@@ -134,7 +134,10 @@ public class JBackgroundComboBox extends JComboBox {
 		@Override
 		public Component getListCellRendererComponent(JList list, Object value, int index,
 				boolean isSelected, boolean cellHasFocus) {
-
+			// add class check for mac osx by @hira at 2013/05/30
+			if (!(value instanceof ColorComboData)) {
+				return this;
+			}
 			ColorComboData data = (ColorComboData)value;
 			list.setSelectionBackground(null);
 			list.setSelectionForeground(null);

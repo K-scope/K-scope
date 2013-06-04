@@ -399,22 +399,21 @@ public class SwingUtils {
         	for (int i=0; i<validcommand.length; i++) {
         		validcommand[i] = StringUtils.trimQuote(validcommand[i]);
         	}
-        	int l = validcommand.length;
-        	String[] commands_and_dir = new String[l + 1]; 
-        	System.arraycopy(validcommand,0,commands_and_dir,0,l); 
-        	commands_and_dir[l] = workdirectory.getAbsolutePath();
-        	ProcessBuilder pb = new ProcessBuilder(commands_and_dir);
-        	pb.redirectErrorStream(true); 
-        	System.out.println(System.getProperty("user.dir"));
-        	//SET location of SSHconnect.jar to the same directory as kscope.jar
-        	pb.directory(new File(System.getProperty("user.dir"))); process = pb.start();
-        	if (process == null) {
-        		errMsg = Message.getString("swingutils.processrun.error.invalid.command", cmdString);
-        		throw new Exception(errMsg); }
-        	// プロセスのエラーストリーム取得
-        	InputStream is = process.getInputStream();
-        	while (true) {
-        		int c = is.read();
+            ProcessBuilder pb = new ProcessBuilder(validcommand);
+            pb.redirectErrorStream(true);
+            if (workdirectory != null) {
+                pb.directory(workdirectory);
+            }
+            process = pb.start();
+            if (process == null) {
+                errMsg = Message.getString("swingutils.processrun.error.invalid.command",
+                                            cmdString);
+                throw new Exception(errMsg);
+            }
+            // プロセスのエラーストリーム取得
+            InputStream is = process.getInputStream();
+            while (true) {
+                int c = is.read();
                 if (c == -1) {
                     is.close();
                     break;
@@ -547,8 +546,20 @@ public class SwingUtils {
 
         try {
             // for Mac
-            if (KscopeProperties.isMac()) {
-
+        	// add at 2013/05/31 by @hira
+        	// Macのフォルダダイアログの表示フラグ
+        	// java1.7以上はAppleScriptにてフォルダダイアログを表示する
+        	// java1.6以下はjava.awt.FileDialogを使用する。
+            boolean applescript = KscopeProperties.isJava17Later();
+            if (KscopeProperties.isMac() && applescript) {
+            	File selected = AppleScriptEngine.showFolderDialog(title, currentDirectoryPath);
+                if (selected == null) {
+                	return null;
+                }
+            	File[] files = {selected};
+                return files;
+            }
+            else if (KscopeProperties.isMac()) {
                 // フォルダ選択に変更
                 System.setProperty("apple.awt.fileDialogForDirectories", "true");
 
@@ -626,12 +637,20 @@ public class SwingUtils {
                             Component parent,
                             String title,
                             String currentDirectoryPath) {
-
         try {
             ProjectFilter filter = new SwingUtils().new ProjectFilter(KscopeProperties.PROJECT_FILE + " | Project Folder");
-            // for Mac
-            if (KscopeProperties.isMac()) {
 
+            // for Mac
+        	// add at 2013/05/31 by @hira
+        	// Macのフォルダダイアログの表示フラグ
+        	// java1.7以上はAppleScriptにてフォルダダイアログを表示する
+        	// java1.6以下はjava.awt.FileDialogを使用する。
+            boolean applescript = KscopeProperties.isJava17Later();
+            if (KscopeProperties.isMac() && applescript) {
+            	File projectfile = AppleScriptEngine.showFolderDialog(title, currentDirectoryPath);
+            	return projectfile;
+            }
+            else if (KscopeProperties.isMac()) {
                 // フォルダ選択に変更
                 System.setProperty("apple.awt.fileDialogForDirectories", "true");
 
@@ -650,7 +669,7 @@ public class SwingUtils {
                 // 親フォルダ
                 dialog.setDirectory(currentDirectoryPath);
                 // ファイルフィルタ
-                dialog.setFilenameFilter(filter);
+                // dialog.setFilenameFilter(filter);
                 // フォルダ選択ダイアログの表示
                 dialog.setVisible(true);
 
@@ -706,26 +725,38 @@ public class SwingUtils {
                             String title,
                             String currentDirectoryPath,
                             boolean multiselection) {
-
         try {
             // for Mac
-            if (KscopeProperties.isMac()) {
-
+        	// add at 2013/05/31 by @hira
+        	// Macのフォルダダイアログの表示フラグ
+        	// java1.7以上はAppleScriptにてフォルダダイアログを表示する
+        	// java1.6以下はjava.awt.FileDialogを使用する。
+            boolean applescript = KscopeProperties.isJava17Later();
+            if (KscopeProperties.isMac() && applescript) {
+            	File selected = AppleScriptEngine.showFolderDialog(title, currentDirectoryPath);
+            	if (selected == null) {
+            		return null;
+            	}
+                File[] files = {selected};
+                return files;
+            }
+            else if (KscopeProperties.isMac()) {
                 // フォルダ選択に変更
                 System.setProperty("apple.awt.fileDialogForDirectories", "true");
 
                 // java.awt.FileDialogを使用
+                // modify FileDialog Mode from FileDialog.SAVE to FileDialog.LOAD at 2013/05/31 by @hira
+                // フォルダ保存ダイアログから選択ダイアログに変更する。既存フォルダが選択できない（入力が必要）為
                 FileDialog dialog = null;
                 if (parent instanceof Frame) {
-                    dialog = new FileDialog((Frame) parent, title, FileDialog.SAVE);
+                    dialog = new FileDialog((Frame) parent, title, FileDialog.LOAD);
                 }
                 else if (parent instanceof Dialog) {
-                    dialog = new FileDialog((Dialog) parent, title, FileDialog.SAVE);
+                    dialog = new FileDialog((Dialog) parent, title, FileDialog.LOAD);
                 }
                 else {
-                    dialog = new FileDialog((Frame) null, title, FileDialog.SAVE);
+                    dialog = new FileDialog((Frame) null, title, FileDialog.LOAD);
                 }
-
                 // 親フォルダ
                 dialog.setDirectory(currentDirectoryPath);
                 // フォルダ選択ダイアログの表示
@@ -791,7 +822,6 @@ public class SwingUtils {
                             ExtFileFilter filter,
                             boolean multiselection
                             ) {
-
         try {
             if (KscopeProperties.isMac()) {
                 FileDialog dialog = null;
@@ -957,7 +987,6 @@ public class SwingUtils {
                             String currentDirectoryPath,
                             boolean multiselection
                             ) {
-
         try {
             MakefileFilter filter = new SwingUtils().new MakefileFilter("Makefile(Makefile*, makefile*)");
             if (KscopeProperties.isMac()) {
@@ -1162,8 +1191,8 @@ public class SwingUtils {
                             String currentDirectoryPath,
                             String defaultname
                             ) {
-
         try {
+        	// Mac
             if (KscopeProperties.isMac()) {
                 FileDialog dialog = null;
                 if (parent instanceof Frame) {

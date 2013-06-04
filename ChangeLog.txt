@@ -20,9 +20,26 @@ CHANGELOG
 - Adding a alert feature.
  * When given intermediate codes have same procedure name. The tool notices a alert.
 
-(2013/5/21) 0.2.2
-- Interface in Analysis view is changed.
-- Message resource files are integrated.
-- Implementation of construction of file tree is changed.
-- File filter in open project dialogue is changed.
-- Text-exporting feature is changed from csv-form to tree-form.
+(2013/5/27) 0.2.2
+- Message resource files are integrated to increase maintainability.
+- Implementation of construction of file tree is changed to improve performance.
+- File filter in open project dialogue is activated to increase usability.
+- A feature of text-exporting from csv-form to tree-form is changed.
+- A display in analysis view is changed.
+- An obsolete support for JDK6 is closed.
+[bug fix]
+- A display of cost ruler of profier is not clear by the event.
+- A discrimination between lowercase and uppercase literals is aware in tree-view.
+- When feature of external tool is called, an exception is occurred in Linux environment.
+- Typo fixed in source codes.
+
+(2013/5/31) 0.2.3
+- Some properties are removed to refactor.
+- Minor changes, icon files are added and deleted.
+- build.xml is fixed to specify UTF-8 encoding.
+
+[bug fix]
+- Fixed for Mac OS X envrironment
+ * Background color of unselected node in tree-view was uninteded.
+ * Class Cast Exception occured in variable access settings.
+ * Feature of file selection was not selectable in new project dialogue (only Mountain Lion  and Java 1.7)

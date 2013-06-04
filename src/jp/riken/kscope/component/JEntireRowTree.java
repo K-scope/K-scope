@@ -262,9 +262,20 @@ public class JEntireRowTree extends javax.swing.JTree implements TreeWillExpandL
                                     expanded, leaf, row, hasFocus);
             if (comp instanceof JComponent) {
                 JComponent label = (JComponent)comp;
-                label.setBackground(selected?SELECTION_BACKGROUND:tree.getBackground());
-                label.setForeground(selected?SELECTION_FORECOLOR:tree.getForeground());
-                label.setOpaque(true);
+                // modify setBackground for mac osx by @hira at 2013/05/30
+                if (selected) {
+                    label.setBackground(SELECTION_BACKGROUND);
+                    label.setForeground(SELECTION_FORECOLOR);
+                    label.setOpaque(true);
+                }
+                else {
+                	label.setBackground(tree.getBackground());
+                	label.setForeground(tree.getForeground());
+                    label.setOpaque(false);
+                }
+                // label.setBackground(selected?SELECTION_BACKGROUND:tree.getBackground());
+                // label.setForeground(selected?SELECTION_FORECOLOR:tree.getForeground());
+                //label.setOpaque(true);
             }
 
             return comp;

@@ -108,12 +108,13 @@ public class FileProjectNewAction extends ActionBase {
         dialog.addExcludeName(KscopeProperties.SETTINGS_FOLDER);
         // プロジェクトプロパティにmakeコマンドがある場合はその文字列を表示
         dialog.setMakeCommand(this.controller.getPropertiesProject().getPropertyValue(ProjectProperties.MAKE_COMMAND).getValue());
+        // タイトル, Makefile, 保存フラグの設定削除 at 2013/05/30 by @hira
         // プロジェクトプロパティにタイトル設定がある場合その文字列を表示
-        dialog.setProjectTitle(this.controller.getPropertiesProject().getPropertyValue(ProjectProperties.PRJ_TITLE).getValue());
+        // dialog.setProjectTitle(this.controller.getPropertiesProject().getPropertyValue(ProjectProperties.PRJ_TITLE).getValue());
         // プロジェクトプロパティにMakefileパスがある場合はそのパスを表示
-        dialog.setMakefilePath(this.controller.getPropertiesProject().getPropertyValue(ProjectProperties.MAKEFILE_PATH).getValue());
+        // dialog.setMakefilePath(this.controller.getPropertiesProject().getPropertyValue(ProjectProperties.MAKEFILE_PATH).getValue());
         // プロジェクト作成直後にプロジェクトを保存するかどうかを設定
-        dialog.setSaveFlag(this.controller.getPropertiesApplication().getSaveProjectAfterCreate());
+        //　dialog.setSaveFlag(this.controller.getPropertiesApplication().getSaveProjectAfterCreate());
 
         int result = dialog.showDialog();
 

@@ -45,7 +45,7 @@ public class KscopeProperties {
      * version : 0.2.1        2013/04/12 release
      * version : 0.2.2        2013/05/01 release
      */
-    public static final String APPLICATION_VERSION = "0.2.2";
+    public static final String APPLICATION_VERSION = "0.2.3";
     /** アプリケーションビルドID */
     //public static final String APPLICATION_BUILDID = "20120315-0900";
 
@@ -479,4 +479,14 @@ public class KscopeProperties {
     }
 
 
+    /**
+     * Javaバージョンが1.7以上であるかチェックする.<br/>
+     * システムプロパティからjava.versionを取得する。
+     * @return    true=Javaバージョンが1.7以上である。
+     */
+    public static boolean isJava17Later() {
+    	String version = System.getProperty("java.specification.version");
+    	double verno = Double.parseDouble(version);
+        return verno >= 1.7;
+    }
 }

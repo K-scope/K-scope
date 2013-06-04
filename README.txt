@@ -1,7 +1,9 @@
 README
 ======
 
-K-scope is a source code analysis tool with graphical user interface that visualizes program structures of Fortran 90 and FORTRAN 77 source code. This software is build by pure java.
+K-scope is a source code analysis tool with graphical user interface that
+visualizes program structures of Fortran 90 and FORTRAN 77 source code.
+This software is build by pure java.
 
 The latest version and documents are available in the following download site.
 http://www.aics.riken.jp/ungi/soft/kscope/
@@ -9,7 +11,7 @@ http://www.aics.riken.jp/ungi/soft/kscope/
 Preliminaries
 ========
 
-First of all, K-scope requires JDK6 or later. Please download from Oracle site.
+First of all, K-scope requires JDK7 or later. Please download from Oracle site.
 http://www.oracle.com/technetwork/java/javase/downloads/index.html
 
 In addition, this tool uses intermediate codes by front end of the XcalableMP compiler.

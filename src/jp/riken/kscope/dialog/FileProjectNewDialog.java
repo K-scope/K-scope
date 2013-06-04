@@ -1637,8 +1637,8 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
      * @return		プロジェクトXMLリスト
      */
     public List<File> getProjectXmlList() {
-    	// ListModel<?> model = this.listProjectXml.getModel();
-    	ListModel model = this.listProjectXml.getModel();
+        // change from ListModel<?> for JDK1.6 by @hira at 2013/05/30
+        ListModel model = this.listProjectXml.getModel();
         if (model.getSize() <= 0) return null;
 
         // プロジェクトフォルダ
