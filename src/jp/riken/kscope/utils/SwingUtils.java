@@ -445,11 +445,17 @@ public class SwingUtils {
 			for (int i = 0; i < validcommand.length; i++) {
 				validcommand[i] = StringUtils.trimQuote(validcommand[i]);
 			}
-			ProcessBuilder pb = new ProcessBuilder(validcommand);
+			
+			int l = validcommand.length;
+			String[] commands_and_dir = new String[l + 1]; 
+			System.arraycopy(validcommand,0,commands_and_dir,0,l); 
+			commands_and_dir[l] = workdirectory.getAbsolutePath();
+			ProcessBuilder pb = new ProcessBuilder(commands_and_dir);
 			pb.redirectErrorStream(true);
-			if (workdirectory != null) {
-				pb.directory(workdirectory);
-			}
+			
+			System.out.println(System.getProperty("user.dir"));
+			// SET location to look for SSHcommect to the same directory as kscope.jar
+			pb.directory(new File(System.getProperty("user.dir")));
 			process = pb.start();
 			if (process == null) {
 				errMsg = Message.getString(
