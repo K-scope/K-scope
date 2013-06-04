@@ -13,6 +13,8 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ * 
+ * Version to work with SSHconnect.
  */
 
 package jp.riken.kscope.utils;
@@ -386,7 +388,7 @@ public class SwingUtils {
         int result = -1;
         Process process = null;
         StringBuilder buf = new StringBuilder();
-        String bufStr = new String();
+        //String bufStr = new String();
         if (commands == null || commands.length <= 0) return 1;
         String cmdString = "";
         for (int i=0; i<commands.length; i++) {
@@ -431,7 +433,7 @@ public class SwingUtils {
                 outStream.write(0x0A);
                 outStream.flush();
             }
-            bufStr = new String(buf.toString().getBytes("iso-8859-1"));
+            //bufStr = new String(buf.toString().getBytes("iso-8859-1"));
             process.waitFor();
             result = process.exitValue();
 
