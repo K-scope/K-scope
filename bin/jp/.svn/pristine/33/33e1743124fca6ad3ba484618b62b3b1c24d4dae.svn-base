@@ -1,0 +1,5 @@
+# To change this template, choose Tools | Templates
+# and open the template in the editor.
+
+KEY1=Error
+KEY2=Because the length of the byte array is smaller than the destination data type, it can not be converted.

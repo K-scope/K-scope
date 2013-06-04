@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+
+<project basedir="." default="jar" name="kscope">
+    <property environment="env"/>
+    <property name="debuglevel" value="source,lines,vars"/>
+    <property name="target" value="1.7"/>
+    <property name="source" value="1.7"/>
+
+    <property name="src.dir" value="src"/>
+	<property name="bin.dir" value="bin"/>
+    <property name="resources.dir" value="resources"/>
+    <property name="properties.dir" value="properties"/>
+    <property name="javadoc.dir" value="docs"/>
+    <property name="jar.name" value="kscope.jar"/>
+
+    <path id="kscope.classpath">
+        <pathelement location="bin"/>
+        <pathelement location="resources"/>
+    </path>
+	
+    <target name="clean">
+        <delete dir="${bin.dir}"/>
+    	<delete file="${jar.name}"/>
+    </target>
+	
+    <target name="cleanall" depends="clean" />
+	
+    <target name="init">
+        <mkdir dir="${bin.dir}"/>
+        <copy includeemptydirs="false" todir="${bin.dir}">
+            <fileset dir="${src.dir}">
+                <exclude name="**/*.java"/>
+            </fileset>
+        </copy>
+    </target>
+		
+    <target name="build" depends="init">
+        <echo message="${ant.project.name}: ${ant.file}"/>
+        <javac debug="true" debuglevel="${debuglevel}" destdir="${bin.dir}" includeantruntime="false" source="${source}" target="${target}">
+            <src path="${src.dir}"/>
+            <classpath refid="kscope.classpath"/>
+        </javac>
+    </target>
+	
+    <target name="jar" depends="build">
+    	<!--<jar jarfile="${jar.name}" basedir="."></jar>-->
+        <echo message="${ant.project.name}: ${jar.name}"/>
+    	<jar destfile="${jar.name}" filesetmanifest="mergewithoutmain">
+            <manifest>
+                <attribute name="Main-Class" value="jp.riken.kscope.Go"/>
+                <attribute name="Class-Path" value="."/>
+            </manifest>
+            <fileset dir="${bin.dir}"/>
+            <fileset dir="${resources.dir}"/>    		
+    	</jar>
+    </target>
+
+    <target name="run">
+        <java classname="jp.riken.kscope.Go" failonerror="true" fork="yes">
+            <jvmarg line="-Duser.language=en"/>
+            <classpath refid="kscope.classpath"/>
+        </java>
+    </target>
+	
+</project>

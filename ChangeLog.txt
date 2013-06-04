@@ -1,0 +1,28 @@
+CHANGELOG
+========
+
+(2012/3/15) 0.1.0
+- A new parser, fonrt end of XcalableMP compiler was supported.
+- Various features and usabilities were upgraded.
+
+(2013/3/22) 0.2.0
+- Enhancement of workflow as follows
+  * front end of XcalableMP compiler
+  * profiler in the K computer
+- Enhancement of byte/FLOP analysis
+
+(2013/4/12) 0.2.1
+- Enhancement of viewer for additional information
+- Refactoring of bundle resources properties
+- Following file/dir name were changed.
+  * project.ksx to Kscope_project.ksx
+  * settings to Kscope_settings
+- Adding a alert feature.
+ * When given intermediate codes have same procedure name. The tool notices a alert.
+
+(2013/5/21) 0.2.2
+- Interface in Analysis view is changed.
+- Message resource files are integrated.
+- Implementation of construction of file tree is changed.
+- File filter in open project dialogue is changed.
+- Text-exporting feature is changed from csv-form to tree-form.

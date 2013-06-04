@@ -1,0 +1,26 @@
+# Configuration file for SSHconnect
+# host IP address and port
+host = 127.0.0.1
+# SSH username and password 
+user = sshuser  
+password = aics
+group_id = 1002
+port = 3022
+
+# Make command
+make = make
+
+# Make command options
+#make_options = -a -b -c
+
+# Location of source files
+local_path = /Users/peterbryzgalov/work/NICAM-K.xml
+
+# Remote F_Front location 
+remote_path = /home/sshuser/kscope/
+
+# Exclude file filter 
+file_filter = .*,*.tar,*.html,*.zip,*.o,*.xml,*.xmod
+
+# Make files need parsing. Separate with commas.
+makefiles = Mkinclude

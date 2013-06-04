@@ -1,0 +1,4 @@
+
+   K-scope: A Java-Based Fortran Source Code Analyzer with Graphical User Interface for Performance Improvement
+   Copyright 2012-2013 RIKEN, Japan
+
