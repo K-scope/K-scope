@@ -19,3 +19,4 @@
  * アプリケーション、GUIのユーティリティクラスです.
  */
 package jp.riken.kscope.utils;
+

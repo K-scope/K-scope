@@ -39,277 +39,313 @@ import org.w3c.dom.NodeList;
 
 /**
  * XMLファイル入出力ユーティリティクラス
+ * 
  * @author riken
  */
 public class XmlUtils {
 
-    /** XMLドキュメント */
-    private Document document;
-    /** XMLパス */
-    private XPath xpath;
+	/** XMLドキュメント */
+	private Document document;
+	/** XMLパス */
+	private XPath xpath;
 
-    /**
-     * コンストラクタ
-     * @param filename		XMLファイル名
-     * @throws Exception		ファイルが存在しない, DOM生成エラー
-     */
-    public XmlUtils(String filename) throws Exception {
-        InputStream is = new FileInputStream(filename);
-        // DOMの生成を行う
-        initialize(is);
-    }
+	/**
+	 * コンストラクタ
+	 * 
+	 * @param filename
+	 *            XMLファイル名
+	 * @throws Exception
+	 *             ファイルが存在しない, DOM生成エラー
+	 */
+	public XmlUtils(String filename) throws Exception {
+		InputStream is = new FileInputStream(filename);
+		// DOMの生成を行う
+		initialize(is);
+	}
 
-    /**
-     * コンストラクタ
-     * @param file		XMLファイル
-     * @throws Exception		ファイルが存在しない, DOM生成エラー
-     */
-    public XmlUtils(File file) throws Exception {
-        InputStream is = new FileInputStream(file);
-        // DOMの生成を行う
-        initialize(is);
-    }
+	/**
+	 * コンストラクタ
+	 * 
+	 * @param file
+	 *            XMLファイル
+	 * @throws Exception
+	 *             ファイルが存在しない, DOM生成エラー
+	 */
+	public XmlUtils(File file) throws Exception {
+		InputStream is = new FileInputStream(file);
+		// DOMの生成を行う
+		initialize(is);
+	}
 
-    /**
-     * コンストラクタ
-     * @param is		XML入力ストリーム
-     * @throws Exception 	DOM生成エラー
-     */
-    public XmlUtils(InputStream is) throws Exception {
-        // DOMの生成を行う
-        initialize(is);
-    }
+	/**
+	 * コンストラクタ
+	 * 
+	 * @param is
+	 *            XML入力ストリーム
+	 * @throws Exception
+	 *             DOM生成エラー
+	 */
+	public XmlUtils(InputStream is) throws Exception {
+		// DOMの生成を行う
+		initialize(is);
+	}
 
-    /**
-     * 初期化を行う.<br/>
-     * DOMの生成を行う
-     * @param is		XML入力ストリーム
-     * @throws Exception
-     */
-    private void initialize(InputStream is) throws Exception {
+	/**
+	 * 初期化を行う.<br/>
+	 * DOMの生成を行う
+	 * 
+	 * @param is
+	 *            XML入力ストリーム
+	 * @throws Exception
+	 */
+	private void initialize(InputStream is) throws Exception {
 
-        // XMLパース
-        DocumentBuilderFactory dbfactory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder builder = dbfactory.newDocumentBuilder();
-        this.document = builder.parse(is);
+		// XMLパース
+		DocumentBuilderFactory dbfactory = DocumentBuilderFactory.newInstance();
+		DocumentBuilder builder = dbfactory.newDocumentBuilder();
+		this.document = builder.parse(is);
 
-        XPathFactory factory = XPathFactory.newInstance();
-        this.xpath = factory.newXPath();
-    }
+		XPathFactory factory = XPathFactory.newInstance();
+		this.xpath = factory.newXPath();
+	}
 
-    /**
-     * XPATHの要素、属性の値を取得する:数値.
-     * @param path		XPATH
-     * @return			値:数値
-     */
-    public int getInt(String path) {
+	/**
+	 * XPATHの要素、属性の値を取得する:数値.
+	 * 
+	 * @param path
+	 *            XPATH
+	 * @return 値:数値
+	 */
+	public int getInt(String path) {
 
-        int value = 0;
-        try {
-            XPathExpression expr = xpath.compile(path);
+		int value = 0;
+		try {
+			XPathExpression expr = xpath.compile(path);
 
-            Object result = expr.evaluate(document, XPathConstants.STRING);
+			Object result = expr.evaluate(document, XPathConstants.STRING);
 
-            value = Integer.parseInt((String)result);
-        } catch (Exception ex) {
-            // ex.printStackTrace();
-        	value = -1;
-        }
+			value = Integer.parseInt((String) result);
+		} catch (Exception ex) {
+			// ex.printStackTrace();
+			value = -1;
+		}
 
-        return value;
-    }
+		return value;
+	}
 
+	/**
+	 * XPATHの要素、属性の値を取得する:文字列.
+	 * 
+	 * @param path
+	 *            XPATH
+	 * @return 値:文字列
+	 */
+	public String getString(String path) {
 
-    /**
-     * XPATHの要素、属性の値を取得する:文字列.
-     * @param path		XPATH
-     * @return			値:文字列
-     */
-    public String getString(String path) {
+		String value = null;
+		try {
+			XPathExpression expr = xpath.compile(path);
 
-        String value = null;
-        try {
-            XPathExpression expr = xpath.compile(path);
+			Object result = expr.evaluate(document, XPathConstants.STRING);
 
-            Object result = expr.evaluate(document, XPathConstants.STRING);
+			value = (String) result;
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
 
-            value = (String) result;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
+		return value;
+	}
 
-        return value;
-    }
+	/**
+	 * XPATHの要素、属性のリストを取得する
+	 * 
+	 * @param path
+	 *            XPATH
+	 * @return リスト:文字列
+	 */
+	public List<String> getList(String path) {
 
-    /**
-     * XPATHの要素、属性のリストを取得する
-     * @param path		XPATH
-     * @return			リスト:文字列
-     */
-    public List<String> getList(String path) {
+		List<String> list = new ArrayList<String>();
+		try {
+			XPathExpression expr = xpath.compile(path);
+			NodeList itemNodeList = (NodeList) expr.evaluate(document,
+					XPathConstants.NODESET);
 
-        List<String> list = new ArrayList<String>();
-        try {
-            XPathExpression expr = xpath.compile(path);
-            NodeList itemNodeList = (NodeList)expr.evaluate(document, XPathConstants.NODESET);
+			if (itemNodeList.getLength() == 0)
+				return null;
 
-            if(itemNodeList.getLength() == 0) return null;
+			for (int i = 0; i < itemNodeList.getLength(); i++) {
+				Node node = itemNodeList.item(i);
+				NodeList textNodes = node.getChildNodes();
+				if (textNodes.getLength() <= 0)
+					continue;
 
-            for(int i = 0; i < itemNodeList.getLength(); i++) {
-                Node node = itemNodeList.item(i);
-                NodeList textNodes = node.getChildNodes();
-                if(textNodes.getLength() <= 0) continue;
+				String value = textNodes.item(0).getNodeValue();
+				if (value == null)
+					continue;
+				list.add(value);
+			}
 
-                String value = textNodes.item(0).getNodeValue();
-                if (value == null) continue;
-                list.add(value);
-            }
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		if (list.size() <= 0)
+			return null;
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-        if (list.size() <= 0) return null;
+		return list;
+	}
 
-        return list;
-    }
+	/**
+	 * XPATHの要素、属性の値を取得する:色.
+	 * 
+	 * @param path
+	 *            XPATH
+	 * @return 値:色
+	 */
+	public Color getColor(String path) {
 
-    /**
-     * XPATHの要素、属性の値を取得する:色.
-     * @param path		XPATH
-     * @return			値:色
-     */
-    public Color getColor(String path) {
+		Color color = null;
+		try {
+			XPathExpression expr = xpath.compile(path);
 
-        Color color = null;
-        try {
-            XPathExpression expr = xpath.compile(path);
+			Object result = expr.evaluate(document, XPathConstants.STRING);
 
-            Object result = expr.evaluate(document, XPathConstants.STRING);
+			color = StringUtils.parseColor((String) result);
 
-            color = StringUtils.parseColor((String) result);
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
+		return color;
+	}
 
-        return color;
-    }
+	/**
+	 * XPATHの要素の値を取得する:フォント.<br/>
+	 * フォント要素の属性からフォントを作成する.<br/>
+	 * name:フォント名<br/>
+	 * size:フォントサイズ<br/>
+	 * bold:ボイド('true' or 'false')<br/>
+	 * italic:ボイド('true' or 'false')
+	 * 
+	 * @param path
+	 *            XPATH
+	 * @return 値:フォント
+	 */
+	public Font getFont(String path) {
 
-    /**
-     * XPATHの要素の値を取得する:フォント.<br/>
-     * フォント要素の属性からフォントを作成する.<br/>
-     * name:フォント名<br/>
-     * size:フォントサイズ<br/>
-     * bold:ボイド('true' or 'false')<br/>
-     * italic:ボイド('true' or 'false')
-     * @param path		XPATH
-     * @return			値:フォント
-     */
-    public Font getFont(String path) {
+		Font font = null;
+		try {
+			XPathExpression expr = xpath.compile(path);
 
-        Font font = null;
-        try {
-            XPathExpression expr = xpath.compile(path);
+			Object result = expr.evaluate(document, XPathConstants.NODE);
 
-            Object result = expr.evaluate(document, XPathConstants.NODE);
+			Node node = (Node) result;
+			if (node == null)
+				return null;
 
-            Node node = (Node) result;
-            if (node == null) return null;
+			NamedNodeMap attrs = node.getAttributes();
+			Node attrnode;
+			String value;
+			attrnode = attrs.getNamedItem("fontname");
+			String name = attrnode.getNodeValue();
+			attrnode = attrs.getNamedItem("size");
+			value = attrnode.getNodeValue();
+			int size = Integer.parseInt(value);
+			attrnode = attrs.getNamedItem("bold");
+			value = attrnode.getNodeValue();
+			boolean bold = Boolean.parseBoolean(value);
+			attrnode = attrs.getNamedItem("italic");
+			value = attrnode.getNodeValue();
+			boolean italic = Boolean.parseBoolean(value);
+			int style = Font.PLAIN;
+			if (bold)
+				style += Font.BOLD;
+			if (italic)
+				style += Font.ITALIC;
 
-            NamedNodeMap attrs = node.getAttributes();
-            Node attrnode;
-            String value;
-            attrnode = attrs.getNamedItem("fontname");
-            String name = attrnode.getNodeValue();
-            attrnode = attrs.getNamedItem("size");
-            value = attrnode.getNodeValue();
-            int size = Integer.parseInt(value);
-            attrnode = attrs.getNamedItem("bold");
-            value = attrnode.getNodeValue();
-            boolean bold = Boolean.parseBoolean(value);
-            attrnode = attrs.getNamedItem("italic");
-            value = attrnode.getNodeValue();
-            boolean italic = Boolean.parseBoolean(value);
-            int style = Font.PLAIN;
-            if (bold) style += Font.BOLD;
-            if (italic) style += Font.ITALIC;
+			// System.out.println("property:font name" + name);
 
-            // System.out.println("property:font name" + name);
+			font = new Font(name, style, size);
 
-            font = new Font(name, style, size);
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
+		return font;
+	}
 
-        return font;
-    }
+	/**
+	 * フォント属性を作成する
+	 * 
+	 * @param node
+	 *            作成ノード
+	 * @param font
+	 *            作成フォント
+	 */
+	public static void createFontAttribute(org.w3c.dom.Element node, Font font) {
 
-    /**
-     *  フォント属性を作成する
-     * @param node		作成ノード
-     * @param font		作成フォント
-     */
-    public static void createFontAttribute(org.w3c.dom.Element node, Font font) {
+		// ドキュメントの取得
+		org.w3c.dom.Document document = node.getOwnerDocument();
 
-        // ドキュメントの取得
-        org.w3c.dom.Document document = node.getOwnerDocument();
+		// name属性
+		{
+			org.w3c.dom.Attr attr = document.createAttribute("fontname");
+			attr.setValue(font.getFamily());
+			node.setAttributeNode(attr);
+		}
+		// サイズ
+		{
+			org.w3c.dom.Attr attr = document.createAttribute("size");
+			attr.setValue(String.valueOf(font.getSize()));
+			node.setAttributeNode(attr);
+		}
+		// スタイル
+		int style = font.getStyle();
+		boolean bold = false;
+		boolean italic = false;
+		if ((style & Font.BOLD) != 0)
+			bold = true;
+		if ((style & Font.ITALIC) != 0)
+			italic = true;
+		// bold
+		{
+			org.w3c.dom.Attr attr = document.createAttribute("bold");
+			attr.setValue(String.valueOf(bold));
+			node.setAttributeNode(attr);
+		}
+		// italic
+		{
+			org.w3c.dom.Attr attr = document.createAttribute("italic");
+			attr.setValue(String.valueOf(italic));
+			node.setAttributeNode(attr);
+		}
 
-        // name属性
-        {
-            org.w3c.dom.Attr attr = document.createAttribute("fontname");
-            attr.setValue(font.getFamily());
-            node.setAttributeNode(attr);
-        }
-        // サイズ
-        {
-            org.w3c.dom.Attr attr = document.createAttribute("size");
-            attr.setValue(String.valueOf(font.getSize()));
-            node.setAttributeNode(attr);
-        }
-        // スタイル
-        int style = font.getStyle();
-        boolean bold = false;
-        boolean italic = false;
-        if ((style & Font.BOLD) != 0) bold = true;
-        if ((style & Font.ITALIC) != 0) italic = true;
-        // bold
-        {
-            org.w3c.dom.Attr attr = document.createAttribute("bold");
-            attr.setValue(String.valueOf(bold));
-            node.setAttributeNode(attr);
-        }
-        // italic
-        {
-            org.w3c.dom.Attr attr = document.createAttribute("italic");
-            attr.setValue(String.valueOf(italic));
-            node.setAttributeNode(attr);
-        }
+		return;
+	}
 
-        return;
-    }
+	/**
+	 * 色属性を作成する
+	 * 
+	 * @param node
+	 *            作成ノード
+	 * @param color
+	 *            作成色
+	 */
+	public static void createColorAttribute(org.w3c.dom.Element node,
+			Color color) {
 
-    /**
-     *  色属性を作成する
-     * @param node		作成ノード
-     * @param color		作成色
-     */
-    public static void createColorAttribute(org.w3c.dom.Element node, Color color) {
+		// ドキュメントの取得
+		org.w3c.dom.Document document = node.getOwnerDocument();
 
-        // ドキュメントの取得
-        org.w3c.dom.Document document = node.getOwnerDocument();
+		// 色属性
+		{
+			org.w3c.dom.Attr attr = document.createAttribute("color");
+			String value = StringUtils.parseColorCode(color);
+			attr.setValue(value);
+			node.setAttributeNode(attr);
+		}
 
-        // 色属性
-        {
-            org.w3c.dom.Attr attr = document.createAttribute("color");
-            String value = StringUtils.parseColorCode(color);
-            attr.setValue(value);
-            node.setAttributeNode(attr);
-        }
-
-        return;
-    }
+		return;
+	}
 
 }
-
-

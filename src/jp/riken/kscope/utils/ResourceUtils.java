@@ -32,142 +32,162 @@ import jp.riken.kscope.properties.KscopeProperties;
 
 /**
  * リソースユーティリティクラス
+ * 
  * @author riken
  */
 public class ResourceUtils {
 
-    /** java.net.URLクラスオブジェクト */
-    private static final Class<?>[] parameters = new Class[] { java.net.URL.class };
+	/** java.net.URLクラスオブジェクト */
+	private static final Class<?>[] parameters = new Class[] { java.net.URL.class };
 
-    /** アプリケーションルートクラス */
-    private static Class<?> rootAppClass;
+	/** アプリケーションルートクラス */
+	private static Class<?> rootAppClass;
 
-    /**
-     * アプリケーションクラスを設定する。
-     * @param rootAppClass			アプリケーションクラス
-     */
-    public static void setRootAppClass(Class<?> rootAppClass) {
-        ResourceUtils.rootAppClass = rootAppClass;
-    }
+	/**
+	 * アプリケーションクラスを設定する。
+	 * 
+	 * @param rootAppClass
+	 *            アプリケーションクラス
+	 */
+	public static void setRootAppClass(Class<?> rootAppClass) {
+		ResourceUtils.rootAppClass = rootAppClass;
+	}
 
-    /**
-     * アイコンリソースを取得する.<br/>
-     * クラスローダから取得できない場合は、'./resouces/icons'パスから取得する。
-     * @param name		アイコン名
-     * @return			アイコンオブジェクト
-     */
-    public static Icon getIcon(String name) {
-        try {
-            //クラスローダ
-            //java.net.URL url = ResourceUtils.class.getClassLoader().getResource(name);            
-            java.net.URL url = ResourceUtils.class.getClassLoader().getResource("icons/" + name);
-                       
-            //開発環境用（デフォルト）
-            if (url == null){
-                url = new File("./resources/icons/" + name).toURI().toURL();
-            }
-            return new ImageIcon(url);
-        } catch (MalformedURLException ex) {
-            ex.printStackTrace();
-            return null;
-        }
-    }
+	/**
+	 * アイコンリソースを取得する.<br/>
+	 * クラスローダから取得できない場合は、'./resouces/icons'パスから取得する。
+	 * 
+	 * @param name
+	 *            アイコン名
+	 * @return アイコンオブジェクト
+	 */
+	public static Icon getIcon(String name) {
+		try {
+			// クラスローダ
+			// java.net.URL url =
+			// ResourceUtils.class.getClassLoader().getResource(name);
+			java.net.URL url = ResourceUtils.class.getClassLoader()
+					.getResource("icons/" + name);
 
-    /**
-     * リソースファイルを取得する.
-     * @param name		ファイル名
-     * @return			リソース入力ストリーム
-     */
-    public static InputStream getPropertiesFile(String name) {
-       
-        try {
-            java.net.URL url = ResourceUtils.class.getClassLoader().getResource(name);
-            if (url == null) {
-                url = rootAppClass.getResource(name);
-            }
-            if (url != null) {
-                InputStream is = url.openStream();
-                return is;
-            }
-            
-            // クラスパスからのプロパティフォルダから検索する
-            url = rootAppClass.getResource(rootAppClass.getSimpleName() + ".class");
-            java.net.URI uri = url.toURI();
-            if (uri.toString().startsWith("jar:")) {
-                url = new java.net.URL(uri.toString().substring(4));
-                uri = url.toURI();
-            }
+			// 開発環境用（デフォルト）
+			if (url == null) {
+				url = new File("./resources/icons/" + name).toURI().toURL();
+			}
+			return new ImageIcon(url);
+		} catch (MalformedURLException ex) {
+			ex.printStackTrace();
+			return null;
+		}
+	}
 
-            File file = new File(uri);
-//            if (file == null || !file.exists()) return null;
+	/**
+	 * リソースファイルを取得する.
+	 * 
+	 * @param name
+	 *            ファイル名
+	 * @return リソース入力ストリーム
+	 */
+	public static InputStream getPropertiesFile(String name) {
 
-            file = file.getParentFile().getParentFile();
-            File propatiesFolder = null;
-            while (file != null) {
-                File folder = new File(file.getAbsolutePath() + File.separator + KscopeProperties.PROPERTIES_FOLDER);
-                if (folder.exists()) {
-                    propatiesFolder = folder;
-                    break;
-                }
-                file = file.getParentFile();
-            }
+		try {
+			java.net.URL url = ResourceUtils.class.getClassLoader()
+					.getResource(name);
+			if (url == null) {
+				url = rootAppClass.getResource(name);
+			}
+			if (url != null) {
+				InputStream is = url.openStream();
+				return is;
+			}
 
-            if (propatiesFolder != null) {
-                InputStream is = new FileInputStream(propatiesFolder + File.separator + name);
-                return is;
-            }
+			// クラスパスからのプロパティフォルダから検索する
+			url = rootAppClass.getResource(rootAppClass.getSimpleName()
+					+ ".class");
+			java.net.URI uri = url.toURI();
+			if (uri.toString().startsWith("jar:")) {
+				url = new java.net.URL(uri.toString().substring(4));
+				uri = url.toURI();
+			}
 
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-                
-        return null;
-    }
+			File file = new File(uri);
+			// if (file == null || !file.exists()) return null;
 
+			file = file.getParentFile().getParentFile();
+			File propatiesFolder = null;
+			while (file != null) {
+				File folder = new File(file.getAbsolutePath() + File.separator
+						+ KscopeProperties.PROPERTIES_FOLDER);
+				if (folder.exists()) {
+					propatiesFolder = folder;
+					break;
+				}
+				file = file.getParentFile();
+			}
 
-    /**
-     * クラスパスを追加する。
-     * @param s			追加パス名
-     * @throws IOException		不正パスエラー
-     */
-    public static void addFile(String s) throws IOException {
-        File f = new File(s);
-        addFile(f);
-    }
+			if (propatiesFolder != null) {
+				InputStream is = new FileInputStream(propatiesFolder
+						+ File.separator + name);
+				return is;
+			}
 
-    /**
-     * クラスパスを追加する。
-     *
-     * @param f	追加パス
-     * @throws IOException	不正パスエラー
-     */
-    public static void addFile(File f) throws IOException {
-        addURL(f.toURI().toURL());
-    }
+		} catch (Exception e) {
+			System.err.println("Error opening recource file "+name);
+			e.printStackTrace();
+		}
 
-    /**
-     * クラスパスを追加する.<br/>
-     * 使用方法 ： addFile("./resources/icons");<br/>
-     * クラスローダからリソースファイルを取得する場合に、事前にクラスパスを追加しておく。<br/>
-     * クラスパスを追加するとgetIconの'new File("./resources/icons/" + name).toURI().toURL();'はしなくてもよい。<br/>
-     *
-     * @param u			追加パスURL
-     * @throws IOException		不正パスエラー
-     */
-    public static void addURL(java.net.URL u) throws IOException {
-        URLClassLoader sysloader = (URLClassLoader) ClassLoader.getSystemClassLoader();
+		return null;
+	}
 
-        Class<?> sysclass = URLClassLoader.class;
+	/**
+	 * クラスパスを追加する。
+	 * 
+	 * @param s
+	 *            追加パス名
+	 * @throws IOException
+	 *             不正パスエラー
+	 */
+	public static void addFile(String s) throws IOException {
+		File f = new File(s);
+		addFile(f);
+	}
 
-        try {
-            Method method = sysclass.getDeclaredMethod("addURL", parameters);
-            method.setAccessible(true);
-            method.invoke(sysloader, new Object[] { u });
-        } catch (Throwable t) {
-            throw new IOException("could not add " + u + " to classpath");
-        }
-    }
+	/**
+	 * クラスパスを追加する。
+	 * 
+	 * @param f
+	 *            追加パス
+	 * @throws IOException
+	 *             不正パスエラー
+	 */
+	public static void addFile(File f) throws IOException {
+		addURL(f.toURI().toURL());
+	}
+
+	/**
+	 * クラスパスを追加する.<br/>
+	 * 使用方法 ： addFile("./resources/icons");<br/>
+	 * クラスローダからリソースファイルを取得する場合に、事前にクラスパスを追加しておく。<br/>
+	 * クラスパスを追加するとgetIconの'new File("./resources/icons/" +
+	 * name).toURI().toURL();'はしなくてもよい。<br/>
+	 * 
+	 * @param u
+	 *            追加パスURL
+	 * @throws IOException
+	 *             不正パスエラー
+	 */
+	public static void addURL(java.net.URL u) throws IOException {
+		URLClassLoader sysloader = (URLClassLoader) ClassLoader
+				.getSystemClassLoader();
+
+		Class<?> sysclass = URLClassLoader.class;
+
+		try {
+			Method method = sysclass.getDeclaredMethod("addURL", parameters);
+			method.setAccessible(true);
+			method.invoke(sysloader, new Object[] { u });
+		} catch (Throwable t) {
+			throw new IOException("could not add " + u + " to classpath");
+		}
+	}
 
 }
-
-

@@ -22,19 +22,19 @@ import java.util.logging.LogRecord;
 
 /**
  * ログフォーマッター
- *
+ * 
  * @author riken
- *
+ * 
  */
 public class LogFormatter extends Formatter {
 
-    /**
-     * ログ出力メッセージのフォーマットを設定する。
-     */
-    @Override
-    public String format(LogRecord record) {
-        return String.format("[%tF %tT] %s : %s%n", record.getMillis(),
-                record.getMillis(), record.getLevel().getName(),
-                record.getMessage());
-    }
+	/**
+	 * ログ出力メッセージのフォーマットを設定する。
+	 */
+	@Override
+	public String format(LogRecord record) {
+		return String.format("[%tF %tT] %s : %s%n", record.getMillis(),
+				record.getMillis(), record.getLevel().getName(),
+				record.getMessage());
+	}
 }
