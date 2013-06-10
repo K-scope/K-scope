@@ -77,6 +77,8 @@ public class ProjectMakeService  extends BaseService {
     private List<File> listSearchPath;
     /** スレッド実行フラグ true:実行継続/false:中止. */
     private boolean m_running = true;
+    /** SSHconnectを使用　*/
+    private boolean useSSHconnect = false;
 
     /**
      * コンストラクタ.
@@ -94,6 +96,18 @@ public class ProjectMakeService  extends BaseService {
     public ProjectMakeService(String commands[], File work) {
     	this.makecommands = commands;
         this.workdirectory = work;
+    }
+    
+    /**
+     * コンストラクタ.
+     * @param commands            Makeコマンド
+     * @param work            Makeコマンド実行フォルダ
+     * @param useSSHconnect	SSHconnectを使用するか否か
+     */
+    public ProjectMakeService(String commands[], File work, boolean useSSHconnect) {
+    	this.makecommands = commands;
+        this.workdirectory = work;
+        this.useSSHconnect = useSSHconnect;
     }
 
     /**
@@ -360,26 +374,37 @@ public class ProjectMakeService  extends BaseService {
 		// ステータスメッセージ
         Application.status.setProgressStart(true);
         if (this.makecommands == null || this.makecommands.length <= 0) return false;
-        
-        // inject SSHconnect call
-        int insert_commands = 3;
-        String[] new_makecommands = new String [makecommands.length + insert_commands];
-        new_makecommands[0] = "java"; 
-        new_makecommands[1] = "-jar"; 
-        new_makecommands[2] = "SSHconnect.jar";
-        String command = new_makecommands[0] + " " + new_makecommands[1] + " " + new_makecommands[2];
-        for (int i=0; i<this.makecommands.length; i++) {
-        	if (!command.isEmpty()) command += " ";
-        	//command += this.makecommands[i];
-        	new_makecommands[i + insert_commands] = this.makecommands[i]; // <-- new make commands initialization 
-        	command += new_makecommands[i + insert_commands];
+        String[] new_makecommands = null;
+        String command = "";
+        if (this.useSSHconnect) {
+        	// inject SSHconnect call
+        	int insert_commands = 3;
+        	new_makecommands = new String [makecommands.length + insert_commands];
+        	new_makecommands[0] = "java";
+        	new_makecommands[1] = "-jar";
+        	new_makecommands[2] = "SSHconnect.jar";
+        	for (int i=0; i < insert_commands; i++) {
+        		if (command.length() > 0) command = command + " ";
+        		command = command + new_makecommands[i];
+        	}
+        	for (int i=0; i < this.makecommands.length; i++) {
+        		if (!command.isEmpty()) command += " ";
+        		new_makecommands[i + insert_commands] = this.makecommands[i]; // <-- new make commands initialization
+        		command += new_makecommands[i + insert_commands];
+        	}
+        } else {
+        	for (int i=0; i<this.makecommands.length; i++) {
+        		if (!command.isEmpty()) command += " ";
+        		command += this.makecommands[i];        		
+        	}
         }
         Application.status.setMessageStatus(command);
 
         // makeコマンド実行
     	int result = -1;
 		try {
-			result = SwingUtils.processRun(new_makecommands, this.workdirectory, this.outStream);
+			if (this.useSSHconnect) result = SwingUtils.processRun(new_makecommands, this.workdirectory, this.outStream);
+			else result = SwingUtils.processRun(this.makecommands, this.workdirectory, this.outStream);
 			if (result != 0) { // 中間コードの生成に失敗した場合は継続するか確認
 				if (JOptionPane.showConfirmDialog(null,
 						Message.getString("projectmakeservice.executemakecommand.continue.message"),

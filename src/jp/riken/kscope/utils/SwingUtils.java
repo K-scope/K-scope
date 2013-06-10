@@ -445,17 +445,26 @@ public class SwingUtils {
 			for (int i = 0; i < validcommand.length; i++) {
 				validcommand[i] = StringUtils.trimQuote(validcommand[i]);
 			}
-			
-			int l = validcommand.length;
-			String[] commands_and_dir = new String[l + 1]; 
-			System.arraycopy(validcommand,0,commands_and_dir,0,l); 
-			commands_and_dir[l] = workdirectory.getAbsolutePath();
-			ProcessBuilder pb = new ProcessBuilder(commands_and_dir);
+			ProcessBuilder pb = null;
+			if (commands[0].indexOf("java")==0) {
+				int l = validcommand.length;
+				String[] commands_and_dir = new String[l + 1]; 
+				System.arraycopy(validcommand,0,commands_and_dir,0,l); 
+				// commands_and_dir[l] = "\""+workdirectory.getAbsolutePath()+"\""; //　<-- produces exception "/../." is not a directory
+				commands_and_dir[l] = workdirectory.getAbsolutePath();
+				pb = new ProcessBuilder(commands_and_dir);
+			}
+			else {
+				pb = new ProcessBuilder(validcommand);
+			}
 			pb.redirectErrorStream(true);
 			
-			System.out.println(System.getProperty("user.dir"));
+			/*System.out.println(System.getProperty("user.dir"));
 			// SET location to look for SSHcommect to the same directory as kscope.jar
-			pb.directory(new File(System.getProperty("user.dir")));
+			pb.directory(new File(System.getProperty("user.dir")));*/
+			if (workdirectory != null && commands[0].indexOf("java") != 0) {
+				pb.directory(workdirectory);
+			}
 			process = pb.start();
 			if (process == null) {
 				errMsg = Message.getString(
@@ -489,6 +498,7 @@ public class SwingUtils {
 			result = process.exitValue();
 
 		} catch (Exception ex) {
+			ex.printStackTrace();
 			errMsg = ex.getMessage();
 			result = -1;
 			if (process != null) {

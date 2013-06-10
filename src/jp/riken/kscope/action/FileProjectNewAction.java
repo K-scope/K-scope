@@ -127,6 +127,9 @@ public class FileProjectNewAction extends ActionBase {
         this.controller.setLastAccessFolder(new File(dialog.getProjectFolder()));
         // 中間コードの生成を行うか否か
         boolean genCode = dialog.isGenerateIntermediateCode();
+        
+        boolean useSSHconnect = dialog.useSSHconnect();
+        
         // 選択ソース
         boolean selectedXml = dialog.isSelectedXml();
         FILE_TYPE type = FILE_TYPE.XCODEML_XML;
@@ -251,7 +254,7 @@ public class FileProjectNewAction extends ActionBase {
             this.controller.getPropertiesProject().setProjectTitle(dialog.getPeojectTitle());
 
             /** 新規作成実行 */
-            execMake(commands.toArray(new String[0]), work, dialog.getProjectXmlList(), project, dialog.isBuild(), dialog.isSave(), genCode, (project.getFileType() == FILE_TYPE.XCODEML_XML));
+            execMake(commands.toArray(new String[0]), work, dialog.getProjectXmlList(), project, dialog.isBuild(), dialog.isSave(), genCode, useSSHconnect, (project.getFileType() == FILE_TYPE.XCODEML_XML));
 
             // ソースビューにプロジェクトフォルダを設定する
             this.controller.getMainframe().getPanelSourceView().setProjectFolder(project.getProjectFolder());
@@ -299,9 +302,9 @@ public class FileProjectNewAction extends ActionBase {
      * @param make
      * @param mode
      */
-    private void execMake(String [] commands, File work, List<File> xmls, ProjectModel model, boolean build, boolean save, boolean make, boolean mode) {
+    private void execMake(String [] commands, File work, List<File> xmls, ProjectModel model, boolean build, boolean save, boolean make, boolean useSSHconnect, boolean mode) {
         final String message = Message.getString("mainmenu.file.newproject"); //プロジェクトの新規作成
-        makeService = new ProjectMakeService(commands, work);
+        makeService = new ProjectMakeService(commands, work, useSSHconnect);
     	ConsolePanel console = this.controller.getMainframe().getPanelAnalysisView().getPanelConsole();
 		console.clearConsole();
     	OutputStream out = console.getOutputStream();

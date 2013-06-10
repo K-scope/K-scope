@@ -1,11 +1,17 @@
 # Configuration file for SSHconnect
 # host IP address and port
 host = 127.0.0.1
+port = 3022
+
 # SSH username and password 
 user = sshuser  
 password = aics
+
 group_id = 1002
-port = 3022
+
+# RSA private key
+key = keys/sshuser_rsa
+passphrase = riken.aics
 
 # Make command
 make = make
@@ -14,9 +20,9 @@ make = make
 #make_options = -a -b -c
 
 # Location of source files
-local_path = /Users/peterbryzgalov/work/NICAM-K.xml
+#local_path = /Users/peterbryzgalov/work/NICAM-K.xml
 
-# Remote F_Front location 
+# Remote location 
 remote_path = /home/sshuser/kscope/
 
 # Exclude file filter 
