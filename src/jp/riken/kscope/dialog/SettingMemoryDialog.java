@@ -166,6 +166,7 @@ public class SettingMemoryDialog extends javax.swing.JDialog implements ActionLi
      * GUI初期化を行う。
      */
     private void initGUI() {
+    	
         try {
         	JPanel panelContent = null;
             // ボタンパネル

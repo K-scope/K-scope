@@ -68,6 +68,7 @@ import jp.riken.kscope.action.ProjectSettingMemoryAction;
 import jp.riken.kscope.action.ProjectSettingOperandAction;
 import jp.riken.kscope.action.ProjectSettingProfilerAction;
 import jp.riken.kscope.action.ProjectSettingProjectAction;
+import jp.riken.kscope.action.ProjectSettingSSHAction;
 import jp.riken.kscope.action.ProjectSettingToolsAction;
 import jp.riken.kscope.action.ProjectSettingViewAction;
 import jp.riken.kscope.action.SearchFindAction;
@@ -392,6 +393,13 @@ public class MainMenu extends JMenuBar implements  MenuListener {
         JMenuItem menuProjectSettingMemory = new JMenuItem(Message.getString("mainmenu.project.config.memoryband"));//要求Bye/FLOP
         menuProjectSetting.add(menuProjectSettingMemory);
         menuProjectSettingMemory.addActionListener(new ProjectSettingMemoryAction(this.controller));
+        
+        // セパレータ
+        menuProjectSetting.addSeparator();
+        // SSHconnect 設定
+        JMenuItem menuProjectSettingSSH = new JMenuItem("SSHconnect");
+        menuProjectSetting.add(menuProjectSettingSSH);
+        menuProjectSettingSSH.addActionListener(new ProjectSettingSSHAction(this.controller));
 
         // 分析
         JMenu menuAnalysis = new JMenu(Message.getString("mainmenu.analysis"));//分析
