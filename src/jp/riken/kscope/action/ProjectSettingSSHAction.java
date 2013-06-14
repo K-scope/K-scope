@@ -5,6 +5,7 @@ import java.awt.event.ActionEvent;
 
 import jp.riken.kscope.Application;
 import jp.riken.kscope.Message;
+import jp.riken.kscope.common.Constant;
 import jp.riken.kscope.dialog.SSHconnectPropertiesDialog;
 import jp.riken.kscope.dialog.SettingMemoryDialog;
 import jp.riken.kscope.properties.MemorybandProperties;
@@ -21,13 +22,13 @@ public class ProjectSettingSSHAction extends ActionBase {
 	@Override
 	public void actionPerformed(ActionEvent event) {
 		// ステータスメッセージ
-        final String message = "Set SSHconnect parameters"; // TODO add messages to properties files to Message.getString("projectsettingmemoryaction.setup.status");  
+        final String message = Message.getString("projectsettingsshconnect.setup.status");  
         Application.status.setMessageMain(message);
 
         // 親Frameの取得を行う。
         Frame frame = getWindowAncestor( event );
 
-        // 要求Byte/FLOP設定ダイアログを表示する。
+        // 設定ダイアログを表示する。
         SSHconnectProperties SSHproperties = null;
 		try {
 			SSHproperties = new SSHconnectProperties();
@@ -37,7 +38,11 @@ public class ProjectSettingSSHAction extends ActionBase {
 		}
 
         SSHconnectPropertiesDialog dialog = new SSHconnectPropertiesDialog(frame, SSHproperties); 
-        int result = dialog.showDialog(); //TODO use result somewhere (look at projectPropertiesAction for sample.
+        int result = dialog.showDialog(); 
+        if (result != Constant.OK_DIALOG) {
+        	Application.status.setMessageMain(message + 
+        			Message.getString("action.common.cancel.status")); //キャンセル
+        	return;
+        }
 	}
-
 }

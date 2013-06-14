@@ -43,6 +43,9 @@ public class ResourceUtils {
 	/** アプリケーションルートクラス */
 	private static Class<?> rootAppClass;
 
+	// Name of the last file used in getPropertiesFile
+	public static String PROPERTIES_FILE_USED = "";
+	
 	/**
 	 * アプリケーションクラスを設定する。
 	 * 
@@ -97,6 +100,7 @@ public class ResourceUtils {
 			}
 			if (url != null) {
 				InputStream is = url.openStream();
+				PROPERTIES_FILE_USED = url.getPath();
 				return is;
 			}
 
@@ -125,8 +129,8 @@ public class ResourceUtils {
 			}
 
 			if (propatiesFolder != null) {
-				InputStream is = new FileInputStream(propatiesFolder
-						+ File.separator + name);
+				PROPERTIES_FILE_USED = propatiesFolder + File.separator + name;
+				InputStream is = new FileInputStream(PROPERTIES_FILE_USED);
 				return is;
 			}
 

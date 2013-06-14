@@ -1,10 +1,14 @@
 package jp.riken.kscope.properties;
 
+import java.io.FileDescriptor;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Properties;
+
+import jp.riken.kscope.utils.ResourceUtils;
 
 /**
  * SSHconnectプロパティ設定クラス
@@ -35,6 +39,8 @@ public class SSHconnectProperties {
     
     Properties prop;
     String[] property_names;
+    String properties_file = ""; // path to the tile, used to read properties
+    private InputStream is=null;
     
     public void setProperty(String name, String value) {
 		prop.setProperty(name, value);
@@ -49,6 +55,8 @@ public class SSHconnectProperties {
     }
 
     
+    
+    
     /**
      * プロジェクト設定プロパティを設定ファイルから読み込む。
      * @param   stream      設定ファイルストリーム
@@ -61,43 +69,13 @@ public class SSHconnectProperties {
 		try {
 			prop.load(new FileInputStream(SSH_PROPERTIES_FILE));
 		} catch (FileNotFoundException e) {
-			// TODO Add feature to read from alternative location, like in:  is = ResourceUtils.getPropertiesFile(PROPERTIES_FILE);
-			//prop.load(new FileInputStream(resource_path + conf_filename));
+			is = ResourceUtils.getPropertiesFile(SSH_PROPERTIES_FILE);
+			properties_file = ResourceUtils.PROPERTIES_FILE_USED;
+			prop.load(is);
 		}
 		
 		property_names = prop.stringPropertyNames().toArray(new String[0]);
-		/*System.out.println("SSH settings:");
-		for (String name : property_names) {
-			System.out.println(name + " : " + getProperty(name));
-		}*/
-		/*
-		default_make = updateProperty(prop,"make");
-		default_local_path = updateProperty(prop, "local_path");  
-		host = updateProperty(prop, "host");
-		user = updateProperty(prop, "user");
-		if (user.length() < 1) throw new InvalidPreferencesFormatException("'user' property not found in "+SSH_PROPERTIES_FILE+". This is a required propery. Set ssh user name for connecting to remote server.");
-		password = updateProperty(prop, "password"); // If password == "" authenticate with key.
-		key = updateProperty(prop,"key");
-		passphrase = updateProperty(prop,"passphrase");
 		
-		try {
-			port = Integer.parseInt(updateProperty(prop, "port"));
-		} catch (NumberFormatException e) {
-			port = 22;
-			System.err.println("'port' propery not found or not a number in "+SSH_PROPERTIES_FILE+". Default port 22 is used.");
-		}
-		  			
-		remote_path = updateProperty(prop, "remote_path");     
-		if (remote_path.length() < 1) throw new InvalidPreferencesFormatException("'remote_path' property not found in "+SSH_PROPERTIES_FILE+". This is a required propery. Set remote path on server to create temporary directories.");
-		
-		String ff = updateProperty(prop, "file_filter");
-		// *.origin - reserved for original copies of edited make files.
-		if (ff != null && ff.length() > 1) file_filter = ff +",*.origin";
-		else System.err.println("'file_filter' property not found in "+SSH_PROPERTIES_FILE+". Default is used: "+ file_filter);
-		
-		// Makefiles to look into for replacement pattern 
-		default_makefiles_process = updateProperty(prop, "makefiles");
-		*/
     }
 	
     public int count() {
@@ -126,16 +104,33 @@ public class SSHconnectProperties {
 		return property_names[i];
 	}
 
+	
+	/**
+	 * Save parameters to configuration file.
+	 * Use java.util.Properties store() method.
+	 * Try to save to the same file, properties were read from.
+	 * If not possible, store to SSH_PROPERTIES_FILE in SSHconnect.jar & kscope.jar folder.
+	 */
 	public void store() {
-		try {
-			prop.store(new FileOutputStream(SSH_PROPERTIES_FILE), "SSHconnect settings");
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		if (properties_file.length() > 1) {
+			try {
+				FileOutputStream fos = new FileOutputStream(properties_file);
+				prop.store(fos, "SSHconnect settings");
+
+			} catch (IOException e) {
+				properties_file = ""; // Couldn't write to this file. Forget it.
+				e.printStackTrace();
+			}
+		}
+		if (properties_file == "") {
+			try {
+				FileOutputStream fos = new FileOutputStream(SSH_PROPERTIES_FILE);
+				prop.store(fos, "SSHconnect settings");
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 	}
-
 }

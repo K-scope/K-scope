@@ -47,7 +47,7 @@ import jp.riken.kscope.data.ProjectPropertyValue;
 import jp.riken.kscope.properties.MemorybandProperties;
 import jp.riken.kscope.properties.SSHconnectProperties;
 
-public class SSHconnectPropertiesDialog  extends javax.swing.JDialog implements ActionListener, ListSelectionListener  {
+public class SSHconnectPropertiesDialog  extends javax.swing.JDialog implements ActionListener  {
 	
 	/**
 	 * 
@@ -67,9 +67,8 @@ public class SSHconnectPropertiesDialog  extends javax.swing.JDialog implements 
     private DefaultTableModel modelProperties;
     /** 列名 */
     private final String[] COLUMN_HEADERS = {
-    		// TODO Set table column headers using Message.getString...
-    	"Name",
-    	"Value"
+    		Message.getString("sshconnectsettingdialog.parameter.name"),
+    		Message.getString("sshconnectsettingdialog.parameter.value")
     };
 
     /** ダイアログの戻り値 */
@@ -176,59 +175,9 @@ public class SSHconnectPropertiesDialog  extends javax.swing.JDialog implements 
     			JScrollPane scrollList = new JScrollPane(tblProperties);
 				scrollList.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 				scrollList.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-				panelContent.add(scrollList, BorderLayout.CENTER);
-    			
-    			// プロパティリスト
-    			/*{
-    				
-    				{
-    					JScrollPane scrollList = new JScrollPane();
-    					scrollList.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-    					scrollList.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-    					panelContent.add(scrollList, BorderLayout.CENTER);
-    					{
-    						modelProperties = new DefaultTableModel();
-    						modelProperties.setColumnCount(COLUMN_HEADER.length);
-    						// ヘッダー列名
-    						String[] columns = COLUMN_HEADER;
-    						modelProperties.setColumnIdentifiers(columns);
-    						tblProperties = new JTable();
-    						scrollList.setViewportView(tblProperties);
-    						tblProperties.setModel(modelProperties);
-    						tblProperties.setSelectionMode(ListSelectionModel.SINGLE_SELECTION );
-    						tblProperties.getSelectionModel().addListSelectionListener(this);
-    						tblProperties.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-    						tblProperties.setDefaultRenderer(Object.class, new DefaultTableCellRenderer());
-    						tblProperties.setColumnSelectionAllowed(false);
-    						tblProperties.setDefaultEditor(Object.class, null);
-
-    						// 列幅設定
-    						// 1列目:PropertyValue:非表示
-    						{
-    							TableColumn col = tblProperties.getColumnModel().getColumn(0);
-    							col.setResizable(false);
-    							col.setMinWidth(0);
-    							col.setMaxWidth(0);
-    						}
-    						// 2列目:キー:非表示
-    						{
-    							TableColumn col = tblProperties.getColumnModel().getColumn(1);
-    							col.setResizable(false);
-    							col.setMinWidth(0);
-    							col.setMaxWidth(0);
-    						}
-    						// 3列目:タイプ:非表示
-    						{
-    							TableColumn col = tblProperties.getColumnModel().getColumn(2);
-    							col.setResizable(false);
-    							col.setMinWidth(0);
-    							col.setMaxWidth(0);
-    						}    						
-    					}
-    				}
-    			}*/
+				panelContent.add(scrollList, BorderLayout.CENTER);	
     		}
-    		setTitle("SSHconnect settings"); // TODO set label from Message.getString... 
+    		setTitle(Message.getString("sshconnectsettingdialog.title")); 
     		setSize(640, 300);
 
     	} catch (Exception e) {
@@ -254,7 +203,6 @@ public class SSHconnectPropertiesDialog  extends javax.swing.JDialog implements 
 	
 	@Override
 	public void actionPerformed(ActionEvent event) {
-		// TODO Auto-generated method stub
 		
 		// OK
 		 // 登録
@@ -262,7 +210,7 @@ public class SSHconnectPropertiesDialog  extends javax.swing.JDialog implements 
             this.result = Constant.OK_DIALOG;
 
             // 変更内容をソースプロパティに更新する。
-            setProperties();
+            saveProperties();
 
             // 変更イベントを発生
             //this.properties.firePropertyChange();
@@ -275,7 +223,7 @@ public class SSHconnectPropertiesDialog  extends javax.swing.JDialog implements 
         if (event.getSource() == this.btnApply) {
             this.result = Constant.OK_DIALOG;
 
-            setProperties();
+            saveProperties();
 
             // 変更イベントを発生
             //this.properties.firePropertyChange();
@@ -291,7 +239,7 @@ public class SSHconnectPropertiesDialog  extends javax.swing.JDialog implements 
         }
 	}
 	
-	private void setProperties() {
+	private void saveProperties() {
 		int rows = this.modelProperties.getRowCount();
 
         for (int i=0; i<rows; i++) {
@@ -302,32 +250,5 @@ public class SSHconnectPropertiesDialog  extends javax.swing.JDialog implements 
         settings.store();
         System.out.println("Settings saved.");
 	}
-
-
-	@Override
-	public void valueChanged(ListSelectionEvent event) {
-		System.out.println("Value changed");
-		// TODO Write code
-		/*if (event.getSource() == this.tblProperties.getSelectionModel()) {
-            // 選択行を取得する。
-            int selectedrow = this.tblProperties.getSelectedRow();
-            if (selectedrow < 0) return;
-
-            // "PropertyValue", "キー", "タイプ", "名前", "値", "メッセージ"
-            ProjectPropertyValue value = new ProjectPropertyValue(
-                        (String)this.modelProperties.getValueAt(selectedrow, 2), //type
-                        (String)this.modelProperties.getValueAt(selectedrow, 1), //key
-                        (String)this.modelProperties.getValueAt(selectedrow, 4), //value
-                        (String)this.modelProperties.getValueAt(selectedrow, 3), //name
-                        (String)this.modelProperties.getValueAt(selectedrow, 5)  //message
-                    );
-            // 選択プロパティ
-            this.selectedvalue = value;
-
-            // 設定パネルに表示する
-            this.setPropertyPanel(value);
-        }*/
-	}
-
 }
 

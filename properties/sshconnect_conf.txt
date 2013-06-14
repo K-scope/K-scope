@@ -1,5 +1,5 @@
 #SSHconnect settings
-#Thu Jun 13 17:27:51 JST 2013
+#Fri Jun 14 16:57:54 JST 2013
 make=make
 port=3022
 user=sshuser  
