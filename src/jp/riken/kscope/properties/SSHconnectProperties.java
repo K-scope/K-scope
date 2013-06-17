@@ -70,7 +70,7 @@ public class SSHconnectProperties {
 			prop.load(new FileInputStream(SSH_PROPERTIES_FILE));
 		} catch (FileNotFoundException e) {
 			is = ResourceUtils.getPropertiesFile(SSH_PROPERTIES_FILE);
-			properties_file = ResourceUtils.PROPERTIES_FILE_USED;
+			// properties_file = ResourceUtils.PROPERTIES_FILE_USED; // Use configuration file stored near K-scope property file.
 			prop.load(is);
 		}
 		
@@ -108,7 +108,7 @@ public class SSHconnectProperties {
 	/**
 	 * Save parameters to configuration file.
 	 * Use java.util.Properties store() method.
-	 * Try to save to the same file, properties were read from.
+	 * DO NOT try to save to the same file, properties were read from. Always save to working dir (near jars), so that SSHconnect can find it
 	 * If not possible, store to SSH_PROPERTIES_FILE in SSHconnect.jar & kscope.jar folder.
 	 */
 	public void store() {
@@ -121,8 +121,9 @@ public class SSHconnectProperties {
 				properties_file = ""; // Couldn't write to this file. Forget it.
 				e.printStackTrace();
 			}
-		}
-		if (properties_file == "") {
+		} 
+		else  
+		{
 			try {
 				FileOutputStream fos = new FileOutputStream(SSH_PROPERTIES_FILE);
 				prop.store(fos, "SSHconnect settings");
