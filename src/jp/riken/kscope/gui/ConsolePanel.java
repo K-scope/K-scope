@@ -21,6 +21,8 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.AdjustmentEvent;
+import java.awt.event.AdjustmentListener;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.FocusEvent;
@@ -37,6 +39,7 @@ import java.util.Queue;
 import java.util.concurrent.ArrayBlockingQueue;
 
 import javax.swing.BorderFactory;
+import javax.swing.BoundedRangeModel;
 import javax.swing.BoxLayout;
 import javax.swing.Icon;
 import javax.swing.JButton;
@@ -96,6 +99,8 @@ public class ConsolePanel extends AnalisysPanelBase implements FocusListener, IA
     private PrintStream sysOut = System.out;
     /** 標準エラー出力ストリーム:システムデフォルト */
     private PrintStream sysErr = System.err;
+    
+    public boolean disable_horizontal_scroll = false;
 
     /**
      * コンソール出力キュー
@@ -216,13 +221,20 @@ public class ConsolePanel extends AnalisysPanelBase implements FocusListener, IA
                 // タブサイズを設定する。
                 SwingUtils.setTabSize(consoleTextPane, TAB_SIZE);
 
-                JScrollPane scroll = new JScrollPane();
+                final JScrollPane scroll = new JScrollPane();
                 scroll.setViewportView(consoleTextPane);
                 this.add(scroll, BorderLayout.CENTER);
                 
-                // add listener
-                TextpaneListener c_listener = new TextpaneListener(scroll);
-                consoleTextPane.addCaretListener((CaretListener)c_listener);                
+                //disable horizontal scroll
+                scroll.getHorizontalScrollBar().addAdjustmentListener(new AdjustmentListener() {
+                	BoundedRangeModel brm = scroll.getHorizontalScrollBar().getModel();
+                	JScrollBar sb =	scroll.getHorizontalScrollBar();
+                	
+                	@Override
+					public void adjustmentValueChanged(AdjustmentEvent arg0) {
+                		if (!brm.getValueIsAdjusting() && disable_horizontal_scroll) sb.setValue(sb.getMinimum());						
+					}                		
+                });
             }
 
             //OutputStream os = new JTextAreaOutputStream(consoleTextPane, "UTF-8");

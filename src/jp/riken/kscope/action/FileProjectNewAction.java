@@ -305,9 +305,9 @@ public class FileProjectNewAction extends ActionBase {
     private void execMake(String [] commands, File work, List<File> xmls, ProjectModel model, boolean build, boolean save, boolean make, boolean useSSHconnect, boolean mode) {
         final String message = Message.getString("mainmenu.file.newproject"); //プロジェクトの新規作成
         makeService = new ProjectMakeService(commands, work, useSSHconnect);
-    	ConsolePanel console = this.controller.getMainframe().getPanelAnalysisView().getPanelConsole();
+    	final ConsolePanel console = this.controller.getMainframe().getPanelAnalysisView().getPanelConsole();
 		console.clearConsole();
-    	OutputStream out = console.getOutputStream();
+		OutputStream out = console.getOutputStream();
     	makeService.setOutputStream(out);
     	final boolean bMake = make;
     	final boolean bBuild = build;
@@ -332,11 +332,12 @@ public class FileProjectNewAction extends ActionBase {
                         try {
                             // 解析実行
                         	if (bMake) {
+                        		console.disable_horizontal_scroll = true; // disable scroll
                         		boolean result = makeService.executeMakeCommand();
                         		if (!result) {
                         			return Constant.CANCEL_RESULT;
                         		}
-
+                        		console.disable_horizontal_scroll = false; // enable scroll
                         	}
                         	Application.status.setMessageStatus("Set files...");
                         	// 中間コードをまたはFortranファイルをソースリストに追加
