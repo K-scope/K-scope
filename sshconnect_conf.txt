@@ -1,5 +1,5 @@
 #SSHconnect settings
-#Mon Jun 17 17:42:42 JST 2013
+#Tue Jun 18 10:29:29 JST 2013
 make=make
 atool_path=/home/sshuser/kscope/bin/
 local_path=/Users/peterbryzgalov/work/NICAM-K.xml
@@ -9,7 +9,7 @@ file_filter=.*,*.tar,*.html,*.zip,*.o,*.xml,*.xmod
 remote_path=/home/sshuser/kscope/
 make_options=-f
 makefiles=Mkinclude
-key=keys/sshuser_rsa
 password=aics
+key=keys/sshuser_rsa
 host=127.0.0.1
 passphrase=riken.aics

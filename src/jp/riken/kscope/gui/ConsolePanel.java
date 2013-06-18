@@ -42,13 +42,17 @@ import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
 import javax.swing.JViewport;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.LineBorder;
+import javax.swing.event.CaretEvent;
+import javax.swing.event.CaretListener;
 import javax.swing.plaf.TextUI;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultStyledDocument;
@@ -208,12 +212,17 @@ public class ConsolePanel extends AnalisysPanelBase implements FocusListener, IA
                 };
                 consoleTextPane.setEditable(false);
                 consoleTextPane.getCaret().setVisible(true);   // キャレットを表示する
+                
                 // タブサイズを設定する。
                 SwingUtils.setTabSize(consoleTextPane, TAB_SIZE);
 
                 JScrollPane scroll = new JScrollPane();
                 scroll.setViewportView(consoleTextPane);
                 this.add(scroll, BorderLayout.CENTER);
+                
+                // add listener
+                TextpaneListener c_listener = new TextpaneListener(scroll);
+                consoleTextPane.addCaretListener((CaretListener)c_listener);                
             }
 
             //OutputStream os = new JTextAreaOutputStream(consoleTextPane, "UTF-8");
@@ -231,6 +240,30 @@ public class ConsolePanel extends AnalisysPanelBase implements FocusListener, IA
             e.printStackTrace();
         }
     }
+    
+    class TextpaneListener implements CaretListener {
+
+    	JScrollPane scroll;
+
+    	public TextpaneListener(JScrollPane scroll) {
+    		this.scroll = scroll;    		
+    	}
+
+    	@Override
+    	public void caretUpdate(CaretEvent e) {
+    		SwingUtilities.invokeLater(
+    				new Runnable()
+    				{
+    					public void run()
+    					{
+    						JScrollBar sb =	scroll.getHorizontalScrollBar();
+    						sb.setValue(sb.getMinimum());    						
+    					}
+    				});
+    	}
+    }
+
+    
 
     /**
      * コンソールをクリアする
