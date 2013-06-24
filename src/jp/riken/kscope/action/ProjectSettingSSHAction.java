@@ -7,8 +7,6 @@ import jp.riken.kscope.Application;
 import jp.riken.kscope.Message;
 import jp.riken.kscope.common.Constant;
 import jp.riken.kscope.dialog.SSHconnectPropertiesDialog;
-import jp.riken.kscope.dialog.SettingMemoryDialog;
-import jp.riken.kscope.properties.MemorybandProperties;
 import jp.riken.kscope.properties.SSHconnectProperties;
 import jp.riken.kscope.service.AppController;
 
@@ -37,8 +35,8 @@ public class ProjectSettingSSHAction extends ActionBase {
 			e.printStackTrace();
 		}
 
-        SSHconnectPropertiesDialog dialog = new SSHconnectPropertiesDialog(frame, SSHproperties); 
-        int result = dialog.showDialog(); 
+		SSHconnectPropertiesDialog dialog = new SSHconnectPropertiesDialog(frame, SSHproperties);  
+		int result = dialog.showDialog(); 
         if (result != Constant.OK_DIALOG) {
         	Application.status.setMessageMain(message + 
         			Message.getString("action.common.cancel.status")); //キャンセル
