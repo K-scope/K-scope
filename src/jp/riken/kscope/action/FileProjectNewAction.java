@@ -138,8 +138,8 @@ public class FileProjectNewAction extends ActionBase {
             type = FILE_TYPE.FORTRANLANG;
         }
         try {
-        	String makeCom = dialog.getMakeCommand();
-        	String makefilePath = dialog.getMakefilePath();
+        	String makeCom = dialog.getMakeCommand();  // make command as set in New Project dialog. Full path if executable file. 
+        	String makefilePath = dialog.getMakefilePath(); // path to makefile as set in New Project dialog. If set " " (space), makefilePath = " ".
 
             // プロジェクトを閉じる
             FileProjectCloseAction closeAction = new FileProjectCloseAction(this.controller);
@@ -204,14 +204,17 @@ public class FileProjectNewAction extends ActionBase {
             // Make関連情報
             List<String> commands = new ArrayList<String>();
             File work = null;
+            File makefile = null;
 
             // 中間コードの生成を行う
             if (genCode){
             	// makefileパス
             	if (! StringUtils.isNullOrEmpty(makefilePath)) {
             		if (!FileUtils.isAbsolutePath(makefilePath)) {
-            			File makefile = FileUtils.joinFilePath(project.getProjectFolder(), makefilePath);
-            			makefilePath = makefile.getAbsolutePath();
+            			makefile = FileUtils.joinFilePath(project.getProjectFolder(), makefilePath);
+            			if (makefile.exists()) makefilePath = makefile.getAbsolutePath();  // Peter: added check if file exists before changing makefilePath. Need if we set fake makefile when we don't need it (in case of running script, not make command).
+            		} else {
+            			makefile = new File(makefilePath);
             		}
             	}
 
@@ -224,11 +227,14 @@ public class FileProjectNewAction extends ActionBase {
                 	String[] options = StringUtils.tokenizerDelimit(makeCom, " ");
                 	commands.addAll(Arrays.asList(options));
                 }
-                work = null;
-                if (!StringUtils.isNullOrEmpty(makefilePath)) {
+                //work = null;
+                if (makefile != null && makefile.exists()) {
                 	commands.add("-f");
                 	commands.add(makefilePath);
                 	work = new File(makefilePath).getParentFile();
+                }
+                else {
+                	work = project.getProjectFolder();
                 }
 
                 // プロジェクトプロパティ設定
