@@ -109,6 +109,14 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
     /** 中間コードの生成を行わない */
     private JRadioButton radioNotGenXML;
     
+    /** SSHconnect用のファイル名フィルタ */
+    private JTextField filefilter_textfield;
+    /** SSHconnect用の置き換えすべきプレースホルダーのあるファイル群 */
+    private JTextField files2preprocess_textfield;
+    /** SSHconnect用の置き換えすべきファイル追加ボタン */
+    private JButton addprerocessfile_button;
+    
+    
     /** SSHconnectを利用する */
     private JCheckBox checkUseSSHconnect;
         
@@ -157,6 +165,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
      * コンストラクタ
      * @param owner		親フレーム
      * @param modal		true=モーダルダイアログを表示する
+     * @wbp.parser.constructor
      */
     public FileProjectNewDialog(Frame owner, boolean modal) {
         super(owner, modal);
@@ -453,9 +462,24 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
         	text.setWrapStyleWord(true);
         	text.setOpaque(false);
         	text.setEditable(false);
-            panelContent.add(text, new GridBagConstraints(1, 1, 3, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(7, 7, 10, 0), 0, 0));
+            panelContent.add(text, new GridBagConstraints(1, 1, 3, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(7, 0, 10, 0), 0, 0));
         }
 
+        // Process files & File filter
+        {
+        	JLabel ffl = new JLabel("File filter"); // TODO add Message.getString
+        	filefilter_textfield = new JTextField();
+        	JLabel procfl = new JLabel("Process files"); // TODO add Message.getString
+        	files2preprocess_textfield = new JTextField();
+        	addprerocessfile_button = new JButton("add"); // TODO add Message.getString
+        	addprerocessfile_button.addActionListener(this);
+        	panelContent.add(ffl, new GridBagConstraints(1, 5, 1, 1, 0.0, 0.0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 7, 0, 7), 0, 0));
+        	panelContent.add(filefilter_textfield, new GridBagConstraints(2, 5, 2, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
+        	panelContent.add(procfl, new GridBagConstraints(1, 6, 1, 1, 0.0, 0.0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
+        	panelContent.add(files2preprocess_textfield, new GridBagConstraints(2, 6, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
+        	panelContent.add(addprerocessfile_button, new GridBagConstraints(3, 6, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
+        }
+        
         return panelContent;
     }
 
@@ -673,7 +697,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
         	text.setWrapStyleWord(true);
         	text.setOpaque(false);
         	text.setEditable(false);
-            panelContent.add(text, new GridBagConstraints(1, 1, 2, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(7, 7, 10, 0), 0, 0));
+            panelContent.add(text, new GridBagConstraints(1, 1, 2, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(7, 0, 10, 0), 0, 0));
         }
 
         return panelContent;
@@ -1232,6 +1256,26 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
             this.txtProjectFolder.setText(selected[0].getPath());
 
         }
+        
+        // Add files to be preprocessed
+        else if (event.getSource() == this.addprerocessfile_button) {
+        	// フォルダ選択ダイアログを表示する。
+            File[] selected = SwingUtils.showOpenFileDialog(this, "Add preprocess files", currentFolder, null, false);
+            if (selected == null || selected.length <= 0) return;
+            for (File file : selected) {
+            	String path = "";
+            	try {
+					path = file.getCanonicalPath();
+				} catch (IOException e) {
+					return;
+				}
+            	String preprocess_files = this.files2preprocess_textfield.getText();
+            	if (!StringUtils.isNullOrEmpty(preprocess_files)) preprocess_files = preprocess_files+";"+path;
+            	else preprocess_files = path;
+            	this.files2preprocess_textfield.setText(preprocess_files);
+            }
+        }        
+        
         // XMLフォルダ追加
         else if (event.getSource() == this.btnXmlFolder) {
             // フォルダ選択ダイアログを表示する。

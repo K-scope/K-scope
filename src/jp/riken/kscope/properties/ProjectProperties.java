@@ -57,6 +57,9 @@ public class ProjectProperties extends PropertiesBase {
     public static final String MAKEFILE_PATH = "makefile-path";
     /** プロジェクトタイトルプロパティキー */
     public static final String PRJ_TITLE = "project-title";
+    /** New properties for SSHconnect */
+    public static final String FILE_FILTER = "file_filter";
+    public static final String PROCESS_FILES = "process_files";
 
     /** プロパティ設定リスト */
     private List<ProjectPropertyValue> listProperty = new ArrayList<ProjectPropertyValue>();
