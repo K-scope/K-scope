@@ -62,7 +62,7 @@ import jp.riken.kscope.xcodeml.XcodeMLParserStax;
  */
 public class ProjectMakeService  extends BaseService {
 	/** makeコマンド */
-	private String makecommands[];
+	private String build_command;
 	/** makeコマンド実行フォルダ */
 	private File workdirectory;
 	/** makeコマンド出力ストリーム */
@@ -84,8 +84,8 @@ public class ProjectMakeService  extends BaseService {
      * コンストラクタ.
      * @param commands            Makeコマンド
      */
-    public ProjectMakeService(String commands[]) {
-    	this.makecommands = commands;
+    public ProjectMakeService(String build_command) {
+    	this.build_command = build_command;
     }
 
     /**
@@ -93,19 +93,19 @@ public class ProjectMakeService  extends BaseService {
      * @param commands            Makeコマンド
      * @param work            Makeコマンド実行フォルダ
      */
-    public ProjectMakeService(String commands[], File work) {
-    	this.makecommands = commands;
+    public ProjectMakeService(String build_command, File work) {
+    	this.build_command = build_command;
         this.workdirectory = work;
     }
     
     /**
      * コンストラクタ.
-     * @param commands            Makeコマンド
+     * @param build_command            Makeコマンド
      * @param work            Makeコマンド実行フォルダ
      * @param useSSHconnect	SSHconnectを使用するか否か
      */
-    public ProjectMakeService(String commands[], File work, boolean useSSHconnect) {
-    	this.makecommands = commands;
+    public ProjectMakeService(String build_command, File work, boolean useSSHconnect) {
+    	this.build_command = build_command;
         this.workdirectory = work;
         this.useSSHconnect = useSSHconnect;
     }
@@ -373,38 +373,25 @@ public class ProjectMakeService  extends BaseService {
 	public boolean executeMakeCommand() throws Exception {
 		// ステータスメッセージ
         Application.status.setProgressStart(true);
-        if (this.makecommands == null || this.makecommands.length <= 0) return false;
-        String[] new_makecommands = null;
-        String command = "";
+        if (this.build_command == null || this.build_command.length() <= 0) return false;
+        String[] exec_commands = null;
         if (this.useSSHconnect) {
         	// inject SSHconnect call
-        	int insert_commands = 3;
-        	new_makecommands = new String [makecommands.length + insert_commands];
-        	new_makecommands[0] = "java";
-        	new_makecommands[1] = "-jar";
-        	new_makecommands[2] = "SSHconnect.jar";
-        	for (int i=0; i < insert_commands; i++) {
-        		if (command.length() > 0) command = command + " ";
-        		command = command + new_makecommands[i];
-        	}
-        	for (int i=0; i < this.makecommands.length; i++) {
-        		if (!command.isEmpty()) command += " ";
-        		new_makecommands[i + insert_commands] = this.makecommands[i]; // <-- new make commands initialization
-        		command += new_makecommands[i + insert_commands];
-        	}
-        } else {
-        	for (int i=0; i<this.makecommands.length; i++) {
-        		if (!command.isEmpty()) command += " ";
-        		command += this.makecommands[i];        		
-        	}
-        }
-        Application.status.setMessageStatus(command);
+        	int formal_commands = 3 + 2;
+        	exec_commands = new String [formal_commands];
+        	exec_commands[0] = "java";
+        	exec_commands[1] = "-jar";
+        	exec_commands[2] = "SSHconnect.jar";
+        	exec_commands[3] = "-m";
+        	exec_commands[4] = "'"+this.build_command+"'";
+        } 
+        Application.status.setMessageStatus(build_command);
 
         // makeコマンド実行
     	int result = -1;
 		try {
-			if (this.useSSHconnect) result = SwingUtils.processRun(new_makecommands, this.workdirectory, this.outStream);
-			else result = SwingUtils.processRun(this.makecommands, this.workdirectory, this.outStream);
+			if (this.useSSHconnect) result = SwingUtils.processRun(exec_commands, this.workdirectory, this.outStream);
+			else result = SwingUtils.processRun(this.build_command.split(" "), this.workdirectory, this.outStream);
 			if (result != 0) { // 中間コードの生成に失敗した場合は継続するか確認
 				if (JOptionPane.showConfirmDialog(null,
 						Message.getString("projectmakeservice.executemakecommand.continue.message"),

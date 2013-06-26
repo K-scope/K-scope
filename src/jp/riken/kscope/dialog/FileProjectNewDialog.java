@@ -123,7 +123,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
     /** Fortran Source File */
     private JRadioButton radioFortran;
     /** makefile テキストフィールド*/
-    private JTextField txtMakefile;
+    //private JTextField txtMakefile;
     /** makeコマンド 参照ボタン */
     private JButton btnMakeCmd;
     /** makefile 参照ボタン */
@@ -662,6 +662,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
         }
 
 		//makefile
+        /*
         {
 	    	JPanel panelMakefile = new JPanel();
 	    	GridBagLayout layoutMakefile = new GridBagLayout();
@@ -687,7 +688,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
 			btnMakefile.addActionListener(this);
 			panelContent.add(panelMakefile,
 					new GridBagConstraints(2, 3, 2, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
-        }
+        }*/
 
         // 説明文
         {
@@ -760,23 +761,23 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
         // Makeコマンド
         String makecmd = null;
         if (isGenerateIntermediateCode()) {
-        row++;
-	        {
-		            panelContent.add(new JLabel(Message.getString("fileprojectnewdialog.makefilepanel.label.makecommand")), //Makeコマンド
-	                             new GridBagConstraints(1, row, 1, 1, 0.0, 0.0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 0, 7), 0, 0));
-	            makecmd = this.txtMakeCommand.getText();
-	            String filename = this.txtMakefile.getText();
-	            if (!filename.isEmpty()) {
-	            	File file = new File(filename);
-	            	filename = file.getName();
-	            	makecmd += " -f " + filename;
-	            }
-	            else {
-	            	makecmd = "";
-	            }
-	            JLabel label = new JLabel(makecmd);
-	            panelContent.add(label, new GridBagConstraints(2, row, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
-	        }
+        	row++;
+        	{
+        		panelContent.add(new JLabel(Message.getString("fileprojectnewdialog.makefilepanel.label.makecommand")), //Makeコマンド
+        				new GridBagConstraints(1, row, 1, 1, 0.0, 0.0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 0, 7), 0, 0));
+        		makecmd = this.txtMakeCommand.getText();
+        		/*String filename = this.txtMakefile.getText();
+        		if (!filename.isEmpty()) {
+        			File file = new File(filename);
+        			filename = file.getName();
+        			makecmd += " -f " + filename;
+        		}
+        		else {
+        			makecmd = "";
+        		}*/
+        		JLabel label = new JLabel(makecmd);
+        		panelContent.add(label, new GridBagConstraints(2, row, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
+        	}
         }
         // 中間コード　or フォートランソース
         row++;
@@ -1031,14 +1032,14 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
 			String desc = Message.getString("fileprojectnewdialog.xmlpanel.additionalfile.desc"); //中間コードの出力先がMakefileと同じ階層でない...
 			if (isGenerateIntermediateCode()) {
 				// makefileのparentを設定
-				String sf = this.txtMakefile.getText();
+				/*String sf = this.txtMakefile.getText();
 				if (!StringUtils.isNullOrEmpty(sf)) {
 					File f = new File(sf);
 					if (f.exists() && f.isFile()) {
 						File pf = f.getParentFile();
 						addProjectList(new File[] {pf});
 					}
-				}
+				}*/
 				radioXml.setSelected(true);
 			}
 			else {
@@ -1105,14 +1106,14 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
     			ret = false;
     		}
     		// makefileパス
-    		String p = getMakefilePath();
+    		/*String p = getMakefilePath();
     		if (StringUtils.isNullOrEmpty(p)) {
     			if (!StringUtils.isNullOrEmpty(msg)) {
     				msg += "\n";
     			}
     			msg += Message.getString("fileprojectnewdialog.errordialog.message.makefileempty"); //Makefileパスが設定されていません。
     			ret = false;
-    		}
+    		}*/
     	}
     	else if (index == 3) {
             List<File> list = getProjectXmlList();
@@ -1203,7 +1204,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
             		DefaultListModel model = (DefaultListModel) this.listProjectXml.getModel();
             		String mk = null;
             		if (isGenerateIntermediateCode()) {
-            			mk = this.txtMakefile.getText();
+            			mk = this.txtMakeCommand.getText();
             		}
             		if (model.size() > 0 || !StringUtils.isNullOrEmpty(mk)) {
             			String desc = Message.getString("fileprojectnewdialog.confirmdialog.projectfolderchange.xmlclear.message"); //プロジェクトフォルダが変更されました。すでに設定されている中間コードは...
@@ -1223,9 +1224,6 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
            						Message.getString("fileprojectnewdialog.confirmdialog.projectfolderchange.title"), //プロジェクトフォルダの変更
            						JOptionPane.WARNING_MESSAGE, JOptionPane.YES_NO_OPTION);
            				if (ret == JOptionPane.YES_OPTION) {
-           					if (!StringUtils.isNullOrEmpty(mk)) {
-           						this.txtMakefile.setText("");
-           					}
            					if (model.size() > 0) {
            						model.clear();
            					}
@@ -1338,73 +1336,75 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
         			Message.getString("fileprojectnewdialog.selectfiledialog.makecommand.title"), //makeコマンドの選択
         			currentFolder, null, false);
         	if (selected == null || selected.length <= 0 || selected[0] == null) return;
-        	this.txtMakeCommand.setText(selected[0].toString());
+        	String text_make_comm = this.txtMakeCommand.getText();
+        	if (text_make_comm.length() == 0) this.txtMakeCommand.setText(selected[0].toString());
+        	else this.txtMakeCommand.setText(text_make_comm + " "+ selected[0].toString());
         }
         // makefile参照ボタン
-        else if (event.getSource() == this.btnMakefile) {
+        /*else if (event.getSource() == this.btnMakefile) {
         	File[] selected = SwingUtils.showOpenMakefileDialog(this,
         			Message.getString("fileprojectnewdialog.selectfiledialog.makefile.title"), //Makefileの選択
         			currentFolder, false);
         	if (selected == null || selected.length <= 0 || selected[0] == null) return;
         	this.txtMakefile.setText(selected[0].toString());
-        }
+        }*/
         // 次へ
         else if (event.getSource() == this.btnNext) {
         	if (!checkParams(this.wizerdIndex)) {
         		return;
         	}
         	if (this.wizerdIndex == this.panelWizerds.length - 1) {
-            	// 最終ページに移動する
-            	if (this.wizerdIndex != panelWizerds.length - 1) {
-                    this.wizerdForward = this.wizerdIndex;
-            		this.wizerdIndex = panelWizerds.length - 1;
-            		changeWizerdPage(this.wizerdIndex);
-            		return;
-            	}
-                // 入力チェックを行う
-                if (!validateProject()) {
-                    return;
-                }
+        		// 最終ページに移動する
+        		if (this.wizerdIndex != panelWizerds.length - 1) { // Peter: Is this possible to be true?
+        			this.wizerdForward = this.wizerdIndex;
+        			this.wizerdIndex = panelWizerds.length - 1;
+        			changeWizerdPage(this.wizerdIndex);
+        			return;
+        		}
+        		// 入力チェックを行う
+        		if (!validateProject()) {
+        			return;
+        		}
 
-                //(2012/4/11) added by teraim パスが存在するか確認
-                File f = new File(currentFolder);
-                //そもそも存在しない。
-                if(! f.exists()){
-                    f.mkdir();
-                }
-                else{
-                    //存在するがファイルの場合（動作無保証、とりあえずエラー値を設定）
-                    if(f.isFile()){
-                        this.result = Constant.ERROR_RESULT;
-                    }
-                    //デフォルト（正常系）
-                    else{
-                         this.result = Constant.OK_DIALOG;
-                    }
-                }
+        		//(2012/4/11) added by teraim パスが存在するか確認
+        		File f = new File(currentFolder);
+        		//そもそも存在しない。
+        		if(! f.exists()){
+        			f.mkdir();
+        		}
+        		else{
+        			//存在するがファイルの場合（動作無保証、とりあえずエラー値を設定）
+        			if(f.isFile()){
+        				this.result = Constant.ERROR_RESULT;
+        			}
+        			//デフォルト（正常系）
+        			else{
+        				this.result = Constant.OK_DIALOG;
+        			}
+        		}
 
-                // ダイアログを閉じる。
-                dispose();
+        		// ダイアログを閉じる。
+        		dispose();
 
-                //
-                //ProjectBuildAction pb = new jp.riken.kscope.action.ProjectBuildAction();
+        		//
+        		//ProjectBuildAction pb = new jp.riken.kscope.action.ProjectBuildAction();
 
-                return;
+        		return;
         	}
         	else {
-        	if (this.wizerdIndex < this.panelWizerds.length - 1) {
-            	this.wizerdForward = this.wizerdIndex;
-        		this.wizerdIndex++;
-	        		if (this.wizerdIndex == 2 &&
-	        				!isGenerateIntermediateCode()) {
-	        			this.wizerdIndex++;
-	        		}
+        		if (this.wizerdIndex < this.panelWizerds.length - 1) {
+        			this.wizerdForward = this.wizerdIndex;
+        			this.wizerdIndex++;
+        			if (this.wizerdIndex == 2 &&
+        					!isGenerateIntermediateCode()) {
+        				this.wizerdIndex++;
+        			}
+        		}
+        		else {
+        			this.wizerdIndex = this.panelWizerds.length - 1;
+        		}
+        		changeWizerdPage(this.wizerdIndex);
         	}
-        	else {
-        		this.wizerdIndex = this.panelWizerds.length - 1;
-        	}
-        	changeWizerdPage(this.wizerdIndex);
-        }
         }
         // 戻る
         else if (event.getSource() == this.btnBack) {
@@ -1777,17 +1777,17 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
      * Makefileパスをセットする
      * @param makefile		Makefileパス
      */
-    public void setMakefilePath(String makefile) {
+    /*public void setMakefilePath(String makefile) {
     	this.txtMakefile.setText(makefile);
-    }
+    }*/
 
     /**
      * makefileパスを取得する
      * @return makefile
      */
-    public String getMakefilePath() {
+    /*public String getMakefilePath() {
     	return this.txtMakefile.getText();
-    }
+    }*?
 
     /**
      * makeコマンド取得
@@ -1804,6 +1804,14 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
     public void setMakeCommand(String str) {
     	this.txtMakeCommand.setText(str);
     }
+    
+    /**
+     * Buildコマンド取得
+     * @return String としてのbuildコマンド
+     */
+	public String getBuildCommand() {
+		return this.txtMakeCommand.getText();
+	}
 
     /**
      * 選択ファイルがXMLファイルであるかチェックする。

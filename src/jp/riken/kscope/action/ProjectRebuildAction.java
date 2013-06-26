@@ -125,7 +125,7 @@ public class ProjectRebuildAction extends ActionBase {
         ProjectModel projectModel = this.controller.getProjectModel();
 		// makeコマンド
 		ProjectProperties project =  this.controller.getPropertiesProject();
-		String commands[] = project.getMakeCommandList();
+		String command = project.getMakeCommand();
 		String path = project.getMakefileFolder(projectModel.getProjectFolder());
 
 		// コンソール
@@ -143,7 +143,7 @@ public class ProjectRebuildAction extends ActionBase {
 		this.updateView = !(modelTree.isSetLanguageTree());
 
 		// makeコマンド実行サービス
-		serviceMake = new ProjectMakeService(commands, new File(path));
+		serviceMake = new ProjectMakeService(command, new File(path));
 		serviceMake.setOutputStream(out);
         // エラー情報モデルを設定する。
 		serviceMake.setErrorInfoModel(modelError);

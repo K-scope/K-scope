@@ -138,9 +138,10 @@ public class FileProjectNewAction extends ActionBase {
             type = FILE_TYPE.FORTRANLANG;
         }
         try {
-        	String makeCom = dialog.getMakeCommand();  // make command as set in New Project dialog. Full path if executable file. 
-        	String makefilePath = dialog.getMakefilePath(); // path to makefile as set in New Project dialog. If set " " (space), makefilePath = " ".
-
+        	//String makeCom = dialog.getMakeCommand();  // make command as set in New Project dialog. Full path if executable file. 
+        	//String makefilePath = dialog.getMakefilePath(); // path to makefile as set in New Project dialog. If set " " (space), makefilePath = " ".
+        	String build_command = dialog.getBuildCommand(); // build command as set in text field in New Project dialog.
+        	
             // プロジェクトを閉じる
             FileProjectCloseAction closeAction = new FileProjectCloseAction(this.controller);
             closeAction.clearProject();
@@ -202,44 +203,22 @@ public class FileProjectNewAction extends ActionBase {
             projectService.setPropertiesMemory(this.controller.getPropertiesMemory());
 
             // Make関連情報
-            List<String> commands = new ArrayList<String>();
+            //List<String> commands = new ArrayList<String>();
             File work = null;
             File makefile = null;
 
             // 中間コードの生成を行う
-            if (genCode){
-            	// makefileパス
-            	if (! StringUtils.isNullOrEmpty(makefilePath)) {
-            		if (!FileUtils.isAbsolutePath(makefilePath)) {
-            			makefile = FileUtils.joinFilePath(project.getProjectFolder(), makefilePath);
-            			if (makefile.exists()) makefilePath = makefile.getAbsolutePath();  // Peter: added check if file exists before changing makefilePath. Need if we set fake makefile when we don't need it (in case of running script, not make command).
-            		} else {
-            			makefile = new File(makefilePath);
-            		}
-            	}
-
+            if (genCode) {
+            	
                 // コンソールを表示
             	this.controller.setSelectedAnalysisPanel(ANALYSIS_PANEL.CONSOLE);
 
-                /* Makeと構造解析と保存 */
-                // コマンド
-                if (!StringUtils.isNullOrEmpty(makeCom))	{
-                	String[] options = StringUtils.tokenizerDelimit(makeCom, " ");
-                	commands.addAll(Arrays.asList(options));
-                }
-                //work = null;
-                if (makefile != null && makefile.exists()) {
-                	commands.add("-f");
-                	commands.add(makefilePath);
-                	work = new File(makefilePath).getParentFile();
-                }
-                else {
-                	work = project.getProjectFolder();
-                }
-
+                work = project.getProjectFolder();
+                
                 // プロジェクトプロパティ設定
-                this.controller.getPropertiesProject().setMakeCommand(makeCom);
-                this.controller.getPropertiesProject().setMakefilePath(makefilePath);
+                //this.controller.getPropertiesProject().setMakeCommand(makeCom);
+                //this.controller.getPropertiesProject().setMakefilePath(makefilePath);
+                this.controller.getPropertiesProject().setBuildCommand(build_command);
             }
             // 中間コードの生成を行わない
             else
@@ -260,7 +239,7 @@ public class FileProjectNewAction extends ActionBase {
             this.controller.getPropertiesProject().setProjectTitle(dialog.getPeojectTitle());
 
             /** 新規作成実行 */
-            execMake(commands.toArray(new String[0]), work, dialog.getProjectXmlList(), project, dialog.isBuild(), dialog.isSave(), genCode, useSSHconnect, (project.getFileType() == FILE_TYPE.XCODEML_XML));
+            execMake(build_command, work, dialog.getProjectXmlList(), project, dialog.isBuild(), dialog.isSave(), genCode, useSSHconnect, (project.getFileType() == FILE_TYPE.XCODEML_XML));
 
             // ソースビューにプロジェクトフォルダを設定する
             this.controller.getMainframe().getPanelSourceView().setProjectFolder(project.getProjectFolder());
@@ -299,7 +278,7 @@ public class FileProjectNewAction extends ActionBase {
 
     /**
      * プロジェクトの新規作成を実行する
-     * @param commands
+     * @param build_command
      * @param work
      * @param xmls
      * @param model
@@ -308,9 +287,9 @@ public class FileProjectNewAction extends ActionBase {
      * @param make
      * @param mode
      */
-    private void execMake(String [] commands, File work, List<File> xmls, ProjectModel model, boolean build, boolean save, boolean make, boolean useSSHconnect, boolean mode) {
+    private void execMake(String build_command, File work, List<File> xmls, ProjectModel model, boolean build, boolean save, boolean make, boolean useSSHconnect, boolean mode) {
         final String message = Message.getString("mainmenu.file.newproject"); //プロジェクトの新規作成
-        makeService = new ProjectMakeService(commands, work, useSSHconnect);
+        makeService = new ProjectMakeService(build_command, work, useSSHconnect);
     	final ConsolePanel console = this.controller.getMainframe().getPanelAnalysisView().getPanelConsole();
 		console.clearConsole();
 		OutputStream out = console.getOutputStream();

@@ -53,13 +53,16 @@ public class ProjectProperties extends PropertiesBase {
     // プロパティキー
     /** makeコマンドプロパティキー */
     public static final String MAKE_COMMAND = "make-command";
+    /** Build command */
+    public static final String BUILD_COMMAND = "build-command";
+    
     /** Makefileパスプロパティキー */
     public static final String MAKEFILE_PATH = "makefile-path";
     /** プロジェクトタイトルプロパティキー */
     public static final String PRJ_TITLE = "project-title";
     /** New properties for SSHconnect */
-    public static final String FILE_FILTER = "file_filter";
-    public static final String PROCESS_FILES = "process_files";
+    public static final String FILE_FILTER = "ssh-file_filter";
+    public static final String PROCESS_FILES = "ssh-process_files";
 
     /** プロパティ設定リスト */
     private List<ProjectPropertyValue> listProperty = new ArrayList<ProjectPropertyValue>();
@@ -340,6 +343,10 @@ public class ProjectProperties extends PropertiesBase {
     public void setMakefilePath(String path) {
     	setValueByKey(MAKEFILE_PATH, path);
     }
+    
+    public void setBuildCommand(String build_command) {
+    	setValueByKey(BUILD_COMMAND, build_command);
+	}
 
     /**
      * プロジェクトタイトルの設定
@@ -409,12 +416,12 @@ public class ProjectProperties extends PropertiesBase {
      * makeコマンドパスを取得します.
      * @return    makeコマンドパス
      */
-    public String getMakefileFolder() {
+    /*public String getMakefileFolder() {
     	String makefile = getPropertyValue(MAKEFILE_PATH).getValue();
     	if (makefile == null) return null;
     	String path = new File(makefile).getParent();
     	return path;
-    }
+    }*/
 
     /**
      * makeコマンドパスを取得します.
@@ -437,6 +444,4 @@ public class ProjectProperties extends PropertiesBase {
     	}
     	return path;
     }
-
-
 }
