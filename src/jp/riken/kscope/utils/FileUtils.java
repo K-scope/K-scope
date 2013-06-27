@@ -212,12 +212,42 @@ public class FileUtils {
 	 *            基準パス
 	 * @return 対象パスの基準パスに対する相対パス
 	 */
-	public static String getRelativePath(String path, String root) {
+	public static String getSubPath(String path, String root) {
 		if (path.length() <= root.length()) {
 			return "";
 		}
 		return path.substring(root.length() + 1);
 	}
+	
+	
+	/**
+	 * Convert absolute path abs_path to relative to base_path.
+	 * abs_path must be subdirectory of base_path. 
+	 * 
+	 * @param base_path
+	 * @param abs_path
+	 * @return relative path from base_path to abs_path
+	 */
+	 public static String getRelativePath(String base_path, String abs_path) throws IOException {
+		 // Normalize the paths
+        String normalized_abs_path = new File(abs_path).getCanonicalPath();
+        String normalized_base_path = new File(base_path).getCanonicalPath();
+        if (normalized_base_path.charAt(normalized_base_path.length() - 1)!= File.separatorChar) normalized_base_path = normalized_base_path + File.separator;
+        
+        //System.out.println(normalized_abs_path + " vs " + normalized_base_path);
+        
+        String relative_path = "";
+        
+        if (normalized_abs_path.indexOf(normalized_base_path) == 0) {
+        	relative_path = normalized_abs_path.substring(normalized_base_path.length());
+        } else if (normalized_abs_path.indexOf(normalized_base_path) > 0) {
+        	System.err.println("Something wrong with these paths: \nbase: " + base_path + "\nabs:  "+abs_path);
+        	throw new IOException("Couldn't process these paths:\nnorm_base: "+normalized_base_path+"\nnorm_abs:  "+normalized_abs_path);
+        }
+        
+		return relative_path;
+	}
+
 
 	/**
 	 * base_fileとnameのファイルを結合したファイルを取得する。
@@ -523,4 +553,6 @@ public class FileUtils {
 		return !canonicalFile.getCanonicalFile().equals(
 				canonicalFile.getAbsoluteFile());
 	}
+	
+	
 }

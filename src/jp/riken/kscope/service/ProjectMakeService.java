@@ -50,6 +50,7 @@ import jp.riken.kscope.language.utils.LanguageVisitor;
 import jp.riken.kscope.language.utils.ValidateLanguage;
 import jp.riken.kscope.model.ProjectModel;
 import jp.riken.kscope.model.ReplacementResultTableModel;
+import jp.riken.kscope.properties.SSHconnectProperties;
 import jp.riken.kscope.utils.Logger;
 import jp.riken.kscope.utils.SwingUtils;
 import jp.riken.kscope.xcodeml.XcodeMLParserStax;
@@ -77,8 +78,8 @@ public class ProjectMakeService  extends BaseService {
     private List<File> listSearchPath;
     /** スレッド実行フラグ true:実行継続/false:中止. */
     private boolean m_running = true;
-    /** SSHconnectを使用　*/
-    private boolean useSSHconnect = false;
+    /** SSHconnect用command line options　*/
+    private SSHconnectProperties sshc_properties = null;
 
     /**
      * コンストラクタ.
@@ -102,12 +103,12 @@ public class ProjectMakeService  extends BaseService {
      * コンストラクタ.
      * @param build_command            Makeコマンド
      * @param work            Makeコマンド実行フォルダ
-     * @param useSSHconnect	SSHconnectを使用するか否か
+     * @param sshc_properties	SSHconnectを使用するか否か
      */
-    public ProjectMakeService(String build_command, File work, boolean useSSHconnect) {
+    public ProjectMakeService(String build_command, File work, SSHconnectProperties sshc_properties) {
     	this.build_command = build_command;
         this.workdirectory = work;
-        this.useSSHconnect = useSSHconnect;
+        this.sshc_properties = sshc_properties;
     }
 
     /**
@@ -375,22 +376,24 @@ public class ProjectMakeService  extends BaseService {
         Application.status.setProgressStart(true);
         if (this.build_command == null || this.build_command.length() <= 0) return false;
         String[] exec_commands = null;
-        if (this.useSSHconnect) {
+        if (this.sshc_properties != null) {
         	// inject SSHconnect call
-        	int formal_commands = 3 + 2;
-        	exec_commands = new String [formal_commands];
+        	String[] sshc_cl = sshc_properties.getCommandLineOptions();
+        	int formal_commands = 3;
+        	exec_commands = new String [formal_commands + sshc_cl.length];
         	exec_commands[0] = "java";
         	exec_commands[1] = "-jar";
         	exec_commands[2] = "SSHconnect.jar";
-        	exec_commands[3] = "-m";
-        	exec_commands[4] = "'"+this.build_command+"'";
+        	for (int i = 0; i < sshc_cl.length; i++) {
+        		exec_commands[i + formal_commands] = sshc_cl[i];
+        	}
         } 
         Application.status.setMessageStatus(build_command);
 
         // makeコマンド実行
     	int result = -1;
 		try {
-			if (this.useSSHconnect) result = SwingUtils.processRun(exec_commands, this.workdirectory, this.outStream);
+			if (this.sshc_properties != null) result = SwingUtils.processRun(exec_commands, this.workdirectory, this.outStream);
 			else result = SwingUtils.processRun(this.build_command.split(" "), this.workdirectory, this.outStream);
 			if (result != 0) { // 中間コードの生成に失敗した場合は継続するか確認
 				if (JOptionPane.showConfirmDialog(null,

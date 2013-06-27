@@ -110,11 +110,13 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
     private JRadioButton radioNotGenXML;
     
     /** SSHconnect用のファイル名フィルタ */
-    private JTextField filefilter_textfield;
+    private JTextField txt_filefilter;
     /** SSHconnect用の置き換えすべきプレースホルダーのあるファイル群 */
-    private JTextField files2preprocess_textfield;
+    private JTextField txt_preprocess_files;
     /** SSHconnect用の置き換えすべきファイル追加ボタン */
     private JButton addprerocessfile_button;
+    /** Panel holds file_filter and process_files fields */
+    private JPanel sshc_settings_panel;
     
     
     /** SSHconnectを利用する */
@@ -467,17 +469,39 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
 
         // Process files & File filter
         {
+        	sshc_settings_panel = new JPanel();
+        	GridBagLayout sshc_panel_layout = new GridBagLayout();
+        	sshc_panel_layout.columnWidths = new int[] {7,160,7,7};
+        	sshc_panel_layout.columnWeights = new double[] {0.0,0.0, 1.0, 0.0};
+        	sshc_panel_layout.rowHeights = new int[] {16,16,16};
+        	sshc_settings_panel.setLayout(sshc_panel_layout);
+        	
+        	JTextArea sshc_text = new JTextArea("SSHconnect use File filter to filter out files, not used for build.\nProcess Files is a list of files with placeholders which need to be replaced."); //Description TODO add Message.getString
+        	sshc_text.setLineWrap(true);
+        	sshc_text.setWrapStyleWord(true);
+        	sshc_text.setOpaque(false);
+        	sshc_text.setEditable(false);
         	JLabel ffl = new JLabel("File filter"); // TODO add Message.getString
-        	filefilter_textfield = new JTextField();
+        	txt_filefilter = new JTextField();
         	JLabel procfl = new JLabel("Process files"); // TODO add Message.getString
-        	files2preprocess_textfield = new JTextField();
+        	txt_preprocess_files = new JTextField();
         	addprerocessfile_button = new JButton("add"); // TODO add Message.getString
         	addprerocessfile_button.addActionListener(this);
+        	
+        	sshc_settings_panel.add(sshc_text, new GridBagConstraints(0, 0, 4, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 7, 10, 7), 0, 0));
+        	sshc_settings_panel.add(ffl, new GridBagConstraints(1, 1, 1, 1, 0.0, 0.0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 7, 0, 7), 0, 0));
+        	sshc_settings_panel.add(txt_filefilter, new GridBagConstraints(2, 1, 2, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
+        	sshc_settings_panel.add(procfl, new GridBagConstraints(1, 2, 1, 1, 0.0, 0.0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 7, 0, 7), 0, 0));
+        	sshc_settings_panel.add(txt_preprocess_files, new GridBagConstraints(2, 2, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
+        	sshc_settings_panel.add(addprerocessfile_button, new GridBagConstraints(3, 2, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
+        	/*
         	panelContent.add(ffl, new GridBagConstraints(1, 5, 1, 1, 0.0, 0.0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 7, 0, 7), 0, 0));
         	panelContent.add(filefilter_textfield, new GridBagConstraints(2, 5, 2, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
         	panelContent.add(procfl, new GridBagConstraints(1, 6, 1, 1, 0.0, 0.0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
         	panelContent.add(files2preprocess_textfield, new GridBagConstraints(2, 6, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
         	panelContent.add(addprerocessfile_button, new GridBagConstraints(3, 6, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
+        	*/
+        	panelContent.add(sshc_settings_panel,new GridBagConstraints(1,5,3,2,0.0,0.0,GridBagConstraints.CENTER, GridBagConstraints.BOTH,new Insets(7,0,0,7),0,0));
         }
         
         return panelContent;
@@ -1058,6 +1082,10 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
 			lblPanelXML.setText(title);
 			txaXMLPanelDesc.setText(desc);
 		}
+		else if (index == 1) { // open BasePanel
+			// hide file_filter and process_files fields
+			sshc_settings_panel.setVisible(useSSHconnect());
+		}		
 		else if (index == panelWizerds.length - 1) {
 			this.btnNext.setText(Message.getString("fileprojectnewdialog.button.new")); //新規作成
 			String labelString = Message.getString("fileprojectnewdialog.finalizepanel.label.xml"); //中間コード
@@ -1264,13 +1292,16 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
             	String path = "";
             	try {
 					path = file.getCanonicalPath();
+					path = FileUtils.getRelativePath(this.txtProjectFolder.getText(),path);
 				} catch (IOException e) {
 					return;
 				}
-            	String preprocess_files = this.files2preprocess_textfield.getText();
-            	if (!StringUtils.isNullOrEmpty(preprocess_files)) preprocess_files = preprocess_files+";"+path;
-            	else preprocess_files = path;
-            	this.files2preprocess_textfield.setText(preprocess_files);
+            	if (path.length() > 0) {
+            		String preprocess_files = this.txt_preprocess_files.getText();
+            		if (!StringUtils.isNullOrEmpty(preprocess_files)) preprocess_files = preprocess_files+";"+path;
+            		else preprocess_files = path;
+            		this.txt_preprocess_files.setText(preprocess_files);
+            	}
             }
         }        
         
@@ -1574,7 +1605,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
                 }
                 else if (FileUtils.isChildPath(projectPath.getCanonicalPath(), addfile.getCanonicalPath())) {
                     // 子パスであるので相対パス表示を行う
-                	String relPath = FileUtils.getRelativePath(addfile.getCanonicalPath(), projectPath.getCanonicalPath());
+                	String relPath = FileUtils.getSubPath(addfile.getCanonicalPath(), projectPath.getCanonicalPath());
                 	if (!containsInProjectList(model, relPath)) {
                 		model.addElement(relPath);
                 	}
@@ -1811,6 +1842,22 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
      */
 	public String getBuildCommand() {
 		return this.txtMakeCommand.getText();
+	}
+	
+	/**
+	 * Return File filter
+	 * @return
+	 */
+	public String getFileFilter() {
+		return this.txt_filefilter.getText();
+	}
+	
+	/**
+	 * Return list of files for placeholder replacement
+	 * @return
+	 */
+	public String getPreprocessFiles() {
+		return this.txt_preprocess_files.getText();
 	}
 
     /**

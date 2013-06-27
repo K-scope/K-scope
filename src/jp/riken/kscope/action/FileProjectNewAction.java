@@ -43,6 +43,7 @@ import jp.riken.kscope.model.ModuleTreeModel;
 import jp.riken.kscope.model.ProjectModel;
 import jp.riken.kscope.properties.KscopeProperties;
 import jp.riken.kscope.properties.ProjectProperties;
+import jp.riken.kscope.properties.SSHconnectProperties;
 import jp.riken.kscope.service.AppController;
 import jp.riken.kscope.service.FutureService;
 import jp.riken.kscope.service.LanguageService;
@@ -93,6 +94,8 @@ public class FileProjectNewAction extends ActionBase {
     @Override
     public void actionPerformed(ActionEvent event) {
         final String message = Message.getString("mainmenu.file.newproject"); //プロジェクトの新規作成
+        SSHconnectProperties sshc_properties = null;
+        
         Application.status.setMessageMain(message);
 
         // 親Frameの取得を行う。
@@ -209,7 +212,6 @@ public class FileProjectNewAction extends ActionBase {
 
             // 中間コードの生成を行う
             if (genCode) {
-            	
                 // コンソールを表示
             	this.controller.setSelectedAnalysisPanel(ANALYSIS_PANEL.CONSOLE);
 
@@ -219,6 +221,14 @@ public class FileProjectNewAction extends ActionBase {
                 //this.controller.getPropertiesProject().setMakeCommand(makeCom);
                 //this.controller.getPropertiesProject().setMakefilePath(makefilePath);
                 this.controller.getPropertiesProject().setBuildCommand(build_command);
+                
+                if (useSSHconnect) { // Set command line options fro SSHconnect call
+                	sshc_properties = new SSHconnectProperties();
+                	sshc_properties.setBuildCommand(build_command);
+                	sshc_properties.setLocalPath(work.getAbsolutePath());
+                	sshc_properties.setFileFilter(dialog.getFileFilter());
+                	sshc_properties.setPreprocessFiles(dialog.getPreprocessFiles());
+                }
             }
             // 中間コードの生成を行わない
             else
@@ -239,7 +249,7 @@ public class FileProjectNewAction extends ActionBase {
             this.controller.getPropertiesProject().setProjectTitle(dialog.getPeojectTitle());
 
             /** 新規作成実行 */
-            execMake(build_command, work, dialog.getProjectXmlList(), project, dialog.isBuild(), dialog.isSave(), genCode, useSSHconnect, (project.getFileType() == FILE_TYPE.XCODEML_XML));
+            execMake(build_command, work, dialog.getProjectXmlList(), project, dialog.isBuild(), dialog.isSave(), genCode, sshc_properties, (project.getFileType() == FILE_TYPE.XCODEML_XML));
 
             // ソースビューにプロジェクトフォルダを設定する
             this.controller.getMainframe().getPanelSourceView().setProjectFolder(project.getProjectFolder());
@@ -287,9 +297,9 @@ public class FileProjectNewAction extends ActionBase {
      * @param make
      * @param mode
      */
-    private void execMake(String build_command, File work, List<File> xmls, ProjectModel model, boolean build, boolean save, boolean make, boolean useSSHconnect, boolean mode) {
+    private void execMake(String build_command, File work, List<File> xmls, ProjectModel model, boolean build, boolean save, boolean make, SSHconnectProperties sshc_properties, boolean mode) {
         final String message = Message.getString("mainmenu.file.newproject"); //プロジェクトの新規作成
-        makeService = new ProjectMakeService(build_command, work, useSSHconnect);
+        makeService = new ProjectMakeService(build_command, work, sshc_properties);
     	final ConsolePanel console = this.controller.getMainframe().getPanelAnalysisView().getPanelConsole();
 		console.clearConsole();
 		OutputStream out = console.getOutputStream();

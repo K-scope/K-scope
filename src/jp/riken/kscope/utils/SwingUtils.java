@@ -425,8 +425,7 @@ public class SwingUtils {
 	 * @return エラーメッセージ（null=正常起動)
 	 * @throws Exception
 	 */
-	public static int processRun(String commands[], File workdirectory,
-			OutputStream outStream) throws Exception {
+	public static int processRun(String commands[], File workdirectory,	OutputStream outStream) throws Exception {
 		String errMsg = null;
 		int result = -1;
 		Process process = null;
@@ -446,13 +445,8 @@ public class SwingUtils {
 				validcommand[i] = StringUtils.trimQuote(validcommand[i]);
 			}
 			ProcessBuilder pb = null;
-			if (commands[0].indexOf("java")==0) {
-				int l = validcommand.length;
-				String[] commands_and_dir = new String[l + 1]; 
-				System.arraycopy(validcommand,0,commands_and_dir,0,l); 
-				// commands_and_dir[l] = "\""+workdirectory.getAbsolutePath()+"\""; //　<-- produces exception "/../." is not a directory
-				commands_and_dir[l] = workdirectory.getAbsolutePath();
-				pb = new ProcessBuilder(commands_and_dir);
+			if (commands[0].indexOf("java")==0) { // call SSHconnect
+				pb = new ProcessBuilder(commands);
 			}
 			else {
 				pb = new ProcessBuilder(validcommand);
