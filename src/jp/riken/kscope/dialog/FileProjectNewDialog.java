@@ -471,7 +471,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
         {
         	sshc_settings_panel = new JPanel();
         	GridBagLayout sshc_panel_layout = new GridBagLayout();
-        	sshc_panel_layout.columnWidths = new int[] {7,160,7,7};
+        	sshc_panel_layout.columnWidths = new int[] {7, 160, 7, 7};
         	sshc_panel_layout.columnWeights = new double[] {0.0,0.0, 1.0, 0.0};
         	sshc_panel_layout.rowHeights = new int[] {16,16,16};
         	sshc_settings_panel.setLayout(sshc_panel_layout);
@@ -1367,9 +1367,21 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
         			Message.getString("fileprojectnewdialog.selectfiledialog.makecommand.title"), //makeコマンドの選択
         			currentFolder, null, false);
         	if (selected == null || selected.length <= 0 || selected[0] == null) return;
-        	String text_make_comm = this.txtMakeCommand.getText();
-        	if (text_make_comm.length() == 0) this.txtMakeCommand.setText(selected[0].toString());
-        	else this.txtMakeCommand.setText(text_make_comm + " "+ selected[0].toString());
+         	for (File file : selected) {
+            	String path = "";
+            	try {
+					path = file.getCanonicalPath();
+					path = FileUtils.getRelativePath(this.txtProjectFolder.getText(),path);
+				} catch (IOException e) {
+					return;
+				}
+            	if (path.length() > 0) {
+            		String text_make_comm = this.txtMakeCommand.getText();
+            		if (!StringUtils.isNullOrEmpty(text_make_comm)) text_make_comm = text_make_comm+" "+path;
+            		else text_make_comm = path;
+            		this.txtMakeCommand.setText(text_make_comm);
+            	}
+            }
         }
         // makefile参照ボタン
         /*else if (event.getSource() == this.btnMakefile) {
