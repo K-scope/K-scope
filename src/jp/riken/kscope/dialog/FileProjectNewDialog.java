@@ -412,18 +412,29 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
 
         JPanel panelContent = new JPanel();
         GridBagLayout jPanel2Layout = new GridBagLayout();
-        jPanel2Layout.rowWeights = new double[] {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0};
-        jPanel2Layout.rowHeights = new int[] {32, 32, 32, 32, 16, 16, 16, 16, 7, 7};
+        jPanel2Layout.rowWeights = new double[] {0.0, 0.0, 0.0, 0.0, 0.0, 1.0};
+        jPanel2Layout.rowHeights = new int[] {16, 16, 16, 32, 32, 128};
         jPanel2Layout.columnWeights = new double[] {0.0, 0.0, 1.0, 0.0};
         jPanel2Layout.columnWidths = new int[] {7, 160, 7, 7};
         panelContent.setLayout(jPanel2Layout);
         //panelContent.setBorder(new LineBorder(new java.awt.Color(0,0,0), 1, false));
         panelContent.setBorder(new EmptyBorder(7, 7, 0, 7));
-        // 説明文
+        // タイトル
         {
             JLabel label = new JLabel(Message.getString("fileprojectnewdialog.statuspanel.basicinfo")); //プロジェクト情報の入力
             panelContent.add(label, new GridBagConstraints(1, 0, 2, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
         }
+        // 説明文
+        {
+        	JTextArea text = new JTextArea(Message.getString("fileprojectnewdialog.basepanel.desc")); //タイトル：プロジェクトのタイトルを入力...
+        	text.setLineWrap(true);
+        	text.setWrapStyleWord(true);
+        	text.setOpaque(false);
+        	text.setEditable(false);
+            panelContent.add(text, new GridBagConstraints(1, 1, 3, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(7, 0, 10, 0), 0, 0));
+        }
+        
+        
         // プロジェクトタイトル
         {
             panelContent.add(new JLabel(Message.getString("fileprojectnewdialog.basepanel.label.title")), //タイトル
@@ -457,15 +468,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
             btnProjectFolder.addActionListener(this);
         }
 
-        // 説明文
-        {
-        	JTextArea text = new JTextArea(Message.getString("fileprojectnewdialog.basepanel.desc")); //タイトル：プロジェクトのタイトルを入力...
-        	text.setLineWrap(true);
-        	text.setWrapStyleWord(true);
-        	text.setOpaque(false);
-        	text.setEditable(false);
-            panelContent.add(text, new GridBagConstraints(1, 1, 3, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(7, 0, 10, 0), 0, 0));
-        }
+        
 
         // Process files & File filter
         {
@@ -476,16 +479,16 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
         	sshc_panel_layout.rowHeights = new int[] {16,16,16};
         	sshc_settings_panel.setLayout(sshc_panel_layout);
         	
-        	JTextArea sshc_text = new JTextArea("SSHconnect use File filter to filter out files, not used for build.\nProcess Files is a list of files with placeholders which need to be replaced."); //Description TODO add Message.getString
+        	JTextArea sshc_text = new JTextArea(Message.getString("fileprojectnewdialog.basepanel.filefilter.desc"));
         	sshc_text.setLineWrap(true);
         	sshc_text.setWrapStyleWord(true);
         	sshc_text.setOpaque(false);
         	sshc_text.setEditable(false);
-        	JLabel ffl = new JLabel("File filter"); // TODO add Message.getString
+        	JLabel ffl = new JLabel(Message.getString("fileprojectnewdialog.basepanel.filefilter.label"));
         	txt_filefilter = new JTextField();
-        	JLabel procfl = new JLabel("Process files"); // TODO add Message.getString
+        	JLabel procfl = new JLabel(Message.getString("fileprojectnewdialog.basepanel.processfiles.label"));
         	txt_preprocess_files = new JTextField();
-        	addprerocessfile_button = new JButton("add"); // TODO add Message.getString
+        	addprerocessfile_button = new JButton(Message.getString("fileprojectnewdialog.basepanel.processfiles.addbutton"));
         	addprerocessfile_button.addActionListener(this);
         	
         	sshc_settings_panel.add(sshc_text, new GridBagConstraints(0, 0, 4, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 7, 10, 7), 0, 0));
@@ -494,14 +497,8 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
         	sshc_settings_panel.add(procfl, new GridBagConstraints(1, 2, 1, 1, 0.0, 0.0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 7, 0, 7), 0, 0));
         	sshc_settings_panel.add(txt_preprocess_files, new GridBagConstraints(2, 2, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
         	sshc_settings_panel.add(addprerocessfile_button, new GridBagConstraints(3, 2, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
-        	/*
-        	panelContent.add(ffl, new GridBagConstraints(1, 5, 1, 1, 0.0, 0.0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 7, 0, 7), 0, 0));
-        	panelContent.add(filefilter_textfield, new GridBagConstraints(2, 5, 2, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
-        	panelContent.add(procfl, new GridBagConstraints(1, 6, 1, 1, 0.0, 0.0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
-        	panelContent.add(files2preprocess_textfield, new GridBagConstraints(2, 6, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
-        	panelContent.add(addprerocessfile_button, new GridBagConstraints(3, 6, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
-        	*/
-        	panelContent.add(sshc_settings_panel,new GridBagConstraints(1,5,3,2,0.0,0.0,GridBagConstraints.CENTER, GridBagConstraints.BOTH,new Insets(7,0,0,7),0,0));
+
+        	panelContent.add(sshc_settings_panel,new GridBagConstraints(1,4,3,2,0.0,0.0,GridBagConstraints.CENTER, GridBagConstraints.BOTH,new Insets(7,0,0,7),0,0));
         }
         
         return panelContent;
@@ -685,36 +682,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
 					new GridBagConstraints(2, 2, 2, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
         }
 
-		//makefile
-        /*
-        {
-	    	JPanel panelMakefile = new JPanel();
-	    	GridBagLayout layoutMakefile = new GridBagLayout();
-	    	layoutMakefile.rowWeights = new double[] {0.1};
-	    	layoutMakefile.rowHeights = new int[] {7};
-	    	layoutMakefile.columnWeights = new double[] {1.0, 0.0};
-	    	layoutMakefile.columnWidths = new int[] {7, 7};
-	    	panelMakefile.setLayout(layoutMakefile);
-
-			panelContent.add(new JLabel("Makefile "),
-					new GridBagConstraints(1, 3, 1, 1, 0.0, 0.0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 7, 0, 7), 0, 0));
-			txtMakefile = new JTextField();
-			panelMakefile.add(txtMakefile,
-					new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
-			btnMakefile = new JButton();
-			panelMakefile.add(btnMakefile,
-					new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
-			btnMakefile.setText(Message.getString("dialog.common.button.refer")); //参照
-			btnMakefile.setPreferredSize(REFER_BUTTON_SIZE);
-			btnMakefile.setMinimumSize(REFER_BUTTON_SIZE);
-			btnMakefile.setMaximumSize(REFER_BUTTON_SIZE);
-			btnMakefile.setMargin(new Insets(0, 3, 0, 3));
-			btnMakefile.addActionListener(this);
-			panelContent.add(panelMakefile,
-					new GridBagConstraints(2, 3, 2, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
-        }*/
-
-        // 説明文
+		// 説明文
         {
         	JTextArea text = new JTextArea(
         			Message.getString("fileprojectnewdialog.makefilepanel.desc")); //実行するmakeコマンド、Makefileを選択してください。
@@ -1286,7 +1254,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
         // Add files to be preprocessed
         else if (event.getSource() == this.addprerocessfile_button) {
         	// フォルダ選択ダイアログを表示する。
-            File[] selected = SwingUtils.showOpenFileDialog(this, "Add preprocess files", currentFolder, null, false);
+            File[] selected = SwingUtils.showOpenFileDialog(this, "Add preprocess files", currentFolder, null, true);
             if (selected == null || selected.length <= 0) return;
             for (File file : selected) {
             	String path = "";

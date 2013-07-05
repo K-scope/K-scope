@@ -923,6 +923,9 @@ public class SwingUtils {
 				// ファイルフィルタ
 				dialog.setFilenameFilter(filter);
 
+				// Multiselection
+				dialog.setMultipleMode(multiselection);
+				
 				// フォルダ選択ダイアログの表示
 				dialog.setVisible(true);
 

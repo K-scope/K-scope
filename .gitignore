@@ -9,3 +9,6 @@ ehthumbs.db
 Thumbs.db
 *.class
 *.jar
+*.png
+*.ucls
+*.mgi
