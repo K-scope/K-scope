@@ -92,11 +92,11 @@ public class ProjectMakeService  extends BaseService {
     /**
      * コンストラクタ.
      * @param commands            Makeコマンド
-     * @param work            Makeコマンド実行フォルダ
+     * @param workdirectory            Makeコマンド実行フォルダ
      */
-    public ProjectMakeService(String build_command, File work) {
+    public ProjectMakeService(String build_command, File workdirectory) {
     	this.build_command = build_command;
-        this.workdirectory = work;
+        this.workdirectory = workdirectory;
     }
     
     /**

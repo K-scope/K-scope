@@ -1,15 +1,23 @@
 package jp.riken.kscope.properties;
 
-import java.io.FileDescriptor;
+import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpression;
+import javax.xml.xpath.XPathFactory;
 
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
+import jp.riken.kscope.Message;
+import jp.riken.kscope.data.SSHconnectData;
 import jp.riken.kscope.utils.ResourceUtils;
 
 /**
@@ -17,155 +25,349 @@ import jp.riken.kscope.utils.ResourceUtils;
  * @author peterbryzgalov
  *
  */
-public class SSHconnectProperties {
+public class SSHconnectProperties extends PropertiesBase {
 	
-	public static final String SSH_PROPERTIES_FILE = "sshconnect_conf.txt";
+	public static String atool_path = "property.sshconnect.atool_path";
+	public static String host = "property.sshconnect.host";
+	public static String port = "property.sshconnect.port";
+	public static String user = "property.sshconnect.user";
+	public static String password = "property.sshconnect.build_command";
+	public static String key = "property.sshconnect.key";
+	public static String passphrase = "property.sshconnect.passphrase";
+	public static String remote_path = "property.sshconnect.remote_path";
+	public static String build_command = "property.sshconnect.build_command";
+	public static String local_path = "property.sshconnect.local_path";
+	public static String file_filter = "property.sshconnect.file_filter";
+	public static String preprocess_files = "property.sshconnect.preprocess_files";
 	
-	public String[] BUILD_COMMAND = {"-m",""}; 
-	public String[] LOCAL_PATH = {"-lp",""};
-	public String[] FILE_FILTER = {"-ff",""};
-	public String[] PREPROCESS_FILES = {"-pf",""};
-	public final String[][] BUILD_PROPERTIES = {BUILD_COMMAND,LOCAL_PATH,FILE_FILTER,PREPROCESS_FILES}; // List of parameters needed for build
-	
-	Properties system_prop; // System properties
-	Properties project_prop = new Properties(); // Project properties
-    String[] property_names;
-    String properties_file = ""; // path to the tile, used to read properties
-    private InputStream is=null;
-    
-    public void setProperty(String name, String value) {
-    	system_prop.setProperty(name, value);
-    }
-
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	/** キーワード(ハイライト)設定リスト */
+    private List<SSHconnectData> listSSH = new ArrayList<SSHconnectData>();
+	
+	private InputStream is=null;
+    
+   	/**
      * コンストラクタ
      * @throws Exception     プロパティ読込エラー
      */
     public SSHconnectProperties() throws Exception {
-        loadSystemProperties();        
+        loadProperties();        
+    }
+    
+    /**
+     * ソース設定プロパティをデフォルト設定ファイルから読み込む。
+     * @throws Exception     プロパティ読込エラー
+     */
+    public void loadProperties() throws Exception {
+        is = null;
+
+        // リソースファイルの読込
+        is = ResourceUtils.getPropertiesFile(KscopeProperties.PROPERTIES_FILE);
+
+        loadProperties(is);
     }
 
     /**
-     * Option setter
-     * @param build_command
+     * ソース設定プロパティを設定ファイルから読み込む。
+     * @param  propertiesFile 		ソース設定プロパティ設定ファイル
+     * @throws Exception     プロパティ読込エラー
      */
-    public void setBuildCommand(String build_command) {
-    	this.BUILD_COMMAND[1] = "'"+build_command+"'";
+    public void loadProperties(File propertiesFile) throws Exception {
+
+        if (!propertiesFile.exists()) {
+            throw(new Exception(Message.getString("propertiesbase.exeption.notexist"))); //ソース設定プロパティファイルが存在しません。
+        }
+
+        // リソースファイルの読込
+        InputStream stream = new FileInputStream(propertiesFile);
+
+        // XMLファイルのパース
+        loadProperties(stream);
     }
+
+    /**
+     * ソース設定プロパティを設定ファイルから読み込む。
+     * @param   stream      設定ファイルストリーム
+     * @throws Exception     プロパティ読込エラー
+     */
+    public void loadProperties(InputStream stream ) throws Exception {
+        // XMLファイルのパース
+        listSSH = parseSSHProperty(stream, "//sshconnect");
+    }
+
+
+    /**
+     * キーワード(ハイライト)設定リストを取得する。
+     * @return		ハイライト設定リスト
+     */
+    public List<SSHconnectData> getList() {
+        return listSSH;
+    }
+
     
     /**
-     * Option setter
-     * @param local_path
+     * キーワード(ハイライト)リストをクリアする。
      */
-    public void setLocalPath(String local_path) {
-    	this.LOCAL_PATH[1] = "'"+local_path + "'";
+    public void clearList() {
+        listSSH = new ArrayList<SSHconnectData>();
     }
-    
+
     /**
-     * Option setter
-     * @param file_filter
+     * 検索Keyと一致するSSHconnectData情報を取得する
+     * @param key	Property key (name)
+     * @return		Property情報
      */
-    public void setFileFilter(String file_filter) {
-    	this.FILE_FILTER[1] = file_filter;
+    public SSHconnectData getPropertySet(String key) {
+        if (key == null || key.isEmpty()) return null;
+
+        for (SSHconnectData ssh_property_set : listSSH) {
+        	String k = ssh_property_set.getKey();
+        	if (k.equalsIgnoreCase(key)) {
+        		return ssh_property_set;
+        	}
+        }
+        return null;
     }
+
     /**
-     * Option setter
-     * @param preprocess_files
+     * キーワードを取得する
+     * @param stream		XML入力ストリーム
+     * @param path		キーワードXPATH
+     * @return		キーワードリスト
+     * @throws Exception 		キーワードパースエラー
      */
-    public void setPreprocessFiles(String preprocess_files) {
-    	this.PREPROCESS_FILES[1] = preprocess_files;
+    public List<SSHconnectData> parseSSHProperty(InputStream stream, String path) throws Exception {
+
+        List<SSHconnectData> list = new ArrayList<SSHconnectData>();
+
+        // XML
+        DocumentBuilderFactory dbfactory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder builder = dbfactory.newDocumentBuilder();
+        org.w3c.dom.Document document = builder.parse(stream);
+
+        XPathFactory factory = XPathFactory.newInstance();
+        XPath xpath = factory.newXPath();
+
+        XPathExpression expr = xpath.compile(path);
+
+        Object result = expr.evaluate(document, XPathConstants.NODESET);
+
+        NodeList nodelist = (NodeList) result;
+        if (nodelist == null) return null;
+
+        for (int i=0; i<nodelist.getLength(); i++) {
+            try {
+                Node node = nodelist.item(i);
+                SSHconnectData sshdata = new SSHconnectData();
+                
+                // 属性の取得
+                NamedNodeMap attrs = node.getAttributes();
+                Node attrnode_key,attrnode_value,attrnode_type;
+                String key = null;
+                String value = null;
+                String commandline_option = null;
+                String type = null;
+                // プロパティ名
+                attrnode_key = attrs.getNamedItem("key");
+                if (attrnode_key != null) {
+                    key = attrnode_key.getNodeValue();
+                }
+                // プロパティ値
+                attrnode_value = attrs.getNamedItem("value");
+                if (attrnode_value != null) {
+                    value = attrnode_value.getNodeValue();                    
+                }
+                attrnode_value = attrs.getNamedItem("commandline_option");
+                if (attrnode_value != null) {
+                    commandline_option = attrnode_value.getNodeValue();                    
+                }
+                // プロパティType
+                attrnode_type = attrs.getNamedItem("type");
+                if (attrnode_type != null) {
+                    type = attrnode_type.getNodeValue();                    
+                }
+                if (key != null || value != null) {
+                	sshdata.setProperty(key, value, commandline_option, type);
+                }
+                
+                list.add(sshdata);
+
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+
+        if (list.size() <= 0) {
+            list = null;
+        }
+
+        return list;
     }
-    
+
+
+    /**
+     * プロパティをDOMノードに出力する
+     * @param node		出力ノード
+     */
+    public void writeProperties(org.w3c.dom.Node node) {
+
+        // ドキュメントの取得
+        org.w3c.dom.Document document = node.getOwnerDocument();
+
+        // コメントを追加
+        {
+            org.w3c.dom.Comment comment = document.createComment(Message.getString("sshconnectproperties.document.comment")); 
+            node.appendChild(comment);
+        }
+
+        if (this.listSSH == null || this.listSSH.size() <= 0) return;
+
+        // SSHconnect property set
+        for (SSHconnectData sshdata : this.listSSH) {
+            org.w3c.dom.Element elem = document.createElement("sshconnect");
+
+            {
+                org.w3c.dom.Attr attr = document.createAttribute("key");
+                attr.setValue(sshdata.getKey());
+                elem.setAttributeNode(attr);
+            }
+            {
+                org.w3c.dom.Attr attr = document.createAttribute("value");
+                attr.setNodeValue(sshdata.getValue());
+                elem.setAttributeNode(attr);
+            }
+            {
+                org.w3c.dom.Attr attr = document.createAttribute("commandline_option");
+                attr.setNodeValue(sshdata.getCommandlineOption());
+                elem.setAttributeNode(attr);
+            }
+            {
+                org.w3c.dom.Attr attr = document.createAttribute("type");
+                attr.setValue(sshdata.getType());
+                elem.setAttributeNode(attr);
+            }
+            // ノード追加
+            node.appendChild(elem);
+        }
+    }
+
     /**
      * Format command line options for SSHconnect call
      * @return
      */
     public String[] getCommandLineOptions() {
     	List<String> command_options = new ArrayList<String>();
-    	for (String[] option : BUILD_PROPERTIES) {
-    		if (option[1].length() > 0) {
-    			command_options.add(option[0]);
-    			command_options.add(option[1]);
+    	for (SSHconnectData sshdata : this.listSSH) {
+    		String commandline_option = sshdata.getCommandlineOption();
+    		String value = sshdata.getValue();
+    		if (value.length() > 0) {
+    			command_options.add(commandline_option);
+    			command_options.add(value);
     		} 
     	}
     	return command_options.toArray(new String[0]);
     }
     
-    /**
-     * プロジェクト設定プロパティを設定ファイルから読み込む。
-     * @param   stream      設定ファイルストリーム
-     * @throws Exception     プロパティ読込エラー
-     */
-    public void loadSystemProperties() throws Exception {
-    	
-    	// Read parameters from configuration file
-		system_prop = new Properties();
-		try {
-			system_prop.load(new FileInputStream(SSH_PROPERTIES_FILE));
-		} catch (FileNotFoundException e) {
-			is = ResourceUtils.getPropertiesFile(SSH_PROPERTIES_FILE);
-			// properties_file = ResourceUtils.PROPERTIES_FILE_USED; // Use configuration file stored near K-scope property file.
-			system_prop.load(is);
-		}
+    
+	//@Override
+	//public void firePropertyChange() {
+		//this.changes.firePropertyChange(this.getClass().getName(), null, this);
+	//}
+
+	public int count() {
+		if (listSSH == null || listSSH.size() <= 0) {return 0;}
+        return listSSH.size();
+	}
+
+	/**
+	 * Get property key
+	 * @param index
+	 * @return
+	 */
+	public String getKey(int index) {
+		if (listSSH == null || listSSH.size() <= 0) {return null;}
+        if (listSSH.size() <= index) {return null;}
+
+        return listSSH.get(index).getKey();
+	}
+
+	/**
+	 * Get property value
+	 * @param index
+	 * @return
+	 */
+	public String getValue(int index) {
+		if (listSSH == null || listSSH.size() <= 0) {return null;}
+        if (listSSH.size() <= index) {return null;}
+
+        return listSSH.get(index).getValue();
+	}
+
+	/**
+	 * Set "value" filed of SSHconnectData entity from listSSH. Entity defined by index.
+	 * @param index
+	 * @param value
+	 */
+	public void setValue(int index, String value) {
+		SSHconnectData sshdata = listSSH.get(index);
+		sshdata.setValue(value);
+	}
 		
-		property_names = system_prop.stringPropertyNames().toArray(new String[0]);
-		
-    }
-	
-    public int count() {
-		return system_prop.size();		
-	}
-
-	public String getProperty(int i) {
-		String name = property_names[i];
-		return getProperty(name);		
-	}
-	
-	public String getProperty(String name) {
-		return system_prop.getProperty(name);		
-	}
-
-	public String getDescription(int i) {
-		String name = property_names[i];
-		return getDescription(name);
-	}
-	
-	public String getDescription(String name) {
-		return system_prop.getProperty(name);
-	}
-
-	public String getPropertyName(int i) {
-		return property_names[i];
-	}
-
+	/**
+	 * Set "value" filed of SSHconnectData entity from listSSH. Entity is defined by the key. 
+	 * Function exits after first assignment.
+	 * Keys are search ignoring character case.
+	 *   
+	 * @param key
+	 * @param value
+	 */
+	private void setValueByKey(String key, String value) {
+		for (SSHconnectData sshproperty : listSSH) {
+			if (sshproperty.getKey().equalsIgnoreCase(key)) {
+				sshproperty.setValue(value);
+				return;
+			}
+		}		
+	}	
 	
 	/**
-	 * Save parameters to configuration file.
-	 * Use java.util.Properties store() method.
-	 * DO NOT try to save to the same file, properties were read from. Always save to working dir (near jars), so that SSHconnect can find it
-	 * If not possible, store to SSH_PROPERTIES_FILE in SSHconnect.jar & kscope.jar folder.
+	 * Set build command.
+	 * Assigns command to the "value" filed of a member of listSSH with "key" field 
+	 * equal to this.build_command String.
+	 * @param command
 	 */
-	public void store() {
-		if (properties_file.length() > 1) {
-			try {
-				FileOutputStream fos = new FileOutputStream(properties_file);
-				system_prop.store(fos, "SSHconnect settings");
+	public void setBuildCommand(String command) {
+		setValueByKey(SSHconnectProperties.build_command, command);
+	}	
 
-			} catch (IOException e) {
-				properties_file = ""; // Couldn't write to this file. Forget it.
-				e.printStackTrace();
-			}
-		} 
-		else  
-		{
-			try {
-				FileOutputStream fos = new FileOutputStream(SSH_PROPERTIES_FILE);
-				system_prop.store(fos, "SSHconnect settings");
-			} catch (FileNotFoundException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
+	/**
+	 * Set local path. Similar to setBuildCommand function.
+	 * @param absolutePath
+	 */
+	public void setLocalPath(String absolutePath) {
+		setValueByKey(SSHconnectProperties.local_path, absolutePath);		
 	}
+
+	/**
+	 * Set file filter. Similar to setBuildCommand function.
+	 * @param filter
+	 */
+	public void setFileFilter(String filter) {
+		setValueByKey(SSHconnectProperties.file_filter, filter);
+	}
+
+	/**
+	 * Set preprocess files. Similar to setBuildCommand function.
+	 * @param files
+	 */
+	public void setPreprocessFiles(String files) {
+		setValueByKey(SSHconnectProperties.preprocess_files, files);		
+	}
+
+	@Override
+	public void firePropertyChange() {}
 }

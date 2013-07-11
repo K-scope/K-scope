@@ -38,6 +38,7 @@ import jp.riken.kscope.properties.KeywordProperties;
 import jp.riken.kscope.properties.MemorybandProperties;
 import jp.riken.kscope.properties.ProfilerProperties;
 import jp.riken.kscope.properties.SourceProperties;
+import jp.riken.kscope.properties.SSHconnectProperties;
 import jp.riken.kscope.properties.VariableMemoryProperties;
 import jp.riken.kscope.utils.FileUtils;
 
@@ -415,6 +416,7 @@ public class SourceView extends ClosableTabbedPane implements  PropertyChangeLis
                 pane.applyKeyword();
             }
         }
+        
     }
 
     /**

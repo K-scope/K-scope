@@ -43,6 +43,7 @@ import jp.riken.kscope.properties.OperandProperties;
 import jp.riken.kscope.properties.ProfilerProperties;
 import jp.riken.kscope.properties.ProgramProperties;
 import jp.riken.kscope.properties.ProjectProperties;
+import jp.riken.kscope.properties.SSHconnectProperties;
 import jp.riken.kscope.properties.SourceProperties;
 
 
@@ -68,6 +69,8 @@ public class ProjectService extends BaseService {
     private ProjectProperties propertiesProject;
     /** 要求Byte/FLOP設定プロパティ */
     private MemorybandProperties propertiesMemory;
+    
+    private SSHconnectProperties propertiesSSH;
 
 
     /**
@@ -382,6 +385,7 @@ public class ProjectService extends BaseService {
         this.propertiesProject.writeProperties(elemSettings, this.projectModel.getProjectFolder());
         // 要求Byte/FLOP設定プロパティ設定出力
         this.propertiesMemory.writeProperties(elemSettings);
+        this.propertiesSSH.writeProperties(elemSettings);
 
         // settingsフォルダ作成
         File settingsFolder = new File(saveFolder.getAbsoluteFile() + File.separator + KscopeProperties.SETTINGS_FOLDER);
@@ -479,6 +483,10 @@ public class ProjectService extends BaseService {
     public void setPropertiesMemory(MemorybandProperties propertiesMemory) {
     	this.propertiesMemory = propertiesMemory;
     }
+    
+    public void setPropertiesSSH(SSHconnectProperties propertiesSSH) {
+    	this.propertiesSSH = propertiesSSH;
+    }
 
     /**
      * プロジェクトを開く
@@ -513,6 +521,7 @@ public class ProjectService extends BaseService {
             this.propertiesProject.loadProperties(settingsXml);
             // 要求Byte/FLOP設定プロパティ
             this.propertiesMemory.loadProperties(settingsXml);
+            this.propertiesSSH.loadProperties(settingsXml);
 
         } catch (Exception ex) {
             // エラーメッセージ出力

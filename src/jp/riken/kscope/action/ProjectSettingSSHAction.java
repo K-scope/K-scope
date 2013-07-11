@@ -27,20 +27,15 @@ public class ProjectSettingSSHAction extends ActionBase {
         Frame frame = getWindowAncestor( event );
 
         // 設定ダイアログを表示する。
-        SSHconnectProperties SSHproperties = null;
-		try {
-			SSHproperties = new SSHconnectProperties();
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+        SSHconnectProperties ssh_properties = this.controller.getPropertiesSSH();
 
-		SSHconnectPropertiesDialog dialog = new SSHconnectPropertiesDialog(frame, SSHproperties);  
+		SSHconnectPropertiesDialog dialog = new SSHconnectPropertiesDialog(frame, ssh_properties);  
 		int result = dialog.showDialog(); 
         if (result != Constant.OK_DIALOG) {
         	Application.status.setMessageMain(message + 
         			Message.getString("action.common.cancel.status")); //キャンセル
         	return;
         }
+        this.controller.setSSHproperties(ssh_properties);
 	}
 }

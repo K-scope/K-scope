@@ -72,6 +72,7 @@ import jp.riken.kscope.properties.OperandProperties;
 import jp.riken.kscope.properties.ProfilerProperties;
 import jp.riken.kscope.properties.ProgramProperties;
 import jp.riken.kscope.properties.ProjectProperties;
+import jp.riken.kscope.properties.SSHconnectProperties;
 import jp.riken.kscope.properties.SourceProperties;
 import jp.riken.kscope.properties.VariableMemoryProperties;
 
@@ -108,6 +109,9 @@ public class AppController implements PropertyChangeListener {
 
     /** 要求Byte/FLOP設定プロパティ */
     private MemorybandProperties propertiesMemory;
+    
+    // SSHconnect
+    private SSHconnectProperties propertiesSSH;
 
     /** アプリケーションプロパティ */
     private ApplicationProperties propertiesApplication;
@@ -299,6 +303,14 @@ public class AppController implements PropertyChangeListener {
      */
     public VariableMemoryProperties getPropertiesVariable() {
         return propertiesVariable;
+    }
+    
+    /**
+     * Get SSH properties
+     * @return SSH properties
+     */
+    public SSHconnectProperties getPropertiesSSH() {
+    	return propertiesSSH;
     }
 
     /**
@@ -710,6 +722,7 @@ public class AppController implements PropertyChangeListener {
         this.propertiesProfiler = null;
         this.propertiesMemory = null;
         this.propertiesVariable = null;
+        this.propertiesSSH = null;
     }
 
     /**
@@ -741,6 +754,9 @@ public class AppController implements PropertyChangeListener {
         if (this.propertiesApplication == null) {
         	this.propertiesApplication = new ApplicationProperties();
         }
+        if (this.propertiesSSH == null) {
+        	this.propertiesSSH = new SSHconnectProperties();
+        }
         // メニュー表示選択をコピーする
         this.mainframe.getMenuMain().clearSelectedMenu();
         if (this.propertiesProfiler == null) {
@@ -763,6 +779,10 @@ public class AppController implements PropertyChangeListener {
 
     }
 
+    public void setSSHproperties(SSHconnectProperties ssh_properties) {
+    	this.propertiesSSH = ssh_properties;
+    }
+    
     /**
      * トレースキーワードを設定する
      */

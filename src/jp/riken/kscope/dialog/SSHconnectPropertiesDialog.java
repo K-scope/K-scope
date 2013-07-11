@@ -1,50 +1,22 @@
 package jp.riken.kscope.dialog;
 
 import java.awt.BorderLayout;
-import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.Font;
 import java.awt.Frame;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.ButtonGroup;
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
-import javax.swing.JSeparator;
 import javax.swing.JTable;
-import javax.swing.JTextField;
-import javax.swing.ListSelectionModel;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.border.Border;
-import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
-import javax.swing.border.EtchedBorder;
-import javax.swing.border.TitledBorder;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
-import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableColumn;
-
 import jp.riken.kscope.Message;
 import jp.riken.kscope.common.Constant;
-import jp.riken.kscope.component.JColorButton;
-import jp.riken.kscope.data.ProjectPropertyValue;
-import jp.riken.kscope.properties.MemorybandProperties;
 import jp.riken.kscope.properties.SSHconnectProperties;
 
 public class SSHconnectPropertiesDialog  extends javax.swing.JDialog implements ActionListener  {
@@ -52,7 +24,7 @@ public class SSHconnectPropertiesDialog  extends javax.swing.JDialog implements 
 	/**
 	 * 
 	 */
-	private SSHconnectProperties settings;
+	private SSHconnectProperties sshproperties;
 	
 	private static final long serialVersionUID = -8218498915763496914L;
 	/** キャンセルボタン */
@@ -76,7 +48,7 @@ public class SSHconnectPropertiesDialog  extends javax.swing.JDialog implements 
 	
 	public SSHconnectPropertiesDialog(Frame frame, SSHconnectProperties settings) {
         super(frame);
-        this.settings = settings;
+        this.sshproperties = settings;
         initGUI();
     }
 	
@@ -146,14 +118,14 @@ public class SSHconnectPropertiesDialog  extends javax.swing.JDialog implements 
 					private static final long serialVersionUID = -6996565435968749645L;
 					
 					public int getColumnCount() { return COLUMN_HEADERS.length; }
-    				public int getRowCount() { return settings.count(); }
+					public int getRowCount() { return sshproperties.count(); }
     				public Object getValueAt(int row, int column) { 
     					if (column > COLUMN_HEADERS.length) {
     						System.err.println("Table has "+COLUMN_HEADERS.length+" columns. You asked for column number"+column);
     						return null;
     					}
-    					if (column == 0) return settings.getPropertyName(row);
-    					if (column == 1) return settings.getProperty(row);
+    					if (column == 0) return sshproperties.getKey(row);
+    					if (column == 1) return sshproperties.getValue(row);
     					return null;
     				}
     				public boolean isCellEditable(int row, int column) {
@@ -165,7 +137,7 @@ public class SSHconnectPropertiesDialog  extends javax.swing.JDialog implements 
     						System.err.println("Table has "+COLUMN_HEADERS.length+" columns. You asked for column number"+column);
     						return;
     					}
-    					if (column == 1) settings.setProperty(settings.getPropertyName(row), value.toString());
+    					if (column == 1) sshproperties.setValue(row, value.toString());
     					fireTableCellUpdated(row, column);
     			    }
     			};
@@ -209,11 +181,8 @@ public class SSHconnectPropertiesDialog  extends javax.swing.JDialog implements 
         if (event.getSource() == this.btnOk) {
             this.result = Constant.OK_DIALOG;
 
-            // 変更内容をソースプロパティに更新する。
-            saveProperties();
-
             // 変更イベントを発生
-            //this.properties.firePropertyChange();
+            //this.sshproperties.firePropertyChange();
 
             // ダイアログを閉じる。
             dispose();
@@ -223,10 +192,8 @@ public class SSHconnectPropertiesDialog  extends javax.swing.JDialog implements 
         if (event.getSource() == this.btnApply) {
             this.result = Constant.OK_DIALOG;
 
-            saveProperties();
-
             // 変更イベントを発生
-            //this.properties.firePropertyChange();
+            //this.sshproperties.firePropertyChange();
 
             return;
         }
@@ -239,16 +206,5 @@ public class SSHconnectPropertiesDialog  extends javax.swing.JDialog implements 
         }
 	}
 	
-	private void saveProperties() {
-		int rows = this.modelProperties.getRowCount();
-
-        for (int i=0; i<rows; i++) {
-            String property_name = (String) this.modelProperties.getValueAt(i, 0);
-            String value = (String) this.modelProperties.getValueAt(i, 1);
-            settings.setProperty(property_name, value);
-        }
-        settings.store();
-        System.out.println("Settings saved.");
-	}
 }
 

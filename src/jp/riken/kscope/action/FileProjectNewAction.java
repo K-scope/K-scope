@@ -204,11 +204,12 @@ public class FileProjectNewAction extends ActionBase {
             projectService.setPropertiesProject(this.controller.getPropertiesProject());
             // 要求Byte/FLOP設定プロパティ
             projectService.setPropertiesMemory(this.controller.getPropertiesMemory());
+            
+            projectService.setPropertiesSSH(this.controller.getPropertiesSSH());
 
             // Make関連情報
             //List<String> commands = new ArrayList<String>();
             File work = null;
-            File makefile = null;
 
             // 中間コードの生成を行う
             if (genCode) {
@@ -222,8 +223,8 @@ public class FileProjectNewAction extends ActionBase {
                 //this.controller.getPropertiesProject().setMakefilePath(makefilePath);
                 this.controller.getPropertiesProject().setBuildCommand(build_command);
                 
-                if (useSSHconnect) { // Set command line options fro SSHconnect call
-                	sshc_properties = new SSHconnectProperties();
+                if (useSSHconnect) { // Set command line options for SSHconnect call
+                	sshc_properties = this.controller.getPropertiesSSH();
                 	sshc_properties.setBuildCommand(build_command);
                 	sshc_properties.setLocalPath(work.getAbsolutePath());
                 	sshc_properties.setFileFilter(dialog.getFileFilter());
