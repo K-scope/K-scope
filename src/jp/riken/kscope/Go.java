@@ -69,7 +69,6 @@ public class Go {
                 ex.printStackTrace();
                 return;
             }
-
         } // Windowsの場合
         else if (KscopeProperties.isWindows()) {
             //(2012/4/10) changed by teraim

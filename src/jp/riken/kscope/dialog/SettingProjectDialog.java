@@ -421,12 +421,13 @@ public class SettingProjectDialog extends javax.swing.JDialog implements ActionL
         	if ("file".equalsIgnoreCase(selectedvalue.getType())) {
         		File[] selected = null;
         		dlgTitle = Message.getString("informationdialog.selectfiledialog.title"); //ファイルの選択
-                if (selectedvalue != null
+                /*if (selectedvalue != null
                 	&& ProjectProperties.MAKEFILE_PATH.equalsIgnoreCase(selectedvalue.getKey())) {
             		// Makefile選択ダイアログを表示する。
                     selected = SwingUtils.showOpenMakefileDialog(this, dlgTitle, currentFolder, false);
                 }
-                else {
+                else*/ 
+        		{
 	        		// ファイル選択ダイアログを表示する。
 	                selected = SwingUtils.showOpenFileDialog(this, dlgTitle, currentFolder, null, true);
                 }

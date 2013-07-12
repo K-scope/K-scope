@@ -110,7 +110,7 @@ public class FileProjectNewAction extends ActionBase {
         // 除外パス名を設定する
         dialog.addExcludeName(KscopeProperties.SETTINGS_FOLDER);
         // プロジェクトプロパティにmakeコマンドがある場合はその文字列を表示
-        dialog.setMakeCommand(this.controller.getPropertiesProject().getPropertyValue(ProjectProperties.MAKE_COMMAND).getValue());
+        dialog.setMakeCommand(this.controller.getPropertiesProject().getPropertyValue(ProjectProperties.BUILD_COMMAND).getValue());
         // タイトル, Makefile, 保存フラグの設定削除 at 2013/05/30 by @hira
         // プロジェクトプロパティにタイトル設定がある場合その文字列を表示
         // dialog.setProjectTitle(this.controller.getPropertiesProject().getPropertyValue(ProjectProperties.PRJ_TITLE).getValue());
@@ -222,6 +222,7 @@ public class FileProjectNewAction extends ActionBase {
                 //this.controller.getPropertiesProject().setMakeCommand(makeCom);
                 //this.controller.getPropertiesProject().setMakefilePath(makefilePath);
                 this.controller.getPropertiesProject().setBuildCommand(build_command);
+                System.out.println("BUILD COMMAND: "+ this.controller.getPropertiesProject().getBuildCommand());
                 
                 if (useSSHconnect) { // Set command line options for SSHconnect call
                 	sshc_properties = this.controller.getPropertiesSSH();

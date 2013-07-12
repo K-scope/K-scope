@@ -69,12 +69,16 @@ public class ProjectRebuildAction extends ActionBase {
 	public boolean validateAction() {
 		ProjectProperties properties = this.controller.getPropertiesProject();
 		if (properties == null) return false;
+		/*
+		 *  MAKE_COMMAND and MAKEFILE_PATH are not used anymore 
 		// makeコマンドが設定されていない場合はfalse
 		ProjectPropertyValue value = properties.getPropertyValue(ProjectProperties.MAKE_COMMAND);
 		if (value == null) return false;
 		if (StringUtils.isNullOrEmpty(value.getValue())) return false;
 		// makefileが設定されていない場合はfalse
 		value = properties.getPropertyValue(ProjectProperties.MAKEFILE_PATH);
+		*/
+		ProjectPropertyValue value = properties.getPropertyValue(ProjectProperties.BUILD_COMMAND);
 		if (value == null) return false;
 		if (StringUtils.isNullOrEmpty(value.getValue())) return false;
 
@@ -125,8 +129,8 @@ public class ProjectRebuildAction extends ActionBase {
         ProjectModel projectModel = this.controller.getProjectModel();
 		// makeコマンド
 		ProjectProperties project =  this.controller.getPropertiesProject();
-		String command = project.getMakeCommand();
-		String path = project.getMakefileFolder(projectModel.getProjectFolder());
+		String command = project.getBuildCommand();
+		//String path = project.getMakefileFolder(projectModel.getProjectFolder());
 
 		// コンソール
 		this.controller.setSelectedAnalysisPanel(ANALYSIS_PANEL.CONSOLE);
@@ -143,7 +147,7 @@ public class ProjectRebuildAction extends ActionBase {
 		this.updateView = !(modelTree.isSetLanguageTree());
 
 		// makeコマンド実行サービス
-		serviceMake = new ProjectMakeService(command, new File(path));
+		serviceMake = new ProjectMakeService(command, projectModel.getProjectFolder());
 		serviceMake.setOutputStream(out);
         // エラー情報モデルを設定する。
 		serviceMake.setErrorInfoModel(modelError);

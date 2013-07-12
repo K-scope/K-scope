@@ -52,12 +52,12 @@ public class ProjectProperties extends PropertiesBase {
 
     // プロパティキー
     /** makeコマンドプロパティキー */
-    public static final String MAKE_COMMAND = "make-command";
+    //public static final String MAKE_COMMAND = "make-command";
     /** Build command */
     public static final String BUILD_COMMAND = "build-command";
     
     /** Makefileパスプロパティキー */
-    public static final String MAKEFILE_PATH = "makefile-path";
+    //public static final String MAKEFILE_PATH = "makefile-path";
     /** プロジェクトタイトルプロパティキー */
     public static final String PRJ_TITLE = "project-title";
     /** New properties for SSHconnect */
@@ -293,7 +293,7 @@ public class ProjectProperties extends PropertiesBase {
         		org.w3c.dom.Attr attr;
         		attr = document.createAttribute("value");
         		String attr_value = value.getValue();
-        		if (MAKEFILE_PATH.equalsIgnoreCase(key)) {
+        		/*if (MAKEFILE_PATH.equalsIgnoreCase(key)) {
         			if (StringUtils.isNullOrEmpty(attr_value)) {
         				attr_value = "";
         			}
@@ -301,7 +301,7 @@ public class ProjectProperties extends PropertiesBase {
         				File f = new File(value.getValue());
         				attr_value = FileUtils.getRelativePath(f, projectFolder);
         			}
-        		}
+        		}*/
         		attr_value = StringUtils.escapeFilePath(attr_value);
     			attr.setNodeValue(attr_value);
         		elem.setAttributeNode(attr);
@@ -332,19 +332,21 @@ public class ProjectProperties extends PropertiesBase {
      * make コマンドの設定
      * @param  command    makeコマンド
      */
-    public void setMakeCommand(String command) {
+    /*public void setMakeCommand(String command) {
+    	System.out.println("Set make command: " + command);
     	setValueByKey(MAKE_COMMAND, command);
-    }
+    }*/
 
     /**
      * makefileパスの設定
      * @param   path    makefileパス
      */
-    public void setMakefilePath(String path) {
+    /*public void setMakefilePath(String path) {
     	setValueByKey(MAKEFILE_PATH, path);
-    }
+    }*/
     
     public void setBuildCommand(String build_command) {
+    	System.out.println("Set build command: " + build_command);
     	setValueByKey(BUILD_COMMAND, build_command);
 	}
 
@@ -381,7 +383,7 @@ public class ProjectProperties extends PropertiesBase {
      * makeコマンドリストを取得します.
      * @return    makeコマンドリスト
      */
-    public String[] getMakeCommandList() {
+    /*public String[] getMakeCommandList() {
     	String command = getPropertyValue(MAKE_COMMAND).getValue();
     	if (command == null) return null;
     	String[] commands = StringUtils.tokenizerDelimit(command, " ");
@@ -395,13 +397,13 @@ public class ProjectProperties extends PropertiesBase {
     	list.add("-f");
     	list.add(name);
     	return list.toArray(new String[0]);
-    }
+    }*/
 
     /**
      * makeコマンドを取得します.
      * @return    makeコマンド
      */
-    public String getMakeCommand() {
+   /* public String getMakeCommand() {
     	String[] commands = getMakeCommandList();
     	if (commands == null) return null;
     	String command = "";
@@ -410,6 +412,15 @@ public class ProjectProperties extends PropertiesBase {
     		command += commands[i];
     	}
     	return command;
+    }*/
+    
+    /**
+     * Get BUILD COMMAND
+     */
+    public String getBuildCommand() {
+    	ProjectPropertyValue bc = getPropertyValue(BUILD_COMMAND);
+    	String bcs = bc.getValue();
+    	return bcs;
     }
 
     /**
@@ -428,7 +439,7 @@ public class ProjectProperties extends PropertiesBase {
      * @param projectFolder    プロジェクトフォルダ
      * @return    makeコマンドパス
      */
-    public String getMakefileFolder(File projectFolder) {
+    /*public String getMakefileFolder(File projectFolder) {
     	String makefile = getPropertyValue(MAKEFILE_PATH).getValue();
     	String path = null;
     	if (makefile == null) return null;
@@ -443,5 +454,5 @@ public class ProjectProperties extends PropertiesBase {
 			} catch (IOException e) {}
     	}
     	return path;
-    }
+    }*/
 }

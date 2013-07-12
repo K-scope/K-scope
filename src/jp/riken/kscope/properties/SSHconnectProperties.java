@@ -27,7 +27,7 @@ import jp.riken.kscope.utils.ResourceUtils;
  */
 public class SSHconnectProperties extends PropertiesBase {
 	
-	public static String atool_path = "property.sshconnect.atool_path";
+	public static String add_path = "property.sshconnect.add_path";
 	public static String host = "property.sshconnect.host";
 	public static String port = "property.sshconnect.port";
 	public static String user = "property.sshconnect.user";

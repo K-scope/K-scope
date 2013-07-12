@@ -223,7 +223,7 @@
         <operand add="0" div="0" mul="0" name="transpose" sub="1"/>
         
         <!-- SSHconnectプロパティ -->
-        <sshconnect key="property.sshconnect.atool_path" value="/home/sshuser/kscope/bin/" type="system" commandline_option="-ap" />
+        <sshconnect key="property.sshconnect.add_path" value="/home/sshuser/kscope/bin/" type="system" commandline_option="-ap" />
 		<sshconnect key="property.sshconnect.host" value="127.0.0.1" type="system" commandline_option="-h" />
 		<sshconnect key="property.sshconnect.port" value="3022" type="system" commandline_option="-p"/>
 		<sshconnect key="property.sshconnect.user" value="sshuser" type="system" commandline_option="-u"/>
@@ -237,8 +237,8 @@
 		<sshconnect key="property.sshconnect.preprocess_files" value="" type="project" commandline_option="-pf"/>
 		
 	<!--  プロジェクトプロパティ -->">
-	<project key="make-command" name="property.project.make-command.name" value="make" type="file" message="property.project.make-command.message" />
-	<project key="makefile-path" name="property.project.makefile-path.name" value="" type="file" message="property.project.makefile-path.message" />
+	<project key="build-command" name="property.project.build-command.name" value="make" type="file" message="property.project.build-command.message" />
+	<!-- project key="makefile-path" name="property.project.makefile-path.name" value="" type="file" message="property.project.makefile-path.message" /-->
 	<project key="project-title" name="property.project.title.name" value="" type="text" message="property.project.title.message" />
 
         <!--  プロファイラプロパティ -->
