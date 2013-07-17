@@ -93,8 +93,7 @@ public class ProjectRebuildAction extends ActionBase {
 	@Override
 	public void actionPerformed(ActionEvent event) {
 		final String message = Message.getString("mainmenu.project.restertanalysis"); //構造解析再実行
-		Application.status.setMessageMain(message);
-
+		Application.status.setMessageMain(message);		
 		Frame frame = getWindowAncestor(event);
         // 確認メッセージを表示する。
         int result = JOptionPane.showConfirmDialog(
@@ -147,7 +146,7 @@ public class ProjectRebuildAction extends ActionBase {
 		this.updateView = !(modelTree.isSetLanguageTree());
 
 		// makeコマンド実行サービス
-		serviceMake = new ProjectMakeService(command, projectModel.getProjectFolder());
+		serviceMake = new ProjectMakeService(command, projectModel.getProjectFolder(),this.controller.getPropertiesSSH());
 		serviceMake.setOutputStream(out);
         // エラー情報モデルを設定する。
 		serviceMake.setErrorInfoModel(modelError);

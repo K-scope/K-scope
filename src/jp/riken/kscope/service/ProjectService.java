@@ -71,8 +71,7 @@ public class ProjectService extends BaseService {
     private MemorybandProperties propertiesMemory;
     
     private SSHconnectProperties propertiesSSH;
-
-
+    
     /**
      * コンストラクタ
      */
@@ -290,8 +289,8 @@ public class ProjectService extends BaseService {
     public ProjectModel getProjectModel() {
         return projectModel;
     }
-
-    /**
+    
+        /**
      * プロジェクトモデルを設定する
      * @param projectModel 		プロジェクトモデル
      */

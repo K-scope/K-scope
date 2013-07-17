@@ -312,11 +312,11 @@ public class AppController implements PropertyChangeListener {
     public SSHconnectProperties getPropertiesSSH() {
     	return propertiesSSH;
     }
-
+    
     /**
      * プロジェクト情報を取得する
      * @return projectModel		プロジェクト情報
-     */
+     */    
     public ProjectModel getProjectModel() {
         return projectModel;
     }

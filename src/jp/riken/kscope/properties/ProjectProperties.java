@@ -346,7 +346,6 @@ public class ProjectProperties extends PropertiesBase {
     }*/
     
     public void setBuildCommand(String build_command) {
-    	System.out.println("Set build command: " + build_command);
     	setValueByKey(BUILD_COMMAND, build_command);
 	}
 
