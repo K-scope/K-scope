@@ -376,7 +376,7 @@ public class ProjectMakeService  extends BaseService {
         Application.status.setProgressStart(true);
         if (this.build_command == null || this.build_command.length() <= 0) return false;
         String[] exec_commands = null;
-        if (this.sshc_properties != null) {
+        if (this.sshc_properties != null && this.sshc_properties.useSSHconnect()) {
         	// inject SSHconnect call
         	String[] sshc_cl = sshc_properties.getCommandLineOptions();
         	int formal_commands = 3;
@@ -393,7 +393,7 @@ public class ProjectMakeService  extends BaseService {
         // makeコマンド実行
     	int result = -1;
 		try {
-			if (this.sshc_properties != null) result = SwingUtils.processRun(exec_commands, this.workdirectory, this.outStream);
+			if (this.sshc_properties != null && this.sshc_properties.useSSHconnect()) result = SwingUtils.processRun(exec_commands, this.workdirectory, this.outStream);
 			else result = SwingUtils.processRun(this.build_command.split(" "), this.workdirectory, this.outStream);
 			if (result != 0) { // 中間コードの生成に失敗した場合は継続するか確認
 				if (JOptionPane.showConfirmDialog(null,

@@ -111,7 +111,7 @@ public class AppController implements PropertyChangeListener {
     private MemorybandProperties propertiesMemory;
     
     // SSHconnect
-    private SSHconnectProperties propertiesSSH;
+    private SSHconnectProperties propertiesSSH = null;
 
     /** アプリケーションプロパティ */
     private ApplicationProperties propertiesApplication;

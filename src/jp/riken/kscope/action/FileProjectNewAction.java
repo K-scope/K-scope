@@ -226,6 +226,7 @@ public class FileProjectNewAction extends ActionBase {
                 
                 if (useSSHconnect) { // Set command line options for SSHconnect call
                 	sshc_properties = this.controller.getPropertiesSSH();
+                	sshc_properties.setUseSSHconnect(true);  // set to use SSHconncet for building this project
                 	sshc_properties.setBuildCommand(build_command);
                 	sshc_properties.setLocalPath(work.getAbsolutePath());
                 	sshc_properties.setFileFilter(dialog.getFileFilter());
@@ -301,7 +302,8 @@ public class FileProjectNewAction extends ActionBase {
      */
     private void execMake(String build_command, File work, List<File> xmls, ProjectModel model, boolean build, boolean save, boolean make, SSHconnectProperties sshc_properties, boolean mode) {
         final String message = Message.getString("mainmenu.file.newproject"); //プロジェクトの新規作成
-        makeService = new ProjectMakeService(build_command, work, sshc_properties);
+        if (sshc_properties!=null) makeService = new ProjectMakeService(build_command, work, sshc_properties);
+        else makeService = new ProjectMakeService(build_command, work);
     	final ConsolePanel console = this.controller.getMainframe().getPanelAnalysisView().getPanelConsole();
 		console.clearConsole();
 		OutputStream out = console.getOutputStream();
