@@ -18,6 +18,7 @@ import org.w3c.dom.NodeList;
 
 import jp.riken.kscope.Message;
 import jp.riken.kscope.data.SSHconnectData;
+import jp.riken.kscope.service.AppController;
 import jp.riken.kscope.utils.ResourceUtils;
 
 /**
@@ -51,12 +52,14 @@ public class SSHconnectProperties extends PropertiesBase {
     private List<SSHconnectData> listSSH = new ArrayList<SSHconnectData>();
 	
 	private InputStream is=null;
+	private AppController controller; // Used to get other properties (ProjectProperties)
     
    	/**
      * コンストラクタ
      * @throws Exception     プロパティ読込エラー
      */
-    public SSHconnectProperties() throws Exception {
+    public SSHconnectProperties(AppController controller) throws Exception {
+    	this.controller = controller;
         loadProperties();        
     }
     
@@ -265,11 +268,18 @@ public class SSHconnectProperties extends PropertiesBase {
     	List<String> command_options = new ArrayList<String>();
     	for (SSHconnectData sshdata : this.listSSH) {
     		String commandline_option = sshdata.getCommandlineOption();
-    		String value = sshdata.getValue();
+    		String value = null;
+    		if (sshdata.getKey().equalsIgnoreCase(SSHconnectProperties.build_command)) {
+    			// Get build command from Project Properties
+    			value = this.controller.getPropertiesProject().getBuildCommand();   
+    		} else {
+    			// Get other properties from SSHconnect Properties
+    			value = sshdata.getValue();
+    		}
     		if (value.length() > 0) {
     			command_options.add(commandline_option);
     			command_options.add(value);
-    		} 
+    		}
     	}
     	return command_options.toArray(new String[0]);
     }
@@ -348,14 +358,16 @@ public class SSHconnectProperties extends PropertiesBase {
 	}	
 	
 	/**
+	 * USE ProjectProperties.getBuildCommand() instead
+	 * 
 	 * Set build command.
 	 * Assigns command to the "value" filed of a member of listSSH with "key" field 
 	 * equal to this.build_command String.
 	 * @param command
 	 */
-	public void setBuildCommand(String command) {
+	/*public void setBuildCommand(String command) {
 		setValueByKey(SSHconnectProperties.build_command, command);
-	}	
+	}*/	
 
 	/**
 	 * Set local path. Similar to setBuildCommand function.

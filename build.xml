@@ -1,65 +1,71 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-
-<project basedir="." default="jar" name="kscope">
+<!-- WARNING: Eclipse auto-generated file.
+              Any modifications will be overwritten.
+              To include a user specific buildfile here, simply create one in the same
+              directory with the processing instruction <?eclipse.ant.import?>
+              as the first entry and export the buildfile again. --><project basedir="." default="build" name="kscope">
     <property environment="env"/>
+    <property name="JRE_LIB" value="../../../../../Library/Java/JavaVirtualMachines/jdk1.7.0_25.jdk/Contents/Home/jre/lib/rt.jar"/>
+    <property name="ECLIPSE_HOME" value="../../../../../Applications/eclipseJava"/>
     <property name="debuglevel" value="source,lines,vars"/>
-    <property name="target" value="1.7"/>
-    <property name="source" value="1.7"/>
-
-    <property name="src.dir" value="src"/>
-	<property name="bin.dir" value="bin"/>
-    <property name="resources.dir" value="resources"/>
-    <property name="properties.dir" value="properties"/>
-    <property name="javadoc.dir" value="docs"/>
-    <property name="jar.name" value="kscope.jar"/>
-
+    <property name="target" value="1.6"/>
+    <property name="source" value="1.6"/>
+    <path id="Persisted container [/Users/peterbryzgalov/Documents/workspaceJava/kscope/bin for project [kscope]].libraryclasspath"/>
+    <path id="Persisted container [/Users/peterbryzgalov/Documents/workspaceJava/kscope/resources for project [kscope]].libraryclasspath"/>
     <path id="kscope.classpath">
         <pathelement location="bin"/>
-        <pathelement location="resources"/>
+        <pathelement location="${JRE_LIB}"/>
+        <path refid="Persisted container [/Users/peterbryzgalov/Documents/workspaceJava/kscope/bin for project [kscope]].libraryclasspath"/>
+        <path refid="Persisted container [/Users/peterbryzgalov/Documents/workspaceJava/kscope/resources for project [kscope]].libraryclasspath"/>
     </path>
-	
-    <target name="clean">
-        <delete dir="${bin.dir}"/>
-    	<delete file="${jar.name}"/>
-    </target>
-	
-    <target name="cleanall" depends="clean" />
-	
+    <path id="run.Kscope run.classpath">
+        <pathelement location="${JRE_LIB}"/>
+        <path refid="kscope.classpath"/>
+    </path>
+    <path id="run.Kscope run.bootclasspath"/>
     <target name="init">
-        <mkdir dir="${bin.dir}"/>
-        <copy includeemptydirs="false" todir="${bin.dir}">
-            <fileset dir="${src.dir}">
+        <mkdir dir="bin"/>
+        <copy includeemptydirs="false" todir="bin">
+            <fileset dir="src">
+                <exclude name="**/*.ucls"/>
+                <exclude name="**/*.useq"/>
                 <exclude name="**/*.java"/>
             </fileset>
         </copy>
     </target>
-		
-    <target name="build" depends="init">
+    <target name="clean">
+        <delete dir="bin"/>
+    </target>
+    <target depends="clean" name="cleanall"/>
+    <target depends="build-subprojects,build-project" name="build"/>
+    <target name="build-subprojects"/>
+    <target depends="init" name="build-project">
         <echo message="${ant.project.name}: ${ant.file}"/>
-        <javac debug="true" debuglevel="${debuglevel}" destdir="${bin.dir}" includeantruntime="false" source="${source}" target="${target}" encoding="UTF-8">
-            <src path="${src.dir}"/>
+        <javac debug="true" debuglevel="${debuglevel}" destdir="bin" includeantruntime="false" source="${source}" target="${target}">
+            <src path="src"/>
             <classpath refid="kscope.classpath"/>
         </javac>
     </target>
-	
-    <target name="jar" depends="build">
-    	<!--<jar jarfile="${jar.name}" basedir="."></jar>-->
-        <echo message="${ant.project.name}: ${jar.name}"/>
-    	<jar destfile="${jar.name}" filesetmanifest="mergewithoutmain">
-            <manifest>
-                <attribute name="Main-Class" value="jp.riken.kscope.Go"/>
-                <attribute name="Class-Path" value="."/>
-            </manifest>
-            <fileset dir="${bin.dir}"/>
-            <fileset dir="${resources.dir}"/>    		
-    	</jar>
+    <target description="Build all projects which reference this project. Useful to propagate changes." name="build-refprojects"/>
+    <target description="copy Eclipse compiler jars to ant lib directory" name="init-eclipse-compiler">
+        <copy todir="${ant.library.dir}">
+            <fileset dir="${ECLIPSE_HOME}/plugins" includes="org.eclipse.jdt.core_*.jar"/>
+        </copy>
+        <unzip dest="${ant.library.dir}">
+            <patternset includes="jdtCompilerAdapter.jar"/>
+            <fileset dir="${ECLIPSE_HOME}/plugins" includes="org.eclipse.jdt.core_*.jar"/>
+        </unzip>
     </target>
-
-    <target name="run">
+    <target description="compile project with Eclipse compiler" name="build-eclipse-compiler">
+        <property name="build.compiler" value="org.eclipse.jdt.core.JDTCompilerAdapter"/>
+        <antcall target="build"/>
+    </target>
+    <target name="Kscope run">
         <java classname="jp.riken.kscope.Go" failonerror="true" fork="yes">
-            <jvmarg line="-Duser.language=en"/>
-            <classpath refid="kscope.classpath"/>
+            <classpath refid="run.Kscope run.classpath"/>
+            <bootclasspath>
+                <path refid="run.Kscope run.bootclasspath"/>
+            </bootclasspath>
         </java>
     </target>
-	
 </project>

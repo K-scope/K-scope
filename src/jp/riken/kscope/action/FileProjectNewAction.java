@@ -227,7 +227,7 @@ public class FileProjectNewAction extends ActionBase {
                 if (useSSHconnect) { // Set command line options for SSHconnect call
                 	sshc_properties = this.controller.getPropertiesSSH();
                 	sshc_properties.setUseSSHconnect(true);  // set to use SSHconncet for building this project
-                	sshc_properties.setBuildCommand(build_command);
+                	//sshc_properties.setBuildCommand(build_command);
                 	sshc_properties.setLocalPath(work.getAbsolutePath());
                 	sshc_properties.setFileFilter(dialog.getFileFilter());
                 	sshc_properties.setPreprocessFiles(dialog.getPreprocessFiles());

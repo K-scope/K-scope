@@ -699,6 +699,9 @@ public class AppController implements PropertyChangeListener {
     public void clearProject() throws Exception {
         // プロパティ設定の生成
     	boolean clear = false;
+    	
+    	//　TODO Project Open の時にclearはfalseに設定されるので、defaultプロパティは消去されない。
+    	// Default（K-scopeは起動された時にdefaultパラメターを読み込む）でproject_folderはnullであるため、isValidProjectはfalseになる。
     	if (this.projectModel != null && this.projectModel.isVaildProject()) {
     		clear = true;
     	}
@@ -754,8 +757,8 @@ public class AppController implements PropertyChangeListener {
         if (this.propertiesApplication == null) {
         	this.propertiesApplication = new ApplicationProperties();
         }
-        if (this.propertiesSSH == null) {
-        	this.propertiesSSH = new SSHconnectProperties();
+        if (this.propertiesSSH == null || this.propertiesSSH.isEmpty()) {
+        	this.propertiesSSH = new SSHconnectProperties(this);
         }
         // メニュー表示選択をコピーする
         this.mainframe.getMenuMain().clearSelectedMenu();
