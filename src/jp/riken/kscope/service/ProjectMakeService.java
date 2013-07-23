@@ -50,6 +50,7 @@ import jp.riken.kscope.language.utils.LanguageVisitor;
 import jp.riken.kscope.language.utils.ValidateLanguage;
 import jp.riken.kscope.model.ProjectModel;
 import jp.riken.kscope.model.ReplacementResultTableModel;
+import jp.riken.kscope.properties.ProjectProperties;
 import jp.riken.kscope.properties.SSHconnectProperties;
 import jp.riken.kscope.utils.Logger;
 import jp.riken.kscope.utils.SwingUtils;
@@ -62,8 +63,6 @@ import jp.riken.kscope.xcodeml.XcodeMLParserStax;
  * @author riken
  */
 public class ProjectMakeService  extends BaseService {
-	/** makeコマンド */
-	private String build_command;
 	/** makeコマンド実行フォルダ */
 	private File workdirectory;
 	/** makeコマンド出力ストリーム */
@@ -78,37 +77,18 @@ public class ProjectMakeService  extends BaseService {
     private List<File> listSearchPath;
     /** スレッド実行フラグ true:実行継続/false:中止. */
     private boolean m_running = true;
-    /** SSHconnect用command line options　*/
-    private SSHconnectProperties sshc_properties = null;
-
-    /**
-     * コンストラクタ.
-     * @param commands            Makeコマンド
-     */
-    public ProjectMakeService(String build_command) {
-    	this.build_command = build_command;
-    }
-
-    /**
-     * コンストラクタ.
-     * @param commands            Makeコマンド
-     * @param workdirectory            Makeコマンド実行フォルダ
-     */
-    public ProjectMakeService(String build_command, File workdirectory) {
-    	this.build_command = build_command;
-        this.workdirectory = workdirectory;
-    }
     
+    private AppController controller;
+
     /**
      * コンストラクタ.
      * @param build_command            Makeコマンド
      * @param work            Makeコマンド実行フォルダ
-     * @param sshc_properties	SSHconnectを使用するか否か
+     * @param controller	AddController
      */
-    public ProjectMakeService(String build_command, File work, SSHconnectProperties sshc_properties) {
-    	this.build_command = build_command;
-        this.workdirectory = work;
-        this.sshc_properties = sshc_properties;
+    public ProjectMakeService(File work, AppController controller) {
+    	this.workdirectory = work;
+        this.controller = controller;
     }
 
     /**
@@ -374,9 +354,13 @@ public class ProjectMakeService  extends BaseService {
 	public boolean executeMakeCommand() throws Exception {
 		// ステータスメッセージ
         Application.status.setProgressStart(true);
-        if (this.build_command == null || this.build_command.length() <= 0) return false;
+        ProjectProperties pproperties = this.controller.getPropertiesProject();
+        String build_command = pproperties.getBuildCommand(); 
+        if (build_command == null || build_command.length() <= 0) return false;
         String[] exec_commands = null;
-        if (this.sshc_properties != null && this.sshc_properties.useSSHconnect()) {
+        SSHconnectProperties sshc_properties = this.controller.getPropertiesSSH();
+        
+        if (sshc_properties != null && pproperties.useSSHconnect()) {
         	// inject SSHconnect call
         	String[] sshc_cl = sshc_properties.getCommandLineOptions();
         	int formal_commands = 3;
@@ -393,8 +377,8 @@ public class ProjectMakeService  extends BaseService {
         // makeコマンド実行
     	int result = -1;
 		try {
-			if (this.sshc_properties != null && this.sshc_properties.useSSHconnect()) result = SwingUtils.processRun(exec_commands, this.workdirectory, this.outStream);
-			else result = SwingUtils.processRun(this.build_command.split(" "), this.workdirectory, this.outStream);
+			if (sshc_properties != null && pproperties.useSSHconnect()) result = SwingUtils.processRun(exec_commands, this.workdirectory, this.outStream);
+			else result = SwingUtils.processRun(build_command.split(" "), this.workdirectory, this.outStream);
 			if (result != 0) { // 中間コードの生成に失敗した場合は継続するか確認
 				if (JOptionPane.showConfirmDialog(null,
 						Message.getString("projectmakeservice.executemakecommand.continue.message"),

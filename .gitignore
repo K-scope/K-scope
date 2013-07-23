@@ -21,3 +21,5 @@
 !/README.txt
 !/sshconnect_conf.txt
 
+## ignore
+.DS*

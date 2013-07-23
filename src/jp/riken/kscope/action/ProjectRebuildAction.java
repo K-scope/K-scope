@@ -18,7 +18,6 @@ package jp.riken.kscope.action;
 
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
-import java.io.File;
 import java.io.OutputStream;
 import java.util.concurrent.Callable;
 
@@ -83,7 +82,8 @@ public class ProjectRebuildAction extends ActionBase {
 		if (StringUtils.isNullOrEmpty(value.getValue())) return false;
 
         // スレッドタスクの実行状態をチェックする
-        return this.controller.isThreadTaskDone();
+        //return this.controller.isThreadTaskDone();
+		return properties.canRebuild();
 	}
 
     /**
@@ -126,11 +126,7 @@ public class ProjectRebuildAction extends ActionBase {
 
         // プロジェクトモデル
         ProjectModel projectModel = this.controller.getProjectModel();
-		// makeコマンド
-		ProjectProperties project =  this.controller.getPropertiesProject();
-		String command = project.getBuildCommand();
-		//String path = project.getMakefileFolder(projectModel.getProjectFolder());
-
+		
 		// コンソール
 		this.controller.setSelectedAnalysisPanel(ANALYSIS_PANEL.CONSOLE);
 		ConsolePanel console = this.controller.getMainframe().getPanelAnalysisView().getPanelConsole();
@@ -146,7 +142,7 @@ public class ProjectRebuildAction extends ActionBase {
 		this.updateView = !(modelTree.isSetLanguageTree());
 
 		// makeコマンド実行サービス
-		serviceMake = new ProjectMakeService(command, projectModel.getProjectFolder(),this.controller.getPropertiesSSH());
+		serviceMake = new ProjectMakeService(projectModel.getProjectFolder(),this.controller);
 		serviceMake.setOutputStream(out);
         // エラー情報モデルを設定する。
 		serviceMake.setErrorInfoModel(modelError);

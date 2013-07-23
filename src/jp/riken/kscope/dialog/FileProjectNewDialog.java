@@ -64,6 +64,7 @@ import jp.riken.kscope.Message;
 import jp.riken.kscope.common.Constant;
 import jp.riken.kscope.data.FILE_TYPE;
 import jp.riken.kscope.properties.KscopeProperties;
+import jp.riken.kscope.properties.ProjectProperties;
 import jp.riken.kscope.utils.FileUtils;
 import jp.riken.kscope.utils.ResourceUtils;
 import jp.riken.kscope.utils.StringUtils;
@@ -117,6 +118,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
     private JButton addprerocessfile_button;
     /** Panel holds file_filter and process_files fields */
     private JPanel sshc_settings_panel;
+    private ProjectProperties pproperties;
     
     
     /** SSHconnectを利用する */
@@ -169,8 +171,9 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
      * @param modal		true=モーダルダイアログを表示する
      * @wbp.parser.constructor
      */
-    public FileProjectNewDialog(Frame owner, boolean modal) {
+    public FileProjectNewDialog(Frame owner, boolean modal, ProjectProperties pproperties) {
         super(owner, modal);
+        this.pproperties = pproperties;
         initGUI();
     }
 
@@ -311,14 +314,16 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
             // SSHconnectの使用切り替え
             checkUseSSHconnect = new JCheckBox(Message.getString("fileprojectnewdialog.kindpanel.checkbox.useSSHconnect"));
             checkUseSSHconnect.setToolTipText(Message.getString("fileprojectnewdialog.kindpanel.checkbox.useSSHconnect.tooltip"));
-            checkUseSSHconnect.setEnabled(false);
-            checkUseSSHconnect.setSelected(true);
+            checkUseSSHconnect.setEnabled(isFullProject());
+            checkUseSSHconnect.setSelected(this.pproperties.getHiddenPropertyValue(ProjectProperties.USE_SSHCONNECT).equalsIgnoreCase("true"));
             
             // XML/Fortran切り替えラジオボタン　デフォルト：中間コード+既存　: Generate intermediate-code by Makefile and sou...
             radioGenXML = new JRadioButton(Message.getString("fileprojectnewdialog.kindpanel.radiobutton.genxml")){
 
 				@Override
 				protected void fireStateChanged() {
+					if (this.isSelected()) pproperties.setHiddenPropertyValue(ProjectProperties.GENERATE_XML, "true");
+					else pproperties.setHiddenPropertyValue(ProjectProperties.GENERATE_XML, "false");
 					checkUseSSHconnect.setEnabled(this.isSelected());
 					if (labelStatus[2] != null) {
 						labelStatus[2].setVisible(isGenerateIntermediateCode());
@@ -345,6 +350,8 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
 
 				@Override
 				protected void fireStateChanged() {
+					if (this.isSelected()) pproperties.setHiddenPropertyValue(ProjectProperties.FULL_PROJECT, "true");
+					else pproperties.setHiddenPropertyValue(ProjectProperties.FULL_PROJECT, "false");
 					radioGenXML.setEnabled(this.isSelected());
 					radioNotGenXML.setEnabled(this.isSelected());					
 					if (labelStatus[3] != null) {
@@ -366,6 +373,10 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
 				}
 
             }; //フルモード
+            
+            radioGenXML.setSelected(genXML());
+            radioNotGenXML.setSelected(!genXML());
+            
             radioXml.setToolTipText(Message.getString("fileprojectnewdialog.kindpanel.radiobutton.fullmode.tooltip")); //K-scopeの全機能を利用可能なモード
             radioFortran = new JRadioButton(Message.getString("fileprojectnewdialog.kindpanel.radiobutton.simplemode"), false); //簡易モード : Simple Mode
             radioFortran.setToolTipText(Message.getString("fileprojectnewdialog.kindpanel.radiobutton.simplemode.tooltip")); //プロファイラ連携機能のみを利用可能なモード
@@ -379,8 +390,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
             groupType.add(radioFortran);
             ButtonGroup groupGenMake = new ButtonGroup();
             groupGenMake.add(radioGenXML);
-            groupGenMake.add(radioNotGenXML);
-            radioNotGenXML.setSelected(true);
+            groupGenMake.add(radioNotGenXML);            
             panelSelect.add(radioXml, new GridBagConstraints(0, 0, 3, 1, 1.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
             panelSelect.add(radioNotGenXML, new GridBagConstraints(1, 1, 2, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
             panelSelect.add(radioGenXML, new GridBagConstraints(1, 2, 2, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
@@ -389,7 +399,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
             panelSelect.add(new JLabel(Message.getString("fileprojectnewdialog.kindpanel.label.fortranonly")), //フォートランソースコードのみを読み込む : Read only a Fortran source code
             		new GridBagConstraints(1, 5, 2, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
 
-            panelContent.add(panelSelect, new GridBagConstraints(1, 2, 2, 5, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 7, 0, 0), 0, 0));
+            panelContent.add(panelSelect, new GridBagConstraints(1, 2, 2, 5, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 7, 0, 0), 0, 0));           
         }
      // 説明文
         {
@@ -405,6 +415,22 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
     }
 
     /**
+     * True if need to build the project (locally or remotely) to generate intermediate code.
+     * @return
+     */
+    private boolean genXML() {
+		return this.pproperties.getHiddenPropertyValue(ProjectProperties.GENERATE_XML).equalsIgnoreCase("true");
+	}
+
+	/**
+     * True if project is full – i.e. includes intermediate code.
+     * @return 
+     */
+    private boolean isFullProject() {
+		return this.pproperties.getHiddenPropertyValue(ProjectProperties.FULL_PROJECT).equalsIgnoreCase("true");
+	}
+
+	/**
      * プロジェクト基本情報画面を作成する.
      * @return    プロジェクト基本情報画面
      */

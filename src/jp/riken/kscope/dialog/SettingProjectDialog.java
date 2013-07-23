@@ -750,7 +750,8 @@ public class SettingProjectDialog extends javax.swing.JDialog implements ActionL
                 int row, int column) {
 
             Object cellValue = value;
-            cellValue = value.toString();
+            if (value != null) cellValue = value.toString();
+            else cellValue = "";
 
             super.getTableCellRendererComponent(table, cellValue, isSelected, hasFocus, row, column);
 

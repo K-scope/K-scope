@@ -18,10 +18,8 @@ package jp.riken.kscope.properties;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -32,8 +30,8 @@ import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathFactory;
 
 import jp.riken.kscope.Message;
+import jp.riken.kscope.data.BasicPropertyList;
 import jp.riken.kscope.data.ProjectPropertyValue;
-import jp.riken.kscope.utils.FileUtils;
 import jp.riken.kscope.utils.ResourceUtils;
 import jp.riken.kscope.utils.StringUtils;
 
@@ -51,21 +49,24 @@ public class ProjectProperties extends PropertiesBase {
     private static final long serialVersionUID = 1L;
 
     // プロパティキー
-    /** makeコマンドプロパティキー */
-    //public static final String MAKE_COMMAND = "make-command";
     /** Build command */
     public static final String BUILD_COMMAND = "build-command";
     
-    /** Makefileパスプロパティキー */
-    //public static final String MAKEFILE_PATH = "makefile-path";
     /** プロジェクトタイトルプロパティキー */
     public static final String PRJ_TITLE = "project-title";
     /** New properties for SSHconnect */
     public static final String FILE_FILTER = "ssh-file_filter";
     public static final String PROCESS_FILES = "ssh-process_files";
+    public static final String USE_SSHCONNECT = "use-sshconnect";
+    
+    public static final String CAN_REBUILD = "rebuild_ready";
+    public static final String GENERATE_XML = "genXML";
+    public static final String FULL_PROJECT = "full_project";
 
     /** プロパティ設定リスト */
     private List<ProjectPropertyValue> listProperty = new ArrayList<ProjectPropertyValue>();
+    /** Project hidden properties */
+    private BasicPropertyList listHiddenProperty = null;
 
     /**
      * コンストラクタ
@@ -84,8 +85,10 @@ public class ProjectProperties extends PropertiesBase {
 
         // リソースファイルの読込
         is = ResourceUtils.getPropertiesFile(KscopeProperties.PROPERTIES_FILE);
-
         loadProperties(is);
+        
+        is = ResourceUtils.getPropertiesFile(KscopeProperties.PROPERTIES_FILE);
+        loadPropertiesOther(is);
     }
 
     /**
@@ -95,16 +98,17 @@ public class ProjectProperties extends PropertiesBase {
      * @throws Exception プロパティ読込エラー
      */
     public void loadProperties(File propertiesFile) throws Exception {
-
         if (!propertiesFile.exists()) {
             throw (new Exception(Message.getString("propertiesbase.exeption.notexist"))); //プロパティファイルが存在しません。
         }
 
         // リソースファイルの読込
         InputStream stream = new FileInputStream(propertiesFile);
-
         // ソース設定プロパティを設定ファイルから読み込む。
         loadProperties(stream);
+        
+        stream = new FileInputStream(propertiesFile);
+        loadPropertiesOther(stream);
     }
 
     /**
@@ -113,6 +117,7 @@ public class ProjectProperties extends PropertiesBase {
      * @throws Exception     プロパティ読込エラー
      */
     public void loadProperties(InputStream stream ) throws Exception {
+    	
         // XMLファイルのパース
     	List<ProjectPropertyValue> list = null;
     	list = parseProjectProperty(stream, "//project");
@@ -120,8 +125,19 @@ public class ProjectProperties extends PropertiesBase {
     		listProperty = list;
     	}
     }
-
+    
     /**
+     * プロジェクト設定プロパティを設定ファイルから読み込む。
+     * @param   stream      設定ファイルストリーム
+     * @throws Exception     プロパティ読込エラー
+     */
+    public void loadPropertiesOther(InputStream stream ) throws Exception {
+    	// Read project hidden properties
+    	listHiddenProperty = new BasicPropertyList(stream, "//project_other");
+    }
+    
+    
+     /**
      * キーワードを取得する
      * @param stream		XML入力ストリーム
      * @param path		キーワードXPATH
@@ -245,6 +261,14 @@ public class ProjectProperties extends PropertiesBase {
         }
         return null;
     }
+    
+    public String getHiddenPropertyValue(String key) {
+    	return listHiddenProperty.getPropertyValue(key);
+    }
+    
+    public void setHiddenPropertyValue(String key, String value) {
+    	listHiddenProperty.setProperty(key, value);   	
+    }
 
     /**
      * プロパティをDOMノードに出力する
@@ -317,6 +341,33 @@ public class ProjectProperties extends PropertiesBase {
 
         	node.appendChild(elem);
         }
+     // コメントを追加
+        {
+            org.w3c.dom.Comment comment = document.createComment("Project hidden properties"); // Project hidden properties
+            node.appendChild(comment);
+        }
+
+        for (String key : this.listHiddenProperty.getKeys()) {
+        	org.w3c.dom.Element elem = document.createElement("project_other");
+
+        	// key
+        	{
+        		org.w3c.dom.Attr attr;
+        		attr = document.createAttribute("key");
+        		attr.setNodeValue(key);
+        		elem.setAttributeNode(attr);
+        	}
+        	// value
+        	{
+        		org.w3c.dom.Attr attr;
+        		attr = document.createAttribute("value");
+        		String attr_value = this.listHiddenProperty.getPropertyValue(key);        		
+        		attr_value = StringUtils.escapeFilePath(attr_value);
+    			attr.setNodeValue(attr_value);
+        		elem.setAttributeNode(attr);
+        	}
+        	node.appendChild(elem);
+        }
     }
 
 
@@ -379,41 +430,6 @@ public class ProjectProperties extends PropertiesBase {
 	}
 
     /**
-     * makeコマンドリストを取得します.
-     * @return    makeコマンドリスト
-     */
-    /*public String[] getMakeCommandList() {
-    	String command = getPropertyValue(MAKE_COMMAND).getValue();
-    	if (command == null) return null;
-    	String[] commands = StringUtils.tokenizerDelimit(command, " ");
-    	String makefile = getPropertyValue(MAKEFILE_PATH).getValue();
-    	if (makefile == null) {
-    		return commands;
-    	}
-    	String name = new File(makefile).getName();
-    	List<String> list = new ArrayList<String>();
-    	list.addAll(Arrays.asList(commands));
-    	list.add("-f");
-    	list.add(name);
-    	return list.toArray(new String[0]);
-    }*/
-
-    /**
-     * makeコマンドを取得します.
-     * @return    makeコマンド
-     */
-   /* public String getMakeCommand() {
-    	String[] commands = getMakeCommandList();
-    	if (commands == null) return null;
-    	String command = "";
-    	for (int i=0; i<commands.length; i++) {
-    		if (!command.isEmpty()) command += " ";
-    		command += commands[i];
-    	}
-    	return command;
-    }*/
-    
-    /**
      * Get BUILD COMMAND
      */
     public String getBuildCommand() {
@@ -422,36 +438,29 @@ public class ProjectProperties extends PropertiesBase {
     	return bcs;
     }
 
-    /**
-     * makeコマンドパスを取得します.
-     * @return    makeコマンドパス
+    /** 
+     * True if project Rebuild action can be performed.
+     * Depends on "rebuild_ready" property from properties.xml
+     * @return
      */
-    /*public String getMakefileFolder() {
-    	String makefile = getPropertyValue(MAKEFILE_PATH).getValue();
-    	if (makefile == null) return null;
-    	String path = new File(makefile).getParent();
-    	return path;
-    }*/
+	public boolean canRebuild() {
+		String s = this.listHiddenProperty.getPropertyValue(CAN_REBUILD);
+		return (s.equalsIgnoreCase("true"));
+	}
+	
+	public void setRebuildFlag(boolean flag) {
+		String value = "";
+		if (flag) value = "true";
+		else value = "false";
+		this.listHiddenProperty.setProperty(CAN_REBUILD,value);
+	}
 
-    /**
-     * makeコマンドパスを取得します.
-     * @param projectFolder    プロジェクトフォルダ
-     * @return    makeコマンドパス
-     */
-    /*public String getMakefileFolder(File projectFolder) {
-    	String makefile = getPropertyValue(MAKEFILE_PATH).getValue();
-    	String path = null;
-    	if (makefile == null) return null;
-    	if (new File(makefile).isAbsolute()) {
-        	path = new File(makefile).getParent();
-        	return path;
-    	}
-    	else {
-    		try {
-    			File file = new File(projectFolder.getAbsolutePath() + File.separator + makefile);
-            	path = file.getCanonicalFile().getParent();
-			} catch (IOException e) {}
-    	}
-    	return path;
-    }*/
+	/**
+	 * Return true if project uses SSHconnect for building Fortran project.
+	 * Returns boolean "true" if property use-sshconnect is set to String "true". 
+	 * @return
+	 */
+	public boolean useSSHconnect() {
+		return getPropertyValue(USE_SSHCONNECT).getValue().equalsIgnoreCase("true");
+	}
 }

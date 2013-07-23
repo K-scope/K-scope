@@ -49,8 +49,6 @@ import jp.riken.kscope.service.FutureService;
 import jp.riken.kscope.service.LanguageService;
 import jp.riken.kscope.service.ProjectMakeService;
 import jp.riken.kscope.service.ProjectService;
-import jp.riken.kscope.utils.FileUtils;
-import jp.riken.kscope.utils.StringUtils;
 import jp.riken.kscope.xcodeml.XcodeMLParserStax;
 
 /**
@@ -103,9 +101,10 @@ public class FileProjectNewAction extends ActionBase {
 
         // 最終アクセスフォルダ
         String currentFolder = this.controller.getLastAccessFolder();
-
+        // Read default value of use_sshconnect
+        ProjectProperties pproperties = this.controller.getPropertiesProject();
         // プロジェクトの新規作成ダイアログを表示する。
-        FileProjectNewDialog dialog = new FileProjectNewDialog(frame, true);
+        FileProjectNewDialog dialog = new FileProjectNewDialog(frame, true, pproperties);
         dialog.setLastAccessFolder(currentFolder);
         // 除外パス名を設定する
         dialog.addExcludeName(KscopeProperties.SETTINGS_FOLDER);
@@ -131,7 +130,9 @@ public class FileProjectNewAction extends ActionBase {
         // 中間コードの生成を行うか否か
         boolean genCode = dialog.isGenerateIntermediateCode();
         
-        boolean useSSHconnect = dialog.useSSHconnect();
+        boolean use_sshconnect = dialog.useSSHconnect();
+        // Set Project property
+        this.controller.getPropertiesProject().getPropertyValue(ProjectProperties.USE_SSHCONNECT).setValue(use_sshconnect ? "true" : "false");
         
         // 選択ソース
         boolean selectedXml = dialog.isSelectedXml();
@@ -224,7 +225,7 @@ public class FileProjectNewAction extends ActionBase {
                 this.controller.getPropertiesProject().setBuildCommand(build_command);
                 System.out.println("BUILD COMMAND: "+ this.controller.getPropertiesProject().getBuildCommand());
                 
-                if (useSSHconnect) { // Set command line options for SSHconnect call
+                if (use_sshconnect) { // Set command line options for SSHconnect call
                 	sshc_properties = this.controller.getPropertiesSSH();
                 	sshc_properties.setUseSSHconnect(true);  // set to use SSHconncet for building this project
                 	//sshc_properties.setBuildCommand(build_command);
@@ -252,8 +253,11 @@ public class FileProjectNewAction extends ActionBase {
             this.controller.getPropertiesProject().setProjectTitle(dialog.getPeojectTitle());
 
             /** 新規作成実行 */
-            execMake(build_command, work, dialog.getProjectXmlList(), project, dialog.isBuild(), dialog.isSave(), genCode, sshc_properties, (project.getFileType() == FILE_TYPE.XCODEML_XML));
+            execMake(build_command, work, dialog.getProjectXmlList(), project, dialog.isBuild(), dialog.isSave(), genCode, (project.getFileType() == FILE_TYPE.XCODEML_XML));
 
+            // Flag that project can be rebuilt
+            if (genCode) this.controller.getPropertiesProject().setRebuildFlag(true);
+            
             // ソースビューにプロジェクトフォルダを設定する
             this.controller.getMainframe().getPanelSourceView().setProjectFolder(project.getProjectFolder());
             if (dialog.isBuild()) {
@@ -289,7 +293,8 @@ public class FileProjectNewAction extends ActionBase {
 
     }
 
-    /**
+   
+	/**
      * プロジェクトの新規作成を実行する
      * @param build_command
      * @param work
@@ -300,11 +305,10 @@ public class FileProjectNewAction extends ActionBase {
      * @param make
      * @param mode
      */
-    private void execMake(String build_command, File work, List<File> xmls, ProjectModel model, boolean build, boolean save, boolean make, SSHconnectProperties sshc_properties, boolean mode) {
+    private void execMake(String build_command, File work, List<File> xmls, ProjectModel model, boolean build, boolean save, boolean make, boolean mode) {
         final String message = Message.getString("mainmenu.file.newproject"); //プロジェクトの新規作成
-        if (sshc_properties!=null) makeService = new ProjectMakeService(build_command, work, sshc_properties);
-        else makeService = new ProjectMakeService(build_command, work);
-    	final ConsolePanel console = this.controller.getMainframe().getPanelAnalysisView().getPanelConsole();
+        makeService = new ProjectMakeService(work, this.controller);
+        final ConsolePanel console = this.controller.getMainframe().getPanelAnalysisView().getPanelConsole();
 		console.clearConsole();
 		OutputStream out = console.getOutputStream();
     	makeService.setOutputStream(out);

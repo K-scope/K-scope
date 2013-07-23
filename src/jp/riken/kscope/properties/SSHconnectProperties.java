@@ -28,18 +28,18 @@ import jp.riken.kscope.utils.ResourceUtils;
  */
 public class SSHconnectProperties extends PropertiesBase {
 	
-	public static String add_path = "property.sshconnect.add_path";
-	public static String host = "property.sshconnect.host";
-	public static String port = "property.sshconnect.port";
-	public static String user = "property.sshconnect.user";
-	public static String password = "property.sshconnect.build_command";
-	public static String key = "property.sshconnect.key";
-	public static String passphrase = "property.sshconnect.passphrase";
-	public static String remote_path = "property.sshconnect.remote_path";
-	public static String build_command = "property.sshconnect.build_command";
-	public static String local_path = "property.sshconnect.local_path";
-	public static String file_filter = "property.sshconnect.file_filter";
-	public static String preprocess_files = "property.sshconnect.preprocess_files";
+	public static String add_path = "add_path";
+	public static String host = "host";
+	public static String port = "port";
+	public static String user = "user";
+	public static String password = "build_command";
+	public static String key = "key";
+	public static String passphrase = "passphrase";
+	public static String remote_path = "remote_path";
+	public static String build_command = "build_command";
+	public static String local_path = "local_path";
+	public static String file_filter = "file_filter";
+	public static String preprocess_files = "preprocess_files";
 	
 	private boolean useSSHconnect = false; // Use SSHconnect for making project or not
 	
@@ -271,15 +271,22 @@ public class SSHconnectProperties extends PropertiesBase {
     		String value = null;
     		if (sshdata.getKey().equalsIgnoreCase(SSHconnectProperties.build_command)) {
     			// Get build command from Project Properties
-    			value = this.controller.getPropertiesProject().getBuildCommand();   
+    			ProjectProperties pp = this.controller.getPropertiesProject();
+    			value = pp.getBuildCommand();   
     		} else {
     			// Get other properties from SSHconnect Properties
     			value = sshdata.getValue();
     		}
-    		if (value.length() > 0) {
-    			command_options.add(commandline_option);
-    			command_options.add(value);
-    		}
+    		try {
+    			if (value.length() > 0) {
+    				command_options.add(commandline_option);
+    				command_options.add(value);
+    			} else {
+    				System.err.println("SSHconnect option "+sshdata.getKey()+" is empty.");
+    			}
+    		} catch (NullPointerException e) {
+    			System.err.println("SSHconnect option "+sshdata.getKey()+" is null.");
+    		} 
     	}
     	return command_options.toArray(new String[0]);
     }
@@ -292,15 +299,6 @@ public class SSHconnectProperties extends PropertiesBase {
     	this.useSSHconnect = use;
     }
     
-    
-    /**
-     * Check if need to use SSHconnect for making Fortran project
-     * @return
-     */
-	public boolean useSSHconnect() {
-		return this.useSSHconnect;
-	}
-
 	public int count() {
 		if (listSSH == null || listSSH.size() <= 0) {return 0;}
         return listSSH.size();

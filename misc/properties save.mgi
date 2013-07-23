@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ClassDiagram>
+    <CommunicationClass
+        name="jp.riken.kscope.dialog.SettingMemoryDialog" x="289" y="291">
+        <Association
+            destinationClassName="jp.riken.kscope.properties.MemorybandProperties"
+            endpointName="properities" kind="Simple"/>
+        <Communication destinationClassName="jp.riken.kscope.properties.MemorybandProperties">
+            <Point x="395" y="516"/>
+        </Communication>
+    </CommunicationClass>
+    <CommunicationClass
+        name="jp.riken.kscope.service.ProjectMakeService" x="-43" y="878">
+        <Association
+            destinationClassName="jp.riken.kscope.properties.SSHconnectProperties"
+            endpointName="sshc_properties" kind="Simple"/>
+        <Association
+            destinationClassName="jp.riken.kscope.model.ProjectModel"
+            endpointName="projectModel" kind="Simple"/>
+        <Communication destinationClassName="jp.riken.kscope.model.ProjectModel">
+            <Point x="1196" y="1200"/>
+        </Communication>
+        <Communication destinationClassName="jp.riken.kscope.service.ProjectService"/>
+        <Communication destinationClassName="jp.riken.kscope.properties.SSHconnectProperties">
+            <Point x="26" y="508"/>
+        </Communication>
+    </CommunicationClass>
+    <CommunicationClass
+        name="jp.riken.kscope.action.FileProjectNewAction" x="1338" y="78">
+        <Association
+            destinationClassName="jp.riken.kscope.service.ProjectMakeService"
+            endpointName="makeService" kind="Simple"/>
+        <Association
+            destinationClassName="jp.riken.kscope.service.ProjectService"
+            endpointName="projectService" kind="Simple"/>
+        <Communication destinationClassName="jp.riken.kscope.model.ProjectModel">
+            <Point x="1408" y="1012"/>
+        </Communication>
+        <Communication destinationClassName="jp.riken.kscope.properties.ProjectProperties"/>
+        <Communication destinationClassName="jp.riken.kscope.service.ProjectMakeService">
+            <Point x="1463" y="142"/>
+            <Point x="1484" y="1037"/>
+            <Point x="1201" y="1322"/>
+            <Point x="24" y="1079"/>
+        </Communication>
+        <Communication destinationClassName="jp.riken.kscope.service.AppController"/>
+        <Communication destinationClassName="jp.riken.kscope.service.ProjectService">
+            <Point x="1039" y="871"/>
+            <Point x="836" y="879"/>
+        </Communication>
+        <Communication destinationClassName="jp.riken.kscope.properties.SSHconnectProperties">
+            <Point x="1360" y="179"/>
+            <Point x="1105" y="701"/>
+            <Point x="292" y="698"/>
+            <Point x="134" y="579"/>
+        </Communication>
+    </CommunicationClass>
+    <CommunicationClass name="jp.riken.kscope.service.ProjectService"
+        x="709" y="888">
+        <Association
+            destinationClassName="jp.riken.kscope.properties.ProjectProperties"
+            endpointName="propertiesProject" kind="Simple"/>
+        <Association
+            destinationClassName="jp.riken.kscope.properties.SSHconnectProperties"
+            endpointName="propertiesSSH" kind="Simple"/>
+        <Association
+            destinationClassName="jp.riken.kscope.model.ProjectModel"
+            endpointName="projectModel" kind="Simple"/>
+        <Association
+            destinationClassName="jp.riken.kscope.properties.MemorybandProperties"
+            endpointName="propertiesMemory" kind="Simple"/>
+        <Communication destinationClassName="jp.riken.kscope.model.ProjectModel"/>
+        <Communication destinationClassName="jp.riken.kscope.properties.ProjectProperties">
+            <Point x="780" y="516"/>
+            <Point x="1007" y="518"/>
+        </Communication>
+        <Communication destinationClassName="jp.riken.kscope.properties.SSHconnectProperties">
+            <Point x="730" y="668"/>
+            <Point x="345" y="664"/>
+            <Point x="268" y="504"/>
+        </Communication>
+        <Communication destinationClassName="jp.riken.kscope.properties.MemorybandProperties">
+            <Point x="745" y="516"/>
+        </Communication>
+    </CommunicationClass>
+    <CommunicationClass
+        name="jp.riken.kscope.properties.KscopeProperties" x="690" y="34"/>
+    <CommunicationClass
+        name="jp.riken.kscope.action.ProjectSettingSSHAction" x="109" y="70">
+        <Communication destinationClassName="jp.riken.kscope.service.AppController">
+            <Point x="606" y="337"/>
+        </Communication>
+        <Communication destinationClassName="jp.riken.kscope.dialog.SSHconnectPropertiesDialog"/>
+    </CommunicationClass>
+    <CommunicationClass name="jp.riken.kscope.model.ProjectModel"
+        x="1214" y="1029"/>
+    <CommunicationClass
+        name="jp.riken.kscope.properties.ProjectProperties" x="998" y="474"/>
+    <CommunicationClass name="jp.riken.kscope.service.AppController"
+        x="694" y="276">
+        <Association
+            destinationClassName="jp.riken.kscope.properties.ProjectProperties"
+            endpointName="propertiesProject" kind="Simple"/>
+        <Association
+            destinationClassName="jp.riken.kscope.properties.SSHconnectProperties"
+            endpointName="propertiesSSH" kind="Simple"/>
+        <Association
+            destinationClassName="jp.riken.kscope.model.ProjectModel"
+            endpointName="projectModel" kind="Simple"/>
+        <Association
+            destinationClassName="jp.riken.kscope.properties.MemorybandProperties"
+            endpointName="propertiesMemory" kind="Simple"/>
+        <Communication destinationClassName="jp.riken.kscope.model.ProjectModel">
+            <Point x="745" y="345"/>
+            <Point x="1232" y="996"/>
+            <Point x="1230" y="1020"/>
+        </Communication>
+        <Communication destinationClassName="jp.riken.kscope.properties.ProjectProperties">
+            <Point x="882" y="488"/>
+        </Communication>
+        <Communication destinationClassName="jp.riken.kscope.properties.MemorybandProperties"/>
+    </CommunicationClass>
+    <CommunicationClass
+        name="jp.riken.kscope.action.ProjectSettingMemoryAction" x="455" y="67">
+        <Communication destinationClassName="jp.riken.kscope.dialog.SettingMemoryDialog">
+            <Point x="392" y="149"/>
+        </Communication>
+        <Communication destinationClassName="jp.riken.kscope.service.AppController">
+            <Point x="592" y="282"/>
+        </Communication>
+    </CommunicationClass>
+    <CommunicationClass name="jp.riken.kscope.Go" x="687" y="130">
+        <Communication destinationClassName="jp.riken.kscope.service.AppController"/>
+        <Communication destinationClassName="jp.riken.kscope.properties.KscopeProperties"/>
+    </CommunicationClass>
+    <CommunicationClass
+        name="jp.riken.kscope.action.FileProjectOpenAction" x="1050" y="75">
+        <Communication destinationClassName="jp.riken.kscope.model.ProjectModel">
+            <Point x="1357" y="418"/>
+            <Point x="1356" y="1002"/>
+        </Communication>
+        <Communication destinationClassName="jp.riken.kscope.properties.ProjectProperties">
+            <Point x="993" y="448"/>
+            <Point x="975" y="465"/>
+        </Communication>
+        <Communication destinationClassName="jp.riken.kscope.service.AppController"/>
+        <Communication destinationClassName="jp.riken.kscope.service.ProjectService">
+            <Point x="784" y="728"/>
+            <Point x="704" y="728"/>
+            <Point x="699" y="884"/>
+        </Communication>
+    </CommunicationClass>
+    <CommunicationClass name="jp.riken.kscope.data.SSHconnectData"
+        x="41" y="756"/>
+    <CommunicationClass
+        name="jp.riken.kscope.dialog.SSHconnectPropertiesDialog" x="28" y="290">
+        <Association
+            destinationClassName="jp.riken.kscope.properties.SSHconnectProperties"
+            endpointName="sshproperties" kind="Simple"/>
+        <Communication destinationClassName="jp.riken.kscope.properties.SSHconnectProperties"/>
+    </CommunicationClass>
+    <CommunicationClass
+        name="jp.riken.kscope.properties.MemorybandProperties" x="507" y="499">
+        <Association
+            destinationClassName="jp.riken.kscope.properties.MemorybandProperties"
+            endpointName="defaultProperties" kind="Simple"/>
+    </CommunicationClass>
+    <CommunicationClass
+        name="jp.riken.kscope.properties.SSHconnectProperties" x="47" y="487">
+        <Association
+            destinationClassName="jp.riken.kscope.data.SSHconnectData"
+            endpointName="listSSH" kind="Simple"/>
+        <Association
+            destinationClassName="jp.riken.kscope.service.AppController"
+            endpointName="controller" kind="Simple"/>
+        <Communication destinationClassName="jp.riken.kscope.properties.ProjectProperties">
+            <Point x="-111" y="608"/>
+            <Point x="-101" y="1092"/>
+            <Point x="1216" y="1357"/>
+            <Point x="1559" y="1024"/>
+            <Point x="1545" y="509"/>
+            <Point x="1510" y="484"/>
+        </Communication>
+        <Communication destinationClassName="jp.riken.kscope.data.SSHconnectData"/>
+    </CommunicationClass>
+</ClassDiagram>
