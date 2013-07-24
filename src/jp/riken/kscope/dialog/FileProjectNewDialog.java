@@ -315,7 +315,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
             checkUseSSHconnect = new JCheckBox(Message.getString("fileprojectnewdialog.kindpanel.checkbox.useSSHconnect"));
             checkUseSSHconnect.setToolTipText(Message.getString("fileprojectnewdialog.kindpanel.checkbox.useSSHconnect.tooltip"));
             checkUseSSHconnect.setEnabled(isFullProject());
-            checkUseSSHconnect.setSelected(this.pproperties.getHiddenPropertyValue(ProjectProperties.USE_SSHCONNECT).equalsIgnoreCase("true"));
+            checkUseSSHconnect.setSelected(this.pproperties.useSSHconnect());
             
             // XML/Fortran切り替えラジオボタン　デフォルト：中間コード+既存　: Generate intermediate-code by Makefile and sou...
             radioGenXML = new JRadioButton(Message.getString("fileprojectnewdialog.kindpanel.radiobutton.genxml")){
@@ -457,6 +457,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
         	text.setWrapStyleWord(true);
         	text.setOpaque(false);
         	text.setEditable(false);
+        	// Init from ProjectProperties        	
             panelContent.add(text, new GridBagConstraints(1, 1, 3, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(7, 0, 10, 0), 0, 0));
         }
         
@@ -466,6 +467,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
             panelContent.add(new JLabel(Message.getString("fileprojectnewdialog.basepanel.label.title")), //タイトル
                              new GridBagConstraints(1, 2, 1, 1, 0.0, 0.0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 7, 0, 7), 0, 0));
             txtProjectTitle = new JTextField();
+            txtProjectTitle.setText(this.pproperties.getPropertyValue(ProjectProperties.PRJ_TITLE).getValue());
             panelContent.add(txtProjectTitle, new GridBagConstraints(2, 2, 2, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 7), 0, 0));
         }
 

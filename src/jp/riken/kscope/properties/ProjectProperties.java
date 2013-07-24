@@ -122,7 +122,7 @@ public class ProjectProperties extends PropertiesBase {
     	List<ProjectPropertyValue> list = null;
     	list = parseProjectProperty(stream, "//project");
     	if (list != null) {
-    		listProperty = list;
+    		this.listProperty = list;
     	}
     }
     
@@ -133,7 +133,7 @@ public class ProjectProperties extends PropertiesBase {
      */
     public void loadPropertiesOther(InputStream stream ) throws Exception {
     	// Read project hidden properties
-    	listHiddenProperty = new BasicPropertyList(stream, "//project_other");
+    	this.listHiddenProperty = new BasicPropertyList(stream, "//project_other");
     }
     
     

@@ -209,7 +209,6 @@ public class FileProjectNewAction extends ActionBase {
             projectService.setPropertiesSSH(this.controller.getPropertiesSSH());
 
             // Make関連情報
-            //List<String> commands = new ArrayList<String>();
             File work = null;
 
             // 中間コードの生成を行う
@@ -220,15 +219,11 @@ public class FileProjectNewAction extends ActionBase {
                 work = project.getProjectFolder();
                 
                 // プロジェクトプロパティ設定
-                //this.controller.getPropertiesProject().setMakeCommand(makeCom);
-                //this.controller.getPropertiesProject().setMakefilePath(makefilePath);
                 this.controller.getPropertiesProject().setBuildCommand(build_command);
-                System.out.println("BUILD COMMAND: "+ this.controller.getPropertiesProject().getBuildCommand());
                 
                 if (use_sshconnect) { // Set command line options for SSHconnect call
                 	sshc_properties = this.controller.getPropertiesSSH();
                 	sshc_properties.setUseSSHconnect(true);  // set to use SSHconncet for building this project
-                	//sshc_properties.setBuildCommand(build_command);
                 	sshc_properties.setLocalPath(work.getAbsolutePath());
                 	sshc_properties.setFileFilter(dialog.getFileFilter());
                 	sshc_properties.setPreprocessFiles(dialog.getPreprocessFiles());
