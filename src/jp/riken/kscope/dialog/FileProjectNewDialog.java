@@ -419,7 +419,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
      * @return
      */
     private boolean genXML() {
-		return this.pproperties.getHiddenPropertyValue(ProjectProperties.GENERATE_XML).equalsIgnoreCase("true");
+    	return this.pproperties.genXML();    	
 	}
 
 	/**
@@ -427,7 +427,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
      * @return 
      */
     private boolean isFullProject() {
-		return this.pproperties.getHiddenPropertyValue(ProjectProperties.FULL_PROJECT).equalsIgnoreCase("true");
+    	return this.pproperties.isFullProject();    	
 	}
 
 	/**

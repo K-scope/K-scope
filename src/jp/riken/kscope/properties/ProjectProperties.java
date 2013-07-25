@@ -270,6 +270,10 @@ public class ProjectProperties extends PropertiesBase {
     	listHiddenProperty.setProperty(key, value);   	
     }
 
+    public String[] getHiddenPropertyPairs() {
+    	return listHiddenProperty.getPairs();
+    }
+    
     /**
      * プロパティをDOMノードに出力する
      * @param node	出力ノード
@@ -444,8 +448,47 @@ public class ProjectProperties extends PropertiesBase {
      * @return
      */
 	public boolean canRebuild() {
-		String s = this.listHiddenProperty.getPropertyValue(CAN_REBUILD);
+		return testValue(getHiddenPropertyValue(ProjectProperties.CAN_REBUILD));		
+	}
+
+	/**
+     * True if project is full – i.e. includes intermediate code.
+     * @return 
+     */
+    public boolean isFullProject() {
+    	return testValue(getHiddenPropertyValue(ProjectProperties.FULL_PROJECT));    	
+	}
+    
+    /**
+     * True if need to build the project (locally or remotely) to generate intermediate code.
+     * @return
+     */
+    public boolean genXML() {
+    	return testValue(getHiddenPropertyValue(ProjectProperties.GENERATE_XML));    	
+	}
+    
+    /**
+	 * Return boolean representation of String value ("true" or not "true") of project hidden property.
+	 * @param s
+	 * @return
+	 */
+	private boolean testValue(String s) {
+		if (s == null) {
+			noHiddenProperties();
+			return true;
+		}
 		return (s.equalsIgnoreCase("true"));
+	}
+	
+    /**
+	 *  Display error and print out hidden properties list
+	 */
+	private void noHiddenProperties() {
+		System.err.println("Project hidden properties not set. Check properties.xml file.\nList of hidden properties:\n");
+		String[] hidden_pproperties = getHiddenPropertyPairs();
+		for (String s : hidden_pproperties) {
+			System.err.println(s);
+		}
 	}
 	
 	public void setRebuildFlag(boolean flag) {

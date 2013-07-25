@@ -129,7 +129,7 @@ public class ProjectRebuildAction extends ActionBase {
 		
 		// コンソール
 		this.controller.setSelectedAnalysisPanel(ANALYSIS_PANEL.CONSOLE);
-		ConsolePanel console = this.controller.getMainframe().getPanelAnalysisView().getPanelConsole();
+		final ConsolePanel console = this.controller.getMainframe().getPanelAnalysisView().getPanelConsole();
 		console.clearConsole();
 		OutputStream out = console.getOutputStream();
 
@@ -180,7 +180,9 @@ public class ProjectRebuildAction extends ActionBase {
                     @Override
 					public Integer call() {
                         try {
+                        	console.disable_horizontal_scroll = true; // disable scroll                    		
                         	boolean result = serviceMake.executeMakeCommand();
+                        	console.disable_horizontal_scroll = false; // enable scroll
                         	if (!result) {
                         		return Constant.CANCEL_RESULT;
                         	}

@@ -108,6 +108,19 @@ public class BasicPropertyList {
 	}
 	
 	/**
+	 * Get array of key:value pairs from the list
+	 * @return Array of pairs key:value as a String[]
+	 */
+	public String[] getPairs() {
+		List<String> keys_list = new ArrayList<String>();
+		for (BasicProperty bp : this.list) {
+			keys_list.add(bp.getKey()+":"+bp.getValue());
+		}
+		return keys_list.toArray(new String[keys_list.size()]);
+	}
+	
+	
+	/**
 	 * Set value of property with the given key.
 	 * If property with the given key not found in the list, add new property.
 	 * @param key

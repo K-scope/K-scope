@@ -332,10 +332,10 @@ public class FileProjectNewAction extends ActionBase {
                         	if (bMake) {
                         		console.disable_horizontal_scroll = true; // disable scroll
                         		boolean result = makeService.executeMakeCommand();
+                        		console.disable_horizontal_scroll = false; // enable scroll
                         		if (!result) {
                         			return Constant.CANCEL_RESULT;
-                        		}
-                        		console.disable_horizontal_scroll = false; // enable scroll
+                        		}                        		
                         	}
                         	Application.status.setMessageStatus("Set files...");
                         	// 中間コードをまたはFortranファイルをソースリストに追加
