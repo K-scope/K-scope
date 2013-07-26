@@ -130,8 +130,6 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
     //private JTextField txtMakefile;
     /** makeコマンド 参照ボタン */
     private JButton btnMakeCmd;
-    /** makefile 参照ボタン */
-    private JButton btnMakefile;
     /** XML パネル説明文 */
     private JTextArea txaXMLPanelDesc;
     /** XML パネル　ラベル */
@@ -1052,14 +1050,11 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
 			String desc = Message.getString("fileprojectnewdialog.xmlpanel.additionalfile.desc"); //中間コードの出力先がMakefileと同じ階層でない...
 			if (isGenerateIntermediateCode()) {
 				// makefileのparentを設定
-				/*String sf = this.txtMakefile.getText();
+				String sf = this.txtProjectFolder.getText();
 				if (!StringUtils.isNullOrEmpty(sf)) {
 					File f = new File(sf);
-					if (f.exists() && f.isFile()) {
-						File pf = f.getParentFile();
-						addProjectList(new File[] {pf});
-					}
-				}*/
+					addProjectList(new File[] {f});					
+				}
 				radioXml.setSelected(true);
 			}
 			else {
@@ -1374,7 +1369,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
             	if (path.length() > 0) {
             		String text_make_comm = this.txtMakeCommand.getText();
             		if (!StringUtils.isNullOrEmpty(text_make_comm)) text_make_comm = text_make_comm+" "+path;
-            		else text_make_comm = path;
+            		else text_make_comm = "./'"+path+"'";
             		this.txtMakeCommand.setText(text_make_comm);
             	}
             }

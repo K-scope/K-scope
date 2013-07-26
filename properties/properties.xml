@@ -233,7 +233,7 @@
 		<sshconnect key="remote_path" value="/home/sshuser/kscope/" type="system" commandline_option="-rp"/>
 		<sshconnect key="build_command" type="project" commandline_option="-m"/>
 		<sshconnect key="local_path" value="/Users/peterbryzgalov/work/NICAM-K.xml" type="project" commandline_option="-lp"/>
-		<sshconnect key="file_filter" value=".*,*.tar,*.zip,*.o,*.xml,*.xmod" type="project" commandline_option="-ff"/>
+		<sshconnect key="file_filter" value="*.tar,*.zip,*.html,*.o,*.xml,*.xmod,.DS*,*.ksx" type="project" commandline_option="-ff"/>
 		<sshconnect key="preprocess_files" value="" type="project" commandline_option="-pf"/>
 		
 	<!--  プロジェクトプロパティ -->

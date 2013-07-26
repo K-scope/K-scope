@@ -133,12 +133,16 @@ property.program.image-file.name=イメージファイル
 property.program.source-file.name=ソースファイル
 
 # プロジェクトプロパティ
-property.project.make-command.name=Makeコマンド
-property.project.make-command.message=
-property.project.makefile-path.name=Makefileパス
-property.project.makefile-path.message=
+property.project.build-command.name=ビルドコマンド
+property.project.build-command.message=
+# property.project.makefile-path.name=Makefileパス
+# property.project.makefile-path.message=
 property.project.title.name=タイトル
 property.project.title.message=
+
+property.project.is_remote.name=サーバでプロジェクトをビルドする
+property.project.local_remote.message=SSHを使って、サーバでソースコードをビルドし、中間コードをダウンロードする
+
 
 #########
 #  GUI  #
@@ -681,10 +685,10 @@ fileprojectnewdialog.button.new=新規作成
 fileprojectnewdialog.button.next=次へ >
 fileprojectnewdialog.kindpanel.desc=フルモードの場合、K-scopeの全ての機能を使用可能です。\n簡易モードの場合、プロファイラ連携機能のみを使用できます。
 
-fileprojectnewdialog.kindpanel.checkbox.useSSHconnect=ソースコードをサーバーでコンパイルする
-fileprojectnewdialog.kindpanel.checkbox.useSSHconnect.tooltip=SSH接続を利用し、サーバーにソースファイルを送り、コンパイルし、中間コードをダウンロードする
+fileprojectnewdialog.kindpanel.checkbox.useSSHconnect=ソースコードをサーバでビルドする
+fileprojectnewdialog.kindpanel.checkbox.useSSHconnect.tooltip=SSH接続を利用し、サーバにソースファイルを送り、コンパイルし、中間コードをダウンロードする
 
-fileprojectnewdialog.basepanel.filefilter.desc=ファイルフィルター: ビルドに不要なファイルを除外するためのカンマ区切りのワイルドカードを指定してください。\n絶対パスのあるファイル: サーバーの絶対パスに置き換えるべきプレースホルダーのあるファイルを指定してください。
+fileprojectnewdialog.basepanel.filefilter.desc=ファイルフィルター: ビルドに不要なファイルを除外するためのカンマ区切りのワイルドカードを指定してください。\n絶対パスのあるファイル: サーバの絶対パスに置き換えるべきプレースホルダーのあるファイルを指定してください。
 fileprojectnewdialog.basepanel.filefilter.label=ファイルフィルター
 fileprojectnewdialog.basepanel.processfiles.label=絶対パスのあるファイル
 fileprojectnewdialog.basepanel.processfiles.addbutton=追加
@@ -702,7 +706,7 @@ fileprojectnewdialog.basepanel.label.title=タイトル
 fileprojectnewdialog.basepanel.label.projectfolder=プロジェクトフォルダ
 fileprojectnewdialog.basepanel.desc=タイトル：プロジェクトのタイトルを入力してください。\nプロジェクトフォルダ：プロジェクト設定ファイルの保存フォルダを選択してください。
 fileprojectnewdialog.makefilepanel.label.makecommand=Build コマンド
-fileprojectnewdialog.makefilepanel.desc=実行するbuildコマンドと作業ディレクトリーを設定してください。
+fileprojectnewdialog.makefilepanel.desc=実行するbuildコマンドを設定してください。そのまま実行されるので、シンタックスに注意してください。
 fileprojectnewdialog.xmlpanel.button.addfolder=フォルダ追加
 fileprojectnewdialog.xmlpanel.button.addfile=ファイル追加
 fileprojectnewdialog.xmlpanel.checkbox.build=構造解析を行う
@@ -1042,6 +1046,8 @@ variableaccessdialog.all.label=すべて
 sshconnectsettingdialog.title = SSH connect 設定
 sshconnectsettingdialog.parameter.name=パラメーター名
 sshconnectsettingdialog.parameter.value=値
+
+sshconnectproperties.document.comment=SSH connect 設定
 
 
 ## GUI ##
