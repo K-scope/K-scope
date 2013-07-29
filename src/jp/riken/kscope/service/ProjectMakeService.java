@@ -82,7 +82,7 @@ public class ProjectMakeService  extends BaseService {
 
     /**
      * コンストラクタ.
-     * @param build_command            Makeコマンド
+     * @param BUILD_COMMAND            Makeコマンド
      * @param work            Makeコマンド実行フォルダ
      * @param controller	AddController
      */

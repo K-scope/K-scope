@@ -118,7 +118,7 @@ public class Go {
 
             // コントローラの初期化
             ctrl.initialize(frame);
-
+           
             String status = Message.getString("go.status.start");
             Application.status.setMessageMain(status);
 

@@ -223,7 +223,61 @@ public class AppController implements PropertyChangeListener {
         lastVars = null;
     }
 
+    /**
+     * プロパティ設定を生成する.
+     * @param   clear    true=プロパティ設定をクリアする
+     * @throws Exception		プロパティ読込エラー
+     */
+    private void createProperties(boolean clear) throws Exception {
+    	// プロパティ設定をクリアする
+    	if (clear) {
+    		clearProperties();
+    	}
+        /** プロパティ設定 */
+        if (this.propertiesProject == null) {
+        	this.propertiesProject = new ProjectProperties();
+        }
+        if (this.propertiesSource == null) {
+        	this.propertiesSource = new SourceProperties();
+        }
+        if (this.propertiesKeyword == null) {
+        	this.propertiesKeyword = new KeywordProperties();
+        }
+        if (this.propertiesProgram == null) {
+        	this.propertiesProgram = new ProgramProperties();
+        }
+        if (this.propertiesOperand == null) {
+        	this.propertiesOperand = new OperandProperties();
+        }
+        if (this.propertiesApplication == null) {
+        	this.propertiesApplication = new ApplicationProperties();
+        }
+        if (this.propertiesSSH == null || this.propertiesSSH.isEmpty()) {
+        	this.propertiesSSH = new SSHconnectProperties(this);
+        }
+        // メニュー表示選択をコピーする
+        this.mainframe.getMenuMain().clearSelectedMenu();
+        if (this.propertiesProfiler == null) {
+        	this.propertiesProfiler = new ProfilerProperties(this.propertiesProfiler);
+        }
+        else {
+        	this.propertiesProfiler.setVisibleProperties(this.propertiesProfiler);
+        }
+        // バーグラフの色設定
+        PROFILERINFO_TYPE.setProfilerProperties(this.propertiesProfiler);
+        // 要求Byte/FLOP設定プロパティ:デフォルト設定を保持する為に生成済みの場合は、newしない。
+        if (this.propertiesMemory == null) {
+        	this.propertiesMemory = new MemorybandProperties();
+        	// デフォルト設定を設定する.
+        	MemorybandProperties defaultProperties = new MemorybandProperties();
+        	this.propertiesMemory.setDefaultProperties(defaultProperties);
+        }
+        // 要求Byte/FLOP変数設定データ
+        this.propertiesVariable = new VariableMemoryProperties(this.propertiesMemory);
 
+    }
+    
+    
     /**
      * メインフレームを取得する
      * @return mainframe		メインフレーム
@@ -728,59 +782,7 @@ public class AppController implements PropertyChangeListener {
         this.propertiesSSH = null;
     }
 
-    /**
-     * プロパティ設定を生成する.
-     * @param   clear    true=プロパティ設定をクリアする
-     * @throws Exception		プロパティ読込エラー
-     */
-    private void createProperties(boolean clear) throws Exception {
-    	// プロパティ設定をクリアする
-    	if (clear) {
-    		clearProperties();
-    	}
-        /** プロパティ設定 */
-        if (this.propertiesProject == null) {
-        	this.propertiesProject = new ProjectProperties();
-        }
-        if (this.propertiesSource == null) {
-        	this.propertiesSource = new SourceProperties();
-        }
-        if (this.propertiesKeyword == null) {
-        	this.propertiesKeyword = new KeywordProperties();
-        }
-        if (this.propertiesProgram == null) {
-        	this.propertiesProgram = new ProgramProperties();
-        }
-        if (this.propertiesOperand == null) {
-        	this.propertiesOperand = new OperandProperties();
-        }
-        if (this.propertiesApplication == null) {
-        	this.propertiesApplication = new ApplicationProperties();
-        }
-        if (this.propertiesSSH == null || this.propertiesSSH.isEmpty()) {
-        	this.propertiesSSH = new SSHconnectProperties(this);
-        }
-        // メニュー表示選択をコピーする
-        this.mainframe.getMenuMain().clearSelectedMenu();
-        if (this.propertiesProfiler == null) {
-        	this.propertiesProfiler = new ProfilerProperties(this.propertiesProfiler);
-        }
-        else {
-        	this.propertiesProfiler.setVisibleProperties(this.propertiesProfiler);
-        }
-        // バーグラフの色設定
-        PROFILERINFO_TYPE.setProfilerProperties(this.propertiesProfiler);
-        // 要求Byte/FLOP設定プロパティ:デフォルト設定を保持する為に生成済みの場合は、newしない。
-        if (this.propertiesMemory == null) {
-        	this.propertiesMemory = new MemorybandProperties();
-        	// デフォルト設定を設定する.
-        	MemorybandProperties defaultProperties = new MemorybandProperties();
-        	this.propertiesMemory.setDefaultProperties(defaultProperties);
-        }
-        // 要求Byte/FLOP変数設定データ
-        this.propertiesVariable = new VariableMemoryProperties(this.propertiesMemory);
-
-    }
+    
 
     public void setSSHproperties(SSHconnectProperties ssh_properties) {
     	this.propertiesSSH = ssh_properties;

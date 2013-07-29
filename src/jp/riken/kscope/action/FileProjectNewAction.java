@@ -103,8 +103,10 @@ public class FileProjectNewAction extends ActionBase {
         String currentFolder = this.controller.getLastAccessFolder();
         // Read default value of use_sshconnect
         ProjectProperties pproperties = this.controller.getPropertiesProject();
+        SSHconnectProperties ssh_properties = this.controller.getPropertiesSSH();
+        
         // プロジェクトの新規作成ダイアログを表示する。
-        FileProjectNewDialog dialog = new FileProjectNewDialog(frame, true, pproperties);
+        FileProjectNewDialog dialog = new FileProjectNewDialog(frame, true, pproperties,ssh_properties);
         dialog.setLastAccessFolder(currentFolder);
         // 除外パス名を設定する
         dialog.addExcludeName(KscopeProperties.SETTINGS_FOLDER);

@@ -55,8 +55,8 @@ public class ProjectProperties extends PropertiesBase {
     /** プロジェクトタイトルプロパティキー */
     public static final String PRJ_TITLE = "project-title";
     /** New properties for SSHconnect */
-    public static final String FILE_FILTER = "ssh-file_filter";
-    public static final String PROCESS_FILES = "ssh-process_files";
+    //public static final String FILE_FILTER = "ssh-file_filter";
+    //public static final String PROCESS_FILES = "ssh-process_files";
     public static final String USE_SSHCONNECT = "use-sshconnect";
     
     public static final String CAN_REBUILD = "rebuild_ready";

@@ -28,18 +28,18 @@ import jp.riken.kscope.utils.ResourceUtils;
  */
 public class SSHconnectProperties extends PropertiesBase {
 	
-	public static String add_path = "add_path";
-	public static String host = "host";
-	public static String port = "port";
-	public static String user = "user";
-	public static String password = "build_command";
-	public static String key = "key";
-	public static String passphrase = "passphrase";
-	public static String remote_path = "remote_path";
-	public static String build_command = "build_command";
-	public static String local_path = "local_path";
-	public static String file_filter = "file_filter";
-	public static String preprocess_files = "preprocess_files";
+	public static String ADD_PATH = "add_path";
+	public static String HOST = "host";
+	public static String PORT = "port";
+	public static String USER = "user";
+	public static String PASSWORD = "build_command";
+	public static String KEY = "key";
+	public static String PASSPHRASE = "passphrase";
+	public static String REMOTE_PATH = "remote_path";
+	public static String BUILD_COMMAND = "build_command";
+	public static String LOCAL_PATH = "local_path";
+	public static String FILE_FILTER = "file_filter";
+	public static String PREPROCESS_FILES = "preprocess_files";
 	
 	private boolean useSSHconnect = false; // Use SSHconnect for making project or not
 	
@@ -269,7 +269,7 @@ public class SSHconnectProperties extends PropertiesBase {
     	for (SSHconnectData sshdata : this.listSSH) {
     		String commandline_option = sshdata.getCommandlineOption();
     		String value = null;
-    		if (sshdata.getKey().equalsIgnoreCase(SSHconnectProperties.build_command)) {
+    		if (sshdata.getKey().equalsIgnoreCase(SSHconnectProperties.BUILD_COMMAND)) {
     			// Get build command from Project Properties
     			ProjectProperties pp = this.controller.getPropertiesProject();
     			value = pp.getBuildCommand();   
@@ -372,7 +372,7 @@ public class SSHconnectProperties extends PropertiesBase {
 	 * @param absolutePath
 	 */
 	public void setLocalPath(String absolutePath) {
-		setValueByKey(SSHconnectProperties.local_path, absolutePath);		
+		setValueByKey(SSHconnectProperties.LOCAL_PATH, absolutePath);		
 	}
 
 	/**
@@ -380,7 +380,7 @@ public class SSHconnectProperties extends PropertiesBase {
 	 * @param filter
 	 */
 	public void setFileFilter(String filter) {
-		setValueByKey(SSHconnectProperties.file_filter, filter);
+		setValueByKey(SSHconnectProperties.FILE_FILTER, filter);
 	}
 
 	/**
@@ -388,7 +388,7 @@ public class SSHconnectProperties extends PropertiesBase {
 	 * @param files
 	 */
 	public void setPreprocessFiles(String files) {
-		setValueByKey(SSHconnectProperties.preprocess_files, files);		
+		setValueByKey(SSHconnectProperties.PREPROCESS_FILES, files);		
 	}
 
 	@Override

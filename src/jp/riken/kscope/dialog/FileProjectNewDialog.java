@@ -65,6 +65,7 @@ import jp.riken.kscope.common.Constant;
 import jp.riken.kscope.data.FILE_TYPE;
 import jp.riken.kscope.properties.KscopeProperties;
 import jp.riken.kscope.properties.ProjectProperties;
+import jp.riken.kscope.properties.SSHconnectProperties;
 import jp.riken.kscope.utils.FileUtils;
 import jp.riken.kscope.utils.ResourceUtils;
 import jp.riken.kscope.utils.StringUtils;
@@ -119,6 +120,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
     /** Panel holds file_filter and process_files fields */
     private JPanel sshc_settings_panel;
     private ProjectProperties pproperties;
+    private SSHconnectProperties sproperties;
     
     
     /** SSHconnectを利用する */
@@ -169,9 +171,10 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
      * @param modal		true=モーダルダイアログを表示する
      * @wbp.parser.constructor
      */
-    public FileProjectNewDialog(Frame owner, boolean modal, ProjectProperties pproperties) {
+    public FileProjectNewDialog(Frame owner, boolean modal, ProjectProperties pproperties, SSHconnectProperties sproperties) {
         super(owner, modal);
         this.pproperties = pproperties;
+        this.sproperties = sproperties;
         initGUI();
     }
 
@@ -512,6 +515,8 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
         	sshc_text.setEditable(false);
         	JLabel ffl = new JLabel(Message.getString("fileprojectnewdialog.basepanel.filefilter.label"));
         	txt_filefilter = new JTextField();
+        	String ffilter= this.sproperties.getPropertySet(SSHconnectProperties.FILE_FILTER).getValue();
+        	txt_filefilter.setText(ffilter);
         	JLabel procfl = new JLabel(Message.getString("fileprojectnewdialog.basepanel.processfiles.label"));
         	txt_preprocess_files = new JTextField();
         	addprerocessfile_button = new JButton(Message.getString("fileprojectnewdialog.basepanel.processfiles.addbutton"));
