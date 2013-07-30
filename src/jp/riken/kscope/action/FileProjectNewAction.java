@@ -91,13 +91,37 @@ public class FileProjectNewAction extends ActionBase {
      */
     @Override
     public void actionPerformed(ActionEvent event) {
+    	 // 親Frameの取得を行う。
+        Frame frame = getWindowAncestor( event );
+    	// Check if have opened project we need to save and close
+    	FileProjectSaveAction save_action = new FileProjectSaveAction(this.controller);
+    	if (save_action.validateAction()) {
+    		int option = JOptionPane.showConfirmDialog(frame,
+    				Message.getString("fileprojectsaveaction.save.confirm.dialog.message"), //プロジェクトを保存しますか？
+    				Message.getString("mainmenu.file.closeproject"), //プロジェクトを閉じる, //プロジェクトの保存
+    				JOptionPane.OK_CANCEL_OPTION,
+    				JOptionPane.WARNING_MESSAGE);
+
+    		if (option != JOptionPane.OK_OPTION) {
+    			Application.status.setMessageMain(Message.getString("mainmenu.file.closeproject")); //プロジェクトを閉じる + Message.getString("action.common.cancel.status")); //:キャンセル
+    			return;
+    		}
+    		save_action.saveProject(frame);
+    		FileProjectCloseAction close_action = new FileProjectCloseAction(this.controller);
+    		try {
+				close_action.closeProject();
+			} catch (Exception e) {
+				System.err.println("Error closing project");
+				e.printStackTrace();
+			}
+    	}
+    	
         final String message = Message.getString("mainmenu.file.newproject"); //プロジェクトの新規作成
         SSHconnectProperties sshc_properties = null;
         
         Application.status.setMessageMain(message);
 
-        // 親Frameの取得を行う。
-        Frame frame = getWindowAncestor( event );
+       
 
         // 最終アクセスフォルダ
         String currentFolder = this.controller.getLastAccessFolder();
@@ -225,7 +249,6 @@ public class FileProjectNewAction extends ActionBase {
                 
                 if (use_sshconnect) { // Set command line options for SSHconnect call
                 	sshc_properties = this.controller.getPropertiesSSH();
-                	sshc_properties.setUseSSHconnect(true);  // set to use SSHconncet for building this project
                 	sshc_properties.setLocalPath(work.getAbsolutePath());
                 	sshc_properties.setFileFilter(dialog.getFileFilter());
                 	sshc_properties.setPreprocessFiles(dialog.getPreprocessFiles());

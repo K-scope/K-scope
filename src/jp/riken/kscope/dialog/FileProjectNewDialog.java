@@ -312,11 +312,13 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
             layoutSelect.columnWidths = new int [] {32, 32, 64};
             panelSelect.setLayout(layoutSelect);
             
-            // SSHconnectの使用切り替え
-            checkUseSSHconnect = new JCheckBox(Message.getString("fileprojectnewdialog.kindpanel.checkbox.useSSHconnect"));
-            checkUseSSHconnect.setToolTipText(Message.getString("fileprojectnewdialog.kindpanel.checkbox.useSSHconnect.tooltip"));
-            checkUseSSHconnect.setEnabled(isFullProject());
-            checkUseSSHconnect.setSelected(this.pproperties.useSSHconnect());
+            if (this.sproperties != null && this.sproperties.haveSSHconnect) {
+            	// SSHconnectの使用切り替え
+            	checkUseSSHconnect = new JCheckBox(Message.getString("fileprojectnewdialog.kindpanel.checkbox.useSSHconnect"));
+            	checkUseSSHconnect.setToolTipText(Message.getString("fileprojectnewdialog.kindpanel.checkbox.useSSHconnect.tooltip"));
+            	checkUseSSHconnect.setEnabled(isFullProject());
+            	checkUseSSHconnect.setSelected(this.pproperties.useSSHconnect());
+            }
             
             // XML/Fortran切り替えラジオボタン　デフォルト：中間コード+既存　: Generate intermediate-code by Makefile and sou...
             radioGenXML = new JRadioButton(Message.getString("fileprojectnewdialog.kindpanel.radiobutton.genxml")){
@@ -325,7 +327,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
 				protected void fireStateChanged() {
 					if (this.isSelected()) pproperties.setHiddenPropertyValue(ProjectProperties.GENERATE_XML, "true");
 					else pproperties.setHiddenPropertyValue(ProjectProperties.GENERATE_XML, "false");
-					checkUseSSHconnect.setEnabled(this.isSelected());
+					if (sproperties != null && sproperties.haveSSHconnect) checkUseSSHconnect.setEnabled(this.isSelected());
 					if (labelStatus[2] != null) {
 						labelStatus[2].setVisible(isGenerateIntermediateCode());
 					}
@@ -395,7 +397,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
             panelSelect.add(radioXml, new GridBagConstraints(0, 0, 3, 1, 1.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
             panelSelect.add(radioNotGenXML, new GridBagConstraints(1, 1, 2, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
             panelSelect.add(radioGenXML, new GridBagConstraints(1, 2, 2, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
-            panelSelect.add(checkUseSSHconnect,new GridBagConstraints(2, 3, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
+            if (this.sproperties != null && this.sproperties.haveSSHconnect) panelSelect.add(checkUseSSHconnect,new GridBagConstraints(2, 3, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
             panelSelect.add(radioFortran, new GridBagConstraints(0, 4, 3, 1, 1.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
             panelSelect.add(new JLabel(Message.getString("fileprojectnewdialog.kindpanel.label.fortranonly")), //フォートランソースコードのみを読み込む : Read only a Fortran source code
             		new GridBagConstraints(1, 5, 2, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
@@ -500,14 +502,15 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
         
 
         // Process files & File filter
-        {
+        if (this.sproperties != null && this.sproperties.haveSSHconnect){
+
         	sshc_settings_panel = new JPanel();
         	GridBagLayout sshc_panel_layout = new GridBagLayout();
         	sshc_panel_layout.columnWidths = new int[] {7, 160, 7, 7};
         	sshc_panel_layout.columnWeights = new double[] {0.0,0.0, 1.0, 0.0};
         	sshc_panel_layout.rowHeights = new int[] {16,16,16};
         	sshc_settings_panel.setLayout(sshc_panel_layout);
-        	
+
         	JTextArea sshc_text = new JTextArea(Message.getString("fileprojectnewdialog.basepanel.filefilter.desc"));
         	sshc_text.setLineWrap(true);
         	sshc_text.setWrapStyleWord(true);
@@ -521,7 +524,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
         	txt_preprocess_files = new JTextField();
         	addprerocessfile_button = new JButton(Message.getString("fileprojectnewdialog.basepanel.processfiles.addbutton"));
         	addprerocessfile_button.addActionListener(this);
-        	
+
         	sshc_settings_panel.add(sshc_text, new GridBagConstraints(0, 0, 4, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 7, 10, 7), 0, 0));
         	sshc_settings_panel.add(ffl, new GridBagConstraints(1, 1, 1, 1, 0.0, 0.0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 7, 0, 7), 0, 0));
         	sshc_settings_panel.add(txt_filefilter, new GridBagConstraints(2, 1, 2, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
@@ -531,7 +534,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
 
         	panelContent.add(sshc_settings_panel,new GridBagConstraints(1,4,3,2,0.0,0.0,GridBagConstraints.CENTER, GridBagConstraints.BOTH,new Insets(7,0,0,7),0,0));
         }
-        
+
         return panelContent;
     }
 
@@ -1080,7 +1083,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
 		}
 		else if (index == 1) { // open BasePanel
 			// hide file_filter and process_files fields
-			sshc_settings_panel.setVisible(useSSHconnect());
+			if (this.sproperties.haveSSHconnect) sshc_settings_panel.setVisible(useSSHconnect());
 		}		
 		else if (index == panelWizerds.length - 1) {
 			this.btnNext.setText(Message.getString("fileprojectnewdialog.button.new")); //新規作成

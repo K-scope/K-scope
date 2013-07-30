@@ -86,15 +86,7 @@ public class FileProjectCloseAction extends ActionBase {
                 return;
             }
 
-            // コンソールをクリアする
-            ConsolePanel console = this.controller.getMainframe().getPanelAnalysisView().getPanelConsole();
-    		console.clearConsole();
-
-            // プロジェクトをクリアする
-            clearProject();
-
-            // ステータスメッセージ
-            Application.status.setMessageMain(message + Message.getString("action.common.done.status")); //:完了
+            closeProject();
 
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -112,6 +104,23 @@ public class FileProjectCloseAction extends ActionBase {
             Application.status.setMessageMain(message + Message.getString("action.common.error.status")); //:エラー
         }
     }
+
+	/**
+	 * @param message
+	 * @throws Exception
+	 */
+	public void closeProject() throws Exception {
+		// コンソールをクリアする
+		ConsolePanel console = this.controller.getMainframe().getPanelAnalysisView().getPanelConsole();
+		console.clearConsole();
+
+		// プロジェクトをクリアする
+		clearProject();
+
+		final String message = Message.getString("mainmenu.file.closeproject"); //プロジェクトを閉じる
+		// ステータスメッセージ
+		Application.status.setMessageMain(message + Message.getString("action.common.done.status")); //:完了
+	}
 
     /**
      * プロジェクトをクリアする

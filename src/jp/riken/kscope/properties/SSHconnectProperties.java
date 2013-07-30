@@ -41,7 +41,7 @@ public class SSHconnectProperties extends PropertiesBase {
 	public static String FILE_FILTER = "file_filter";
 	public static String PREPROCESS_FILES = "preprocess_files";
 	
-	private boolean useSSHconnect = false; // Use SSHconnect for making project or not
+	public boolean haveSSHconnect = false; // Possible to use SSHconnect for making project or not
 	
 	/**
 	 * 
@@ -291,14 +291,7 @@ public class SSHconnectProperties extends PropertiesBase {
     	return command_options.toArray(new String[0]);
     }
     
-    /**
-     * Set flag to use SSHconnect for making Fortran project
-     * @param use
-     */
-    public void setUseSSHconnect(boolean use) {
-    	this.useSSHconnect = use;
-    }
-    
+      
 	public int count() {
 		if (listSSH == null || listSSH.size() <= 0) {return 0;}
         return listSSH.size();

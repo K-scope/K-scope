@@ -17,6 +17,7 @@
 package jp.riken.kscope.action;
 
 import java.awt.Frame;
+import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.util.concurrent.Callable;
@@ -99,7 +100,16 @@ public class FileProjectSaveAction extends ActionBase {
             return;
         }
 
-        // プロジェクトサービス
+        saveProject(frame);
+    }
+
+	/**
+	 * @param message
+	 * @param frame
+	 * @throws HeadlessException
+	 */
+	public void saveProject(Frame frame)	throws HeadlessException {
+		// プロジェクトサービス
         ProjectService service = new ProjectService(this.controller.getProjectModel());
         // キーワードプロパティ
         service.setPropertiesKeyword(this.controller.getPropertiesKeyword());
@@ -132,7 +142,7 @@ public class FileProjectSaveAction extends ActionBase {
 
         } catch (Exception e) {
             e.printStackTrace();
-
+            String message = Message.getString("mainmenu.file.saveproject"); //プロジェクトの保存
             // エラーメッセージ
             JOptionPane.showMessageDialog(frame,
                     Message.getString("fileprojectsaveaction.save.failed.dialog.message"), //プロジェクトの保存に失敗しました。
@@ -142,7 +152,7 @@ public class FileProjectSaveAction extends ActionBase {
             // ステータスメッセージ
             Application.status.setMessageMain(message + Message.getString("action.common.error.status")); //:エラー
         }
-    }
+	}
 
     /**
      * Languageクラスのシリアライズを行う

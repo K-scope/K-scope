@@ -355,12 +355,13 @@ public class ProjectMakeService  extends BaseService {
 		// ステータスメッセージ
         Application.status.setProgressStart(true);
         ProjectProperties pproperties = this.controller.getPropertiesProject();
+        SSHconnectProperties sshc_properties = this.controller.getPropertiesSSH();
         String build_command = pproperties.getBuildCommand(); 
         if (build_command == null || build_command.length() <= 0) return false;
         String[] exec_commands = null;
-        SSHconnectProperties sshc_properties = this.controller.getPropertiesSSH();
         
-        if (sshc_properties != null && pproperties.useSSHconnect()) {
+        
+        if (useSSHconnect(pproperties, sshc_properties)) {
         	// inject SSHconnect call
         	String[] sshc_cl = sshc_properties.getCommandLineOptions();
         	int formal_commands = 3;
@@ -377,7 +378,7 @@ public class ProjectMakeService  extends BaseService {
         // makeコマンド実行
     	int result = -1;
 		try {
-			if (sshc_properties != null && pproperties.useSSHconnect()) result = SwingUtils.processRun(exec_commands, this.workdirectory, this.outStream);
+			if (useSSHconnect(pproperties, sshc_properties)) result = SwingUtils.processRun(exec_commands, this.workdirectory, this.outStream);
 			else result = SwingUtils.processRun(build_command.split(" "), this.workdirectory, this.outStream);
 			if (result != 0) { // 中間コードの生成に失敗した場合は継続するか確認
 				if (JOptionPane.showConfirmDialog(null,
@@ -395,6 +396,16 @@ public class ProjectMakeService  extends BaseService {
 			ex.printStackTrace();
 			throw ex;
 		}
+	}
+
+	/**
+	 * @param pproperties
+	 * @param sshc_properties
+	 * @return
+	 */
+	private boolean useSSHconnect(ProjectProperties pproperties, SSHconnectProperties sshc_properties) {
+		if (sshc_properties == null || pproperties == null) return false;
+		return sshc_properties.haveSSHconnect && pproperties.useSSHconnect();
 	}
 
 	/**

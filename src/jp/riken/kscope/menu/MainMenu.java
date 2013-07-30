@@ -394,13 +394,15 @@ public class MainMenu extends JMenuBar implements  MenuListener {
         menuProjectSetting.add(menuProjectSettingMemory);
         menuProjectSettingMemory.addActionListener(new ProjectSettingMemoryAction(this.controller));
         
-        // セパレータ
-        menuProjectSetting.addSeparator();
-        // SSHconnect 設定
-        JMenuItem menuProjectSettingSSH = new JMenuItem(Message.getString("mainmenu.project.config.sshconnect")); // SSHconnect
-        menuProjectSetting.add(menuProjectSettingSSH);
-        menuProjectSettingSSH.addActionListener(new ProjectSettingSSHAction(this.controller));
-
+        if (this.controller.isSSHconnectAvailable()) {
+        	// セパレータ
+        	menuProjectSetting.addSeparator();
+        	// SSHconnect 設定
+        	JMenuItem menuProjectSettingSSH = new JMenuItem(Message.getString("mainmenu.project.config.sshconnect")); // SSHconnect
+        	menuProjectSetting.add(menuProjectSettingSSH);
+        	menuProjectSettingSSH.addActionListener(new ProjectSettingSSHAction(this.controller));
+        }
+        
         // 分析
         JMenu menuAnalysis = new JMenu(Message.getString("mainmenu.analysis"));//分析
         this.add(menuAnalysis);

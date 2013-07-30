@@ -143,13 +143,28 @@ public class AppController implements PropertyChangeListener {
     /** 変数特性一覧アクション（更新用） */
     private AnalysisVariableAction actionVariable = null;
 
+    private boolean haveSSHconnect = false;
     /**
      * コンストラクタ
      */
     public AppController() {
+    	haveSSHconnect = checkSSHconnect();
     }
 
-    /**
+    private boolean checkSSHconnect() {
+    	File f = new File("SSHconnect.jar");
+    	if(f.exists()) {
+    		System.out.println(f.getAbsolutePath());
+    		return true;
+    	} 
+    	return false;
+	}
+    
+    public boolean isSSHconnectAvailable() {
+    	return this.haveSSHconnect;
+    }
+
+	/**
      * 初期化を行う。
      * @throws Exception     初期起動エラー
      */
@@ -253,7 +268,8 @@ public class AppController implements PropertyChangeListener {
         	this.propertiesApplication = new ApplicationProperties();
         }
         if (this.propertiesSSH == null || this.propertiesSSH.isEmpty()) {
-        	this.propertiesSSH = new SSHconnectProperties(this);
+        		this.propertiesSSH = new SSHconnectProperties(this);
+        		this.propertiesSSH.haveSSHconnect = this.haveSSHconnect; // set Flag if SSHconnect is present
         }
         // メニュー表示選択をコピーする
         this.mainframe.getMenuMain().clearSelectedMenu();

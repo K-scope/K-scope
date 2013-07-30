@@ -133,6 +133,7 @@ public class SettingProjectDialog extends javax.swing.JDialog implements ActionL
      * @param frame		親フレーム
      * @param modal		true=モーダルダイアログを表示する
      * @param properities		プロジェクト設定プロパティ
+     * @wbp.parser.constructor
      */
     public SettingProjectDialog(Frame frame, boolean modal, ProjectProperties properities) {
         super(frame, modal);
@@ -624,10 +625,11 @@ public class SettingProjectDialog extends javax.swing.JDialog implements ActionL
             lblValue.setText(Message.getString("settingprojectdialog.column_header.value"));//値
         }
         {
-            txtValue = new JTextField();
+        	JLabel txtValue = new JLabel();
             this.panelProperty.add(txtValue, new GridBagConstraints(1, 1, 2, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
             txtValue.setText(str);
-            txtValue.setEditable(false);
+            txtValue.setBorder(BorderFactory.createEtchedBorder());
+            //txtValue.setEditable(false);
         }
         // メッセージ
         {
