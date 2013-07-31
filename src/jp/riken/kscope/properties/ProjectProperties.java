@@ -59,7 +59,6 @@ public class ProjectProperties extends PropertiesBase {
     //public static final String PROCESS_FILES = "ssh-process_files";
     public static final String USE_SSHCONNECT = "use-sshconnect";
     
-    public static final String CAN_REBUILD = "rebuild_ready";
     public static final String GENERATE_XML = "genXML";
     public static final String FULL_PROJECT = "full_project";
 
@@ -444,11 +443,11 @@ public class ProjectProperties extends PropertiesBase {
 
     /** 
      * True if project Rebuild action can be performed.
-     * Depends on "rebuild_ready" property from properties.xml
+     * Depends on "full_project" and "generate_xml" properties from properties.xml
      * @return
      */
 	public boolean canRebuild() {
-		return testValue(getHiddenPropertyValue(ProjectProperties.CAN_REBUILD));		
+		return testValue(getHiddenPropertyValue(ProjectProperties.FULL_PROJECT)) && testValue(getHiddenPropertyValue(ProjectProperties.GENERATE_XML));		
 	}
 
 	/**
@@ -491,13 +490,9 @@ public class ProjectProperties extends PropertiesBase {
 		}
 	}
 	
-	public void setRebuildFlag(boolean flag) {
-		String value = "";
-		if (flag) value = "true";
-		else value = "false";
-		this.listHiddenProperty.setProperty(CAN_REBUILD,value);
-	}
-
+	// NO MORE NEED IN REBUILD FLAG. "REBUILD" MENU DEPENDS ONLY ON GENXML AND FULL_PROJECT PROPERTIES
+	// DELETED : public void setRebuildFlag(boolean flag) {}
+		
 	/**
 	 * Return true if project uses SSHconnect for building Fortran project.
 	 * Returns boolean "true" if property use-sshconnect is set to String "true". 

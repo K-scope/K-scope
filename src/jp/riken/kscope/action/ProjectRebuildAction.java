@@ -66,17 +66,14 @@ public class ProjectRebuildAction extends ActionBase {
      */
 	@Override
 	public boolean validateAction() {
+		// CHECK if have open project
+		FileProjectSaveAction save_action = new FileProjectSaveAction(this.controller);
+    	if (!save_action.validateAction()) return false;
+		
 		ProjectProperties properties = this.controller.getPropertiesProject();
 		if (properties == null) return false;
-		/*
-		 *  MAKE_COMMAND and MAKEFILE_PATH are not used anymore 
-		// makeコマンドが設定されていない場合はfalse
-		ProjectPropertyValue value = properties.getPropertyValue(ProjectProperties.MAKE_COMMAND);
-		if (value == null) return false;
-		if (StringUtils.isNullOrEmpty(value.getValue())) return false;
-		// makefileが設定されていない場合はfalse
-		value = properties.getPropertyValue(ProjectProperties.MAKEFILE_PATH);
-		*/
+		
+		// CHECK build_command
 		ProjectPropertyValue value = properties.getPropertyValue(ProjectProperties.BUILD_COMMAND);
 		if (value == null) return false;
 		if (StringUtils.isNullOrEmpty(value.getValue())) return false;

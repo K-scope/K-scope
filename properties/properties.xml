@@ -242,7 +242,6 @@
 	<project key="use-sshconnect" name="property.project.is_remote.name" value="true" type="text" message="property.project.local_remote.message" />
 	
 	<!-- Project hidden properties -->
-	<project_other key="rebuild_ready" value="false"/>
 	<project_other key="genXML" value="true" />
 	<project_other key="full_project" value="true" />
 

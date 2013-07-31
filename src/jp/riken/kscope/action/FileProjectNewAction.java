@@ -275,8 +275,9 @@ public class FileProjectNewAction extends ActionBase {
             /** 新規作成実行 */
             execMake(build_command, work, dialog.getProjectXmlList(), project, dialog.isBuild(), dialog.isSave(), genCode, (project.getFileType() == FILE_TYPE.XCODEML_XML));
 
+            // NO MORE NEED IN REBUILD FLAG. "REBUILD" MENU DEPENDS ONLY ON GENXML AND FULL_PROJECT PROPERTIES
             // Flag that project can be rebuilt
-            if (genCode) this.controller.getPropertiesProject().setRebuildFlag(true);
+            //if (genCode) this.controller.getPropertiesProject().setRebuildFlag(true);
             
             // ソースビューにプロジェクトフォルダを設定する
             this.controller.getMainframe().getPanelSourceView().setProjectFolder(project.getProjectFolder());
