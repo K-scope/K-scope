@@ -1942,6 +1942,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
      * @return true = 利用する
      */
     public boolean useSSHconnect() {
+    	if (this.checkUseSSHconnect == null) return false;
     	if (this.checkUseSSHconnect.isEnabled()) {
     		return this.checkUseSSHconnect.isSelected();
     	}
