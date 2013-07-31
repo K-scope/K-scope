@@ -61,16 +61,17 @@ import javax.swing.border.EtchedBorder;
 import javax.swing.border.LineBorder;
 
 import jp.riken.kscope.Message;
+import jp.riken.kscope.action.ProjectSettingSSHAction;
 import jp.riken.kscope.common.Constant;
 import jp.riken.kscope.data.FILE_TYPE;
 import jp.riken.kscope.properties.KscopeProperties;
 import jp.riken.kscope.properties.ProjectProperties;
 import jp.riken.kscope.properties.SSHconnectProperties;
+import jp.riken.kscope.service.AppController;
 import jp.riken.kscope.utils.FileUtils;
 import jp.riken.kscope.utils.ResourceUtils;
 import jp.riken.kscope.utils.StringUtils;
 import jp.riken.kscope.utils.SwingUtils;
-import jp.riken.kscope.utils.SwingUtils.ExtFileFilter;
 
 /**
  * プロジェクトの新規作成ダイアログクラス
@@ -122,9 +123,13 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
     private ProjectProperties pproperties;
     private SSHconnectProperties sproperties;
     
+    /** Parent action */
+    private AppController controller;
+    
     
     /** SSHconnectを利用する */
     private JCheckBox checkUseSSHconnect;
+    private JButton ssh_settings_button;
         
     /** Fortran Source File */
     private JRadioButton radioFortran;
@@ -164,6 +169,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
     private final java.awt.Dimension REFER_BUTTON_SIZE = new java.awt.Dimension(64, 22);
     /** makeコマンドテキストボックス */
 	private JTextField txtMakeCommand;
+	private Frame frame;
 
     /**
      * コンストラクタ
@@ -171,10 +177,12 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
      * @param modal		true=モーダルダイアログを表示する
      * @wbp.parser.constructor
      */
-    public FileProjectNewDialog(Frame owner, boolean modal, ProjectProperties pproperties, SSHconnectProperties sproperties) {
+    public FileProjectNewDialog(Frame owner, boolean modal, ProjectProperties pproperties, SSHconnectProperties sproperties, AppController controller) {
         super(owner, modal);
         this.pproperties = pproperties;
         this.sproperties = sproperties;
+        this.controller = controller;
+        this.frame = owner;
         initGUI();
     }
 
@@ -313,11 +321,20 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
             panelSelect.setLayout(layoutSelect);
             
             if (this.sproperties != null && this.sproperties.haveSSHconnect) {
+            	ssh_settings_button = new JButton(Message.getString("fileprojectnewdialog.kindpanel.SSHsettings"));
             	// SSHconnectの使用切り替え
-            	checkUseSSHconnect = new JCheckBox(Message.getString("fileprojectnewdialog.kindpanel.checkbox.useSSHconnect"));
+            	checkUseSSHconnect = new JCheckBox(Message.getString("fileprojectnewdialog.kindpanel.checkbox.useSSHconnect")) {
+            		@Override
+            		protected void fireStateChanged() {
+            			if (haveSSHconnect(sproperties)) {
+            				ssh_settings_button.setEnabled(this.isSelected());
+            			}
+            		}
+            	};
             	checkUseSSHconnect.setToolTipText(Message.getString("fileprojectnewdialog.kindpanel.checkbox.useSSHconnect.tooltip"));
             	checkUseSSHconnect.setEnabled(isFullProject());
             	checkUseSSHconnect.setSelected(this.pproperties.useSSHconnect());
+            	
             }
             
             // XML/Fortran切り替えラジオボタン　デフォルト：中間コード+既存　: Generate intermediate-code by Makefile and sou...
@@ -327,7 +344,10 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
 				protected void fireStateChanged() {
 					if (this.isSelected()) pproperties.setHiddenPropertyValue(ProjectProperties.GENERATE_XML, "true");
 					else pproperties.setHiddenPropertyValue(ProjectProperties.GENERATE_XML, "false");
-					if (sproperties != null && sproperties.haveSSHconnect) checkUseSSHconnect.setEnabled(this.isSelected());
+					if (haveSSHconnect(sproperties)) {
+						checkUseSSHconnect.setEnabled(this.isSelected());
+						ssh_settings_button.setEnabled(this.isSelected());
+					}
 					if (labelStatus[2] != null) {
 						labelStatus[2].setVisible(isGenerateIntermediateCode());
 					}
@@ -349,7 +369,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
             //中間コードの生成は行わない
             radioNotGenXML = new JRadioButton(Message.getString("fileprojectnewdialog.kindpanel.radiobutton.existxml")); //既存の中間コードを読み込む : Read existing intermediate-code
             radioNotGenXML.setToolTipText(Message.getString("fileprojectnewdialog.kindpanel.radiobutton.existxml.tooltip")); //既存の中間コードを読み込み、プロジェクトを作成します。
-            radioXml = new JRadioButton(Message.getString("fileprojectnewdialog.kindpanel.radiobutton.fullmode"), true) {
+            radioXml = new JRadioButton("radioXML",true) {//Message.getString("fileprojectnewdialog.kindpanel.radiobutton.fullmode"), true) {
 
 				@Override
 				protected void fireStateChanged() {
@@ -372,6 +392,11 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
 					if (checkbox_StructureAnalysis != null) {
 						checkbox_StructureAnalysis.setEnabled(this.isSelected());
 						checkbox_StructureAnalysis.setSelected(this.isSelected());
+					}
+					if (haveSSHconnect(sproperties)) {
+						boolean enabled = this.isSelected() && radioGenXML.isSelected() && radioGenXML.isEnabled();
+						checkUseSSHconnect.setEnabled(enabled);
+						ssh_settings_button.setEnabled(enabled);
 					}
 				}
 
@@ -397,7 +422,11 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
             panelSelect.add(radioXml, new GridBagConstraints(0, 0, 3, 1, 1.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
             panelSelect.add(radioNotGenXML, new GridBagConstraints(1, 1, 2, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
             panelSelect.add(radioGenXML, new GridBagConstraints(1, 2, 2, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
-            if (this.sproperties != null && this.sproperties.haveSSHconnect) panelSelect.add(checkUseSSHconnect,new GridBagConstraints(2, 3, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
+            if (this.sproperties != null && this.sproperties.haveSSHconnect) {
+            	panelSelect.add(checkUseSSHconnect,new GridBagConstraints(2, 3, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
+            	panelSelect.add(ssh_settings_button,new GridBagConstraints(3, 3, 1,1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
+            	ssh_settings_button.addActionListener(this);
+            }
             panelSelect.add(radioFortran, new GridBagConstraints(0, 4, 3, 1, 1.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
             panelSelect.add(new JLabel(Message.getString("fileprojectnewdialog.kindpanel.label.fortranonly")), //フォートランソースコードのみを読み込む : Read only a Fortran source code
             		new GridBagConstraints(1, 5, 2, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
@@ -417,7 +446,12 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
         return panelContent;
     }
 
-    /**
+    protected boolean haveSSHconnect(SSHconnectProperties sproperties) {
+		if (sproperties == null) return false;
+		return sproperties.haveSSHconnect;
+	}
+
+	/**
      * True if need to build the project (locally or remotely) to generate intermediate code.
      * @return
      */
@@ -1506,6 +1540,11 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
         		}
         	}
         }
+        else if (event.getSource() == this.ssh_settings_button) {
+        	ProjectSettingSSHAction psssh_action = new ProjectSettingSSHAction(this.controller);
+        	psssh_action.openDialog(this.frame);
+        }
+        
     }
 
     /**

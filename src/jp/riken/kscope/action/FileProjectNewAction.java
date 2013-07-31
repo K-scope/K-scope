@@ -102,11 +102,9 @@ public class FileProjectNewAction extends ActionBase {
     				JOptionPane.OK_CANCEL_OPTION,
     				JOptionPane.WARNING_MESSAGE);
 
-    		if (option != JOptionPane.OK_OPTION) {
-    			Application.status.setMessageMain(Message.getString("mainmenu.file.closeproject")); //プロジェクトを閉じる + Message.getString("action.common.cancel.status")); //:キャンセル
-    			return;
+    		if (option == JOptionPane.OK_OPTION) {
+    			save_action.saveProject(frame);
     		}
-    		save_action.saveProject(frame);
     		FileProjectCloseAction close_action = new FileProjectCloseAction(this.controller);
     		try {
 				close_action.closeProject();
@@ -130,7 +128,7 @@ public class FileProjectNewAction extends ActionBase {
         SSHconnectProperties ssh_properties = this.controller.getPropertiesSSH();
         
         // プロジェクトの新規作成ダイアログを表示する。
-        FileProjectNewDialog dialog = new FileProjectNewDialog(frame, true, pproperties,ssh_properties);
+        FileProjectNewDialog dialog = new FileProjectNewDialog(frame, true, pproperties,ssh_properties, this.controller);
         dialog.setLastAccessFolder(currentFolder);
         // 除外パス名を設定する
         dialog.addExcludeName(KscopeProperties.SETTINGS_FOLDER);

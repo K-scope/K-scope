@@ -168,7 +168,7 @@ public class SSHconnectPropertiesDialog  extends javax.swing.JDialog implements 
 
         // ダイアログ表示
         this.setVisible(true);
-
+        this.requestFocus();
         return this.result;
     }
 	

@@ -223,16 +223,16 @@
         <operand add="0" div="0" mul="0" name="transpose" sub="1"/>
         
         <!-- SSHconnectプロパティ -->
-        <sshconnect key="add_path" value="/home/sshuser/kscope/bin/" type="system" commandline_option="-ap" />
-		<sshconnect key="host" value="127.0.0.1" type="system" commandline_option="-h" />
-		<sshconnect key="port" value="3022" type="system" commandline_option="-p"/>
-		<sshconnect key="user" value="sshuser" type="system" commandline_option="-u"/>
-		<sshconnect key="password" value="aics" type="system" commandline_option="-pw"/>
-		<sshconnect key="key" value="keys/sshuser_rsa" type="system" commandline_option="-k"/>
-		<sshconnect key="passphrase" value="riken.aics" type="system" commandline_option="-ph"/>
-		<sshconnect key="remote_path" value="/home/sshuser/kscope/" type="system" commandline_option="-rp"/>
+        <sshconnect key="add_path" value="/opt/omnixmp/bin" type="system" commandline_option="-ap" />
+		<sshconnect key="host" value="kscope.aics.riken.jp" type="system" commandline_option="-h" />
+		<sshconnect key="port" value="22" type="system" commandline_option="-p"/>
+		<sshconnect key="user" value="peter" type="system" commandline_option="-u"/>
+		<sshconnect key="password" value="" type="system" commandline_option="-pw"/>
+		<sshconnect key="key" value="/Users/peterbryzgalov/.ssh/id_rsa_com" type="system" commandline_option="-k"/>
+		<sshconnect key="passphrase" value="" type="system" commandline_option="-ph"/>
+		<sshconnect key="remote_path" value="/home/peter/" type="system" commandline_option="-rp"/>
 		<sshconnect key="build_command" type="project" commandline_option="-m"/>
-		<sshconnect key="local_path" value="/Users/peterbryzgalov/work/NICAM-K.xml" type="project" commandline_option="-lp"/>
+		<sshconnect key="local_path" value="" type="project" commandline_option="-lp"/>
 		<sshconnect key="file_filter" value="*.tar,*.zip,*.html,*.o,*.xml,*.xmod,.DS*,*.ksx" type="project" commandline_option="-ff"/>
 		<sshconnect key="preprocess_files" value="" type="project" commandline_option="-pf"/>
 		

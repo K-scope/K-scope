@@ -26,16 +26,28 @@ public class ProjectSettingSSHAction extends ActionBase {
         // 親Frameの取得を行う。
         Frame frame = getWindowAncestor( event );
 
-        // 設定ダイアログを表示する。
-        SSHconnectProperties ssh_properties = this.controller.getPropertiesSSH();
+       	openDialog(frame);
+	}
 
-		SSHconnectPropertiesDialog dialog = new SSHconnectPropertiesDialog(frame, ssh_properties);  
+	/**
+	 *  設定ダイアログを表示する。
+	 * @param frame
+	 */
+	public void openDialog(Frame frame) {
+		String message = Message.getString("projectsettingsshconnect.setup.status");
+		
+        SSHconnectProperties ssh_properties = this.controller.getPropertiesSSH();
+        
+		SSHconnectPropertiesDialog dialog = new SSHconnectPropertiesDialog(frame, ssh_properties);
+		dialog.setModal(true);
 		int result = dialog.showDialog(); 
-        if (result != Constant.OK_DIALOG) {
+		if (result != Constant.OK_DIALOG) {
         	Application.status.setMessageMain(message + 
         			Message.getString("action.common.cancel.status")); //キャンセル
         	return;
         }
         this.controller.setSSHproperties(ssh_properties);
 	}
+	
+	
 }
