@@ -1084,6 +1084,16 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
 		if (index == 0) {
 			this.btnBack.setEnabled(false);
 		}
+		else if (index == 1) { // open BasePanel
+			// hide file_filter and process_files fields
+			if (this.sproperties.haveSSHconnect) {
+				if (useSSHconnect() && !haveAllSettings2connect()) {
+					ProjectSettingSSHAction psssh_action = new ProjectSettingSSHAction(this.controller);
+		        	psssh_action.openDialog(this.frame,Message.getString("projectsettingsshconnect.setup.need_parameters"));
+				}
+				sshc_settings_panel.setVisible(useSSHconnect());
+			}
+		}
 		else if (index == 3) {
 			String title = Message.getString("fileprojectnewdialog.statuspanel.xml"); //中間コードの選択
 			if (labelStatus[3] != null) {
@@ -1114,11 +1124,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
 			}
 			lblPanelXML.setText(title);
 			txaXMLPanelDesc.setText(desc);
-		}
-		else if (index == 1) { // open BasePanel
-			// hide file_filter and process_files fields
-			if (this.sproperties.haveSSHconnect) sshc_settings_panel.setVisible(useSSHconnect());
-		}		
+		}				
 		else if (index == panelWizerds.length - 1) {
 			this.btnNext.setText(Message.getString("fileprojectnewdialog.button.new")); //新規作成
 			String labelString = Message.getString("fileprojectnewdialog.finalizepanel.label.xml"); //中間コード
@@ -1130,7 +1136,15 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
 		}
     }
 
-    /**
+    private boolean haveAllSettings2connect() {
+		String host = this.sproperties.getPropertySet(SSHconnectProperties.HOST).getValue();
+		if (host == null || host.length() < 1) return false;
+		String user = this.sproperties.getPropertySet(SSHconnectProperties.USER).getValue();
+		if (user == null || user.length() < 1) return false;
+		return true;
+	}
+
+	/**
      * 設定パラメータチェック
      * @param	index		ウィザードパネル番号
      * @return				true=成功, false=失敗

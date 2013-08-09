@@ -1,6 +1,7 @@
 package jp.riken.kscope.dialog;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.Frame;
 import java.awt.Insets;
@@ -11,6 +12,7 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.JTextArea;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
@@ -42,6 +44,7 @@ public class SSHconnectPropertiesDialog  extends javax.swing.JDialog implements 
     		Message.getString("sshconnectsettingdialog.parameter.name"),
     		Message.getString("sshconnectsettingdialog.parameter.value")
     };
+    private String message = null;
 
     /** ダイアログの戻り値 */
     private int result = Constant.CANCEL_DIALOG;
@@ -49,6 +52,13 @@ public class SSHconnectPropertiesDialog  extends javax.swing.JDialog implements 
 	public SSHconnectPropertiesDialog(Frame frame, SSHconnectProperties settings) {
         super(frame);
         this.sshproperties = settings;
+        initGUI();
+    }
+	
+	public SSHconnectPropertiesDialog(Frame frame, SSHconnectProperties settings, String message) {
+        super(frame);
+        this.sshproperties = settings;
+        this.message = message;
         initGUI();
     }
 	
@@ -63,7 +73,24 @@ public class SSHconnectPropertiesDialog  extends javax.swing.JDialog implements 
     		thisLayout.setHgap(5);
     		thisLayout.setVgap(5);
     		getContentPane().setLayout(thisLayout);
-
+    		
+    		// Message panel
+    		if (this.message != null) {
+    			JPanel panel_message = new JPanel();
+    			BorderLayout jPanelLayout = new BorderLayout(0,0);
+    			panel_message.setLayout(jPanelLayout);
+    			getContentPane().add(panel_message, BorderLayout.NORTH);
+    			panel_message.setPreferredSize(new java.awt.Dimension(390, 30));
+    			
+    			JTextArea text = new JTextArea(message);
+            	text.setLineWrap(true);
+            	text.setWrapStyleWord(false);
+            	text.setOpaque(true);
+            	text.setEditable(false);
+            	text.setBackground(Color.white);
+            	text.setBorder(new EmptyBorder(3, 15, 3, 15));
+            	panel_message.add(text, BorderLayout.CENTER);
+    		}
     		// ボタンパネル
     		{
     			JPanel panelButtons = new JPanel();

@@ -34,7 +34,7 @@ public class ProjectSettingSSHAction extends ActionBase {
 	 * @param frame
 	 */
 	public void openDialog(Frame frame) {
-		String message = Message.getString("projectsettingsshconnect.setup.status");
+		String status = Message.getString("projectsettingsshconnect.setup.status");
 		
         SSHconnectProperties ssh_properties = this.controller.getPropertiesSSH();
         
@@ -42,7 +42,27 @@ public class ProjectSettingSSHAction extends ActionBase {
 		dialog.setModal(true);
 		int result = dialog.showDialog(); 
 		if (result != Constant.OK_DIALOG) {
-        	Application.status.setMessageMain(message + 
+        	Application.status.setMessageMain(status + 
+        			Message.getString("action.common.cancel.status")); //キャンセル
+        	return;
+        }
+        this.controller.setSSHproperties(ssh_properties);
+	}
+	
+	/**
+	 *  Message付きの設定ダイアログを表示する。
+	 * @param frame
+	 */
+	public void openDialog(Frame frame, String message) {
+		String status = Message.getString("projectsettingsshconnect.setup.status");
+		
+        SSHconnectProperties ssh_properties = this.controller.getPropertiesSSH();
+        
+		SSHconnectPropertiesDialog dialog = new SSHconnectPropertiesDialog(frame, ssh_properties, message);
+		dialog.setModal(true);
+		int result = dialog.showDialog(); 
+		if (result != Constant.OK_DIALOG) {
+        	Application.status.setMessageMain(status + 
         			Message.getString("action.common.cancel.status")); //キャンセル
         	return;
         }
