@@ -36,6 +36,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.DefaultListCellRenderer;
@@ -482,6 +483,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
         panelContent.setLayout(jPanel2Layout);
         //panelContent.setBorder(new LineBorder(new java.awt.Color(0,0,0), 1, false));
         panelContent.setBorder(new EmptyBorder(7, 7, 0, 7));
+        //panelContent.setBorder(BorderFactory.createLineBorder(Color.black));
         // タイトル
         {
             JLabel label = new JLabel(Message.getString("fileprojectnewdialog.statuspanel.basicinfo")); //プロジェクト情報の入力
@@ -550,6 +552,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
         	sshc_text.setWrapStyleWord(true);
         	sshc_text.setOpaque(false);
         	sshc_text.setEditable(false);
+        	
         	JLabel ffl = new JLabel(Message.getString("fileprojectnewdialog.basepanel.filefilter.label"));
         	txt_filefilter = new JTextField();
         	String ffilter= this.sproperties.getPropertySet(SSHconnectProperties.FILE_FILTER).getValue();
@@ -557,6 +560,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
         	JLabel procfl = new JLabel(Message.getString("fileprojectnewdialog.basepanel.processfiles.label"));
         	txt_preprocess_files = new JTextField();
         	addprerocessfile_button = new JButton(Message.getString("fileprojectnewdialog.basepanel.processfiles.addbutton"));
+        	addprerocessfile_button.setEnabled(false);
         	addprerocessfile_button.addActionListener(this);
 
         	sshc_settings_panel.add(sshc_text, new GridBagConstraints(0, 0, 4, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 7, 10, 7), 0, 0));
@@ -1093,6 +1097,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
 				}
 				sshc_settings_panel.setVisible(useSSHconnect());
 			}
+			this.btnNext.setEnabled(false);  // Disable until project folder selected    		
 		}
 		else if (index == 3) {
 			String title = Message.getString("fileprojectnewdialog.statuspanel.xml"); //中間コードの選択
@@ -1327,6 +1332,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
             }
 
             this.txtProjectFolder.setText(selected[0].getPath());
+            enableButtons();
 
         }
         
@@ -1440,6 +1446,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
         }*/
         // 次へ
         else if (event.getSource() == this.btnNext) {
+        	//System.out.println(this.wizerdIndex);
         	if (!checkParams(this.wizerdIndex)) {
         		return;
         	}
@@ -1481,14 +1488,13 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
 
         		return;
         	}
-        	else {
+        	else {   
         		if (this.wizerdIndex < this.panelWizerds.length - 1) {
         			this.wizerdForward = this.wizerdIndex;
         			this.wizerdIndex++;
-        			if (this.wizerdIndex == 2 &&
-        					!isGenerateIntermediateCode()) {
+        			if (this.wizerdIndex == 2 && isGenerateIntermediateCode()) {
         				this.wizerdIndex++;
-        			}
+        			}        			
         		}
         		else {
         			this.wizerdIndex = this.panelWizerds.length - 1;
@@ -1561,7 +1567,12 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
         
     }
 
-    /**
+    private void enableButtons() {
+		this.btnNext.setEnabled(true);
+		this.addprerocessfile_button.setEnabled(true);
+	}
+
+	/**
      * プロジェクトファイルリスト重複チェック
      * @param model       プロジェクトファイルリスト
      * @param path        重複チェックプロジェクトファイル
