@@ -317,8 +317,8 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
             GridBagLayout layoutSelect = new GridBagLayout();
             layoutSelect.rowWeights = new double [] {0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
             layoutSelect.rowHeights = new int [] {16, 16, 16, 16, 16, 16};
-            layoutSelect.columnWeights = new double [] {0.0, 0.0, 0.0};
-            layoutSelect.columnWidths = new int [] {32, 32, 64};
+            layoutSelect.columnWeights = new double [] {0.0, 0.0, 0.0,0.0};
+            layoutSelect.columnWidths = new int [] {32, 32, 64, 128};
             panelSelect.setLayout(layoutSelect);
             
             if (this.sproperties != null && this.sproperties.haveSSHconnect) {
@@ -370,7 +370,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
             //中間コードの生成は行わない
             radioNotGenXML = new JRadioButton(Message.getString("fileprojectnewdialog.kindpanel.radiobutton.existxml")); //既存の中間コードを読み込む : Read existing intermediate-code
             radioNotGenXML.setToolTipText(Message.getString("fileprojectnewdialog.kindpanel.radiobutton.existxml.tooltip")); //既存の中間コードを読み込み、プロジェクトを作成します。
-            radioXml = new JRadioButton("radioXML",true) {//Message.getString("fileprojectnewdialog.kindpanel.radiobutton.fullmode"), true) {
+            radioXml = new JRadioButton(Message.getString("fileprojectnewdialog.kindpanel.radiobutton.fullmode"), true) {
 
 				@Override
 				protected void fireStateChanged() {
@@ -422,7 +422,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
             groupGenMake.add(radioNotGenXML);            
             panelSelect.add(radioXml, new GridBagConstraints(0, 0, 3, 1, 1.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
             panelSelect.add(radioNotGenXML, new GridBagConstraints(1, 1, 2, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
-            panelSelect.add(radioGenXML, new GridBagConstraints(1, 2, 2, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
+            panelSelect.add(radioGenXML, new GridBagConstraints(1, 2, 3, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
             if (this.sproperties != null && this.sproperties.haveSSHconnect) {
             	panelSelect.add(checkUseSSHconnect,new GridBagConstraints(2, 3, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
             	panelSelect.add(ssh_settings_button,new GridBagConstraints(3, 3, 1,1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
@@ -432,7 +432,8 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
             panelSelect.add(new JLabel(Message.getString("fileprojectnewdialog.kindpanel.label.fortranonly")), //フォートランソースコードのみを読み込む : Read only a Fortran source code
             		new GridBagConstraints(1, 5, 2, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
 
-            panelContent.add(panelSelect, new GridBagConstraints(1, 2, 2, 5, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 7, 0, 0), 0, 0));           
+            panelContent.add(panelSelect, new GridBagConstraints(1, 2, 3, 5, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 7, 0, 0), 0, 0));         
+            
         }
      // 説明文
         {
@@ -1097,7 +1098,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
 				}
 				sshc_settings_panel.setVisible(useSSHconnect());
 			}
-			this.btnNext.setEnabled(false);  // Disable until project folder selected    		
+			if (this.txtProjectFolder.getText().length() < 1) this.btnNext.setEnabled(false);  // Disable until project folder selected    		
 		}
 		else if (index == 3) {
 			String title = Message.getString("fileprojectnewdialog.statuspanel.xml"); //中間コードの選択
@@ -1436,14 +1437,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
             	}
             }
         }
-        // makefile参照ボタン
-        /*else if (event.getSource() == this.btnMakefile) {
-        	File[] selected = SwingUtils.showOpenMakefileDialog(this,
-        			Message.getString("fileprojectnewdialog.selectfiledialog.makefile.title"), //Makefileの選択
-        			currentFolder, false);
-        	if (selected == null || selected.length <= 0 || selected[0] == null) return;
-        	this.txtMakefile.setText(selected[0].toString());
-        }*/
+        
         // 次へ
         else if (event.getSource() == this.btnNext) {
         	//System.out.println(this.wizerdIndex);

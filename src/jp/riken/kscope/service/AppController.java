@@ -267,7 +267,7 @@ public class AppController implements PropertyChangeListener {
         if (this.propertiesApplication == null) {
         	this.propertiesApplication = new ApplicationProperties();
         }
-        if (this.propertiesSSH == null || this.propertiesSSH.isEmpty()) {
+        if (this.propertiesSSH == null) { //  always true!! --> || this.propertiesSSH.isEmpty()) {
         		this.propertiesSSH = new SSHconnectProperties(this);
         		this.propertiesSSH.haveSSHconnect = this.haveSSHconnect; // set Flag if SSHconnect is present
         }
@@ -795,7 +795,7 @@ public class AppController implements PropertyChangeListener {
         this.propertiesProfiler = null;
         this.propertiesMemory = null;
         this.propertiesVariable = null;
-        this.propertiesSSH = null;
+        //this.propertiesSSH = null;
     }
 
     

@@ -29,7 +29,7 @@ import jp.riken.kscope.utils.ResourceUtils;
 public class SSHconnectProperties extends PropertiesBase {
 	
 	public static String ADD_PATH = "add_path";
-	public static String HOST = "host";
+	public static String HOST = "server_address";
 	public static String PORT = "port";
 	public static String USER = "user";
 	public static String PASSWORD = "build_command";

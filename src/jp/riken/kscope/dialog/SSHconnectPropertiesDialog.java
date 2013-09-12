@@ -7,16 +7,24 @@ import java.awt.Frame;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
+import javax.swing.RowFilter;
+import javax.swing.RowSorter;
+import javax.swing.RowSorter.SortKey;
 import javax.swing.ScrollPaneConstants;
+import javax.swing.SortOrder;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
+import javax.swing.table.TableRowSorter;
+
 import jp.riken.kscope.Message;
 import jp.riken.kscope.common.Constant;
 import jp.riken.kscope.properties.SSHconnectProperties;
@@ -151,6 +159,7 @@ public class SSHconnectPropertiesDialog  extends javax.swing.JDialog implements 
     						System.err.println("Table has "+COLUMN_HEADERS.length+" columns. You asked for column number"+column);
     						return null;
     					}
+    					
     					if (column == 0) return sshproperties.getKey(row);
     					if (column == 1) return sshproperties.getValue(row);
     					return null;
@@ -170,6 +179,17 @@ public class SSHconnectPropertiesDialog  extends javax.swing.JDialog implements 
     			};
     			modelProperties.setColumnIdentifiers(COLUMN_HEADERS);
     			tblProperties = new JTable(modelProperties);
+    			
+    			TableRowSorter<TableModel> sorter;
+    			sorter = new TableRowSorter<TableModel> (modelProperties);
+    			
+    			String filter_expr = "^((?!"+SSHconnectProperties.BUILD_COMMAND+").)*$";
+    			sorter.setRowFilter(RowFilter.regexFilter(filter_expr,0));
+    			
+    			ArrayList<SortKey> list = new ArrayList<SortKey>();
+    			list.add( new RowSorter.SortKey(0, SortOrder.ASCENDING) );
+    			sorter.setSortKeys(list);
+    			tblProperties.setRowSorter (sorter);
     			
     			JScrollPane scrollList = new JScrollPane(tblProperties);
 				scrollList.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);

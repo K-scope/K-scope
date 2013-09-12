@@ -355,7 +355,7 @@ public class ProjectService extends BaseService {
      * @param saveFolder    保存フォルダ
      * @throws Exception 		プロパティ出力エラー
      */
-    private void writeProperties(File saveFolder) throws Exception {
+    public void writeProperties(File saveFolder) throws Exception {
 
         // ドキュメント作成
         DocumentBuilderFactory dbfactory = DocumentBuilderFactory.newInstance();

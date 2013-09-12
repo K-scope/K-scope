@@ -2,6 +2,8 @@ package jp.riken.kscope.action;
 
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
+import java.io.File;
+import java.io.IOException;
 
 import jp.riken.kscope.Application;
 import jp.riken.kscope.Message;
@@ -9,6 +11,7 @@ import jp.riken.kscope.common.Constant;
 import jp.riken.kscope.dialog.SSHconnectPropertiesDialog;
 import jp.riken.kscope.properties.SSHconnectProperties;
 import jp.riken.kscope.service.AppController;
+import jp.riken.kscope.service.ProjectService;
 
 public class ProjectSettingSSHAction extends ActionBase {
 
@@ -47,6 +50,9 @@ public class ProjectSettingSSHAction extends ActionBase {
         	return;
         }
         this.controller.setSSHproperties(ssh_properties);
+        // Save properties
+        // TODO write code to save settings to properties.xml
+       
 	}
 	
 	/**

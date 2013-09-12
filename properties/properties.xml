@@ -224,7 +224,7 @@
         
         <!-- SSHconnectプロパティ -->
         <sshconnect key="add_path" value="/opt/omnixmp/bin" type="system" commandline_option="-ap" />
-		<sshconnect key="host" value="kscope.aics.riken.jp" type="system" commandline_option="-h" />
+		<sshconnect key="server_address" value="kscope.aics.riken.jp" type="system" commandline_option="-h" />
 		<sshconnect key="port" value="22" type="system" commandline_option="-p"/>
 		<sshconnect key="user" value="" type="system" commandline_option="-u"/>
 		<sshconnect key="password" value="" type="system" commandline_option="-pw"/>
