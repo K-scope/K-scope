@@ -1440,7 +1440,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
         
         // 次へ
         else if (event.getSource() == this.btnNext) {
-        	//System.out.println(this.wizerdIndex);
+        	//System.out.println(this.wizerdIndex+"/"+this.panelWizerds.length);
         	if (!checkParams(this.wizerdIndex)) {
         		return;
         	}
@@ -1486,7 +1486,8 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
         		if (this.wizerdIndex < this.panelWizerds.length - 1) {
         			this.wizerdForward = this.wizerdIndex;
         			this.wizerdIndex++;
-        			if (this.wizerdIndex == 2 && isGenerateIntermediateCode()) {
+        			//System.out.println("Generate intercode:"+isGenerateIntermediateCode());
+        			if (this.wizerdIndex == 2 && !isGenerateIntermediateCode()) {
         				this.wizerdIndex++;
         			}        			
         		}

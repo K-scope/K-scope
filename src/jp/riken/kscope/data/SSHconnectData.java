@@ -30,19 +30,23 @@ public class SSHconnectData {
 	private String value;
 	private String commandline_option;
 	private boolean type;
+	private int order;
+	private String description;
 	
 	static boolean SYSTEM_TYPE = true;
 	static boolean PROJECT_TYPE = false;
 	static String SYSTEM = "system";
 	static String PROJECT = "project";
 	
-	public void setProperty(String k,String v, String co, String t) {
+	public void setProperty(String k,String v, String co, String t, int order, String description) {
 		this.key = k;
 		this.value = v;
 		this.commandline_option = co;
 		if (t.equalsIgnoreCase(SYSTEM)) this.type = SYSTEM_TYPE;
 		else if (t.equalsIgnoreCase(PROJECT)) this.type = PROJECT_TYPE;
 		else System.err.println("Invalid value for type of SSHconnectData property. It must be either "+SYSTEM+" or " + PROJECT+". Had: "+t+". Value is not set.");
+		this.order = order;
+		this.description = description;
 	}
 	
 	public void setValue(String new_value) {
@@ -64,6 +68,14 @@ public class SSHconnectData {
 	public String getType() {
 		if (this.type == SSHconnectData.SYSTEM_TYPE) return SSHconnectData.SYSTEM;
 		return SSHconnectData.PROJECT;
+	}
+	
+	public int getOrder() {
+		return this.order;
+	}
+	
+	public String getDescription() {
+		return this.description;
 	}
 	
 }

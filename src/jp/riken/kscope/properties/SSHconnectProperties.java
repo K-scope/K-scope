@@ -171,11 +171,13 @@ public class SSHconnectProperties extends PropertiesBase {
                 
                 // 属性の取得
                 NamedNodeMap attrs = node.getAttributes();
-                Node attrnode_key,attrnode_value,attrnode_type;
+                Node attrnode_key,attrnode_value,attrnode_type,attrnode_description;
                 String key = null;
                 String value = null;
                 String commandline_option = null;
                 String type = null;
+                String description = null;
+                
                 // プロパティ名
                 attrnode_key = attrs.getNamedItem("key");
                 if (attrnode_key != null) {
@@ -195,8 +197,15 @@ public class SSHconnectProperties extends PropertiesBase {
                 if (attrnode_type != null) {
                     type = attrnode_type.getNodeValue();                    
                 }
+                
+                //Description
+                attrnode_description = attrs.getNamedItem("description");
+                if (attrnode_description != null) {
+                    description = attrnode_description.getNodeValue();                    
+                }                
+                
                 if (key != null || value != null) {
-                	sshdata.setProperty(key, value, commandline_option, type);
+                	sshdata.setProperty(key, value, commandline_option, type, i, description);
                 }
                 
                 list.add(sshdata);
@@ -253,6 +262,11 @@ public class SSHconnectProperties extends PropertiesBase {
             {
                 org.w3c.dom.Attr attr = document.createAttribute("type");
                 attr.setValue(sshdata.getType());
+                elem.setAttributeNode(attr);
+            }
+            {
+                org.w3c.dom.Attr attr = document.createAttribute("description");
+                attr.setValue(sshdata.getDescription());
                 elem.setAttributeNode(attr);
             }
             // ノード追加
@@ -319,6 +333,30 @@ public class SSHconnectProperties extends PropertiesBase {
         if (listSSH.size() <= index) {return null;}
 
         return listSSH.get(index).getValue();
+	}
+	
+	/**
+	 * Get property description
+	 * @param index
+	 * @return
+	 */
+	public String getDescription(int index) {
+		if (listSSH == null || listSSH.size() <= 0) {return null;}
+        if (listSSH.size() <= index) {return null;}
+
+        return listSSH.get(index).getDescription();
+	}
+	
+	/**
+	 * Get property order number
+	 * @param index
+	 * @return
+	 */
+	public int getOrder(int index) {
+		if (listSSH == null || listSSH.size() <= 0) {return -1;}
+        if (listSSH.size() <= index) {return -1;}
+
+        return listSSH.get(index).getOrder();
 	}
 
 	/**

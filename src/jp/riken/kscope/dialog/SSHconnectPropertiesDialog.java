@@ -8,6 +8,7 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.Comparator;
 
 import javax.swing.JButton;
 import javax.swing.JPanel;
@@ -49,8 +50,10 @@ public class SSHconnectPropertiesDialog  extends javax.swing.JDialog implements 
     private DefaultTableModel modelProperties;
     /** 列名 */
     private final String[] COLUMN_HEADERS = {
+    		Message.getString("sshconnectsettingdialog.parameter.order"),
     		Message.getString("sshconnectsettingdialog.parameter.name"),
-    		Message.getString("sshconnectsettingdialog.parameter.value")
+    		Message.getString("sshconnectsettingdialog.parameter.value"),
+    		Message.getString("sshconnectsettingdialog.parameter.description")
     };
     private String message = null;
 
@@ -63,6 +66,9 @@ public class SSHconnectPropertiesDialog  extends javax.swing.JDialog implements 
         initGUI();
     }
 	
+	/**
+	 * @wbp.parser.constructor
+	 */
 	public SSHconnectPropertiesDialog(Frame frame, SSHconnectProperties settings, String message) {
         super(frame);
         this.sshproperties = settings;
@@ -160,12 +166,14 @@ public class SSHconnectPropertiesDialog  extends javax.swing.JDialog implements 
     						return null;
     					}
     					
-    					if (column == 0) return sshproperties.getKey(row);
-    					if (column == 1) return sshproperties.getValue(row);
+    					if (column == 0) return sshproperties.getOrder(row);
+    					else if (column == 1) return sshproperties.getKey(row);
+    					else if (column == 2) return sshproperties.getValue(row);
+    					else if (column == 3) return Message.getString(sshproperties.getDescription(row));
     					return null;
     				}
     				public boolean isCellEditable(int row, int column) {
-    					if (column==1) return true;
+    					if (column==2) return true;
     					return false;
     				}
     				public void setValueAt(Object value, int row, int column) {
@@ -173,18 +181,34 @@ public class SSHconnectPropertiesDialog  extends javax.swing.JDialog implements 
     						System.err.println("Table has "+COLUMN_HEADERS.length+" columns. You asked for column number"+column);
     						return;
     					}
-    					if (column == 1) sshproperties.setValue(row, value.toString());
+    					if (column == 2) sshproperties.setValue(row, value.toString());
     					fireTableCellUpdated(row, column);
     			    }
     			};
+    			
     			modelProperties.setColumnIdentifiers(COLUMN_HEADERS);
     			tblProperties = new JTable(modelProperties);
+    			tblProperties.getColumnModel().getColumn(0).setMaxWidth(30);
+    			tblProperties.getColumnModel().getColumn(1).setMinWidth(120);
+    			tblProperties.getColumnModel().getColumn(1).setMaxWidth(140);
+    			tblProperties.getColumnModel().getColumn(2).setMinWidth(200);
+    			tblProperties.getColumnModel().getColumn(2).setMaxWidth(400);
     			
     			TableRowSorter<TableModel> sorter;
     			sorter = new TableRowSorter<TableModel> (modelProperties);
     			
     			String filter_expr = "^((?!"+SSHconnectProperties.BUILD_COMMAND+").)*$";
-    			sorter.setRowFilter(RowFilter.regexFilter(filter_expr,0));
+    			sorter.setRowFilter(RowFilter.regexFilter(filter_expr,1));
+    			
+    			sorter.setComparator(0, new Comparator<Integer>() {
+
+    		        @Override
+    		        public int compare(Integer o1, Integer o2)
+    		        {
+    		            return o1-o2;
+    		        }
+
+    		    });
     			
     			ArrayList<SortKey> list = new ArrayList<SortKey>();
     			list.add( new RowSorter.SortKey(0, SortOrder.ASCENDING) );
@@ -197,7 +221,7 @@ public class SSHconnectPropertiesDialog  extends javax.swing.JDialog implements 
 				panelContent.add(scrollList, BorderLayout.CENTER);	
     		}
     		setTitle(Message.getString("sshconnectsettingdialog.title")); 
-    		setSize(640, 300);
+    		setSize(800, 300);
 
     	} catch (Exception e) {
     		e.printStackTrace();

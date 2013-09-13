@@ -223,18 +223,18 @@
         <operand add="0" div="0" mul="0" name="transpose" sub="1"/>
         
         <!-- SSHconnectプロパティ -->
-        <sshconnect key="add_path" value="/opt/omnixmp/bin" type="system" commandline_option="-ap" />
-		<sshconnect key="server_address" value="kscope.aics.riken.jp" type="system" commandline_option="-h" />
-		<sshconnect key="port" value="22" type="system" commandline_option="-p"/>
-		<sshconnect key="user" value="" type="system" commandline_option="-u"/>
-		<sshconnect key="password" value="" type="system" commandline_option="-pw"/>
-		<sshconnect key="key" value="/Users/peterbryzgalov/.ssh/id_rsa_com" type="system" commandline_option="-k"/>
-		<sshconnect key="passphrase" value="" type="system" commandline_option="-ph"/>
-		<sshconnect key="remote_path" value="/home/peter/" type="system" commandline_option="-rp"/>
-		<sshconnect key="build_command" type="project" commandline_option="-m"/>
-		<sshconnect key="local_path" value="" type="project" commandline_option="-lp"/>
-		<sshconnect key="file_filter" value="*.tar,*.zip,*.html,*.o,*.xml,*.xmod,.DS*,*.ksx" type="project" commandline_option="-ff"/>
-		<sshconnect key="preprocess_files" value="" type="project" commandline_option="-pf"/>
+        <sshconnect key="server_address" value="kscope.aics.riken.jp" type="system" commandline_option="-h" description="property.sshparameters.server_address" />
+		<sshconnect key="port" value="22" type="system" commandline_option="-p" description="property.sshparameters.port" />
+		<sshconnect key="user" value="" type="system" commandline_option="-u" description="property.sshparameters.user"/>
+		<sshconnect key="password" value="" type="system" commandline_option="-pw" description="property.sshparameters.password"/>
+		<sshconnect key="key" value="/Users/peterbryzgalov/.ssh/id_rsa_com" type="system" commandline_option="-k" description="property.sshparameters.key"/>
+		<sshconnect key="passphrase" value="" type="system" commandline_option="-ph" description="property.sshparameters.passphrase"/>
+		<sshconnect key="add_path" value="/opt/omnixmp/bin" type="system" commandline_option="-ap" description="property.sshparameters.add_path"  />
+		<sshconnect key="remote_path" value="/home/peter/" type="system" commandline_option="-rp" description="property.sshparameters.remote_path"/>
+		<sshconnect key="build_command" type="project" commandline_option="-m" description="property.sshparameters.build_command"/>
+		<sshconnect key="local_path" value="" type="project" commandline_option="-lp" description="property.sshparameters.local_path"/>
+		<sshconnect key="file_filter" value="*.tar,*.zip,*.html,*.o,*.xml,*.xmod,.DS*,*.ksx" type="project" commandline_option="-ff" description="property.sshparameters.file_filter"/>
+		<sshconnect key="preprocess_files" value="" type="project" commandline_option="-pf" description="property.sshparameters.preprocess_files"/>
 		
 	<!--  プロジェクトプロパティ -->
 	<project key="build-command" name="property.project.build-command.name" value="make" type="file" message="property.project.build-command.message" />
