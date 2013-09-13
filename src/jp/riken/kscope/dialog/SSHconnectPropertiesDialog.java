@@ -2,6 +2,7 @@ package jp.riken.kscope.dialog;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Frame;
 import java.awt.Insets;
@@ -10,11 +11,14 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Comparator;
 
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
+import javax.swing.JViewport;
 import javax.swing.RowFilter;
 import javax.swing.RowSorter;
 import javax.swing.RowSorter.SortKey;
@@ -22,6 +26,7 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.SortOrder;
 import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
@@ -188,11 +193,17 @@ public class SSHconnectPropertiesDialog  extends javax.swing.JDialog implements 
     			
     			modelProperties.setColumnIdentifiers(COLUMN_HEADERS);
     			tblProperties = new JTable(modelProperties);
-    			tblProperties.getColumnModel().getColumn(0).setMaxWidth(30);
+    			tblProperties.getColumnModel().getColumn(0).setMaxWidth(25);
     			tblProperties.getColumnModel().getColumn(1).setMinWidth(120);
     			tblProperties.getColumnModel().getColumn(1).setMaxWidth(140);
     			tblProperties.getColumnModel().getColumn(2).setMinWidth(200);
     			tblProperties.getColumnModel().getColumn(2).setMaxWidth(400);
+    			tblProperties.setRowMargin(5);
+    			tblProperties.setRowHeight(20);
+    			DefaultTableCellRenderer num_cell_renderer = new DefaultTableCellRenderer();
+    			num_cell_renderer.setHorizontalAlignment( JLabel.CENTER );
+    			num_cell_renderer.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 5));
+    			tblProperties.getColumnModel().getColumn(0).setCellRenderer( num_cell_renderer );
     			
     			TableRowSorter<TableModel> sorter;
     			sorter = new TableRowSorter<TableModel> (modelProperties);
@@ -218,10 +229,17 @@ public class SSHconnectPropertiesDialog  extends javax.swing.JDialog implements 
     			JScrollPane scrollList = new JScrollPane(tblProperties);
 				scrollList.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 				scrollList.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+				scrollList.setColumnHeader(new JViewport() {
+				      @Override public Dimension getPreferredSize() {
+				        Dimension d = super.getPreferredSize();
+				        d.height = 30;
+				        return d;
+				      }
+				    });
 				panelContent.add(scrollList, BorderLayout.CENTER);	
     		}
     		setTitle(Message.getString("sshconnectsettingdialog.title")); 
-    		setSize(800, 300);
+    		setSize(800, 350);
 
     	} catch (Exception e) {
     		e.printStackTrace();

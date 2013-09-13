@@ -233,8 +233,8 @@
 		<sshconnect key="remote_path" value="/home/peter/" type="system" commandline_option="-rp" description="property.sshparameters.remote_path"/>
 		<sshconnect key="build_command" type="project" commandline_option="-m" description="property.sshparameters.build_command"/>
 		<sshconnect key="local_path" value="" type="project" commandline_option="-lp" description="property.sshparameters.local_path"/>
+		<sshconnect key="preprocess_files" value="" type="project" commandline_option="-pf" description="property.sshparameters.preprocess_files"/>		
 		<sshconnect key="file_filter" value="*.tar,*.zip,*.html,*.o,*.xml,*.xmod,.DS*,*.ksx" type="project" commandline_option="-ff" description="property.sshparameters.file_filter"/>
-		<sshconnect key="preprocess_files" value="" type="project" commandline_option="-pf" description="property.sshparameters.preprocess_files"/>
 		
 	<!--  プロジェクトプロパティ -->
 	<project key="build-command" name="property.project.build-command.name" value="make" type="file" message="property.project.build-command.message" />
