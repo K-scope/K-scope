@@ -39,7 +39,7 @@ import jp.riken.kscope.utils.ResourceUtils;
  *
  * @author riken
  */
-public class Go {
+public class Kscope {
 
     /**
      * メインメソッド
@@ -50,16 +50,15 @@ public class Go {
         // 初期設定
         // MacOSXでのJava実行環境用のシステムプロパティの設定.
         if (isMac()) {
-            // JFrameにメニューをつけるのではなく、一般的なOSXアプリ同様に画面上端のスクリーンメニューにする.
+        	// JFrameにメニューをつけるのではなく、一般的なOSXアプリ同様に画面上端のスクリーンメニューにする.
             System.setProperty("apple.laf.useScreenMenuBar", "true");
             System.setProperty("com.apple.macos.smallTabs", "true");
+            
 
             // スクリーンメニュー左端に表記されるアプリケーション名を設定する
             // (何も設定しないとクラス名になる。)
             String title = Message.getString("application.name");
-            System.setProperty(
-                    "com.apple.mrj.application.apple.menu.about.name",
-                    title);
+            
 
             // システム標準のL&Fを設定.
             // MacOSXならAqua、WindowsXPならLuna、Vista/Windows7ならばAeroになる.
@@ -69,6 +68,7 @@ public class Go {
                 ex.printStackTrace();
                 return;
             }
+            System.setProperty( "com.apple.mrj.application.apple.menu.about.name",title);
         } // Windowsの場合
         else if (KscopeProperties.isWindows()) {
             //(2012/4/10) changed by teraim
@@ -84,7 +84,7 @@ public class Go {
         }
         // Linuxの場合は設定しない。
 
-        Go app = new Go();
+        Kscope app = new Kscope();
         app.initApp();
         // Logger.info("parallel_tool start");
         // メインフレーム表示

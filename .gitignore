@@ -23,3 +23,5 @@
 
 ## ignore
 .DS*
+keys/sshuser_rsa_key
+keys/sshuser_rsa_key.pub

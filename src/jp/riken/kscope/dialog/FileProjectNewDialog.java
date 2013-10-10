@@ -1143,10 +1143,16 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
     }
 
     private boolean haveAllSettings2connect() {
-		String host = this.sproperties.getPropertySet(SSHconnectProperties.HOST).getValue();
-		if (host == null || host.length() < 1) return false;
-		String user = this.sproperties.getPropertySet(SSHconnectProperties.USER).getValue();
-		if (user == null || user.length() < 1) return false;
+    	if (this.sproperties == null) return false;
+    	try {
+			String host = this.sproperties.getPropertySet(SSHconnectProperties.HOST).getValue();
+			if (host == null || host.length() < 1) return false;
+			String user = this.sproperties.getPropertySet(SSHconnectProperties.USER).getValue();
+			if (user == null || user.length() < 1) return false;
+    	} 
+    	catch (NullPointerException e) {    		
+    		return false;
+    	}
 		return true;
 	}
 
