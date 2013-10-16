@@ -59,7 +59,7 @@ public class AboutDialog extends javax.swing.JDialog implements ActionListener, 
     /** ダイアログの戻り値 */
     private int result = Constant.CANCEL_DIALOG;
     /** ダイアログサイズ */
-    private Dimension DIALOG_SIZE = new Dimension(320, 300);
+    private Dimension DIALOG_SIZE = new Dimension(320, 480);
 
     /**
      * コンストラクタ

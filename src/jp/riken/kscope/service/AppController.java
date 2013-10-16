@@ -143,30 +143,35 @@ public class AppController implements PropertyChangeListener {
     /** 変数特性一覧アクション（更新用） */
     private AnalysisVariableAction actionVariable = null;
 
+    /**/
     private boolean haveSSHconnect = false;
+
     /**
      * コンストラクタ
      */
     public AppController() {
-    	haveSSHconnect = checkSSHconnect();
+        haveSSHconnect = checkSSHconnect();
     }
 
+    /**/
     private boolean checkSSHconnect() {
-    	File f = new File("SSHconnect.jar");
-    	if(f.exists()) {
-    		System.out.println(f.getAbsolutePath());
-    		return true;
-    	} 
-    	return false;
-	}
-    
-    public boolean isSSHconnectAvailable() {
-    	return this.haveSSHconnect;
+        File f = new File("SSHconnect.jar");
+        if (f.exists()) {
+            System.out.println(f.getAbsolutePath());
+            return true;
+        }
+        return false;
     }
 
-	/**
+    /**/
+    public boolean isSSHconnectAvailable() {
+        return this.haveSSHconnect;
+    }
+
+    /**
      * 初期化を行う。
-     * @throws Exception     初期起動エラー
+     *
+     * @throws Exception 初期起動エラー
      */
     public void initialize() throws Exception {
         // 初期化を行う。
@@ -1040,13 +1045,14 @@ public class AppController implements PropertyChangeListener {
 
     /**
      * エラー情報を設定する
-     * @param error    エラー情報
+     *
+     * @param error エラー情報
      */
-	public void setErrorInfo(ErrorInfo error) {
+    public void setErrorInfo(ErrorInfo error) {
         // エラー情報モデル
         ErrorInfoModel errorModel = this.getErrorInfoModel();
         errorModel.addErrorInfo(error);
-	}
+    }
 }
 
 

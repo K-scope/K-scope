@@ -44,8 +44,10 @@ public class KscopeProperties {
      * version : 0.2.0        2013/03/22 release
      * version : 0.2.1        2013/04/12 release
      * version : 0.2.2        2013/05/01 release
+     * version : 0.2.3        2013/05/31 release
+     * version : 0.2.4        2013/10/30 release
      */
-    public static final String APPLICATION_VERSION = "0.2.3";
+    public static final String APPLICATION_VERSION = "0.2.4";
     /** アプリケーションビルドID */
     //public static final String APPLICATION_BUILDID = "20120315-0900";
 

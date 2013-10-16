@@ -56,8 +56,8 @@ import jp.riken.kscope.xcodeml.XcodeMLParserStax;
  * @author riken
  */
 public class FileProjectNewAction extends ActionBase {
-	/** 中間コードを生成するクラス */
-	private ProjectMakeService makeService;
+    /** 中間コードを生成するクラス */
+    private ProjectMakeService makeService;
     /** プロジェクトのクリアアクション */
     private ProjectClearLanguageAction clearAction;
     /** データベース構築サービス */
@@ -67,6 +67,7 @@ public class FileProjectNewAction extends ActionBase {
 
     /**
      * コンストラクタ
+     *
      * @param controller	アプリケーションコントローラ
      */
     public FileProjectNewAction(AppController controller) {
@@ -76,14 +77,14 @@ public class FileProjectNewAction extends ActionBase {
     /**
      * アクションが実行可能であるかチェックする.<br/>
      * アクションの実行前チェック、メニューのイネーブルの切替を行う。<br/>
-     * @return		true=アクションが実行可能
+     *
+     * @return	true=アクションが実行可能
      */
     @Override
-	public boolean validateAction() {
+    public boolean validateAction() {
         // スレッドタスクの実行状態をチェックする
         return this.controller.isThreadTaskDone();
-	}
-
+    }
 
     /**
      * アクション発生イベント

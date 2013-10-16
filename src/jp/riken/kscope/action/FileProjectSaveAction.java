@@ -109,7 +109,7 @@ public class FileProjectSaveAction extends ActionBase {
 	 * @throws HeadlessException
 	 */
 	public void saveProject(Frame frame)	throws HeadlessException {
-		// プロジェクトサービス
+	// プロジェクトサービス
         ProjectService service = new ProjectService(this.controller.getProjectModel());
         // キーワードプロパティ
         service.setPropertiesKeyword(this.controller.getPropertiesKeyword());
@@ -125,7 +125,7 @@ public class FileProjectSaveAction extends ActionBase {
         service.setPropertiesProject(this.controller.getPropertiesProject());
         // 要求Byte/FLOP設定プロパティ
         service.setPropertiesMemory(this.controller.getPropertiesMemory());
-        
+        //
         service.setPropertiesSSH(this.controller.getPropertiesSSH());
         // エラーモデル
         service.setErrorInfoModel(this.controller.getErrorInfoModel());
@@ -152,7 +152,7 @@ public class FileProjectSaveAction extends ActionBase {
             // ステータスメッセージ
             Application.status.setMessageMain(message + Message.getString("action.common.error.status")); //:エラー
         }
-	}
+    }
 
     /**
      * Languageクラスのシリアライズを行う
@@ -182,7 +182,7 @@ public class FileProjectSaveAction extends ActionBase {
                      * スレッド実行を行う
                      */
                     @Override
-					public Integer call() {
+                    public Integer call() {
                         try {
                             // シリアライズ実行
                             service.writeLanguage(folder);

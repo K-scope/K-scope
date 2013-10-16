@@ -144,14 +144,14 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
     private JLabel lblPanelXML;
 
     private JPanel panelStatusContent = null;
-	private final int ARROW_SIZE = 10;
+    private final int ARROW_SIZE = 10;
     private JLabel labelStatus[] = new JLabel[5];
-    private JPanel panelWizerds[] = new JPanel[5];
+    private JPanel panelWizards[] = new JPanel[5];
     private int wizerdIndex;
     private int wizerdForward;
-    private JPanel panelWizerdParent;
+    private JPanel panelWizardParent;
     private CardLayout cardWizerd;
-    private final String LABEL_WIZERDS[] = new String[]{"kind", "base", "makefile", "xml", "finalize"};
+    private final String LABEL_WIZARDS[] = new String[]{"kind", "base", "makefile", "xml", "finalize"};
     /** 戻るボタン */
     private JButton btnBack;
     /** 次へボタン */
@@ -169,8 +169,8 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
     /** 参照ボタンサイズ */
     private final java.awt.Dimension REFER_BUTTON_SIZE = new java.awt.Dimension(64, 22);
     /** makeコマンドテキストボックス */
-	private JTextField txtMakeCommand;
-	private Frame frame;
+    private JTextField txtMakeCommand;
+    private Frame frame;
 
     /**
      * コンストラクタ
@@ -194,7 +194,6 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
     public FileProjectNewDialog(JFrame frame) {
         super(frame);
         initGUI();
-
     }
 
     /**
@@ -245,26 +244,26 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
             }
 
             // 種類情報
-            this.panelWizerds[0] = createWizerdKindPanel();
+            this.panelWizards[0] = createWizardKindPanel();
             // 基本情報
-            this.panelWizerds[1] = createWizerdBasePanel();
+            this.panelWizards[1] = createWizardBasePanel();
             // Makefile
-            this.panelWizerds[2] = createWizerdMakefilePanel();
+            this.panelWizards[2] = createWizardMakefilePanel();
             // 中間コード
-            this.panelWizerds[3] = createWizerdXmlPanel();
+            this.panelWizards[3] = createWizardXmlPanel();
             // 完了
-            this.panelWizerds[4] = createWizerdFinalizePanel();
+            this.panelWizards[4] = createWizardFinalizePanel();
             // ステータスパネル
             JPanel panelStatus = createStatusPanel();
 
-            this.panelWizerdParent = new JPanel();
+            this.panelWizardParent = new JPanel();
             this.cardWizerd = new CardLayout();
-            this.panelWizerdParent.setLayout(cardWizerd);
+            this.panelWizardParent.setLayout(cardWizerd);
             //this.panelWizerdParent.setBorder(new LineBorder(java.awt.Color.RED));
-            this.panelWizerdParent.add(LABEL_WIZERDS[0], this.panelWizerds[0]);
-            this.panelWizerdParent.add(LABEL_WIZERDS[1], this.panelWizerds[1]);
-            this.panelWizerdParent.add(LABEL_WIZERDS[2], this.panelWizerds[2]);
-            this.panelWizerdParent.add(LABEL_WIZERDS[3], this.panelWizerds[3]);
+            this.panelWizardParent.add(LABEL_WIZARDS[0], this.panelWizards[0]);
+            this.panelWizardParent.add(LABEL_WIZARDS[1], this.panelWizards[1]);
+            this.panelWizardParent.add(LABEL_WIZARDS[2], this.panelWizards[2]);
+            this.panelWizardParent.add(LABEL_WIZARDS[3], this.panelWizards[3]);
             JPanel panelCenter = new JPanel();
             BorderLayout layoutCenter = new BorderLayout();
             panelCenter.setLayout(layoutCenter);
@@ -275,12 +274,12 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
             txaErrMsg.setEditable(false);
             txaErrMsg.setForeground(new Color(255, 0, 0));
             panelCenter.add(txaErrMsg, BorderLayout.SOUTH);
-            panelCenter.add(this.panelWizerdParent, BorderLayout.CENTER);
+            panelCenter.add(this.panelWizardParent, BorderLayout.CENTER);
             getContentPane().add(panelCenter, BorderLayout.CENTER);
             getContentPane().add(panelStatus, BorderLayout.WEST);
             this.wizerdIndex = 0;
             this.wizerdForward = 0;
-            changeWizerdPage(this.wizerdIndex);
+            changeWizardPage(this.wizerdIndex);
 
             // ダイアログサイズ
             this.setSize(760, 360);
@@ -297,7 +296,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
      * プロジェクト種別選択画面を作成する.
      * @return    プロジェクト種別選択画面
      */
-    private JPanel createWizerdKindPanel() {
+    private JPanel createWizardKindPanel() {
     	JPanel panelContent = new JPanel();
     	GridBagLayout jPanel2Layout = new GridBagLayout();
     	jPanel2Layout.rowWeights = new double[] {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0};
@@ -347,18 +346,18 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
 					else pproperties.setHiddenPropertyValue(ProjectProperties.GENERATE_XML, "false");
 					if (haveSSHconnect(sproperties)) {
 						checkUseSSHconnect.setEnabled(this.isSelected());
-						ssh_settings_button.setEnabled(this.isSelected());
+					//	ssh_settings_button.setEnabled(this.isSelected());
 					}
 					if (labelStatus[2] != null) {
 						labelStatus[2].setVisible(isGenerateIntermediateCode());
 					}
 					if (labelStatus[3] != null) {
-						if(isGenerateIntermediateCode()) {
-							labelStatus[3].setText(Message.getString("fileprojectnewdialog.statuspanel.additionalxml")); //中間コードの追加選択
-						}
-						else {
-							labelStatus[3].setText(Message.getString("fileprojectnewdialog.statuspanel.xml")); //中間コードの選択
-						}
+                                                //if(isGenerateIntermediateCode()) {
+						labelStatus[3].setText(Message.getString("fileprojectnewdialog.statuspanel.xml")); //中間コードの追加選択
+						//}
+						//else {
+						//	labelStatus[3].setText(Message.getString("fileprojectnewdialog.statuspanel.xml")); //中間コードの選択
+						//}
 					}
 					if (panelStatusContent != null) {
 						panelStatusContent.repaint();
@@ -385,7 +384,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
 						}
 						else {
 							if (isGenerateIntermediateCode()) {
-								label = Message.getString("fileprojectnewdialog.statuspanel.additionalxml"); //中間コードの追加選択
+								label = Message.getString("fileprojectnewdialog.statuspanel.xml"); //既存中間コードの追加選択
 							}
 						}
 						labelStatus[3].setText(label);
@@ -419,29 +418,29 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
             groupType.add(radioFortran);
             ButtonGroup groupGenMake = new ButtonGroup();
             groupGenMake.add(radioGenXML);
-            groupGenMake.add(radioNotGenXML);            
+            groupGenMake.add(radioNotGenXML);
             panelSelect.add(radioXml, new GridBagConstraints(0, 0, 3, 1, 1.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
             panelSelect.add(radioNotGenXML, new GridBagConstraints(1, 1, 2, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
             panelSelect.add(radioGenXML, new GridBagConstraints(1, 2, 3, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
             if (this.sproperties != null && this.sproperties.haveSSHconnect) {
-            	panelSelect.add(checkUseSSHconnect,new GridBagConstraints(2, 3, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
-            	panelSelect.add(ssh_settings_button,new GridBagConstraints(3, 3, 1,1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
-            	ssh_settings_button.addActionListener(this);
+                panelSelect.add(checkUseSSHconnect, new GridBagConstraints(2, 3, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
+                panelSelect.add(ssh_settings_button, new GridBagConstraints(3, 3, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
+                ssh_settings_button.addActionListener(this);
             }
             panelSelect.add(radioFortran, new GridBagConstraints(0, 4, 3, 1, 1.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
             panelSelect.add(new JLabel(Message.getString("fileprojectnewdialog.kindpanel.label.fortranonly")), //フォートランソースコードのみを読み込む : Read only a Fortran source code
-            		new GridBagConstraints(1, 5, 2, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
+                    new GridBagConstraints(1, 5, 2, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
 
-            panelContent.add(panelSelect, new GridBagConstraints(1, 2, 3, 5, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 7, 0, 0), 0, 0));         
-            
+            panelContent.add(panelSelect, new GridBagConstraints(1, 2, 3, 5, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 7, 0, 0), 0, 0));
+
         }
-     // 説明文
+        // 説明文
         {
-        	JTextArea text = new JTextArea(Message.getString("fileprojectnewdialog.kindpanel.desc")); //フルモードの場合、... : When select Full Mode, you can use all functions of K-scope...
-        	text.setLineWrap(true);
-        	text.setWrapStyleWord(true);
-        	text.setOpaque(false);
-        	text.setEditable(false);
+            JTextArea text = new JTextArea(Message.getString("fileprojectnewdialog.kindpanel.desc")); //フルモードの場合、... : When select Full Mode, you can use all functions of K-scope...
+            text.setLineWrap(true);
+            text.setWrapStyleWord(true);
+            text.setOpaque(false);
+            text.setEditable(false);
             panelContent.add(text, new GridBagConstraints(1, 1, 3, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(7, 7, 10, 0), 0, 0));
         }
 
@@ -449,31 +448,37 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
     }
 
     protected boolean haveSSHconnect(SSHconnectProperties sproperties) {
-		if (sproperties == null) return false;
-		return sproperties.haveSSHconnect;
-	}
+        if (sproperties == null) {
+            return false;
+        }
+        return sproperties.haveSSHconnect;
+    }
 
-	/**
-     * True if need to build the project (locally or remotely) to generate intermediate code.
+    /**
+     * True if need to build the project (locally or remotely) to generate
+     * intermediate code.
+     *
      * @return
      */
     private boolean genXML() {
-    	return this.pproperties.genXML();    	
-	}
+        return this.pproperties.genXML();
+    }
 
-	/**
+    /**
      * True if project is full – i.e. includes intermediate code.
-     * @return 
+     *
+     * @return
      */
     private boolean isFullProject() {
-    	return this.pproperties.isFullProject();    	
-	}
+        return this.pproperties.isFullProject();
+    }
 
-	/**
+    /**
      * プロジェクト基本情報画面を作成する.
-     * @return    プロジェクト基本情報画面
+     *
+     * @return プロジェクト基本情報画面
      */
-    private JPanel createWizerdBasePanel() {
+    private JPanel createWizardBasePanel() {
 
         JPanel panelContent = new JPanel();
         GridBagLayout jPanel2Layout = new GridBagLayout();
@@ -487,7 +492,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
         //panelContent.setBorder(BorderFactory.createLineBorder(Color.black));
         // タイトル
         {
-            JLabel label = new JLabel(Message.getString("fileprojectnewdialog.statuspanel.basicinfo")); //プロジェクト情報の入力
+            JLabel label = new JLabel(Message.getString("fileprojectnewdialog.statuspanel.basicinfo_long")); //プロジェクト情報の入力
             panelContent.add(label, new GridBagConstraints(1, 0, 2, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
         }
         // 説明文
@@ -582,7 +587,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
      * プロジェクトXML追加画面を作成する.
      * @return    プロジェクトXML追加画面
      */
-    private JPanel createWizerdXmlPanel() {
+    private JPanel createWizardXmlPanel() {
 
         JPanel panelContent = new JPanel();
         GridBagLayout jPanel2Layout = new GridBagLayout();
@@ -595,7 +600,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
 
         // 説明文
         {
-        	lblPanelXML = new JLabel(Message.getString("fileprojectnewdialog.statuspanel.xml")); //中間コードの選択
+            lblPanelXML = new JLabel(Message.getString("fileprojectnewdialog.statuspanel.xml")); //中間コードの選択
             panelContent.add(lblPanelXML, new GridBagConstraints(1, 0, 2, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
         }
 
@@ -631,7 +636,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
                 BoxLayout layoutXmlButtons = new BoxLayout(panelXmlButtons, javax.swing.BoxLayout.Y_AXIS);
                 panelXmlButtons.setLayout(layoutXmlButtons);
                 panelXml.add(panelXmlButtons, new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
-
+                
                 java.awt.Dimension xmlButtomSize = new java.awt.Dimension(112, 22);
                 {
                     btnXmlFolder = new JButton();
@@ -710,7 +715,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
      * プロジェクトMakefile画面を作成する.
      * @return    プロジェクトMakefile画面
      */
-    private JPanel createWizerdMakefilePanel() {
+    private JPanel createWizardMakefilePanel() {
 
         JPanel panelContent = new JPanel();
         GridBagLayout jPanel2Layout = new GridBagLayout();
@@ -773,7 +778,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
      * プロジェクト作成最終確認画面を作成する.
      * @return    プロジェクト作成最終確認画面
      */
-    private JPanel createWizerdFinalizePanel() {
+    private JPanel createWizardFinalizePanel() {
 
     	int row = 0;
         JPanel panelContent = new JPanel();
@@ -788,22 +793,22 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
         // 説明文
         row = 0;
         {
-            JLabel label = new JLabel(Message.getString("fileprojectnewdialog.statuspanel.confirm")); //入力情報の確認
+            JLabel label = new JLabel(Message.getString("fileprojectnewdialog.statuspanel.confirm_long")); //入力情報の確認            
             panelContent.add(label, new GridBagConstraints(0, row, 3, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
         }
 
         // モード
         row++;
         {
-        	panelContent.add(new JLabel(Message.getString("fileprojectnewdialog.finalizepanel.label.mode")), // 動作モード
-        			new GridBagConstraints(1, row, 1, 1, 0.0, 0.0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 0, 7), 0, 0));
+            panelContent.add(new JLabel(Message.getString("fileprojectnewdialog.finalizepanel.label.mode")), // 動作モード
+                    new GridBagConstraints(1, row, 1, 1, 0.0, 0.0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 0, 7), 0, 0));
 
-        	String str = radioXml.getText();
-        	if (isSelectedFortran()) {
-        		str = radioFortran.getText();
-        	}
-        	JLabel label = new JLabel(str);
-        	panelContent.add(label, new GridBagConstraints(2, row, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
+            String str = radioXml.getText();
+            if (isSelectedFortran()) {
+                str = radioFortran.getText();
+            }
+            JLabel label = new JLabel(str);
+            panelContent.add(label, new GridBagConstraints(2, row, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
         }
 
         // プロジェクトタイトル
@@ -847,20 +852,23 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
         // 中間コード　or フォートランソース
         row++;
         {
-        	String labelString = Message.getString("fileprojectnewdialog.finalizepanel.label.xml"); //中間コード
-        	if(isSelectedFortran()) {
-        		labelString = Message.getString("fileprojectnewdialog.finalizepanel.label.fortran"); //フォートランソース
-        	}
-        	lblFinalizePanelCode = new JLabel(labelString);
+            String labelString = Message.getString("fileprojectnewdialog.finalizepanel.label.xml"); //中間コード
+            if (isSelectedFortran()) {
+                labelString = Message.getString("fileprojectnewdialog.finalizepanel.label.fortran"); //フォートランソース
+            }
+            lblFinalizePanelCode = new JLabel(labelString);
             panelContent.add(lblFinalizePanelCode,
-                             new GridBagConstraints(1, row, 1, 1, 0.0, 0.0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 0, 7), 0, 0));
+                    new GridBagConstraints(1, row, 1, 1, 0.0, 0.0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 0, 7), 0, 0));
             String xml = null;
-    		DefaultListModel model = (DefaultListModel) this.listProjectXml.getModel();
-            for (int i=0; i<model.getSize(); i++) {
-                String pathname = (String)model.getElementAt(i);
-                if (xml == null) xml = new String();
-                else xml += ",";
-            	xml += pathname;
+            DefaultListModel model = (DefaultListModel) this.listProjectXml.getModel();
+            for (int i = 0; i < model.getSize(); i++) {
+                String pathname = (String) model.getElementAt(i);
+                if (xml == null) {
+                    xml = new String();
+                } else {
+                    xml += ",";
+                }
+                xml += pathname;
             }
             JLabel label = new JLabel(xml);
             panelContent.add(label, new GridBagConstraints(2, row, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
@@ -868,24 +876,24 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
 
         // 構造解析を行う
         if ((this.radioXml.isSelected() && !this.checkbox_StructureAnalysis.isSelected())) {
-	        row++;
-	        {
-	            panelContent.add(new JLabel(Message.getString("fileprojectnewdialog.finalizepanel.label.build")), //構造解析
-	                             new GridBagConstraints(1, row, 1, 1, 0.0, 0.0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 0, 7), 0, 0));
-	            JLabel label = new JLabel(Message.getString("fileprojectnewdialog.finalizepanel.savecheck.donot")); //行わない
-	            panelContent.add(label, new GridBagConstraints(2, row, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
-	        }
+            row++;
+            {
+                panelContent.add(new JLabel(Message.getString("fileprojectnewdialog.finalizepanel.label.build")), //構造解析
+                        new GridBagConstraints(1, row, 1, 1, 0.0, 0.0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 0, 7), 0, 0));
+                JLabel label = new JLabel(Message.getString("fileprojectnewdialog.finalizepanel.savecheck.donot")); //行わない
+                panelContent.add(label, new GridBagConstraints(2, row, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
+            }
         }
 
         // 保存を行う
         if (isSave()) {
-        	row++;
-        	{
-        		panelContent.add(new JLabel(Message.getString("fileprojectnewdialog.finalizepanel.label.save")), //作成後に保存
+            row++;
+            {
+                panelContent.add(new JLabel(Message.getString("fileprojectnewdialog.finalizepanel.label.save")), //作成後に保存
                         new GridBagConstraints(1, row, 1, 1, 0.0, 0.0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 0, 7), 0, 0));
-        		JLabel label = new JLabel(Message.getString("fileprojectnewdialog.finalizepanel.savecheck.do")); //行う
-        		panelContent.add(label, new GridBagConstraints(2, row, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
-        	}
+                JLabel label = new JLabel(Message.getString("fileprojectnewdialog.finalizepanel.savecheck.do")); //行う
+                panelContent.add(label, new GridBagConstraints(2, row, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
+            }
         }
 
         return panelContent;
@@ -1067,15 +1075,15 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
      * プロジェクト新規作成画面を切り替える.
      * @param index		切替画面Index
      */
-    private void changeWizerdPage(int index) {
+    private void changeWizardPage(int index) {
 
-    	if (index == panelWizerds.length - 1) {
-            this.panelWizerdParent.remove(this.panelWizerds[index]);
-    		this.cardWizerd.removeLayoutComponent(this.panelWizerds[index]);
-    		this.panelWizerds[index] = createWizerdFinalizePanel();
-    		this.panelWizerdParent.add(LABEL_WIZERDS[index], this.panelWizerds[index]);
+    	if (index == panelWizards.length - 1) {
+            this.panelWizardParent.remove(this.panelWizards[index]);
+    		this.cardWizerd.removeLayoutComponent(this.panelWizards[index]);
+    		this.panelWizards[index] = createWizardFinalizePanel();
+    		this.panelWizardParent.add(LABEL_WIZARDS[index], this.panelWizards[index]);
     	}
-    	this.cardWizerd.show(this.panelWizerdParent, LABEL_WIZERDS[index]);
+    	this.cardWizerd.show(this.panelWizardParent, LABEL_WIZARDS[index]);
     	for (int i=0; i<this.labelStatus.length; i++) {
     		this.labelStatus[i].setBackground(Color.WHITE);
         	this.labelStatus[i].setOpaque(true);
@@ -1093,18 +1101,19 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
 			// hide file_filter and process_files fields
 			if (this.sproperties.haveSSHconnect) {
 				if (useSSHconnect() && !haveAllSettings2connect()) {
-					ProjectSettingSSHAction psssh_action = new ProjectSettingSSHAction(this.controller);
-		        	psssh_action.openDialog(this.frame,Message.getString("projectsettingsshconnect.setup.need_parameters"));
+                                    ProjectSettingSSHAction psssh_action = new ProjectSettingSSHAction(this.controller);
+                                    psssh_action.openDialog(this.frame,Message.getString("projectsettingsshconnect.setup.need_parameters"));
 				}
 				sshc_settings_panel.setVisible(useSSHconnect());
 			}
 			if (this.txtProjectFolder.getText().length() < 1) this.btnNext.setEnabled(false);  // Disable until project folder selected    		
 		}
 		else if (index == 3) {
-			String title = Message.getString("fileprojectnewdialog.statuspanel.xml"); //中間コードの選択
-			if (labelStatus[3] != null) {
-				title = labelStatus[3].getText();
-			}
+			String title = Message.getString("fileprojectnewdialog.statuspanel.xml_long"); //中間コードの選択
+                        //(2013/10/16) removed by teraim
+			//if (labelStatus[3] != null) {
+			//	title = labelStatus[3].getText();
+			//}
 			String desc = Message.getString("fileprojectnewdialog.xmlpanel.additionalfile.desc"); //中間コードの出力先がMakefileと同じ階層でない...
 			if (isGenerateIntermediateCode()) {
 				// makefileのparentを設定
@@ -1130,8 +1139,17 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
 			}
 			lblPanelXML.setText(title);
 			txaXMLPanelDesc.setText(desc);
+                        
+                        //(2013/10/16) added by teraim
+                        if(this.useSSHconnect()){
+                            listProjectXml.setEnabled(false);
+                            btnXmlFolder.setEnabled(false);
+                            btnXmlFile.setEnabled(false);
+                            btnXmlDelete.setEnabled(false);
+                        }
+                        
 		}				
-		else if (index == panelWizerds.length - 1) {
+		else if (index == panelWizards.length - 1) {
 			this.btnNext.setText(Message.getString("fileprojectnewdialog.button.new")); //新規作成
 			String labelString = Message.getString("fileprojectnewdialog.finalizepanel.label.xml"); //中間コード
         	if(isSelectedFortran()) {
@@ -1142,24 +1160,31 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
 		}
     }
 
+    //
     private boolean haveAllSettings2connect() {
-    	if (this.sproperties == null) return false;
-    	try {
-			String host = this.sproperties.getPropertySet(SSHconnectProperties.HOST).getValue();
-			if (host == null || host.length() < 1) return false;
-			String user = this.sproperties.getPropertySet(SSHconnectProperties.USER).getValue();
-			if (user == null || user.length() < 1) return false;
-    	} 
-    	catch (NullPointerException e) {    		
-    		return false;
-    	}
-		return true;
-	}
+        if (this.sproperties == null) {
+            return false;
+        }
+        try {
+            String host = this.sproperties.getPropertySet(SSHconnectProperties.HOST).getValue();
+            if (host == null || host.length() < 1) {
+                return false;
+            }
+            String user = this.sproperties.getPropertySet(SSHconnectProperties.USER).getValue();
+            if (user == null || user.length() < 1) {
+                return false;
+            }
+        } catch (NullPointerException e) {
+            return false;
+        }
+        return true;
+    }
 
-	/**
+    /**
      * 設定パラメータチェック
-     * @param	index		ウィザードパネル番号
-     * @return				true=成功, false=失敗
+     *
+     * @param	index	ウィザードパネル番号
+     * @return	true=成功, false=失敗
      */
     private boolean checkParams(int index) {
     	String msg = "";
@@ -1450,12 +1475,12 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
         	if (!checkParams(this.wizerdIndex)) {
         		return;
         	}
-        	if (this.wizerdIndex == this.panelWizerds.length - 1) {
+        	if (this.wizerdIndex == this.panelWizards.length - 1) {
         		// 最終ページに移動する
-        		if (this.wizerdIndex != panelWizerds.length - 1) { // Peter: Is this possible to be true?
+        		if (this.wizerdIndex != panelWizards.length - 1) { // Peter: Is this possible to be true?
         			this.wizerdForward = this.wizerdIndex;
-        			this.wizerdIndex = panelWizerds.length - 1;
-        			changeWizerdPage(this.wizerdIndex);
+        			this.wizerdIndex = panelWizards.length - 1;
+        			changeWizardPage(this.wizerdIndex);
         			return;
         		}
         		// 入力チェックを行う
@@ -1489,7 +1514,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
         		return;
         	}
         	else {   
-        		if (this.wizerdIndex < this.panelWizerds.length - 1) {
+        		if (this.wizerdIndex < this.panelWizards.length - 1) {
         			this.wizerdForward = this.wizerdIndex;
         			this.wizerdIndex++;
         			//System.out.println("Generate intercode:"+isGenerateIntermediateCode());
@@ -1498,9 +1523,9 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
         			}        			
         		}
         		else {
-        			this.wizerdIndex = this.panelWizerds.length - 1;
+        			this.wizerdIndex = this.panelWizards.length - 1;
         		}
-        		changeWizerdPage(this.wizerdIndex);
+        		changeWizardPage(this.wizerdIndex);
         	}
         }
         // 戻る
@@ -1517,7 +1542,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
         	else {
         		this.wizerdForward = 0;
         	}
-        	changeWizerdPage(this.wizerdIndex);
+        	changeWizardPage(this.wizerdIndex);
         }
         // ラジオボタン　XcodeML選択
         else if (event.getSource() == this.radioXml) {
