@@ -191,7 +191,7 @@ public class SettingOperandDialog extends javax.swing.JDialog implements ActionL
                 JPanel panelFlop = new JPanel();
                 getContentPane().add(panelFlop, BorderLayout.NORTH);
                 // 四則演算のFLOP設定
-                String title = Message.getString("settingoperanddialog.contentspanel.title"); //組込み関数の演算数設定
+                String title = Message.getString("settingoperanddialog.panelflop.title"); //四則演算の演算数設定
                 TitledBorder borderTitle = new TitledBorder(BorderFactory.createEtchedBorder(), title);
                 Border border = new CompoundBorder( new EmptyBorder(7,7,7,7), borderTitle);
                 panelFlop.setBorder(border);

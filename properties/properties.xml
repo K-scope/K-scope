@@ -225,12 +225,12 @@
         <!-- SSHconnectプロパティ -->
         <sshconnect key="server_address" value="k.aics.riken.jp" type="system" commandline_option="-h" description="property.sshparameters.server_address" />
         <sshconnect key="port" value="22" type="system" commandline_option="-p" description="property.sshparameters.port" />
-        <sshconnect key="user" value="USERNAME" type="system" commandline_option="-u" description="property.sshparameters.user"/>
+        <sshconnect key="user" value="a01004" type="system" commandline_option="-u" description="property.sshparameters.user"/>
         <sshconnect key="password" value="" type="system" commandline_option="-pw" description="property.sshparameters.password"/>
-        <sshconnect key="key" value="/Users/USERNAME/.ssh/id_rsa" type="system" commandline_option="-k" description="property.sshparameters.key"/>
+        <sshconnect key="key" value="/Users/teraim/.ssh/id_rsa" type="system" commandline_option="-k" description="property.sshparameters.key"/>
         <sshconnect key="passphrase" value="" type="system" commandline_option="-ph" description="property.sshparameters.passphrase"/>
         <sshconnect key="add_path" value="/opt/aics/omni/bin" type="system" commandline_option="-ap" description="property.sshparameters.add_path"  />
-        <sshconnect key="remote_path" value="/home/aics-sft/USERNAME/" type="system" commandline_option="-rp" description="property.sshparameters.remote_path"/>
+        <sshconnect key="remote_path" value="/home/aics-sft/a01004/" type="system" commandline_option="-rp" description="property.sshparameters.remote_path"/>
         <sshconnect key="build_command" type="project" commandline_option="-m" description="property.sshparameters.build_command"/>
         <sshconnect key="local_path" value="" type="project" commandline_option="-lp" description="property.sshparameters.local_path"/>
         <sshconnect key="preprocess_files" value="" type="project" commandline_option="-pf" description="property.sshparameters.preprocess_files"/>		

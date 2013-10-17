@@ -536,8 +536,8 @@ public class SettingProfilerDialog extends javax.swing.JDialog implements Action
             {
                 this.eprofMeasureStatement = new JTextArea();
                 this.eprofMeasureStatement.setBorder(new EtchedBorder(EtchedBorder.LOWERED));
-        //        this.eprofMeasureStatement.setMinimumSize(textSize);
-        //        this.eprofMeasureStatement.setPreferredSize(textSize);
+                //this.eprofMeasureStatement.setMinimumSize(textSize);
+                //this.eprofMeasureStatement.setPreferredSize(textSize);
                 panelProperty.add(this.eprofMeasureStatement, new GridBagConstraints(2, 1, 1, 3, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
                 this.eprofMeasureStatement.setText(statement);
             }
@@ -557,8 +557,7 @@ public class SettingProfilerDialog extends javax.swing.JDialog implements Action
                 this.properties.setEprofFunctionStart(this.eprofFunctionname.getText());
                 // 測定区間ステートメント:開始ステートメント
                 this.properties.setEprofStatementStart(this.eprofMeasureStatement.getText());
-            }
-            else if (this.type == PANEL_TYPE.EPROF_STATEMENT_END) {
+            } else if (this.type == PANEL_TYPE.EPROF_STATEMENT_END) {
                 // 測定区間ステートメント:終了関数名
                 this.properties.setEprofFunctionEnd(this.eprofFunctionname.getText());
                 // 測定区間ステートメント:終了ステートメント
@@ -858,38 +857,40 @@ public class SettingProfilerDialog extends javax.swing.JDialog implements Action
             }
             // グラデーションパネル
             {
-	            // グラデーション色
-	        	JPanel panelGradient = new JPanel() {
-	        	    /** シリアル番号 */
-	        	    private static final long serialVersionUID = 1L;
-	        		/**
-	        		 * プロファイラルーラのグラデーションを描画する.
-	        		 */
-					@Override
-					protected void paintComponent(Graphics g) {
-						super.paintComponent(g);
-						Graphics2D g2 = (Graphics2D)g;
-						// 描画領域
-						Rectangle rectDraw = this.getBounds();
-						int step = 256;
-						float width = (float)rectDraw.width / (float)step;
-				        Color minColor = ProfilerRulerPanel.this.btnRulerMin.getColor();
-				        Color maxColor = ProfilerRulerPanel.this.btnRulerMax.getColor();
-						for (int i=0; i<step; i++) {
-							float pos_x = (float)i * width;
-							Rectangle2D.Float rect2d = new Rectangle2D.Float(pos_x, 0, width, 40);
-							float ratio = (float)i / (float)step;
-							Color valueColor = SwingUtils.getGradientHsbColor(ratio, minColor, maxColor);
-							g2.setColor(valueColor);
-							g2.fill(rect2d);
-						}
-					}
+                // グラデーション色
+                JPanel panelGradient = new JPanel() {
+                    /**
+                     * シリアル番号
+                     */
+                    private static final long serialVersionUID = 1L;
 
-	        	};
-	        	panelGradient.setPreferredSize(new Dimension(60, 25));
-	        	panelGradient.setMinimumSize(new Dimension(30, 25));
-	        	panelGradient.setBorder(new LineBorder(Color.BLACK, 1));
-	        	panelProperty.add(panelGradient, new GridBagConstraints(3, 2, 1, 2, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 10, 0, 0), 0, 0));
+                    /**
+                     * プロファイラルーラのグラデーションを描画する.
+                     */
+                    @Override
+                    protected void paintComponent(Graphics g) {
+                        super.paintComponent(g);
+                        Graphics2D g2 = (Graphics2D) g;
+                        // 描画領域
+                        Rectangle rectDraw = this.getBounds();
+                        int step = 256;
+                        float width = (float) rectDraw.width / (float) step;
+                        Color minColor = ProfilerRulerPanel.this.btnRulerMin.getColor();
+                        Color maxColor = ProfilerRulerPanel.this.btnRulerMax.getColor();
+                        for (int i = 0; i < step; i++) {
+                            float pos_x = (float) i * width;
+                            Rectangle2D.Float rect2d = new Rectangle2D.Float(pos_x, 0, width, 40);
+                            float ratio = (float) i / (float) step;
+                            Color valueColor = SwingUtils.getGradientHsbColor(ratio, minColor, maxColor);
+                            g2.setColor(valueColor);
+                            g2.fill(rect2d);
+                        }
+                    }
+                };
+                panelGradient.setPreferredSize(new Dimension(60, 25));
+                panelGradient.setMinimumSize(new Dimension(30, 25));
+                panelGradient.setBorder(new LineBorder(Color.BLACK, 1));
+                panelProperty.add(panelGradient, new GridBagConstraints(3, 2, 1, 2, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 10, 0, 0), 0, 0));
             }
         }
 

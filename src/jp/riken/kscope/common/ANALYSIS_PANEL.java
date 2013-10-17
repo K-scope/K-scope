@@ -35,7 +35,7 @@ public enum ANALYSIS_PANEL {
     /** トレースパネル */
     TRACE(Message.getString("mainmenu.window.analysis.trace"), "trace.csv"), //トレース
     /** 演算カウントパネル */
-    OPERAND(Message.getString("mainmenu.project.config.operation"), "count.csv"), //演算カウント
+    OPERAND(Message.getString("mainmenu.analysis.operation"), "count.csv"), //演算カウント
     /** 要求Byte/FLOP算出結果パネル */
     REQUIRED(Message.getString("mainmenu.window.analysis.byteflop"), "required.csv"), // 要求Byte/FLOP算出結果パネル
     /** プロパティパネル */

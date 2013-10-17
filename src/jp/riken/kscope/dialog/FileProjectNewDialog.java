@@ -121,7 +121,9 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
     private JButton addprerocessfile_button;
     /** Panel holds file_filter and process_files fields */
     private JPanel sshc_settings_panel;
+    /* プロジェクトプロパティ*/
     private ProjectProperties pproperties;
+    /** SSH connectプロパティ */
     private SSHconnectProperties sproperties;
     
     /** Parent action */
@@ -147,10 +149,10 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
     private final int ARROW_SIZE = 10;
     private JLabel labelStatus[] = new JLabel[5];
     private JPanel panelWizards[] = new JPanel[5];
-    private int wizerdIndex;
-    private int wizerdForward;
+    private int wizardIndex;
+    private int wizardForward;
     private JPanel panelWizardParent;
-    private CardLayout cardWizerd;
+    private CardLayout cardWizard;
     private final String LABEL_WIZARDS[] = new String[]{"kind", "base", "makefile", "xml", "finalize"};
     /** 戻るボタン */
     private JButton btnBack;
@@ -208,10 +210,10 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
             {
                 JPanel panelButtons = new JPanel();
                 GridBagLayout layoutButton = new GridBagLayout();
-                layoutButton.rowWeights = new double [] {0.0};
-                layoutButton.rowHeights = new int [] {32};
-                layoutButton.columnWeights = new double [] {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
-                layoutButton.columnWidths = new int [] {50, 100, 100, 100, 100, 100, 100, 50};
+                layoutButton.rowWeights = new double[]{0.0};
+                layoutButton.rowHeights = new int[]{32};
+                layoutButton.columnWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+                layoutButton.columnWidths = new int[]{50, 100, 100, 100, 100, 100, 100, 50};
                 panelButtons.setLayout(layoutButton);
                 getContentPane().add(panelButtons, BorderLayout.SOUTH);
                 panelButtons.setPreferredSize(new java.awt.Dimension(700, 43));
@@ -257,9 +259,8 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
             JPanel panelStatus = createStatusPanel();
 
             this.panelWizardParent = new JPanel();
-            this.cardWizerd = new CardLayout();
-            this.panelWizardParent.setLayout(cardWizerd);
-            //this.panelWizerdParent.setBorder(new LineBorder(java.awt.Color.RED));
+            this.cardWizard = new CardLayout();
+            this.panelWizardParent.setLayout(cardWizard);
             this.panelWizardParent.add(LABEL_WIZARDS[0], this.panelWizards[0]);
             this.panelWizardParent.add(LABEL_WIZARDS[1], this.panelWizards[1]);
             this.panelWizardParent.add(LABEL_WIZARDS[2], this.panelWizards[2]);
@@ -277,9 +278,9 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
             panelCenter.add(this.panelWizardParent, BorderLayout.CENTER);
             getContentPane().add(panelCenter, BorderLayout.CENTER);
             getContentPane().add(panelStatus, BorderLayout.WEST);
-            this.wizerdIndex = 0;
-            this.wizerdForward = 0;
-            changeWizardPage(this.wizerdIndex);
+            this.wizardIndex = 0;
+            this.wizardForward = 0;
+            changeWizardPage(this.wizardIndex);
 
             // ダイアログサイズ
             this.setSize(760, 360);
@@ -294,15 +295,16 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
 
     /**
      * プロジェクト種別選択画面を作成する.
-     * @return    プロジェクト種別選択画面
+     *
+     * @return プロジェクト種別選択画面
      */
     private JPanel createWizardKindPanel() {
-    	JPanel panelContent = new JPanel();
-    	GridBagLayout jPanel2Layout = new GridBagLayout();
-    	jPanel2Layout.rowWeights = new double[] {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0};
-        jPanel2Layout.rowHeights = new int[] {32, 32, 32, 32, 16, 16, 16, 16, 7, 7};
-        jPanel2Layout.columnWeights = new double[] {0.0, 0.0, 1.0, 0.0};
-        jPanel2Layout.columnWidths = new int[] {7, 160, 7, 7};
+        JPanel panelContent = new JPanel();
+        GridBagLayout jPanel2Layout = new GridBagLayout();
+        jPanel2Layout.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0};
+        jPanel2Layout.rowHeights = new int[]{32, 32, 32, 32, 16, 16, 16, 16, 7, 7};
+        jPanel2Layout.columnWeights = new double[]{0.0, 0.0, 1.0, 0.0};
+        jPanel2Layout.columnWidths = new int[]{7, 160, 7, 7};
         panelContent.setLayout(jPanel2Layout);
         panelContent.setBorder(new EmptyBorder(7, 7, 0, 7));
         // 説明文
@@ -314,97 +316,92 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
         {
             JPanel panelSelect = new JPanel();
             GridBagLayout layoutSelect = new GridBagLayout();
-            layoutSelect.rowWeights = new double [] {0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
-            layoutSelect.rowHeights = new int [] {16, 16, 16, 16, 16, 16};
-            layoutSelect.columnWeights = new double [] {0.0, 0.0, 0.0,0.0};
-            layoutSelect.columnWidths = new int [] {32, 32, 64, 128};
+            layoutSelect.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+            layoutSelect.rowHeights = new int[]{16, 16, 16, 16, 16, 16};
+            layoutSelect.columnWeights = new double[]{0.0, 0.0, 0.0, 0.0};
+            layoutSelect.columnWidths = new int[]{32, 32, 64, 128};
             panelSelect.setLayout(layoutSelect);
-            
+
             if (this.sproperties != null && this.sproperties.haveSSHconnect) {
-            	ssh_settings_button = new JButton(Message.getString("fileprojectnewdialog.kindpanel.SSHsettings"));
-            	// SSHconnectの使用切り替え
-            	checkUseSSHconnect = new JCheckBox(Message.getString("fileprojectnewdialog.kindpanel.checkbox.useSSHconnect")) {
-            		@Override
-            		protected void fireStateChanged() {
-            			if (haveSSHconnect(sproperties)) {
-            				ssh_settings_button.setEnabled(this.isSelected());
-            			}
-            		}
-            	};
-            	checkUseSSHconnect.setToolTipText(Message.getString("fileprojectnewdialog.kindpanel.checkbox.useSSHconnect.tooltip"));
-            	checkUseSSHconnect.setEnabled(isFullProject());
-            	checkUseSSHconnect.setSelected(this.pproperties.useSSHconnect());
-            	
+                ssh_settings_button = new JButton(Message.getString("fileprojectnewdialog.kindpanel.SSHsettings"));
+                // SSHconnectの使用切り替え
+                checkUseSSHconnect = new JCheckBox(Message.getString("fileprojectnewdialog.kindpanel.checkbox.useSSHconnect")) {
+                    @Override
+                    protected void fireStateChanged() {
+                        if (haveSSHconnect(sproperties)) {
+                            ssh_settings_button.setEnabled(this.isSelected());
+                        }
+                    }
+                };
+                checkUseSSHconnect.setToolTipText(Message.getString("fileprojectnewdialog.kindpanel.checkbox.useSSHconnect.tooltip"));
+                checkUseSSHconnect.setEnabled(isFullProject());
+                checkUseSSHconnect.setSelected(this.pproperties.useSSHconnect());
             }
-            
+
             // XML/Fortran切り替えラジオボタン　デフォルト：中間コード+既存　: Generate intermediate-code by Makefile and sou...
-            radioGenXML = new JRadioButton(Message.getString("fileprojectnewdialog.kindpanel.radiobutton.genxml")){
-
-				@Override
-				protected void fireStateChanged() {
-					if (this.isSelected()) pproperties.setHiddenPropertyValue(ProjectProperties.GENERATE_XML, "true");
-					else pproperties.setHiddenPropertyValue(ProjectProperties.GENERATE_XML, "false");
-					if (haveSSHconnect(sproperties)) {
-						checkUseSSHconnect.setEnabled(this.isSelected());
-					//	ssh_settings_button.setEnabled(this.isSelected());
-					}
-					if (labelStatus[2] != null) {
-						labelStatus[2].setVisible(isGenerateIntermediateCode());
-					}
-					if (labelStatus[3] != null) {
-                                                //if(isGenerateIntermediateCode()) {
-						labelStatus[3].setText(Message.getString("fileprojectnewdialog.statuspanel.xml")); //中間コードの追加選択
-						//}
-						//else {
-						//	labelStatus[3].setText(Message.getString("fileprojectnewdialog.statuspanel.xml")); //中間コードの選択
-						//}
-					}
-					if (panelStatusContent != null) {
-						panelStatusContent.repaint();
-					}
-				}
-
+            radioGenXML = new JRadioButton(Message.getString("fileprojectnewdialog.kindpanel.radiobutton.genxml")) {
+                @Override
+                protected void fireStateChanged() {
+                    if (this.isSelected()) {
+                        pproperties.setHiddenPropertyValue(ProjectProperties.GENERATE_XML, "true");
+                    } else {
+                        pproperties.setHiddenPropertyValue(ProjectProperties.GENERATE_XML, "false");
+                    }
+                    if (haveSSHconnect(sproperties)) {
+                        checkUseSSHconnect.setEnabled(this.isSelected());
+                        //ssh_settings_button.setEnabled(this.isSelected());                                                                 
+                    }
+                    if (labelStatus[2] != null) {
+                        labelStatus[2].setVisible(isGenerateIntermediateCode());
+                    }
+                    if (labelStatus[3] != null) {
+                        labelStatus[3].setText(Message.getString("fileprojectnewdialog.statuspanel.xml")); //中間コードの追加選択
+                    }
+                    if (panelStatusContent != null) {
+                        panelStatusContent.repaint();
+                    }
+                }
             };
             radioGenXML.setToolTipText(Message.getString("fileprojectnewdialog.kindpanel.radiobutton.genxml.tooltip")); //中間コードを生成するよう記述...
             //中間コードの生成は行わない
             radioNotGenXML = new JRadioButton(Message.getString("fileprojectnewdialog.kindpanel.radiobutton.existxml")); //既存の中間コードを読み込む : Read existing intermediate-code
             radioNotGenXML.setToolTipText(Message.getString("fileprojectnewdialog.kindpanel.radiobutton.existxml.tooltip")); //既存の中間コードを読み込み、プロジェクトを作成します。
             radioXml = new JRadioButton(Message.getString("fileprojectnewdialog.kindpanel.radiobutton.fullmode"), true) {
-
-				@Override
-				protected void fireStateChanged() {
-					if (this.isSelected()) pproperties.setHiddenPropertyValue(ProjectProperties.FULL_PROJECT, "true");
-					else pproperties.setHiddenPropertyValue(ProjectProperties.FULL_PROJECT, "false");
-					radioGenXML.setEnabled(this.isSelected());
-					radioNotGenXML.setEnabled(this.isSelected());					
-					if (labelStatus[3] != null) {
-						String label = Message.getString("fileprojectnewdialog.statuspanel.xml"); //中間コードの選択
-						if (!this.isSelected()) {
-							label = Message.getString("fileprojectnewdialog.statuspanel.fortran"); //フォートランソースの選択
-						}
-						else {
-							if (isGenerateIntermediateCode()) {
-								label = Message.getString("fileprojectnewdialog.statuspanel.xml"); //既存中間コードの追加選択
-							}
-						}
-						labelStatus[3].setText(label);
-					}
-					if (checkbox_StructureAnalysis != null) {
-						checkbox_StructureAnalysis.setEnabled(this.isSelected());
-						checkbox_StructureAnalysis.setSelected(this.isSelected());
-					}
-					if (haveSSHconnect(sproperties)) {
-						boolean enabled = this.isSelected() && radioGenXML.isSelected() && radioGenXML.isEnabled();
-						checkUseSSHconnect.setEnabled(enabled);
-						ssh_settings_button.setEnabled(enabled);
-					}
-				}
-
+                @Override
+                protected void fireStateChanged() {
+                    if (this.isSelected()) {
+                        pproperties.setHiddenPropertyValue(ProjectProperties.FULL_PROJECT, "true");
+                    } else {
+                        pproperties.setHiddenPropertyValue(ProjectProperties.FULL_PROJECT, "false");
+                    }
+                    radioGenXML.setEnabled(this.isSelected());
+                    radioNotGenXML.setEnabled(this.isSelected());
+                    if (labelStatus[3] != null) {
+                        String label = Message.getString("fileprojectnewdialog.statuspanel.xml"); //中間コードの選択
+                        if (!this.isSelected()) {
+                            label = Message.getString("fileprojectnewdialog.statuspanel.fortran"); //フォートランソースの選択
+                        } else {
+                            if (isGenerateIntermediateCode()) {
+                                label = Message.getString("fileprojectnewdialog.statuspanel.xml"); //既存中間コードの追加選択
+                            }
+                        }
+                        labelStatus[3].setText(label);
+                    }
+                    if (checkbox_StructureAnalysis != null) {
+                        checkbox_StructureAnalysis.setEnabled(this.isSelected());
+                        checkbox_StructureAnalysis.setSelected(this.isSelected());
+                    }
+                    if (haveSSHconnect(sproperties)) {
+                        boolean enabled = this.isSelected() && radioGenXML.isSelected() && radioGenXML.isEnabled();
+                        checkUseSSHconnect.setEnabled(enabled);
+                        ssh_settings_button.setEnabled(enabled);                                              
+                    }
+                }
             }; //フルモード
             
             radioGenXML.setSelected(genXML());
             radioNotGenXML.setSelected(!genXML());
-            
+
             radioXml.setToolTipText(Message.getString("fileprojectnewdialog.kindpanel.radiobutton.fullmode.tooltip")); //K-scopeの全機能を利用可能なモード
             radioFortran = new JRadioButton(Message.getString("fileprojectnewdialog.kindpanel.radiobutton.simplemode"), false); //簡易モード : Simple Mode
             radioFortran.setToolTipText(Message.getString("fileprojectnewdialog.kindpanel.radiobutton.simplemode.tooltip")); //プロファイラ連携機能のみを利用可能なモード
@@ -482,10 +479,10 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
 
         JPanel panelContent = new JPanel();
         GridBagLayout jPanel2Layout = new GridBagLayout();
-        jPanel2Layout.rowWeights = new double[] {0.0, 0.0, 0.0, 0.0, 0.0, 1.0};
-        jPanel2Layout.rowHeights = new int[] {16, 16, 16, 32, 32, 128};
-        jPanel2Layout.columnWeights = new double[] {0.0, 0.0, 1.0, 0.0};
-        jPanel2Layout.columnWidths = new int[] {7, 160, 7, 7};
+        jPanel2Layout.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 1.0};
+        jPanel2Layout.rowHeights = new int[]{16, 16, 16, 32, 32, 128};
+        jPanel2Layout.columnWeights = new double[]{0.0, 0.0, 1.0, 0.0};
+        jPanel2Layout.columnWidths = new int[]{7, 160, 7, 7};
         panelContent.setLayout(jPanel2Layout);
         //panelContent.setBorder(new LineBorder(new java.awt.Color(0,0,0), 1, false));
         panelContent.setBorder(new EmptyBorder(7, 7, 0, 7));
@@ -497,20 +494,20 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
         }
         // 説明文
         {
-        	JTextArea text = new JTextArea(Message.getString("fileprojectnewdialog.basepanel.desc")); //タイトル：プロジェクトのタイトルを入力...
-        	text.setLineWrap(true);
-        	text.setWrapStyleWord(true);
-        	text.setOpaque(false);
-        	text.setEditable(false);
-        	// Init from ProjectProperties        	
+            JTextArea text = new JTextArea(Message.getString("fileprojectnewdialog.basepanel.desc")); //タイトル：プロジェクトのタイトルを入力...
+            text.setLineWrap(true);
+            text.setWrapStyleWord(true);
+            text.setOpaque(false);
+            text.setEditable(false);
+            // Init from ProjectProperties        	
             panelContent.add(text, new GridBagConstraints(1, 1, 3, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(7, 0, 10, 0), 0, 0));
         }
-        
-        
+
+
         // プロジェクトタイトル
         {
             panelContent.add(new JLabel(Message.getString("fileprojectnewdialog.basepanel.label.title")), //タイトル
-                             new GridBagConstraints(1, 2, 1, 1, 0.0, 0.0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 7, 0, 7), 0, 0));
+                    new GridBagConstraints(1, 2, 1, 1, 0.0, 0.0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 7, 0, 7), 0, 0));
             txtProjectTitle = new JTextField();
             txtProjectTitle.setText(this.pproperties.getPropertyValue(ProjectProperties.PRJ_TITLE).getValue());
             panelContent.add(txtProjectTitle, new GridBagConstraints(2, 2, 2, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 7), 0, 0));
@@ -518,17 +515,17 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
 
         // プロジェクトフォルダ
         {
-	        panelContent.add(new JLabel(Message.getString("fileprojectnewdialog.basepanel.label.projectfolder")), //プロジェクトフォルダ：
-	                         new GridBagConstraints(1, 3, 1, 1, 0.0, 0.0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 7, 0, 7), 0, 0));
-	        JPanel panelFolder = new JPanel();
-	        GridBagLayout layoutFolder = new GridBagLayout();
-	        panelContent.add(panelFolder, new GridBagConstraints(2, 3, 2, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 0, 0, 7), 0, 0));
-	        // panelFolder.setBorder(new LineBorder(new java.awt.Color(0,0,0), 1, false));
-	        layoutFolder.rowWeights = new double[] {0.1};
-	        layoutFolder.rowHeights = new int[] {7};
-	        layoutFolder.columnWeights = new double[] {1.0, 0.0};
-	        layoutFolder.columnWidths = new int[] {7, 7};
-	        panelFolder.setLayout(layoutFolder);
+            panelContent.add(new JLabel(Message.getString("fileprojectnewdialog.basepanel.label.projectfolder")), //プロジェクトフォルダ：
+                    new GridBagConstraints(1, 3, 1, 1, 0.0, 0.0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 7, 0, 7), 0, 0));
+            JPanel panelFolder = new JPanel();
+            GridBagLayout layoutFolder = new GridBagLayout();
+            panelContent.add(panelFolder, new GridBagConstraints(2, 3, 2, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 0, 0, 7), 0, 0));
+            // panelFolder.setBorder(new LineBorder(new java.awt.Color(0,0,0), 1, false));
+            layoutFolder.rowWeights = new double[]{0.1};
+            layoutFolder.rowHeights = new int[]{7};
+            layoutFolder.columnWeights = new double[]{1.0, 0.0};
+            layoutFolder.columnWidths = new int[]{7, 7};
+            panelFolder.setLayout(layoutFolder);
 
             txtProjectFolder = new JTextField();
             panelFolder.add(txtProjectFolder, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
@@ -541,60 +538,60 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
             btnProjectFolder.addActionListener(this);
         }
 
-        
+
 
         // Process files & File filter
-        if (this.sproperties != null && this.sproperties.haveSSHconnect){
+        if (this.sproperties != null && this.sproperties.haveSSHconnect) {
 
-        	sshc_settings_panel = new JPanel();
-        	GridBagLayout sshc_panel_layout = new GridBagLayout();
-        	sshc_panel_layout.columnWidths = new int[] {7, 160, 7, 7};
-        	sshc_panel_layout.columnWeights = new double[] {0.0,0.0, 1.0, 0.0};
-        	sshc_panel_layout.rowHeights = new int[] {16,16,16};
-        	sshc_settings_panel.setLayout(sshc_panel_layout);
+            sshc_settings_panel = new JPanel();
+            GridBagLayout sshc_panel_layout = new GridBagLayout();
+            sshc_panel_layout.columnWidths = new int[]{7, 160, 7, 7};
+            sshc_panel_layout.columnWeights = new double[]{0.0, 0.0, 1.0, 0.0};
+            sshc_panel_layout.rowHeights = new int[]{16, 16, 16};
+            sshc_settings_panel.setLayout(sshc_panel_layout);
 
-        	JTextArea sshc_text = new JTextArea(Message.getString("fileprojectnewdialog.basepanel.filefilter.desc"));
-        	sshc_text.setLineWrap(true);
-        	sshc_text.setWrapStyleWord(true);
-        	sshc_text.setOpaque(false);
-        	sshc_text.setEditable(false);
-        	
-        	JLabel ffl = new JLabel(Message.getString("fileprojectnewdialog.basepanel.filefilter.label"));
-        	txt_filefilter = new JTextField();
-        	String ffilter= this.sproperties.getPropertySet(SSHconnectProperties.FILE_FILTER).getValue();
-        	txt_filefilter.setText(ffilter);
-        	JLabel procfl = new JLabel(Message.getString("fileprojectnewdialog.basepanel.processfiles.label"));
-        	txt_preprocess_files = new JTextField();
-        	addprerocessfile_button = new JButton(Message.getString("fileprojectnewdialog.basepanel.processfiles.addbutton"));
-        	addprerocessfile_button.setEnabled(false);
-        	addprerocessfile_button.addActionListener(this);
+            JTextArea sshc_text = new JTextArea(Message.getString("fileprojectnewdialog.basepanel.filefilter.desc"));
+            sshc_text.setLineWrap(true);
+            sshc_text.setWrapStyleWord(true);
+            sshc_text.setOpaque(false);
+            sshc_text.setEditable(false);
 
-        	sshc_settings_panel.add(sshc_text, new GridBagConstraints(0, 0, 4, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 7, 10, 7), 0, 0));
-        	sshc_settings_panel.add(ffl, new GridBagConstraints(1, 1, 1, 1, 0.0, 0.0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 7, 0, 7), 0, 0));
-        	sshc_settings_panel.add(txt_filefilter, new GridBagConstraints(2, 1, 2, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
-        	sshc_settings_panel.add(procfl, new GridBagConstraints(1, 2, 1, 1, 0.0, 0.0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 7, 0, 7), 0, 0));
-        	sshc_settings_panel.add(txt_preprocess_files, new GridBagConstraints(2, 2, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
-        	sshc_settings_panel.add(addprerocessfile_button, new GridBagConstraints(3, 2, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
+            JLabel ffl = new JLabel(Message.getString("fileprojectnewdialog.basepanel.filefilter.label"));
+            txt_filefilter = new JTextField();
+            String ffilter = this.sproperties.getPropertySet(SSHconnectProperties.FILE_FILTER).getValue();
+            txt_filefilter.setText(ffilter);
+            JLabel procfl = new JLabel(Message.getString("fileprojectnewdialog.basepanel.processfiles.label"));
+            txt_preprocess_files = new JTextField();
+            addprerocessfile_button = new JButton(Message.getString("fileprojectnewdialog.basepanel.processfiles.addbutton"));
+            addprerocessfile_button.setEnabled(false);
+            addprerocessfile_button.addActionListener(this);
 
-        	panelContent.add(sshc_settings_panel,new GridBagConstraints(1,4,3,2,0.0,0.0,GridBagConstraints.CENTER, GridBagConstraints.BOTH,new Insets(7,0,0,7),0,0));
+            sshc_settings_panel.add(sshc_text, new GridBagConstraints(0, 0, 4, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 7, 10, 7), 0, 0));
+            sshc_settings_panel.add(ffl, new GridBagConstraints(1, 1, 1, 1, 0.0, 0.0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 7, 0, 7), 0, 0));
+            sshc_settings_panel.add(txt_filefilter, new GridBagConstraints(2, 1, 2, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
+            sshc_settings_panel.add(procfl, new GridBagConstraints(1, 2, 1, 1, 0.0, 0.0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 7, 0, 7), 0, 0));
+            sshc_settings_panel.add(txt_preprocess_files, new GridBagConstraints(2, 2, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
+            sshc_settings_panel.add(addprerocessfile_button, new GridBagConstraints(3, 2, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
+
+            panelContent.add(sshc_settings_panel, new GridBagConstraints(1, 4, 3, 2, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(7, 0, 0, 7), 0, 0));
         }
 
         return panelContent;
     }
 
-
     /**
      * プロジェクトXML追加画面を作成する.
-     * @return    プロジェクトXML追加画面
+     *
+     * @return プロジェクトXML追加画面
      */
     private JPanel createWizardXmlPanel() {
 
         JPanel panelContent = new JPanel();
         GridBagLayout jPanel2Layout = new GridBagLayout();
-        jPanel2Layout.rowWeights = new double[] {0.0, 0.0, 0.0, 0.0, 0.0, 1.0};
-        jPanel2Layout.rowHeights = new int[] {32, 32, 32, 32, 32, 7};
-        jPanel2Layout.columnWeights = new double[] {0.0, 0.0, 1.0, 0.0};
-        jPanel2Layout.columnWidths = new int[] {7, 160, 7, 7};
+        jPanel2Layout.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 1.0};
+        jPanel2Layout.rowHeights = new int[]{32, 32, 32, 32, 32, 7};
+        jPanel2Layout.columnWeights = new double[]{0.0, 0.0, 1.0, 0.0};
+        jPanel2Layout.columnWidths = new int[]{7, 160, 7, 7};
         panelContent.setLayout(jPanel2Layout);
         panelContent.setBorder(new EmptyBorder(7, 7, 0, 7));
 
@@ -609,10 +606,10 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
             JPanel panelXml = new JPanel();
             GridBagLayout layoutXml = new GridBagLayout();
             panelContent.add(panelXml, new GridBagConstraints(1, 2, 2, 2, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 7, 0, 0), 0, 0));
-            layoutXml.rowWeights = new double[] {1.0};
-            layoutXml.rowHeights = new int[] {7};
-            layoutXml.columnWeights = new double[] {1.0, 0.0};
-            layoutXml.columnWidths = new int[] {400, 7};
+            layoutXml.rowWeights = new double[]{1.0};
+            layoutXml.rowHeights = new int[]{7};
+            layoutXml.columnWeights = new double[]{1.0, 0.0};
+            layoutXml.columnWidths = new int[]{400, 7};
             panelXml.setLayout(layoutXml);
             {
                 listProjectXml = new JList();
@@ -636,7 +633,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
                 BoxLayout layoutXmlButtons = new BoxLayout(panelXmlButtons, javax.swing.BoxLayout.Y_AXIS);
                 panelXmlButtons.setLayout(layoutXmlButtons);
                 panelXml.add(panelXmlButtons, new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
-                
+
                 java.awt.Dimension xmlButtomSize = new java.awt.Dimension(112, 22);
                 {
                     btnXmlFolder = new JButton();
@@ -671,40 +668,39 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
         {
             JPanel panelAdvanced = new JPanel();
             GridBagLayout layout = new GridBagLayout();
-            layout.rowWeights = new double[] {1.0, 1.0};
-            layout.rowHeights = new int[] {7, 7};
-            layout.columnWeights = new double[] {0.0, 0.0};
-            layout.columnWidths = new int[] {7, 7};
+            layout.rowWeights = new double[]{1.0, 1.0};
+            layout.rowHeights = new int[]{7, 7};
+            layout.columnWeights = new double[]{0.0, 0.0};
+            layout.columnWidths = new int[]{7, 7};
             panelAdvanced.setLayout(layout);
             btnAdvancedXml = new JToggleButton("Advanced >>", false) {
-				@Override
-				protected void fireStateChanged() {
-					checkbox_StructureAnalysis.setVisible(this.isSelected());
-					cbxSaveProject.setVisible(this.isSelected());
-				}
+                @Override
+                protected void fireStateChanged() {
+                    checkbox_StructureAnalysis.setVisible(this.isSelected());
+                    cbxSaveProject.setVisible(this.isSelected());
+                }
             };
             panelAdvanced.add(btnAdvancedXml,
-					new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
+                    new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
             checkbox_StructureAnalysis = new JCheckBox(Message.getString("fileprojectnewdialog.xmlpanel.checkbox.build"), true); //構造解析を行う
             checkbox_StructureAnalysis.setVisible(btnAdvancedXml.isSelected());
             panelAdvanced.add(checkbox_StructureAnalysis,
-					new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 14, 0, 0), 0, 0));
+                    new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 14, 0, 0), 0, 0));
             cbxSaveProject = new JCheckBox(Message.getString("fileprojectnewdialog.xmlpanel.checkbox.save"), false); //作成後にプロジェクトを保存する
             cbxSaveProject.setVisible(btnAdvancedXml.isSelected());
             panelAdvanced.add(cbxSaveProject,
-					new GridBagConstraints(1, 1, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 14, 0, 0), 0, 0));
+                    new GridBagConstraints(1, 1, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 14, 0, 0), 0, 0));
             panelContent.add(panelAdvanced, new GridBagConstraints(1, 4, 2, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(7, 7, 0, 0), 0, 0));
         }
 
         // 説明文
         {
-//        	JTextArea text = new JTextArea("既存、又は出力する中間コード(XML)のフォルダ、ファイルを選択してください。\nプロファイラ用ソースはプロファイラ出力したフォートランソースファイルを選択してください。この場合、構造解析はおこないません。");
-        	txaXMLPanelDesc = new JTextArea(
-        			Message.getString("fileprojectnewdialog.xmlpanel.desc")); //中間コードのフォルダまたはファイルを選択してください。
-        	txaXMLPanelDesc.setLineWrap(true);
-        	txaXMLPanelDesc.setWrapStyleWord(true);
-        	txaXMLPanelDesc.setOpaque(false);
-        	txaXMLPanelDesc.setEditable(false);
+            //JTextArea text = new JTextArea("既存、又は出力する中間コード(XML)のフォルダ、ファイルを選択してください。\nプロファイラ用ソースはプロファイラ出力したフォートランソースファイルを選択してください。この場合、構造解析はおこないません。");
+            txaXMLPanelDesc = new JTextArea(Message.getString("fileprojectnewdialog.xmlpanel.desc")); //中間コードのフォルダまたはファイルを選択してください。
+            txaXMLPanelDesc.setLineWrap(true);
+            txaXMLPanelDesc.setWrapStyleWord(true);
+            txaXMLPanelDesc.setOpaque(false);
+            txaXMLPanelDesc.setEditable(false);
             panelContent.add(txaXMLPanelDesc, new GridBagConstraints(1, 1, 2, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(7, 7, 10, 0), 0, 0));
         }
 
@@ -713,16 +709,17 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
 
     /**
      * プロジェクトMakefile画面を作成する.
-     * @return    プロジェクトMakefile画面
+     *
+     * @return プロジェクトMakefile画面
      */
     private JPanel createWizardMakefilePanel() {
 
         JPanel panelContent = new JPanel();
         GridBagLayout jPanel2Layout = new GridBagLayout();
-        jPanel2Layout.rowWeights = new double[] {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0};
-        jPanel2Layout.rowHeights = new int[] {32, 32, 32, 32, 32, 7, 10};
-        jPanel2Layout.columnWeights = new double[] {0.0, 0.0, 1.0, 0.0};
-        jPanel2Layout.columnWidths = new int[] {7, 120, 7, 7};
+        jPanel2Layout.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0};
+        jPanel2Layout.rowHeights = new int[]{32, 32, 32, 32, 32, 7, 10};
+        jPanel2Layout.columnWeights = new double[]{0.0, 0.0, 1.0, 0.0};
+        jPanel2Layout.columnWidths = new int[]{7, 120, 7, 7};
         panelContent.setLayout(jPanel2Layout);
         panelContent.setBorder(new EmptyBorder(7, 7, 0, 7));
 
@@ -732,42 +729,41 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
             panelContent.add(label, new GridBagConstraints(1, 0, 2, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
         }
 
-		//makeコマンド
+        //makeコマンド
         {
-	    	JPanel panelMakeCmd = new JPanel();
-	    	GridBagLayout layoutMakeCmd = new GridBagLayout();
-	    	layoutMakeCmd.rowWeights = new double[] {0.1};
-	    	layoutMakeCmd.rowHeights = new int[] {7};
-	    	layoutMakeCmd.columnWeights = new double[] {1.0, 0.0};
-	    	layoutMakeCmd.columnWidths = new int[] {7, 7};
-	    	panelMakeCmd.setLayout(layoutMakeCmd);
+            JPanel panelMakeCmd = new JPanel();
+            GridBagLayout layoutMakeCmd = new GridBagLayout();
+            layoutMakeCmd.rowWeights = new double[]{0.1};
+            layoutMakeCmd.rowHeights = new int[]{7};
+            layoutMakeCmd.columnWeights = new double[]{1.0, 0.0};
+            layoutMakeCmd.columnWidths = new int[]{7, 7};
+            panelMakeCmd.setLayout(layoutMakeCmd);
 
-			panelContent.add(new JLabel(Message.getString("fileprojectnewdialog.makefilepanel.label.makecommand")), //Makeコマンド
-					new GridBagConstraints(1, 2, 1, 1, 0.0, 0.0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 7, 0, 7), 0, 0));
-			txtMakeCommand = new JTextField();
-			panelMakeCmd.add(txtMakeCommand,
-					new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
-			btnMakeCmd = new JButton();
-			panelMakeCmd.add(btnMakeCmd,
-					new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
-			btnMakeCmd.setText(Message.getString("dialog.common.button.refer")); //参照
-			btnMakeCmd.setPreferredSize(REFER_BUTTON_SIZE);
-			btnMakeCmd.setMinimumSize(REFER_BUTTON_SIZE);
-			btnMakeCmd.setMaximumSize(REFER_BUTTON_SIZE);
-			btnMakeCmd.setMargin(new Insets(0, 3, 0, 3));
-			btnMakeCmd.addActionListener(this);
-			panelContent.add(panelMakeCmd,
-					new GridBagConstraints(2, 2, 2, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
+            panelContent.add(new JLabel(Message.getString("fileprojectnewdialog.makefilepanel.label.makecommand")), //Makeコマンド
+                    new GridBagConstraints(1, 2, 1, 1, 0.0, 0.0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 7, 0, 7), 0, 0));
+            txtMakeCommand = new JTextField();
+            panelMakeCmd.add(txtMakeCommand,
+                    new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
+            btnMakeCmd = new JButton();
+            panelMakeCmd.add(btnMakeCmd,
+                    new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
+            btnMakeCmd.setText(Message.getString("dialog.common.button.refer")); //参照
+            btnMakeCmd.setPreferredSize(REFER_BUTTON_SIZE);
+            btnMakeCmd.setMinimumSize(REFER_BUTTON_SIZE);
+            btnMakeCmd.setMaximumSize(REFER_BUTTON_SIZE);
+            btnMakeCmd.setMargin(new Insets(0, 3, 0, 3));
+            btnMakeCmd.addActionListener(this);
+            panelContent.add(panelMakeCmd,
+                    new GridBagConstraints(2, 2, 2, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
         }
 
-		// 説明文
+        // 説明文
         {
-        	JTextArea text = new JTextArea(
-        			Message.getString("fileprojectnewdialog.makefilepanel.desc")); //実行するmakeコマンド、Makefileを選択してください。
-        	text.setLineWrap(true);
-        	text.setWrapStyleWord(true);
-        	text.setOpaque(false);
-        	text.setEditable(false);
+            JTextArea text = new JTextArea(Message.getString("fileprojectnewdialog.makefilepanel.desc")); //実行するmakeコマンド、Makefileを選択してください。
+            text.setLineWrap(true);
+            text.setWrapStyleWord(true);
+            text.setOpaque(false);
+            text.setEditable(false);
             panelContent.add(text, new GridBagConstraints(1, 1, 2, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(7, 0, 10, 0), 0, 0));
         }
 
@@ -776,17 +772,18 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
 
     /**
      * プロジェクト作成最終確認画面を作成する.
-     * @return    プロジェクト作成最終確認画面
+     *
+     * @return プロジェクト作成最終確認画面
      */
     private JPanel createWizardFinalizePanel() {
 
-    	int row = 0;
+        int row = 0;
         JPanel panelContent = new JPanel();
         GridBagLayout jPanel2Layout = new GridBagLayout();
-        jPanel2Layout.rowWeights = new double[] {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0};
-        jPanel2Layout.rowHeights = new int[] {32, 32, 32, 32, 32, 32, 32, 8, 7, 7, 10};
-        jPanel2Layout.columnWeights = new double[] {0.0, 0.0, 1.0, 0.0};
-        jPanel2Layout.columnWidths = new int[] {7, 160, 7, 7};
+        jPanel2Layout.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0};
+        jPanel2Layout.rowHeights = new int[]{32, 32, 32, 32, 32, 32, 32, 8, 7, 7, 10};
+        jPanel2Layout.columnWeights = new double[]{0.0, 0.0, 1.0, 0.0};
+        jPanel2Layout.columnWidths = new int[]{7, 160, 7, 7};
         panelContent.setLayout(jPanel2Layout);
         panelContent.setBorder(new EmptyBorder(7, 7, 0, 7));
 
@@ -815,7 +812,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
         row++;
         {
             panelContent.add(new JLabel(Message.getString("fileprojectnewdialog.basepanel.label.title")), //タイトル
-                             new GridBagConstraints(1, row, 1, 1, 0.0, 0.0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 0, 7), 0, 0));
+                    new GridBagConstraints(1, row, 1, 1, 0.0, 0.0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 0, 7), 0, 0));
             JLabel label = new JLabel(txtProjectTitle.getText());
             panelContent.add(label, new GridBagConstraints(2, row, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
         }
@@ -823,7 +820,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
         row++;
         {
             panelContent.add(new JLabel(Message.getString("fileprojectnewdialog.basepanel.label.projectfolder")), //プロジェクトフォルダ
-                             new GridBagConstraints(1, row, 1, 1, 0.0, 0.0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 0, 7), 0, 0));
+                    new GridBagConstraints(1, row, 1, 1, 0.0, 0.0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 0, 7), 0, 0));
             JLabel label = new JLabel(txtProjectFolder.getText());
             panelContent.add(label, new GridBagConstraints(2, row, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
         }
@@ -831,23 +828,23 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
         // Makeコマンド
         String makecmd = null;
         if (isGenerateIntermediateCode()) {
-        	row++;
-        	{
-        		panelContent.add(new JLabel(Message.getString("fileprojectnewdialog.makefilepanel.label.makecommand")), //Makeコマンド
-        				new GridBagConstraints(1, row, 1, 1, 0.0, 0.0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 0, 7), 0, 0));
-        		makecmd = this.txtMakeCommand.getText();
-        		/*String filename = this.txtMakefile.getText();
-        		if (!filename.isEmpty()) {
-        			File file = new File(filename);
-        			filename = file.getName();
-        			makecmd += " -f " + filename;
-        		}
-        		else {
-        			makecmd = "";
-        		}*/
-        		JLabel label = new JLabel(makecmd);
-        		panelContent.add(label, new GridBagConstraints(2, row, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
-        	}
+            row++;
+            {
+                panelContent.add(new JLabel(Message.getString("fileprojectnewdialog.makefilepanel.label.makecommand")), //Makeコマンド
+                        new GridBagConstraints(1, row, 1, 1, 0.0, 0.0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 0, 7), 0, 0));
+                makecmd = this.txtMakeCommand.getText();
+                /*String filename = this.txtMakefile.getText();
+                 if (!filename.isEmpty()) {
+                 File file = new File(filename);
+                 filename = file.getName();
+                 makecmd += " -f " + filename;
+                 }
+                 else {
+                 makecmd = "";
+                 }*/
+                JLabel label = new JLabel(makecmd);
+                panelContent.add(label, new GridBagConstraints(2, row, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
+            }
         }
         // 中間コード　or フォートランソース
         row++;
@@ -901,129 +898,144 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
 
     /**
      * プロジェクト作成進捗画面を作成する.
-     * @return    プロジェクト作成進捗画面
+     *
+     * @return プロジェクト作成進捗画面
      */
     private JPanel createStatusPanel() {
-    	final int ROW_HEIGHT = 16;
-    	final int LABEL_WIDTH = 72;
+        final int ROW_HEIGHT = 16;
+        final int LABEL_WIDTH = 72;
 
         this.panelStatusContent = new JPanel() {
+            @Override
+            public void paintComponent(Graphics g) {
 
-			@Override
-			public void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                Graphics2D g2 = (Graphics2D) g;
+                g2.setColor(Color.BLACK);
 
-				super.paintComponent(g);
-				Graphics2D g2 = (Graphics2D)g;
-	            g2.setColor(Color.BLACK);
+                BasicStroke wideStroke = new BasicStroke(2.0f);
+                g2.setStroke(wideStroke);
 
-	            BasicStroke wideStroke = new BasicStroke(2.0f);
-	            g2.setStroke(wideStroke);
+                // 矢印
+                int x0, y0, x1, y1;
+                int xp[] = new int[3], yp[] = new int[3];
+                // 0->1
+                {
+                    Rectangle rect0 = labelStatus[0].getBounds();
+                    Rectangle rect1 = labelStatus[1].getBounds();
+                    x0 = rect0.x + rect0.width / 2;
+                    y0 = rect0.y + rect0.height;
+                    x1 = rect1.x + rect1.width / 2;
+                    y1 = rect1.y;
 
-	            // 矢印
-	            int x0, y0, x1, y1;
-	            int xp[] = new int[3], yp[] = new int[3];
-	            // 0->1
-	            {
-		            Rectangle rect0 = labelStatus[0].getBounds();
-		            Rectangle rect1 = labelStatus[1].getBounds();
-		            x0 = rect0.x + rect0.width/2;
-		            y0 = rect0.y + rect0.height;
-		            x1 = rect1.x + rect1.width/2;
-		            y1 = rect1.y;
+                    g2.drawLine(x0, y0, x1, y1);
 
-	            	g2.drawLine(x0, y0, x1, y1);
+                    xp[0] = x1;
+                    yp[0] = y1;
+                    xp[1] = x1 - ARROW_SIZE / 2;
+                    yp[1] = y1 - ARROW_SIZE;
+                    xp[2] = x1 + ARROW_SIZE / 2;
+                    yp[2] = y1 - ARROW_SIZE;
+                    g2.fillPolygon(xp, yp, 3);
+                }
+                // 1->2
+                {
+                    Rectangle rect0 = labelStatus[1].getBounds();
+                    Rectangle rect1 = labelStatus[2].getBounds();
+                    x0 = rect0.x + rect0.width / 2;
+                    y0 = rect0.y + rect0.height;
+                    x1 = rect1.x + rect1.width / 2;
+                    y1 = rect1.y;
 
-		            xp[0] = x1; yp[0] = y1;
-		            xp[1] = x1-ARROW_SIZE/2; yp[1] = y1-ARROW_SIZE;
-		            xp[2] = x1+ARROW_SIZE/2; yp[2] = y1-ARROW_SIZE;
-		            g2.fillPolygon(xp, yp, 3);
-            	}
-	            // 1->2
-            	{
-		            Rectangle rect0 = labelStatus[1].getBounds();
-		            Rectangle rect1 = labelStatus[2].getBounds();
-		            x0 = rect0.x + rect0.width/2;
-		            y0 = rect0.y + rect0.height;
-		            x1 = rect1.x + rect1.width/2;
-		            y1 = rect1.y;
+                    if (isGenerateIntermediateCode()) {
+                        g2.drawLine(x0, y0, x1, y1);
 
-		            if (isGenerateIntermediateCode()) {
-		            	g2.drawLine(x0, y0, x1, y1);
+                        xp[0] = x1;
+                        yp[0] = y1;
+                        xp[1] = x1 - ARROW_SIZE / 2;
+                        yp[1] = y1 - ARROW_SIZE;
+                        xp[2] = x1 + ARROW_SIZE / 2;
+                        yp[2] = y1 - ARROW_SIZE;
+                        g2.fillPolygon(xp, yp, 3);
+                    }
+                }
+                // 2->3
+                {
+                    Rectangle rect0 = labelStatus[2].getBounds();
+                    Rectangle rect1 = labelStatus[3].getBounds();
+                    x0 = rect0.x + rect0.width / 2;
+                    y0 = rect0.y + rect0.height;
+                    x1 = rect1.x + rect1.width / 2;
+                    y1 = rect1.y;
 
-			            xp[0] = x1; yp[0] = y1;
-			            xp[1] = x1-ARROW_SIZE/2; yp[1] = y1-ARROW_SIZE;
-			            xp[2] = x1+ARROW_SIZE/2; yp[2] = y1-ARROW_SIZE;
-			            g2.fillPolygon(xp, yp, 3);
-		            }
-            	}
-            	// 2->3
-            	{
-		            Rectangle rect0 = labelStatus[2].getBounds();
-		            Rectangle rect1 = labelStatus[3].getBounds();
-		            x0 = rect0.x + rect0.width/2;
-		            y0 = rect0.y + rect0.height;
-		            x1 = rect1.x + rect1.width/2;
-		            y1 = rect1.y;
+                    if (isGenerateIntermediateCode()) {
+                        g2.drawLine(x0, y0, x1, y1);
 
-		            if (isGenerateIntermediateCode()) {
-			            g2.drawLine(x0, y0, x1, y1);
+                        xp[0] = x1;
+                        yp[0] = y1;
+                        xp[1] = x1 - ARROW_SIZE / 2;
+                        yp[1] = y1 - ARROW_SIZE;
+                        xp[2] = x1 + ARROW_SIZE / 2;
+                        yp[2] = y1 - ARROW_SIZE;
+                        g2.fillPolygon(xp, yp, 3);
+                    }
+                }
+                // 1->3
+                {
+                    Rectangle rect0 = labelStatus[1].getBounds();
+                    Rectangle rect1 = labelStatus[3].getBounds();
+                    x0 = rect0.x + rect0.width / 2;
+                    y0 = rect0.y + rect0.height;
+                    x1 = rect1.x + rect1.width / 2;
+                    y1 = rect1.y;
 
-			            xp[0] = x1; yp[0] = y1;
-			            xp[1] = x1-ARROW_SIZE/2; yp[1] = y1-ARROW_SIZE;
-			            xp[2] = x1+ARROW_SIZE/2; yp[2] = y1-ARROW_SIZE;
-			            g2.fillPolygon(xp, yp, 3);
-		            }
-            	}
-            	// 1->3
-	            {
-		            Rectangle rect0 = labelStatus[1].getBounds();
-		            Rectangle rect1 = labelStatus[3].getBounds();
-		            x0 = rect0.x + rect0.width/2;
-		            y0 = rect0.y + rect0.height;
-		            x1 = rect1.x + rect1.width/2;
-		            y1 = rect1.y;
+                    if (!isGenerateIntermediateCode()) {
+                        g2.drawLine(x0, y0, x1, y1);
 
-		            if (!isGenerateIntermediateCode()) {
-		            	g2.drawLine(x0, y0, x1, y1);
+                        xp[0] = x1;
+                        yp[0] = y1;
+                        xp[1] = x1 - ARROW_SIZE / 2;
+                        yp[1] = y1 - ARROW_SIZE;
+                        xp[2] = x1 + ARROW_SIZE / 2;
+                        yp[2] = y1 - ARROW_SIZE;
+                        g2.fillPolygon(xp, yp, 3);
+                    }
 
-			            xp[0] = x1; yp[0] = y1;
-			            xp[1] = x1-ARROW_SIZE/2; yp[1] = y1-ARROW_SIZE;
-			            xp[2] = x1+ARROW_SIZE/2; yp[2] = y1-ARROW_SIZE;
-			            g2.fillPolygon(xp, yp, 3);
-		            }
+                }
+                // 3->4
+                {
+                    Rectangle rect0 = labelStatus[3].getBounds();
+                    Rectangle rect1 = labelStatus[4].getBounds();
+                    x0 = rect0.x + rect0.width / 2;
+                    y0 = rect0.y + rect0.height;
+                    x1 = rect1.x + rect1.width / 2;
+                    y1 = rect1.y;
 
-	            }
-	            // 3->4
-	            {
-		            Rectangle rect0 = labelStatus[3].getBounds();
-		            Rectangle rect1 = labelStatus[4].getBounds();
-		            x0 = rect0.x + rect0.width/2;
-		            y0 = rect0.y + rect0.height;
-		            x1 = rect1.x + rect1.width/2;
-		            y1 = rect1.y;
+                    g2.drawLine(x0, y0, x1, y1);
 
-		            g2.drawLine(x0, y0, x1, y1);
+                    xp[0] = x1;
+                    yp[0] = y1;
+                    xp[1] = x1 - ARROW_SIZE / 2;
+                    yp[1] = y1 - ARROW_SIZE;
+                    xp[2] = x1 + ARROW_SIZE / 2;
+                    yp[2] = y1 - ARROW_SIZE;
+                    g2.fillPolygon(xp, yp, 3);
+                }
 
-		            xp[0] = x1; yp[0] = y1;
-		            xp[1] = x1-ARROW_SIZE/2; yp[1] = y1-ARROW_SIZE;
-		            xp[2] = x1+ARROW_SIZE/2; yp[2] = y1-ARROW_SIZE;
-		            g2.fillPolygon(xp, yp, 3);
-	            }
-
-			}
+            }
         };
 
         GridBagLayout jPanel2Layout = new GridBagLayout();
-        jPanel2Layout.rowWeights = new double[] {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
-        jPanel2Layout.rowHeights = new int[] {32, ROW_HEIGHT, 32, ROW_HEIGHT, 32, ROW_HEIGHT, 32, ROW_HEIGHT, 32, 7};
-        jPanel2Layout.columnWeights = new double[] {0.0, 0.0};
-        jPanel2Layout.columnWidths = new int[] {7, 7};
+        jPanel2Layout.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+        jPanel2Layout.rowHeights = new int[]{32, ROW_HEIGHT, 32, ROW_HEIGHT, 32, ROW_HEIGHT, 32, ROW_HEIGHT, 32, 7};
+        jPanel2Layout.columnWeights = new double[]{0.0, 0.0};
+        jPanel2Layout.columnWidths = new int[]{7, 7};
         panelStatusContent.setLayout(jPanel2Layout);
         EmptyBorder border = new EmptyBorder(7, 7, 7, 7);
         panelStatusContent.setBorder(border);
 
         Font font = new Font("Meiryo UI", Font.PLAIN, 11);
-        java.awt.Dimension sizex2 = new java.awt.Dimension(LABEL_WIDTH*2, 22);
+        java.awt.Dimension sizex2 = new java.awt.Dimension(LABEL_WIDTH * 2, 22);
         labelStatus[0] = new JLabel(Message.getString("fileprojectnewdialog.statuspanel.kind")); //動作モードの選択
         labelStatus[0].setPreferredSize(sizex2);
         labelStatus[0].setBorder(new LineBorder(Color.BLACK));
@@ -1073,91 +1085,101 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
 
     /**
      * プロジェクト新規作成画面を切り替える.
-     * @param index		切替画面Index
+     *
+     * @param index	切替画面Index
      */
     private void changeWizardPage(int index) {
 
-    	if (index == panelWizards.length - 1) {
+        if (index == panelWizards.length - 1) {
             this.panelWizardParent.remove(this.panelWizards[index]);
-    		this.cardWizerd.removeLayoutComponent(this.panelWizards[index]);
-    		this.panelWizards[index] = createWizardFinalizePanel();
-    		this.panelWizardParent.add(LABEL_WIZARDS[index], this.panelWizards[index]);
-    	}
-    	this.cardWizerd.show(this.panelWizardParent, LABEL_WIZARDS[index]);
-    	for (int i=0; i<this.labelStatus.length; i++) {
-    		this.labelStatus[i].setBackground(Color.WHITE);
-        	this.labelStatus[i].setOpaque(true);
-    	}
-		this.labelStatus[index].setBackground(new Color(255, 160, 122));
+            this.cardWizard.removeLayoutComponent(this.panelWizards[index]);
+            this.panelWizards[index] = createWizardFinalizePanel();
+            this.panelWizardParent.add(LABEL_WIZARDS[index], this.panelWizards[index]);
+        }
+        this.cardWizard.show(this.panelWizardParent, LABEL_WIZARDS[index]);
+        for (int i = 0; i < this.labelStatus.length; i++) {
+            this.labelStatus[i].setBackground(Color.WHITE);
+            this.labelStatus[i].setOpaque(true);
+        }
+        this.labelStatus[index].setBackground(new Color(255, 160, 122));
 
-		this.btnBack.setEnabled(true);
-		this.btnNext.setEnabled(true);
-		this.btnNext.setText(Message.getString("fileprojectnewdialog.button.next")); //次へ >
-		this.btnCancel.setEnabled(true);
-		if (index == 0) {
-			this.btnBack.setEnabled(false);
-		}
-		else if (index == 1) { // open BasePanel
-			// hide file_filter and process_files fields
-			if (this.sproperties.haveSSHconnect) {
-				if (useSSHconnect() && !haveAllSettings2connect()) {
-                                    ProjectSettingSSHAction psssh_action = new ProjectSettingSSHAction(this.controller);
-                                    psssh_action.openDialog(this.frame,Message.getString("projectsettingsshconnect.setup.need_parameters"));
-				}
-				sshc_settings_panel.setVisible(useSSHconnect());
-			}
-			if (this.txtProjectFolder.getText().length() < 1) this.btnNext.setEnabled(false);  // Disable until project folder selected    		
-		}
-		else if (index == 3) {
-			String title = Message.getString("fileprojectnewdialog.statuspanel.xml_long"); //中間コードの選択
-                        //(2013/10/16) removed by teraim
-			//if (labelStatus[3] != null) {
-			//	title = labelStatus[3].getText();
-			//}
-			String desc = Message.getString("fileprojectnewdialog.xmlpanel.additionalfile.desc"); //中間コードの出力先がMakefileと同じ階層でない...
-			if (isGenerateIntermediateCode()) {
-				// makefileのparentを設定
-				String sf = this.txtProjectFolder.getText();
-				if (!StringUtils.isNullOrEmpty(sf)) {
-					File f = new File(sf);
-					addProjectList(new File[] {f});					
-				}
-				radioXml.setSelected(true);
-			}
-			else {
-				// 中間コードが空の場合は自動的にプロジェクトフォルダを設定
-				if (this.listProjectXml.getModel().getSize() < 1) {
-					File f = new File(this.txtProjectFolder.getText());
-					addProjectList(new File[] {f});
-				}
-				if (isSelectedXml()) {
-					desc = Message.getString("fileprojectnewdialog.xmlpanel.desc"); //中間コードのフォルダまたはファイルを選択してください。
-				}
-				else {
-					desc = Message.getString("fileprojectnewdialog.xmlpanel.fortran.desc"); //プロファイラ用ソースはプロファイラ出力した...
-				}
-			}
-			lblPanelXML.setText(title);
-			txaXMLPanelDesc.setText(desc);
-                        
-                        //(2013/10/16) added by teraim
-                        if(this.useSSHconnect()){
-                            listProjectXml.setEnabled(false);
-                            btnXmlFolder.setEnabled(false);
-                            btnXmlFile.setEnabled(false);
-                            btnXmlDelete.setEnabled(false);
-                        }
-                        
-		}				
-		else if (index == panelWizards.length - 1) {
-			this.btnNext.setText(Message.getString("fileprojectnewdialog.button.new")); //新規作成
-			String labelString = Message.getString("fileprojectnewdialog.finalizepanel.label.xml"); //中間コード
-        	if(isSelectedFortran()) {
-        		labelString = Message.getString("fileprojectnewdialog.finalizepanel.label.fortran"); //フォートランソース
-        	}
-        	lblFinalizePanelCode.setText(labelString);
-
-		}
+        this.btnBack.setEnabled(true);
+        this.btnNext.setEnabled(true);
+        this.btnNext.setText(Message.getString("fileprojectnewdialog.button.next")); //次へ >
+        this.btnCancel.setEnabled(true);
+        if (index == 0) {
+            this.btnBack.setEnabled(false);
+        } else if (index == 1) { // open BasePanel
+            // hide file_filter and process_files fields
+            if (this.sproperties.haveSSHconnect) {
+                if (useSSHconnect() && !haveAllSettings2connect()) {
+                    ProjectSettingSSHAction psssh_action = new ProjectSettingSSHAction(this.controller);
+                    psssh_action.openDialog(this.frame, Message.getString("projectsettingsshconnect.setup.need_parameters"));
+                }
+                sshc_settings_panel.setVisible(useSSHconnect());
+            }
+            if (this.txtProjectFolder.getText().length() < 1) {
+                this.btnNext.setEnabled(false);  // Disable until project folder selected    		
+            }
+        } else if (index == 3) {
+            String title = Message.getString("fileprojectnewdialog.statuspanel.xml_long"); //中間コードの選択
+            //(2013/10/16) removed by teraim
+            //if (labelStatus[3] != null) {
+            //	title = labelStatus[3].getText();
+            //}
+            String desc = Message.getString("fileprojectnewdialog.xmlpanel.additionalfile.desc"); //中間コードの出力先がMakefileと同じ階層でない...
+            if (isGenerateIntermediateCode()) {
+                // makefileのparentを設定
+                String sf = this.txtProjectFolder.getText();
+                if (!StringUtils.isNullOrEmpty(sf)) {
+                    File f = new File(sf);
+                    addProjectList(new File[]{f});
+                }
+                radioXml.setSelected(true);
+            } else {
+                // 中間コードが空の場合は自動的にプロジェクトフォルダを設定
+                if (this.listProjectXml.getModel().getSize() < 1) {
+                    File f = new File(this.txtProjectFolder.getText());
+                    addProjectList(new File[]{f});
+                }
+                if (isSelectedXml()) {
+                    desc = Message.getString("fileprojectnewdialog.xmlpanel.desc"); //中間コードのフォルダまたはファイルを選択してください。
+                } else {
+                    desc = Message.getString("fileprojectnewdialog.xmlpanel.fortran.desc"); //プロファイラ用ソースはプロファイラ出力した...
+                }
+            }
+            lblPanelXML.setText(title);
+            txaXMLPanelDesc.setText(desc);
+            
+            //(2013/10/16) added by teraim
+            //SSHconnectを使う場合と、シンプルモードの場合は、既存中間コードの追加をdisableにする。
+            if (this.useSSHconnect()) {
+                listProjectXml.setEnabled(false);
+                btnXmlFolder.setEnabled(false);
+                btnXmlFile.setEnabled(false);
+                btnXmlDelete.setEnabled(false);
+            }
+            else if(!this.isFullProject()){
+                //Todo 構文解析もdisableにする。
+                listProjectXml.setEnabled(false);
+                btnXmlFolder.setEnabled(false);
+                btnXmlFile.setEnabled(false);
+                btnXmlDelete.setEnabled(false);                
+            }else{
+                listProjectXml.setEnabled(true);
+                btnXmlFolder.setEnabled(true);
+                btnXmlFile.setEnabled(true);
+                btnXmlDelete.setEnabled(true);            
+            }            
+            
+        } else if (index == panelWizards.length - 1) {
+            this.btnNext.setText(Message.getString("fileprojectnewdialog.button.new")); //新規作成
+            String labelString = Message.getString("fileprojectnewdialog.finalizepanel.label.xml"); //中間コード
+            if (isSelectedFortran()) {
+                labelString = Message.getString("fileprojectnewdialog.finalizepanel.label.fortran"); //フォートランソース
+            }
+            lblFinalizePanelCode.setText(labelString);
+        }
     }
 
     //
@@ -1187,83 +1209,78 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
      * @return	true=成功, false=失敗
      */
     private boolean checkParams(int index) {
-    	String msg = "";
-    	boolean ret = true;
-    	if (index == 1) {
-    		// タイトルは無くてもいいからチェックしない
-    		// プロジェクトフォルダ
-    		String s = getProjectFolder();
-    		if (StringUtils.isNullOrEmpty(s)) {
-    			msg = Message.getString("fileprojectnewdialog.errordialog.message.projectfolderempty"); //"プロジェクトフォルダは必須項目です。"
-    			ret = false;
-    		}
-    		else {
-    			File f = new File(s);
-    			if (!f.exists()) {
-    				msg = Message.getString("fileprojectnewdialog.errordialog.message.projectfoldermissing"); //指定されたプロジェクトフォルダは存在しません。
-    				msg += " [" + s + "]";
-    				ret = false;
-    			}
-    			else if (!f.isDirectory()) {
-    				msg = Message.getString("fileprojectnewdialog.errordialog.message.projectfolderisnotdirectory"); //指定されたプロジェクトフォルダはディレクトリではありません。
-    				ret = false;
-    			}
-    		}
-    	}
-    	else if (index == 2) {
-    		// makeコマンド
-    		String m = getMakeCommand();
-    		if (StringUtils.isNullOrEmpty(m)) {
-    			msg = Message.getString("fileprojectnewdialog.errordialog.message.makecommandempty"); //Makeコマンドが設定されていません。
-    			ret = false;
-    		}
-    		// makefileパス
+        String msg = "";
+        boolean ret = true;
+        if (index == 1) {
+            // タイトルは無くてもいいからチェックしない
+            // プロジェクトフォルダ
+            String s = getProjectFolder();
+            if (StringUtils.isNullOrEmpty(s)) {
+                msg = Message.getString("fileprojectnewdialog.errordialog.message.projectfolderempty"); //"プロジェクトフォルダは必須項目です。"
+                ret = false;
+            } else {
+                File f = new File(s);
+                if (!f.exists()) {
+                    msg = Message.getString("fileprojectnewdialog.errordialog.message.projectfoldermissing"); //指定されたプロジェクトフォルダは存在しません。
+                    msg += " [" + s + "]";
+                    ret = false;
+                } else if (!f.isDirectory()) {
+                    msg = Message.getString("fileprojectnewdialog.errordialog.message.projectfolderisnotdirectory"); //指定されたプロジェクトフォルダはディレクトリではありません。
+                    ret = false;
+                }
+            }
+        } else if (index == 2) {
+            // makeコマンド
+            String m = getMakeCommand();
+            if (StringUtils.isNullOrEmpty(m)) {
+                msg = Message.getString("fileprojectnewdialog.errordialog.message.makecommandempty"); //Makeコマンドが設定されていません。
+                ret = false;
+            }
+            // makefileパス
     		/*String p = getMakefilePath();
-    		if (StringUtils.isNullOrEmpty(p)) {
-    			if (!StringUtils.isNullOrEmpty(msg)) {
-    				msg += "\n";
-    			}
-    			msg += Message.getString("fileprojectnewdialog.errordialog.message.makefileempty"); //Makefileパスが設定されていません。
-    			ret = false;
-    		}*/
-    	}
-    	else if (index == 3) {
+             if (StringUtils.isNullOrEmpty(p)) {
+             if (!StringUtils.isNullOrEmpty(msg)) {
+             msg += "\n";
+             }
+             msg += Message.getString("fileprojectnewdialog.errordialog.message.makefileempty"); //Makefileパスが設定されていません。
+             ret = false;
+             }*/
+        } else if (index == 3) {
             List<File> list = getProjectXmlList();
             if (list != null && list.size() > 0) {
                 for (File file : list) {
                     if (!file.exists()) {
-                    	if (!StringUtils.isNullOrEmpty(msg)) {
-                    		msg += "\n";
-                    	}
-                    	msg += Message.getString("fileprojectnewdialog.errordialog.filenotexist.message", file.getName()); //ファイル[%s]が存在しません。
+                        if (!StringUtils.isNullOrEmpty(msg)) {
+                            msg += "\n";
+                        }
+                        msg += Message.getString("fileprojectnewdialog.errordialog.filenotexist.message", file.getName()); //ファイル[%s]が存在しません。
                         ret = false;
                     }
                 }
+            } else {
+                msg = Message.getString("fileprojectnewdialog.errordialog.message.xmlempty"); //中間コードが設定されていません。
+                if (isSelectedFortran()) {
+                    msg = Message.getString("fileprojectnewdialog.errordialog.message.fortranempty"); //フォートランソースファイルが設定されていません。
+                }
+                ret = false;
             }
-            else {
-            	msg = Message.getString("fileprojectnewdialog.errordialog.message.xmlempty"); //中間コードが設定されていません。
-            	if (isSelectedFortran()) {
-            		msg = Message.getString("fileprojectnewdialog.errordialog.message.fortranempty"); //フォートランソースファイルが設定されていません。
-            	}
-            	ret = false;
-            }
-    	}
-    	if (StringUtils.isNullOrEmpty(msg)) {
-    		//txaErrMsg.setText("");
-    		return ret;
-    	}
-    	else {
-    		//txaErrMsg.setText(msg);
-    		JOptionPane.showMessageDialog(this, msg,
-    				Message.getString("fileprojectnewdialog.errordialog.title"), //設定エラー
-    				JOptionPane.ERROR_MESSAGE);
-    		return ret;
-    	}
+        }
+        if (StringUtils.isNullOrEmpty(msg)) {
+            //txaErrMsg.setText("");
+            return ret;
+        } else {
+            //txaErrMsg.setText(msg);
+            JOptionPane.showMessageDialog(this, msg,
+                    Message.getString("fileprojectnewdialog.errordialog.title"), //設定エラー
+                    JOptionPane.ERROR_MESSAGE);
+            return ret;
+        }
     }
 
     /**
      * ダイアログを表示する。
-     * @return    ダイアログの閉じた時のボタン種別
+     *
+     * @return ダイアログの閉じた時のボタン種別
      */
     public int showDialog() {
 
@@ -1278,7 +1295,8 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
 
     /**
      * ボタンクリックイベント
-     * @param event		イベント情報
+     *
+     * @param event	イベント情報
      */
     @Override
     public void actionPerformed(ActionEvent event) {
@@ -1288,8 +1306,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
         if (currentFolder == null || currentFolder.isEmpty()) {
             if (this.lastAccessFolder != null) {
                 currentFolder = this.lastAccessFolder;
-            }
-            else {
+            } else {
                 currentFolder = System.getProperty("user.dir");
             }
         }
@@ -1306,45 +1323,44 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
             File[] selected = SwingUtils.showOpenFolderDialog(this,
                     Message.getString("dialog.common.selectproject.title"), //プロジェクトフォルダの選択
                     currentFolder, false);
-            if (selected == null || selected.length <= 0) return;
+            if (selected == null || selected.length <= 0) {
+                return;
+            }
 
             // 中間コードやMakefileが設定されている状態でプロジェクトフォルダが変更された場合は相対パスに注意
             String prjF = this.txtProjectFolder.getText();
             if (!StringUtils.isNullOrEmpty(prjF)) {
-            	String prjFNew = selected[0].getAbsolutePath();
-            	if (!prjF.equals(prjFNew)) {
-            		DefaultListModel model = (DefaultListModel) this.listProjectXml.getModel();
-            		String mk = null;
-            		if (isGenerateIntermediateCode()) {
-            			mk = this.txtMakeCommand.getText();
-            		}
-            		if (model.size() > 0 || !StringUtils.isNullOrEmpty(mk)) {
-            			String desc = Message.getString("fileprojectnewdialog.confirmdialog.projectfolderchange.xmlclear.message"); //プロジェクトフォルダが変更されました。すでに設定されている中間コードは...
-            			if (isSelectedFortran()) {
-            				desc = Message.getString("fileprojectnewdialog.confirmdialog.projectfolderchange.fortranclear.message"); //プロジェクトフォルダが変更されました。すでに設定されているフォートランファイルは...
-            			}
-            			else{
-            				if (!StringUtils.isNullOrEmpty(mk) && model.size() > 0) {
-            					desc = Message.getString("fileprojectnewdialog.confirmdialog.projectfolderchange.makefileandxmlclear.message"); //プロジェクトフォルダが変更されました。すでに設定されているMakefileと中間コードは...
-            				}
-            				else if (!StringUtils.isNullOrEmpty(mk)) {
-            					desc = Message.getString("fileprojectnewdialog.confirmdialog.projectfolderchange.makefileclear.message"); //プロジェクトフォルダが変更されました。すでに設定されているMakefileは...
-            				}
-            			}
+                String prjFNew = selected[0].getAbsolutePath();
+                if (!prjF.equals(prjFNew)) {
+                    DefaultListModel model = (DefaultListModel) this.listProjectXml.getModel();
+                    String mk = null;
+                    if (isGenerateIntermediateCode()) {
+                        mk = this.txtMakeCommand.getText();
+                    }
+                    if (model.size() > 0 || !StringUtils.isNullOrEmpty(mk)) {
+                        String desc = Message.getString("fileprojectnewdialog.confirmdialog.projectfolderchange.xmlclear.message"); //プロジェクトフォルダが変更されました。すでに設定されている中間コードは...
+                        if (isSelectedFortran()) {
+                            desc = Message.getString("fileprojectnewdialog.confirmdialog.projectfolderchange.fortranclear.message"); //プロジェクトフォルダが変更されました。すでに設定されているフォートランファイルは...
+                        } else {
+                            if (!StringUtils.isNullOrEmpty(mk) && model.size() > 0) {
+                                desc = Message.getString("fileprojectnewdialog.confirmdialog.projectfolderchange.makefileandxmlclear.message"); //プロジェクトフォルダが変更されました。すでに設定されているMakefileと中間コードは...
+                            } else if (!StringUtils.isNullOrEmpty(mk)) {
+                                desc = Message.getString("fileprojectnewdialog.confirmdialog.projectfolderchange.makefileclear.message"); //プロジェクトフォルダが変更されました。すでに設定されているMakefileは...
+                            }
+                        }
 
-           				int ret = JOptionPane.showConfirmDialog(this, desc,
-           						Message.getString("fileprojectnewdialog.confirmdialog.projectfolderchange.title"), //プロジェクトフォルダの変更
-           						JOptionPane.WARNING_MESSAGE, JOptionPane.YES_NO_OPTION);
-           				if (ret == JOptionPane.YES_OPTION) {
-           					if (model.size() > 0) {
-           						model.clear();
-           					}
-           				}
-           				else {
-           					return;
-           				}
-            		}
-            	}
+                        int ret = JOptionPane.showConfirmDialog(this, desc,
+                                Message.getString("fileprojectnewdialog.confirmdialog.projectfolderchange.title"), //プロジェクトフォルダの変更
+                                JOptionPane.WARNING_MESSAGE, JOptionPane.YES_NO_OPTION);
+                        if (ret == JOptionPane.YES_OPTION) {
+                            if (model.size() > 0) {
+                                model.clear();
+                            }
+                        } else {
+                            return;
+                        }
+                    }
+                }
             }
 
             // 選択プロジェクトフォルダが既存プロジェクトであるかチェックする。
@@ -1354,10 +1370,10 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
             if (projectFile.exists()) {
                 // 確認メッセージを表示する。
                 int option = JOptionPane.showConfirmDialog(this,
-                          Message.getString("fileprojectnewdialog.warnningdialog.projectexist.message"), //選択プロジェクトフォルダは既存プロジェクトです～
-                          Message.getString("mainmenu.file.saveproject"), //プロジェクトの保存
-                          JOptionPane.OK_CANCEL_OPTION,
-                          JOptionPane.WARNING_MESSAGE);
+                        Message.getString("fileprojectnewdialog.warnningdialog.projectexist.message"), //選択プロジェクトフォルダは既存プロジェクトです～
+                        Message.getString("mainmenu.file.saveproject"), //プロジェクトの保存
+                        JOptionPane.OK_CANCEL_OPTION,
+                        JOptionPane.WARNING_MESSAGE);
                 if (option != JOptionPane.OK_OPTION) {
                     return;
                 }
@@ -1366,48 +1382,49 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
             this.txtProjectFolder.setText(selected[0].getPath());
             enableButtons();
 
-        }
-        
-        // Add files to be preprocessed
+        } // Add files to be preprocessed
         else if (event.getSource() == this.addprerocessfile_button) {
-        	// フォルダ選択ダイアログを表示する。
+            // フォルダ選択ダイアログを表示する。
             File[] selected = SwingUtils.showOpenFileDialog(this, "Add preprocess files", currentFolder, null, true);
-            if (selected == null || selected.length <= 0) return;
-            for (File file : selected) {
-            	String path = "";
-            	try {
-					path = file.getCanonicalPath();
-					path = FileUtils.getRelativePath(this.txtProjectFolder.getText(),path);
-				} catch (IOException e) {
-					return;
-				}
-            	if (path.length() > 0) {
-            		String preprocess_files = this.txt_preprocess_files.getText();
-            		if (!StringUtils.isNullOrEmpty(preprocess_files)) preprocess_files = preprocess_files+";"+path;
-            		else preprocess_files = path;
-            		this.txt_preprocess_files.setText(preprocess_files);
-            	}
+            if (selected == null || selected.length <= 0) {
+                return;
             }
-        }        
-        
-        // XMLフォルダ追加
+            for (File file : selected) {
+                String path = "";
+                try {
+                    path = file.getCanonicalPath();
+                    path = FileUtils.getRelativePath(this.txtProjectFolder.getText(), path);
+                } catch (IOException e) {
+                    return;
+                }
+                if (path.length() > 0) {
+                    String preprocess_files = this.txt_preprocess_files.getText();
+                    if (!StringUtils.isNullOrEmpty(preprocess_files)) {
+                        preprocess_files = preprocess_files + ";" + path;
+                    } else {
+                        preprocess_files = path;
+                    }
+                    this.txt_preprocess_files.setText(preprocess_files);
+                }
+            }
+        } // XMLフォルダ追加
         else if (event.getSource() == this.btnXmlFolder) {
             // フォルダ選択ダイアログを表示する。
-        	String title = null;
+            String title = null;
             if (this.radioXml.isSelected()) {
                 title = Message.getString("fileprojectnewdialog.selectfolderdialog.xml.title"); //中間コードフォルダの選択
-            }
-            else if (this.radioFortran.isSelected()) {
+            } else if (this.radioFortran.isSelected()) {
                 title = Message.getString("fileprojectnewdialog.selectfolderdialog.fortran.title"); //Fortranフォルダの選択
             }
             File[] selected = SwingUtils.showOpenFolderDialog(this, title, currentFolder, true);
-            if (selected == null || selected.length <= 0) return;
+            if (selected == null || selected.length <= 0) {
+                return;
+            }
 
             // プロジェクトXMLファイルをリストに追加する
             addProjectList(selected);
 
-        }
-        // XMLファイル選択
+        } // XMLファイル選択
         else if (event.getSource() == this.btnXmlFile) {
             // ファイル選択ダイアログのタイトル
             String title = null;
@@ -1420,8 +1437,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
                 // String[] exts = {"xml"};
                 // filter = new SwingUtils().new ExtFileFilter(description, exts);
                 filter = new SwingUtils().new ExtFileFilter(FILE_TYPE.getXcodemlFilter());
-            }
-            else if (this.radioFortran.isSelected()) {
+            } else if (this.radioFortran.isSelected()) {
                 title = Message.getString("fileprojectnewdialog.selectfiledialog.fortran.title");//フォートランソースの選択
                 // ソースファイルフィルタ
                 // FILE_TYPEからフィルタ作成に変更 at 2013/05/14 by @hira
@@ -1433,193 +1449,192 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
 
             // ファイル選択ダイアログを表示する。
             File[] selected = SwingUtils.showOpenFileDialog(this, title, currentFolder, filter, true);
-            if (selected == null || selected.length <= 0) return;
+            if (selected == null || selected.length <= 0) {
+                return;
+            }
 
             // プロジェクトXMLファイルをリストに追加する
             addProjectList(selected);
 
-        }
-        // XMLファイル削除
+        } // XMLファイル削除
         else if (event.getSource() == this.btnXmlDelete) {
             int index = this.listProjectXml.getSelectedIndex();
-            if (index < 0) return;
-            DefaultListModel model = (DefaultListModel)this.listProjectXml.getModel();
-            model.remove(index);
-        }
-        // makeコマンド参照ボタン
-        else if (event.getSource() == this.btnMakeCmd) {
-        	File[] selected = SwingUtils.showOpenFileDialog(this,
-        			Message.getString("fileprojectnewdialog.selectfiledialog.makecommand.title"), //makeコマンドの選択
-        			currentFolder, null, false);
-        	if (selected == null || selected.length <= 0 || selected[0] == null) return;
-         	for (File file : selected) {
-            	String path = "";
-            	try {
-					path = file.getCanonicalPath();
-					path = FileUtils.getRelativePath(this.txtProjectFolder.getText(),path);
-				} catch (IOException e) {
-					return;
-				}
-            	if (path.length() > 0) {
-            		String text_make_comm = this.txtMakeCommand.getText();
-            		if (!StringUtils.isNullOrEmpty(text_make_comm)) text_make_comm = text_make_comm+" "+path;
-            		else text_make_comm = "./'"+path+"'";
-            		this.txtMakeCommand.setText(text_make_comm);
-            	}
+            if (index < 0) {
+                return;
             }
-        }
-        
-        // 次へ
+            DefaultListModel model = (DefaultListModel) this.listProjectXml.getModel();
+            model.remove(index);
+        } // makeコマンド参照ボタン
+        else if (event.getSource() == this.btnMakeCmd) {
+            File[] selected = SwingUtils.showOpenFileDialog(this,
+                    Message.getString("fileprojectnewdialog.selectfiledialog.makecommand.title"), //makeコマンドの選択
+                    currentFolder, null, false);
+            if (selected == null || selected.length <= 0 || selected[0] == null) {
+                return;
+            }
+            for (File file : selected) {
+                String path = "";
+                try {
+                    path = file.getCanonicalPath();
+                    path = FileUtils.getRelativePath(this.txtProjectFolder.getText(), path);
+                } catch (IOException e) {
+                    return;
+                }
+                if (path.length() > 0) {
+                    String text_make_comm = this.txtMakeCommand.getText();
+                    if (!StringUtils.isNullOrEmpty(text_make_comm)) {
+                        text_make_comm = text_make_comm + " " + path;
+                    } else {
+                        text_make_comm = "./'" + path + "'";
+                    }
+                    this.txtMakeCommand.setText(text_make_comm);
+                }
+            }
+        } // 次へ
         else if (event.getSource() == this.btnNext) {
-        	//System.out.println(this.wizerdIndex+"/"+this.panelWizerds.length);
-        	if (!checkParams(this.wizerdIndex)) {
-        		return;
-        	}
-        	if (this.wizerdIndex == this.panelWizards.length - 1) {
-        		// 最終ページに移動する
-        		if (this.wizerdIndex != panelWizards.length - 1) { // Peter: Is this possible to be true?
-        			this.wizerdForward = this.wizerdIndex;
-        			this.wizerdIndex = panelWizards.length - 1;
-        			changeWizardPage(this.wizerdIndex);
-        			return;
-        		}
-        		// 入力チェックを行う
-        		if (!validateProject()) {
-        			return;
-        		}
+            if (!checkParams(this.wizardIndex)) {
+                return;
+            }
+            if (this.wizardIndex == this.panelWizards.length - 1) {
+                // 最終ページに移動する
+                if (this.wizardIndex != panelWizards.length - 1) { // Peter: Is this possible to be true?
+                    this.wizardForward = this.wizardIndex;
+                    this.wizardIndex = panelWizards.length - 1;
+                    changeWizardPage(this.wizardIndex);
+                    return;
+                }
+                // 入力チェックを行う
+                if (!validateProject()) {
+                    return;
+                }
 
-        		//(2012/4/11) added by teraim パスが存在するか確認
-        		File f = new File(currentFolder);
-        		//そもそも存在しない。
-        		if(! f.exists()){
-        			f.mkdir();
-        		}
-        		else{
-        			//存在するがファイルの場合（動作無保証、とりあえずエラー値を設定）
-        			if(f.isFile()){
-        				this.result = Constant.ERROR_RESULT;
-        			}
-        			//デフォルト（正常系）
-        			else{
-        				this.result = Constant.OK_DIALOG;
-        			}
-        		}
+                //(2012/4/11) added by teraim パスが存在するか確認
+                File f = new File(currentFolder);
+                //そもそも存在しない。
+                if (!f.exists()) {
+                    f.mkdir();
+                } else {
+                    //存在するがファイルの場合（動作無保証、とりあえずエラー値を設定）
+                    if (f.isFile()) {
+                        this.result = Constant.ERROR_RESULT;
+                    } //デフォルト（正常系）
+                    else {
+                        this.result = Constant.OK_DIALOG;
+                    }
+                }
 
-        		// ダイアログを閉じる。
-        		dispose();
+                // ダイアログを閉じる。
+                dispose();
 
-        		//
-        		//ProjectBuildAction pb = new jp.riken.kscope.action.ProjectBuildAction();
+                //
+                //ProjectBuildAction pb = new jp.riken.kscope.action.ProjectBuildAction();
 
-        		return;
-        	}
-        	else {   
-        		if (this.wizerdIndex < this.panelWizards.length - 1) {
-        			this.wizerdForward = this.wizerdIndex;
-        			this.wizerdIndex++;
-        			//System.out.println("Generate intercode:"+isGenerateIntermediateCode());
-        			if (this.wizerdIndex == 2 && !isGenerateIntermediateCode()) {
-        				this.wizerdIndex++;
-        			}        			
-        		}
-        		else {
-        			this.wizerdIndex = this.panelWizards.length - 1;
-        		}
-        		changeWizardPage(this.wizerdIndex);
-        	}
-        }
-        // 戻る
+                return;
+            } else {
+                if (this.wizardIndex < this.panelWizards.length - 1) {
+                    this.wizardForward = this.wizardIndex;
+                    this.wizardIndex++;
+                    //System.out.println("Generate intercode:"+isGenerateIntermediateCode());
+                    if (this.wizardIndex == 2 && !isGenerateIntermediateCode()) {
+                        this.wizardIndex++;
+                    }
+                } else {
+                    this.wizardIndex = this.panelWizards.length - 1;
+                }
+                changeWizardPage(this.wizardIndex);
+            }
+        } // 戻る
         else if (event.getSource() == this.btnBack) {
-        	this.wizerdIndex = this.wizerdForward;
-        	if (this.wizerdForward > 0) {
-        		this.wizerdForward--;
-        		if (this.wizerdIndex == 2 &&
-        				!isGenerateIntermediateCode()) {
-        			this.wizerdIndex--;
-        			this.wizerdForward--;
-        		}
-        	}
-        	else {
-        		this.wizerdForward = 0;
-        	}
-        	changeWizardPage(this.wizerdIndex);
-        }
-        // ラジオボタン　XcodeML選択
+            this.wizardIndex = this.wizardForward;
+            if (this.wizardForward > 0) {
+                this.wizardForward--;
+                if (this.wizardIndex == 2
+                        && !isGenerateIntermediateCode()) {
+                    this.wizardIndex--;
+                    this.wizardForward--;
+                }
+            } else {
+                this.wizardForward = 0;
+            }
+            changeWizardPage(this.wizardIndex);
+        } // ラジオボタン　XcodeML選択
         else if (event.getSource() == this.radioXml) {
-        	if (this.radioXml.isSelected()) {
-        		// すでにフォートランが設定されている場合はクリア
-        		DefaultListModel model = (DefaultListModel) this.listProjectXml.getModel();
-        		if (model.getSize() > 0) {
-        			int res = JOptionPane.showConfirmDialog(this,
-        					Message.getString("fileprojectnewdialog.confirmdialog.filekindchange.message"), //ファイル種別を変更するとファイルリストがクリアされます。ファイル種別を変更しますか？
-        					Message.getString("fileprojectnewdialog.confirmdialog.filekindchange.title"), //ファイル種別の変更
-        					JOptionPane.OK_CANCEL_OPTION);
-        			if (res == JOptionPane.OK_OPTION) {
-        				model.clear();
-        				return;
-        			} else {
-        				this.radioFortran.setSelected(true);
-        	        	checkbox_StructureAnalysis.setSelected(false);
-        	        	checkbox_StructureAnalysis.setEnabled(false);
-        				return;
-        			}
-        		}
-        	}
-        }
-        // ラジオボタン Fortran選択
+            if (this.radioXml.isSelected()) {
+                // すでにフォートランが設定されている場合はクリア
+                DefaultListModel model = (DefaultListModel) this.listProjectXml.getModel();
+                if (model.getSize() > 0) {
+                    int res = JOptionPane.showConfirmDialog(this,
+                            Message.getString("fileprojectnewdialog.confirmdialog.filekindchange.message"), //ファイル種別を変更するとファイルリストがクリアされます。ファイル種別を変更しますか？
+                            Message.getString("fileprojectnewdialog.confirmdialog.filekindchange.title"), //ファイル種別の変更
+                            JOptionPane.OK_CANCEL_OPTION);
+                    if (res == JOptionPane.OK_OPTION) {
+                        model.clear();
+                        return;
+                    } else {
+                        this.radioFortran.setSelected(true);
+                        checkbox_StructureAnalysis.setSelected(false);
+                        checkbox_StructureAnalysis.setEnabled(false);
+                        return;
+                    }
+                }
+            }
+        } // ラジオボタン Fortran選択
         else if (event.getSource() == this.radioFortran) {
-        	if (this.radioFortran.isSelected()) {
-        		// すでにXMLが設定されている場合はクリア
-        		DefaultListModel model = (DefaultListModel) this.listProjectXml.getModel();
-        		if (model.getSize() > 0) {
-        			int res = JOptionPane.showConfirmDialog(this,
-        					Message.getString("fileprojectnewdialog.confirmdialog.filekindchange.message"), //ファイル種別を変更するとファイルリストがクリアされます。ファイル種別を変更しますか？
-        					Message.getString("fileprojectnewdialog.confirmdialog.filekindchange.title"), //ファイル種別の変更
-        					JOptionPane.OK_CANCEL_OPTION);
-        			if (res == JOptionPane.OK_OPTION) {
-        				model.clear();
-        				return;
-        			} else {
-        				this.radioXml.setSelected(true);
-        				return;
-        			}
-        		}
-        	}
+            if (this.radioFortran.isSelected()) {
+                // すでにXMLが設定されている場合はクリア
+                DefaultListModel model = (DefaultListModel) this.listProjectXml.getModel();
+                if (model.getSize() > 0) {
+                    int res = JOptionPane.showConfirmDialog(this,
+                            Message.getString("fileprojectnewdialog.confirmdialog.filekindchange.message"), //ファイル種別を変更するとファイルリストがクリアされます。ファイル種別を変更しますか？
+                            Message.getString("fileprojectnewdialog.confirmdialog.filekindchange.title"), //ファイル種別の変更
+                            JOptionPane.OK_CANCEL_OPTION);
+                    if (res == JOptionPane.OK_OPTION) {
+                        model.clear();
+                        return;
+                    } else {
+                        this.radioXml.setSelected(true);
+                        return;
+                    }
+                }
+            }
+        } else if (event.getSource() == this.ssh_settings_button) {
+            ProjectSettingSSHAction psssh_action = new ProjectSettingSSHAction(this.controller);
+            psssh_action.openDialog(this.frame);
         }
-        else if (event.getSource() == this.ssh_settings_button) {
-        	ProjectSettingSSHAction psssh_action = new ProjectSettingSSHAction(this.controller);
-        	psssh_action.openDialog(this.frame);
-        }
-        
+
     }
 
     private void enableButtons() {
-		this.btnNext.setEnabled(true);
-		this.addprerocessfile_button.setEnabled(true);
-	}
+        this.btnNext.setEnabled(true);
+        this.addprerocessfile_button.setEnabled(true);
+    }
 
-	/**
+    /**
      * プロジェクトファイルリスト重複チェック
-     * @param model       プロジェクトファイルリスト
-     * @param path        重複チェックプロジェクトファイル
-     * @return      true=重複ファイル
+     *
+     * @param model プロジェクトファイルリスト
+     * @param path 重複チェックプロジェクトファイル
+     * @return true=重複ファイル
      */
     private boolean containsInProjectList(DefaultListModel model, String path) {
-    	for (int i=0; i<model.getSize(); i++) {
-    		String modelPath = (String)model.getElementAt(i);
-    		if (modelPath.equals(path)) {
-    			return true;
-    		}
-    	}
-    	return false;
+        for (int i = 0; i < model.getSize(); i++) {
+            String modelPath = (String) model.getElementAt(i);
+            if (modelPath.equals(path)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
      * プロジェクトXMLファイルを追加する
-     * @param file		XMLファイルリスト
+     *
+     * @param file	XMLファイルリスト
      */
     private void addProjectList(File[] file) {
-        if (file == null || file.length <= 0) return;
+        if (file == null || file.length <= 0) {
+            return;
+        }
 
         // プロジェクトフォルダ
         String projectFolderName = this.txtProjectFolder.getText();
@@ -1633,10 +1648,10 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
         selectedFiles = new ArrayList<File>(selectedFiles);
         // プロジェクトXMLリストの作成
         DefaultListModel model = (DefaultListModel) this.listProjectXml.getModel();
-        for (int i=0; i<model.getSize(); i++) {
+        for (int i = 0; i < model.getSize(); i++) {
             File path = null;
             try {
-                String pathname = (String)model.getElementAt(i);
+                String pathname = (String) model.getElementAt(i);
                 path = new File(pathname);
                 if (!path.isAbsolute()) {
                     path = new File(projectPath.getCanonicalPath() + File.separator + pathname);
@@ -1644,7 +1659,9 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
             } catch (IOException ex) {
                 path = null;
             }
-            if (path == null) continue;
+            if (path == null) {
+                continue;
+            }
 
             if (selectedFiles.contains(path)) {
                 selectedFiles.remove(path);
@@ -1664,54 +1681,51 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
                 if (projectPath == null) {
                     // 絶対パス表示を行う
                     model.addElement(addfile.getCanonicalPath());
-                }
-                else if (projectPath.equals(addfile)) {
-                	if (!containsInProjectList(model, "./")) {
-                		model.addElement("./");
-                	}
+                } else if (projectPath.equals(addfile)) {
+                    if (!containsInProjectList(model, "./")) {
+                        model.addElement("./");
+                    }
                     // 同一フォルダ指定であるので、子フォルダ、子ファイル(xml)を追加
                     /*File[] childfiles = projectPath.listFiles();
-                    if (childfiles != null && childfiles.length > 0) {
-                        for (int i=0; i<childfiles.length; i++) {
-                            File childfile = childfiles[i];
-                            // 除外パスに含まれているかチェックする
-                            if (this.containsExcludeName(childfile.getPath())) {
-                                continue;
-                            }
+                     if (childfiles != null && childfiles.length > 0) {
+                     for (int i=0; i<childfiles.length; i++) {
+                     File childfile = childfiles[i];
+                     // 除外パスに含まれているかチェックする
+                     if (this.containsExcludeName(childfile.getPath())) {
+                     continue;
+                     }
 
-                            if (childfile.isFile()) {
-                            	if (this.radioXml.isSelected()) {
-                                    if (!FILE_TYPE.isXcodemlFile(childfile)) {
-                                        childfile = null;
-                                    }
-                                }
-                                else if (this.radioFortran.isSelected()) {
-                                    if (!FILE_TYPE.isFortranFile(childfile)) {
-                                        childfile = null;
-                                    }
-                                }
-                                else {
-                                    childfile = null;
-                                }
-                            }
-                            if (childfile != null) {
-                                // 子パスであるので相対パス表示を行う
-                            	String relPath = FileUtils.getRelativePath(childfile.getCanonicalPath(), projectPath.getCanonicalPath());
-                            	if (!containsInProjectList(model, relPath)) {
-                            		model.addElement(relPath);
-                            	}
-                            }
-                        }
-                    }*/
-                }
-                else if (FileUtils.isChildPath(projectPath.getCanonicalPath(), addfile.getCanonicalPath())) {
+                     if (childfile.isFile()) {
+                     if (this.radioXml.isSelected()) {
+                     if (!FILE_TYPE.isXcodemlFile(childfile)) {
+                     childfile = null;
+                     }
+                     }
+                     else if (this.radioFortran.isSelected()) {
+                     if (!FILE_TYPE.isFortranFile(childfile)) {
+                     childfile = null;
+                     }
+                     }
+                     else {
+                     childfile = null;
+                     }
+                     }
+                     if (childfile != null) {
+                     // 子パスであるので相対パス表示を行う
+                     String relPath = FileUtils.getRelativePath(childfile.getCanonicalPath(), projectPath.getCanonicalPath());
+                     if (!containsInProjectList(model, relPath)) {
+                     model.addElement(relPath);
+                     }
+                     }
+                     }
+                     }*/
+                } else if (FileUtils.isChildPath(projectPath.getCanonicalPath(), addfile.getCanonicalPath())) {
                     // 子パスであるので相対パス表示を行う
-                	String relPath = FileUtils.getSubPath(addfile.getCanonicalPath(), projectPath.getCanonicalPath());
-                	if (!containsInProjectList(model, relPath)) {
-                		model.addElement(relPath);
-                	}
-                }
-                else {
+                    String relPath = FileUtils.getSubPath(addfile.getCanonicalPath(), projectPath.getCanonicalPath());
+                    if (!containsInProjectList(model, relPath)) {
+                        model.addElement(relPath);
+                    }
+                } else {
                     // 絶対パス表示を行う
                     model.addElement(addfile.getCanonicalPath());
                 }
@@ -1724,7 +1738,8 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
 
     /**
      * 入力チェックを行う
-     * @return			true=入力チェックOK
+     *
+     * @return	true=入力チェックOK
      */
     private boolean validateProject() {
 
@@ -1733,8 +1748,8 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
         // プロジェクトフォルダ
         if (projectFolder == null || projectFolder.isEmpty()) {
             JOptionPane.showMessageDialog(this, Message.getString("fileprojectnewdialog.errordialog.noprojectfolder.messag"), //プロジェクトフォルダを選択してください。
-                                                Message.getString("dialog.common.error"), //エラー
-                                                JOptionPane.ERROR_MESSAGE);
+                    Message.getString("dialog.common.error"), //エラー
+                    JOptionPane.ERROR_MESSAGE);
             return false;
         }
 
@@ -1745,7 +1760,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
             for (File file : list) {
                 if (!file.exists()) {
                     JOptionPane.showMessageDialog(this,
-                    		Message.getString("fileprojectnewdialog.errordialog.filenotexist.message", file.getName()), //ファイル[%s]が存在しません。
+                            Message.getString("fileprojectnewdialog.errordialog.filenotexist.message", file.getName()), //ファイル[%s]が存在しません。
                             Message.getString("dialog.common.error"), //エラー
                             JOptionPane.ERROR_MESSAGE);
                     return false;
@@ -1756,9 +1771,9 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
         return true;
     }
 
-
     /**
      * XMLフォルダ・ファイルリストにアイコン表示クラス
+     *
      * @author riken
      *
      */
@@ -1767,36 +1782,39 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
 
         @Override
         public Component getListCellRendererComponent(
-                                JList list, Object value,
-                                int index, boolean isSelected,
-                                boolean cellHasFocus) {
+                JList list, Object value,
+                int index, boolean isSelected,
+                boolean cellHasFocus) {
 
             JLabel label = (JLabel) super.getListCellRendererComponent(
-                                        list, value,
-                                        index, isSelected,
-                                        cellHasFocus);
-            String path = (String)value;
+                    list, value,
+                    index, isSelected,
+                    cellHasFocus);
+            String path = (String) value;
             File file = new File(path);
             if (!file.isAbsolute()) {
-            	try {
+                try {
                     String projectFolder = getProjectFolder();
                     File projectPath = new File(projectFolder);
                     file = new File(projectPath.getCanonicalPath() + File.separator + path);
-                } catch (IOException e) { }
+                } catch (IOException e) {
+                }
             }
 
             String iconname = null;
             if (file.isDirectory()) {
                 iconname = "folder.gif";
-            }
+            } 
             //(2012/4/11) changed by teraim デフォルトをファイルに変更
             //else if (file.isFile()) {
             //    iconname = "file.gif";
             //}
-            else{
+            else {
                 iconname = "file.gif";
             }
-            if (iconname == null) return label;
+            if (iconname == null) {
+                return label;
+            }
 
             Icon icon = ResourceUtils.getIcon(iconname);
             // 表示アイコンを設定する。
@@ -1807,7 +1825,8 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
 
     /**
      * プロジェクトタイトルを取得する
-     * @return		プロジェクトタイトル
+     *
+     * @return	プロジェクトタイトル
      */
     public String getPeojectTitle() {
         return this.txtProjectTitle.getText();
@@ -1815,7 +1834,8 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
 
     /**
      * プロジェクトフォルダを取得する
-     * @return		プロジェクトフォルダ
+     *
+     * @return	プロジェクトフォルダ
      */
     public String getProjectFolder() {
         return this.txtProjectFolder.getText();
@@ -1823,12 +1843,15 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
 
     /**
      * プロジェクトXMLリストを取得する
-     * @return		プロジェクトXMLリスト
+     *
+     * @return	プロジェクトXMLリスト
      */
     public List<File> getProjectXmlList() {
         // change from ListModel<?> for JDK1.6 by @hira at 2013/05/30
         ListModel model = this.listProjectXml.getModel();
-        if (model.getSize() <= 0) return null;
+        if (model.getSize() <= 0) {
+            return null;
+        }
 
         // プロジェクトフォルダ
         String projectFolder = getProjectFolder();
@@ -1836,29 +1859,34 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
 
         // プロジェクトXMLリストの作成
         List<File> list = new ArrayList<File>();
-        for (int i=0; i<model.getSize(); i++) {
+        for (int i = 0; i < model.getSize(); i++) {
             File path = null;
             try {
-                String pathname = (String)model.getElementAt(i);
+                String pathname = (String) model.getElementAt(i);
                 path = new File(pathname);
                 if (!path.isAbsolute()) {
-                        path = new File(projectPath.getCanonicalPath() + File.separator + pathname);
+                    path = new File(projectPath.getCanonicalPath() + File.separator + pathname);
                 }
             } catch (IOException ex) {
                 path = null;
             }
-            if (path == null) continue;
+            if (path == null) {
+                continue;
+            }
             list.add(path);
         }
 
-        if (list.size() <= 0) return null;
+        if (list.size() <= 0) {
+            return null;
+        }
 
         return list;
     }
 
     /**
      * 除外パス名を設定する
-     * @param name		除外パス名
+     *
+     * @param name	除外パス名
      */
     public void addExcludeName(String name) {
         if (this.excludeName == null) {
@@ -1869,12 +1897,17 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
 
     /**
      * 除外パス名に含まれているかチェックする
-     * @param path		検索パス名
-     * @return			true=除外パス
+     *
+     * @param path	検索パス名
+     * @return	true=除外パス
      */
     private boolean containsExcludeName(String path) {
-        if (path == null || path.isEmpty()) return false;
-        if (this.excludeName == null) return false;
+        if (path == null || path.isEmpty()) {
+            return false;
+        }
+        if (this.excludeName == null) {
+            return false;
+        }
 
         path = path.toLowerCase();
         for (String value : this.excludeName) {
@@ -1887,83 +1920,92 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
         return false;
     }
 
-
     /**
      * 最終アクセスフォルダを設定する
-     * @param folder		最終アクセスフォルダ
+     *
+     * @param folder	最終アクセスフォルダ
      */
     public void setLastAccessFolder(String folder) {
-        if (folder == null) return;
+        if (folder == null) {
+            return;
+        }
         this.lastAccessFolder = folder;
     }
 
     /**
      * プロジェクトタイトルをセットする
-     * @param title		プロジェクトタイトル
+     *
+     * @param title	プロジェクトタイトル
      */
     public void setProjectTitle(String title) {
-    	this.txtProjectTitle.setText(title);
+        this.txtProjectTitle.setText(title);
     }
 
     /**
      * Makefileパスをセットする
-     * @param makefile		Makefileパス
+     *
+     * @param makefile	Makefileパス
      */
     /*public void setMakefilePath(String makefile) {
-    	this.txtMakefile.setText(makefile);
-    }*/
-
+     this.txtMakefile.setText(makefile);
+     }*/
     /**
      * makefileパスを取得する
+     *
      * @return makefile
      */
     /*public String getMakefilePath() {
-    	return this.txtMakefile.getText();
-    }*?
-
+     return this.txtMakefile.getText();
+     }*/
     /**
      * makeコマンド取得
+     *
      * @return makeコマンド
      */
     public String getMakeCommand() {
-    	return this.txtMakeCommand.getText();
+        return this.txtMakeCommand.getText();
     }
 
     /**
      * makeコマンド設定
+     *
      * @param	str	makeコマンド
      */
     public void setMakeCommand(String str) {
-    	this.txtMakeCommand.setText(str);
+        this.txtMakeCommand.setText(str);
     }
-    
+
     /**
      * Buildコマンド取得
+     *
      * @return String としてのbuildコマンド
      */
-	public String getBuildCommand() {
-		return this.txtMakeCommand.getText();
-	}
-	
-	/**
-	 * Return File filter
-	 * @return
-	 */
-	public String getFileFilter() {
-		return this.txt_filefilter.getText();
-	}
-	
-	/**
-	 * Return list of files for placeholder replacement
-	 * @return
-	 */
-	public String getPreprocessFiles() {
-		return this.txt_preprocess_files.getText();
-	}
+    public String getBuildCommand() {
+        return this.txtMakeCommand.getText();
+    }
+
+    /**
+     * Return File filter
+     *
+     * @return
+     */
+    public String getFileFilter() {
+        return this.txt_filefilter.getText();
+    }
+
+    /**
+     * Return list of files for placeholder replacement
+     *
+     * @return
+     */
+    public String getPreprocessFiles() {
+        return this.txt_preprocess_files.getText();
+    }
 
     /**
      * 選択ファイルがXMLファイルであるかチェックする。
-     * @return		true=XMLファイル
+     *
+     * @return	true=XMLファイル
      */
     public boolean isSelectedXml() {
         return this.radioXml.isSelected();
@@ -1971,7 +2013,8 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
 
     /**
      * 選択ファイルがFortranファイルであるかチェックする。
-     * @return		true=Fortranファイル
+     *
+     * @return	true=Fortranファイル
      */
     public boolean isSelectedFortran() {
         return this.radioFortran.isSelected();
@@ -1979,52 +2022,59 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
 
     /**
      * 中間コードの生成を行うかチェックする
-     * @return		true=中間コードの生成を行う
+     *
+     * @return	true=中間コードの生成を行う
      */
     public boolean isGenerateIntermediateCode() {
-    	if (this.radioGenXML.isEnabled()) {
-    		return this.radioGenXML.isSelected();
-    	}
-    	return false;
+        if (this.radioGenXML.isEnabled()) {
+            return this.radioGenXML.isSelected();
+        }
+        return false;
     }
-    
+
     /**
      * SSHconncet を利用するか否か
+     *
      * @return true = 利用する
      */
     public boolean useSSHconnect() {
-    	if (this.checkUseSSHconnect == null) return false;
-    	if (this.checkUseSSHconnect.isEnabled()) {
-    		return this.checkUseSSHconnect.isSelected();
-    	}
-    	return false;
+        if (this.checkUseSSHconnect == null) {
+            return false;
+        }
+        if (this.checkUseSSHconnect.isEnabled()) {
+            return this.checkUseSSHconnect.isSelected();
+        }
+        return false;
     }
 
     /**
      * プロジェクト作成直後に保存フラグを設定する
-     * @param	save    true=保存する
+     *
+     * @param	save true=保存する
      */
     public void setSaveFlag(boolean save) {
-    	cbxSaveProject.setSelected(save);
+        cbxSaveProject.setSelected(save);
     }
 
     /**
      * プロジェクト作成後にプロジェクトを保存するかチェックする
-     * @return		true=保存する
+     *
+     * @return	true=保存する
      */
     public boolean isSave() {
-    	return this.cbxSaveProject.isSelected();
+        return this.cbxSaveProject.isSelected();
     }
 
     /**
      * 構造解析を自動的に行うかチェックする
-     * @return		true=構造解析を行う
+     *
+     * @return	true=構造解析を行う
      */
     public boolean isBuild() {
-    	if (isSelectedFortran()) return false;
-    	return this.checkbox_StructureAnalysis.isSelected();
+        if (isSelectedFortran()) {
+            return false;
+        }
+        return this.checkbox_StructureAnalysis.isSelected();
     }
-
 }
-
 
