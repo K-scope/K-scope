@@ -56,7 +56,7 @@
     </target>
 
     <target name="run">
-        <java classname="jp.riken.kscope.Go" failonerror="true" fork="yes">
+        <java classname="jp.riken.kscope.Kscope" failonerror="true" fork="yes">
             <jvmarg line="-Duser.language=en"/>
             <classpath refid="kscope.classpath"/>
         </java>

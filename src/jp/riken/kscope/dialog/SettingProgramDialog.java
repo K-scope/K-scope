@@ -346,15 +346,16 @@ public class SettingProgramDialog extends javax.swing.JDialog implements ActionL
                     // 拡張子説明
                     {
                         JLabel label1 = new JLabel();
+                        panelProgram.add(label1, new GridBagConstraints(1, 3, 2, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
                         label1.setText(Message.getString("settingprogramdialog.label.suffix.desc")); //拡張子はカンマ区切りで複数設定できます。
-                        JLabel label2 = new JLabel();
-                        label2.setText(Message.getString("settingprogramdialog.label.suffix.ex")); //(例) LOG,TXT,DAT
+                        //JLabel label2 = new JLabel();
+                        //label2.setText(Message.getString("settingprogramdialog.label.suffix.ex")); //(例) LOG,TXT,DAT
 
                         // ボックスパネル
-                        Box box = Box.createVerticalBox();
-                        box.add(label1);
-                        box.add(label2);
-                        panelProgram.add(box, new GridBagConstraints(1, 3, 2, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
+                        //Box box = Box.createVerticalBox();
+                        //box.add(label1);
+                        //box.add(label2);
+                        //panelProgram.add(box, new GridBagConstraints(1, 3, 2, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
                     }
                     // 外部ツール
                     {

@@ -3,23 +3,32 @@ README
 
 K-scope is a source code analysis tool with graphical user interface that
 visualizes program structures of Fortran 90 and FORTRAN 77 source code.
-This software is build by pure java.
+This software is written by pure java.
 
 The latest version and documents are available in the following download site.
 http://www.aics.riken.jp/ungi/soft/kscope/
 
 Preliminaries
-========
+=============
 
 First of all, K-scope requires JDK7 or later. Please download from Oracle site.
 http://www.oracle.com/technetwork/java/javase/downloads/index.html
 
-In addition, this tool uses intermediate codes by front end of the XcalableMP compiler.
-Please download and compile the F_Front program. 
+In addition, this tool uses intermediate codes created by front end of the Omni XcalableMP compiler.
+Please download and compile the F_Front and atool program. 
 http://www.hpcs.cs.tsukuba.ac.jp/omni-compiler/xcalablemp/download.html
 
+If you can access a server installed with Omni XcalableMP compiler, 
+you can build intermediate code on the server remotely via SSH service
+by SSHconnect.jar, instead of above installation process.
+This fruit is collaboration between AICS HPC Usability Team and AICS Software Development Team
+to enhance the K-scope's feature.
+
+This setup is easy. Firstly, SSHconnect.jar is placed in the same directory as kscope.jar.
+After starting the K-scope, new option is enabled in new project wizard.
+
 Compile and Run
-===========
+===============
 
 We provides two-type packages: jar-executable package and all source codes in our site.
 Therefore you can easily modify and compiling from source codes.
@@ -39,7 +48,7 @@ In the normally process, you may obtained start screen after you enter the commn
 Tips on usage) "-Duser.language" VM-option is language selecter, English(en) and Japanese(ja).
 
 License
-=====
+=======
  K-scope
  Copyright 2012-2013 RIKEN, Japan
 
