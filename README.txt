@@ -3,8 +3,11 @@ README
 
 K-scope is a source code analysis tool with graphical user interface that
 visualizes program structures of Fortran 90 and FORTRAN 77 source code.
-This software is written by pure java.
+It is suitable for source code reading for engineers who work the performance
+improvement for an applicaiton. Futhermore this software is written by pure Java
+to improve the portability.
 
+K-scope is developed by RIKEN AICS Software Development Team.
 The latest version and documents are available in the following download site.
 http://www.aics.riken.jp/ungi/soft/kscope/
 
@@ -14,15 +17,17 @@ Preliminaries
 First of all, K-scope requires JDK7 or later. Please download from Oracle site.
 http://www.oracle.com/technetwork/java/javase/downloads/index.html
 
-In addition, this tool uses intermediate codes created by front end of the Omni XcalableMP compiler.
+In addition, this tool uses intermediate codes created by front end of
+the Omni XcalableMP compiler. 
+
 Please download and compile the F_Front and atool program. 
 http://www.hpcs.cs.tsukuba.ac.jp/omni-compiler/xcalablemp/download.html
 
 If you can access a server installed with Omni XcalableMP compiler, 
-you can build intermediate code on the server remotely via SSH service
-by SSHconnect.jar, instead of above installation process.
-This fruit is collaboration between AICS HPC Usability Team and AICS Software Development Team
-to enhance the K-scope's feature.
+you can build intermediate codes on the server remotely via SSH service by SSHconnect.jar.
+This software is an utility for remote command execution with automatic transfer.
+It is developed by RIKEN AICS HPC Usability Team in collaboration
+to enhance the K-scope's feature, and is bundled with the binary package of the K-scope.
 
 This setup is easy. Firstly, SSHconnect.jar is placed in the same directory as kscope.jar.
 After starting the K-scope, new option is enabled in new project wizard.
@@ -63,4 +68,3 @@ License
  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  See the License for the specific language governing permissions and
  limitations under the License.
-
