@@ -157,7 +157,7 @@ public class LanguageTreePopupMenu extends JPopupMenu implements PopupMenuListen
         menuAnalysisVariable.addActionListener(actionAnalysisVariable);
 
         // 解析:演算数カウント
-        JMenuItem menuAnalysisCount = new JMenuItem(Message.getString("mainmenu.project.config.operation")); //演算数カウント
+        JMenuItem menuAnalysisCount = new JMenuItem(Message.getString("mainmenu.analysis.operation")); //演算数カウント
         actionAnalysisOperand = new AnalysisOperandAction(this.controller, FRAME_VIEW.EXPLORE_VIEW);
         this.add(menuAnalysisCount);
         menuAnalysisCount.addActionListener(actionAnalysisOperand);

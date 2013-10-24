@@ -141,7 +141,7 @@ public class ModuleTreePopupMenu extends JPopupMenu implements PopupMenuListener
         menuAnalysisVariable.addActionListener(actionAnalysisVariable);
 
         // 解析:演算カウント
-        JMenuItem menuAnalysisCount = new JMenuItem(Message.getString("mainmenu.project.config.operation")); //演算カウント
+        JMenuItem menuAnalysisCount = new JMenuItem(Message.getString("mainmenu.analysis.operation")); //演算カウント
         AnalysisOperandAction actionAnalysisOperand = new AnalysisOperandAction(this.controller, FRAME_VIEW.EXPLORE_VIEW);
         this.add(menuAnalysisCount);
         menuAnalysisCount.addActionListener(actionAnalysisOperand);

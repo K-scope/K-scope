@@ -4,11 +4,11 @@ README
 K-scope is a source code analysis tool with graphical user interface that
 visualizes program structures of Fortran 90 and FORTRAN 77 source code.
 It is suitable for source code reading for engineers who work the performance
-improvement for an applicaiton. Futhermore this software is written by pure Java
-to improve the portability.
+improvement for an applicaiton.
 
-K-scope is developed by RIKEN AICS Software Development Team.
-The latest version and documents are available in the following download site.
+K-scope is developed by RIKEN AICS Software Development Team, and is distributed
+as Open Source Software. The latest version and documents are available in the
+following download site.
 http://www.aics.riken.jp/ungi/soft/kscope/
 
 Preliminaries
@@ -18,37 +18,42 @@ First of all, K-scope requires JDK7 or later. Please download from Oracle site.
 http://www.oracle.com/technetwork/java/javase/downloads/index.html
 
 In addition, this tool uses intermediate codes created by front end of
-the Omni XcalableMP compiler. 
-
-Please download and compile the F_Front and atool program. 
+the Omni XcalableMP compiler. There exists a download site as follow.
 http://www.hpcs.cs.tsukuba.ac.jp/omni-compiler/xcalablemp/download.html
 
 If you can access a server installed with Omni XcalableMP compiler, 
-you can build intermediate codes on the server remotely via SSH service by SSHconnect.jar.
-This software is an utility for remote command execution with automatic transfer.
-It is developed by RIKEN AICS HPC Usability Team in collaboration
-to enhance the K-scope's feature, and is bundled with the binary package of the K-scope.
+you can build intermediate codes on the server remotely via SSH service by
+SSHconnect.jar. This software is an utility for remote command execution with
+automatic transfer. It is developed by RIKEN AICS HPC Usability Team in
+collaboration to enhance the K-scope's feature, and is bundled with the binary
+package of the K-scope.
 
-This setup is easy. Firstly, SSHconnect.jar is placed in the same directory as kscope.jar.
-After starting the K-scope, new option is enabled in new project wizard.
+This setup is easy. Firstly, SSHconnect.jar is placed in the same directory as
+kscope.jar. After starting the K-scope, new option is enabled in new project
+wizard.
 
 Compile and Run
 ===============
 
-We provides two-type packages: jar-executable package and all source codes in our site.
-Therefore you can easily modify and compiling from source codes.
-In that case, we recommend IDE enviroments such as Eclipse or NetBeans.
+This software is written by pure Java to improve the portability.
+We provide two-type packages: jar-executable package and source code package
+in our site. Especially this source cord packages includes all source codes
+necessary for modify and compiling. In that case, we recommend IDE enviroments
+such as Eclipse or NetBeans.
 NOTICE) The source codes includes Japanese comments by UTF-8.
+
+We provide build.xml to compile.
+
+  $ ant
 
 After the compiling, you may obtain jar-executable or classes.
 Run is simple as follows.
 
   $ java -jar kscope.jar
 
-K-scope must require folders for properties and resources.
-If the program cannot find the folders, it may terminate abnormally.
-
-In the normally process, you may obtained start screen after you enter the commnad.
+K-scope requires specific folders for properties.
+If the program cannot find that folders, it may terminate abnormally.
+In the normally process, you may obtained start screen.
 
 Tips on usage) "-Duser.language" VM-option is language selecter, English(en) and Japanese(ja).
 

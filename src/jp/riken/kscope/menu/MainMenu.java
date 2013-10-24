@@ -501,7 +501,7 @@ public class MainMenu extends JMenuBar implements  MenuListener {
 									FRAME_VIEW.EXPLORE_VIEW));
 
         // プロファイラ
-        JMenu menuProfiler = new JMenu(Message.getString("mainmenu.project.config.profiler"));
+        JMenu menuProfiler = new JMenu(Message.getString("mainmenu.project.profiler"));
         this.add(menuProfiler);
         menuProfiler.addMenuListener(this);
 
