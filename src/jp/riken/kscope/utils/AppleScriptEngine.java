@@ -27,54 +27,56 @@ import javax.script.ScriptEngineManager;
  */
 public class AppleScriptEngine {
 
-	/**
-	 * フォルダ選択ダイアログ表示のAppleScriptを実行する.
-	 * @param title		タイトル
-	 * @param currentDirectoryPath		デフォルトパス
-	 * @return			選択フォルダ
-	 */
-	public static File showFolderDialog(
-				            String title,
-				            String currentDirectoryPath) {
+    /**
+     * フォルダ選択ダイアログ表示のAppleScriptを実行する.
+     *
+     * @param title	タイトル
+     * @param currentDirectoryPath	デフォルトパス
+     * @return	選択フォルダ
+     */
+    public static File showFolderDialog(
+            String title,
+            String currentDirectoryPath) {
         try {
-			final String script = createChooseFolderScript(title, currentDirectoryPath);
-			ScriptEngine scriptEngine = new ScriptEngineManager().getEngineByName("AppleScript");
-			final String result = (String) scriptEngine.eval(script);
-			if (result == null || result.length() <= 0) {
-				return null;
-			}
-			return new File(result);
-		} catch (Exception ex) {
-			ex.printStackTrace();
-			return null;
-		}
+            final String script = createChooseFolderScript(title, currentDirectoryPath);
+            ScriptEngine scriptEngine = new ScriptEngineManager().getEngineByName("AppleScript");
+            final String result = (String) scriptEngine.eval(script);
+            if (result == null || result.length() <= 0) {
+                return null;
+            }
+            return new File(result);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return null;
+        }
     }
 
-	/**
-	 * フォルダ選択ダイアログ表示のAppleScriptを作成する.
-	 * @param title		ダイアログ記述
-	 * @param path		デフォルトパス
-	 * @return			AppleScript
-	 */
-	private static String createChooseFolderScript(String title, String path) {
-		StringBuffer buf = new StringBuffer();
-		// try
-		buf.append("try\n");
-		// set theFolder to choose folder with prompt "title" default location "path"
-		buf.append("set theFolder to choose folder with prompt \"");
-		buf.append(title);
-		buf.append("\"");
-		buf.append(" default location ");
-		buf.append("\"");
-		buf.append(path);
-		buf.append("\"");
-		buf.append("\n");
-		buf.append("set thePath to theFolder as string\n");
-		buf.append("set pPath to POSIX path of theFolder as string\n");
-		buf.append("return pPath\n");
-		buf.append("on error\n");
-		buf.append("return \"\"\n");
-		buf.append("end try\n");
-		return buf.toString();
-	}
+    /**
+     * フォルダ選択ダイアログ表示のAppleScriptを作成する.
+     *
+     * @param title	ダイアログ記述
+     * @param path	デフォルトパス
+     * @return	AppleScript
+     */
+    private static String createChooseFolderScript(String title, String path) {
+        StringBuffer buf = new StringBuffer();
+        // try
+        buf.append("try\n");
+        // set theFolder to choose folder with prompt "title" default location "path"
+        buf.append("set theFolder to choose folder with prompt \"");
+        buf.append(title);
+        buf.append("\"");
+        buf.append(" default location ");
+        buf.append("\"");
+        buf.append(path);
+        buf.append("\"");
+        buf.append("\n");
+        buf.append("set thePath to theFolder as string\n");
+        buf.append("set pPath to POSIX path of theFolder as string\n");
+        buf.append("return pPath\n");
+        buf.append("on error\n");
+        buf.append("return \"\"\n");
+        buf.append("end try\n");
+        return buf.toString();
+    }
 }

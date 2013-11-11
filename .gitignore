@@ -2,12 +2,10 @@
 /*
 /.*
 
-##
+## not ignore
 !/src
 !/resources
 !/properties
-#!/misc
-#!/keys
 
 !/.git
 !/.gitignore
@@ -19,9 +17,6 @@
 !/LICENSE.txt
 !/NOTICE.txt
 !/README.txt
-#!/sshconnect_conf.txt
 
 ## ignore
 .DS*
-#keys/sshuser_rsa_key
-#keys/sshuser_rsa_key.pub

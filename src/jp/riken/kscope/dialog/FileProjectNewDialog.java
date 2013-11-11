@@ -1615,7 +1615,9 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
 
     private void enableButtons() {
         this.btnNext.setEnabled(true);
-        this.addprerocessfile_button.setEnabled(true);
+        if (this.sproperties != null && this.sproperties.haveSSHconnect) {
+          this.addprerocessfile_button.setEnabled(true);
+        }
     }
 
     /**

@@ -9,6 +9,8 @@ import java.awt.Font;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
 
 import javax.swing.JOptionPane;
 import javax.xml.parsers.DocumentBuilder;
@@ -491,4 +493,18 @@ public class KscopeProperties {
     	double verno = Double.parseDouble(version);
         return verno >= 1.7;
     }
+    
+    /*
+     * Applescriptが使用可能かチェックする
+     * @retrun true=Applescriptが使用可能である。
+     */
+    public static boolean isApplescript() {
+        ScriptEngine scriptEngine = new ScriptEngineManager().getEngineByName("AppleScript");
+        if (scriptEngine == null){
+            return false;
+        } else {
+            return true;
+        }        
+    }
+
 }

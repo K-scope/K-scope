@@ -617,7 +617,8 @@ public class SwingUtils {
 			// Macのフォルダダイアログの表示フラグ
 			// java1.7以上はAppleScriptにてフォルダダイアログを表示する
 			// java1.6以下はjava.awt.FileDialogを使用する。
-			boolean applescript = KscopeProperties.isJava17Later();
+			//boolean applescript = KscopeProperties.isJava17Later();
+                        boolean applescript = KscopeProperties.isApplescript();
 			if (KscopeProperties.isMac() && applescript) {
 				File selected = AppleScriptEngine.showFolderDialog(title,
 						currentDirectoryPath);
@@ -715,7 +716,8 @@ public class SwingUtils {
 			// Macのフォルダダイアログの表示フラグ
 			// java1.7以上はAppleScriptにてフォルダダイアログを表示する
 			// java1.6以下はjava.awt.FileDialogを使用する。
-			boolean applescript = KscopeProperties.isJava17Later();
+			//boolean applescript = KscopeProperties.isJava17Later();
+                        boolean applescript = KscopeProperties.isApplescript();
 			if (KscopeProperties.isMac() && applescript) {
 				File projectfile = AppleScriptEngine.showFolderDialog(title,
 						currentDirectoryPath);
@@ -808,7 +810,8 @@ public class SwingUtils {
 			// Macのフォルダダイアログの表示フラグ
 			// java1.7以上はAppleScriptにてフォルダダイアログを表示する
 			// java1.6以下はjava.awt.FileDialogを使用する。
-			boolean applescript = KscopeProperties.isJava17Later();
+			//boolean applescript = KscopeProperties.isJava17Later();
+                        boolean applescript = KscopeProperties.isApplescript();
 			if (KscopeProperties.isMac() && applescript) {
 				File selected = AppleScriptEngine.showFolderDialog(title,
 						currentDirectoryPath);
