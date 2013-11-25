@@ -18,6 +18,7 @@ package jp.riken.kscope.dialog;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Frame;
@@ -44,6 +45,7 @@ import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 
@@ -220,7 +222,22 @@ public class SSHconnectPropertiesDialog  extends javax.swing.JDialog implements 
                 };
 
                 modelProperties.setColumnIdentifiers(COLUMN_HEADERS);
-                tblProperties = new JTable(modelProperties);
+                final CustomCellRenderer ccr = new CustomCellRenderer();
+                tblProperties = new JTable(modelProperties) {
+                	/**
+					 * JTabe class with customizable CellRenderer for hiding passwords.
+					 * Hides cell in column 2 if value in column 1 contains string "pass".
+					 */
+					private static final long serialVersionUID = 1L;
+					
+					public TableCellRenderer getCellRenderer(int row, int column) {
+						String value = (String) this.getValueAt(row, 1);
+						if (column == 2 && value.indexOf("pass") >=0 ) { 
+                			return ccr;
+                		}
+                		return super.getCellRenderer(row, column);
+                	}
+                };
                 tblProperties.getColumnModel().getColumn(0).setMaxWidth(25);
                 tblProperties.getColumnModel().getColumn(1).setMinWidth(120);
                 tblProperties.getColumnModel().getColumn(1).setMaxWidth(140);
@@ -228,11 +245,12 @@ public class SSHconnectPropertiesDialog  extends javax.swing.JDialog implements 
                 tblProperties.getColumnModel().getColumn(2).setMaxWidth(400);
                 tblProperties.setRowMargin(5);
                 tblProperties.setRowHeight(20);
+                
                 DefaultTableCellRenderer num_cell_renderer = new DefaultTableCellRenderer();
                 num_cell_renderer.setHorizontalAlignment(JLabel.CENTER);
                 num_cell_renderer.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 5));
                 tblProperties.getColumnModel().getColumn(0).setCellRenderer(num_cell_renderer);
-
+                
                 TableRowSorter<TableModel> sorter;
                 sorter = new TableRowSorter<TableModel>(modelProperties);
 
@@ -269,6 +287,34 @@ public class SSHconnectPropertiesDialog  extends javax.swing.JDialog implements 
 
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+    
+    static class CustomCellRenderer extends DefaultTableCellRenderer {
+    	private static final String ASTERISKS = "************************";
+
+        @Override
+        public Component getTableCellRendererComponent(JTable arg0, Object arg1, boolean arg2, boolean arg3, int arg4, int arg5) {
+            int length =0;
+            if (arg1 instanceof String) {
+                length =  ((String) arg1).length();
+            } else if (arg1 instanceof char[]) {
+                length = ((char[])arg1).length;
+            }
+            setText(asterisks(length));
+            return this;
+        }
+
+        private String asterisks(int length) {
+            if (length > ASTERISKS.length()) {
+                StringBuilder sb = new StringBuilder(length);
+                for (int i = 0; i < length; i++) {
+                    sb.append('*');
+                }
+                return sb.toString();
+            } else {
+                return ASTERISKS.substring(0, length);
+            }
         }
     }
     

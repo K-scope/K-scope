@@ -5,7 +5,7 @@
 ## not ignore
 !/src
 !/resources
-!/properties
+!/properties/properties.xml
 
 !/.git
 !/.gitignore
