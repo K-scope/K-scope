@@ -45,3 +45,7 @@ This release is collaboration version between AICS HPC Usability Research Team a
 - Fixed an archive format: zip to tgz
 - Fixed small changes in the interfaces
 - Fixed a few typos in messages and captions
+
+(2013/12/27) Version 0.2.5 is released.
+- Hide passwords in server settings table
+- Version upgrade for SSHconnect (1.03 to 1.18) to support front-end of the K computer
