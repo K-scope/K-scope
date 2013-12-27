@@ -19,5 +19,5 @@ limitations under the License.
    Peter Bryzgalov, HPC Usability Research Team, AICS, RIKEN
    under the Apache License 2.0
 
-   SSHconnect 1.03 (http://www.aics.riken.jp/ungi/soft/kscope/)
+   SSHconnect 1.18 (http://www.aics.riken.jp/ungi/soft/kscope/)
 

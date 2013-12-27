@@ -1,5 +1,5 @@
 CHANGELOG
-========
+=========
 
 (2012/3/15) Version 0.1.0 is released.
 - A new parser, fonrt end of XcalableMP compiler is supported.
