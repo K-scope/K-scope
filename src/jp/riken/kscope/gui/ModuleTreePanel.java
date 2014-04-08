@@ -533,9 +533,15 @@ public class ModuleTreePanel extends javax.swing.JPanel implements ITabComponent
     @Override
     public void setSelectedNode(Object selectnode) {
         if (selectnode == null) return;
-
+         // 引数がノードの場合はそのままノードパスを設定するように変更(2014/4/8 ohichi)
+        if(selectnode instanceof  DefaultMutableTreeNode){
+        	TreePath path = new TreePath(((DefaultMutableTreeNode)selectnode).getPath());
+        	this.treeExplore.setSelectionPath(path);
+        	this.treeExplore.scrollPathToVisibleForVertical(path);
+        }else{
         // 選択ノードを設定する
-        this.treeExplore.setSelectedNode(selectnode);
+        	this.treeExplore.setSelectedNode(selectnode);
+        }
         return;
     }
 

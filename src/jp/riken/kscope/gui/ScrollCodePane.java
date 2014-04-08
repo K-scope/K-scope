@@ -18,6 +18,7 @@ package jp.riken.kscope.gui;
 
 import java.awt.Color;
 import java.awt.Rectangle;
+import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
@@ -722,6 +723,9 @@ public class ScrollCodePane extends FrameScrollPane implements ITabComponent, Ch
      */
     public void setSourcePanelPopupMenu(SourcePanelPopupMenu menuSourcePanel) {
         this.sourcePane.setComponentPopupMenu(menuSourcePanel);
+
+        // Filtered-ASTへの逆引き機能用に追加(2014/4/8 ohichi)
+        this.sourcePane.addMouseListener((MouseListener) menuSourcePanel.getAction());
     }
 
     /**

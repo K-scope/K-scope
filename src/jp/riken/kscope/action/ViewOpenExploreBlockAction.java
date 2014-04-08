@@ -66,8 +66,9 @@ public class ViewOpenExploreBlockAction extends ActionBase implements MouseListe
 
     /**
      * 選択ファイルを開く
+     * AllAnalysisMemoryActionクラスのためにprivateからpublicに変更(2014/4/8 ohichi)
      */
-    private void openFile() {
+    public void openFile() {
 
         // 選択ソースコード行情報を取得する
         CodeLine[] line = this.controller.getMainframe().getPanelExplorerView().getSelectedCodeLines();

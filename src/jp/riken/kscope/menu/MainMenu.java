@@ -31,6 +31,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 
 import jp.riken.kscope.Message;
 import jp.riken.kscope.action.ActionBase;
+import jp.riken.kscope.action.AllAnalysisMemoryAction;
 import jp.riken.kscope.action.AnalysisMemoryAction;
 import jp.riken.kscope.action.AnalysisOperandAction;
 import jp.riken.kscope.action.AnalysisReferenceAction;
@@ -499,6 +500,12 @@ public class MainMenu extends JMenuBar implements  MenuListener {
 									this.controller,
 									AnalysisMemoryAction.ACTION_MODE.MEMORY_CALCULATE,
 									FRAME_VIEW.EXPLORE_VIEW));
+
+        //分析:要求Byte/FLOP算出  (2014/4/8追加 ohichi)
+        JMenuItem menuAllAMC = new JMenuItem(Message.getString("mainmenu.analysis.allcalculate"));
+        menuAnalysis.add(menuAllAMC);
+        menuAllAMC.addActionListener(new AllAnalysisMemoryAction((this.controller)));
+     
 
         // プロファイラ
         JMenu menuProfiler = new JMenu(Message.getString("mainmenu.project.profiler"));

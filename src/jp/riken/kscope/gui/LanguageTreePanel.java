@@ -254,11 +254,17 @@ public class LanguageTreePanel extends javax.swing.JPanel implements ITabCompone
     @Override
     public void setSelectedNode(Object selectnode) {
         if (selectnode == null) return;
-
-        // 選択ノードを展開する
-        this.treeExplore.expandObjectPath(selectnode);
-        // 選択ノードを設定する
-        this.treeExplore.setSelectedNode(selectnode);
+	// 引数がノードの場合はそのままノードパスを設定するように変更(2014/4/8 ohichi)
+        if(selectnode instanceof  DefaultMutableTreeNode){
+        	TreePath path = new TreePath(((DefaultMutableTreeNode)selectnode).getPath());
+        	this.treeExplore.setSelectionPath(path);
+        	this.treeExplore.scrollPathToVisibleForVertical(path);
+        }else{
+        	// 選択ノードを展開する
+        	this.treeExplore.expandObjectPath(selectnode);
+        	// 選択ノードを設定する
+        	this.treeExplore.setSelectedNode(selectnode);
+        }
 
         return;
     }

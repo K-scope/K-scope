@@ -31,6 +31,7 @@ import jp.riken.kscope.action.AnalysisMemoryAction;
 import jp.riken.kscope.action.AnalysisReferenceAction;
 import jp.riken.kscope.action.AnalysisTraceAction;
 import jp.riken.kscope.action.EditClipboardCopyAction;
+import jp.riken.kscope.action.FSourceTTreeAction;
 import jp.riken.kscope.action.FileOpenSourceFileAction;
 import jp.riken.kscope.action.ProfilerAddEprofAction;
 import jp.riken.kscope.action.SearchFindAction;
@@ -50,6 +51,8 @@ public class SourcePanelPopupMenu extends JPopupMenu implements PopupMenuListene
 
     /** アプリケーションコントローラ */
     private AppController controller;
+    /**ダブルクリックアクション (2014/4/8 ohichi)**/
+    private ActionListener action;
 
     /**
      * コンストラクタ
@@ -77,6 +80,11 @@ public class SourcePanelPopupMenu extends JPopupMenu implements PopupMenuListene
     private void initialize() {
 
         // メニューの作成
+        // ノードを選択する (2014/4/8追加 ohichi)
+    	JMenuItem selectNode = new JMenuItem(Message.getString("mainmenu.edit.click"));
+    	this.add(selectNode);
+    	action = new FSourceTTreeAction(this.controller);
+    	selectNode.addActionListener(action);
 
         // 編集:コピー
         JMenuItem menuEditCopy = new JMenuItem(Message.getString("mainmenu.edit.copy")); //コピー
@@ -171,6 +179,13 @@ public class SourcePanelPopupMenu extends JPopupMenu implements PopupMenuListene
         }
     }
 
+    /**
+     * 選択展開アクションリスナを取得する(2014/4/8追加 ohichi)
+     * @return		選択展開アクションリスナ
+     */
+    public ActionListener getAction() {
+        return action;
+    }
 
     /**
      * ポップアップメニューが取り消されたイベント
