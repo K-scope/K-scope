@@ -23,7 +23,7 @@ import jp.riken.kscope.common.KEYWORD_TYPE;
 
 /**
  * ソースコードのキーワードデータクラス
- * @author riken
+ * @author RIKEN
  *
  */
 public class Keyword {

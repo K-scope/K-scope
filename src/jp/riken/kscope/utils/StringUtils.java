@@ -35,7 +35,7 @@ import jp.riken.kscope.properties.KscopeProperties;
 /**
  * 文字列操作ユーティリティクラス
  * 
- * @author riken
+ * @author RIKEN
  * 
  */
 public class StringUtils {
@@ -53,7 +53,6 @@ public class StringUtils {
 	 * @return 判定結果文字コード文字列 "ASCII" ASCII "ISO-2022-JP" JIS "EUC_JP" EUC_JP
 	 *         "SHIFT_JIS" SHIFT-JIS "UTF-8" UTF-8 null 判定不可
 	 */
-	@SuppressWarnings("unused")
 	public static String getDetectedCharset(byte[] byts) {
 		int len = byts.length;
 		int sjis = 0;

@@ -53,7 +53,7 @@ import jp.riken.kscope.xcodeml.XcodeMLParserStax;
 
 /**
  * プロジェクトの新規作成アクション
- * @author riken
+ * @author RIKEN
  */
 public class FileProjectNewAction extends ActionBase {
     /** 中間コードを生成するクラス */

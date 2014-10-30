@@ -19,7 +19,7 @@ package jp.riken.kscope.common;
 
 /**
  * 定数クラス
- * @author riken
+ * @author RIKEN
  *
  */
 public class Constant {

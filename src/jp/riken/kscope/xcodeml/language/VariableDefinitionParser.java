@@ -40,7 +40,7 @@ import jp.riken.kscope.xcodeml.xml.gen.Var;
 
 /**
  * VariableDefinitionパーサクラス
- * @author riken
+ * @author RIKEN
  */
 public class VariableDefinitionParser {
 
@@ -446,6 +446,7 @@ public class VariableDefinitionParser {
      * 構造体の入れ子リストに追加する
      * @param type		追加構造体
      */
+    @SuppressWarnings("unused")
     private void addStackType(jp.riken.kscope.language.fortran.Type type) {
         if (type == null) return;
         if (this.stackType == null) {

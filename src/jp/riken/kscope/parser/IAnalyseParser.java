@@ -29,7 +29,7 @@ import jp.riken.kscope.language.Fortran;
 
 /**
  * フォートラン構文解析インターフェイス
- * @author riken
+ * @author RIKEN
  */
 public interface IAnalyseParser extends PropertyChangeListener {
 

@@ -118,7 +118,6 @@ public class Message {
 		return null;
 	}
 
-
 	/**
 	 * メッセージのキーが存在するかチェックする.
 	 * @param key	キー

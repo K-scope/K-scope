@@ -57,15 +57,15 @@ import jp.riken.kscope.Message;
 import jp.riken.kscope.common.ACCESSMEMORY_TYPE;
 import jp.riken.kscope.common.Constant;
 import jp.riken.kscope.component.JBackgroundComboBox;
-import jp.riken.kscope.data.Memoryband;
+import jp.riken.kscope.data.RequiredBF;
 import jp.riken.kscope.language.IBlock;
 import jp.riken.kscope.language.Variable;
-import jp.riken.kscope.properties.MemorybandProperties;
+import jp.riken.kscope.properties.RequiredBFProperties;
 import jp.riken.kscope.properties.VariableMemoryProperties;
 
 /**
  * 変数アクセス先設定ダイアログ
- * @author riken
+ * @author RIKEN
  */
 public class VariableAccessDialog  extends javax.swing.JDialog implements ActionListener {
 
@@ -98,11 +98,11 @@ public class VariableAccessDialog  extends javax.swing.JDialog implements Action
     /** 変数アクセス先メモリ設定 */
     private VariableMemoryProperties propertiesVariable;
     /** 要求Byte/FLOP設定プロパティ設定 */
-    private MemorybandProperties propertiesMemoryband;
+    private RequiredBFProperties propertiesMemoryband;
     /** ダイアログの戻り値 */
     private int result = Constant.CANCEL_DIALOG;
 	/** メモリ性能算出結果ダイアログ */
-	private MemoryPerformanceDialog nextDialog;
+	private RequiredBFDialog nextDialog;
 	/** 親ダイアログフラグ true=最初に呼び出されたダイアログ, false=他のダイアログから呼び出された */
 	private boolean ownerDialog;
     /** 算出パネル */
@@ -112,7 +112,7 @@ public class VariableAccessDialog  extends javax.swing.JDialog implements Action
     		                                 Message.getString("variableaccessdialog.header.variable"),  // 変数
     		                                 Message.getString("settingprojectdialog.column_header.type"),   // タイプ
     		                                 Message.getString("variableaccessdialog.header.datatype"),   // データ型
-    		                                 Message.getString("settingmemorydialog.label.access"),  // アクセス先
+    		                                 Message.getString("settingrequiredbfdialog.label.access"),  // アクセス先
     										 ""
                                              };
     /** メモリアクセス先テーブル列最小幅 */
@@ -318,6 +318,7 @@ public class VariableAccessDialog  extends javax.swing.JDialog implements Action
      * すべてのメモリアクセス先コンボボックスを作成する.
      * @return		すべてのメモリアクセス先コンボボックス
      */
+    @SuppressWarnings("unused")
     private JBackgroundComboBox createAllAccessCombobox() {
 //    	JComboBox cmb = new JComboBox(listmemory);
 //		ComboColorRenderer renderer = new ComboColorRenderer();
@@ -381,7 +382,7 @@ public class VariableAccessDialog  extends javax.swing.JDialog implements Action
 
 	/**
 	 * セルを描画用コンボボックス
-	 * @author riken
+	 * @author RIKEN
 	 */
 	class RendererComboBox extends JBackgroundComboBox implements TableCellRenderer {
 		/** シリアル番号 */
@@ -404,7 +405,7 @@ public class VariableAccessDialog  extends javax.swing.JDialog implements Action
 			Color selectColor = Color.white;
 			ACCESSMEMORY_TYPE type = ACCESSMEMORY_TYPE.getAccessMemoryType(value.toString());
 			if (type != null) {
-				Memoryband mem = VariableAccessDialog.this.propertiesMemoryband.getMemoryband(type);
+				RequiredBF mem = VariableAccessDialog.this.propertiesMemoryband.getRequiredBF(type);
 				if (mem != null) {
 					selectColor = mem.getBackColor();
 				}
@@ -418,7 +419,7 @@ public class VariableAccessDialog  extends javax.swing.JDialog implements Action
 
 	/**
 	 * コンボボックスセルエディタ
-	 * @author riken
+	 * @author RIKEN
 	 */
 	class ComboBoxCellEditor extends DefaultCellEditor {
 		/** シリアル番号 */
@@ -449,7 +450,7 @@ public class VariableAccessDialog  extends javax.swing.JDialog implements Action
 					type = ACCESSMEMORY_TYPE.getAccessMemoryType(cellValue);
 				} catch (Exception ex) {}
 				for (int i=0; i<listmemory.length; i++) {
-					Memoryband mem = propertiesMemoryband.getMemoryband(listmemory[i]);
+					RequiredBF mem = propertiesMemoryband.getRequiredBF(listmemory[i]);
 					combo.addItem(listmemory[i].getName(), mem!=null?mem.getBackColor():null);
 				}
 				if (type == null) {
@@ -738,8 +739,8 @@ public class VariableAccessDialog  extends javax.swing.JDialog implements Action
     	if (selobj instanceof String) {
     		value = (String)selobj;
     	}
-    	else if (selobj instanceof Memoryband) {
-    		value = ((Memoryband)selobj).getName();
+    	else if (selobj instanceof RequiredBF) {
+    		value = ((RequiredBF)selobj).getName();
     	}
 
     	if (this.chkSelect.isSelected()) {
@@ -781,7 +782,7 @@ public class VariableAccessDialog  extends javax.swing.JDialog implements Action
 		Object objEditor = this.tblAccess.getCellEditor(row, col);
 		Object objRenderer = this.tblAccess.getCellRenderer(row, col);
 		if (obj instanceof JComboBox) {
-			((JComboBox)obj).setSelectedItem(value);
+			((JComboBox<?>)obj).setSelectedItem(value);
 		}
 		else {
 			this.tblAccess.setValueAt(value, row, col);
@@ -789,11 +790,11 @@ public class VariableAccessDialog  extends javax.swing.JDialog implements Action
 		if (objEditor instanceof ComboBoxCellEditor) {
 			Component cmp = ((ComboBoxCellEditor)objEditor).getComponent();
 			if (cmp instanceof JComboBox) {
-    			((JComboBox)cmp).setSelectedItem(value);
+    			((JComboBox<?>)cmp).setSelectedItem(value);
 			}
 		}
 		if (objRenderer instanceof JComboBox) {
-			((JComboBox)objRenderer).setSelectedItem(value);
+			((JComboBox<?>)objRenderer).setSelectedItem(value);
 		}
 	}
 
@@ -808,7 +809,7 @@ public class VariableAccessDialog  extends javax.swing.JDialog implements Action
 		Object obj = this.tblAccess.getValueAt(row, col);
 		Object objEditor = this.tblAccess.getCellEditor(row, col);
 		if (obj instanceof JComboBox) {
-			value = (String)((JComboBox)obj).getSelectedItem();
+			value = (String)((JComboBox<?>)obj).getSelectedItem();
 		}
 		else {
 			value = (String)this.tblAccess.getValueAt(row, col);
@@ -821,8 +822,9 @@ public class VariableAccessDialog  extends javax.swing.JDialog implements Action
 	 * 変数にアクセス先メモリを設定する.
 	 * @param  temporary    一時設定フラグ : true=ソースビューへの適用は行わない.
 	 */
+	@SuppressWarnings("unchecked")
 	private void setVariableAccessMemory(boolean temporary) {
-    	for (int row=0; row<this.tblAccess.getRowCount(); row++) {
+		for (int row=0; row<this.tblAccess.getRowCount(); row++) {
     		// 変数オブジェクト
     		Variable var = null;
     		List<Variable> list = null;
@@ -891,7 +893,7 @@ public class VariableAccessDialog  extends javax.swing.JDialog implements Action
      * メモリ性能算出結果ダイアログを設定する.
      * @param dialog		メモリ性能算出結果ダイアログ
      */
-    public void setMemoryPerformanceDialog(MemoryPerformanceDialog dialog) {
+    public void setMemoryPerformanceDialog(RequiredBFDialog dialog) {
     	this.nextDialog = dialog;
     }
 
@@ -915,7 +917,7 @@ public class VariableAccessDialog  extends javax.swing.JDialog implements Action
 	 * 要求Byte/FLOP設定プロパティを設定する.
 	 * @param properties    要求Byte/FLOP設定プロパティ
 	 */
-	public void setPropertiesMemoryband(MemorybandProperties properties) {
+	public void setPropertiesMemoryband(RequiredBFProperties properties) {
 		this.propertiesMemoryband = properties;
 		updateProperties();
 	}
@@ -931,7 +933,7 @@ public class VariableAccessDialog  extends javax.swing.JDialog implements Action
 			if (this.propertiesMemoryband != null) {
 				this.cmbAllAccess.removeAllItems();
 				for (ACCESSMEMORY_TYPE type : listmemory) {
-					Memoryband mem = this.propertiesMemoryband.getMemoryband(type);
+					RequiredBF mem = this.propertiesMemoryband.getRequiredBF(type);
 					this.cmbAllAccess.addItem(
 										type.getName(),
 										mem != null?mem.getBackColor():null);

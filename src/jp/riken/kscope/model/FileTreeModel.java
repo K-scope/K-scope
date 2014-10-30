@@ -38,7 +38,7 @@ import jp.riken.kscope.utils.SwingUtils;
 
 /**
  * ファイルツリーモデルクラス
- * @author riken
+ * @author RIKEN
  *
  */
 public class FileTreeModel extends Observable {
@@ -209,6 +209,7 @@ public class FileTreeModel extends Observable {
      * @param sourceFiles		ソースファイルリスト
      * @return		true=親パス
      */
+    @SuppressWarnings("unused")
     private boolean isParentPath(File parent, SourceFile[] sourceFiles) {
         for (int i = 0; i < sourceFiles.length; i++) {
             File srcFile = null;

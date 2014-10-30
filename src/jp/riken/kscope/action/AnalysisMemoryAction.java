@@ -28,14 +28,14 @@ import jp.riken.kscope.common.Constant;
 import jp.riken.kscope.common.FRAME_VIEW;
 import jp.riken.kscope.data.BlockList;
 import jp.riken.kscope.data.CodeLine;
-import jp.riken.kscope.dialog.MemoryPerformanceDialog;
+import jp.riken.kscope.dialog.RequiredBFDialog;
 import jp.riken.kscope.dialog.VariableAccessDialog;
 import jp.riken.kscope.language.BlockType;
 import jp.riken.kscope.language.IBlock;
 import jp.riken.kscope.language.utils.LanguageUtils;
 import jp.riken.kscope.model.LanguageTreeModel;
-import jp.riken.kscope.model.RequiredByteFlopModel;
-import jp.riken.kscope.properties.MemorybandProperties;
+import jp.riken.kscope.model.RequiredBFModel;
+import jp.riken.kscope.properties.RequiredBFProperties;
 import jp.riken.kscope.properties.VariableMemoryProperties;
 import jp.riken.kscope.service.AnalysisMemoryService;
 import jp.riken.kscope.service.AppController;
@@ -43,7 +43,7 @@ import jp.riken.kscope.service.AppController;
 
 /**
  * 要求Byte/FLOPアクションクラス
- * @author riken
+ * @author RIKEN
  */
 public class AnalysisMemoryAction extends ActionBase {
 	/** アクションモード */
@@ -117,12 +117,12 @@ public class AnalysisMemoryAction extends ActionBase {
         // 親Frameの取得を行う。
         Frame frame = getWindowAncestor( event );
         // 要求Byte/FLOP設定プロパティ
-        MemorybandProperties properitiesMemory = this.controller.getPropertiesMemory();
+        RequiredBFProperties properitiesMemory = this.controller.getPropertiesMemory();
         // 変数アクセス先メモリ設定
         VariableMemoryProperties properitiesVariable = this.controller.getPropertiesVariable();
         // メモリアクセス先設定ダイアログ
         VariableAccessDialog dialogVariable = new VariableAccessDialog(frame, true);        // メモリアクセス性能ダイアログ
-        MemoryPerformanceDialog dialogPerformance = new MemoryPerformanceDialog(frame, true);
+        RequiredBFDialog dialogPerformance = new RequiredBFDialog(frame, true);
         // プロパティ設定
         dialogVariable.setPropertiesVariable(properitiesVariable);
         dialogVariable.setPropertiesMemoryband(properitiesMemory);
@@ -136,14 +136,14 @@ public class AnalysisMemoryAction extends ActionBase {
         dialogPerformance.setVariableAccessDialog(dialogVariable);
 
         // 要求Byte/FLOP算出サービス
-        RequiredByteFlopModel modelRequired = this.controller.getRequiredByteFlopModel();
+        RequiredBFModel modelRequired = this.controller.getRequiredByteFlopModel();
         LanguageTreeModel modelLanguage = this.controller.getLanguageTreeModel();
         modelRequired.setModelLanguageTree(modelLanguage);
         AnalysisMemoryService serviceMemory = new AnalysisMemoryService();
         serviceMemory.setBlocks(blocks);
-        serviceMemory.setProperitiesMemoryband(properitiesMemory);
+        serviceMemory.setProperitiesRequiredBF(properitiesMemory);
         serviceMemory.setPropertiesOperand(this.controller.getPropertiesOperand());
-        serviceMemory.setModelRequired(modelRequired);
+        serviceMemory.setModelRequiredBF(modelRequired);
         serviceMemory.setPropertiesVariableMemory(properitiesVariable);
         dialogPerformance.setServiceMemory(serviceMemory);
 

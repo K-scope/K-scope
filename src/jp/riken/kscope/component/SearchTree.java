@@ -31,7 +31,7 @@ import jp.riken.kscope.utils.StringUtils;
 
 /**
  * 検索ツリークラス
- * @author riken
+ * @author RIKEN
  */
 public class SearchTree extends ObjectTree {
 
@@ -60,7 +60,7 @@ public class SearchTree extends ObjectTree {
 
     /**
      * 検索ツリーノードのレンダリングクラス
-     * @author riken
+     * @author RIKEN
      */
     public class SearchTreeCellRenderer extends ObjectTreeCellRenderer {
 

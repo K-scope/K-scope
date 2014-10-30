@@ -23,7 +23,7 @@ import java.util.logging.LogRecord;
 /**
  * ログフォーマッター
  * 
- * @author riken
+ * @author RIKEN
  * 
  */
 public class LogFormatter extends Formatter {

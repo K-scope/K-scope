@@ -42,7 +42,7 @@ import jp.riken.kscope.utils.SwingUtils;
 
 /**
  * プロファイラ凡例ダイアログ
- * @author riken
+ * @author RIKEN
  */
 public class ProfilerLegendDialog extends javax.swing.JDialog implements PropertyChangeListener {
     /** シリアル番号 */

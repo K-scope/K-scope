@@ -33,7 +33,7 @@ import jp.riken.kscope.service.AppController;
 
 /**
  * 変数有効域アクション
- * @author riken
+ * @author RIKEN
  */
 public class AnalysisScopeAction extends ActionBase {
 

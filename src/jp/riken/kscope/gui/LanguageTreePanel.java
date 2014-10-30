@@ -57,7 +57,7 @@ import jp.riken.kscope.utils.ResourceUtils;
 
 /**
  * 構造ツリータブパネルクラス
- * @author riken
+ * @author RIKEN
  *
  */
 public class LanguageTreePanel extends javax.swing.JPanel implements ITabComponent, ITreeComponent, Observer {

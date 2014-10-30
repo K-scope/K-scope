@@ -33,7 +33,7 @@ import javax.xml.xpath.XPathFactory;
 
 import jp.riken.kscope.Message;
 import jp.riken.kscope.common.ACCESSMEMORY_TYPE;
-import jp.riken.kscope.data.Memoryband;
+import jp.riken.kscope.data.RequiredBF;
 import jp.riken.kscope.utils.ResourceUtils;
 import jp.riken.kscope.utils.StringUtils;
 
@@ -43,21 +43,21 @@ import org.w3c.dom.NodeList;
 
 /**
  * 要求Byte/FLOP設定プロパティ
- * @author riken
+ * @author RIKEN
  */
-public class MemorybandProperties  extends PropertiesBase {
+public class RequiredBFProperties  extends PropertiesBase {
     /** シリアル番号 */
     private static final long serialVersionUID = 1L;
 
-	/** 実効スループット算出モード */
-	public enum THROUGHPUT_STORE_MODE {
+	/** メモリスループット算出モード */
+	public enum MEM_THROUGHPUT_CALC_MODE {
 		AUTO,		///< 自動判定：デフォルト
 		STORE,		///< ストアあり
-		NONESTORE	///< ストアなし
+		NOSTORE	    ///< ストアなし
 	}
 
-	/** 算出単位 */
-	public enum UNIT_TYPE {
+	/** 要求BFの算出単位 */
+	public enum BF_CALC_TYPE {
 		BYTE_FLOP,		///< Byte/FLOP
 		FLOP_BYTE		///< FLOP/Byte
 	}
@@ -66,13 +66,13 @@ public class MemorybandProperties  extends PropertiesBase {
 	public final int DEFUALT_DATASIZE = 4;
     /* プロパティキー */
     /** 要求Byte/FLOP要素 */
-    private final String ELEM_MEMORYBAND = "memoryband";
+    private final String ELEM_REQUIRED_BF = "required_bf";
     /** 演算性能 GFLOPS */
-    private final String KEY_OPERATION_PERFORMANCE = "operation-performance";
-    /** スループットストアモード */
-    private final String KEY_THROUGHPUT_STORE_MODE = "throughput-store-mode";
-    /** 算出単位 */
-    private final String KEY_UNIT_TYPE = "unit-type";
+    private final String KEY_FLOP_PERFORMANCE = "flop-performance";
+    /** メモリスループット算出モード（スループット算出時にストアを考慮するかの選択） */
+    private final String KEY_MEM_THROUGHPUT_CALC_MODE = "mem-throughput-calc_mode";
+    /** 要求BF算出の単位 */
+    private final String KEY_BF_CALC_TYPE = "calc-type";
     /** デフォルトサイズ */
     private final String KEY_DEFAULT_SIZE = "default-size";
     /** アクセス先キー属性 */
@@ -82,47 +82,47 @@ public class MemorybandProperties  extends PropertiesBase {
     /** アクセス先名称属性 */
     private final String ATTR_NAME = "name";
     /** アクセス先背景色 */
-    private final String ATTR_BACKCOLOR = "backcolor";
-    /** スループット:ストアあり */
-    private final String ATTR_THROUGHPUT_STORE = "throughput-store";
-    /** スループット:ストアなし */
-    private final String ATTR_THROUGHPUT_NONESTORE = "throughput-nonestore";
+    private final String ATTR_BACKGROUND_COLOR = "backcolor";
+    /** メモリスループット:ストアあり */
+    private final String ATTR_MEM_THROUGHPUT_STORE = "mem-throughput-store";
+    /** メモリスループット:ストアなし */
+    private final String ATTR_MEM_THROUGHPUT_NOSTORE = "mem-throughput-nostore";
     /** 係数 */
     private final String ATTR_COEFFICIENT = "coef";
     /** 要求B/F算出 */
-    private final String ATTR_REQUIRED = "required";
+    private final String ATTR_REQUIRED_BF = "required-bf";
     /** 律速 */
     private final String ATTR_LIMITING = "limiting";
     /** 有効/無効 */
     private final String ATTR_ENABLED = "enabled";
     /** デフォルトサイズ：real */
-    private final String ATTR_REAL = "real";
+    private final String ATTR_SIZE_REAL = "size-real";
     /** デフォルトサイズ：integer */
-    private final String ATTR_INTEGER = "integer";
+    private final String ATTR_SIZE_INTEGER = "size-integer";
 
     /** 演算性能 */
-    private float operation_performance;
-    /** スループットストア設定 */
-    private THROUGHPUT_STORE_MODE storeMode;
-    /** 算出単位 */
-    private UNIT_TYPE unitType;
+    private float flop_performance;
+    /** メモリスループット算出モード設定 */
+    private MEM_THROUGHPUT_CALC_MODE memThroughtputCalcMode;
+    /** BF算出単位 */
+    private BF_CALC_TYPE BFCalcType;
     /** デフォルトサイズ:real (byte) */
     private int defaultSizeReal;
     /** デフォルトサイズ:integer (byte) */
     private int defaultSizeInteger;
     /** 要求Byte/FLOP設定リスト */
-    private List<Memoryband> listMemory= new ArrayList<Memoryband>();
+    private List<RequiredBF> listReqBF= new ArrayList<RequiredBF>();
     /** デフォルト要求Byte/FLOP設定 */
-    private MemorybandProperties defaultProperties;
+    private RequiredBFProperties defaultProperties;
 
     /**
      * コンストラクタ
      * @throws Exception     プロパティ読込エラー
      */
-    public MemorybandProperties() throws Exception {
+    public RequiredBFProperties() throws Exception {
     	// デフォルト値
-    	this.storeMode = THROUGHPUT_STORE_MODE.AUTO;
-    	this.unitType = UNIT_TYPE.BYTE_FLOP;
+    	this.memThroughtputCalcMode = MEM_THROUGHPUT_CALC_MODE.AUTO;
+    	this.BFCalcType = BF_CALC_TYPE.BYTE_FLOP;
     	this.defaultSizeReal = DEFUALT_DATASIZE;
     	this.defaultSizeInteger = DEFUALT_DATASIZE;
         loadProperties();
@@ -166,9 +166,9 @@ public class MemorybandProperties  extends PropertiesBase {
      */
     public void loadProperties(InputStream stream ) throws Exception {
         // XMLファイルのパース
-    	List<Memoryband> list = parseMemoryband(stream, "//" + ELEM_MEMORYBAND);
+    	List<RequiredBF> list = parseRequiredBF(stream, "//" + ELEM_REQUIRED_BF);
     	if (list != null && list.size() > 0) {
-    		this.listMemory = list;
+    		this.listReqBF = list;
     	}
     }
 
@@ -178,9 +178,9 @@ public class MemorybandProperties  extends PropertiesBase {
      * @param path		要求Byte/FLOP設定XPATH
      * @throws Exception 		要求Byte/FLOP設定パースエラー
      */
-    public List<Memoryband> parseMemoryband(InputStream stream, String path) throws Exception {
+    public List<RequiredBF> parseRequiredBF(InputStream stream, String path) throws Exception {
 
-        List<Memoryband> list = new ArrayList<Memoryband>();
+        List<RequiredBF> list = new ArrayList<RequiredBF>();
 
         // XML
         DocumentBuilderFactory dbfactory = DocumentBuilderFactory.newInstance();
@@ -190,7 +190,7 @@ public class MemorybandProperties  extends PropertiesBase {
         XPathFactory factory = XPathFactory.newInstance();
         XPath xpath = factory.newXPath();
 
-        // memoryband要素の取得
+        // 要求BF要素の取得
         XPathExpression expr = xpath.compile(path);
 
         Object result = expr.evaluate(document, XPathConstants.NODESET);
@@ -201,7 +201,7 @@ public class MemorybandProperties  extends PropertiesBase {
         for (int i=0; i<nodelist.getLength(); i++) {
             try {
                 Node node = nodelist.item(i);
-                Memoryband band = null;
+                RequiredBF reqbf = null;
 
                 // 属性の取得
                 NamedNodeMap attrs = node.getAttributes();
@@ -211,32 +211,32 @@ public class MemorybandProperties  extends PropertiesBase {
                 attrnode = attrs.getNamedItem(ATTR_KEY);
                 if (attrnode == null) continue;
                 String key = attrnode.getNodeValue();
-                // 演算性能
-                if (KEY_OPERATION_PERFORMANCE.equalsIgnoreCase(key)) {
+                // 浮動小数点数演算性能
+                if (KEY_FLOP_PERFORMANCE.equalsIgnoreCase(key)) {
                     attrnode = attrs.getNamedItem(ATTR_VALUE);
                     value = attrnode.getNodeValue();
                     if (StringUtils.isFloat(value)) {
-                        this.setOperationPerformance(Float.parseFloat(value));
+                        this.setFlopPerformance(Float.parseFloat(value));
                     }
                     continue;
                 }
-                // スループットストアモード
-                else if (KEY_THROUGHPUT_STORE_MODE.equalsIgnoreCase(key)) {
+                // メモリスループット算出モード
+                else if (KEY_MEM_THROUGHPUT_CALC_MODE.equalsIgnoreCase(key)) {
                     attrnode = attrs.getNamedItem(ATTR_VALUE);
                     value = attrnode.getNodeValue();
                     try {
-						this.setStoreMode(THROUGHPUT_STORE_MODE.valueOf(value.toUpperCase()));
+						this.setMemThroughputCalcMode(MEM_THROUGHPUT_CALC_MODE.valueOf(value.toUpperCase()));
 					} catch (Exception ex) {
 						ex.printStackTrace();
 					}
                     continue;
                 }
-                // 算出単位
-                else if (KEY_UNIT_TYPE.equalsIgnoreCase(key)) {
+                // BF算出単位
+                else if (KEY_BF_CALC_TYPE.equalsIgnoreCase(key)) {
                     attrnode = attrs.getNamedItem(ATTR_VALUE);
                     value = attrnode.getNodeValue();
                     try {
-						this.setUnitType(UNIT_TYPE.valueOf(value.toUpperCase()));
+						this.setCalcType(BF_CALC_TYPE.valueOf(value.toUpperCase()));
 					} catch (Exception ex) {
 						ex.printStackTrace();
 					}
@@ -245,74 +245,71 @@ public class MemorybandProperties  extends PropertiesBase {
                 // デフォルトサイズ
                 else if (KEY_DEFAULT_SIZE.equalsIgnoreCase(key)) {
                 	// real
-                    attrnode = attrs.getNamedItem(ATTR_REAL);
+                    attrnode = attrs.getNamedItem(ATTR_SIZE_REAL);
                     value = attrnode.getNodeValue();
                     if (StringUtils.isNumeric(value)) {
                         this.setDefaultSizeReal(Integer.parseInt(value));
                     }
                 	// integer
-                    attrnode = attrs.getNamedItem(ATTR_INTEGER);
+                    attrnode = attrs.getNamedItem(ATTR_SIZE_INTEGER);
                     value = attrnode.getNodeValue();
                     if (StringUtils.isNumeric(value)) {
                         this.setDefaultSizeInteger(Integer.parseInt(value));
                     }
                     continue;
                 }
-
                 // Memory
                 else if (ACCESSMEMORY_TYPE.MEMORY.getKey().equalsIgnoreCase(key)) {
-                    band = new Memoryband(ACCESSMEMORY_TYPE.MEMORY);
+                    reqbf = new RequiredBF(ACCESSMEMORY_TYPE.MEMORY);
                 }
                 // L1 cache
                 else if (ACCESSMEMORY_TYPE.L1_CACHE.getKey().equalsIgnoreCase(key)) {
-                    band = new Memoryband(ACCESSMEMORY_TYPE.L1_CACHE);
+                    reqbf = new RequiredBF(ACCESSMEMORY_TYPE.L1_CACHE);
                 }
                 // L2 cache
                 else if (ACCESSMEMORY_TYPE.L2_CACHE.getKey().equalsIgnoreCase(key)) {
-                    band = new Memoryband(ACCESSMEMORY_TYPE.L2_CACHE);
+                    reqbf = new RequiredBF(ACCESSMEMORY_TYPE.L2_CACHE);
                 }
                 // Register
                 else if (ACCESSMEMORY_TYPE.REGISTER.getKey().equalsIgnoreCase(key)) {
-                    band = new Memoryband(ACCESSMEMORY_TYPE.REGISTER);
+                    reqbf = new RequiredBF(ACCESSMEMORY_TYPE.REGISTER);
                 }
                 // custom
                 else if (ACCESSMEMORY_TYPE.CUSTOM.getKey().equalsIgnoreCase(key)) {
-                    band = new Memoryband(ACCESSMEMORY_TYPE.CUSTOM);
+                    reqbf = new RequiredBF(ACCESSMEMORY_TYPE.CUSTOM);
                 }
-                if (band == null) continue;
+                if (reqbf == null) continue;
 
                 // アクセス先名称
                 attrnode = attrs.getNamedItem(ATTR_NAME);
-                String name = null;
                 if (attrnode != null) {
-                	name = attrnode.getNodeValue();
-                    band.setName(name);
+                	String res = attrnode.getNodeValue();
+                    reqbf.setName(res);
                 }
 
                 // アクセス先背景色
-                attrnode = attrs.getNamedItem(ATTR_BACKCOLOR);
-                Color backcolor = null;
+                attrnode = attrs.getNamedItem(ATTR_BACKGROUND_COLOR);
                 if (attrnode != null) {
                     value = attrnode.getNodeValue();
-                    backcolor = StringUtils.parseColor(value);
-                    band.setBackColor(backcolor);
+                    Color res = StringUtils.parseColor(value);
+                    reqbf.setBackColor(res);
                 }
 
-                // スループット:ストアあり
-                attrnode = attrs.getNamedItem(ATTR_THROUGHPUT_STORE);
+                // メモリスループット:ストアあり
+                attrnode = attrs.getNamedItem(ATTR_MEM_THROUGHPUT_STORE);
                 if (attrnode != null) {
                     value = attrnode.getNodeValue();
                     if (StringUtils.isFloat(value)) {
-                    	band.setThroughputStore(Float.parseFloat(value));
+                    	reqbf.setMemThroughputStore(Float.parseFloat(value));
                     }
                 }
 
-                // スループット:ストアなし
-                attrnode = attrs.getNamedItem(ATTR_THROUGHPUT_NONESTORE);
+                // メモリスループット:ストアなし
+                attrnode = attrs.getNamedItem(ATTR_MEM_THROUGHPUT_NOSTORE);
                 if (attrnode != null) {
                     value = attrnode.getNodeValue();
                     if (StringUtils.isFloat(value)) {
-                    	band.setThroughputNonestore(Float.parseFloat(value));
+                    	reqbf.setMemThroughputNostore(Float.parseFloat(value));
                     }
                 }
 
@@ -321,35 +318,35 @@ public class MemorybandProperties  extends PropertiesBase {
                 if (attrnode != null) {
                     value = attrnode.getNodeValue();
                     if (StringUtils.isFloat(value)) {
-                    	band.setCoef(Float.parseFloat(value));
+                    	reqbf.setCoef(Float.parseFloat(value));
                     }
                 }
 
                 // 要求B/F算出フラグ
-                attrnode = attrs.getNamedItem(ATTR_REQUIRED);
+                attrnode = attrs.getNamedItem(ATTR_REQUIRED_BF);
                 if (attrnode != null) {
                     value = attrnode.getNodeValue();
-                    boolean required = Boolean.parseBoolean(value);
-                    band.setRequired(required);
+                    boolean res = Boolean.parseBoolean(value);
+                    reqbf.setRequiredBF(res);
                 }
 
                 // 律速フラグ
                 attrnode = attrs.getNamedItem(ATTR_LIMITING);
                 if (attrnode != null) {
                     value = attrnode.getNodeValue();
-                    boolean limiting = Boolean.parseBoolean(value);
-                    band.setLimiting(limiting);
+                    boolean res = Boolean.parseBoolean(value);
+                    reqbf.setLimiting(res);
                 }
 
                 // 有効・無効
                 attrnode = attrs.getNamedItem(ATTR_ENABLED);
                 if (attrnode != null) {
                     value = attrnode.getNodeValue();
-                    boolean enabled = Boolean.parseBoolean(value);
-                    band.setEnabled(enabled);
+                    boolean res = Boolean.parseBoolean(value);
+                    reqbf.setEnabled(res);
                 }
 
-                list.add(band);
+                list.add(reqbf);
 
             } catch (Exception ex) {
                 ex.printStackTrace();
@@ -378,16 +375,16 @@ public class MemorybandProperties  extends PropertiesBase {
             node.appendChild(comment);
         }
 
-        if (this.listMemory == null || this.listMemory.size() <= 0) return;
+        if (this.listReqBF == null || this.listReqBF.size() <= 0) return;
 
-        // 演算性能 GFLOPS
+        // 浮動小数点数演算性能 GFLOPS
         {
-            org.w3c.dom.Element elem = document.createElement(ELEM_MEMORYBAND);
+            org.w3c.dom.Element elem = document.createElement(ELEM_REQUIRED_BF);
             org.w3c.dom.Attr attrKey = document.createAttribute(ATTR_KEY);
-            attrKey.setValue(KEY_OPERATION_PERFORMANCE);
+            attrKey.setValue(KEY_FLOP_PERFORMANCE);
             elem.setAttributeNode(attrKey);
 
-        	float value = this.getOperationPerformance();
+        	float value = this.getFlopPerformance();
             org.w3c.dom.Attr attrValue = document.createAttribute(ATTR_VALUE);
             attrValue.setNodeValue(String.valueOf(value));
             elem.setAttributeNode(attrValue);
@@ -395,14 +392,14 @@ public class MemorybandProperties  extends PropertiesBase {
             // ノード追加
             node.appendChild(elem);
         }
-        // スループットストアモード
+        // メモリスループット算出モード
         {
-            org.w3c.dom.Element elem = document.createElement(ELEM_MEMORYBAND);
+            org.w3c.dom.Element elem = document.createElement(ELEM_REQUIRED_BF);
             org.w3c.dom.Attr attrKey = document.createAttribute(ATTR_KEY);
-            attrKey.setValue(KEY_THROUGHPUT_STORE_MODE);
+            attrKey.setValue(KEY_MEM_THROUGHPUT_CALC_MODE);
             elem.setAttributeNode(attrKey);
 
-            THROUGHPUT_STORE_MODE value = this.getStoreMode();
+            MEM_THROUGHPUT_CALC_MODE value = this.getMemThroughputCalcMode();
             org.w3c.dom.Attr attrValue = document.createAttribute(ATTR_VALUE);
             attrValue.setNodeValue(value.toString().toLowerCase());
             elem.setAttributeNode(attrValue);
@@ -410,14 +407,14 @@ public class MemorybandProperties  extends PropertiesBase {
             // ノード追加
             node.appendChild(elem);
         }
-        // 算出単位
+        // 要求BFの算出単位
         {
-            org.w3c.dom.Element elem = document.createElement(ELEM_MEMORYBAND);
+            org.w3c.dom.Element elem = document.createElement(ELEM_REQUIRED_BF);
             org.w3c.dom.Attr attrKey = document.createAttribute(ATTR_KEY);
-            attrKey.setValue(KEY_UNIT_TYPE);
+            attrKey.setValue(KEY_BF_CALC_TYPE);
             elem.setAttributeNode(attrKey);
 
-            UNIT_TYPE value = this.getUnitType();
+            BF_CALC_TYPE value = this.getBFCalcType();
             org.w3c.dom.Attr attrValue = document.createAttribute(ATTR_VALUE);
             attrValue.setNodeValue(value.toString().toLowerCase());
             elem.setAttributeNode(attrValue);
@@ -427,18 +424,18 @@ public class MemorybandProperties  extends PropertiesBase {
         }
         // デフォルトサイズ
         {
-            org.w3c.dom.Element elem = document.createElement(ELEM_MEMORYBAND);
+            org.w3c.dom.Element elem = document.createElement(ELEM_REQUIRED_BF);
             org.w3c.dom.Attr attrKey = document.createAttribute(ATTR_KEY);
             attrKey.setValue(KEY_DEFAULT_SIZE);
             elem.setAttributeNode(attrKey);
             // real
             int real = this.getDefaultSizeReal();
-            org.w3c.dom.Attr attrReal = document.createAttribute(ATTR_REAL);
+            org.w3c.dom.Attr attrReal = document.createAttribute(ATTR_SIZE_REAL);
             attrReal.setNodeValue(String.valueOf(real));
             elem.setAttributeNode(attrReal);
             // integer
             int integer = this.getDefaultSizeInteger();
-            org.w3c.dom.Attr attrInteger = document.createAttribute(ATTR_INTEGER);
+            org.w3c.dom.Attr attrInteger = document.createAttribute(ATTR_SIZE_INTEGER);
             attrInteger.setNodeValue(String.valueOf(integer));
             elem.setAttributeNode(attrInteger);
 
@@ -446,8 +443,8 @@ public class MemorybandProperties  extends PropertiesBase {
             node.appendChild(elem);
         }
         // 要求Byte/FLOP設定
-        for (Memoryband bind : this.listMemory) {
-            org.w3c.dom.Element elem = document.createElement(ELEM_MEMORYBAND);
+        for (RequiredBF bind : this.listReqBF) {
+            org.w3c.dom.Element elem = document.createElement(ELEM_REQUIRED_BF);
 
             // キー名
             {
@@ -467,22 +464,22 @@ public class MemorybandProperties  extends PropertiesBase {
             // アクセス先背景色
             {
                 Color color = bind.getBackColor();
-                org.w3c.dom.Attr attr = document.createAttribute(ATTR_BACKCOLOR);
+                org.w3c.dom.Attr attr = document.createAttribute(ATTR_BACKGROUND_COLOR);
                 attr.setNodeValue(StringUtils.parseColorCode(color));
                 elem.setAttributeNode(attr);
             }
 
-            // スループット:ストアあり
+            // メモリスループット算出モード:ストアあり
             {
-            	float value = bind.getThroughputStore();
-                org.w3c.dom.Attr attr = document.createAttribute(ATTR_THROUGHPUT_STORE);
+            	float value = bind.getMemThroughputStore();
+                org.w3c.dom.Attr attr = document.createAttribute(ATTR_MEM_THROUGHPUT_STORE);
                 attr.setNodeValue(String.valueOf(value));
                 elem.setAttributeNode(attr);
             }
-            // スループット:ストアなし
+            // メモリスループット算出モード:ストアなし
             {
-            	float value = bind.getThroughputNonestore();
-                org.w3c.dom.Attr attr = document.createAttribute(ATTR_THROUGHPUT_NONESTORE);
+            	float value = bind.getMemThroughputNostore();
+                org.w3c.dom.Attr attr = document.createAttribute(ATTR_MEM_THROUGHPUT_NOSTORE);
                 attr.setNodeValue(String.valueOf(value));
                 elem.setAttributeNode(attr);
             }
@@ -495,8 +492,8 @@ public class MemorybandProperties  extends PropertiesBase {
             }
             // 要求B/F算出
             {
-            	boolean value = bind.isRequired();
-                org.w3c.dom.Attr attr = document.createAttribute(ATTR_REQUIRED);
+            	boolean value = bind.isRequiredBF();
+                org.w3c.dom.Attr attr = document.createAttribute(ATTR_REQUIRED_BF);
                 attr.setNodeValue(String.valueOf(value));
                 elem.setAttributeNode(attr);
             }
@@ -532,17 +529,17 @@ public class MemorybandProperties  extends PropertiesBase {
      * 要求Byte/FLOP設定リストを取得する。
      * @return		要求Byte/FLOP設定リスト
      */
-    public List<Memoryband> getListMemoryband() {
-        return this.listMemory;
+    public List<RequiredBF> getListRequiredBF() {
+        return this.listReqBF;
     }
 
     /**
      * 要求Byte/FLOP設定数を取得する。
      * @return		要求Byte/FLOP設定数
      */
-    public int getMemorybandCount() {
-        if (listMemory == null || listMemory.size() <= 0) {return 0;}
-        return listMemory.size();
+    public int getRequiredBFCount() {
+        if (listReqBF == null || listReqBF.size() <= 0) {return 0;}
+        return listReqBF.size();
     }
 
     /**
@@ -550,11 +547,10 @@ public class MemorybandProperties  extends PropertiesBase {
      * @param	index		インデックス
      * @return		要求Byte/FLOP設定
      */
-    public Memoryband getMemoryband(int index) {
-        if (listMemory == null || listMemory.size() <= 0) {return null;}
-        if (listMemory.size() <= index) {return null;}
-
-        return listMemory.get(index);
+    public RequiredBF getRequiredBF(int index) {
+        if (listReqBF == null || listReqBF.size() <= 0) {return null;}
+        if (listReqBF.size() <= index) {return null;}
+        return listReqBF.get(index);
     }
 
     /**
@@ -562,49 +558,46 @@ public class MemorybandProperties  extends PropertiesBase {
      * @param	index		インデックス
      * @param	keyword		要求Byte/FLOP設定
      */
-    public void setMemoryband(int index, Memoryband band) {
-        if (listMemory == null || listMemory.size() <= 0) {return;}
-        if (listMemory.size() <= index) {return;}
-        listMemory.set(index, band);
+    public void setRequiredBF(int index, RequiredBF reqbf) {
+        if (listReqBF == null || listReqBF.size() <= 0) {return;}
+        if (listReqBF.size() <= index) {return;}
+        listReqBF.set(index, reqbf);
     }
 
     /**
      * 要求Byte/FLOP設定を追加する。
      * @param	keyword		要求Byte/FLOP設定
      */
-    public void addMemoryband(Memoryband band) {
-        if (listMemory == null) {
-        	listMemory = new ArrayList<Memoryband>();
+    public void addRequiredBF(RequiredBF reqbf) {
+        if (listReqBF == null) {
+        	listReqBF = new ArrayList<RequiredBF>();
         }
-
-        listMemory.add(band);
+        listReqBF.add(reqbf);
     }
 
     /**
      * 要求Byte/FLOP設定を削除する。
      * @param	keyword		要求Byte/FLOP設定
      */
-    public void removeMemoryband(Memoryband band) {
-        if (listMemory == null) return;
-
-        listMemory.remove(band);
+    public void removeRequiredBF(RequiredBF reqbf) {
+        if (listReqBF == null) return;
+        listReqBF.remove(reqbf);
     }
 
     /**
      * 要求Byte/FLOP設定を削除する。
      * @param	index		インデックス
      */
-    public void removeMemoryband(int index) {
-        if (listMemory == null) return;
-
-        listMemory.remove(index);
+    public void removeRequiredBF(int index) {
+        if (listReqBF == null) return;
+        listReqBF.remove(index);
     }
 
     /**
      * 要求Byte/FLOP設定リストをクリアする。
      */
-    public void clearMemoryband() {
-    	listMemory = new ArrayList<Memoryband>();
+    public void clearRequiredBF() {
+    	listReqBF = new ArrayList<RequiredBF>();
     }
 
     /**
@@ -612,13 +605,13 @@ public class MemorybandProperties  extends PropertiesBase {
      * @param type		要求Byte/FLOPタイプ
      * @return		Keyword情報
      */
-    public Memoryband getMemoryband(ACCESSMEMORY_TYPE type) {
+    public RequiredBF getRequiredBF(ACCESSMEMORY_TYPE type) {
         if (type == null) return null;
 
-        for (Memoryband band : listMemory) {
-        	ACCESSMEMORY_TYPE srctype = band.getType();
+        for (RequiredBF bf : listReqBF) {
+        	ACCESSMEMORY_TYPE srctype = bf.getType();
             if (srctype == type) {
-                return band;
+                return bf;
             }
         }
 
@@ -629,16 +622,16 @@ public class MemorybandProperties  extends PropertiesBase {
      * 演算性能を取得する
      * @return		演算性能
      */
-	public float getOperationPerformance() {
-		return this.operation_performance;
+	public float getFlopPerformance() {
+		return this.flop_performance;
 	}
 
 	/**
 	 * 演算性能を設定する.
 	 * @param performance	演算性能
 	 */
-	public void setOperationPerformance(float performance) {
-		this.operation_performance = performance;
+	public void setFlopPerformance(float performance) {
+		this.flop_performance = performance;
 	}
 
 
@@ -646,7 +639,7 @@ public class MemorybandProperties  extends PropertiesBase {
      * デフォルト要求Byte/FLOP設定を取得する.
      * @return   デフォルト要求Byte/FLOP設定
      */
-    public MemorybandProperties getDefaultProperties() {
+    public RequiredBFProperties getDefaultProperties() {
     	return this.defaultProperties;
     }
 
@@ -654,40 +647,40 @@ public class MemorybandProperties  extends PropertiesBase {
      * デフォルト要求Byte/FLOP設定を設定する.
      * @return   デフォルト要求Byte/FLOP設定
      */
-    public void setDefaultProperties(MemorybandProperties properties) {
+    public void setDefaultProperties(RequiredBFProperties properties) {
     	this.defaultProperties = properties;
     }
 
 	/**
-	 * スループットストア設定を取得する.
-	 * @return		スループットストア設定
+	 * スループット算出モード設定を取得する.
+	 * @return		スループット算出モード設定
 	 */
-	public THROUGHPUT_STORE_MODE getStoreMode() {
-		return storeMode;
+	public MEM_THROUGHPUT_CALC_MODE getMemThroughputCalcMode() {
+		return memThroughtputCalcMode;
 	}
 
 	/**
-	 * スループットストア設定を設定する
-	 * @param storeMode		スループットストア設定
+	 * スループット算出モードを設定する
+	 * @param memThroughputCalcMode		スループット算出モード設定
 	 */
-	public void setStoreMode(THROUGHPUT_STORE_MODE storeMode) {
-		this.storeMode = storeMode;
+	public void setMemThroughputCalcMode(MEM_THROUGHPUT_CALC_MODE memThroughputCalcMode) {
+		this.memThroughtputCalcMode = memThroughputCalcMode;
 	}
 
 	/**
-	 * 算出単位を取得する.
+	 * 要求BF算出の単位を取得する.
 	 * @return		算出単位
 	 */
-	public UNIT_TYPE getUnitType() {
-		return unitType;
+	public BF_CALC_TYPE getBFCalcType() {
+		return BFCalcType;
 	}
 
 	/**
-	 * 算出単位を設定する.
-	 * @param unitType		算出単位
+	 * 要求BF算出の単位を設定する.
+	 * @param BFCalcType		算出単位
 	 */
-	public void setUnitType(UNIT_TYPE unitType) {
-		this.unitType = unitType;
+	public void setCalcType(BF_CALC_TYPE BFCalcType) {
+		this.BFCalcType = BFCalcType;
 	}
 
 	/**
@@ -723,32 +716,31 @@ public class MemorybandProperties  extends PropertiesBase {
 	}
 
 	/**
-	 * スループット：ストア有りを取得する.
+	 * スループット算出モード：ストア有りを取得する.
 	 * @return    スループット：ストア有り
 	 */
-	public float getThroughputStore() {
-		int count = getMemorybandCount();
+	public float getMemThroughputStore() {
+		int count = getRequiredBFCount();
 		float value = 0.0F;
 		for (int i=0; i<count; i++) {
-			Memoryband mem = getMemoryband(i);
-			float throughput = mem.getThroughputStore();
+			RequiredBF mem = getRequiredBF(i);
+			float throughput = mem.getMemThroughputStore();
 			float coef = mem.getCoef();
 			value += throughput * coef;
 		}
 		return value;
 	}
 
-
 	/**
-	 * スループット：ストア有りを取得する.
+	 * スループット算出モード：ストア有りを取得する.
 	 * @return    スループット：ストア有り
 	 */
-	public float getThroughputNoneStore() {
-		int count = getMemorybandCount();
+	public float getMemThroughputNostore() {
+		int count = getRequiredBFCount();
 		float value = 0.0F;
 		for (int i=0; i<count; i++) {
-			Memoryband mem = getMemoryband(i);
-			float throughput = mem.getThroughputNonestore();
+			RequiredBF mem = getRequiredBF(i);
+			float throughput = mem.getMemThroughputNostore();
 			float coef = mem.getCoef();
 			value += throughput * coef;
 		}

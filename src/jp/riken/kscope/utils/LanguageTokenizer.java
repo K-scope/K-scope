@@ -26,7 +26,7 @@ import java.util.Iterator;
 /**
  * 言語構文分割クラス
  * 
- * @author riken
+ * @author RIKEN
  * 
  */
 public class LanguageTokenizer {

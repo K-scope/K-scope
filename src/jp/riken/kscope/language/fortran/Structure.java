@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import jp.riken.kscope.data.CodeLine;
-import jp.riken.kscope.language.Block;
+//import jp.riken.kscope.language.Block;
 import jp.riken.kscope.language.IBlock;
 import jp.riken.kscope.language.Statement;
 import jp.riken.kscope.language.VariableDefinition;

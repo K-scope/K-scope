@@ -34,7 +34,7 @@ import jp.riken.kscope.menu.SourcePanelPopupMenu;
 import jp.riken.kscope.model.SourceCodeModel;
 import jp.riken.kscope.properties.KeywordProperties;
 import jp.riken.kscope.properties.ProfilerProperties;
-import jp.riken.kscope.properties.SSHconnectProperties;
+//import jp.riken.kscope.properties.SSHconnectProperties;
 import jp.riken.kscope.properties.SourceProperties;
 import jp.riken.kscope.properties.VariableMemoryProperties;
 
@@ -42,7 +42,7 @@ import jp.riken.kscope.properties.VariableMemoryProperties;
 /**
  * ルーラ付きソースコード表示パイン.<br/>
  * 右側にプロファイラプレビューパネルを表示する.
- * @author riken
+ * @author RIKEN
  */
 public class SourceCodePanel extends JPanel implements ITabComponent, ChangeListener, CaretListener, Observer {
 

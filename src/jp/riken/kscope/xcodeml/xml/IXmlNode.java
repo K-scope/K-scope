@@ -18,7 +18,7 @@ package jp.riken.kscope.xcodeml.xml;
 
 /**
  * XML要素クラス
- * @author riken
+ * @author RIKEN
  */
 public interface IXmlNode {
 

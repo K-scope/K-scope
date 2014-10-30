@@ -20,7 +20,7 @@ import jp.riken.kscope.language.Fortran;
 
 /**
  * 分析サービスの基底クラス
- * @author riken
+ * @author RIKEN
  */
 public class AnalysisBaseService extends BaseService {
 

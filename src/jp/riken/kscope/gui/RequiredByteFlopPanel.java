@@ -43,18 +43,18 @@ import jp.riken.kscope.Message;
 import jp.riken.kscope.common.ANALYSIS_PANEL;
 import jp.riken.kscope.component.JStripeTable;
 import jp.riken.kscope.data.CodeLine;
-import jp.riken.kscope.data.RequiredByteFlopResult;
+import jp.riken.kscope.data.RequiredBFResult;
 import jp.riken.kscope.language.IBlock;
 import jp.riken.kscope.language.IInformation;
 import jp.riken.kscope.menu.MainMenu;
-import jp.riken.kscope.model.RequiredByteFlopModel;
+import jp.riken.kscope.model.RequiredBFModel;
 import jp.riken.kscope.properties.SourceProperties;
 import jp.riken.kscope.utils.ResourceUtils;
 import jp.riken.kscope.utils.SwingUtils;
 
 /**
  * 要求Byte/FLOPパネルクラス
- * @author riken
+ * @author RIKEN
  *
  */
 public class RequiredByteFlopPanel extends AnalisysPanelBase implements Observer, IAnalisysComponent {
@@ -75,7 +75,7 @@ public class RequiredByteFlopPanel extends AnalisysPanelBase implements Observer
     /** 要求Byte/FLOP算出結果テーブル */
     private JTable tableResult;
     /** 要求Byte/FLOP算出結果モデル */
-    private RequiredByteFlopModel modelRequired;
+    private RequiredBFModel modelRequired;
 
     /**
      * コンストラクタ
@@ -84,7 +84,7 @@ public class RequiredByteFlopPanel extends AnalisysPanelBase implements Observer
         super();
 
         // モデルの生成を行う
-        modelRequired = new RequiredByteFlopModel();
+        modelRequired = new RequiredBFModel();
         // オブザーバを設定する。
         modelRequired.addObserver(this);
 
@@ -101,7 +101,7 @@ public class RequiredByteFlopPanel extends AnalisysPanelBase implements Observer
         super(proparties);
 
         // モデルの生成を行う
-        modelRequired = new RequiredByteFlopModel();
+        modelRequired = new RequiredBFModel();
         // オブザーバを設定する。
         modelRequired.addObserver(this);
 
@@ -221,7 +221,7 @@ public class RequiredByteFlopPanel extends AnalisysPanelBase implements Observer
     @Override
     public void update(Observable o, Object arg) {
         // 要求Byte/FLOP算出結果
-        RequiredByteFlopModel observer = (RequiredByteFlopModel)o;
+        RequiredBFModel observer = (RequiredBFModel)o;
 
         // テーブルモデル
         DefaultTableModel model = observer.getTableModel();
@@ -244,7 +244,7 @@ public class RequiredByteFlopPanel extends AnalisysPanelBase implements Observer
      * 演算カウントテーブルモデルを取得する
      * @return		変数特性一覧テーブルモデル
      */
-    public RequiredByteFlopModel getModel() {
+    public RequiredBFModel getModel() {
         return this.modelRequired;
     }
 
@@ -326,8 +326,8 @@ public class RequiredByteFlopPanel extends AnalisysPanelBase implements Observer
         DefaultTableModel tableModel = (DefaultTableModel) this.tableResult.getModel();
         Object obj = tableModel.getValueAt(row, 0);
         if (obj == null) return null;
-        if (obj instanceof RequiredByteFlopResult) {
-            return ((RequiredByteFlopResult)obj).getBlock();
+        if (obj instanceof RequiredBFResult) {
+            return ((RequiredBFResult)obj).getBlock();
         }
         return null;
     }
@@ -346,9 +346,9 @@ public class RequiredByteFlopPanel extends AnalisysPanelBase implements Observer
         DefaultTableModel tableModel = (DefaultTableModel) this.tableResult.getModel();
         Object obj = tableModel.getValueAt(row, 0);
         if (obj == null) return null;
-        if (obj instanceof RequiredByteFlopResult) {
-        	if (((RequiredByteFlopResult)obj).getBlock() instanceof IInformation) {
-                return (IInformation)((RequiredByteFlopResult)obj).getBlock();
+        if (obj instanceof RequiredBFResult) {
+        	if (((RequiredBFResult)obj).getBlock() instanceof IInformation) {
+                return (IInformation)((RequiredBFResult)obj).getBlock();
         	}
         }
         return null;

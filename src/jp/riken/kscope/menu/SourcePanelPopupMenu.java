@@ -42,7 +42,7 @@ import jp.riken.kscope.service.AppController;
 
 /**
  * ソースファイルパネルポップアップメニュークラス
- * @author riken
+ * @author RIKEN
  */
 public class SourcePanelPopupMenu extends JPopupMenu implements PopupMenuListener {
 

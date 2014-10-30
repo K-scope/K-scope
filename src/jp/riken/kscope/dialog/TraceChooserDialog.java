@@ -50,7 +50,7 @@ import jp.riken.kscope.utils.ResourceUtils;
 
 /**
  * トレース選択ダイアログ
- * @author riken
+ * @author RIKEN
  *
  */
 public class TraceChooserDialog extends javax.swing.JDialog implements ActionListener, MouseListener {

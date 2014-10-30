@@ -24,7 +24,7 @@ import jp.riken.kscope.Message;
 
 /**
  * 構造ツリーフィルタタイプ
- * @author riken
+ * @author RIKEN
  */
 public enum FILTER_TYPE {
     // 構造ツリーフィルタタイプ

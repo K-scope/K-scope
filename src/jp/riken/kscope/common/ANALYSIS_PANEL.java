@@ -20,7 +20,7 @@ import jp.riken.kscope.Message;
 
 /**
  * 分析情報パネルの識別文字列
- * @author riken
+ * @author RIKEN
  */
 public enum ANALYSIS_PANEL {
     // パネル一覧

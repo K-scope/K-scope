@@ -29,7 +29,7 @@ import jp.riken.kscope.xcodeml.xml.gen.*;
 
 /**
  * Variableパーサクラス
- * @author riken
+ * @author RIKEN
  */
 public class VariableParser {
 

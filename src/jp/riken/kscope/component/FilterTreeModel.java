@@ -25,7 +25,7 @@ import jp.riken.kscope.common.FILTER_TYPE;
 
 /**
  * フィルタツリーモデルクラス
- * @author riken
+ * @author RIKEN
  *
  */
 public class FilterTreeModel extends DefaultTreeModel {

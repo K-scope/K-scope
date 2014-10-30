@@ -44,7 +44,7 @@ import jp.riken.kscope.utils.FileUtils;
 
 /**
  * トレースアクション
- * @author riken
+ * @author RIKEN
  *
  */
 public class AnalysisTraceAction extends ActionBase {

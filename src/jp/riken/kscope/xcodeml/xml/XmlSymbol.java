@@ -18,7 +18,7 @@ package jp.riken.kscope.xcodeml.xml;
 
 /**
  * シンボルリストクラス
- * @author riken
+ * @author RIKEN
  *
  */
 public class XmlSymbol {

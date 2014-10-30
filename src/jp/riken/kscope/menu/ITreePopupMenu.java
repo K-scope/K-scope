@@ -23,7 +23,7 @@ import java.util.EventListener;
 
 /**
  * ツリーポップアップメニューインターフェイス
- * @author riken
+ * @author RIKEN
  */
 public interface ITreePopupMenu {
 

@@ -236,15 +236,14 @@
         <sshconnect key="preprocess_files" value="" type="project" commandline_option="-pf" description="property.sshparameters.preprocess_files"/>		
         <sshconnect key="file_filter" value="*.tar,*.tgz,*.zip,*.txt,*.html,*.xml,*.o,*.mod,*.xmod,.DS*,*.ksx" type="project" commandline_option="-ff" description="property.sshparameters.file_filter"/>
 		
-	<!--  プロジェクトプロパティ -->
-	<project key="build-command" name="property.project.build-command.name" value="make" type="file" message="property.project.build-command.message" />
-	<project key="project-title" name="property.project.title.name" value="" type="text" message="property.project.title.message" />
-	<project key="use-sshconnect" name="property.project.is_remote.name" value="true" type="text" message="property.project.local_remote.message" />
+	    <!--  プロジェクトプロパティ -->
+        <project key="build-command" name="property.project.build-command.name" value="make" type="file" message="property.project.build-command.message" />
+        <project key="project-title" name="property.project.title.name" value="" type="text" message="property.project.title.message" />
+        <project key="use-sshconnect" name="property.project.is_remote.name" value="true" type="text" message="property.project.local_remote.message" />
 	
-	<!-- Project hidden properties -->
-	<project_other key="genXML" value="false" />
-	<project_other key="full_project" value="true" />
-
+        <!-- Project hidden properties -->
+        <project_other key="genXML" value="false" />
+        <project_other key="full_project" value="true" />
 
         <!--  プロファイラプロパティ -->
         <profiler key='costinfo-maxcount' value='0' />
@@ -263,15 +262,15 @@ call %FUNCTION("%NAME", %NUMBER, %LEVEL)
 !]]></profiler>
 
         <!--  要求Byte/FLOP設定プロパティ -->
-        <memoryband key='operation-performance' value='128' />
-        <memoryband key="throughput-store-mode" value="auto"/>
-        <memoryband key="unit-type" value="byte_flop"/>
-        <memoryband key='memory' name="Memory" backcolor='#FFE4E1' throughput-store='46' throughput-nonestore='52' coef='0.5' required='true' limiting='true' enabled='true' />
-        <memoryband key='l1_cache' name="L1 Cache" backcolor='#7FFFD4' throughput-store='512' throughput-nonestore='512' coef='0.2' required='true' limiting='true'  enabled='true' />
-        <memoryband key='l2_cache' name="L2 Cache" backcolor='#ADFF2F' throughput-store='180' throughput-nonestore='180' coef='0.3' required='true' limiting='true' enabled='true' />
-        <memoryband key='register' name="Register" backcolor='#FFFFE0' throughput-store='512' throughput-nonestore='512' coef='0.0' required='true' limiting='true' enabled='true' />
-        <memoryband key='custom' name="Custom" backcolor='#EE82EE' throughput-store='128' throughput-nonestore='140' coef='0.0' required='true' limiting='true' enabled='true' />
-        <memoryband key="default-size" real="4" integer="4"/>
+        <required_bf key='flop-performance' value='128' />
+        <required_bf key="mem-throughput-calc-mode" value="auto"/>
+        <required_bf key="calc-type" value="byte_flop"/>
+        <required_bf key='memory' name="Memory" backcolor='#FFE4E1' mem-throughput-store='46' mem-throughput-nostore='52' coef='0.5' required-bf='true' limiting='true' enabled='true' />
+        <required_bf key='l1_cache' name="L1 Cache" backcolor='#7FFFD4' mem-throughput-store='512' mem-throughput-nostore='512' coef='0.2' required-bf='true' limiting='true'  enabled='true' />
+        <required_bf key='l2_cache' name="L2 Cache" backcolor='#ADFF2F' mem-throughput-store='180' mem-throughput-nostore='180' coef='0.3' required-bf='true' limiting='true' enabled='true' />
+        <required_bf key='register' name="Register" backcolor='#FFFFE0' mem-throughput-store='512' mem-throughput-nostore='512' coef='0.0' required-bf='true' limiting='true' enabled='true' />
+        <required_bf key='custom' name="Custom" backcolor='#EE82EE' mem-throughput-calc-mode-store='128' mem-throughput-calc-mode-nostore='140' coef='0.0' required-bf='true' limiting='true' enabled='true' />
+        <required_bf key="default-size" size-real="4" size-integer="4"/>
 
 	<!-- アプリケーションプロパティ -->
 	<application key="newproject_save" value="false"/>

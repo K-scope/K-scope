@@ -35,7 +35,7 @@ import jp.riken.kscope.service.AppController;
 
 /**
  * 参照一覧アクション
- * @author riken
+ * @author RIKEN
  */
 public class AnalysisVariableAction extends ActionBase {
 

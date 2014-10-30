@@ -38,7 +38,7 @@ import jp.riken.kscope.utils.StringUtils;
 
 /**
  * プロファイラ:コスト情報モデル
- * @author riken
+ * @author RIKEN
  *
  */
 public class ProfilerCostTableModel extends ProfilerTableBaseModel {

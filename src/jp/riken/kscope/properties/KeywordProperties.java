@@ -42,10 +42,9 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-
 /**
  * ソースコードのキーワード(ハイライト)設定クラス
- * @author riken
+ * @author RIKEN
  *
  */
 public class KeywordProperties extends PropertiesBase {
@@ -113,7 +112,6 @@ public class KeywordProperties extends PropertiesBase {
         this.changes.firePropertyChange(this.getClass().getName(), null, this);
     }
 
-
     /**
      * キーワード(ハイライト)設定リストを取得する。
      * @return		ハイライト設定リスト
@@ -139,7 +137,6 @@ public class KeywordProperties extends PropertiesBase {
     public Keyword getKeyword(int index) {
         if (listKeyword == null || listKeyword.size() <= 0) {return null;}
         if (listKeyword.size() <= index) {return null;}
-
         return listKeyword.get(index);
     }
 
@@ -162,7 +159,6 @@ public class KeywordProperties extends PropertiesBase {
         if (listKeyword == null) {
             listKeyword = new ArrayList<Keyword>();
         }
-
         listKeyword.add(keyword);
     }
 
@@ -172,7 +168,6 @@ public class KeywordProperties extends PropertiesBase {
      */
     public void removeKeyword(Keyword keyword) {
         if (listKeyword == null) return;
-
         listKeyword.remove(keyword);
     }
 
@@ -182,7 +177,6 @@ public class KeywordProperties extends PropertiesBase {
      */
     public void removeKeyword(int index) {
         if (listKeyword == null) return;
-
         listKeyword.remove(index);
     }
 

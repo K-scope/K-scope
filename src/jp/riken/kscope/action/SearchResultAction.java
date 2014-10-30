@@ -29,7 +29,7 @@ import jp.riken.kscope.service.AppController;
 
 /**
  * 検索動作（前へ移動、次へ移動、クリア）アクション
- * @author riken
+ * @author RIKEN
  */
 public class SearchResultAction extends ActionBase {
 

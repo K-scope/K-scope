@@ -38,7 +38,7 @@ import jp.riken.kscope.utils.StringUtils;
 
 /**
  * プロファイラ:コールグラフ情報モデル
- * @author riken
+ * @author RIKEN
  *
  */
 public class ProfilerCallGraphModel  extends ProfilerTableBaseModel {

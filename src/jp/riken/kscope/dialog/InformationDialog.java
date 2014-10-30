@@ -45,7 +45,7 @@ import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledEditorKit;
 import javax.swing.text.View;
 import javax.swing.text.ViewFactory;
-import javax.swing.border.EtchedBorder;
+//import javax.swing.border.EtchedBorder;
 import javax.swing.BoxLayout;
 
 import jp.riken.kscope.Message;
@@ -58,7 +58,7 @@ import jp.riken.kscope.utils.SwingUtils;
 
 /**
  * 付加情報編集ダイアログ
- * @author riken
+ * @author RIKEN
  *
  */
 public class InformationDialog extends javax.swing.JDialog implements ActionListener {
@@ -468,7 +468,7 @@ public class InformationDialog extends javax.swing.JDialog implements ActionList
 
 	/**
      * 行折り返し段落のビュークラス
-     * @author riken
+     * @author RIKEN
      */
     private class NoWrapParagraphView extends ParagraphView {
         /**
@@ -506,7 +506,7 @@ public class InformationDialog extends javax.swing.JDialog implements ActionList
 
     /**
      * ビューの作成クラス
-     * @author riken
+     * @author RIKEN
      */
     class NoWrapViewFactory implements ViewFactory {
         /**
@@ -536,7 +536,7 @@ public class InformationDialog extends javax.swing.JDialog implements ActionList
 
     /**
      * 書式付きテキストスタイル
-     * @author riken
+     * @author RIKEN
      */
     @SuppressWarnings("serial")
     class NoWrapEditorKit extends StyledEditorKit {

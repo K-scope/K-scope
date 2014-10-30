@@ -28,7 +28,7 @@ import jp.riken.kscope.service.LanguageService;
 
 /**
  * フォートランノードプロパティアクションクラス
- * @author riken
+ * @author RIKEN
  */
 public class LanguagePropertiesAction extends ActionBase {
 

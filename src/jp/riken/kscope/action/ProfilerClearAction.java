@@ -24,7 +24,7 @@ import jp.riken.kscope.service.AppController;
 
 /**
  * プロファイラ情報のクリアアクションクラス
- * @author riken
+ * @author RIKEN
  */
 public class ProfilerClearAction extends ActionBase {
 

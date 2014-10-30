@@ -30,7 +30,7 @@ import jp.riken.kscope.utils.SwingUtils;
 
 /**
  * 検索フィルタノードクラス
- * @author riken
+ * @author RIKEN
  */
 public class SearchTreeNode extends FilterTreeNode {
 

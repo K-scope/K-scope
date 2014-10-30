@@ -63,7 +63,7 @@ import jp.riken.kscope.utils.StringUtils;
 
 /**
  * キーワード設定ダイアログクラス
- * @author riken
+ * @author RIKEN
  *
  */
 public class SettingKeywordDialog extends javax.swing.JDialog implements ActionListener, ListSelectionListener, ItemListener {
@@ -986,7 +986,7 @@ public class SettingKeywordDialog extends javax.swing.JDialog implements ActionL
 
     /**
      * キーワードテーブルの色セルの描画クラス
-     * @author riken
+     * @author RIKEN
      *
      */
     private class KeywordTableRenderer extends DefaultTableCellRenderer {

@@ -17,7 +17,7 @@
 
 package jp.riken.kscope.dialog;
 import java.awt.BorderLayout;
-import java.awt.Component;
+//import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.Frame;
 import java.awt.GridBagConstraints;
@@ -40,7 +40,7 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.border.Border;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
-import javax.swing.border.EtchedBorder;
+//import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -55,7 +55,7 @@ import jp.riken.kscope.utils.StringUtils;
 
 /**
  * 演算カウントダイアログクラス
- * @author riken
+ * @author RIKEN
  *
  */
 public class SettingOperandDialog extends javax.swing.JDialog implements ActionListener, ListSelectionListener {

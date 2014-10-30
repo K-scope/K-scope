@@ -20,7 +20,7 @@ import java.util.List;
 
 /**
  *  ハードウェアモニタ情報
- * @author riken
+ * @author RIKEN
  */
 public class HardwareMonitorInfo {
     /** 測定スレッド数 */

@@ -24,7 +24,7 @@ import jp.riken.kscope.properties.ProfilerProperties;
 
 /**
  * プロファイラ情報タイプ
- * @author riken
+ * @author RIKEN
  */
 public enum PROFILERINFO_TYPE {
     /** コスト情報(手続):DPROF */

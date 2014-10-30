@@ -32,13 +32,13 @@ import jp.riken.kscope.xcodeml.xml.gen.StatementLabel;
  * XcodeMLパーサコンテキストクラス.<br/>
  * XcodeMLをパースする上での必要情報を管理する.
  *
- * @author riken
+ * @author RIKEN
  */
 public class XcodeMLContext {
 
     /**
      * IXmlNodeスタッククラス
-     * @author riken
+     * @author RIKEN
      */
     public class InvokeNodeStack extends LinkedList<IXmlNode> {
         /** シリアル番号 */

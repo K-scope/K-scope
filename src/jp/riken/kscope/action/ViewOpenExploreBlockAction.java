@@ -20,7 +20,7 @@ import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.io.File;
+//import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,7 +36,7 @@ import jp.riken.kscope.service.AppController;
 
 /**
  * ファイルを開くアクションクラス
- * @author riken
+ * @author RIKEN
  */
 public class ViewOpenExploreBlockAction extends ActionBase implements MouseListener {
 
@@ -130,8 +130,7 @@ public class ViewOpenExploreBlockAction extends ActionBase implements MouseListe
     @Override
     public void actionPerformed(ActionEvent event) {
     	// ステータスバー
-    	Application.status.setMessageMain(
-    			Message.getString("mainmenu.view.openfile")); //ファイルを開く
+    	Application.status.setMessageMain(Message.getString("mainmenu.view.openfile")); //ファイルを開く
         // 選択ファイルを開く
         openFile();
     }

@@ -35,7 +35,7 @@ import jp.riken.kscope.xcodeml.xml.gen.Name;
 /**
  * Type and Symbol manager.
  *
- * @author riken
+ * @author RIKEN
  */
 public class XcodeMLTypeManager {
     /** データ型テーブル */
@@ -49,7 +49,7 @@ public class XcodeMLTypeManager {
 
     /**
      * データ型テーブルクラス
-     * @author riken
+     * @author RIKEN
      */
     private class TypeMap extends HashMap<String, IXmlTypeTableChoice> {
         /** シリアル番号 */
@@ -75,7 +75,7 @@ public class XcodeMLTypeManager {
 
     /**
      * シンボルテーブルクラス
-     * @author riken
+     * @author RIKEN
      */
     private class SymbolMap extends HashMap<String, Id> {
         /** シリアル番号 */
@@ -101,7 +101,7 @@ public class XcodeMLTypeManager {
 
     /**
      * シンボルスタッククラス
-     * @author riken
+     * @author RIKEN
      *
      */
     private class SymbolMapStack extends LinkedList<SymbolMap> {
@@ -125,7 +125,7 @@ public class XcodeMLTypeManager {
 
     /**
      * 参照型識別子テーブルクラス
-     * @author riken
+     * @author RIKEN
      */
     private class AliasMap extends HashMap<String, String> {
         /** シリアル番号 */
@@ -151,7 +151,7 @@ public class XcodeMLTypeManager {
 
     /**
      * 参照型識別子スタッククラス
-     * @author riken
+     * @author RIKEN
      */
     private class AliasMapStack extends LinkedList<AliasMap> {
         /** シリアル番号 */
@@ -174,7 +174,7 @@ public class XcodeMLTypeManager {
 
     /**
      * データ型テーブルクラス
-     * @author riken
+     * @author RIKEN
      */
     public class TypeList extends LinkedList<IXmlTypeTableChoice> {
         /** シリアル番号 */

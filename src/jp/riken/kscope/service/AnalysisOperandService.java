@@ -44,7 +44,7 @@ import jp.riken.kscope.properties.OperandProperties;
 
 /**
  * 分析：演算カウントを行う
- * @author riken
+ * @author RIKEN
  */
 public class AnalysisOperandService extends AnalysisBaseService {
 
@@ -197,6 +197,7 @@ public class AnalysisOperandService extends AnalysisBaseService {
      * @param block 処理ブロック
      * @return カウント情報の整数配列
      */
+    @SuppressWarnings("unused")
     private CountResult countBlock(IBlock block) {
         CountResult result = new CountResult();
         this.countChildren(block, result);

@@ -39,7 +39,7 @@ import jp.riken.kscope.utils.SwingUtils;
 
 /**
  * 分析結果の該当箇所を開くアクションクラス
- * @author riken
+ * @author RIKEN
  */
 public class ViewOpenAnalysisLineAction extends ActionBase implements MouseListener {
 

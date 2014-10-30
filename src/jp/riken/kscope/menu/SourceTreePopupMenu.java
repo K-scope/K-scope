@@ -50,7 +50,7 @@ import jp.riken.kscope.service.AppController;
 
 /**
  * ソースエクスプローラパネルポップアップメニュー
- * @author riken
+ * @author RIKEN
  *
  */
 public class SourceTreePopupMenu extends JPopupMenu implements PopupMenuListener, ITreePopupMenu {

@@ -29,7 +29,7 @@ import jp.riken.kscope.xcodeml.xml.gen.IndexRange;
 
 /**
  * VariableDimensionパーサクラス
- * @author riken
+ * @author RIKEN
  */
 public class VariableDimensionParser {
 

@@ -35,12 +35,12 @@ import javax.swing.JViewport;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import jp.riken.kscope.common.ANALYSIS_PANEL;
+//import jp.riken.kscope.common.ANALYSIS_PANEL;
 import jp.riken.kscope.common.FRAME_VIEW;
 
 /**
  * 閉じるボタンつきタブペイン
- * @author riken
+ * @author RIKEN
  *
  */
 public abstract class ClosableTabbedPane extends JTabbedPane  implements ITabComponent, ChangeListener, ActionListener {
@@ -283,7 +283,7 @@ public abstract class ClosableTabbedPane extends JTabbedPane  implements ITabCom
 
     /**
      * 閉じるボタンアイコン
-     * @author riken
+     * @author RIKEN
      *
      */
     private static class CloseTabIcon implements Icon {

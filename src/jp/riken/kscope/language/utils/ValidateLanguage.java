@@ -69,7 +69,7 @@ import jp.riken.kscope.language.generic.Procedures;
 /**
  * データベースの検証クラス.
  * 未定義構造体を検索し、定義を設定する.
- * @author riken
+ * @author RIKEN
  */
 public class ValidateLanguage implements ILanguageEntry {
 	/** 探索履歴リスト */
@@ -87,7 +87,7 @@ public class ValidateLanguage implements ILanguageEntry {
 
 	/**
 	 * エラー情報クラス
-	 * @author riken
+	 * @author RIKEN
 	 */
 	class ErrorTypeInfo {
 		/** エラー構造体 */

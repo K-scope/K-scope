@@ -21,7 +21,7 @@ import jp.riken.kscope.language.VariableDefinition;
 
 /**
  * アクセス先メモリタイプ
- * @author riken
+ * @author RIKEN
  */
 public enum ACCESSMEMORY_TYPE {
     /** Memory */

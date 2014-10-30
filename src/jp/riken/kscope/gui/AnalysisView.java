@@ -46,7 +46,7 @@ import jp.riken.kscope.properties.SourceProperties;
 /**
  * 解析ビュークラス.<br/>
  * 参照一覧、トレース、検索結果をタブを配置する。
- * @author riken
+ * @author RIKEN
  *
  */
 public class AnalysisView  extends ClosableTabbedPane implements PropertyChangeListener {
@@ -74,8 +74,6 @@ public class AnalysisView  extends ClosableTabbedPane implements PropertyChangeL
     private ReferencePanel panelReference;
     /** 変数有効域パネル */
     private ScopePanel panelScope;
-    /** 差替結果パネル */
-    private ReplacementResultTablePanel panelReplace;
     /** トレースパネル */
     private TraceResultPanel panelTrace;
     /** プロファイラ:情報パネル */
@@ -147,11 +145,6 @@ public class AnalysisView  extends ClosableTabbedPane implements PropertyChangeL
             panelScope = new ScopePanel(ANALYSIS_PANEL.SCOPE);
             panelScope.setParentComponent(this);
             this.addTab(ANALYSIS_PANEL.SCOPE.getTabName(),  panelScope);
-
-            // 差替結果パネル
-            panelReplace = new ReplacementResultTablePanel(ANALYSIS_PANEL.REPLACE);
-            panelReplace.setParentComponent(this);
-            //this.addTab(ANALYSIS_PANEL.REPLACE.getTabName(),  panelReplace);
 
             // プロファイラパネルリスト
             if (panelProfilerList == null) {
@@ -414,10 +407,6 @@ public class AnalysisView  extends ClosableTabbedPane implements PropertyChangeL
             if (panelRequiredByteFlop.getEnumPanel() == panel) {
                 viewpanel = panelRequiredByteFlop;
             }
-            /** 差替結果パネル */
-            if (panelReplace.getEnumPanel() == panel) {
-                viewpanel = panelReplace;
-            }
             /** プロパティテーブルパネル */
             if (panelPropertiesTable.getEnumPanel() == panel) {
                 viewpanel = panelPropertiesTable;
@@ -488,8 +477,7 @@ public class AnalysisView  extends ClosableTabbedPane implements PropertyChangeL
     						    		panelPropertiesTable,
     						    		panelConsole, panelError,
     						    		panelSearchResult, panelReference,
-    						    		panelScope, panelReplace,
-    						    		panelProfilerMeasure, panelTrace};
+    						    		panelScope, panelProfilerMeasure, panelTrace};
         for (IAnalisysComponent panel : listPanel) {
         	if (panel != null) {
                 panel.setActionListener(menu);
@@ -520,8 +508,6 @@ public class AnalysisView  extends ClosableTabbedPane implements PropertyChangeL
         this.panelOperand.clearModel();
         /** 要求B/F算出結果パネル */
         this.panelRequiredByteFlop.clearModel();
-        /** 差替結果パネル */
-        this.panelReplace.clearModel();
         /** プロパティテーブルパネル */
         this.panelPropertiesTable.clearModel();
         /** エラー箇所パネル */
@@ -585,14 +571,6 @@ public class AnalysisView  extends ClosableTabbedPane implements PropertyChangeL
      */
     public RequiredByteFlopPanel getPanelRequiredByteFlop() {
         return this.panelRequiredByteFlop;
-    }
-
-    /**
-     * 差替結果パネルを取得する
-     * @return 差替結果パネル
-     */
-    public ReplacementResultTablePanel getPanelReplace() {
-        return this.panelReplace;
     }
 
     /**

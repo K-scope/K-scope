@@ -18,7 +18,7 @@ package jp.riken.kscope.profiler.common;
 
 /**
  * プロファイラ定数クラス
- * @author riken
+ * @author RIKEN
  */
 public class ProfConstant {
 

@@ -20,7 +20,7 @@ import jp.riken.kscope.utils.Logger;
 
 /**
  * 例外処理ハンドラ
- * @author riken
+ * @author RIKEN
  */
 public class ExceptionHandler {
 

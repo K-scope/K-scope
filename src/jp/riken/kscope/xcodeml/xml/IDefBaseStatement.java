@@ -18,7 +18,7 @@ package jp.riken.kscope.xcodeml.xml;
 
 /**
  * ステートメント文のインターフェイスクラス
- * @author riken
+ * @author RIKEN
  *
  */
 public interface IDefBaseStatement {

@@ -20,7 +20,7 @@ package jp.riken.kscope.profiler.common;
 /**
  * マジックキー情報を保持する
  *
- * @author riken
+ * @author RIKEN
  */
 public class MagicKey {
     private String id;

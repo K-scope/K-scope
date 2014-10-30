@@ -25,7 +25,7 @@ import jp.riken.kscope.profiler.ProfilerDprofData;
 /**
  * プロファイラコスト情報の行によるソート（昇順）クラス
  *
- * @author riken
+ * @author RIKEN
  *
  */
 public class ProfilerCostTableModelComparator implements

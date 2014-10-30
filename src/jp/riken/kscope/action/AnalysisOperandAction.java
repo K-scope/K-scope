@@ -33,7 +33,7 @@ import jp.riken.kscope.service.AppController;
 
 /**
  * 演算カウントアクション
- * @author riken
+ * @author RIKEN
  */
 public class AnalysisOperandAction extends ActionBase {
 

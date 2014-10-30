@@ -91,7 +91,7 @@ import jp.riken.kscope.properties.KscopeProperties;
 /**
  * Swingユーティリティクラス
  * 
- * @author riken
+ * @author RIKEN
  */
 public class SwingUtils {
 	/** タブサイズチェック用文字 */
@@ -139,7 +139,7 @@ public class SwingUtils {
 	/**
 	 * 行折り返し段落のビュークラス
 	 * 
-	 * @author riken
+	 * @author RIKEN
 	 */
 	private class NoWrapParagraphView extends ParagraphView {
 		/**
@@ -187,7 +187,7 @@ public class SwingUtils {
 	/**
 	 * ビューの作成クラス
 	 * 
-	 * @author riken
+	 * @author RIKEN
 	 */
 	class NoWrapViewFactory implements ViewFactory {
 		/**
@@ -220,7 +220,7 @@ public class SwingUtils {
 	/**
 	 * 書式付きテキストスタイル
 	 * 
-	 * @author riken
+	 * @author RIKEN
 	 */
 	@SuppressWarnings("serial")
 	class NoWrapEditorKit extends StyledEditorKit {
@@ -247,14 +247,13 @@ public class SwingUtils {
 	 *            属性名
 	 * @return 属性値
 	 */
-	@SuppressWarnings("rawtypes")
 	public static String getAttributeValue(javax.swing.text.Element elem,
 			HTML.Tag tagname, HTML.Attribute attrname) {
 
 		// タグの探索
 		javax.swing.text.AttributeSet attrs = elem.getAttributes();
 		String attrValue = null;
-		for (Enumeration enumAttrs = attrs.getAttributeNames(); enumAttrs
+		for (Enumeration<?> enumAttrs = attrs.getAttributeNames(); enumAttrs
 				.hasMoreElements();) {
 			Object attrTag = enumAttrs.nextElement();
 
@@ -264,7 +263,7 @@ public class SwingUtils {
 						.getAttribute(attrTag);
 
 				// 属性の探索
-				for (Enumeration enumAtag = atag.getAttributeNames(); enumAtag
+				for (Enumeration<?> enumAtag = atag.getAttributeNames(); enumAtag
 						.hasMoreElements();) {
 					Object attrAtag = enumAtag.nextElement();
 
@@ -620,8 +619,7 @@ public class SwingUtils {
 			//boolean applescript = KscopeProperties.isJava17Later();
                         boolean applescript = KscopeProperties.isApplescript();
 			if (KscopeProperties.isMac() && applescript) {
-				File selected = AppleScriptEngine.showFolderDialog(title,
-						currentDirectoryPath);
+				File selected = AppleScriptEngine.showFolderDialog(title, currentDirectoryPath);
 				if (selected == null) {
 					return null;
 				}
@@ -630,7 +628,8 @@ public class SwingUtils {
 			} else if (KscopeProperties.isMac()) {
 				// フォルダ選択に変更
 				System.setProperty("apple.awt.fileDialogForDirectories", "true");
-
+				//System.setProperty("apple.awt.fileDialogForDirectories", "falase");
+				
 				// java.awt.FileDialogを使用
 				FileDialog dialog = null;
 				if (parent instanceof Frame) {
@@ -665,8 +664,7 @@ public class SwingUtils {
 			// for Windows, Linux
 			else {
 
-				JFileChooser filechooser = new JFileChooser(
-						currentDirectoryPath);
+				JFileChooser filechooser = new JFileChooser(currentDirectoryPath);
 				filechooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 				filechooser.setDialogTitle(title);
 				filechooser.setMultiSelectionEnabled(multiselection);
@@ -717,26 +715,23 @@ public class SwingUtils {
 			// java1.7以上はAppleScriptにてフォルダダイアログを表示する
 			// java1.6以下はjava.awt.FileDialogを使用する。
 			//boolean applescript = KscopeProperties.isJava17Later();
-                        boolean applescript = KscopeProperties.isApplescript();
+            boolean applescript = KscopeProperties.isApplescript();
 			if (KscopeProperties.isMac() && applescript) {
-				File projectfile = AppleScriptEngine.showFolderDialog(title,
-						currentDirectoryPath);
+				File projectfile = AppleScriptEngine.showFolderDialog(title, currentDirectoryPath);
 				return projectfile;
 			} else if (KscopeProperties.isMac()) {
 				// フォルダ選択に変更
 				System.setProperty("apple.awt.fileDialogForDirectories", "true");
-
+				//System.setProperty("apple.awt.fileDialogForDirectories", "false");
+				
 				// java.awt.FileDialogを使用
 				FileDialog dialog = null;
 				if (parent instanceof Frame) {
-					dialog = new FileDialog((Frame) parent, title,
-							FileDialog.LOAD);
+					dialog = new FileDialog((Frame) parent, title, FileDialog.LOAD);
 				} else if (parent instanceof Dialog) {
-					dialog = new FileDialog((Dialog) parent, title,
-							FileDialog.LOAD);
+					dialog = new FileDialog((Dialog) parent, title, FileDialog.LOAD);
 				} else {
-					dialog = new FileDialog((Frame) null, title,
-							FileDialog.LOAD);
+					dialog = new FileDialog((Frame) null, title, FileDialog.LOAD);
 				}
 
 				// 親フォルダ
@@ -752,8 +747,7 @@ public class SwingUtils {
 					return null;
 
 				// 選択ファイルの取得
-				String selected = dialog.getDirectory() + File.separator
-						+ dialog.getFile();
+				String selected = dialog.getDirectory() + File.separator + dialog.getFile();
 				if (selected != null) {
 					File projectfile = new File(selected);
 					return projectfile;
@@ -765,8 +759,7 @@ public class SwingUtils {
 				JFileChooser filechooser = new JFileChooser(
 						currentDirectoryPath);
 				// ファイルとフォルダを選択可能とする.
-				filechooser
-						.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+				filechooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
 				filechooser.setDialogTitle(title);
 				filechooser.addChoosableFileFilter(filter);
 				// JDK7の場合はsetFileFilterを設定しないとフィルタが選択されない。 at 2013/05/14 by
@@ -823,7 +816,8 @@ public class SwingUtils {
 			} else if (KscopeProperties.isMac()) {
 				// フォルダ選択に変更
 				System.setProperty("apple.awt.fileDialogForDirectories", "true");
-
+				//System.setProperty("apple.awt.fileDialogForDirectories", "false");
+				
 				// java.awt.FileDialogを使用
 				// modify FileDialog Mode from FileDialog.SAVE to
 				// FileDialog.LOAD at 2013/05/31 by @hira
@@ -947,8 +941,7 @@ public class SwingUtils {
 			} else {
 
 				// ファイル選択ダイアログを表示する。
-				JFileChooser filechooser = new JFileChooser(
-						currentDirectoryPath);
+				JFileChooser filechooser = new JFileChooser(currentDirectoryPath);
 				filechooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 				filechooser.setMultiSelectionEnabled(multiselection);
 				filechooser.setDialogTitle(title);
@@ -982,7 +975,7 @@ public class SwingUtils {
 	/**
 	 * 拡張子ファイルフィルタ.
 	 * 
-	 * @author riken
+	 * @author RIKEN
 	 */
 	public class ExtFileFilter extends FileFilter implements FilenameFilter {
 		/** ファイルフィルタ説明文 */
@@ -1101,14 +1094,11 @@ public class SwingUtils {
 			if (KscopeProperties.isMac()) {
 				FileDialog dialog = null;
 				if (parent instanceof Frame) {
-					dialog = new FileDialog((Frame) parent, title,
-							FileDialog.LOAD);
+					dialog = new FileDialog((Frame) parent, title, FileDialog.LOAD);
 				} else if (parent instanceof Dialog) {
-					dialog = new FileDialog((Dialog) parent, title,
-							FileDialog.LOAD);
+					dialog = new FileDialog((Dialog) parent, title, FileDialog.LOAD);
 				} else {
-					dialog = new FileDialog((Frame) null, title,
-							FileDialog.LOAD);
+					dialog = new FileDialog((Frame) null, title, FileDialog.LOAD);
 				}
 				// 親フォルダ
 				dialog.setDirectory(currentDirectoryPath);
@@ -1125,8 +1115,7 @@ public class SwingUtils {
 					return null;
 
 				// 選択ファイルの取得
-				String selected = dialog.getDirectory() + File.separator
-						+ dialog.getFile();
+				String selected = dialog.getDirectory() + File.separator + dialog.getFile();
 				if (selected != null) {
 					File[] files = { new File(selected) };
 					return files;
@@ -1134,8 +1123,7 @@ public class SwingUtils {
 			} else {
 
 				// ファイル選択ダイアログを表示する。
-				JFileChooser filechooser = new JFileChooser(
-						currentDirectoryPath);
+				JFileChooser filechooser = new JFileChooser(currentDirectoryPath);
 				filechooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 				filechooser.setMultiSelectionEnabled(multiselection);
 				filechooser.setDialogTitle(title);
@@ -1167,7 +1155,7 @@ public class SwingUtils {
 	/**
 	 * Makefileファイルフィルタ.
 	 * 
-	 * @author riken
+	 * @author RIKEN
 	 */
 	public class MakefileFilter extends FileFilter implements FilenameFilter {
 		/** ファイルフィルタ説明文 */
@@ -1242,7 +1230,7 @@ public class SwingUtils {
 	/**
 	 * Projectファイルフィルタ.
 	 * 
-	 * @author riken
+	 * @author RIKEN
 	 */
 	public class ProjectFilter extends FileFilter implements FilenameFilter {
 		/** ファイルフィルタ説明文 */
@@ -1354,16 +1342,14 @@ public class SwingUtils {
 					return null;
 
 				// 選択ファイルの取得
-				String selected = dialog.getDirectory() + File.separator
-						+ dialog.getFile();
+				String selected = dialog.getDirectory() + File.separator + dialog.getFile();
 				if (selected != null) {
 					return new File(selected);
 				}
 			} else {
 
 				// ファイル保存ダイアログを表示する。
-				JFileChooser filechooser = new JFileChooser(
-						currentDirectoryPath);
+				JFileChooser filechooser = new JFileChooser(currentDirectoryPath);
 				filechooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 				filechooser.setDialogTitle(title);
 
@@ -1405,13 +1391,10 @@ public class SwingUtils {
 		if (!file.exists())
 			return true;
 		// swingutils.savefiledialog.overwrite.title=上書き確認
-		String title = Message
-				.getString("swingutils.savefiledialog.overwrite.title");
+		String title = Message.getString("swingutils.savefiledialog.overwrite.title");
 		// swingutils.savefiledialog.overwrite.message=ファイル[%s]は既に存在します。既存のファイルを置き換えますか？
-		String message = Message.getString(
-				"swingutils.savefiledialog.overwrite.message", file.getName());
-		int confirm = JOptionPane.showConfirmDialog(frame, message, title,
-				JOptionPane.WARNING_MESSAGE, JOptionPane.OK_CANCEL_OPTION);
+		String message = Message.getString("swingutils.savefiledialog.overwrite.message", file.getName());
+		int confirm = JOptionPane.showConfirmDialog(frame, message, title, JOptionPane.WARNING_MESSAGE, JOptionPane.OK_CANCEL_OPTION);
 
 		if (confirm == JOptionPane.OK_OPTION)
 			return true;
@@ -2048,8 +2031,7 @@ public class SwingUtils {
 				String name = defaultnames[j];
 				for (int i = 0; i < fontNames.length; i++) {
 					if (fontNames[i].equals(name)) {
-						defaultFont = new Font(name, Font.PLAIN,
-								DEFAULTFONT_SIZE);
+						defaultFont = new Font(name, Font.PLAIN, DEFAULTFONT_SIZE);
 						return defaultFont;
 					}
 				}
@@ -2067,12 +2049,10 @@ public class SwingUtils {
 	 */
 	public static String toTreeText(TreeNode node) {
 		StringBuffer buf = new StringBuffer();
-		Enumeration<?> elems = ((DefaultMutableTreeNode) node)
-				.preorderEnumeration();
+		Enumeration<?> elems = ((DefaultMutableTreeNode) node).preorderEnumeration();
 		try {
 			while (elems.hasMoreElements()) {
-				DefaultMutableTreeNode next = (DefaultMutableTreeNode) elems
-						.nextElement();
+				DefaultMutableTreeNode next = (DefaultMutableTreeNode) elems.nextElement();
 				Object obj = next.getUserObject();
 				String text = null;
 				File file = null;

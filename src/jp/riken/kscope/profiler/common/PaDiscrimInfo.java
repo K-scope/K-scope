@@ -19,7 +19,7 @@ package jp.riken.kscope.profiler.common;
 /**
  * 共通情報のPA識別情報を保持する
  *
- * @author riken
+ * @author RIKEN
  */
 public class PaDiscrimInfo {
     private short cpu;

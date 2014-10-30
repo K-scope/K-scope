@@ -23,7 +23,7 @@ import jp.riken.kscope.service.AppController;
 
 /**
  * バージョン情報ダイアログを表示する
- * @author riken
+ * @author RIKEN
  *
  */
 public class HelpVersionAction extends ActionBase {

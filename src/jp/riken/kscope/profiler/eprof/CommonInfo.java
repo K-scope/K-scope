@@ -22,7 +22,7 @@ import jp.riken.kscope.profiler.common.ProfConstant;
 /**
  * 共通情報を保持する
  *
- * @author riken
+ * @author RIKEN
  */
 public class CommonInfo {
 

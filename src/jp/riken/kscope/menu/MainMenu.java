@@ -65,7 +65,7 @@ import jp.riken.kscope.action.ProjectDeleteFileAction;
 import jp.riken.kscope.action.ProjectPropertyAction;
 import jp.riken.kscope.action.ProjectRebuildAction;
 import jp.riken.kscope.action.ProjectSettingKeywordAction;
-import jp.riken.kscope.action.ProjectSettingMemoryAction;
+import jp.riken.kscope.action.ProjectSettingRequiredBFAction;
 import jp.riken.kscope.action.ProjectSettingOperandAction;
 import jp.riken.kscope.action.ProjectSettingProfilerAction;
 import jp.riken.kscope.action.ProjectSettingProjectAction;
@@ -105,7 +105,7 @@ import jp.riken.kscope.service.AppController;
 
 /**
  * メインメニューバークラス
- * @author riken
+ * @author RIKEN
  *
  */
 public class MainMenu extends JMenuBar implements  MenuListener {
@@ -188,6 +188,7 @@ public class MainMenu extends JMenuBar implements  MenuListener {
         JMenu menuFile = new JMenu(Message.getString("mainmenu.file")); //ファイル
         this.add(menuFile);
         menuFile.addMenuListener(this);
+        
         // ファイル:プロジェクトの新規作成
         JMenuItem menuFileProjectNew = new JMenuItem(Message.getString("mainmenu.file.newproject")); //プロジェクトの新規作成
         menuFileProjectNew.addActionListener(new FileProjectNewAction(this.controller));
@@ -210,23 +211,22 @@ public class MainMenu extends JMenuBar implements  MenuListener {
 
         // セパレータ
         menuFile.addSeparator();
-        // ファイル:構造情報の差替 : delete 構造情報の差替 at 2013/04/10 by @hira
-        // JMenuItem menuFileImport = new JMenuItem(Message.getString("mainmenu.file.replaceproject")); //構造情報の差替
-        // menuFileImport.addActionListener(new FileProjectImportAction(this.controller));
-        // menuFile.add(menuFileImport);
 
         // ファイル:エクスポート
         JMenu menuFileExport = new JMenu(Message.getString("mainmenu.file.export")); //エクスポート
         menuFile.add(menuFileExport);
+        
         // ファイル:エクスポート:構造情報(TEXT)
         JMenuItem menuFileExportLanguage = new JMenuItem(Message.getString("mainmenu.file.export.structure")); //構造情報(TEXT)
         menuFileExport.add(menuFileExportLanguage);
         menuFileExportLanguage.addActionListener(new FileExportExploreAction(this.controller));
+        
         // ファイル:エクスポート:分析情報
         JMenuItem menuFileExportAnalysis = new JMenuItem(Message.getString("mainmenu.file.export.analysis")); //分析情報
         menuFileExport.add(menuFileExportAnalysis);
         actionExportAnalysis = new FileExportAnalysisAction(this.controller);
         menuFileExportAnalysis.addActionListener(actionExportAnalysis);
+        
         // ファイル：エクスポート：ソースファイル
         JMenuItem menuFileExportSourceFile = new JMenuItem(Message.getString("mainmenu.file.export.source")); //ソースファイル
         menuFileExport.add(menuFileExportSourceFile);
@@ -241,6 +241,7 @@ public class MainMenu extends JMenuBar implements  MenuListener {
 
         // セパレータ
         menuFile.addSeparator();
+        
         // ファイル:終了
         JMenuItem menuFileExit = new JMenuItem(Message.getString("mainmenu.file.close")); //終了
         menuFile.add(menuFileExit);
@@ -319,6 +320,7 @@ public class MainMenu extends JMenuBar implements  MenuListener {
         JMenuItem menuProjectBuild = new JMenuItem(Message.getString("mainmenu.project.startanalysis"));//構造解析実行
         menuProject.add(menuProjectBuild);
         menuProjectBuild.addActionListener(new ProjectBuildAction((this.controller)));
+        
         // プロジェクト:構造解析キャンセル
         menuProjectCancel = new JMenuItem(Message.getString("mainmenu.project.endanalysis"));//構造解析キャンセル
         menuProject.add(menuProjectCancel);
@@ -391,9 +393,9 @@ public class MainMenu extends JMenuBar implements  MenuListener {
         menuProjectSettingProfiler.addActionListener(new ProjectSettingProfilerAction(this.controller));
 
         // プロジェクト:設定:要求Bye/FLOP設定
-        JMenuItem menuProjectSettingMemory = new JMenuItem(Message.getString("mainmenu.project.config.memoryband"));//要求Bye/FLOP
-        menuProjectSetting.add(menuProjectSettingMemory);
-        menuProjectSettingMemory.addActionListener(new ProjectSettingMemoryAction(this.controller));
+        JMenuItem menuProjectSettingRequiredBF = new JMenuItem(Message.getString("mainmenu.project.config.requiredbf"));//要求Bye/FLOP
+        menuProjectSetting.add(menuProjectSettingRequiredBF);
+        menuProjectSettingRequiredBF.addActionListener(new ProjectSettingRequiredBFAction(this.controller));
         
         if (this.controller.isSSHconnectAvailable()) {
         	// セパレータ

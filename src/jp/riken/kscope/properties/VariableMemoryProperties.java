@@ -22,14 +22,14 @@ import java.util.List;
 
 import jp.riken.kscope.common.ACCESSMEMORY_TYPE;
 import jp.riken.kscope.data.Keyword;
-import jp.riken.kscope.data.Memoryband;
+import jp.riken.kscope.data.RequiredBF;
 import jp.riken.kscope.data.VariableMemory;
 import jp.riken.kscope.language.Variable;
 
 
 /**
  * ソースコードの変数アクセス先メモリ設定クラス
- * @author riken
+ * @author RIKEN
  */
 public class VariableMemoryProperties extends PropertiesBase {
 
@@ -39,13 +39,13 @@ public class VariableMemoryProperties extends PropertiesBase {
     /** 変数(ハイライト)設定リスト */
     private List<VariableMemory> listVariable = new ArrayList<VariableMemory>();
     /** 要求Byte/FLOP設定プロパティ */
-    MemorybandProperties memoryProperties;
+    RequiredBFProperties memoryProperties;
 
     /**
      * コンストラクタ
      * @param properties  要求Byte/FLOP設定プロパティ
      */
-    public VariableMemoryProperties(MemorybandProperties properties) {
+    public VariableMemoryProperties(RequiredBFProperties properties) {
     	this.memoryProperties = properties;
     }
 
@@ -184,7 +184,7 @@ public class VariableMemoryProperties extends PropertiesBase {
 		if (variable == null) return;
 		if (containsVariableMemory(variable)) {
 			VariableMemory varmem = getVariableMemory(variable);
-			Memoryband mem = getMemoryband(variable);
+			RequiredBF mem = getMemoryband(variable);
 			varmem.setMemoryband(mem);
 		}
 		else {
@@ -201,7 +201,7 @@ public class VariableMemoryProperties extends PropertiesBase {
 	 */
 	private VariableMemory createVariableMemory(Variable variable) {
 		// 変数メモリデータの生成
-		Memoryband mem = getMemoryband(variable);
+		RequiredBF mem = getMemoryband(variable);
 		VariableMemory varmem = new VariableMemory(variable, mem);
 
 		return varmem;
@@ -213,7 +213,7 @@ public class VariableMemoryProperties extends PropertiesBase {
 	 * @param variable		変数
 	 * @return		アクセス先メモリ
 	 */
-	private Memoryband getMemoryband(Variable variable) {
+	private RequiredBF getMemoryband(Variable variable) {
 		// 変数メモリデータの生成
 		ACCESSMEMORY_TYPE memorytype = variable.getMemoryType();
 		if (memorytype == null) {
@@ -222,7 +222,7 @@ public class VariableMemoryProperties extends PropertiesBase {
 				memorytype = ACCESSMEMORY_TYPE.getDefaultType(variable.getDefinition());
 			}
 		}
-		Memoryband mem = memoryProperties.getMemoryband(memorytype);
+		RequiredBF mem = memoryProperties.getRequiredBF(memorytype);
 		return mem;
 	}
 

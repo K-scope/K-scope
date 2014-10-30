@@ -42,7 +42,7 @@ import org.w3c.dom.NodeList;
 
 /**
  * 演算カウントプロパティクラス
- * @author riken
+ * @author RIKEN
  */
 public class OperandProperties extends PropertiesBase {
 

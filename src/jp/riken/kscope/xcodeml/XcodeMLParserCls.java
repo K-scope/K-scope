@@ -45,7 +45,7 @@ import jp.riken.kscope.xcodeml.xml.gen.XcodeProgram;
  * XcodeML出力のXMLファイルから一括でバインディングを行い、XcodeProgramクラスを生成する。
  * 生成XcodeProgramクラスから、コード行を作成し、データベースへ登録する。
  *
- * @author riken
+ * @author RIKEN
  */
 public abstract class XcodeMLParserCls implements IAnalyseParser {
 
@@ -57,6 +57,7 @@ public abstract class XcodeMLParserCls implements IAnalyseParser {
     /** キャンセルフラグ */
     boolean m_cancel = false;
     /** インクルードファイルがない場合の対応 true:確認する/false:無視する */
+    @SuppressWarnings("unused")
     private boolean m_confirm_include = true;
 
     /** パース対象のXMLファイル */
@@ -220,6 +221,7 @@ public abstract class XcodeMLParserCls implements IAnalyseParser {
      *            出力Fortranクラス
      * @return true:currentUnitはProgramUnitである。
      */
+    @SuppressWarnings("unused")
     private boolean isCurrentProgramUnit(Fortran ft) {
         ProgramUnit unit = ft.get_current_unit();
         if (unit instanceof ProgramUnit) {

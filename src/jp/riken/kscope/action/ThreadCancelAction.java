@@ -23,7 +23,7 @@ import jp.riken.kscope.service.FutureService;
 
 /**
  * 実行中スレッドキャンセルアクション
- * @author riken
+ * @author RIKEN
  */
 public class ThreadCancelAction extends ActionBase {
 

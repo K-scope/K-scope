@@ -21,7 +21,7 @@ import java.util.ArrayList;
 /**
  * コールグラフ情報を保持する
  *
- * @author riken
+ * @author RIKEN
  */
 public class CallGraphInfo {
     private float totalSumSampNum;

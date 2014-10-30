@@ -67,7 +67,7 @@ import jp.riken.kscope.utils.SwingUtils;
 
 /**
  * トレース結果パネルクラス
- * @author riken
+ * @author RIKEN
  *
  */
 public class TraceResultPanel extends AnalisysPanelBase implements Observer, IAnalisysComponent, ActionListener, MouseListener, TreeSelectionListener {

@@ -27,7 +27,7 @@ import jp.riken.kscope.properties.ProfilerProperties;
 /**
  * 基本プロファイラ(DProf)データクラス.
  * Dprofのプロファイラデータ
- * @author riken
+ * @author RIKEN
  */
 public class ProfilerDprofData extends ProfilerBaseData implements ISourceBargraph {
 

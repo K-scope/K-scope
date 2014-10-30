@@ -34,7 +34,7 @@ import jp.riken.kscope.properties.OperandProperties;
 
 /**
  * 演算数カウントユーティリティクラス
- * @author riken
+ * @author RIKEN
  */
 public class OperandCounterUtils {
 
@@ -353,7 +353,7 @@ public class OperandCounterUtils {
 
     /**
      * 演算カウント結果クラス
-     * @author riken
+     * @author RIKEN
      */
     public class OperandCountResult {
     	/** 演算カウント:加算 */

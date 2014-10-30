@@ -45,7 +45,7 @@ import jp.riken.kscope.utils.StringUtils;
 /**
  * 変数特性一覧の作成を行うサービスクラス
  *
- * @author riken
+ * @author RIKEN
  */
 public class AnalysisVariableService extends AnalysisBaseService {
 
@@ -170,6 +170,7 @@ public class AnalysisVariableService extends AnalysisBaseService {
      *            変数宣言の配列
      * @return ソートされた変数宣言のセット。無ければ空のセットを返す。
      */
+    @SuppressWarnings("unused")
     private Set<VariableDefinition> sort(VariableDefinition[] list) {
         if (list == null) {
             return new LinkedHashSet<VariableDefinition>();

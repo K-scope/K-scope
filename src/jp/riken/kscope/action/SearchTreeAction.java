@@ -30,7 +30,7 @@ import jp.riken.kscope.Message;
 import jp.riken.kscope.common.ANALYSIS_PANEL;
 import jp.riken.kscope.common.Constant;
 import jp.riken.kscope.common.EXPLORE_PANEL;
-import jp.riken.kscope.data.ErrorInfo;
+//import jp.riken.kscope.data.ErrorInfo;
 import jp.riken.kscope.dialog.SearchTreeDialog;
 import jp.riken.kscope.model.ErrorInfoModel;
 import jp.riken.kscope.service.AnalysisSearchService;
@@ -41,7 +41,7 @@ import jp.riken.kscope.utils.SwingUtils;
 
 /**
  * ツリー検索アクション
- * @author riken
+ * @author RIKEN
  */
 public class SearchTreeAction extends ActionBase {
 	/** 検索サービス */

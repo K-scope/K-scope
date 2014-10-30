@@ -24,9 +24,9 @@ import jp.riken.kscope.common.ACCESSMEMORY_TYPE;
 
 /**
  * 要求Byte/FLOPデータクラス
- * @author riken
+ * @author RIKEN
  */
-public class Memoryband {
+public class RequiredBF {
 
     /** アクセス先タイプ */
     private ACCESSMEMORY_TYPE type;
@@ -35,13 +35,13 @@ public class Memoryband {
     /** アクセス先背景色 */
     private Color backColor;
     /** スループット:ストアあり */
-    private float throughput_store;
+    private float mem_throughput_store;
     /** スループット:ストアなし */
-    private float throughput_nonestore;
+    private float mem_throughput_nostore;
     /** 係数 */
     private float coef;
     /** 要求B/F算出 */
-    private boolean required;
+    private boolean requiredbf;
     /** 律速 */
     private boolean limiting;
     /** 有効/無効フラグ */
@@ -51,7 +51,7 @@ public class Memoryband {
      * コンストラクタ
      * @param type		アクセス先タイプ
      */
-    public Memoryband(ACCESSMEMORY_TYPE type) {
+    public RequiredBF(ACCESSMEMORY_TYPE type) {
         this.setType(type);
     }
 
@@ -72,35 +72,35 @@ public class Memoryband {
     }
 
     /**
-     * スループット:ストアありを取得する.
-     * @return		スループット:ストアあり
+     * メモリスループット:ストアありを取得する.
+     * @return		メモリスループット:ストアあり
      */
-	public float getThroughputStore() {
-		return throughput_store;
+	public float getMemThroughputStore() {
+		return mem_throughput_store;
 	}
 
 	/**
-	 * スループット:ストアありを設定する
-	 * @param throughput_store	スループット:ストアあり
+	 * メモリスループット:ストアありを設定する
+	 * @param mem_throughput_store	メモリスループット:ストアあり
 	 */
-	public void setThroughputStore(float throughput_store) {
-		this.throughput_store = throughput_store;
+	public void setMemThroughputStore(float mem_throughput_store) {
+		this.mem_throughput_store = mem_throughput_store;
 	}
 
 	/**
-	 * スループット:ストアなしを取得する.
-	 * @return		スループット:ストアなし
+	 * メモリスループット:ストアなしを取得する.
+	 * @return		メモリスループット:ストアなし
 	 */
-	public float getThroughputNonestore() {
-		return throughput_nonestore;
+	public float getMemThroughputNostore() {
+		return mem_throughput_nostore;
 	}
 
 	/**
-	 * スループット:ストアなしを設定する.
-	 * @param throughput_nonestore		スループット:ストアなし
+	 * メモリスループット:ストアなしを設定する.
+	 * @param mem_throughput_nostore		メモリスループット:ストアなし
 	 */
-	public void setThroughputNonestore(float throughput_nonestore) {
-		this.throughput_nonestore = throughput_nonestore;
+	public void setMemThroughputNostore(float mem_throughput_nostore) {
+		this.mem_throughput_nostore = mem_throughput_nostore;
 	}
 
 	/**
@@ -123,16 +123,16 @@ public class Memoryband {
 	 * 要求B/F算出フラグを取得する.
 	 * @return	要求B/F算出フラグ
 	 */
-	public boolean isRequired() {
-		return required;
+	public boolean isRequiredBF() {
+		return requiredbf;
 	}
 
 	/**
 	 * 要求B/F算出フラグを設定する.
-	 * @param required	要求B/F算出フラグ
+	 * @param bf	要求B/F算出フラグ
 	 */
-	public void setRequired(boolean required) {
-		this.required = required;
+	public void setRequiredBF(boolean bf) {
+		this.requiredbf = bf;
 	}
 
 	/**

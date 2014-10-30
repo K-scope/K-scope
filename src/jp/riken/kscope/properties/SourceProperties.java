@@ -32,7 +32,7 @@ import jp.riken.kscope.utils.XmlUtils;
 /**
  * ソースコードの表示設定クラス
  *
- * @author riken
+ * @author RIKEN
  */
 public class SourceProperties extends PropertiesBase {
 

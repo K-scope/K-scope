@@ -36,7 +36,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.BorderFactory;
+
+//import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.DefaultListCellRenderer;
@@ -76,7 +77,7 @@ import jp.riken.kscope.utils.SwingUtils;
 
 /**
  * プロジェクトの新規作成ダイアログクラス
- * @author riken
+ * @author RIKEN
  *
  */
 public class FileProjectNewDialog extends javax.swing.JDialog implements ActionListener {
@@ -85,7 +86,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
     private static final long serialVersionUID = 1L;
 
     /** 中間コード・フォルダ・ファイルリスト */
-    private JList listProjectXml;
+    private JList<String> listProjectXml;
     /** プロジェクトタイトル */
     private JTextField txtProjectTitle;
     /** プロジェクトフォルダ */
@@ -124,10 +125,11 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
     private JButton addprerocessfile_button;
     /** Panel holds file_filter and process_files fields */
     private JPanel sshc_settings_panel;
-    /** プロジェクトプロパティ*/
-    private ProjectProperties pproperties;
     /** SSH connectプロパティ */
     private SSHconnectProperties sproperties;
+
+    /** プロジェクトプロパティ*/
+    private ProjectProperties pproperties;
     
     /** Parent action */
     private AppController controller;
@@ -335,7 +337,9 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
                 ssh_settings_button = new JButton(Message.getString("fileprojectnewdialog.kindpanel.SSHsettings"));
                 // SSHconnectの使用切り替え
                 checkUseSSHconnect = new JCheckBox(Message.getString("fileprojectnewdialog.kindpanel.checkbox.useSSHconnect")) {
-                    @Override
+					private static final long serialVersionUID = -1195485757658963243L;
+
+					@Override
                     protected void fireStateChanged() {
                         if (haveSSHconnect(sproperties)) {
                             ssh_settings_button.setEnabled(this.isSelected());
@@ -353,7 +357,9 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
 
             //ビルドコマンドを用いて中間コード生成ラジオボタン(フルモードII)
             radioGenXML = new JRadioButton(Message.getString("fileprojectnewdialog.kindpanel.radiobutton.genxml")) {
-                @Override
+				private static final long serialVersionUID = 8187608139294097396L;
+
+				@Override
                 protected void fireStateChanged() {
                     if (this.isSelected()) {
                         pproperties.setHiddenPropertyValue(ProjectProperties.GENERATE_XML, "true");
@@ -378,7 +384,9 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
             
             //フルモードのラジオボタン
             radioFullMode = new JRadioButton(Message.getString("fileprojectnewdialog.kindpanel.radiobutton.fullmode"), true) {
-                @Override
+				private static final long serialVersionUID = 346406280524706387L;
+
+				@Override
                 protected void fireStateChanged() {
                     if (this.isSelected()) {
                         pproperties.setHiddenPropertyValue(ProjectProperties.FULL_PROJECT, "true");
@@ -613,7 +621,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
             layoutXml.columnWidths = new int[]{400, 7};
             panelXml.setLayout(layoutXml);
             {
-                listProjectXml = new JList();
+                listProjectXml = new JList<String>();
                 JScrollPane scrollList = new JScrollPane();
                 scrollList.getViewport().setView(listProjectXml);
                 panelXml.add(scrollList, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
@@ -621,7 +629,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
                 // 単一選択モード
                 listProjectXml.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
                 // リストモデル
-                DefaultListModel model = new DefaultListModel();
+                DefaultListModel<String> model = new DefaultListModel<String>();
                 listProjectXml.setModel(model);
                 // リストにアイコン表示
                 listProjectXml.setCellRenderer(new IconListRenderer());
@@ -675,7 +683,9 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
             layout.columnWidths = new int[]{7, 7};
             panelAdvanced.setLayout(layout);
             btnAdvancedXml = new JToggleButton("Advanced >>", false) {
-                @Override
+				private static final long serialVersionUID = 8408253832919667943L;
+
+				@Override
                 protected void fireStateChanged() {
                     checkbox_StructureAnalysis.setVisible(this.isSelected());
                     cbxSaveProject.setVisible(this.isSelected());
@@ -864,9 +874,9 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
             panelContent.add(lblFinalizePanelCode,
                     new GridBagConstraints(1, row, 1, 1, 0.0, 0.0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 0, 7), 0, 0));
             String xml = null;
-            DefaultListModel model = (DefaultListModel) this.listProjectXml.getModel();
+            DefaultListModel<String> model = (DefaultListModel<String>) this.listProjectXml.getModel();
             for (int i = 0; i < model.getSize(); i++) {
-                String pathname = (String) model.getElementAt(i);
+                String pathname = model.getElementAt(i);
                 if (xml == null) {
                     xml = new String();
                 } else {
@@ -913,7 +923,9 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
         final int LABEL_WIDTH = 72;
 
         this.panelStatusContent = new JPanel() {
-            @Override
+			private static final long serialVersionUID = -1481838304987157059L;
+
+			@Override
             public void paintComponent(Graphics g) {
 
                 super.paintComponent(g);
@@ -1341,7 +1353,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
             if (!StringUtils.isNullOrEmpty(prjF)) {
                 String prjFNew = selected[0].getAbsolutePath();
                 if (!prjF.equals(prjFNew)) {
-                    DefaultListModel model = (DefaultListModel) this.listProjectXml.getModel();
+                    DefaultListModel<String> model = (DefaultListModel<String>) this.listProjectXml.getModel();
                     String mk = null;
                     if (isGenerateIntermediateCode()) {
                         mk = this.txtMakeCommand.getText();
@@ -1475,7 +1487,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
             if (index < 0) {
                 return;
             }
-            DefaultListModel model = (DefaultListModel) this.listProjectXml.getModel();
+            DefaultListModel<String> model = (DefaultListModel<String>) this.listProjectXml.getModel();
             model.remove(index);
         }
         // ビルドコマンド参照ボタン
@@ -1567,7 +1579,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
         else if (event.getSource() == this.radioFullMode) {
             if (this.radioFullMode.isSelected()) {
                 // すでにフォートランが設定されている場合はクリア
-                DefaultListModel model = (DefaultListModel) this.listProjectXml.getModel();
+                DefaultListModel<String> model = (DefaultListModel<String>) this.listProjectXml.getModel();
                 if (model.getSize() > 0) {
                     int res = JOptionPane.showConfirmDialog(this,
                             Message.getString("fileprojectnewdialog.confirmdialog.filekindchange.message"), //ファイル種別を変更するとファイルリストがクリアされます。ファイル種別を変更しますか？
@@ -1589,7 +1601,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
         else if (event.getSource() == this.radioSimpleMode) {
             if (this.radioSimpleMode.isSelected()) {
                 // すでに中間コードが設定されている場合はクリア
-                DefaultListModel model = (DefaultListModel) this.listProjectXml.getModel();
+                DefaultListModel<String> model = (DefaultListModel<String>) this.listProjectXml.getModel();
                 if (model.getSize() > 0) {
                     int res = JOptionPane.showConfirmDialog(this,
                             Message.getString("fileprojectnewdialog.confirmdialog.filekindchange.message"), //ファイル種別を変更するとファイルリストがクリアされます。ファイル種別を変更しますか？
@@ -1627,9 +1639,9 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
      * @param path 重複チェックプロジェクトファイル
      * @return true=重複ファイル
      */
-    private boolean containsInProjectList(DefaultListModel model, String path) {
+    private boolean containsInProjectList(DefaultListModel<String> model, String path) {
         for (int i = 0; i < model.getSize(); i++) {
-            String modelPath = (String) model.getElementAt(i);
+            String modelPath = model.getElementAt(i);
             if (modelPath.equals(path)) {
                 return true;
             }
@@ -1658,11 +1670,11 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
         List<File> selectedFiles = java.util.Arrays.asList(file);
         selectedFiles = new ArrayList<File>(selectedFiles);
         // プロジェクトXMLリストの作成
-        DefaultListModel model = (DefaultListModel) this.listProjectXml.getModel();
+        DefaultListModel<String> model = (DefaultListModel<String>) this.listProjectXml.getModel();
         for (int i = 0; i < model.getSize(); i++) {
             File path = null;
             try {
-                String pathname = (String) model.getElementAt(i);
+                String pathname = model.getElementAt(i);
                 path = new File(pathname);
                 if (!path.isAbsolute()) {
                     path = new File(projectPath.getCanonicalPath() + File.separator + pathname);
@@ -1785,7 +1797,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
     /**
      * 中間コードフォルダ・ファイルリストにアイコン表示クラス
      *
-     * @author riken
+     * @author RIKEN
      *
      */
     @SuppressWarnings("serial")
@@ -1793,7 +1805,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
 
         @Override
         public Component getListCellRendererComponent(
-                JList list, Object value,
+                JList<?> list, Object value,
                 int index, boolean isSelected,
                 boolean cellHasFocus) {
 
@@ -1818,9 +1830,6 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
             } 
             else {
                 iconname = "file.gif";
-            }
-            if (iconname == null) {
-                return label;
             }
 
             Icon icon = ResourceUtils.getIcon(iconname);
@@ -1855,7 +1864,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
      */
     public List<File> getProjectXmlList() {
         // change from ListModel<?> for JDK1.6 by @hira at 2013/05/30
-        ListModel model = this.listProjectXml.getModel();
+        ListModel<String> model = this.listProjectXml.getModel();
         if (model.getSize() <= 0) {
             return null;
         }
@@ -1869,7 +1878,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
         for (int i = 0; i < model.getSize(); i++) {
             File path = null;
             try {
-                String pathname = (String) model.getElementAt(i);
+                String pathname = model.getElementAt(i);
                 path = new File(pathname);
                 if (!path.isAbsolute()) {
                     path = new File(projectPath.getCanonicalPath() + File.separator + pathname);
@@ -1947,23 +1956,6 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
     public void setProjectTitle(String title) {
         this.txtProjectTitle.setText(title);
     }
-
-    /**
-     * Makefileパスをセットする
-     *
-     * @param makefile	Makefileパス
-     */
-    /*public void setMakefilePath(String makefile) {
-     this.txtMakefile.setText(makefile);
-     }*/
-    /**
-     * makefileパスを取得する
-     *
-     * @return makefile
-     */
-    /*public String getMakefilePath() {
-     return this.txtMakefile.getText();
-     }*/
     
     /**
      * ビルドコマンド取得

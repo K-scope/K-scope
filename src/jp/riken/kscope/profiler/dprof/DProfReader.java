@@ -26,7 +26,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.swing.JOptionPane;
+//import javax.swing.JOptionPane;
 
 import jp.riken.kscope.Message;
 import jp.riken.kscope.data.CodeLine;
@@ -42,7 +42,7 @@ import jp.riken.kscope.profiler.utils.ProfilerReaderUtil;
 /**
  * DProfileファイルを読み込み、情報を保持する
  *
- * @author riken
+ * @author RIKEN
  *
  */
 public class DProfReader extends BaseReader implements IProfilerReader {

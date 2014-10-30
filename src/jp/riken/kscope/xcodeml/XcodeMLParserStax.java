@@ -55,7 +55,7 @@ import jp.riken.kscope.xcodeml.xml.gen.XcodeProgram;
  * XcodeML出力のXMLファイルから一括でバインディングを行い、XcodeProgramクラスを生成する。
  * 生成XcodeProgramクラスから、コード行を作成し、データベースへ登録する。
  *
- * @author riken
+ * @author RIKEN
  */
 public class XcodeMLParserStax extends XcodeMLParserCls {
 

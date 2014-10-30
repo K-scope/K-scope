@@ -24,7 +24,7 @@ import java.util.regex.Matcher;
 
 /**
  * 拡張子設定データクラス
- * @author riken
+ * @author RIKEN
  */
 public class Program {
 

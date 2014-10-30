@@ -36,7 +36,7 @@ import jp.riken.kscope.utils.TextFileReader;
 
 /**
  * ファイル管理を行うサービスクラス
- * @author riken
+ * @author RIKEN
  */
 public class FileService extends BaseService {
 

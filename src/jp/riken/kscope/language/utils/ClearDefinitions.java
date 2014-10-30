@@ -29,7 +29,7 @@ import jp.riken.kscope.language.generic.*;
 /**
  * データベースリセットクラス.
  * サブルーチン、関数、変数の定義参照をクリアする.
- * @author riken
+ * @author RIKEN
  */
 public class ClearDefinitions implements ILanguageEntry {
 	/** 探索履歴リスト */

@@ -19,7 +19,7 @@ package jp.riken.kscope.data;
 
 /**
  * 検索条件クラス
- * @author riken
+ * @author RIKEN
  */
 public class SearchOption {
 

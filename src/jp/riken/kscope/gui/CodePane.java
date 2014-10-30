@@ -51,7 +51,7 @@ import jp.riken.kscope.utils.SwingUtils;
 
 /**
  * ソースコード表示用テキストパイン
- * @author riken
+ * @author RIKEN
  */
 public class CodePane extends JTextPane implements ITabComponent, FocusListener {
 
@@ -73,7 +73,7 @@ public class CodePane extends JTextPane implements ITabComponent, FocusListener 
 
     /**
      * 複数行範囲の背景色の情報クラス
-     * @author riken
+     * @author RIKEN
      */
     public class LinesBackground {
         /** 開始行番号(1〜) */
@@ -169,7 +169,7 @@ public class CodePane extends JTextPane implements ITabComponent, FocusListener 
 
     /**
      * 行折り返し段落のビュークラス
-     * @author riken
+     * @author RIKEN
      */
     private class WordWrapParagraphView extends ParagraphView {
         /**
@@ -226,7 +226,7 @@ public class CodePane extends JTextPane implements ITabComponent, FocusListener 
 
     /**
      * ビューの作成クラス
-     * @author riken
+     * @author RIKEN
      */
     private class WordWrapViewFactory implements ViewFactory {
         /**
@@ -256,7 +256,7 @@ public class CodePane extends JTextPane implements ITabComponent, FocusListener 
 
     /**
      * 現在行に背景色を設定する。
-     * @author riken
+     * @author RIKEN
      */
     public class LineHighlightTextPaneUI extends BasicTextPaneUI {
         /**
@@ -331,7 +331,7 @@ public class CodePane extends JTextPane implements ITabComponent, FocusListener 
 
     /**
      * 書式付きテキストスタイル
-     * @author riken
+     * @author RIKEN
      */
     private class WordWrapEditorKit extends StyledEditorKit {
         /** シリアル番号 */

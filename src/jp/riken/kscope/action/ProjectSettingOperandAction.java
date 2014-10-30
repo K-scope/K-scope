@@ -28,7 +28,7 @@ import jp.riken.kscope.service.AppController;
 
 /**
  * 演算カウント設定アクションクラス
- * @author riken
+ * @author RIKEN
  *
  */
 public class ProjectSettingOperandAction extends ActionBase {

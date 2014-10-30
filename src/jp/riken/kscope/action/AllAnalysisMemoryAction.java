@@ -15,6 +15,7 @@
  * limitations under the License.
  */
 package jp.riken.kscope.action;
+
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -27,12 +28,12 @@ import jp.riken.kscope.Application;
 import jp.riken.kscope.Message;
 import jp.riken.kscope.common.EXPLORE_PANEL;
 import jp.riken.kscope.component.FilterTreeNode;
-import jp.riken.kscope.data.RequiredByteFlopResult;
+import jp.riken.kscope.data.RequiredBFResult;
 import jp.riken.kscope.language.IBlock;
 import jp.riken.kscope.language.Procedure;
 import jp.riken.kscope.model.LanguageTreeModel;
-import jp.riken.kscope.model.RequiredByteFlopModel;
-import jp.riken.kscope.properties.MemorybandProperties;
+import jp.riken.kscope.model.RequiredBFModel;
+import jp.riken.kscope.properties.RequiredBFProperties;
 import jp.riken.kscope.properties.VariableMemoryProperties;
 import jp.riken.kscope.service.AnalysisMemoryService;
 import jp.riken.kscope.service.AppController;
@@ -45,7 +46,7 @@ public class AllAnalysisMemoryAction extends ActionBase {
 	/**解析サービス**/
 	private AnalysisMemoryService serviceMemory;
 	/**算出結果一覧**/
-	private List<RequiredByteFlopResult> list;
+	private List<RequiredBFResult> list;
     /** ツリーにおいて既に追加されたプログラム単位を格納する作業用セット */
     private HashSet<Procedure> checkList = new HashSet<Procedure>();
     /**
@@ -100,14 +101,14 @@ public class AllAnalysisMemoryAction extends ActionBase {
         //ルートノードの取得
         FilterTreeNode root = (FilterTreeNode)modelTree.getRoot();
         if(root != null){
-        	   	//プロパティの設定
+        	//プロパティの設定
         	setService();
         	this.checkList.clear();
-        	list = new ArrayList<RequiredByteFlopResult>();
+        	list = new ArrayList<RequiredBFResult>();
         	
         	searchProcedure(root);
         	if (list.size() <= 0) return;
-        	this.serviceMemory.setAnalysisPanel(list.toArray(new RequiredByteFlopResult[0]));
+        	this.serviceMemory.setAnalysisPanel(list.toArray(new RequiredBFResult[0]));
         }
 
      }
@@ -137,16 +138,16 @@ public class AllAnalysisMemoryAction extends ActionBase {
      */   
     private void setService(){
        // 要求Byte/FLOP設定プロパティ
-        MemorybandProperties properitiesMemory = this.controller.getPropertiesMemory();
+        RequiredBFProperties properitiesMemory = this.controller.getPropertiesMemory();
         // 変数アクセス先メモリ設定
         VariableMemoryProperties properitiesVariable = this.controller.getPropertiesVariable();
-        RequiredByteFlopModel modelRequired = this.controller.getRequiredByteFlopModel(); 
+        RequiredBFModel modelRequired = this.controller.getRequiredByteFlopModel(); 
         LanguageTreeModel modelLanguage = this.controller.getLanguageTreeModel();
         modelRequired.setModelLanguageTree(modelLanguage);
         this.serviceMemory = new AnalysisMemoryService();
-        this.serviceMemory.setProperitiesMemoryband(properitiesMemory);
+        this.serviceMemory.setProperitiesRequiredBF(properitiesMemory);
         this.serviceMemory.setPropertiesOperand(this.controller.getPropertiesOperand());
-        this.serviceMemory.setModelRequired(modelRequired);
+        this.serviceMemory.setModelRequiredBF(modelRequired);
         this.serviceMemory.setPropertiesVariableMemory(properitiesVariable);
         
     }
@@ -155,8 +156,8 @@ public class AllAnalysisMemoryAction extends ActionBase {
      * 計算実行
      * @param block		対象ブロック
      */      
-    private RequiredByteFlopResult cal(IBlock block){
-    	RequiredByteFlopResult result = this.serviceMemory.calculateRequiredByteFlop(block);
+    private RequiredBFResult cal(IBlock block){
+    	RequiredBFResult result = this.serviceMemory.calcRequiredBF(block);
     	return result;
     }
 }

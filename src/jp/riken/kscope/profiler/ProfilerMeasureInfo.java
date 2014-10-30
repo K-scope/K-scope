@@ -25,7 +25,7 @@ import jp.riken.kscope.language.IBlock;
 
 /**
  * 詳細プロファイラ測定区間情報クラス
- * @author riken
+ * @author RIKEN
  */
 public class ProfilerMeasureInfo {
 

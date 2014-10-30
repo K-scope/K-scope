@@ -28,7 +28,7 @@ import jp.riken.kscope.utils.XmlUtils;
 
 /**
  * アプリケーションプロパティクラス
- * @author riken
+ * @author RIKEN
  */
 public class ApplicationProperties extends PropertiesBase {
     /** シリアル番号 */

@@ -18,7 +18,7 @@ package jp.riken.kscope.profiler.eprof;
 
 /**
  * ハードウェアモニタ情報（ＰＡ情報）テーブル
- * @author riken
+ * @author RIKEN
  */
 public class HardwarePaTable {
     /** スレッド番号 */

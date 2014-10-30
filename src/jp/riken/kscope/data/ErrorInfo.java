@@ -18,7 +18,7 @@ package jp.riken.kscope.data;
 
 /**
  * エラー行情報クラス
- * @author riken
+ * @author RIKEN
  */
 public class ErrorInfo {
     /** エラー行情報 */

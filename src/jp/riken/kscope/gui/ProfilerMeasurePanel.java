@@ -57,7 +57,7 @@ import jp.riken.kscope.utils.SwingUtils;
 
 /**
  * 測定区間情報パネルクラス
- * @author riken
+ * @author RIKEN
  */
 public class ProfilerMeasurePanel extends AnalisysPanelBase implements Observer, IAnalisysComponent, ActionListener, MouseListener {
 

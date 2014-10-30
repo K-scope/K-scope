@@ -34,7 +34,7 @@ import jp.riken.kscope.service.AppController;
 
 /**
  * プロファイラテーブルパネルポップアップメニュークラス
- * @author riken
+ * @author RIKEN
  */
 public class ProfilerPopupMenu extends JPopupMenu implements PopupMenuListener {
 

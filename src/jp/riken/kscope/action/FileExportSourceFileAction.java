@@ -36,7 +36,7 @@ import jp.riken.kscope.utils.StringUtils;
 
 /**
  * ソースファイルエクスポートアクション.
- * @author riken
+ * @author RIKEN
  */
 public class FileExportSourceFileAction extends ActionBase {
 	/** プロジェクトフォルダ */

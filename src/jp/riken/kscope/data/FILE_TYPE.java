@@ -28,7 +28,7 @@ import jp.riken.kscope.properties.KscopeProperties;
 /**
  * ソースファイルの形式列挙クラス。 ソースファイルの形式のタイプリストである。 また、拡張子フィルタ、拡張子によるソースファイル形式の判断、取得を行う。
  *
- * @author riken
+ * @author RIKEN
  *
  */
 public enum FILE_TYPE {

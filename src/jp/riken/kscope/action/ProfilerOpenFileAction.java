@@ -33,7 +33,7 @@ import jp.riken.kscope.utils.SwingUtils;
 
 /**
  * プロファイラデータ読込アクションクラス
- * @author riken
+ * @author RIKEN
  *
  */
 public class ProfilerOpenFileAction extends ActionBase {

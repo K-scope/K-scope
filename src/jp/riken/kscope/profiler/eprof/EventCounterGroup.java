@@ -18,7 +18,7 @@ package jp.riken.kscope.profiler.eprof;
 
 /**
  * イベントカウンタグループ
- * @author riken
+ * @author RIKEN
  */
 public class EventCounterGroup {
 

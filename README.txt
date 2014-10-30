@@ -4,7 +4,7 @@ README
 K-scope is a source code analysis tool with graphical user interface that
 visualizes program structures of Fortran 90 and FORTRAN 77 source code.
 It is suitable for source code reading for engineers who work the performance
-improvement for an applicaiton.
+improvement for an application.
 
 K-scope is developed by RIKEN AICS Software Development Team, and is distributed
 as Open Source Software. The latest version and documents are available in the
@@ -55,7 +55,7 @@ K-scope requires specific folders for properties.
 If the program cannot find that folders, it may terminate abnormally.
 In the normally process, you may obtained start screen.
 
-Tips on usage) "-Duser.language" VM-option is language selecter, English(en) and Japanese(ja).
+Tips on usage) "-Duser.language" VM-option is language selector, English(en) and Japanese(ja).
 
 License
 =======

@@ -33,7 +33,7 @@ import javax.swing.border.Border;
 
 /**
  * コンポーネント付きボーダクラス
- * @author riken
+ * @author RIKEN
  */
 public class JComponentTitledBorder implements Border, MouseListener, MouseMotionListener, SwingConstants {
 	/** ボーダ上のコンポーネントのX方向オフセット */

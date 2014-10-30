@@ -30,7 +30,7 @@ import jp.riken.kscope.language.generic.*;
 
 /**
  * Fortranデータベース探索クラス
- * @author riken
+ * @author RIKEN
  */
 public class LanguageVisitor implements ILanguageEntry {
 

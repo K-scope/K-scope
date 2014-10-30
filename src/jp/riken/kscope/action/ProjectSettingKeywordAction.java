@@ -28,7 +28,7 @@ import jp.riken.kscope.service.AppController;
 
 /**
  * キーワード設定アクションクラス
- * @author riken
+ * @author RIKEN
  */
 public class ProjectSettingKeywordAction extends ActionBase {
 

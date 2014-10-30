@@ -37,7 +37,7 @@ import jp.riken.kscope.profiler.common.PaDiscrimInfo;
 /**
  * EProfileファイルを読み込み、情報を保持する
  *
- * @author riken
+ * @author RIKEN
  *
  */
 public class EProfReader extends BaseReader implements IProfilerReader {

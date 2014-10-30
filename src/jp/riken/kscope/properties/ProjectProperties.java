@@ -41,7 +41,7 @@ import org.w3c.dom.NodeList;
 
 /**
  * プロジェクトプロパティ設定クラス
- * @author riken
+ * @author RIKEN
  */
 public class ProjectProperties extends PropertiesBase {
 

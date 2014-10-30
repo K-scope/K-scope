@@ -20,7 +20,7 @@ import jp.riken.kscope.common.ANALYSIS_PANEL;
 
 /**
  * 分析情報パネル基底クラス
- * @author riken
+ * @author RIKEN
  */
 public abstract class AnalisysPanelBase extends javax.swing.JPanel implements ITabComponent {
 

@@ -32,7 +32,7 @@ import jp.riken.kscope.language.IBlock;
 /**
  * ツリーパネルコンポーネントインターフェイス.<br/>
  * ツリー構成を持つパネルコンポーネントのインターフェイス
- * @author riken
+ * @author RIKEN
  */
 public interface ITreeComponent {
 

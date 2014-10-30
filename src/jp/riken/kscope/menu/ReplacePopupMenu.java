@@ -22,9 +22,10 @@ import javax.swing.JPopupMenu;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 
-import jp.riken.kscope.action.AnalysisOperandAction;
-import jp.riken.kscope.action.AnalysisReferenceAction;
-import jp.riken.kscope.action.AnalysisScopeAction;
+
+//import jp.riken.kscope.action.AnalysisOperandAction;
+//import jp.riken.kscope.action.AnalysisReferenceAction;
+//import jp.riken.kscope.action.AnalysisScopeAction;
 import jp.riken.kscope.action.EditInformationEditAction;
 import jp.riken.kscope.action.FileExportExploreAction;
 import jp.riken.kscope.common.FRAME_VIEW;
@@ -32,7 +33,7 @@ import jp.riken.kscope.service.AppController;
 
 /**
  * 変数特性一覧ポップアップメニュークラス
- * @author riken
+ * @author RIKEN
  */
 public class ReplacePopupMenu extends JPopupMenu implements PopupMenuListener {
 
@@ -43,6 +44,7 @@ public class ReplacePopupMenu extends JPopupMenu implements PopupMenuListener {
     private AppController controller;
 
     /** エクスポートアクション */
+    @SuppressWarnings("unused")
     private FileExportExploreAction actionExportExplore;
     /** 分析:付加情報アクション */
     private EditInformationEditAction actionAnalysisInformation;

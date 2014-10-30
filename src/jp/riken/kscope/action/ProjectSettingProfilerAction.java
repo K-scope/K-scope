@@ -28,7 +28,7 @@ import jp.riken.kscope.service.AppController;
 
 /**
  * プロファイラ設定アクションクラス
- * @author riken
+ * @author RIKEN
  */
 public class ProjectSettingProfilerAction extends ActionBase {
 

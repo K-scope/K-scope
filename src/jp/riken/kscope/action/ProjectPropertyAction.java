@@ -26,7 +26,7 @@ import jp.riken.kscope.service.ProjectService;
 
 /**
  * プロジェクトプロパティアクション
- * @author riken
+ * @author RIKEN
  */
 public class ProjectPropertyAction extends ActionBase {
 

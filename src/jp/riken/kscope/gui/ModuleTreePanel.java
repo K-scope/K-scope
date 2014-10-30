@@ -56,7 +56,7 @@ import jp.riken.kscope.utils.ResourceUtils;
 
 /**
  * モジュールツリータブパネルクラス
- * @author riken
+ * @author RIKEN
  *
  */
 public class ModuleTreePanel extends javax.swing.JPanel implements ITabComponent, ITreeComponent, Observer {

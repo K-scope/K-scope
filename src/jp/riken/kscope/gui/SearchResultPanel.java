@@ -66,7 +66,7 @@ import jp.riken.kscope.utils.SwingUtils;
 
 /**
  * 検索結果パネルクラス
- * @author riken
+ * @author RIKEN
  *
  */
 public class SearchResultPanel extends AnalisysPanelBase implements Observer, IAnalisysComponent, ActionListener, MouseListener {

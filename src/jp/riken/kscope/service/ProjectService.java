@@ -38,7 +38,7 @@ import jp.riken.kscope.model.ProjectModel;
 import jp.riken.kscope.model.PropertiesTableModel;
 import jp.riken.kscope.properties.KscopeProperties;
 import jp.riken.kscope.properties.KeywordProperties;
-import jp.riken.kscope.properties.MemorybandProperties;
+import jp.riken.kscope.properties.RequiredBFProperties;
 import jp.riken.kscope.properties.OperandProperties;
 import jp.riken.kscope.properties.ProfilerProperties;
 import jp.riken.kscope.properties.ProgramProperties;
@@ -49,7 +49,7 @@ import jp.riken.kscope.properties.SourceProperties;
 
 /**
  * プロジェクトの管理を行うサービスクラス
- * @author riken
+ * @author RIKEN
  */
 public class ProjectService extends BaseService {
 
@@ -68,7 +68,7 @@ public class ProjectService extends BaseService {
     /** プロジェクト設定 */
     private ProjectProperties propertiesProject;
     /** 要求Byte/FLOP設定プロパティ */
-    private MemorybandProperties propertiesMemory;
+    private RequiredBFProperties propertiesMemory;
     
     private SSHconnectProperties propertiesSSH;
     
@@ -479,7 +479,7 @@ public class ProjectService extends BaseService {
      * 要求Byte/FLOP設定プロパティ設定を設定する
      * @param propertiesMemory		要求Byte/FLOP設定プロパティ
      */
-    public void setPropertiesMemory(MemorybandProperties propertiesMemory) {
+    public void setPropertiesMemory(RequiredBFProperties propertiesMemory) {
     	this.propertiesMemory = propertiesMemory;
     }
     

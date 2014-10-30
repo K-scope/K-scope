@@ -35,7 +35,7 @@ import jp.riken.kscope.language.ProgramUnit;
 /**
  * データベースユーティリティクラス.
  * データベースからブロックの検索、取得等を行う
- * @author riken
+ * @author RIKEN
  */
 public class LanguageUtils {
     /** フォートランデータベース */

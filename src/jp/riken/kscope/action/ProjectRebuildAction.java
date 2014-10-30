@@ -41,7 +41,7 @@ import jp.riken.kscope.utils.StringUtils;
 
 /**
  * 構造解析再実行アクション
- * @author riken
+ * @author RIKEN
  */
 public class ProjectRebuildAction extends ActionBase {
 	/** makeコマンド実行サービス */
@@ -49,6 +49,7 @@ public class ProjectRebuildAction extends ActionBase {
 	/** 構造解析サービス */
 	private LanguageService serviceLang;
 	/** エクスプローラビューの更新フラグ */
+    @SuppressWarnings("unused")
 	private boolean updateView;
 
     /**
@@ -147,8 +148,6 @@ public class ProjectRebuildAction extends ActionBase {
 		serviceMake.setFortranLanguage(this.controller.getFortranLanguage());
         // XMLファイル検索パス
 		serviceMake.setListSearchPath(this.controller.getProjectModel().getListSearchPath());
-        // 差替結果モデルを設定する。
-		serviceMake.setReplaceModel(this.controller.getReplaceTableModel());
         // プロジェクトモデル
 		serviceMake.setProjectModel(this.controller.getProjectModel());
 
@@ -193,13 +192,6 @@ public class ProjectRebuildAction extends ActionBase {
                             	serviceLang.setExplorerView();
                         	}
 
-                            // 差替結果タブをアクティブにする
-                        	if (serviceMake.getReplaceModel() != null && serviceMake.getReplaceModel().getReplacementResultCount() > 0) {
-	                            controller.setSelectedAnalysisPanel(ANALYSIS_PANEL.REPLACE);
-                        	}
-                        	else {
-                        		controller.getMainframe().getPanelAnalysisView().closeTab(ANALYSIS_PANEL.REPLACE);
-                        	}
                             return Constant.SUCCESS_RESULT;
                         } catch (Exception e) {
                             e.printStackTrace();

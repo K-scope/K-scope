@@ -39,7 +39,7 @@ import jp.riken.kscope.utils.StringUtils;
 
 /**
  * スタイル付テキストモデル
- * @author riken
+ * @author RIKEN
  *
  */
 public class BatchDocument extends DefaultStyledDocument {
@@ -189,6 +189,7 @@ public class BatchDocument extends DefaultStyledDocument {
      * @param endOffset			終了ドキュメントキャレット位置
      * @throws Exception
      */
+    @SuppressWarnings("unused")
     private void checkForTokens(KeywordProperties properties, int startOffset, int endOffset) throws Exception {
         int length = endOffset - startOffset + 1;
         String content = this.getText(startOffset, length);

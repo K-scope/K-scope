@@ -36,7 +36,7 @@ import jp.riken.kscope.utils.SwingUtils;
 
 /**
  * プロファイラ:情報基底モデル
- * @author riken
+ * @author RIKEN
  */
 public abstract class ProfilerTableBaseModel extends Observable {
 

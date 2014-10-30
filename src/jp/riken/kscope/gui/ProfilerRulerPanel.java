@@ -52,7 +52,7 @@ import jp.riken.kscope.utils.SwingUtils;
 
 /**
  * プロファイラルーラパネルクラス
- * @author riken
+ * @author RIKEN
  */
 public class ProfilerRulerPanel extends JPanel implements ChangeListener, MouseListener, Observer, MouseMotionListener, ComponentListener {
 
@@ -82,6 +82,7 @@ public class ProfilerRulerPanel extends JPanel implements ChangeListener, MouseL
 	/** ソースコード表示パネルボーダー色 = Color.GRAY*/
 	private final Color DEFAULT_BORDERCOLORPANEL = Color.GRAY;
 	/** ソースコード表示パネル背景色  new Color(220, 220, 220, 64) */
+    @SuppressWarnings("unused")
 	private final Color DEFAULT_BACKCOLORPANEL = new Color(220, 220, 220, 64);
 	/** プロファイラデータ:最大値 */
 	private float maxValue;

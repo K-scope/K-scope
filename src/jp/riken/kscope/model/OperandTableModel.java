@@ -36,7 +36,7 @@ import jp.riken.kscope.utils.SwingUtils;
 
 /**
  * 演算カウントモデル
- * @author riken
+ * @author RIKEN
  *
  */
 public class OperandTableModel extends Observable {
@@ -65,7 +65,7 @@ public class OperandTableModel extends Observable {
 
     /**
      * ブロック演算カウント情報クラス
-     * @author riken
+     * @author RIKEN
      */
     public class OperandBlock {
         /** ブロックノード */

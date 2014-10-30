@@ -34,9 +34,6 @@ import jp.riken.kscope.data.SourceFile;
 import jp.riken.kscope.exception.LanguageException;
 import jp.riken.kscope.information.InformationBlock;
 import jp.riken.kscope.information.InformationBlocks;
-import jp.riken.kscope.information.ReplacementResult;
-import jp.riken.kscope.information.ReplacementResult.RESULT_STATUS;
-import jp.riken.kscope.information.ReplacementResults;
 import jp.riken.kscope.information.TextInfo;
 import jp.riken.kscope.language.BlockType;
 import jp.riken.kscope.language.Fortran;
@@ -49,7 +46,6 @@ import jp.riken.kscope.language.utils.InformationEntry;
 import jp.riken.kscope.language.utils.LanguageVisitor;
 import jp.riken.kscope.language.utils.ValidateLanguage;
 import jp.riken.kscope.model.ProjectModel;
-import jp.riken.kscope.model.ReplacementResultTableModel;
 import jp.riken.kscope.properties.ProjectProperties;
 import jp.riken.kscope.properties.SSHconnectProperties;
 import jp.riken.kscope.utils.Logger;
@@ -60,7 +56,7 @@ import jp.riken.kscope.xcodeml.XcodeMLParserStax;
 /**
  * Makefileの実行クラス.
  * Makefileを実行し、データベースの再構築を行う.
- * @author riken
+ * @author RIKEN
  */
 public class ProjectMakeService  extends BaseService {
 	/** makeコマンド実行フォルダ */
@@ -69,8 +65,6 @@ public class ProjectMakeService  extends BaseService {
 	private OutputStream outStream;
 	/** プロジェクトモデル */
 	private ProjectModel projectModel;
-	/** 付加情報差替情報モデル */
-    private ReplacementResultTableModel replaceModel;
     /** フォートラン構文解析結果格納データベース:現在のデータベース. */
     private Fortran currentDb = null;
     /** XMLファイル検索パスリスト */
@@ -155,15 +149,6 @@ public class ProjectMakeService  extends BaseService {
             	String msg = Message.getString("validatelanguage.final.error", error);
             	this.addErrorInfo(msg);
             }
-
-			// 付加情報の差替を行う
-            this.replaceModel.clearReplacement();
-			ReplacementResults results = copyInformations(buildDb, this.currentDb);
-			if (results != null) {
-	            // 付加情報差替結果をパネルにセットする。
-	            this.replaceModel.setTitle(Message.getString("projectmakeservice.replaceinformation.title")); //差替結果一覧
-	            this.replaceModel.addReplacementResultBlock(results);
-			}
 
 			// 作成データベースを元のデータベースにコピーする
 			this.currentDb.copyShallow(buildDb);
@@ -633,319 +618,6 @@ public class ProjectMakeService  extends BaseService {
     	return xml;
     }
 
-
-	/**
-	 * 付加情報のコピーを行う.
-	 * @param destDb		コピー先データベース
-	 * @param srcDb		    コピー元データベース
-	 * @return				付加情報差替結果
-	 */
-    private ReplacementResults copyInformations(Fortran destDb, Fortran srcDb) {
-    	if (srcDb == null) return null;
-    	if (destDb == null) return null;
-
-        ReplacementResults listResults = new ReplacementResults();
-
-    	// すべての付加情報を取得する
-    	InformationBlocks destInfos = null;
-    	InformationBlocks srcInfos = null;
-    	{
-	        InformationEntry entry = new InformationEntry(destDb);
-	        LanguageVisitor visitor = new LanguageVisitor(entry);
-	        visitor.entry();
-	        destInfos = entry.getInformationBlocks();
-    	}
-    	{
-	        InformationEntry entry = new InformationEntry(srcDb);
-	        LanguageVisitor visitor = new LanguageVisitor(entry);
-	        visitor.entry();
-	        srcInfos = entry.getInformationBlocks();
-    	}
-    	// InformationBlocks destInfos = destDb.getInformationBlocksAll();
-    	// InformationBlocks srcInfos = srcDb.getInformationBlocksAll();
-    	if (srcInfos == null) return null;
-    	for (InformationBlock info : srcInfos) {
-    		if (info == null) continue;
-    		if (info.getInformation() == null) continue;
-    		if (info.getInformation().getContent() == null) continue;
-    		if (info.getInformation().getContent().isEmpty()) continue;
-
-    		// コピー済みであるかチェックする.
-    		if (containsInformationBlock(destInfos, info)) {
-				// 付加情報差替:成功
-    			ReplacementResult result = new ReplacementResult(ReplacementResult.RESULT_STATUS.UNSURE,
-										info.getInformation(),
-										info, info,
-										info, info);
-    			listResults.add(result);
-    			continue;
-    		}
-    		IInformation[] infoBlocks = {info.getStartBlock(), info.getEndBlock()};
-    		ReplacementResult[] results = new ReplacementResult[]{null, null};
-    		for (int i=0; i<2; i++) {
-    			if (i == 1 && infoBlocks[0] == infoBlocks[1]) {
-    				results[1] = results[0];
-    				break;
-    			}
-    			if (isBlock(infoBlocks[i])) {
-		            // DO, IF, SELECT文の付加情報のコピーを行う。
-	    			results[i] = copyInformationBlock(infoBlocks[i], destDb, srcDb);
-	    			if (results[i] == null) {
-	    				break;
-	    			}
-    			}
-    			else {
-		            // 代入文、その他の付加情報のコピーを行う。
-	    			results[i] = copyInformationStatement(infoBlocks[i], destDb, srcDb);
-	    			if (results[i] == null) {
-	    				break;
-	    			}
-    			}
-    		}
-
-    		if (results[0] == null || results[1] == null) {
-    			// 付加情報差替不可
-    			results[0] = new ReplacementResult(ReplacementResult.RESULT_STATUS.FAILURE,
-    											info.getInformation(),
-    											null, null,
-    											infoBlocks[0], infoBlocks[1]);
-    			listResults.add(results[0]);
-    			continue;
-    		}
-    		else if (infoBlocks[0] == infoBlocks[1]) {
-    			// 付加情報差替結果追加
-    			listResults.add(results[0]);
-    		}
-    		else {
-    			// 付加情報ブロックを生成して追加。
-    			IInformation newinfo = destDb.getInformation(results[0].getCurrentStartPosition(), results[1].getCurrentEndPosition());
-    			newinfo.setInformation(info.getInformation());
-
-    			// 範囲指定付加情報の場合
-    			ReplacementResult result = margeReplacementResults(newinfo, results[0], results[1]);
-    			// 付加情報差替結果追加
-    			listResults.add(result);
-    		}
-    	}
-    	if (listResults.size() <= 0) {
-    		return null;
-    	}
-        return listResults;
-    }
-
-	/**
-	 * 付加情報のコピーを行う：DO,IF,SELECT文.
-	 * @param targetInfo	コピー元付加情報
-	 * @param destDb		コピー先データベース
-	 * @param srcDb		    コピー元データベース
-	 * @return				付加情報差替結果
-	 */
-    private ReplacementResult copyInformationBlock(IInformation targetInfo, Fortran destDb, Fortran srcDb) {
-    	if (targetInfo == null) return null;
-    	if (destDb == null) return null;
-    	if (srcDb == null) return null;
-
-    	ReplacementResult result = null;
-
-        // 付加情報のコピーを行う。
-		// (1) 更新対象のモジュールであるか = [programDest, programSrc]
-		ProgramUnit[] programInfos = getInformationProgramUnits(targetInfo, destDb, srcDb);
-		if (programInfos == null) {
-			return null;
-		}
-
-		// (2) 同じモジュール、サブルーチンであれば付加情報をコピーする.
-		result = copyInformation(targetInfo, programInfos[0], programInfos[1]);
-    	if (result != null) return result;
-
-    	// 付加情報と同一ブロックを検索する
-    	IInformation[] destBlocks = programInfos[0].searchInformationBlocks(targetInfo);
-    	IInformation[] srcBlocks = programInfos[1].searchInformationBlocks(targetInfo);
-    	if (destBlocks != null && srcBlocks != null) {
-    		if (destBlocks.length == srcBlocks.length) {
-    			// (3) 同じ構造ブロックに付加情報をコピーする.
-    			result = copyInformationBlock(targetInfo, destBlocks, srcBlocks);
-	        	if (result != null) return result;
-    		}
-    	}
-
-    	// (4-2)同一構造であるかチェックする。
-    	if (programInfos[1].equalsLayout(programInfos[0])) {
-			// (4-2)同じ構造位置に付加情報をコピーする.
-    		result = copyLayoutInformationBlock(targetInfo, programInfos[0], programInfos[1]);
-        	if (result != null) return result;
-    	}
-
-		return null;
-    }
-
-
-	/**
-	 * 付加情報のコピーを行う：代入文,その他構文.
-	 * @param targetInfo	コピー元付加情報
-	 * @param destDb		コピー先データベース
-	 * @param srcDb		    コピー元データベース
-	 * @return				付加情報差替結果
-	 */
-    private ReplacementResult copyInformationStatement(IInformation targetInfo, Fortran destDb, Fortran srcDb) {
-    	if (targetInfo == null) return null;
-    	if (destDb == null) return null;
-    	if (srcDb == null) return null;
-
-    	ReplacementResult result = null;
-
-        // 付加情報のコピーを行う。
-		// (1) 更新対象のモジュールであるか = [programDest, programSrc]
-		ProgramUnit[] programInfos = getInformationProgramUnits(targetInfo, destDb, srcDb);
-		if (programInfos == null) {
-			return null;
-		}
-
-		// (2) 同じモジュール、サブルーチンであれば付加情報をコピーする.
-		result = copyInformation(targetInfo, programInfos[0], programInfos[1]);
-    	if (result != null) return result;
-
-    	// 付加情報と同一ブロックを検索する
-    	IInformation[] destBlocks = programInfos[0].searchInformationBlocks(targetInfo);
-    	IInformation[] srcBlocks = programInfos[1].searchInformationBlocks(targetInfo);
-    	if (destBlocks != null && srcBlocks != null) {
-    		if (destBlocks.length == srcBlocks.length) {
-    			// (3) 同じ構造ブロックに付加情報をコピーする.
-    			result = copyInformationStatement(targetInfo, destBlocks, srcBlocks);
-	        	if (result != null) return result;
-    		}
-    	}
-
-    	// (4-2)同一構造であるかチェックする。
-    	if (programInfos[1].equalsLayout(programInfos[0])) {
-			// (4-2)同じ構造位置に付加情報をコピーする.
-    		result = copyLayoutInformationStatement(targetInfo, destBlocks, srcBlocks);
-        	if (result != null) return result;
-    	}
-
-		return null;
-    }
-
-
-    /**
-     * 付加情報と同一ブロック構造位置に付加情報をコピーする：DO,IF,SELECT文.
-     * @param info		付加情報
-     * @param destBlocks		コピー先ブロックリスト
-     * @param srcBlocks			コピー元ブロックリスト
-     * @return			付加情報差替結果
-     */
-	private ReplacementResult copyInformationBlock(IInformation info,
-										IInformation[] destBlocks,
-										IInformation[] srcBlocks) {
-		if (info == null) return null;
-		if (destBlocks == null) return null;
-		if (srcBlocks == null) return null;
-		// ブロックリスト数が異なれば付加情報コピー不可とする.
-		if (destBlocks.length != srcBlocks.length) return null;
-
-		ReplacementResult result = null;
-		for (int i=0; i<srcBlocks.length; i++) {
-			IInformation srcblock = srcBlocks[i];
-			IInformation destblock = destBlocks[i];
-			// 付加情報ブロックであるか？
-			if (info != srcblock) continue;
-
-			boolean ismatch = false;
-			if (srcBlocks.length == 1) {
-				// (3) 同じ構造ブロックに付加情報をコピーする.
-				ismatch = true;
-			}
-			else {
-				// (4-1) ブロック構造をチェックする
-				ismatch = equalsParentLayout(destblock, srcblock);
-			}
-			if (ismatch) {
-				// 付加情報のコピー
-	        	TextInfo infoText = null;
-	        	if (info.getInformation() != null) {
-	        		infoText = new TextInfo(info.getInformation().getContent());
-	        	}
-				destblock.setInformation(infoText);
-				// 付加情報差替:不確定
-				result = new ReplacementResult(ReplacementResult.RESULT_STATUS.UNSURE,
-										info.getInformation(),
-										destblock, destblock,
-										srcblock, srcblock);
-			}
-			break;
-		}
-
-		return result;
-	}
-
-
-    /**
-     * 付加情報と同一ブロック構造位置に付加情報をコピーする：代入文,その他構文.
-     * @param info		付加情報
-     * @param destBlocks		コピー先ブロックリスト
-     * @param srcBlocks			コピー元ブロックリスト
-     * @return			付加情報差替結果
-     */
-	private ReplacementResult copyInformationStatement(IInformation info,
-										IInformation[] destBlocks,
-										IInformation[] srcBlocks) {
-		if (info == null) return null;
-		if (destBlocks == null) return null;
-		if (srcBlocks == null) return null;
-		if (destBlocks.length <= 0) return null;
-		if (srcBlocks.length <= 0) return null;
-		if (destBlocks.length != srcBlocks.length) return null;
-
-		ReplacementResult result = null;
-		IInformation srcblock = null;
-		IInformation destblock = null;
-		for (int i=0; i<srcBlocks.length; i++) {
-			// 付加情報ブロックであるか？
-			if (info == srcBlocks[i]) {
-				srcblock = srcBlocks[i];
-				destblock = destBlocks[i];
-				break;
-			}
-		}
-		if (srcblock == null || destblock == null) return null;
-		if (!(srcblock instanceof IBlock)) return null;
-		if (!(destblock instanceof IBlock)) return null;
-
-		if (((IBlock)srcblock).getMotherBlock() != null
-			&& ((IBlock)destblock).getMotherBlock() != null) {
-			// 親ブロックが同じであること.
-			String parentSrcText = ((IBlock)srcblock).getMotherBlock().toString();
-			String parentDestText = ((IBlock)destblock).getMotherBlock().toString();
-			if (!parentSrcText.equalsIgnoreCase(parentDestText)) {
-				return null;
-			}
-			// ブロック階層が同じであること.
-			if (!equalsParentLayout(destblock, srcblock)) {
-				return null;
-			}
-		}
-		else if (((IBlock)srcblock).getMotherBlock() != null
-				|| ((IBlock)destblock).getMotherBlock() != null) {
-			return null;
-		}
-		if (srcblock != null && destblock != null) {
-			// 付加情報のコピー
-        	TextInfo infoText = null;
-        	if (info.getInformation() != null) {
-        		infoText = new TextInfo(info.getInformation().getContent());
-        	}
-			destblock.setInformation(infoText);
-			// 付加情報差替:不確定
-			result = new ReplacementResult(ReplacementResult.RESULT_STATUS.UNSURE,
-									info.getInformation(),
-									destblock, destblock,
-									srcblock, srcblock);
-		}
-
-		return result;
-	}
-
-
 	/**
 	 * 付加情報のProgramUnitを取得する.
 	 * @param info		コピー付加情報
@@ -1005,201 +677,12 @@ public class ProjectMakeService  extends BaseService {
     }
 
 	/**
-	 * 付加情報のコピーを行う：ProgramUnit.
-	 * @param info			コピー付加情報
-	 * @param destUnit		コピー先モジュール
-	 * @param srcUnit		コピー元モジュール
-	 * @return				付加情報差替結果
-	 */
-    private ReplacementResult copyInformation(IInformation info, ProgramUnit destUnit, ProgramUnit srcUnit) {
-    	if (info == null) return null;
-    	if (destUnit == null) return null;
-    	if (srcUnit == null) return null;
-
-    	ReplacementResult result = null;
-    	if (info instanceof ProgramUnit) {
-    		// namespaceのチェックを行う
-    		String infoname = info.getNamespace();
-    		String destname = destUnit.getNamespace();
-    		String srcname = srcUnit.getNamespace();
-    		if (!infoname.equalsIgnoreCase(destname)) return null;
-    		if (!infoname.equalsIgnoreCase(srcname)) return null;
-            // 付加情報生成
-        	TextInfo infoText = null;
-        	if (info.getInformation() != null) {
-        		infoText = new TextInfo(info.getInformation().getContent());
-        	}
-        	destUnit.setInformation(infoText);
-            // 付加情報差替成功
-        	result = new ReplacementResult(ReplacementResult.RESULT_STATUS.SUCCESS,
-											infoText, destUnit, destUnit, info, info);
-    	}
-    	else if (destUnit instanceof Module && srcUnit instanceof Module) {
-    		result = copyInformationModule(info, (Module)destUnit, (Module)srcUnit);
-		}
-		else if (destUnit instanceof Procedure && srcUnit instanceof Procedure) {
-    		result = copyInformationProcedure(info, (Procedure)destUnit, (Procedure)srcUnit);
-		}
-
-		return result;
-    }
-
-
-	/**
-	 * 付加情報のコピーを行う：モジュール.
-	 * @param info		コピー付加情報
-	 * @param destModule		コピー先モジュール
-	 * @param srcModule		    コピー元モジュール
-	 * @return				付加情報差替結果
-	 */
-    private ReplacementResult copyInformationModule(IInformation info, Module destModule, Module srcModule) {
-    	if (info == null) return null;
-    	if (destModule == null) return null;
-    	if (srcModule == null) return null;
-
-        // ２つのProgramUnitが同じであるかチェックする.
-    	ReplacementResult element = null;
-        if (srcModule.equalsBlocks(destModule)) {
-        	IInformation target = destModule.findBlock(info);
-        	if (target == null) return null;
-            // 付加情報生成
-        	TextInfo infoText = null;
-        	if (info.getInformation() != null) {
-        		infoText = new TextInfo(info.getInformation().getContent());
-        	}
-        	target.setInformation(infoText);
-            // 付加情報差替成功
-            element = new ReplacementResult(ReplacementResult.RESULT_STATUS.SUCCESS,
-											infoText, target, target, info, info);
-        }
-        return element;
-    }
-
-
-	/**
-	 * 付加情報のコピーを行う：プロシージャ.
-	 * @param info		コピー付加情報
-	 * @param destProcedure		コピー先プロシージャ
-	 * @param srcProcedure		    コピー元プロシージャ
-	 * @return				付加情報差替結果
-	 */
-    private ReplacementResult copyInformationProcedure(IInformation info, Procedure destProcedure, Procedure srcProcedure) {
-    	if (info == null) return null;
-    	if (destProcedure == null) return null;
-    	if (srcProcedure == null) return null;
-
-        // ２つのProgramUnitが同じであるかチェックする.
-    	ReplacementResult element = null;
-        if (srcProcedure.equalsBlocks(destProcedure)) {
-        	IInformation target = destProcedure.findBlock(info);
-        	if (target == null) return null;
-            // 付加情報生成
-        	TextInfo infoText = null;
-        	if (info.getInformation() != null) {
-        		infoText = new TextInfo(info.getInformation().getContent());
-        	}
-            target.setInformation(infoText);
-            // 付加情報差替成功
-            element = new ReplacementResult(ReplacementResult.RESULT_STATUS.SUCCESS,
-											infoText, target, target, info, info);
-        }
-        return element;
-    }
-
-	/**
-	 * 同一構造位置に付加情報のコピーを行う：DO,IF,SELECT文.
-	 * @param info		付加情報
-	 * @param destUnit		コピー先ProgramUnit
-	 * @param srcUnit		    コピー元ProgramUnit
-	 * @return				付加情報差替結果
-	 */
-    private ReplacementResult copyLayoutInformationBlock(IInformation info, ProgramUnit destUnit, ProgramUnit srcUnit) {
-    	if (info == null) return null;
-    	if (destUnit == null) return null;
-    	if (srcUnit == null) return null;
-
-    	String layoutId = info.getLayoutID();
-    	IInformation destInfo = destUnit.findInformationLayoutID(layoutId);
-    	IInformation srcInfo = srcUnit.findInformationLayoutID(layoutId);
-    	if (srcInfo == null) return null;
-    	if (destInfo == null) return null;
-    	if (srcInfo != info) return null;
-
-        // 付加情報生成
-    	TextInfo infoText = null;
-    	if (info.getInformation() != null) {
-    		infoText = new TextInfo(info.getInformation().getContent());
-    	}
-        destInfo.setInformation(infoText);
-        // 付加情報差替成功
-        ReplacementResult result = new ReplacementResult(ReplacementResult.RESULT_STATUS.UNSURE,
-										infoText, destInfo, destInfo, srcInfo, srcInfo);
-
-		return result;
-    }
-
-
-	/**
-	 * 同一構造位置に付加情報のコピーを行う：代入文,その他構文.
-	 * @param targetinfo		付加情報
-     * @param destBlocks		コピー先ブロックリスト
-     * @param srcBlocks			コピー元ブロックリスト
-	 * @return				付加情報差替結果
-	 */
-    private ReplacementResult copyLayoutInformationStatement(
-    				IInformation targetinfo,
-					IInformation[] destBlocks,
-					IInformation[] srcBlocks) {
-    	if (targetinfo == null) return null;
-    	if (destBlocks == null) return null;
-    	if (srcBlocks == null) return null;
-
-    	String layoutId = targetinfo.getLayoutID();
-		List<IInformation> srcinfos = new ArrayList<IInformation>();
-		List<IInformation> destinfos = new ArrayList<IInformation>();
-    	for (IInformation info : destBlocks) {
-    		String id = info.getLayoutID();
-    		if (layoutId.equalsIgnoreCase(id)) {
-    			destinfos.add(info);
-    		}
-    	}
-    	for (IInformation info : srcBlocks) {
-    		String id = info.getLayoutID();
-    		if (layoutId.equalsIgnoreCase(id)) {
-    			srcinfos.add(info);
-    		}
-    	}
-    	if (srcinfos.size() != destinfos.size()) {
-    		return null;
-    	}
-    	IInformation destinfo = null;
-    	IInformation srcinfo = null;
-    	for (int i=0; i<srcinfos.size(); i++) {
-    		if (targetinfo == srcinfos.get(i)) {
-    			srcinfo = srcinfos.get(i);
-    			destinfo = destinfos.get(i);
-    			break;
-    		}
-    	}
-        // 付加情報生成
-    	TextInfo infoText = null;
-    	if (targetinfo.getInformation() != null) {
-    		infoText = new TextInfo(targetinfo.getInformation().getContent());
-    	}
-    	destinfo.setInformation(infoText);
-        // 付加情報差替成功
-        ReplacementResult result = new ReplacementResult(ReplacementResult.RESULT_STATUS.UNSURE,
-										infoText, destinfo, destinfo, srcinfo, srcinfo);
-
-		return result;
-    }
-
-    /**
      * ネームスペース（モジュール＋サブルーチン）のProgramUnitを取得する
      * @param destDb		検索対象データベース
      * @param namespace		検索ネームスペース
      * @return				ProgramUnit
      */
+    @SuppressWarnings("unused")
     private ProgramUnit getProgramUnitByNamespace(Fortran destDb, String namespace) {
     	if (destDb == null) return null;
     	Map<String, Module> modules = destDb.getModules();
@@ -1247,74 +730,6 @@ public class ProjectMakeService  extends BaseService {
 
 		return false;
 	}
-
-	/**
-	 * 付加情報差替情報モデルを取得する.
-	 * @return replaceModel		付加情報差替情報モデルを
-	 */
-	public ReplacementResultTableModel getReplaceModel() {
-		return this.replaceModel;
-	}
-
-	/**
-	 * 付加情報差替情報モデルをセットする
-	 * @param model    付加情報差替情報モデル
-	 */
-	public void setReplaceModel(ReplacementResultTableModel model) {
-		this.replaceModel = model;
-	}
-
-	/**
-	 * 付加情報差替結果のマージを行う.
-	 * @param info		付加情報
-	 * @param resultStart   開始付加情報差替結果
-	 * @param resultEnd     終了付加情報差替結果
-	 * @return		マージ付加情報差替結果
-	 */
-	private ReplacementResult margeReplacementResults(IInformation info,
-											ReplacementResult resultStart,
-											ReplacementResult resultEnd) {
-		RESULT_STATUS[] statusOrder = {RESULT_STATUS.FAILURE, RESULT_STATUS.UNSURE, RESULT_STATUS.SUCCESS};
-		int statusId = 2;
-		for (int i=0; i<statusOrder.length; i++) {
-			if (resultStart.getStatus() == statusOrder[i]) {
-				statusId = i;
-				break;
-			}
-		}
-		for (int i=0; i<statusOrder.length; i++) {
-			if (resultEnd.getStatus() == statusOrder[i]) {
-				if (statusId > i) {
-					statusId = i;
-				}
-				break;
-			}
-		}
-		RESULT_STATUS status = statusOrder[statusId];
-		if (status == RESULT_STATUS.SUCCESS) {
-			status = RESULT_STATUS.UNSURE;
-			// 終了ステータス:○の場合、同一サブルーチンかチェックする.
-			if (info instanceof InformationBlock) {
-				IInformation start = ((InformationBlock)info).getStartBlock();
-				IInformation end = ((InformationBlock)info).getEndBlock();
-				if (start != null && end != null
-					&& start.getNamespace() != null && end.getNamespace() != null) {
-					if (start.getNamespace().equalsIgnoreCase(end.getNamespace())) {
-						status = RESULT_STATUS.SUCCESS;
-					}
-				}
-			}
-		}
-		ReplacementResult result = new ReplacementResult(status,
-										info.getInformation(),
-										resultStart.getCurrentStartPosition(),
-										resultEnd.getCurrentEndPosition(),
-										resultStart.getOldStartPosition(),
-										resultEnd.getOldEndPosition());
-
-		return result;
-	}
-
 
 	/**
 	 * DO,IF,SELECT文であるかチェックする.
@@ -1379,6 +794,7 @@ public class ProjectMakeService  extends BaseService {
 	 * @param srcinfo		ブロック２
 	 * @return			true=同一ブロック構造
 	 */
+	@SuppressWarnings("unused")
 	private boolean equalsParentBlock(IInformation destinfo, IInformation srcinfo) {
 		if (destinfo == null) return false;
 		if (srcinfo == null) return false;

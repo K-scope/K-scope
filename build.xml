@@ -47,7 +47,7 @@
         <echo message="${ant.project.name}: ${jar.name}"/>
     	<jar destfile="${jar.name}" filesetmanifest="mergewithoutmain">
             <manifest>
-                <attribute name="Main-Class" value="jp.riken.kscope.Kscope"/>
+                <attribute name="Main-Class" value="jp.riken.kscope.kscope"/>
                 <attribute name="Class-Path" value="."/>
             </manifest>
             <fileset dir="${bin.dir}"/>
@@ -56,7 +56,7 @@
     </target>
 
     <target name="run">
-        <java classname="jp.riken.kscope.Kscope" failonerror="true" fork="yes">
+        <java classname="jp.riken.kscope.kscope" failonerror="true" fork="yes">
             <jvmarg line="-Duser.language=en"/>
             <classpath refid="kscope.classpath"/>
         </java>

@@ -67,7 +67,7 @@ import jp.riken.kscope.utils.SwingUtils;
 
 /**
  * プロファイラ設定ダイアログ
- * @author riken
+ * @author RIKEN
  */
 public class SettingProfilerDialog extends javax.swing.JDialog implements ActionListener, TreeSelectionListener {
     /** シリアル番号 */
@@ -581,6 +581,7 @@ public class SettingProfilerDialog extends javax.swing.JDialog implements Action
         /** プロファイラ設定 */
         private ProfilerProperties properties;
         /** パネルタイプ */
+        @SuppressWarnings("unused")
         private PANEL_TYPE type;
         /** コスト情報表示最大数 */
         private JTextField maxCount;
@@ -745,6 +746,7 @@ public class SettingProfilerDialog extends javax.swing.JDialog implements Action
         /** プロファイラ設定 */
         private ProfilerProperties properties;
         /** パネルタイプ */
+        @SuppressWarnings("unused")
         private PANEL_TYPE type;
         /** コストルーラ:最小色 */
         private JColorButton btnRulerMin;

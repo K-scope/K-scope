@@ -21,7 +21,7 @@ import java.util.List;
 
 /**
  * シンボル情報レコードクラス
- * @author riken
+ * @author RIKEN
  */
 public class SymbolRecord {
     /** シンボル情報：シンボル情報リスト(=スレッド数) */

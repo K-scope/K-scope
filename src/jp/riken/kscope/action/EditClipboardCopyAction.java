@@ -24,7 +24,7 @@ import jp.riken.kscope.service.AppController;
 
 /**
  * クリップボードコピーアクションクラス
- * @author riken
+ * @author RIKEN
  *
  */
 public class EditClipboardCopyAction extends ActionBase {

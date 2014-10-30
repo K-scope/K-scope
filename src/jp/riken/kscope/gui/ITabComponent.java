@@ -16,13 +16,12 @@
  */
 package jp.riken.kscope.gui;
 
-import jp.riken.kscope.common.ANALYSIS_PANEL;
-
+//import jp.riken.kscope.common.ANALYSIS_PANEL;
 
 /**
  * タブコンポーネントインターフェイス.<br/>
  * タブパイン、子要素のテキストパイン等すべてのタブを構成するコンポーネントのインターフェイス
- * @author riken
+ * @author RIKEN
  */
 public interface ITabComponent {
 

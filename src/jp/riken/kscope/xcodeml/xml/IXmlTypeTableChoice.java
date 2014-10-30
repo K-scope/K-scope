@@ -18,7 +18,7 @@ package jp.riken.kscope.xcodeml.xml;
 
 /**
  * データ型インターフェイスクラス
- * @author riken
+ * @author RIKEN
  */
 public interface IXmlTypeTableChoice {
 

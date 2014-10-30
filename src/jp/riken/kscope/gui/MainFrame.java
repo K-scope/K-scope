@@ -19,7 +19,6 @@ package jp.riken.kscope.gui;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Toolkit;
 
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
@@ -53,7 +52,7 @@ import jp.riken.kscope.service.AppController;
 
 /**
  * メインフレーム
- * @author riken
+ * @author RIKEN
  */
 public class MainFrame extends javax.swing.JFrame implements ITabComponent {
 
@@ -117,7 +116,6 @@ public class MainFrame extends javax.swing.JFrame implements ITabComponent {
         focusListener = new TabFocusListener();
 
         BorderLayout frameLayout = new BorderLayout();
-        Toolkit tk = getToolkit();
         Dimension screen_size = getToolkit().getScreenSize();
         this.setBounds(0, 0, screen_size.width, screen_size.height);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -208,8 +206,7 @@ public class MainFrame extends javax.swing.JFrame implements ITabComponent {
 
         // 変数特性一覧のコンテキストメニュー
         panelAnalysisView.getPanelVariable().setPopupMenu(new VariablePopupMenu(controller));
-        // 差替結果のコンテキストメニュー
-        panelAnalysisView.getPanelReplace().setPopupMenu(new ReplacePopupMenu(controller));
+
         // プロファイラコスト情報のコンテキストメニュー
         ProfilerPopupMenu profilerPopup = new ProfilerPopupMenu(controller);
         panelAnalysisView.setProfilerPopupMenu(profilerPopup);

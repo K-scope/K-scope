@@ -23,7 +23,7 @@ import jp.riken.kscope.data.SearchOption;
 
 /**
  * 検索フィルタツリーモデルクラス
- * @author riken
+ * @author RIKEN
  *
  */
 public class SearchTreeModel extends FilterTreeModel {

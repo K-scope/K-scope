@@ -52,7 +52,7 @@ import jp.riken.kscope.utils.SwingUtils;
 
 /**
  * プロファイラバーグラフ表示クラス
- * @author riken
+ * @author RIKEN
  */
 public class ProfilerLineInfo extends JPanel implements CaretListener, DocumentListener, PropertyChangeListener {
 
@@ -66,6 +66,7 @@ public class ProfilerLineInfo extends JPanel implements CaretListener, DocumentL
     /** 行番号の配置:右 */
     public final static float RIGHT = 1.0f;
     /** 行番号表示エリアのボーダ設定 */
+    @SuppressWarnings("unused")
     private final static Border OUTER = new MatteBorder(0, 0, 0, 2, Color.GRAY);
     private final static Border LEFT_BORDER = new MatteBorder(0, 2, 0, 0, Color.GRAY);
     /** 行番号表示エリア高さ */

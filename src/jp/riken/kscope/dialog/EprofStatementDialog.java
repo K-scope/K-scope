@@ -34,11 +34,11 @@ import javax.swing.JTextField;
 import jp.riken.kscope.Message;
 import jp.riken.kscope.common.Constant;
 import jp.riken.kscope.properties.ProfilerProperties;
-import jp.riken.kscope.utils.StringUtils;
+//import jp.riken.kscope.utils.StringUtils;
 
 /**
  * 詳細プロファイラ測定区間設定ダイアログクラス
- * @author riken
+ * @author RIKEN
  */
 public class EprofStatementDialog extends javax.swing.JDialog implements ActionListener {
 

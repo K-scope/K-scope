@@ -48,7 +48,7 @@ import jp.riken.kscope.utils.TextFileReader;
 
 /**
  * 分析:検索サービスクラス
- * @author riken
+ * @author RIKEN
  */
 public class AnalysisSearchService extends AnalysisBaseService {
 

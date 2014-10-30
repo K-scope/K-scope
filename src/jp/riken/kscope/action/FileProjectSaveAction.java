@@ -38,7 +38,7 @@ import jp.riken.kscope.service.ProjectService;
 
 /**
  * プロジェクトの保存アクション
- * @author riken
+ * @author RIKEN
  */
 public class FileProjectSaveAction extends ActionBase {
 

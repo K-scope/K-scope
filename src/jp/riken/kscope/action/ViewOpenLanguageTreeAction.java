@@ -30,7 +30,7 @@ import jp.riken.kscope.service.LanguageService;
 
 /**
  * 新規構造ツリーを開くアクションクラス
- * @author riken
+ * @author RIKEN
  */
 public class ViewOpenLanguageTreeAction extends ActionBase {
 

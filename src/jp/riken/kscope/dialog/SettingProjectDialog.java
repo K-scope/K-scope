@@ -60,7 +60,7 @@ import jp.riken.kscope.utils.SwingUtils;
 
 /**
  * プロジェクト設定ダイアログ
- * @author riken
+ * @author RIKEN
  */
 public class SettingProjectDialog extends javax.swing.JDialog implements ActionListener, ListSelectionListener  {
 
@@ -729,7 +729,7 @@ public class SettingProjectDialog extends javax.swing.JDialog implements ActionL
 
     /**
      * プロパティテーブル描画クラス
-     * @author riken
+     * @author RIKEN
      *
      */
     private class PropertiesTableRenderer extends DefaultTableCellRenderer {

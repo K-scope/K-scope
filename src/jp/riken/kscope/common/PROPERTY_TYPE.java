@@ -19,7 +19,7 @@ package jp.riken.kscope.common;
 
 /**
  * プロパティ値タイプ
- * @author riken
+ * @author RIKEN
  */
 public enum PROPERTY_TYPE {
     // プロパティ値タイプ 

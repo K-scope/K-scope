@@ -23,7 +23,7 @@ import java.awt.event.FocusListener;
 /**
  * フォーカスリスナ.<br/>
  * 現在フォーカスのあるコンポーネントを取得する。
- * @author riken
+ * @author RIKEN
  *
  */
 public class TabFocusListener implements FocusListener {

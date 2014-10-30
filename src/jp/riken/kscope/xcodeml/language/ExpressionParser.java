@@ -41,7 +41,7 @@ import jp.riken.kscope.xcodeml.xml.gen.*;
 
 /**
  * Expressionパーサクラス
- * @author riken
+ * @author RIKEN
  */
 public class ExpressionParser {
 
@@ -98,6 +98,7 @@ public class ExpressionParser {
     /** 右小括弧 ) */
     private final String EXPR_PARENRIGHT = ")";
     /** FmemberRef % : 構造体メンバ */
+    @SuppressWarnings("unused")
     private final String EXPR_TYPEMEMBER = "%";
     /** 左大括弧 [ */
     private final String EXPR_COARRAYLEFT = "[";
@@ -337,7 +338,7 @@ public class ExpressionParser {
             if (typeChoice != null) {
                 FfunctionType functionTypeElem = (FfunctionType) typeChoice;
                 String returnTypeName = functionTypeElem.getReturnType();
-                EnumType typeId = EnumType.getTypeIdFromXcodemlTypeName(returnTypeName);
+                //EnumType typeId = EnumType.getTypeIdFromXcodemlTypeName(returnTypeName);
                 is_intrinsic = XmlNodeUtil.isBoolean(functionTypeElem.isIsIntrinsic());
                 is_external = XmlNodeUtil.isBoolean(functionTypeElem.isIsExternal());
                 is_recursive = XmlNodeUtil.isBoolean(functionTypeElem.isIsRecursive());

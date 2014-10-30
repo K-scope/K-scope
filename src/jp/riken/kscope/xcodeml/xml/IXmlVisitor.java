@@ -23,7 +23,7 @@ import jp.riken.kscope.xcodeml.xml.gen.*;
 
 /**
  * XcodeMLノード探索インターフェイス
- * @author riken
+ * @author RIKEN
  */
 public interface IXmlVisitor {
     /**

@@ -23,7 +23,7 @@ import javax.script.ScriptEngineManager;
 
 /**
  * AppleScriptの実行クラス
- * @author riken
+ * @author RIKEN
  */
 public class AppleScriptEngine {
 

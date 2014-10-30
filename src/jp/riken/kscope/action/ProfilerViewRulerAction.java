@@ -23,7 +23,7 @@ import jp.riken.kscope.service.AppController;
 
 /**
  * プロファイラのソースコストルーラ表示切替アクションクラス
- * @author riken
+ * @author RIKEN
  */
 public class ProfilerViewRulerAction extends ActionBase {
 

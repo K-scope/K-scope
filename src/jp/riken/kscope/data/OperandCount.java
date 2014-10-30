@@ -19,7 +19,7 @@ package jp.riken.kscope.data;
 
 /**
  * 演算カウント
- * @author riken
+ * @author RIKEN
  *
  */
 public class OperandCount {

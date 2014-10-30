@@ -32,7 +32,7 @@ import org.xml.sax.SAXException;
 
 /**
  * K-scopeプロパティクラス アプリケーションプロパティを"properties.xml"から読み込む。 アプリケーションプロパティ値の取得を行う。
- * @author riken
+ * @author RIKEN
  */
 public class KscopeProperties {
 
@@ -49,16 +49,13 @@ public class KscopeProperties {
      * version : 0.2.3        2013/05/31 release
      * version : 0.2.4        2013/10/30 release
      * version : 0.2.5        2013/12/27 release
+     * version : 0.2.6        2014/11/10 release
      */
-    public static final String APPLICATION_VERSION = "0.2.5";
-    /** アプリケーションビルドID */
-    //public static final String APPLICATION_BUILDID = "20120315-0900";
+    public static final String APPLICATION_VERSION = "0.2.6";
 
     /** データベースファイル */
     public static final String DATABASE_FILE = "db.ksx";
-    /** アプリケーションプロパティファイル (日本語用)*/
-    // public static final String PROPERTIES_FILE_JA = "properties_ja.xml";
-    /** アプリケーションプロパティファイル(英語用)*/
+    /** アプリケーションプロパティファイル*/
     public static final String PROPERTIES_FILE_DEFAULT = "properties.xml";
     /** アプリケーションプロパティファイル */
     public static String PROPERTIES_FILE = null;
@@ -66,9 +63,9 @@ public class KscopeProperties {
     /** アプリケーションプロパティフォルダ：システム初期設定 */
     public static final String PROPERTIES_FOLDER = "properties";
     /** プロジェクトファイル */
-    public static final String PROJECT_FILE = "Kscope_project.ksx";
+    public static final String PROJECT_FILE = "kscope_project.ksx";
     /** 設定フォルダ */
-    public static final String SETTINGS_FOLDER = "Kscope_settings";
+    public static final String SETTINGS_FOLDER = "kscope_settings";
 
     /** アプリケーションプロパティテーブル */
     private static HashMap<String, Object> m_properties = new HashMap<String, Object>();
@@ -485,19 +482,19 @@ public class KscopeProperties {
 
 
     /**
-     * Javaバージョンが1.7以上であるかチェックする.<br/>
+     * Javaバージョンが1.8以上であるかチェックする.<br/>
      * システムプロパティからjava.versionを取得する。
      * @return    true=Javaバージョンが1.7以上である。
      */
-    public static boolean isJava17Later() {
+    public static boolean isJava18Later() {
     	String version = System.getProperty("java.specification.version");
     	double verno = Double.parseDouble(version);
-        return verno >= 1.7;
+        return verno >= 1.8;
     }
     
     /*
-     * Applescriptが使用可能かチェックする
-     * @retrun true=Applescriptが使用可能である。
+     * AppleScriptが使用可能かチェックする
+     * @retrun true=AppleScriptが使用可能である。
      */
     public static boolean isApplescript() {
         ScriptEngine scriptEngine = new ScriptEngineManager().getEngineByName("AppleScript");

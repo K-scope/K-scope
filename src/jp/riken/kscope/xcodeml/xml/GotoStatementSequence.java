@@ -22,7 +22,7 @@ import jp.riken.kscope.xcodeml.xml.gen.Value;
 
 /**
  * GotoStatement要素(GOTO文)クラス
- * @author riken
+ * @author RIKEN
  *
  */
 public class GotoStatementSequence implements IXmlNode {

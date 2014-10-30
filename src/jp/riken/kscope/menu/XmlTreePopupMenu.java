@@ -46,7 +46,7 @@ import jp.riken.kscope.service.AppController;
 
 /**
  * XMLエクスプローラパネルポップアップメニュー
- * @author riken
+ * @author RIKEN
  *
  */
 public class XmlTreePopupMenu extends JPopupMenu implements PopupMenuListener, ITreePopupMenu {

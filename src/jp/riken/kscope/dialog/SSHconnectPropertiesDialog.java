@@ -173,7 +173,6 @@ public class SSHconnectPropertiesDialog  extends javax.swing.JDialog implements 
 
                 // Connection to data in SSHconnectProperties class (instance settings)
                 modelProperties = new DefaultTableModel() {
-
                     private static final long serialVersionUID = -6996565435968749645L;
 
                     public int getColumnCount() {
@@ -273,7 +272,9 @@ public class SSHconnectPropertiesDialog  extends javax.swing.JDialog implements 
                 scrollList.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
                 scrollList.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
                 scrollList.setColumnHeader(new JViewport() {
-                    @Override
+					private static final long serialVersionUID = -8778306342340592940L;
+
+					@Override
                     public Dimension getPreferredSize() {
                         Dimension d = super.getPreferredSize();
                         d.height = 30;
@@ -291,8 +292,9 @@ public class SSHconnectPropertiesDialog  extends javax.swing.JDialog implements 
     }
     
     static class CustomCellRenderer extends DefaultTableCellRenderer {
-    	private static final String ASTERISKS = "************************";
-
+		private static final long serialVersionUID = -7528172127524209908L;
+		private static final String ASTERISKS = "************************";
+    	
         @Override
         public Component getTableCellRendererComponent(JTable arg0, Object arg1, boolean arg2, boolean arg3, int arg4, int arg5) {
             int length =0;

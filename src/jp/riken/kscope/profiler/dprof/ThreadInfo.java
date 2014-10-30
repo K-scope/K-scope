@@ -20,7 +20,7 @@ package jp.riken.kscope.profiler.dprof;
  *
  * スレッド情報を保持する
  *
- * @author riken
+ * @author RIKEN
  */
 public class ThreadInfo {
     private int threadNo;

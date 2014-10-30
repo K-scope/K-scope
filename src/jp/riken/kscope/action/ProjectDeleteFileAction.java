@@ -35,7 +35,7 @@ import jp.riken.kscope.service.ProjectService;
 
 /**
  * XMLファイル削除アクションクラス
- * @author riken
+ * @author RIKEN
  *
  */
 public class ProjectDeleteFileAction extends ActionBase {

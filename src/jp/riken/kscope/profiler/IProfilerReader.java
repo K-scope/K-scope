@@ -21,7 +21,7 @@ import java.io.File;
 
 /**
  * プロファイラファイルの読込クラス
- * @author riken
+ * @author RIKEN
  */
 public interface IProfilerReader {
 

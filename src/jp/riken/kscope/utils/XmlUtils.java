@@ -40,7 +40,7 @@ import org.w3c.dom.NodeList;
 /**
  * XMLファイル入出力ユーティリティクラス
  * 
- * @author riken
+ * @author RIKEN
  */
 public class XmlUtils {
 

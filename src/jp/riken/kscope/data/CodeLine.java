@@ -23,7 +23,7 @@ import jp.riken.kscope.utils.StringUtils;
 /**
  * ソースコードクラス
  *
- * @author riken
+ * @author RIKEN
  *
  */
 public class CodeLine implements Comparable<CodeLine>, Serializable {

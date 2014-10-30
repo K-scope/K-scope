@@ -52,7 +52,7 @@ import jp.riken.kscope.utils.SwingUtils;
 
 /**
  * 変数有効域テーブルパネルクラス
- * @author riken
+ * @author RIKEN
  *
  */
 public class ScopePanel extends AnalisysPanelBase implements Observer, IAnalisysComponent {

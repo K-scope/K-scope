@@ -33,7 +33,7 @@ import jp.riken.kscope.service.AppController;
 
 /**
  * 変数特性一覧ポップアップメニュークラス
- * @author riken
+ * @author RIKEN
  */
 public class VariablePopupMenu extends JPopupMenu implements PopupMenuListener {
 
@@ -44,6 +44,7 @@ public class VariablePopupMenu extends JPopupMenu implements PopupMenuListener {
     private AppController controller;
 
     /** エクスポートアクション */
+    @SuppressWarnings("unused")
     private FileExportExploreAction actionExportExplore;
     /** 分析:演算カウントアクション */
     private AnalysisOperandAction actionAnalysisOperand;

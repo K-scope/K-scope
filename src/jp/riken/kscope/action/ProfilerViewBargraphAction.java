@@ -25,7 +25,7 @@ import jp.riken.kscope.service.AppController;
 
 /**
  * プロファイラのソースコストグラフ表示切替アクションクラス
- * @author riken
+ * @author RIKEN
  */
 public class ProfilerViewBargraphAction extends ActionBase {
 

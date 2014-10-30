@@ -24,7 +24,7 @@ import jp.riken.kscope.service.AppController;
 
 /**
  * 表示ーファイルを閉じるアクション
- * @author riken
+ * @author RIKEN
  */
 public class ViewCloseAction extends ActionBase {
 

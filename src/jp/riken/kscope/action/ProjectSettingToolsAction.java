@@ -28,7 +28,7 @@ import jp.riken.kscope.service.AppController;
 
 /**
  * 外部ツール設定アクションクラス
- * @author riken
+ * @author RIKEN
  *
  */
 public class ProjectSettingToolsAction extends ActionBase {

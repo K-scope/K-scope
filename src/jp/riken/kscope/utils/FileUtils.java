@@ -27,7 +27,7 @@ import java.util.ArrayList;
 /**
  * ファイルユーティリティクラス
  * 
- * @author riken
+ * @author RIKEN
  * 
  */
 public class FileUtils {

@@ -43,7 +43,7 @@ import jp.riken.kscope.utils.SwingUtils;
 
 /**
  * 付加情報モデルクラス
- * @author riken
+ * @author RIKEN
  */
 public class InformationModel extends Observable implements PropertyChangeListener {
 
@@ -61,7 +61,7 @@ public class InformationModel extends Observable implements PropertyChangeListen
 
     /**
      * 付加情報ノードクラス.
-     * @author riken
+     * @author RIKEN
      */
     private class InformationNode {
         /** 付加情報設定開始ノード */
@@ -76,6 +76,7 @@ public class InformationModel extends Observable implements PropertyChangeListen
          * @param node 付加情報設定ステートメント
          * @param info 付加情報
          */
+        @SuppressWarnings("unused")
         public InformationNode(IInformation node, TextInfo info) {
             super();
             this.startNode = node;

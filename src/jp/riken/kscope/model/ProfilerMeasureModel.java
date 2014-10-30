@@ -36,7 +36,7 @@ import jp.riken.kscope.utils.SwingUtils;
 
 /**
  * 測定タイマ情報テーブルモデル
- * @author riken
+ * @author RIKEN
  *
  */
 public class ProfilerMeasureModel extends Observable {
