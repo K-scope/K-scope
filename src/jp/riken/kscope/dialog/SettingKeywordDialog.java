@@ -522,7 +522,7 @@ public class SettingKeywordDialog extends javax.swing.JDialog implements ActionL
             // 大文字・小文字の区別
             cell = modelKeyword.getValueAt(i, 5);
             boolean sensitivecase = (Boolean)cell;
-            keyword.setSensitivecase(sensitivecase);
+            keyword.setCaseSensitive(sensitivecase);
             // 正規表現
             cell = modelKeyword.getValueAt(i, 6);
             boolean regex = (Boolean)cell;
@@ -844,7 +844,7 @@ public class SettingKeywordDialog extends javax.swing.JDialog implements ActionL
         if (italic) style += Font.ITALIC;
         keyword.setStyle(style);
         // 大文字・小文字の区別
-        keyword.setSensitivecase(this.chkSensitivecase.isSelected());
+        keyword.setCaseSensitive(this.chkSensitivecase.isSelected());
         // 正規表現
         keyword.setRegex(this.chkRegex.isSelected());
         // キーワードロック

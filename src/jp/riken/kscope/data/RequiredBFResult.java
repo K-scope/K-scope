@@ -33,7 +33,7 @@ public class RequiredBFResult {
 	/** Store変数の算出Byte */
 	private int store;
 	/** 演算数(FLOP) = add(F) + mul(F) + intrinsic(F) */
-	private int operand;
+	private int op;
 	/** 要求Byte/FLOP =(Load+Store) / FLOP */
 	private float requiredBF; 		///<
 	/** 要求FLOP/Byte = FLOP/(Load+Store) */
@@ -144,15 +144,15 @@ public class RequiredBFResult {
 	 * @return 演算数(FLOP)
 	 */
 	public int getOperand() {
-		return operand;
+		return op;
 	}
 	/**
 	 * 演算数(FLOP)を設定する.
 	 * 演算数(FLOP) = add(F) + mul(F) + intrinsic(F)
-	 * @param operand 演算数(FLOP)
+	 * @param op 演算数(FLOP)
 	 */
-	public void setOperand(int operand) {
-		this.operand = operand;
+	public void setOperation(int op) {
+		this.op = op;
 	}
 	/**
 	 * 要求Byte/FLOPを取得する.
@@ -438,7 +438,7 @@ public class RequiredBFResult {
 	 * スループットストア設定を設定する.
 	 * @param storeMode スループットストア設定
 	 */
-	public void setStoreMode(MEM_THROUGHPUT_CALC_MODE storeMode) {
+	public void setMemThroughputCalcMode(MEM_THROUGHPUT_CALC_MODE storeMode) {
 		this.storeMode = storeMode;
 	}
 	/**
@@ -614,10 +614,10 @@ public class RequiredBFResult {
 	 * Required = (Load + Store) / FLOP
 	 * @return  計算結果:要求Byte/FLOP
 	 */
-	public float calculateRequired() {
+	public float calcRequiredBF() {
 		float flop = 0.0F;
-		if (this.operand > 0) {
-			flop = (float)(this.load + this.store) / (float)this.operand;
+		if (this.op > 0) {
+			flop = (float)(this.load + this.store) / (float)this.op;
 		}
 		this.requiredBF = flop;
 		if (flop > 0.0F) {

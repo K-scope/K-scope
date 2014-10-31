@@ -27,7 +27,7 @@ import jp.riken.kscope.language.Fortran;
 import jp.riken.kscope.language.IBlock;
 import jp.riken.kscope.model.ErrorInfoModel;
 import jp.riken.kscope.model.OperandTableModel;
-import jp.riken.kscope.properties.OperandProperties;
+import jp.riken.kscope.properties.OperationProperties;
 import jp.riken.kscope.service.AnalysisOperandService;
 import jp.riken.kscope.service.AppController;
 
@@ -120,7 +120,7 @@ public class AnalysisOperandAction extends ActionBase {
         // 演算カウントテーブルモデルを取得する
         OperandTableModel modelOperand = this.controller.getOperandTableModel();
         // 組込み関数演算カウントプロパティを取得する
-        OperandProperties propertiesOperand = this.controller.getPropertiesOperand();
+        OperationProperties propertiesOperand = this.controller.getPropertiesOperation();
         // エラー情報モデル
         ErrorInfoModel errorModel = this.controller.getErrorInfoModel();
 

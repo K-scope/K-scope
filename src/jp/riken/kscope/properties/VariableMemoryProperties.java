@@ -39,14 +39,14 @@ public class VariableMemoryProperties extends PropertiesBase {
     /** 変数(ハイライト)設定リスト */
     private List<VariableMemory> listVariable = new ArrayList<VariableMemory>();
     /** 要求Byte/FLOP設定プロパティ */
-    RequiredBFProperties memoryProperties;
+    RequiredBFProperties requiredBFProperties;
 
     /**
      * コンストラクタ
      * @param properties  要求Byte/FLOP設定プロパティ
      */
     public VariableMemoryProperties(RequiredBFProperties properties) {
-    	this.memoryProperties = properties;
+    	this.requiredBFProperties = properties;
     }
 
     /**
@@ -56,7 +56,6 @@ public class VariableMemoryProperties extends PropertiesBase {
     public void firePropertyChange() {
         this.changes.firePropertyChange(this.getClass().getName(), null, this);
     }
-
 
     /**
      * 変数(ハイライト)設定リストを取得する。
@@ -185,7 +184,7 @@ public class VariableMemoryProperties extends PropertiesBase {
 		if (containsVariableMemory(variable)) {
 			VariableMemory varmem = getVariableMemory(variable);
 			RequiredBF mem = getMemoryband(variable);
-			varmem.setMemoryband(mem);
+			varmem.setRequiredBF(mem);
 		}
 		else {
 			// 変数メモリデータの生成
@@ -222,7 +221,7 @@ public class VariableMemoryProperties extends PropertiesBase {
 				memorytype = ACCESSMEMORY_TYPE.getDefaultType(variable.getDefinition());
 			}
 		}
-		RequiredBF mem = memoryProperties.getRequiredBF(memorytype);
+		RequiredBF mem = requiredBFProperties.getRequiredBF(memorytype);
 		return mem;
 	}
 

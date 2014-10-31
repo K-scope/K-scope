@@ -467,7 +467,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
      * @return
      */
     private boolean genXML() {
-        return this.pproperties.genXML();
+        return this.pproperties.generateXML();
     }
 
     /**

@@ -77,8 +77,7 @@ public interface IAnalyseParser extends PropertyChangeListener {
      * @param oldValue			プロパティ旧値
      * @param newValue			プロパティ新値
      */
-    public void firePropertyChange(String propertyName, Object oldValue,
-            Object newValue);
+    public void firePropertyChange(String propertyName, Object oldValue, Object newValue);
 
     /**
      * プロパティ変更イベント
@@ -104,7 +103,6 @@ public interface IAnalyseParser extends PropertyChangeListener {
      * XMLファイルからソースファイルのみパースする
      */
     public void parseSourceFile();
-
 
     /**
      * ソースファイルの基準フォルダを設定する

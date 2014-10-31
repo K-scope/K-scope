@@ -32,7 +32,7 @@ import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathFactory;
 
 import jp.riken.kscope.Message;
-import jp.riken.kscope.data.OperandCount;
+import jp.riken.kscope.data.OperationCount;
 import jp.riken.kscope.utils.ResourceUtils;
 import jp.riken.kscope.utils.StringUtils;
 
@@ -44,7 +44,7 @@ import org.w3c.dom.NodeList;
  * 演算カウントプロパティクラス
  * @author RIKEN
  */
-public class OperandProperties extends PropertiesBase {
+public class OperationProperties extends PropertiesBase {
 
     /** シリアル番号 */
     private static final long serialVersionUID = 1L;
@@ -63,7 +63,7 @@ public class OperandProperties extends PropertiesBase {
      * コンストラクタ
      * @throws Exception     プロパティ読込エラー
      */
-    public OperandProperties() throws Exception {
+    public OperationProperties() throws Exception {
         loadProperties();
     }
 
@@ -78,7 +78,6 @@ public class OperandProperties extends PropertiesBase {
         // 演算カウントプロパティを設定ファイルから読み込む。
         loadProperties(stream);
     }
-
 
     /**
      * 演算カウントプロパティを設定ファイルから読み込む。
@@ -112,19 +111,19 @@ public class OperandProperties extends PropertiesBase {
         org.w3c.dom.Document document = builder.parse(stream);
 
         // XMLファイルのパース
-        List<OperandCount> list = parseOperand(document, "//operand");
+        List<OperationCount> list = parseOperation(document, "//operation");
 
         // PropertiesクラスのHashTableに追加する
         // キーは組込み関数名(=name)とする
-        for (OperandCount operand : list) {
-            String name = operand.getName();
+        for (OperationCount opc : list) {
+            String name = opc.getName();
             if (name != null && !name.isEmpty()) {
-                addOperandProperty(name, operand);
+                addOperationProperty(name, opc);
             }
         }
 
         // 四則演算FLOP設定
-        parseOperationFlop(document, "//operation_flop");
+        parseOperatorFlop(document, "//operator_flop");
     }
 
 
@@ -135,8 +134,8 @@ public class OperandProperties extends PropertiesBase {
      * @return		演算カウント設定リスト
      * @throws Exception     プロパティ読込エラー
      */
-    public List<OperandCount> parseOperand(org.w3c.dom.Document document, String path) throws Exception {
-        List<OperandCount> list = new ArrayList<OperandCount>();
+    public List<OperationCount> parseOperation(org.w3c.dom.Document document, String path) throws Exception {
+        List<OperationCount> list = new ArrayList<OperationCount>();
 
         XPathFactory factory = XPathFactory.newInstance();
         XPath xpath = factory.newXPath();
@@ -151,7 +150,7 @@ public class OperandProperties extends PropertiesBase {
         for (int i=0; i<nodelist.getLength(); i++) {
             try {
                 Node node = nodelist.item(i);
-                OperandCount operand = new OperandCount();
+                OperationCount opc = new OperationCount();
 
                 // 属性の取得
                 NamedNodeMap attrs = node.getAttributes();
@@ -163,7 +162,7 @@ public class OperandProperties extends PropertiesBase {
                 if (attrnode != null) {
                     name = attrnode.getNodeValue();
                     if (name != null && !name.isEmpty()) {
-                        operand.setName(name);
+                        opc.setName(name);
                     }
                 }
                 if (name == null || name.isEmpty()) {
@@ -175,7 +174,7 @@ public class OperandProperties extends PropertiesBase {
                 if (attrnode != null) {
                     value = attrnode.getNodeValue();
                     if (StringUtils.isNumeric(value)) {
-                        operand.setAdd(Integer.parseInt(value));
+                        opc.setAdd(Integer.parseInt(value));
                     }
                 }
                 // 演算子:-カウント
@@ -183,7 +182,7 @@ public class OperandProperties extends PropertiesBase {
                 if (attrnode != null) {
                     value = attrnode.getNodeValue();
                     if (StringUtils.isNumeric(value)) {
-                        operand.setSub(Integer.parseInt(value));
+                        opc.setSub(Integer.parseInt(value));
                     }
                 }
                 // 演算子:*カウント
@@ -191,7 +190,7 @@ public class OperandProperties extends PropertiesBase {
                 if (attrnode != null) {
                     value = attrnode.getNodeValue();
                     if (StringUtils.isNumeric(value)) {
-                        operand.setMul(Integer.parseInt(value));
+                        opc.setMul(Integer.parseInt(value));
                     }
                 }
                 // 演算子:/カウント
@@ -199,12 +198,12 @@ public class OperandProperties extends PropertiesBase {
                 if (attrnode != null) {
                     value = attrnode.getNodeValue();
                     if (StringUtils.isNumeric(value)) {
-                        operand.setDiv(Integer.parseInt(value));
+                        opc.setDiv(Integer.parseInt(value));
 
                     }
                 }
 
-                list.add(operand);
+                list.add(opc);
 
             } catch (Exception ex) {
                 ex.printStackTrace();
@@ -226,7 +225,7 @@ public class OperandProperties extends PropertiesBase {
      * @return		演算カウント設定リスト
      * @throws Exception     プロパティ読込エラー
      */
-    public void parseOperationFlop(org.w3c.dom.Document document, String path) throws Exception {
+    public void parseOperatorFlop(org.w3c.dom.Document document, String path) throws Exception {
 
         XPathFactory factory = XPathFactory.newInstance();
         XPath xpath = factory.newXPath();
@@ -299,7 +298,7 @@ public class OperandProperties extends PropertiesBase {
      * @param key		組込み関数名
      * @param value		演算カウント
      */
-    public void addOperandProperty(String key, OperandCount value) {
+    public void addOperationProperty(String key, OperationCount value) {
         this.put(key, value);
     }
 
@@ -308,8 +307,8 @@ public class OperandProperties extends PropertiesBase {
      * @param key		組込み関数名
      * @return        演算カウント
      */
-    public OperandCount getOperandProperty(String key) {
-        return (OperandCount) this.get(key);
+    public OperationCount getOperationProperty(String key) {
+        return (OperationCount) this.get(key);
     }
 
 
@@ -333,7 +332,7 @@ public class OperandProperties extends PropertiesBase {
 
         // コメントを追加
         {
-            org.w3c.dom.Comment comment = document.createComment(Message.getString("operandproperties.document.comment")); //演算カウントプロパティ
+            org.w3c.dom.Comment comment = document.createComment(Message.getString("operationproperties.document.comment")); //演算カウントプロパティ
             node.appendChild(comment);
         }
 
@@ -380,37 +379,37 @@ public class OperandProperties extends PropertiesBase {
         // キーワード
         while (enumKeys.hasMoreElements()){
             String key = (String)enumKeys.nextElement();
-            OperandCount operand = getOperandProperty(key);
+            OperationCount opc = getOperationProperty(key);
 
-            org.w3c.dom.Element elem = document.createElement("operand");
+            org.w3c.dom.Element elem = document.createElement("operation");
             // 組込み関数名
             {
                 org.w3c.dom.Attr attr = document.createAttribute("name");
-                attr.setNodeValue(operand.getName());
+                attr.setNodeValue(opc.getName());
                 elem.setAttributeNode(attr);
             }
             // 演算子:+カウント
-            if (operand.getAdd() != null) {
+            if (opc.getAdd() != null) {
                 org.w3c.dom.Attr attr = document.createAttribute("add");
-                attr.setNodeValue(String.valueOf(operand.getAdd()));
+                attr.setNodeValue(String.valueOf(opc.getAdd()));
                 elem.setAttributeNode(attr);
             }
             // 演算子:*カウント
-            if (operand.getMul() != null) {
+            if (opc.getMul() != null) {
                 org.w3c.dom.Attr attr = document.createAttribute("mul");
-                attr.setNodeValue(String.valueOf(operand.getMul()));
+                attr.setNodeValue(String.valueOf(opc.getMul()));
                 elem.setAttributeNode(attr);
             }
             // 演算子:-カウント
-            if (operand.getSub() != null) {
+            if (opc.getSub() != null) {
                 org.w3c.dom.Attr attr = document.createAttribute("sub");
-                attr.setNodeValue(String.valueOf(operand.getSub()));
+                attr.setNodeValue(String.valueOf(opc.getSub()));
                 elem.setAttributeNode(attr);
             }
             // 演算子:/カウント
-            if (operand.getDiv() != null) {
+            if (opc.getDiv() != null) {
                 org.w3c.dom.Attr attr = document.createAttribute("div");
-                attr.setNodeValue(String.valueOf(operand.getDiv()));
+                attr.setNodeValue(String.valueOf(opc.getDiv()));
                 elem.setAttributeNode(attr);
             }
 
@@ -431,7 +430,7 @@ public class OperandProperties extends PropertiesBase {
 	 * 演算子FLOP:+を設定する
 	 * @param value  演算子FLOP:+
 	 */
-	public void setAdd(int value) {
+	public void setFlopAdd(int value) {
 		this.flopAdd = value;
 	}
 
@@ -447,7 +446,7 @@ public class OperandProperties extends PropertiesBase {
 	 * 演算子FLOP:*を設定する
 	 * @param value  演算子FLOP:*
 	 */
-	public void setMul(int value) {
+	public void setFlopMul(int value) {
 		this.flopMul = value;
 	}
 
@@ -463,7 +462,7 @@ public class OperandProperties extends PropertiesBase {
 	 * 演算子FLOP:-を設定する
 	 * @param value  演算子FLOP:-
 	 */
-	public void setSub(int value) {
+	public void setFlopSub(int value) {
 		this.flopSub = value;
 	}
 
@@ -479,7 +478,7 @@ public class OperandProperties extends PropertiesBase {
 	 * 演算子FLOP:/を設定する
 	 * @param value  演算子FLOP:/
 	 */
-	public void setDiv(int value) {
+	public void setFlopDiv(int value) {
 		this.flopDiv = value;
 	}
 
@@ -495,7 +494,7 @@ public class OperandProperties extends PropertiesBase {
 	 * 演算子FLOP:**を設定する
 	 * @param value  演算子FLOP:**
 	 */
-	public void setPow(int value) {
+	public void setFlopPow(int value) {
 		this.flopPow = value;
 	}
 

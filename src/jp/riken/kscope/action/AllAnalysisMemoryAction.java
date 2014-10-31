@@ -146,7 +146,7 @@ public class AllAnalysisMemoryAction extends ActionBase {
         modelRequired.setModelLanguageTree(modelLanguage);
         this.serviceMemory = new AnalysisMemoryService();
         this.serviceMemory.setProperitiesRequiredBF(properitiesMemory);
-        this.serviceMemory.setPropertiesOperand(this.controller.getPropertiesOperand());
+        this.serviceMemory.setPropertiesOperand(this.controller.getPropertiesOperation());
         this.serviceMemory.setModelRequiredBF(modelRequired);
         this.serviceMemory.setPropertiesVariableMemory(properitiesVariable);
         

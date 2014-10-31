@@ -40,10 +40,10 @@ public class RequiredBF {
     private float mem_throughput_nostore;
     /** 係数 */
     private float coef;
-    /** 要求B/F算出 */
-    private boolean requiredbf;
+    /** 要求B/F算出フラグ */
+    private boolean reqbf;
     /** 律速 */
-    private boolean limiting;
+    private boolean limits;
     /** 有効/無効フラグ */
     private boolean enabled;
 
@@ -124,7 +124,7 @@ public class RequiredBF {
 	 * @return	要求B/F算出フラグ
 	 */
 	public boolean isRequiredBF() {
-		return requiredbf;
+		return reqbf;
 	}
 
 	/**
@@ -132,7 +132,7 @@ public class RequiredBF {
 	 * @param bf	要求B/F算出フラグ
 	 */
 	public void setRequiredBF(boolean bf) {
-		this.requiredbf = bf;
+		this.reqbf = bf;
 	}
 
 	/**
@@ -140,15 +140,15 @@ public class RequiredBF {
 	 * @return		律速フラグ
 	 */
 	public boolean isLimiting() {
-		return limiting;
+		return limits;
 	}
 
 	/**
 	 * 律速フラグを設定する.
-	 * @param limiting		律速フラグ
+	 * @param limits		律速フラグ
 	 */
-	public void setLimiting(boolean limiting) {
-		this.limiting = limiting;
+	public void setLimiting(boolean limits) {
+		this.limits = limits;
 	}
 
 	/**

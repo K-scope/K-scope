@@ -625,7 +625,8 @@ public class ProjectMakeService  extends BaseService {
 	 * @param srcDb		    コピー元モジュール
 	 * @return				付加情報のProgramUnit[programDest, programSrc]
 	 */
-    private ProgramUnit[] getInformationProgramUnits(IInformation info, Fortran destDb, Fortran srcDb) {
+    @SuppressWarnings("unused")
+	private ProgramUnit[] getInformationProgramUnits(IInformation info, Fortran destDb, Fortran srcDb) {
     	if (info == null) return null;
     	if (destDb == null) return null;
     	if (srcDb == null) return null;
@@ -717,7 +718,8 @@ public class ProjectMakeService  extends BaseService {
 	 * @param infos		InformationBlocks(=InformationBlockリスト)
 	 * @param src		検索InformationBlock
 	 * @return			true=含まれる
-	 */
+	 */    
+	@SuppressWarnings("unused")
 	private boolean containsInformationBlock(InformationBlocks infos, InformationBlock src) {
 		if (infos == null) return false;
 		if (src == null) return false;
@@ -736,6 +738,7 @@ public class ProjectMakeService  extends BaseService {
 	 * @param  info   付加情報ブロック
 	 * @return    DO,IF,SELECT文
 	 */
+	@SuppressWarnings("unused")
 	private boolean isBlock(IInformation info) {
 		if (!(info instanceof IBlock)) return false;
 		if (((IBlock)info).getBlockType() == BlockType.SELECTION
@@ -756,6 +759,7 @@ public class ProjectMakeService  extends BaseService {
 	 * @param srcinfo		ブロック２
 	 * @return			true=同一ブロック構造
 	 */
+	@SuppressWarnings("unused")
 	private boolean equalsParentLayout(IInformation destinfo, IInformation srcinfo) {
 		if (destinfo == null) return false;
 		if (srcinfo == null) return false;

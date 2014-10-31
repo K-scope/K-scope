@@ -66,7 +66,7 @@ import jp.riken.kscope.action.ProjectPropertyAction;
 import jp.riken.kscope.action.ProjectRebuildAction;
 import jp.riken.kscope.action.ProjectSettingKeywordAction;
 import jp.riken.kscope.action.ProjectSettingRequiredBFAction;
-import jp.riken.kscope.action.ProjectSettingOperandAction;
+import jp.riken.kscope.action.ProjectSettingOperationAction;
 import jp.riken.kscope.action.ProjectSettingProfilerAction;
 import jp.riken.kscope.action.ProjectSettingProjectAction;
 import jp.riken.kscope.action.ProjectSettingSSHAction;
@@ -380,7 +380,7 @@ public class MainMenu extends JMenuBar implements  MenuListener {
         // プロジェクト:設定:演算カウント
         JMenuItem menuProjectSettingOperation = new JMenuItem(Message.getString("mainmenu.project.config.operation"));//演算カウント
         menuProjectSetting.add(menuProjectSettingOperation);
-        menuProjectSettingOperation.addActionListener(new ProjectSettingOperandAction(this.controller));
+        menuProjectSettingOperation.addActionListener(new ProjectSettingOperationAction(this.controller));
 
         // プロジェクト:設定:外部ツール
         JMenuItem menuProjectSettingTools = new JMenuItem(Message.getString("mainmenu.project.config.program"));//外部ツール

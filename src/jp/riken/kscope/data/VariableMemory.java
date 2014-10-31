@@ -35,19 +35,19 @@ public class VariableMemory extends Keyword {
 	/** 変数 */
 	private Variable variable;
 	/** アクセス先メモリ */
-	private RequiredBF requiredbf;
+	private RequiredBF reqbf;
 
     /**
      * コンストラクタ
      * @param variable		変数
-     * @param bf    アクセス先メモリ
+     * @param reqbf    アクセス先メモリ
      */
-    public VariableMemory(Variable variable, RequiredBF bf) {
+    public VariableMemory(Variable variable, RequiredBF reqbf) {
     	super(KEYWORD_TYPE.VARIABLE);
         this.variable = variable;
-        this.requiredbf = bf;
+        this.reqbf = reqbf;
         // 大文字・小文字の区別を設定する
-        setSensitivecase(false);
+        setCaseSensitive(false);
         // 正規表現を設定する
         setRegex(true);
         // 単語検索を設定する
@@ -106,8 +106,8 @@ public class VariableMemory extends Keyword {
 	 */
 	@Override
 	public Color getBackgroundcolor() {
-		if (requiredbf == null) return null;
-		return requiredbf.getBackColor();
+		if (reqbf == null) return null;
+		return reqbf.getBackColor();
 	}
 
 	/**
@@ -128,16 +128,16 @@ public class VariableMemory extends Keyword {
 	 * アクセス先メモリを取得する.
 	 * @return アクセス先メモリ
 	 */
-	public RequiredBF getMemoryband() {
-		return requiredbf;
+	public RequiredBF getRequiredBF() {
+		return reqbf;
 	}
 
 	/**
 	 * アクセス先メモリを設定する
-	 * @param bf    アクセス先メモリ
+	 * @param reqbf    アクセス先メモリ
 	 */
-	public void setMemoryband(RequiredBF bf) {
-		this.requiredbf = bf;
+	public void setRequiredBF(RequiredBF reqbf) {
+		this.reqbf = reqbf;
 	}
 
 }

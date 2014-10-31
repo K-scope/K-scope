@@ -679,7 +679,7 @@ public class TraceResultPanel extends AnalisysPanelBase implements Observer, IAn
                 Keyword word = new Keyword(KEYWORD_TYPE.TRACE);
                 word.setKeyword(variable);
                 word.setSearchWord(true);
-                word.setSensitivecase(false);
+                word.setCaseSensitive(false);
                 word.setSearchVariable(true);
                 word.setSearchLine(line);
 

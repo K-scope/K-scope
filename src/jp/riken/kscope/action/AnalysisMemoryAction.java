@@ -142,7 +142,7 @@ public class AnalysisMemoryAction extends ActionBase {
         AnalysisMemoryService serviceMemory = new AnalysisMemoryService();
         serviceMemory.setBlocks(blocks);
         serviceMemory.setProperitiesRequiredBF(properitiesMemory);
-        serviceMemory.setPropertiesOperand(this.controller.getPropertiesOperand());
+        serviceMemory.setPropertiesOperand(this.controller.getPropertiesOperation());
         serviceMemory.setModelRequiredBF(modelRequired);
         serviceMemory.setPropertiesVariableMemory(properitiesVariable);
         dialogPerformance.setServiceMemory(serviceMemory);

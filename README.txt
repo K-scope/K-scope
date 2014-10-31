@@ -1,61 +1,78 @@
 README
 ======
 
-K-scope is a source code analysis tool with graphical user interface that
-visualizes program structures of Fortran 90 and FORTRAN 77 source code.
-It is suitable for source code reading for engineers who work the performance
-improvement for an application.
+K-scope is a Fortran source code analysis tool with graphical user interface
+that visualizes program structures for Fortran 90 and FORTRAN 77 source code.
+This tool simply visualizes call tree from AST based on compiler's static
+analysis. The call tree consists of loops, branches, and procedure-calls as
+candidates of hot-spot in an application. Such a source code visualization
+is suitable for source code reading for engineers who improve application
+performance in high performance computing. This tool expects to understand
+program structure before performance tuning.
 
 K-scope is developed by RIKEN AICS Software Development Team, and is distributed
-as Open Source Software. The latest version and documents are available in the
+as open-source software. The latest version and documents are available in the
 following download site.
+
 http://www.aics.riken.jp/ungi/soft/kscope/
 
 Preliminaries
 =============
 
-First of all, K-scope requires JDK7 or later. Please download from Oracle site.
+K-scope requires Java version 1.8 or later. If you build a binary package
+from the K-scope source codes, please download JDK from the Oracle site and
+install it on your environment. 
+
+Except for the above case (for example, developer), JRE is enough for ordinary use. 
+
 http://www.oracle.com/technetwork/java/javase/downloads/index.html
 
-In addition, this tool uses intermediate codes created by front end of
-the Omni XcalableMP compiler. There exists a download site as follow.
+In addition, K-scope uses intermediate codes (= AST) created by front end of
+the Omni XcalableMP compiler. Please download the compiler suite from
+following URL.
+
 http://www.hpcs.cs.tsukuba.ac.jp/omni-compiler/xcalablemp/download.html
 
-If you can access a server installed with Omni XcalableMP compiler, 
-you can build intermediate codes on the server remotely via SSH service by
-SSHconnect.jar. This software is an utility for remote command execution with
-automatic transfer. It is developed by RIKEN AICS HPC Usability Team in
-collaboration to enhance the K-scope's feature, and is bundled with the binary
-package of the K-scope.
+If you can access a remote server installed with Omni XcalableMP (OMP)
+compiler (For example, front-end of the K computer is suitable environment
+to make intermediate codes with OMP), you can build intermediate codes
+on the server remotely via SSH connection by SSHconnect.jar. This software
+is an utility for remote command execution with automatic transfer.
+It is developed by RIKEN AICS HPC Usability Team in collaboration to enhance
+the K-scope's feature, and is bundled with the binary package of K-scope.
 
-This setup is easy. Firstly, SSHconnect.jar is placed in the same directory as
-kscope.jar. After starting the K-scope, new option is enabled in new project
-wizard.
+The usage for SSHconnect is simple and easy.
+First, please copy SSHconnect.jar in the same directory as kscope.jar.
+After the setup, please restart K-scope, and then the features for SSHconnect
+is enabled in new project wizard.
 
 Compile and Run
 ===============
 
-This software is written by pure Java to improve the portability.
+This software is written by pure Java to improve portability.
 We provide two-type packages: jar-executable package and source code package
-in our site. Especially this source cord packages includes all source codes
-necessary for modify and compiling. In that case, we recommend IDE enviroments
-such as Eclipse or NetBeans.
-NOTICE) The source codes includes Japanese comments by UTF-8.
+in our site. Especially, the source cord package includes all source codes
+necessary for modify and compiling. (The source codes includes Japanese
+comments by UTF-8.)
 
-We provide build.xml to compile.
+The source code package includes build.xml to compiler with Apache ant.
+Also compiling is simple and easy.
 
   $ ant
 
-After the compiling, you may obtain jar-executable or classes.
-Run is simple as follows.
+After the compiling, you may obtain jar-executable including classes.
+Run is simple as follow.
 
   $ java -jar kscope.jar
 
-K-scope requires specific folders for properties.
-If the program cannot find that folders, it may terminate abnormally.
-In the normally process, you may obtained start screen.
+At the time of startup, K-scope requires specific folders for properties.
+If K-scope cannot find those folders, it may terminate abnormally.
 
 Tips on usage) "-Duser.language" VM-option is language selector, English(en) and Japanese(ja).
+
+  $ java -jar -Duser.language=en kscope.jar ## for english mode
+
+  $ java -jar -Duser.language=ja kscope.jar ## for japanese mode
 
 License
 =======

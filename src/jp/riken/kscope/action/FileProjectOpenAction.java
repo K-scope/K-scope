@@ -148,7 +148,7 @@ public class FileProjectOpenAction extends ActionBase {
             // 外部ツールプロパティ
             service.setPropertiesExtension(this.controller.getPropertiesExtension());
             // 演算カウントプロパティ
-            service.setPropertiesOperand(this.controller.getPropertiesOperand());
+            service.setPropertiesOperand(this.controller.getPropertiesOperation());
             // ソースビュー設定プロパティ
             service.setPropertiesSource(this.controller.getPropertiesSource());
             // プロファイラプロパティ設定プロパティ

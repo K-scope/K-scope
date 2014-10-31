@@ -221,7 +221,7 @@ public class FileProjectNewAction extends ActionBase {
             // 外部ツールプロパティ設定
             projectService.setPropertiesExtension(this.controller.getPropertiesExtension());
             // 演算カウントプロパティ設定
-            projectService.setPropertiesOperand(this.controller.getPropertiesOperand());
+            projectService.setPropertiesOperand(this.controller.getPropertiesOperation());
             // ソースビュープロパティ設定
             projectService.setPropertiesSource(this.controller.getPropertiesSource());
             // プロファイラプロパティ設定

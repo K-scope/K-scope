@@ -39,7 +39,7 @@ import jp.riken.kscope.model.PropertiesTableModel;
 import jp.riken.kscope.properties.KscopeProperties;
 import jp.riken.kscope.properties.KeywordProperties;
 import jp.riken.kscope.properties.RequiredBFProperties;
-import jp.riken.kscope.properties.OperandProperties;
+import jp.riken.kscope.properties.OperationProperties;
 import jp.riken.kscope.properties.ProfilerProperties;
 import jp.riken.kscope.properties.ProgramProperties;
 import jp.riken.kscope.properties.ProjectProperties;
@@ -60,7 +60,7 @@ public class ProjectService extends BaseService {
     /** 外部ツールプロパティ */
     private ProgramProperties propertiesExtension;
     /** 演算カウントプロパティ */
-    private OperandProperties propertiesOperand;
+    private OperationProperties propertiesOperand;
     /** ソースビュー設定 */
     private SourceProperties propertiesSource;
     /** プロファイラプロパティ設定 */
@@ -447,7 +447,7 @@ public class ProjectService extends BaseService {
      * 演算カウントプロパティを設定する
      * @param propertiesOperand			演算カウントプロパティ
      */
-    public void setPropertiesOperand(OperandProperties propertiesOperand) {
+    public void setPropertiesOperand(OperationProperties propertiesOperand) {
         this.propertiesOperand = propertiesOperand;
     }
 

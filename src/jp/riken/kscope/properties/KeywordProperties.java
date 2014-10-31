@@ -314,7 +314,7 @@ public class KeywordProperties extends PropertiesBase {
                 if (attrnode != null) {
                     value = attrnode.getNodeValue();
                     sensitivecase = Boolean.parseBoolean(value);
-                    keyword.setSensitivecase(sensitivecase);
+                    keyword.setCaseSensitive(sensitivecase);
                 }
                 // 正規表現
                 attrnode = attrs.getNamedItem("regex");

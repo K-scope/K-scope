@@ -28,7 +28,7 @@ CHANGELOG
 - Fixed a bug: exception arises when calling an external tool in Linux environment.
 - Fixed an implementation for the message resource files to improve maintainability
 - Fixed an implementation for the analysis-view interface
-- Fixed an implementation for JDK7 instead of JDK6 which is end of support in the K-scope.
+- Fixed an implementation for JDK7 instead of JDK6 which is end of support in K-scope.
 
 (2013/5/31) Version 0.2.3 is released.
 - Added and removed icon files as minor changes
@@ -55,5 +55,5 @@ This release is collaboration version between AICS HPC Usability Research Team a
 
 (2014/11/10) Version 0.2.6 is released.
 This release is collaboration version between Yokokawa-lab (Main contributor is Tomoyo Ohichi.) in Kobe university and AICS Software Development Team.
-- Fixed an implementation for JDK8 instead of JDK7 which is end of support in the K-scope.
-- XXX
+- Fixed an implementation for JDK8 instead of JDK7 which is end of support in K-scope.
+- Fixed documentations and removed deprecated codes and properties.

@@ -82,7 +82,7 @@ public class RequiredBFProperties  extends PropertiesBase {
     /** アクセス先名称属性 */
     private final String ATTR_NAME = "name";
     /** アクセス先背景色 */
-    private final String ATTR_BACKGROUND_COLOR = "backcolor";
+    private final String ATTR_BACKGROUND_COLOR = "background-color";
     /** メモリスループット:ストアあり */
     private final String ATTR_MEM_THROUGHPUT_STORE = "mem-throughput-store";
     /** メモリスループット:ストアなし */
@@ -90,9 +90,9 @@ public class RequiredBFProperties  extends PropertiesBase {
     /** 係数 */
     private final String ATTR_COEFFICIENT = "coef";
     /** 要求B/F算出 */
-    private final String ATTR_REQUIRED_BF = "required-bf";
+    private final String ATTR_REQUIRED_BF = "reqbf";
     /** 律速 */
-    private final String ATTR_LIMITING = "limiting";
+    private final String ATTR_LIMITS = "limits";
     /** 有効/無効 */
     private final String ATTR_ENABLED = "enabled";
     /** デフォルトサイズ：real */
@@ -100,8 +100,8 @@ public class RequiredBFProperties  extends PropertiesBase {
     /** デフォルトサイズ：integer */
     private final String ATTR_SIZE_INTEGER = "size-integer";
 
-    /** 演算性能 */
-    private float flop_performance;
+    /** 理論浮動小数点数演算性能 */
+    private float theoretical_flop_performance;
     /** メモリスループット算出モード設定 */
     private MEM_THROUGHPUT_CALC_MODE memThroughtputCalcMode;
     /** BF算出単位 */
@@ -331,7 +331,7 @@ public class RequiredBFProperties  extends PropertiesBase {
                 }
 
                 // 律速フラグ
-                attrnode = attrs.getNamedItem(ATTR_LIMITING);
+                attrnode = attrs.getNamedItem(ATTR_LIMITS);
                 if (attrnode != null) {
                     value = attrnode.getNodeValue();
                     boolean res = Boolean.parseBoolean(value);
@@ -490,7 +490,7 @@ public class RequiredBFProperties  extends PropertiesBase {
                 attr.setNodeValue(String.valueOf(value));
                 elem.setAttributeNode(attr);
             }
-            // 要求B/F算出
+            // 要求B/F算出（有効・無効）
             {
             	boolean value = bind.isRequiredBF();
                 org.w3c.dom.Attr attr = document.createAttribute(ATTR_REQUIRED_BF);
@@ -500,7 +500,7 @@ public class RequiredBFProperties  extends PropertiesBase {
             // 律速
             {
             	boolean value = bind.isLimiting();
-                org.w3c.dom.Attr attr = document.createAttribute(ATTR_LIMITING);
+                org.w3c.dom.Attr attr = document.createAttribute(ATTR_LIMITS);
                 attr.setNodeValue(String.valueOf(value));
                 elem.setAttributeNode(attr);
             }
@@ -608,10 +608,10 @@ public class RequiredBFProperties  extends PropertiesBase {
     public RequiredBF getRequiredBF(ACCESSMEMORY_TYPE type) {
         if (type == null) return null;
 
-        for (RequiredBF bf : listReqBF) {
-        	ACCESSMEMORY_TYPE srctype = bf.getType();
+        for (RequiredBF reqbf : listReqBF) {
+        	ACCESSMEMORY_TYPE srctype = reqbf.getType();
             if (srctype == type) {
-                return bf;
+                return reqbf;
             }
         }
 
@@ -619,19 +619,19 @@ public class RequiredBFProperties  extends PropertiesBase {
     }
 
     /**
-     * 演算性能を取得する
+     * 理論浮動小数点数演算性能を取得する
      * @return		演算性能
      */
 	public float getFlopPerformance() {
-		return this.flop_performance;
+		return this.theoretical_flop_performance;
 	}
 
 	/**
-	 * 演算性能を設定する.
+	 * 理論浮動小数点数演算性能を設定する.
 	 * @param performance	演算性能
 	 */
 	public void setFlopPerformance(float performance) {
-		this.flop_performance = performance;
+		this.theoretical_flop_performance = performance;
 	}
 
 

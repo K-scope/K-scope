@@ -203,7 +203,7 @@ public class Keyword {
      * 大文字・小文字の区別を設定する
      * @param sensitivecase		大文字・小文字の区別(true=大文字・小文字の区別を行う)
      */
-    public void setSensitivecase(boolean sensitivecase) {
+    public void setCaseSensitive(boolean sensitivecase) {
         this.sensitivecase = sensitivecase;
     }
 

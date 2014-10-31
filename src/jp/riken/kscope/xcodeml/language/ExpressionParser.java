@@ -549,9 +549,9 @@ public class ExpressionParser {
         }
 
         // バッファに追加:演算子
-        String operand = getOperand(node);
+        String op = getOperation(node);
         // バッファ追加
-        buf.append(operand);
+        buf.append(op);
         buf.append(EXPR_SPACE);
 
         if (rightExpr != null) {
@@ -787,8 +787,7 @@ public class ExpressionParser {
         return exprVar;
     }
 
-
-
+    
     /**
      * FcoArrayRef(coarrayの参照)要素から式クラスを作成する
      *
@@ -1850,7 +1849,7 @@ public class ExpressionParser {
      * @param node		XMLノード
      * @return   演算子文字列
      */
-    private String getOperand(IXmlNode node) {
+    private String getOperation(IXmlNode node) {
 
         if (node instanceof PlusExpr) {
             // 加算

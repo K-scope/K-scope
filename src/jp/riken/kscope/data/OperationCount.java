@@ -22,7 +22,7 @@ package jp.riken.kscope.data;
  * @author RIKEN
  *
  */
-public class OperandCount {
+public class OperationCount {
 
     /** 演算子:+カウント */
     private Integer add;
@@ -52,7 +52,7 @@ public class OperandCount {
     /**
      * コンストラクタ
      */
-    public OperandCount() {
+    public OperationCount() {
     }
 
     /**

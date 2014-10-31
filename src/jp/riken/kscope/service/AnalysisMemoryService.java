@@ -29,12 +29,12 @@ import jp.riken.kscope.language.Substitution;
 import jp.riken.kscope.language.Variable;
 import jp.riken.kscope.language.fortran.VariableType;
 import jp.riken.kscope.language.utils.LanguageVisitor;
-import jp.riken.kscope.language.utils.OperandCounterUtils;
+import jp.riken.kscope.language.utils.OperationCounterUtils;
 import jp.riken.kscope.language.utils.VariableMemoryEntry;
 import jp.riken.kscope.model.RequiredBFModel;
 import jp.riken.kscope.properties.RequiredBFProperties;
 import jp.riken.kscope.properties.RequiredBFProperties.MEM_THROUGHPUT_CALC_MODE;
-import jp.riken.kscope.properties.OperandProperties;
+import jp.riken.kscope.properties.OperationProperties;
 import jp.riken.kscope.properties.VariableMemoryProperties;
 import jp.riken.kscope.utils.StringUtils;
 
@@ -47,7 +47,7 @@ public class AnalysisMemoryService extends AnalysisBaseService {
     /** 要求Byte/FLOP設定プロパティ */
     private RequiredBFProperties properitiesRequiredBF;
     /** 組込み関数演算カウントプロパティ */
-    private OperandProperties propertiesOperand;
+    private OperationProperties propertiesOperation;
     /** 要求Byte/FLOPテーブルモデル */
     private RequiredBFModel modelRequiredBF;
     /** 要求Byte/FLOP算出結果 */
@@ -84,16 +84,16 @@ public class AnalysisMemoryService extends AnalysisBaseService {
 	 * 組込み関数演算カウントプロパティを取得する.
 	 * @return 組込み関数演算カウントプロパティ
 	 */
-	public OperandProperties getPropertiesOperand() {
-		return propertiesOperand;
+	public OperationProperties getPropertiesOperand() {
+		return propertiesOperation;
 	}
 
 	/**
 	 * 組込み関数演算カウントプロパティを設定する.
 	 * @param properities 組込み関数演算カウントプロパティ
 	 */
-	public void setPropertiesOperand(OperandProperties properities) {
-		this.propertiesOperand = properities;
+	public void setPropertiesOperand(OperationProperties properities) {
+		this.propertiesOperation = properities;
 	}
 
 	/**
@@ -156,8 +156,8 @@ public class AnalysisMemoryService extends AnalysisBaseService {
 		if (block == null) return null;
 
 		// 演算数,Load,Storeをカウントする.
-		OperandCounterUtils utils = new OperandCounterUtils();
-		utils.setPropertiesOperand(this.propertiesOperand);
+		OperationCounterUtils utils = new OperationCounterUtils();
+		utils.setPropertiesOperation(this.propertiesOperation);
 		utils.countBlock(block);
 
 		RequiredBFResult result = new RequiredBFResult();
@@ -170,16 +170,16 @@ public class AnalysisMemoryService extends AnalysisBaseService {
 		// Load, Store
 		setStoreLoad(result, lefts, rights);
         // 演算数
-		setOperand(result, utils.getAddFlop(),
-							utils.getSubFlop(),
-							utils.getMulFlop(),
-							utils.getDivFlop(),
-							utils.getPowFlop(),
-							utils.getFunctionFlop());
+		setOperation(result, utils.getAddFlop(),
+						   utils.getSubFlop(),
+						   utils.getMulFlop(),
+						   utils.getDivFlop(),
+						   utils.getPowFlop(),
+						   utils.getFunctionFlop());
         // 要求Byte/FLOP,要求FLOP/Byte
-		result.calculateRequired();
-		// スループット
-		setMemoryThroughput(result, lefts, rights);
+		result.calcRequiredBF();
+		// メモリスループット
+		setMemThroughput(result, lefts, rights);
 		// 実効Byte/FLOP,実効FLOP/Byte
 		result.calcRequiredBF(this.properitiesRequiredBF.getFlopPerformance());
 		// ピーク性能
@@ -202,12 +202,12 @@ public class AnalysisMemoryService extends AnalysisBaseService {
 	 * @param pow		累乗
 	 * @param function	組込関数の加算(+) + 乗算(*)
 	 */
-	private void setOperand(RequiredBFResult result, int add, int sub, int mul, int div, int pow, int function) {
+	private void setOperation(RequiredBFResult result, int add, int sub, int mul, int div, int pow, int function) {
 		if (result == null) return;
 
 		// 演算数(FLOP) = add(F) + mul(F) + intrinsic(F)
-		int operand = add + sub + mul + div + pow + function;
-		result.setOperand(operand);
+		int op = add + sub + mul + div + pow + function;
+		result.setOperation(op);
 		// 浮動小数点データ型の変数に対する加算(+)の数
 		result.setAddCount(add);
 		// 浮動小数点データ型の変数に対する減算(-)の数
@@ -250,7 +250,7 @@ public class AnalysisMemoryService extends AnalysisBaseService {
 	 */
 	private List<Variable> getMargeVariable(List<Variable> lefts, List<Variable> rights) {
 		List<Variable> all = new ArrayList<Variable>();
-		OperandCounterUtils utils = new OperandCounterUtils();
+		OperationCounterUtils utils = new OperationCounterUtils();
 		if (lefts != null) {
 			for (Variable var : lefts) {
 				if (utils.getVariables(all, var) == null) {
@@ -275,7 +275,7 @@ public class AnalysisMemoryService extends AnalysisBaseService {
 	 * @param lefts			左辺変数リスト
 	 * @param rights		右辺変数リスト
 	 */
-	private void setMemoryThroughput(RequiredBFResult result, List<Variable> lefts, List<Variable> rights) {
+	private void setMemThroughput(RequiredBFResult result, List<Variable> lefts, List<Variable> rights) {
 		if (result == null) return;
 
 		// Store有り、無しの判定
@@ -292,8 +292,8 @@ public class AnalysisMemoryService extends AnalysisBaseService {
 		}
 		result.setThroughput(throughput);
 
-		// スループットモード
-		result.setStoreMode(this.properitiesRequiredBF.getMemThroughputCalcMode());
+		// メモリスループット算出モード
+		result.setMemThroughputCalcMode(this.properitiesRequiredBF.getMemThroughputCalcMode());
 		// 算出元のスループット値(GB/s)（ストア有り or ストアなし）
 		RequiredBF memory = this.properitiesRequiredBF.getRequiredBF(ACCESSMEMORY_TYPE.MEMORY);
 		RequiredBF l1 = this.properitiesRequiredBF.getRequiredBF(ACCESSMEMORY_TYPE.L1_CACHE);
@@ -325,7 +325,7 @@ public class AnalysisMemoryService extends AnalysisBaseService {
 	}
 
 	/**
-	 * アクセス先メモリを設定する.
+	 * メモリアクセス先メモリを設定する.
 	 * @param result		算出結果
 	 * @param lefts			左辺変数リスト
 	 * @param rights		右辺変数リスト

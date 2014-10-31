@@ -230,7 +230,7 @@ public class SettingRequiredBFDialog extends javax.swing.JDialog implements Acti
                 Border border = new EmptyBorder(7,7,0,7);
                 panelContent.setBorder(border);
 
-                // 浮動小数点数演算性能
+                // 理論演算性能
                 int TEXT_INPUT = 5;
                 {
                     JPanel panelPerformance = new JPanel();
@@ -242,7 +242,7 @@ public class SettingRequiredBFDialog extends javax.swing.JDialog implements Acti
                     panelPerformance.setLayout(layoutPerformance);
                     panelContent.add(panelPerformance);
 
-                    JLabel label = new JLabel(Message.getString("settingrequiredbfdialog.label.performance")); //演算性能
+                    JLabel label = new JLabel(Message.getString("settingrequiredbfdialog.label.performance")); //理論演算性能
                     panelPerformance.add(label, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(7, 4, 7, 4), 0, 0));
                     this.txtPerformance = new JTextField(TEXT_INPUT);
                 	this.txtPerformance.setHorizontalAlignment(JTextField.RIGHT);
@@ -298,7 +298,7 @@ public class SettingRequiredBFDialog extends javax.swing.JDialog implements Acti
                         // ストアなし
                         col++;
                         {
-                        	JLabel header = new JLabel(Message.getString("settingrequiredbfdialog.label.nonestore")); //ストア無し
+                        	JLabel header = new JLabel(Message.getString("settingrequiredbfdialog.label.nostore")); //ストア無し
                         	header.setHorizontalAlignment(JLabel.CENTER);
                         	panelRequiredBF.add(header, new GridBagConstraints(col, 1, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 4, 0, 4), 0, 0));
                         }
@@ -324,20 +324,20 @@ public class SettingRequiredBFDialog extends javax.swing.JDialog implements Acti
                         // 背景色
                         col++;
                         {
-                        	JLabel header = new JLabel(Message.getString("settingrequiredbfdialog.label.backcolor")); //背景色
+                        	JLabel header = new JLabel(Message.getString("settingrequiredbfdialog.label.bgcolor")); //背景色
                         	header.setHorizontalAlignment(JLabel.CENTER);
                         	panelRequiredBF.add(header, new GridBagConstraints(col, 0, 2, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 4, 0, 4), 0, 0));
                         }
                         // 色選択
                         {
-                        	JLabel header = new JLabel(Message.getString("settingrequiredbfdialog.label.backcolor.select")); //色選択
+                        	JLabel header = new JLabel(Message.getString("settingrequiredbfdialog.label.bgcolor.select")); //色選択
                         	header.setHorizontalAlignment(JLabel.CENTER);
                         	panelRequiredBF.add(header, new GridBagConstraints(col, 1, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 4, 0, 4), 0, 0));
                         }
                         // 無効
                         col++;
                         {
-                        	JLabel header = new JLabel(Message.getString("settingrequiredbfdialog.label.backcolor.enabled")); //無効
+                        	JLabel header = new JLabel(Message.getString("settingrequiredbfdialog.label.bgcolor.enabled")); //無効
                         	header.setHorizontalAlignment(JLabel.CENTER);
                         	panelRequiredBF.add(header, new GridBagConstraints(col, 1, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 4, 0, 4), 0, 0));
                         }
@@ -347,10 +347,10 @@ public class SettingRequiredBFDialog extends javax.swing.JDialog implements Acti
                         	JSeparator spc = new JSeparator(JSeparator.VERTICAL);
                         	panelRequiredBF.add(spc, new GridBagConstraints(col, 0, 1, layoutMemory.rowHeights.length, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.VERTICAL, new Insets(0, 4, 0, 4), 0, 0));
                         }
-                        // 要求Byte算出
+                        // 要求BF算出
                         col++;
                         {
-                        	JLabel header = new JLabel(Message.getString("settingrequiredbfdialog.label.required")); //<html><center>要求Byte<br/>算出対象</center></html>
+                        	JLabel header = new JLabel(Message.getString("settingrequiredbfdialog.label.reqbf")); //要求BF算出対象
                         	header.setHorizontalAlignment(JLabel.CENTER);
                         	panelRequiredBF.add(header, new GridBagConstraints(col, 0, 1, 2, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 4, 0, 4), 0, 0));
                         }
@@ -363,9 +363,9 @@ public class SettingRequiredBFDialog extends javax.swing.JDialog implements Acti
                         // テーブル
                         // アクセス先名
                         this.lblNames = new JLabel[MEMORY_MAXROWS];
-                        // メモリスループット:ストア有り
+                        // メモリスループット（ストア有り）
                         this.txtMem_throughput_calc_mode_stores = new JTextField[MEMORY_MAXROWS];
-                        // メモリスループット:ストア無し
+                        // メモリスループット（ストア無し）
                         this.txtMem_throughput_calc_mode_nostores = new JTextField[MEMORY_MAXROWS];
                         // 係数
                         this.txtCoefs = new JTextField[MEMORY_MAXROWS];
@@ -373,7 +373,7 @@ public class SettingRequiredBFDialog extends javax.swing.JDialog implements Acti
                         this.btnColors = new JColorButton[MEMORY_MAXROWS];
                         // 背景色の有効、無効
                         this.chkColors = new JCheckBox[MEMORY_MAXROWS];
-                        // 要求Byte算出
+                        // 要求BF算出
                         this.chkRequiredbfs  = new JCheckBox[MEMORY_MAXROWS];
                         int row = 3;
                         for (int i=0; i<MEMORY_MAXROWS; i++) {
@@ -411,7 +411,7 @@ public class SettingRequiredBFDialog extends javax.swing.JDialog implements Acti
                         	this.chkRequiredbfs[i] = new JCheckBox();
                          	panelRequiredBF.add(this.chkRequiredbfs[i], new GridBagConstraints(col, row, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(2, 0, 2, 0), 0, 0));
 
-                        	row ++;
+                        	row++;
                         }
                     }
 
@@ -435,7 +435,7 @@ public class SettingRequiredBFDialog extends javax.swing.JDialog implements Acti
                     	panelOptions.add(labelMemThroughputCalcMode, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 4, 0, 4), 0, 0));
                     	radioMemThroughputCalcModeAuto = new JRadioButton(Message.getString("settingrequiredbfdialog.option.storemode.auto")); //自動判定
                     	radioMemThroughputCalcModeStore = new JRadioButton(Message.getString("settingrequiredbfdialog.label.store")); //ストア有り
-                    	radioMemThroughputCalcModeNostore = new JRadioButton(Message.getString("settingrequiredbfdialog.label.nonestore")); //ストア無し
+                    	radioMemThroughputCalcModeNostore = new JRadioButton(Message.getString("settingrequiredbfdialog.label.nostore")); //ストア無し
                     	ButtonGroup groupStore = new ButtonGroup();
                     	groupStore.add(radioMemThroughputCalcModeAuto);
                     	groupStore.add(radioMemThroughputCalcModeStore);
@@ -450,7 +450,7 @@ public class SettingRequiredBFDialog extends javax.swing.JDialog implements Acti
                     	panelOptions.add(panelStore, new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 4, 0, 4), 0, 0));
 
                         // BF算出単位
-                        JLabel labelBFCalcType = new JLabel(Message.getString("settingrequiredbfdialog.label.unit")); //算出単位
+                        JLabel labelBFCalcType = new JLabel(Message.getString("settingrequiredbfdialog.label.unit")); //BF算出単位
                         panelOptions.add(labelBFCalcType, new GridBagConstraints(0, 1, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 4, 0, 4), 0, 0));
                         this.radioBFCalcTypeUnitBF = new JRadioButton(Message.getString("settingrequiredbfdialog.check.unit.bf")); //Byte/FLOP
                         this.radioBFCalcTypeUnitFB = new JRadioButton(Message.getString("settingrequiredbfdialog.check.unit.fb")); //FLOP/Byte
@@ -523,10 +523,10 @@ public class SettingRequiredBFDialog extends javax.swing.JDialog implements Acti
     public void setRequiredBFProperties(RequiredBFProperties properities) {
     	if (properities == null) return;
 
-        // 演算性能
+        // 浮動小数点演算演算性能
         this.txtPerformance.setText(String.valueOf(properities.getFlopPerformance()));
 
-    	// オプション：スループットストア
+    	// オプション：メモリスループット算出モード（ストアの有無の設定）
 		RequiredBFProperties.MEM_THROUGHPUT_CALC_MODE mem_throughput_calc_mode = this.properities.getMemThroughputCalcMode();
 		if (mem_throughput_calc_mode == RequiredBFProperties.MEM_THROUGHPUT_CALC_MODE.AUTO) {
 			this.radioMemThroughputCalcModeAuto.setSelected(true);
@@ -537,7 +537,7 @@ public class SettingRequiredBFDialog extends javax.swing.JDialog implements Acti
 		else if (mem_throughput_calc_mode == RequiredBFProperties.MEM_THROUGHPUT_CALC_MODE.NOSTORE) {
 			this.radioMemThroughputCalcModeNostore.setSelected(true);
 		}
-    	// オプション：算出単位
+    	// オプション：BF算出単位
 		RequiredBFProperties.BF_CALC_TYPE unit_type = this.properities.getBFCalcType();
 		if (unit_type == RequiredBFProperties.BF_CALC_TYPE.BYTE_FLOP) {
 			this.radioBFCalcTypeUnitBF.setSelected(true);
@@ -551,17 +551,17 @@ public class SettingRequiredBFDialog extends javax.swing.JDialog implements Acti
 		int sizeInteger = this.properities.getDefaultSizeInteger();
 		this.txtSizeInteger.setText(String.valueOf(sizeInteger));
 
-        // アクセス先
+        // メモリアクセス先
         int count = properities.getRequiredBFCount();
         for (int i=0; i<MEMORY_MAXROWS; i++) {
         	if (i<count) {
 	        	RequiredBF bf = properities.getRequiredBF(i);
 	            // 行データの作成
-	            // アクセス先名
+	            // メモリアクセス先名
 	            this.lblNames[i].setText(bf.getName());
-	            // スループット:ストア有り
+	            // メモリスループット:ストア有り
 	            this.txtMem_throughput_calc_mode_stores[i].setText(String.valueOf(bf.getMemThroughputStore()));
-	            // スループット:ストア無し
+	            // メモリスループット:ストア無し
 	            this.txtMem_throughput_calc_mode_nostores[i].setText(String.valueOf(bf.getMemThroughputNostore()));
 	            // 係数
 	            this.txtCoefs[i].setText(String.valueOf(bf.getCoef()));
@@ -570,7 +570,7 @@ public class SettingRequiredBFDialog extends javax.swing.JDialog implements Acti
 	            this.btnColors[i].addActionListener(this);
 	            // 背景色の有効、無効
 	           	this.chkColors[i].setSelected((bf.getBackColor() == null));
-	            // 要求Byte算出
+	            // 要求BF算出
 	            this.chkRequiredbfs[i].setSelected((bf.isRequiredBF()));
         	}
         	else {
@@ -596,7 +596,7 @@ public class SettingRequiredBFDialog extends javax.swing.JDialog implements Acti
      */
     public RequiredBFProperties getRequiredBFProperties() {
 
-        // 演算性能
+        // 浮動小数点数演算性能
     	{
             float value = 0.0f;
             String cell = this.txtPerformance.getText();
@@ -684,7 +684,7 @@ public class SettingRequiredBFDialog extends javax.swing.JDialog implements Acti
 		            this.properities.getRequiredBF(i).setBackColor(null);
         		}
         	}
-            // 要求B算出
+            // 要求BF算出
         	{
         		boolean value = this.chkRequiredbfs[i].isSelected();
 	            this.properities.getRequiredBF(i).setRequiredBF(value);

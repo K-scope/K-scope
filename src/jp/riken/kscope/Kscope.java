@@ -51,18 +51,15 @@ public class Kscope {
     	if (KscopeProperties.isMac()) {
         	// JFrameにメニューをつけるのではなく、一般的なOSXアプリ同様に画面上端のスクリーンメニューにする.
         	System.setProperty("apple.laf.useScreenMenuBar", "true");
-            System.setProperty("com.apple.macos.smallTabs", "true");
-            
-            // スクリーンメニュー左端に表記されるアプリケーション名を設定する
-            // (何も設定しないとクラス名になる。)
-            String title = Message.getString("application.name");
-            
+            System.setProperty("com.apple.macos.smallTabs", "true");           
             try {
                 UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
             } catch (Exception ex) {
                 ex.printStackTrace();
                 return;
             }
+            // スクリーンメニュー左端に表記されるアプリケーション名を設定する (何も設定しないとクラス名になる。)
+            String title = Message.getString("application.name");
             System.setProperty( "com.apple.mrj.application.apple.menu.about.name",title);
         }
         else if (KscopeProperties.isWindows()) {

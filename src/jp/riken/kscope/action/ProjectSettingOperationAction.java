@@ -22,8 +22,8 @@ import java.awt.event.ActionEvent;
 import jp.riken.kscope.Application;
 import jp.riken.kscope.Message;
 import jp.riken.kscope.common.Constant;
-import jp.riken.kscope.dialog.SettingOperandDialog;
-import jp.riken.kscope.properties.OperandProperties;
+import jp.riken.kscope.dialog.SettingOperationDialog;
+import jp.riken.kscope.properties.OperationProperties;
 import jp.riken.kscope.service.AppController;
 
 /**
@@ -31,13 +31,13 @@ import jp.riken.kscope.service.AppController;
  * @author RIKEN
  *
  */
-public class ProjectSettingOperandAction extends ActionBase {
+public class ProjectSettingOperationAction extends ActionBase {
 
     /**
      * コンストラクタ
      * @param controller	アプリケーションコントローラ
      */
-    public ProjectSettingOperandAction(AppController controller) {
+    public ProjectSettingOperationAction(AppController controller) {
         super(controller);
     }
 
@@ -48,24 +48,22 @@ public class ProjectSettingOperandAction extends ActionBase {
     @Override
     public void actionPerformed(ActionEvent event) {
         // ステータスメッセージ
-        final String message = Message.getString("projectsettingoperandction.setup.status"); //演算カウント設定
+        final String message = Message.getString("projectsettingoperationaction.setup.status"); //演算カウント設定
         Application.status.setMessageMain(message);
 
         // 親Frameの取得を行う。
         Frame frame = getWindowAncestor( event );
 
         // 演算カウント設定ダイアログを表示する。
-        OperandProperties properities = this.controller.getPropertiesOperand();
+        OperationProperties properities = this.controller.getPropertiesOperation();
 
-        SettingOperandDialog dialog = new SettingOperandDialog(frame, true, properities);
+        SettingOperationDialog dialog = new SettingOperationDialog(frame, true, properities);
         int result = dialog.showDialog();
         if (result != Constant.OK_DIALOG) {
-        	Application.status.setMessageMain(message +
-        			Message.getString("action.common.cancel.status")); // キャンセル
+        	Application.status.setMessageMain(message + Message.getString("action.common.cancel.status")); // キャンセル
         	return;
         }
-        Application.status.setMessageMain(message +
-    			Message.getString("action.common.done.status")); // 完了
+        Application.status.setMessageMain(message + Message.getString("action.common.done.status")); // 完了
         return;
     }
 

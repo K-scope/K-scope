@@ -67,7 +67,7 @@ import jp.riken.kscope.properties.KscopeProperties;
 import jp.riken.kscope.properties.ApplicationProperties;
 import jp.riken.kscope.properties.KeywordProperties;
 import jp.riken.kscope.properties.RequiredBFProperties;
-import jp.riken.kscope.properties.OperandProperties;
+import jp.riken.kscope.properties.OperationProperties;
 import jp.riken.kscope.properties.ProfilerProperties;
 import jp.riken.kscope.properties.ProgramProperties;
 import jp.riken.kscope.properties.ProjectProperties;
@@ -101,7 +101,7 @@ public class AppController implements PropertyChangeListener {
     private ProgramProperties propertiesProgram;
 
     /** 演算カウントプロパティ */
-    private OperandProperties propertiesOperand;
+    private OperationProperties propertiesOperand;
 
     /** プロファイラプロパティ */
     private ProfilerProperties propertiesProfiler;
@@ -268,7 +268,7 @@ public class AppController implements PropertyChangeListener {
         	this.propertiesProgram = new ProgramProperties();
         }
         if (this.propertiesOperand == null) {
-        	this.propertiesOperand = new OperandProperties();
+        	this.propertiesOperand = new OperationProperties();
         }
         if (this.propertiesApplication == null) {
         	this.propertiesApplication = new ApplicationProperties();
@@ -345,7 +345,7 @@ public class AppController implements PropertyChangeListener {
      * 演算カウントプロパティを取得する
      * @return		演算カウントプロパティ
      */
-    public OperandProperties getPropertiesOperand() {
+    public OperationProperties getPropertiesOperation() {
         return this.propertiesOperand;
     }
 
