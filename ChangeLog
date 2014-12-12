@@ -42,7 +42,7 @@ CHANGELOG
 
 (2013/10/31) Version 0.2.4 is released. 
 This release is collaboration version between AICS HPC Usability Research Team and AICS Software Development Team.
-- Bundled new library, SSHconnect.jar into the binary package of the K-scope
+- Bundled a new library, SSHconnect.jar into the binary package of the K-scope
 - Added a building feature for intermediate code on server via SSH port in full project mode
 - Fixed an implementation of main class name: "Go" to "kscope"
 - Fixed an implementation for the interfaces (minor change)
@@ -53,7 +53,9 @@ This release is collaboration version between AICS HPC Usability Research Team a
 - Fixed an implementation for password input in server settings table (Hide password)
 - Version upgrade for SSHconnect (1.03 to 1.18) to support front-end of the K computer
 
-(2014/11/10) Version 0.2.6 is released.
+(2014/12/19) Version 0.2.6 is released.
 This release is collaboration version between Yokokawa-lab (Main contributor is Tomoyo Ohichi.) in Kobe university and AICS Software Development Team.
+- Added a new feature for expanding the selected node of the tree by double clicking a source line on source-view
+- Added a new feature for 
 - Fixed an implementation for JDK8 instead of JDK7 which is end of support in K-scope.
 - Fixed documentations and removed deprecated codes and properties.

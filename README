@@ -33,18 +33,13 @@ following URL.
 
 http://www.hpcs.cs.tsukuba.ac.jp/omni-compiler/xcalablemp/download.html
 
-If you can access a remote server installed with Omni XcalableMP (OMP)
+If you can access a remote server installed with Omni XcalableMP (XMP)
 compiler (For example, front-end of the K computer is suitable environment
-to make intermediate codes with OMP), you can build intermediate codes
+to make intermediate codes with XMP), you can build intermediate codes
 on the server remotely via SSH connection by SSHconnect.jar. This software
 is an utility for remote command execution with automatic transfer.
 It is developed by RIKEN AICS HPC Usability Team in collaboration to enhance
 the K-scope's feature, and is bundled with the binary package of K-scope.
-
-The usage for SSHconnect is simple and easy.
-First, please copy SSHconnect.jar in the same directory as kscope.jar.
-After the setup, please restart K-scope, and then the features for SSHconnect
-is enabled in new project wizard.
 
 Compile and Run
 ===============
