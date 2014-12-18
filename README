@@ -7,14 +7,21 @@ This tool simply visualizes call tree from AST based on compiler's static
 analysis. The call tree consists of loops, branches, and procedure-calls as
 candidates of hot-spot in an application. Such a source code visualization
 is suitable for source code reading for engineers who improve application
-performance in high performance computing. This tool expects to understand
-program structure before performance tuning.
+performance in high performance computing. This tool will be expected to
+understand program structure before performance tuning.
 
 K-scope is developed by RIKEN AICS Software Development Team, and is distributed
 as open-source software. The latest version and documents are available in the
 following download site.
 
 http://www.aics.riken.jp/ungi/soft/kscope/
+
+Also, we collaborated with following groups to improve the profrmance tuning
+environment of HPC, imported some features from the contributions as an
+experimental strudy.
+
+- RIKEN AICS HPC Usability Team (version 0.2.4)
+- Yokokawa laboratory in Kobe university (version 0.2.6)
 
 Preliminaries
 =============
