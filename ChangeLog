@@ -55,7 +55,7 @@ This release is collaboration version between AICS HPC Usability Research Team a
 
 (2014/12/19) Version 0.2.6 is released.
 This release is collaboration version between Yokokawa-lab (Main contributor is Tomoyo Ohichi.) in Kobe university and AICS Software Development Team.
-- Added a feature for expanding the selected node on explore-view by double clicking a source line on source-view
-- Added a feature of required byte/flop calculation for all nodes of the tree
+- Added a feature: expanding the element node of tree on explore-view by double clicking a source line on source-view
+- Added a feature: required byte/flop estimation for all nodes of tree
 - Fixed an implementation for JDK8 instead of JDK7 which is end of support in K-scope.
 - Fixed documentations and removed deprecated codes and properties.
