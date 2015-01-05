@@ -43,7 +43,7 @@ import jp.riken.kscope.model.ModuleTreeModel;
 import jp.riken.kscope.model.ProjectModel;
 import jp.riken.kscope.properties.KscopeProperties;
 import jp.riken.kscope.properties.ProjectProperties;
-import jp.riken.kscope.properties.SSHconnectProperties;
+import jp.riken.kscope.properties.DockerIaaSProperties;
 import jp.riken.kscope.service.AppController;
 import jp.riken.kscope.service.FutureService;
 import jp.riken.kscope.service.LanguageService;
@@ -116,20 +116,17 @@ public class FileProjectNewAction extends ActionBase {
     	}
     	
         final String message = Message.getString("mainmenu.file.newproject"); //プロジェクトの新規作成
-        SSHconnectProperties sshc_properties = null;
-        
+        DockerIaaSProperties docker_iaas_properties = null;
         Application.status.setMessageMain(message);
-
-       
 
         // 最終アクセスフォルダ
         String currentFolder = this.controller.getLastAccessFolder();
         // Read default value of use_sshconnect
         ProjectProperties pproperties = this.controller.getPropertiesProject();
-        sshc_properties = this.controller.getPropertiesSSH();
+        docker_iaas_properties = this.controller.getPropertiesDIAAS();
         
         // プロジェクトの新規作成ダイアログを表示する。
-        FileProjectNewDialog dialog = new FileProjectNewDialog(frame, true, pproperties,sshc_properties, this.controller);
+        FileProjectNewDialog dialog = new FileProjectNewDialog(frame, true, pproperties,docker_iaas_properties, this.controller);
         dialog.setLastAccessFolder(currentFolder);
         // 除外パス名を設定する
         dialog.addExcludeName(KscopeProperties.SETTINGS_FOLDER);
@@ -155,9 +152,9 @@ public class FileProjectNewAction extends ActionBase {
         // 中間コードの生成を行うか否か
         boolean genCode = dialog.isGenerateIntermediateCode();
         
-        boolean use_sshconnect = dialog.useSSHconnect();
+        boolean use_docker_iaas = dialog.useDockerIaaS();
         // Set Project property
-        this.controller.getPropertiesProject().getPropertyValue(ProjectProperties.USE_SSHCONNECT).setValue(use_sshconnect ? "true" : "false");
+        this.controller.getPropertiesProject().getPropertyValue(ProjectProperties.USE_SSHCONNECT).setValue(use_docker_iaas ? "true" : "false");
         
         // 選択ソース
         boolean selectedXml = dialog.isSelectedXml();
@@ -231,7 +228,7 @@ public class FileProjectNewAction extends ActionBase {
             // 要求Byte/FLOP設定プロパティ
             projectService.setPropertiesMemory(this.controller.getPropertiesMemory());
             
-            projectService.setPropertiesSSH(this.controller.getPropertiesSSH());
+            projectService.setPropertiesDIAAS(this.controller.getPropertiesDIAAS());
 
             // Make関連情報
             File work = null;
@@ -246,11 +243,9 @@ public class FileProjectNewAction extends ActionBase {
                 // プロジェクトプロパティ設定
                 this.controller.getPropertiesProject().setBuildCommand(build_command);
                 
-                if (use_sshconnect) { // Set command line options for SSHconnect call
-                	sshc_properties = this.controller.getPropertiesSSH();
-                	sshc_properties.setLocalPath(work.getAbsolutePath());
-                	sshc_properties.setFileFilter(dialog.getFileFilter());
-                	sshc_properties.setPreprocessFiles(dialog.getPreprocessFiles());
+                if (use_docker_iaas) { // Set command line options for SSHconnect call
+                	docker_iaas_properties = this.controller.getPropertiesDIAAS();
+                	docker_iaas_properties.setLocalPath(work.getAbsolutePath());                	
                 }
             }
             // 中間コードの生成を行わない

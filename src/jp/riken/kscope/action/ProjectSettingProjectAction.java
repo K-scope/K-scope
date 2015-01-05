@@ -25,7 +25,7 @@ import jp.riken.kscope.common.Constant;
 import jp.riken.kscope.data.ProjectPropertyValue;
 import jp.riken.kscope.dialog.SettingProjectDialog;
 import jp.riken.kscope.properties.ProjectProperties;
-import jp.riken.kscope.properties.SSHconnectProperties;
+import jp.riken.kscope.properties.DockerIaaSProperties;
 import jp.riken.kscope.properties.SourceProperties;
 import jp.riken.kscope.service.AppController;
 
@@ -51,7 +51,7 @@ public class ProjectSettingProjectAction extends ActionBase {
 		
 		// プロジェクト設定ダイアログを表示する。
         ProjectProperties properties = this.controller.getPropertiesProject();
-		SSHconnectProperties sproperties = this.controller.getPropertiesSSH();
+        DockerIaaSProperties sproperties = this.controller.getPropertiesDIAAS();
 		if (!sproperties.haveSSHconnect) {
 			ProjectPropertyValue useSSHconnect = properties.getPropertyValue(ProjectProperties.USE_SSHCONNECT);
 			useSSHconnect.setType("fixed-text");

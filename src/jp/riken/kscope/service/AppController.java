@@ -72,7 +72,7 @@ import jp.riken.kscope.properties.OperandProperties;
 import jp.riken.kscope.properties.ProfilerProperties;
 import jp.riken.kscope.properties.ProgramProperties;
 import jp.riken.kscope.properties.ProjectProperties;
-import jp.riken.kscope.properties.SSHconnectProperties;
+import jp.riken.kscope.properties.DockerIaaSProperties;
 import jp.riken.kscope.properties.SourceProperties;
 import jp.riken.kscope.properties.VariableMemoryProperties;
 
@@ -82,6 +82,8 @@ import jp.riken.kscope.properties.VariableMemoryProperties;
  *
  */
 public class AppController implements PropertyChangeListener {
+	
+	private String remote_make_file = "makeSetup.sh";
 
     /** メインフレーム */
     private MainFrame mainframe;
@@ -111,8 +113,8 @@ public class AppController implements PropertyChangeListener {
     private MemorybandProperties propertiesMemory;
     
     // SSHconnect
-    private SSHconnectProperties propertiesSSH = null;
-
+    private DockerIaaSProperties docker_iaas_properties = null;
+    
     /** アプリケーションプロパティ */
     private ApplicationProperties propertiesApplication;
 
@@ -144,18 +146,18 @@ public class AppController implements PropertyChangeListener {
     private AnalysisVariableAction actionVariable = null;
 
     /**/
-    private boolean haveSSHconnect = false;
+    private boolean haveDockerIaaS = false;
 
     /**
      * コンストラクタ
      */
     public AppController() {
-        haveSSHconnect = checkSSHconnect();
+        haveDockerIaaS = checkDockerIaaS();
     }
 
     /**/
-    private boolean checkSSHconnect() {
-        File f = new File("SSHconnect.jar");
+    private boolean checkDockerIaaS() {
+        File f = new File(remote_make_file);
         if (f.exists()) {
             System.out.println(f.getAbsolutePath());
             return true;
@@ -165,7 +167,7 @@ public class AppController implements PropertyChangeListener {
 
     /**/
     public boolean isSSHconnectAvailable() {
-        return this.haveSSHconnect;
+        return this.haveDockerIaaS;
     }
 
     /**
@@ -272,9 +274,9 @@ public class AppController implements PropertyChangeListener {
         if (this.propertiesApplication == null) {
         	this.propertiesApplication = new ApplicationProperties();
         }
-        if (this.propertiesSSH == null) { //  always true!! --> || this.propertiesSSH.isEmpty()) {
-        		this.propertiesSSH = new SSHconnectProperties(this);
-        		this.propertiesSSH.haveSSHconnect = this.haveSSHconnect; // set Flag if SSHconnect is present
+        if (this.docker_iaas_properties == null) { //  always true!! --> || this.propertiesSSH.isEmpty()) {
+        		this.docker_iaas_properties = new DockerIaaSProperties(this);
+        		this.docker_iaas_properties.haveSSHconnect = this.haveDockerIaaS; // set Flag if SSHconnect is present
         }
         // メニュー表示選択をコピーする
         this.mainframe.getMenuMain().clearSelectedMenu();
@@ -384,8 +386,8 @@ public class AppController implements PropertyChangeListener {
      * Get SSH properties
      * @return SSH properties
      */
-    public SSHconnectProperties getPropertiesSSH() {
-    	return propertiesSSH;
+    public DockerIaaSProperties getPropertiesDIAAS() {
+    	return docker_iaas_properties;
     }
     
     /**
@@ -805,8 +807,8 @@ public class AppController implements PropertyChangeListener {
 
     
 
-    public void setSSHproperties(SSHconnectProperties ssh_properties) {
-    	this.propertiesSSH = ssh_properties;
+    public void setSSHproperties(DockerIaaSProperties docker_iaas_properties) {
+    	this.docker_iaas_properties = docker_iaas_properties;
     }
     
     /**

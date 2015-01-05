@@ -67,7 +67,7 @@ import jp.riken.kscope.common.Constant;
 import jp.riken.kscope.data.FILE_TYPE;
 import jp.riken.kscope.properties.KscopeProperties;
 import jp.riken.kscope.properties.ProjectProperties;
-import jp.riken.kscope.properties.SSHconnectProperties;
+import jp.riken.kscope.properties.DockerIaaSProperties;
 import jp.riken.kscope.service.AppController;
 import jp.riken.kscope.utils.FileUtils;
 import jp.riken.kscope.utils.ResourceUtils;
@@ -123,17 +123,17 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
     /** SSHconnect用の置き換えすべきファイル追加ボタン */
     private JButton addprerocessfile_button;
     /** Panel holds file_filter and process_files fields */
-    private JPanel sshc_settings_panel;
+    private JPanel docker_settings_panel;
     /** プロジェクトプロパティ*/
     private ProjectProperties pproperties;
     /** SSH connectプロパティ */
-    private SSHconnectProperties sproperties;
+    private DockerIaaSProperties docker_iaas_properties;
     
     /** Parent action */
     private AppController controller;
         
     /** SSHconnectを利用する */
-    private JCheckBox checkUseSSHconnect;
+    private JCheckBox checkUseRemote;
     private JButton ssh_settings_button;
         
     /** makefile テキストフィールド*/
@@ -180,10 +180,10 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
      * @param modal		true=モーダルダイアログを表示する
      * @wbp.parser.constructor
      */
-    public FileProjectNewDialog(Frame owner, boolean modal, ProjectProperties pproperties, SSHconnectProperties sproperties, AppController controller) {
+    public FileProjectNewDialog(Frame owner, boolean modal, ProjectProperties pproperties, DockerIaaSProperties docker_iaas_properties, AppController controller) {
         super(owner, modal);
         this.pproperties = pproperties;
-        this.sproperties = sproperties;
+        this.docker_iaas_properties = docker_iaas_properties;
         this.controller = controller;
         this.frame = owner;
         initGUI();
@@ -331,20 +331,20 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
             layoutSelect.columnWidths = new int[]{32, 32, 64, 128};
             panelSelect.setLayout(layoutSelect);
 
-            if (this.sproperties != null && this.sproperties.haveSSHconnect) {
+            if (this.docker_iaas_properties != null && this.docker_iaas_properties.have_docker_iaas) {
                 ssh_settings_button = new JButton(Message.getString("fileprojectnewdialog.kindpanel.SSHsettings"));
                 // SSHconnectの使用切り替え
-                checkUseSSHconnect = new JCheckBox(Message.getString("fileprojectnewdialog.kindpanel.checkbox.useSSHconnect")) {
+                checkUseRemote = new JCheckBox(Message.getString("fileprojectnewdialog.kindpanel.checkbox.useSSHconnect")) {
                     @Override
                     protected void fireStateChanged() {
-                        if (haveSSHconnect(sproperties)) {
+                        if (haveDockerIAAS(docker_iaas_properties)) {
                             ssh_settings_button.setEnabled(this.isSelected());
                         }
                     }
                 };
-                checkUseSSHconnect.setToolTipText(Message.getString("fileprojectnewdialog.kindpanel.checkbox.useSSHconnect.tooltip"));
-                checkUseSSHconnect.setEnabled(isFullProject());
-                checkUseSSHconnect.setSelected(this.pproperties.useSSHconnect());
+                checkUseRemote.setToolTipText(Message.getString("fileprojectnewdialog.kindpanel.checkbox.useSSHconnect.tooltip"));
+                checkUseRemote.setEnabled(isFullProject());
+                checkUseRemote.setSelected(this.pproperties.useSSHconnect());
             }
 
             //中間コードの生成は行わないラジオボタン（フルモードI）
@@ -360,8 +360,8 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
                     } else {
                         pproperties.setHiddenPropertyValue(ProjectProperties.GENERATE_XML, "false");
                     }
-                    if (haveSSHconnect(sproperties)) {
-                        checkUseSSHconnect.setEnabled(this.isSelected());
+                    if (haveDockerIAAS(docker_iaas_properties)) {
+                        checkUseRemote.setEnabled(this.isSelected());
                     }
                     if (labelStatus[2] != null) {
                         labelStatus[2].setVisible(isGenerateIntermediateCode());
@@ -400,9 +400,9 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
                         checkbox_StructureAnalysis.setEnabled(this.isSelected());
                         checkbox_StructureAnalysis.setSelected(this.isSelected());
                     }
-                    if (haveSSHconnect(sproperties)) {
+                    if (haveDockerIAAS(docker_iaas_properties)) {
                         boolean enabled = this.isSelected() && radioGenXML.isSelected() && radioGenXML.isEnabled();
-                        checkUseSSHconnect.setEnabled(enabled);
+                        checkUseRemote.setEnabled(enabled);
                         ssh_settings_button.setEnabled(enabled);                                              
                     }
                 }
@@ -429,8 +429,8 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
             panelSelect.add(radioFullMode, new GridBagConstraints(0, 0, 3, 1, 1.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
             panelSelect.add(radioNotGenXML, new GridBagConstraints(1, 1, 2, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
             panelSelect.add(radioGenXML, new GridBagConstraints(1, 2, 3, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
-            if (this.sproperties != null && this.sproperties.haveSSHconnect) {
-                panelSelect.add(checkUseSSHconnect, new GridBagConstraints(2, 3, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
+            if (this.docker_iaas_properties != null && this.docker_iaas_properties.have_docker_iaas) {
+                panelSelect.add(checkUseRemote, new GridBagConstraints(2, 3, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
                 panelSelect.add(ssh_settings_button, new GridBagConstraints(3, 3, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
                 ssh_settings_button.addActionListener(this);
             }
@@ -445,11 +445,11 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
         return panelContent;
     }
 
-    protected boolean haveSSHconnect(SSHconnectProperties sproperties) {
-        if (sproperties == null) {
+    protected boolean haveDockerIAAS(DockerIaaSProperties docker_iaas_properties) {
+        if (docker_iaas_properties == null) {
             return false;
         }
-        return sproperties.haveSSHconnect;
+        return docker_iaas_properties.have_docker_iaas;
     }
 
     /**
@@ -542,39 +542,15 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
 
 
         // Process files & File filter
-        if (this.sproperties != null && this.sproperties.haveSSHconnect) {
+        if (this.docker_iaas_properties != null && this.docker_iaas_properties.have_docker_iaas) {
 
-            sshc_settings_panel = new JPanel();
+            docker_settings_panel = new JPanel();
             GridBagLayout sshc_panel_layout = new GridBagLayout();
             sshc_panel_layout.columnWidths = new int[]{7, 160, 7, 7};
             sshc_panel_layout.columnWeights = new double[]{0.0, 0.0, 1.0, 0.0};
             sshc_panel_layout.rowHeights = new int[]{16, 16, 16};
-            sshc_settings_panel.setLayout(sshc_panel_layout);
-
-            JTextArea sshc_text = new JTextArea(Message.getString("fileprojectnewdialog.basepanel.filefilter.desc"));
-            sshc_text.setLineWrap(true);
-            sshc_text.setWrapStyleWord(true);
-            sshc_text.setOpaque(false);
-            sshc_text.setEditable(false);
-
-            JLabel ffl = new JLabel(Message.getString("fileprojectnewdialog.basepanel.filefilter.label"));
-            txt_filefilter = new JTextField();
-            String ffilter = this.sproperties.getPropertySet(SSHconnectProperties.FILE_FILTER).getValue();
-            txt_filefilter.setText(ffilter);
-            JLabel procfl = new JLabel(Message.getString("fileprojectnewdialog.basepanel.processfiles.label"));
-            txt_preprocess_files = new JTextField();
-            addprerocessfile_button = new JButton(Message.getString("fileprojectnewdialog.basepanel.processfiles.addbutton"));
-            addprerocessfile_button.setEnabled(false);
-            addprerocessfile_button.addActionListener(this);
-
-            sshc_settings_panel.add(sshc_text, new GridBagConstraints(0, 0, 4, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 7, 10, 7), 0, 0));
-            sshc_settings_panel.add(ffl, new GridBagConstraints(1, 1, 1, 1, 0.0, 0.0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 7, 0, 7), 0, 0));
-            sshc_settings_panel.add(txt_filefilter, new GridBagConstraints(2, 1, 2, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
-            sshc_settings_panel.add(procfl, new GridBagConstraints(1, 2, 1, 1, 0.0, 0.0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 7, 0, 7), 0, 0));
-            sshc_settings_panel.add(txt_preprocess_files, new GridBagConstraints(2, 2, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
-            sshc_settings_panel.add(addprerocessfile_button, new GridBagConstraints(3, 2, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
-
-            panelContent.add(sshc_settings_panel, new GridBagConstraints(1, 4, 3, 2, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(7, 0, 0, 7), 0, 0));
+            docker_settings_panel.setLayout(sshc_panel_layout);
+      
         }
 
         return panelContent;
@@ -1121,12 +1097,12 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
             this.btnBack.setEnabled(false);
         } else if (index == 1) { // open BasePanel
             // hide file_filter and process_files fields
-            if (this.sproperties.haveSSHconnect) {
-                if (useSSHconnect() && !haveAllSettings2connect()) {
+            if (this.docker_iaas_properties.have_docker_iaas) {
+                if (useDockerIaaS() && !haveAllSettings2connect()) {
                     ProjectSettingSSHAction psssh_action = new ProjectSettingSSHAction(this.controller);
                     psssh_action.openDialog(this.frame, Message.getString("projectsettingsshconnect.setup.need_parameters"));
                 }
-                sshc_settings_panel.setVisible(useSSHconnect());
+                docker_settings_panel.setVisible(useDockerIaaS());
             }
             if (this.txtProjectFolder.getText().length() < 1) {
                 this.btnNext.setEnabled(false);  // Disable until project folder selected    		
@@ -1169,7 +1145,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
             
             //(2013/10/16) added by teraim
             //SSHconnectを使う場合は、既存中間コードの追加をdisableにする。
-            if (useSSHconnect()) {
+            if (useDockerIaaS()) {
                 listProjectXml.setEnabled(false);
                 btnXmlFolder.setEnabled(false);
                 btnXmlFile.setEnabled(false);
@@ -1194,15 +1170,15 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
 
     //
     private boolean haveAllSettings2connect() {
-        if (this.sproperties == null) {
+        if (this.docker_iaas_properties == null) {
             return false;
         }
         try {
-            String host = this.sproperties.getPropertySet(SSHconnectProperties.HOST).getValue();
+            String host = this.docker_iaas_properties.getPropertySet(DockerIaaSProperties.HOST).getValue();
             if (host == null || host.length() < 1) {
                 return false;
             }
-            String user = this.sproperties.getPropertySet(SSHconnectProperties.USER).getValue();
+            String user = this.docker_iaas_properties.getPropertySet(DockerIaaSProperties.USER).getValue();
             if (user == null || user.length() < 1) {
                 return false;
             }
@@ -1615,7 +1591,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
 
     private void enableButtons() {
         this.btnNext.setEnabled(true);
-        if (this.sproperties != null && this.sproperties.haveSSHconnect) {
+        if (this.docker_iaas_properties != null && this.docker_iaas_properties.have_docker_iaas) {
           this.addprerocessfile_button.setEnabled(true);
         }
     }
@@ -2041,16 +2017,16 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
     }
 
     /**
-     * SSHconncet を利用するか否か
+     * Docker IaaS を利用するか否か
      *
      * @return true = 利用する
      */
-    public boolean useSSHconnect() {
-        if (this.checkUseSSHconnect == null) {
+    public boolean useDockerIaaS() {
+        if (this.checkUseRemote == null) {
             return false;
         }
-        if (this.checkUseSSHconnect.isEnabled()) {
-            return this.checkUseSSHconnect.isSelected();
+        if (this.checkUseRemote.isEnabled()) {
+            return this.checkUseRemote.isSelected();
         }
         return false;
     }
