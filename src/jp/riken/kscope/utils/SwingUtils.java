@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  * 
- * Version to work with SSHconnect.
+ * Version for building code on a server.
  */
 
 package jp.riken.kscope.utils;
@@ -445,7 +445,7 @@ public class SwingUtils {
 				validcommand[i] = StringUtils.trimQuote(validcommand[i]);
 			}
 			ProcessBuilder pb = null;
-			if (commands[0].indexOf("java")==0) { // call SSHconnect
+			if (commands[0].indexOf("java")==0) { // call remote build command
 				pb = new ProcessBuilder(commands);
 			}
 			else {

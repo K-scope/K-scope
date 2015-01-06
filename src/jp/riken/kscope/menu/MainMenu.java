@@ -68,7 +68,7 @@ import jp.riken.kscope.action.ProjectSettingMemoryAction;
 import jp.riken.kscope.action.ProjectSettingOperandAction;
 import jp.riken.kscope.action.ProjectSettingProfilerAction;
 import jp.riken.kscope.action.ProjectSettingProjectAction;
-import jp.riken.kscope.action.ProjectSettingSSHAction;
+import jp.riken.kscope.action.ProjectSettingDockerAction;
 import jp.riken.kscope.action.ProjectSettingToolsAction;
 import jp.riken.kscope.action.ProjectSettingViewAction;
 import jp.riken.kscope.action.SearchFindAction;
@@ -394,13 +394,13 @@ public class MainMenu extends JMenuBar implements  MenuListener {
         menuProjectSetting.add(menuProjectSettingMemory);
         menuProjectSettingMemory.addActionListener(new ProjectSettingMemoryAction(this.controller));
         
-        if (this.controller.isSSHconnectAvailable()) {
+        if (this.controller.haveDIAAS()) {
         	// セパレータ
         	menuProjectSetting.addSeparator();
-        	// SSHconnect 設定
-        	JMenuItem menuProjectSettingSSH = new JMenuItem(Message.getString("mainmenu.project.config.sshconnect")); // SSHconnect
+        	// Remote connection
+        	JMenuItem menuProjectSettingSSH = new JMenuItem(Message.getString("mainmenu.project.config.server")); 
         	menuProjectSetting.add(menuProjectSettingSSH);
-        	menuProjectSettingSSH.addActionListener(new ProjectSettingSSHAction(this.controller));
+        	menuProjectSettingSSH.addActionListener(new ProjectSettingDockerAction(this.controller));
         }
         
         // 分析

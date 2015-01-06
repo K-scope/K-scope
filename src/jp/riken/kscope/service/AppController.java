@@ -112,7 +112,7 @@ public class AppController implements PropertyChangeListener {
     /** 要求Byte/FLOP設定プロパティ */
     private MemorybandProperties propertiesMemory;
     
-    // SSHconnect
+    // Docker IaaS properties
     private DockerIaaSProperties docker_iaas_properties = null;
     
     /** アプリケーションプロパティ */
@@ -166,7 +166,7 @@ public class AppController implements PropertyChangeListener {
     }
 
     /**/
-    public boolean isSSHconnectAvailable() {
+    public boolean haveDIAAS() {
         return this.haveDockerIaaS;
     }
 
@@ -276,7 +276,7 @@ public class AppController implements PropertyChangeListener {
         }
         if (this.docker_iaas_properties == null) { //  always true!! --> || this.propertiesSSH.isEmpty()) {
         		this.docker_iaas_properties = new DockerIaaSProperties(this);
-        		this.docker_iaas_properties.haveSSHconnect = this.haveDockerIaaS; // set Flag if SSHconnect is present
+        		this.docker_iaas_properties.have_docker_iaas = this.haveDockerIaaS; // set Flag if SSHconnect is present
         }
         // メニュー表示選択をコピーする
         this.mainframe.getMenuMain().clearSelectedMenu();

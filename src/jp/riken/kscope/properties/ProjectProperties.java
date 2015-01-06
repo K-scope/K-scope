@@ -54,10 +54,8 @@ public class ProjectProperties extends PropertiesBase {
     
     /** プロジェクトタイトルプロパティキー */
     public static final String PRJ_TITLE = "project-title";
-    /** New properties for SSHconnect */
-    //public static final String FILE_FILTER = "ssh-file_filter";
-    //public static final String PROCESS_FILES = "ssh-process_files";
-    public static final String USE_SSHCONNECT = "use-sshconnect";
+    /** New properties for building on server */
+    public static final String USE_SERVER = "use-server";
     
     public static final String GENERATE_XML = "genXML";
     public static final String FULL_PROJECT = "full_project";
@@ -250,6 +248,7 @@ public class ProjectProperties extends PropertiesBase {
      */
     public ProjectPropertyValue getPropertyValue(String key) {
         if (key == null) {
+        	System.err.println("Key "+key+" is null");
             return null;
         }
 
@@ -258,6 +257,7 @@ public class ProjectProperties extends PropertiesBase {
                 return property;
             }
         }
+        System.err.println("Property "+key+" not found");
         return null;
     }
     
@@ -494,11 +494,11 @@ public class ProjectProperties extends PropertiesBase {
 	// DELETED : public void setRebuildFlag(boolean flag) {}
 		
 	/**
-	 * Return true if project uses SSHconnect for building Fortran project.
-	 * Returns boolean "true" if property use-sshconnect is set to String "true". 
+	 * Return true if project uses server for building Fortran project.
+	 * Returns boolean "true" if property use-server is set to String "true". 
 	 * @return
 	 */
-	public boolean useSSHconnect() {
-		return getPropertyValue(USE_SSHCONNECT).getValue().equalsIgnoreCase("true");
+	public boolean useServer() {
+		return getPropertyValue(USE_SERVER).getValue().equalsIgnoreCase("true");
 	}
 }

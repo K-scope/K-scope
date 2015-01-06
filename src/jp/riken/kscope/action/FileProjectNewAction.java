@@ -154,7 +154,7 @@ public class FileProjectNewAction extends ActionBase {
         
         boolean use_docker_iaas = dialog.useDockerIaaS();
         // Set Project property
-        this.controller.getPropertiesProject().getPropertyValue(ProjectProperties.USE_SSHCONNECT).setValue(use_docker_iaas ? "true" : "false");
+        this.controller.getPropertiesProject().getPropertyValue(ProjectProperties.USE_SERVER).setValue(use_docker_iaas ? "true" : "false");
         
         // 選択ソース
         boolean selectedXml = dialog.isSelectedXml();
@@ -243,7 +243,7 @@ public class FileProjectNewAction extends ActionBase {
                 // プロジェクトプロパティ設定
                 this.controller.getPropertiesProject().setBuildCommand(build_command);
                 
-                if (use_docker_iaas) { // Set command line options for SSHconnect call
+                if (use_docker_iaas) { // Set command line options for remote build command
                 	docker_iaas_properties = this.controller.getPropertiesDIAAS();
                 	docker_iaas_properties.setLocalPath(work.getAbsolutePath());                	
                 }

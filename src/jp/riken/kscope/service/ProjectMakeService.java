@@ -51,7 +51,7 @@ import jp.riken.kscope.language.utils.ValidateLanguage;
 import jp.riken.kscope.model.ProjectModel;
 import jp.riken.kscope.model.ReplacementResultTableModel;
 import jp.riken.kscope.properties.ProjectProperties;
-import jp.riken.kscope.properties.SSHconnectProperties;
+import jp.riken.kscope.properties.DockerIaaSProperties;
 import jp.riken.kscope.utils.Logger;
 import jp.riken.kscope.utils.SwingUtils;
 import jp.riken.kscope.xcodeml.XcodeMLParserStax;
@@ -355,20 +355,18 @@ public class ProjectMakeService  extends BaseService {
 		// ステータスメッセージ
         Application.status.setProgressStart(true);
         ProjectProperties pproperties = this.controller.getPropertiesProject();
-        SSHconnectProperties sshc_properties = this.controller.getPropertiesSSH();
+        DockerIaaSProperties docker_iaas_properties = this.controller.getPropertiesDIAAS();
         String build_command = pproperties.getBuildCommand(); 
         if (build_command == null || build_command.length() <= 0) return false;
         String[] exec_commands = null;
         
         
-        if (useSSHconnect(pproperties, sshc_properties)) {
-        	// inject SSHconnect call
-        	String[] sshc_cl = sshc_properties.getCommandLineOptions();
-        	int formal_commands = 3;
+        if (useDockerIaaS(pproperties, docker_iaas_properties)) {
+        	// inject remote build command
+        	String[] sshc_cl = docker_iaas_properties.getCommandLineOptions();
+        	int formal_commands = 1;
         	exec_commands = new String [formal_commands + sshc_cl.length];
-        	exec_commands[0] = "java";
-        	exec_commands[1] = "-jar";
-        	exec_commands[2] = "SSHconnect.jar";
+        	exec_commands[0] = "./makeRemote.sh";
         	for (int i = 0; i < sshc_cl.length; i++) {
         		exec_commands[i + formal_commands] = sshc_cl[i];
         	}
@@ -378,7 +376,7 @@ public class ProjectMakeService  extends BaseService {
         // makeコマンド実行
     	int result = -1;
 		try {
-			if (useSSHconnect(pproperties, sshc_properties)) result = SwingUtils.processRun(exec_commands, this.workdirectory, this.outStream);
+			if (useDockerIaaS(pproperties, docker_iaas_properties)) result = SwingUtils.processRun(exec_commands, this.workdirectory, this.outStream);
 			else result = SwingUtils.processRun(build_command.split(" "), this.workdirectory, this.outStream);
 			if (result != 0) { // 中間コードの生成に失敗した場合は継続するか確認
 				if (JOptionPane.showConfirmDialog(null,
@@ -400,12 +398,12 @@ public class ProjectMakeService  extends BaseService {
 
 	/**
 	 * @param pproperties
-	 * @param sshc_properties
+	 * @param docker_iaas_properties
 	 * @return
 	 */
-	private boolean useSSHconnect(ProjectProperties pproperties, SSHconnectProperties sshc_properties) {
-		if (sshc_properties == null || pproperties == null) return false;
-		return sshc_properties.haveSSHconnect && pproperties.useSSHconnect();
+	private boolean useDockerIaaS(ProjectProperties pproperties, DockerIaaSProperties docker_iaas_properties) {
+		if (docker_iaas_properties == null || pproperties == null) return false;
+		return docker_iaas_properties.have_docker_iaas && pproperties.useServer();
 	}
 
 	/**

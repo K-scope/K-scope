@@ -62,7 +62,7 @@ import javax.swing.border.EtchedBorder;
 import javax.swing.border.LineBorder;
 
 import jp.riken.kscope.Message;
-import jp.riken.kscope.action.ProjectSettingSSHAction;
+import jp.riken.kscope.action.ProjectSettingDockerAction;
 import jp.riken.kscope.common.Constant;
 import jp.riken.kscope.data.FILE_TYPE;
 import jp.riken.kscope.properties.KscopeProperties;
@@ -116,23 +116,17 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
     /** シンプルモード */
     private JRadioButton radioSimpleMode;
     
-    /** SSHconnect用のファイル名フィルタ */
-    private JTextField txt_filefilter;
-    /** SSHconnect用の置き換えすべきプレースホルダーのあるファイル群 */
-    private JTextField txt_preprocess_files;
-    /** SSHconnect用の置き換えすべきファイル追加ボタン */
-    private JButton addprerocessfile_button;
     /** Panel holds file_filter and process_files fields */
     private JPanel docker_settings_panel;
     /** プロジェクトプロパティ*/
     private ProjectProperties pproperties;
-    /** SSH connectプロパティ */
+    /** Server プロパティ */
     private DockerIaaSProperties docker_iaas_properties;
     
     /** Parent action */
     private AppController controller;
         
-    /** SSHconnectを利用する */
+    /** Serverを利用する */
     private JCheckBox checkUseRemote;
     private JButton ssh_settings_button;
         
@@ -333,8 +327,8 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
 
             if (this.docker_iaas_properties != null && this.docker_iaas_properties.have_docker_iaas) {
                 ssh_settings_button = new JButton(Message.getString("fileprojectnewdialog.kindpanel.SSHsettings"));
-                // SSHconnectの使用切り替え
-                checkUseRemote = new JCheckBox(Message.getString("fileprojectnewdialog.kindpanel.checkbox.useSSHconnect")) {
+                // Remote build の使用切り替え
+                checkUseRemote = new JCheckBox(Message.getString("fileprojectnewdialog.kindpanel.checkbox.useServer")) {
                     @Override
                     protected void fireStateChanged() {
                         if (haveDockerIAAS(docker_iaas_properties)) {
@@ -342,9 +336,9 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
                         }
                     }
                 };
-                checkUseRemote.setToolTipText(Message.getString("fileprojectnewdialog.kindpanel.checkbox.useSSHconnect.tooltip"));
+                checkUseRemote.setToolTipText(Message.getString("fileprojectnewdialog.kindpanel.checkbox.useServer.tooltip"));
                 checkUseRemote.setEnabled(isFullProject());
-                checkUseRemote.setSelected(this.pproperties.useSSHconnect());
+                checkUseRemote.setSelected(this.pproperties.useServer());
             }
 
             //中間コードの生成は行わないラジオボタン（フルモードI）
@@ -544,7 +538,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
         // Process files & File filter
         if (this.docker_iaas_properties != null && this.docker_iaas_properties.have_docker_iaas) {
 
-            docker_settings_panel = new JPanel();
+        	JPanel docker_settings_panel = new JPanel();
             GridBagLayout sshc_panel_layout = new GridBagLayout();
             sshc_panel_layout.columnWidths = new int[]{7, 160, 7, 7};
             sshc_panel_layout.columnWeights = new double[]{0.0, 0.0, 1.0, 0.0};
@@ -1099,8 +1093,8 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
             // hide file_filter and process_files fields
             if (this.docker_iaas_properties.have_docker_iaas) {
                 if (useDockerIaaS() && !haveAllSettings2connect()) {
-                    ProjectSettingSSHAction psssh_action = new ProjectSettingSSHAction(this.controller);
-                    psssh_action.openDialog(this.frame, Message.getString("projectsettingsshconnect.setup.need_parameters"));
+                	ProjectSettingDockerAction docker_action = new ProjectSettingDockerAction(this.controller);
+                    docker_action.openDialog(this.frame, Message.getString("projectsettingsshconnect.setup.need_parameters"));
                 }
                 docker_settings_panel.setVisible(useDockerIaaS());
             }
@@ -1144,7 +1138,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
             txaXMLPanelDesc.setText(desc);
             
             //(2013/10/16) added by teraim
-            //SSHconnectを使う場合は、既存中間コードの追加をdisableにする。
+            // Remote buildを使う場合は、既存中間コードの追加をdisableにする。
             if (useDockerIaaS()) {
                 listProjectXml.setEnabled(false);
                 btnXmlFolder.setEnabled(false);
@@ -1367,33 +1361,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
             this.txtProjectFolder.setText(selected[0].getPath());
             enableButtons();
 
-        }
-        // Add files to be preprocessed プレースホルダの処理対象のファイルを追加
-        else if (event.getSource() == this.addprerocessfile_button) {
-            // フォルダ選択ダイアログを表示する。
-            File[] selected = SwingUtils.showOpenFileDialog(this, "Add preprocess files", currentFolder, null, true);
-            if (selected == null || selected.length <= 0) {
-                return;
-            }
-            for (File file : selected) {
-                String path = "";
-                try {
-                    path = file.getCanonicalPath();
-                    path = FileUtils.getRelativePath(this.txtProjectFolder.getText(), path);
-                } catch (IOException e) {
-                    return;
-                }
-                if (path.length() > 0) {
-                    String preprocess_files = this.txt_preprocess_files.getText();
-                    if (!StringUtils.isNullOrEmpty(preprocess_files)) {
-                        preprocess_files = preprocess_files + ";" + path;
-                    } else {
-                        preprocess_files = path;
-                    }
-                    this.txt_preprocess_files.setText(preprocess_files);
-                }
-            }
-        } 
+        }         
         // フルモード: 中間コードフォルダ追加、簡易モード: Fortranコードフォルダの追加
         else if (event.getSource() == this.btnXmlFolder) {
             // フォルダ選択ダイアログを表示する。
@@ -1583,7 +1551,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
         }
         // SSHサーバへの接続パラメタを設定するボタンを選択
         else if (event.getSource() == this.ssh_settings_button) {
-            ProjectSettingSSHAction psssh_action = new ProjectSettingSSHAction(this.controller);
+        	ProjectSettingDockerAction psssh_action = new ProjectSettingDockerAction(this.controller);
             psssh_action.openDialog(this.frame);
         }
 
@@ -1592,7 +1560,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
     private void enableButtons() {
         this.btnNext.setEnabled(true);
         if (this.docker_iaas_properties != null && this.docker_iaas_properties.have_docker_iaas) {
-          this.addprerocessfile_button.setEnabled(true);
+          //this.addprerocessfile_button.setEnabled(true);
         }
     }
 
@@ -1968,25 +1936,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
         return this.txtMakeCommand.getText();
     }
 
-    /**
-     * Return File filter
-     *
-     * @return
-     */
-    public String getFileFilter() {
-        return this.txt_filefilter.getText();
-    }
-
-    /**
-     * Return list of files for placeholder replacement
-     *
-     * @return
-     */
-    public String getPreprocessFiles() {
-        return this.txt_preprocess_files.getText();
-    }
-
-    /**
+     /**
      * 選択ファイルが中間コードファイルであるかチェックする。
      *
      * @return	true=XMLファイル

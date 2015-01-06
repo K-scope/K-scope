@@ -158,7 +158,7 @@ public class FileProjectOpenAction extends ActionBase {
             // 要求Byte/FLOP設定プロパティ
             service.setPropertiesMemory(this.controller.getPropertiesMemory());
             
-            service.setPropertiesSSH(this.controller.getPropertiesSSH());
+            service.setPropertiesDIAAS(this.controller.getPropertiesDIAAS());
             // エラーモデル
             service.setErrorInfoModel(this.controller.getErrorInfoModel());
 

@@ -70,10 +70,10 @@ public class DockerIaaSPropertiesDialog  extends javax.swing.JDialog implements 
     private DefaultTableModel modelProperties;
     /** 列名 */
     private final String[] COLUMN_HEADERS = {
-        Message.getString("sshconnectsettingdialog.parameter.order"),
-        Message.getString("sshconnectsettingdialog.parameter.name"),
-        Message.getString("sshconnectsettingdialog.parameter.value"),
-        Message.getString("sshconnectsettingdialog.parameter.description")
+        Message.getString("remotebuildsettingdialog.parameter.order"),
+        Message.getString("remotebuildsettingdialog.parameter.name"),
+        Message.getString("remotebuildsettingdialog.parameter.value"),
+        Message.getString("remotebuildsettingdialog.parameter.description")
     };
     private String message = null;
 
@@ -282,7 +282,7 @@ public class DockerIaaSPropertiesDialog  extends javax.swing.JDialog implements 
                 });
                 panelContent.add(scrollList, BorderLayout.CENTER);
             }
-            setTitle(Message.getString("sshconnectsettingdialog.title"));
+            setTitle(Message.getString("remotebuildsettingdialog.title"));
             setSize(800, 350);
 
         } catch (Exception e) {

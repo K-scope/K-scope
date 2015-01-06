@@ -46,11 +46,8 @@ public class DockerIaaSProperties extends PropertiesBase {
 	
 	public static String ADD_PATH = "add_path";
 	public static String HOST = "server_address";
-	public static String PORT = "port";
 	public static String USER = "user";
-	public static String PASSWORD = "build_command";
 	public static String KEY = "key";
-	public static String PASSPHRASE = "passphrase";
 	public static String BUILD_COMMAND = "build_command";
 	public static String LOCAL_PATH = "local_path";
 	
@@ -114,7 +111,7 @@ public class DockerIaaSProperties extends PropertiesBase {
      */
     public void loadProperties(InputStream stream ) throws Exception {
         // XMLファイルのパース
-        listSSH = parseSSHProperty(stream, "//sshconnect");
+        listSSH = parseSSHProperty(stream, "//server");
     }
 
 
@@ -247,7 +244,7 @@ public class DockerIaaSProperties extends PropertiesBase {
 
         // コメントを追加
         {
-            org.w3c.dom.Comment comment = document.createComment(Message.getString("sshconnectproperties.document.comment")); 
+            org.w3c.dom.Comment comment = document.createComment(Message.getString("remotebuildproperties.document.comment")); 
             node.appendChild(comment);
         }
 
@@ -255,7 +252,7 @@ public class DockerIaaSProperties extends PropertiesBase {
 
         // SSHconnect property set
         for (SSHconnectData sshdata : this.listSSH) {
-            org.w3c.dom.Element elem = document.createElement("sshconnect");
+            org.w3c.dom.Element elem = document.createElement("server");
 
             {
                 org.w3c.dom.Attr attr = document.createAttribute("key");
@@ -288,7 +285,7 @@ public class DockerIaaSProperties extends PropertiesBase {
     }
 
     /**
-     * Format command line options for SSHconnect call
+     * Format command line options for makeRemote.sh call
      * @return
      */
     public String[] getCommandLineOptions() {
@@ -296,7 +293,7 @@ public class DockerIaaSProperties extends PropertiesBase {
     	for (SSHconnectData sshdata : this.listSSH) {
     		String commandline_option = sshdata.getCommandlineOption();
     		String value = null;
-    		if (sshdata.getKey().equalsIgnoreCase(SSHconnectProperties.BUILD_COMMAND)) {
+    		if (sshdata.getKey().equalsIgnoreCase(DockerIaaSProperties.BUILD_COMMAND)) {
     			// Get build command from Project Properties
     			ProjectProperties pp = this.controller.getPropertiesProject();
     			value = pp.getBuildCommand();   
@@ -309,10 +306,10 @@ public class DockerIaaSProperties extends PropertiesBase {
     				command_options.add(commandline_option);
     				command_options.add(value);
     			} else {
-    				System.err.println("SSHconnect option "+sshdata.getKey()+" is empty.");
+    				System.err.println("makeRemote.sh option "+sshdata.getKey()+" is empty.");
     			}
     		} catch (NullPointerException e) {
-    			System.err.println("SSHconnect option "+sshdata.getKey()+" is null.");
+    			System.err.println("makeRemote.sh option "+sshdata.getKey()+" is null.");
     		} 
     	}
     	return command_options.toArray(new String[0]);
@@ -416,7 +413,7 @@ public class DockerIaaSProperties extends PropertiesBase {
 	 * @param absolutePath
 	 */
 	public void setLocalPath(String absolutePath) {
-		setValueByKey(SSHconnectProperties.LOCAL_PATH, absolutePath);		
+		setValueByKey(DockerIaaSProperties.LOCAL_PATH, absolutePath);		
 	}
 
 	

@@ -51,11 +51,11 @@ public class ProjectSettingProjectAction extends ActionBase {
 		
 		// プロジェクト設定ダイアログを表示する。
         ProjectProperties properties = this.controller.getPropertiesProject();
-        DockerIaaSProperties sproperties = this.controller.getPropertiesDIAAS();
-		if (!sproperties.haveSSHconnect) {
-			ProjectPropertyValue useSSHconnect = properties.getPropertyValue(ProjectProperties.USE_SSHCONNECT);
-			useSSHconnect.setType("fixed-text");
-			useSSHconnect.setValue("false");
+        DockerIaaSProperties docker_iaas_properties = this.controller.getPropertiesDIAAS();
+		if (!docker_iaas_properties.have_docker_iaas) {
+			ProjectPropertyValue use_server = properties.getPropertyValue(ProjectProperties.USE_SERVER);
+			use_server.setType("fixed-text");
+			use_server.setValue("false");
 		}
 		SettingProjectDialog dialog = new SettingProjectDialog(frame, true, properties);
 		dialog.setLastAccessFolder(currentFolder);
