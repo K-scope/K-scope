@@ -83,7 +83,7 @@ import jp.riken.kscope.properties.VariableMemoryProperties;
  */
 public class AppController implements PropertyChangeListener {
 	
-	private String remote_make_file = "makeSetup.sh";
+	private String remote_make_file = "makeRemote.sh";
 
     /** メインフレーム */
     private MainFrame mainframe;

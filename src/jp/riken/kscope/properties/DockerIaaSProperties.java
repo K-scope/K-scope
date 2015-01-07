@@ -312,7 +312,12 @@ public class DockerIaaSProperties extends PropertiesBase {
     			System.err.println("makeRemote.sh option "+sshdata.getKey()+" is null.");
     		} 
     	}
-    	return command_options.toArray(new String[0]);
+    	String[] result=command_options.toArray(new String[0]);
+    	/* System.out.println("Command line options:");
+    	for (String s: result) {
+    		System.out.println(s);
+    	}  */  		
+    	return result;
     }
     
       

@@ -240,10 +240,8 @@
 		<!-- Docker IaaS プロパティ -->
         <server key="server_address" value="power" type="system" commandline_option="-h" description="property.serverparameters.server_address" />
         <server key="user" value="nic" type="system" commandline_option="-u" description="property.serverparameters.user"/>
-        <!-- server key="password" value="" type="system" commandline_option="-pw" description="property.dockerparameters.password"/-->
         <server key="key" value="/Users/peterbryzgalov/work/tmp/docker_rsa" type="system" commandline_option="-k" description="property.serverparameters.key"/>
-        <!-- server key="passphrase" value="" type="system" commandline_option="-ph" description="property.dockerparameters.passphrase"/-->
-        <server key="add_path" value="/opt/omnixmp/bin" type="system" commandline_option="-a" description="property.dserverparameters.add_path" />
+        <server key="add_path" value="/opt/omnixmp/bin" type="system" commandline_option="-a" description="property.serverparameters.add_path" />
         <server key="build_command" value="make" type="project" commandline_option="-m" description="property.serverparameters.build_command"/>
         <server key="local_path" value="/Users/peterbryzgalov/work/Kscope_projects/NICAMdock" type="project" commandline_option="-p" description="property.serverparameters.local_path"/>
 		

@@ -24,7 +24,9 @@ local_user=$USER
 make_command="make"
 add_path="/opt/omnixmp/bin"
 
-while getopts "u:h:p:k:m:" opt; do
+echo "Called with $@"
+
+while getopts "u:h:p:k:m:a:" opt; do
   case $opt in
     u)
       remoteuser=$OPTARG

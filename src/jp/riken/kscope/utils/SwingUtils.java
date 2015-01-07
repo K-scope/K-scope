@@ -439,13 +439,17 @@ public class SwingUtils {
 		}
 		cmdString = cmdString.trim();
 
+		
+		boolean remote=(commands[0].indexOf("makeRemote.sh")>=0);
+		System.out.println(commands);
+		System.out.println("Remote="+remote);
 		try {
 			String[] validcommand = commands.clone();
 			for (int i = 0; i < validcommand.length; i++) {
 				validcommand[i] = StringUtils.trimQuote(validcommand[i]);
 			}
 			ProcessBuilder pb = null;
-			if (commands[0].indexOf("java")==0) { // call remote build command
+			if (remote) { // call remote build command
 				pb = new ProcessBuilder(commands);
 			}
 			else {
@@ -453,10 +457,13 @@ public class SwingUtils {
 			}
 			pb.redirectErrorStream(true);
 			
-			/*System.out.println(System.getProperty("user.dir"));
+			
 			// SET location to look for SSHcommect to the same directory as kscope.jar
-			pb.directory(new File(System.getProperty("user.dir")));*/
-			if (workdirectory != null && commands[0].indexOf("java") != 0) {
+			if (remote) {
+				pb.directory(new File(System.getProperty("user.dir")));
+				System.out.println("Directory: "+System.getProperty("user.dir"));
+			}
+			else if (workdirectory != null) {
 				pb.directory(workdirectory);
 			}
 			process = pb.start();

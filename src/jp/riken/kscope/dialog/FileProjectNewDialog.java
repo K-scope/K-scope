@@ -329,7 +329,12 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
                 ssh_settings_button = new JButton(Message.getString("fileprojectnewdialog.kindpanel.SSHsettings"));
                 // Remote build の使用切り替え
                 checkUseRemote = new JCheckBox(Message.getString("fileprojectnewdialog.kindpanel.checkbox.useServer")) {
-                    @Override
+                    /**
+					 * 
+					 */
+					private static final long serialVersionUID = -1195485757658963243L;
+
+					@Override
                     protected void fireStateChanged() {
                         if (haveDockerIAAS(docker_iaas_properties)) {
                             ssh_settings_button.setEnabled(this.isSelected());
@@ -347,7 +352,12 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
 
             //ビルドコマンドを用いて中間コード生成ラジオボタン(フルモードII)
             radioGenXML = new JRadioButton(Message.getString("fileprojectnewdialog.kindpanel.radiobutton.genxml")) {
-                @Override
+                /**
+				 * 
+				 */
+				private static final long serialVersionUID = 8187608139294097396L;
+
+				@Override
                 protected void fireStateChanged() {
                     if (this.isSelected()) {
                         pproperties.setHiddenPropertyValue(ProjectProperties.GENERATE_XML, "true");
@@ -372,7 +382,12 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
             
             //フルモードのラジオボタン
             radioFullMode = new JRadioButton(Message.getString("fileprojectnewdialog.kindpanel.radiobutton.fullmode"), true) {
-                @Override
+                /**
+				 * 
+				 */
+				private static final long serialVersionUID = 346406280524706387L;
+
+				@Override
                 protected void fireStateChanged() {
                     if (this.isSelected()) {
                         pproperties.setHiddenPropertyValue(ProjectProperties.FULL_PROJECT, "true");
@@ -538,7 +553,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
         // Process files & File filter
         if (this.docker_iaas_properties != null && this.docker_iaas_properties.have_docker_iaas) {
 
-        	JPanel docker_settings_panel = new JPanel();
+        	docker_settings_panel = new JPanel();
             GridBagLayout sshc_panel_layout = new GridBagLayout();
             sshc_panel_layout.columnWidths = new int[]{7, 160, 7, 7};
             sshc_panel_layout.columnWeights = new double[]{0.0, 0.0, 1.0, 0.0};
@@ -645,7 +660,12 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
             layout.columnWidths = new int[]{7, 7};
             panelAdvanced.setLayout(layout);
             btnAdvancedXml = new JToggleButton("Advanced >>", false) {
-                @Override
+                /**
+				 * 
+				 */
+				private static final long serialVersionUID = 8408253832919667943L;
+
+				@Override
                 protected void fireStateChanged() {
                     checkbox_StructureAnalysis.setVisible(this.isSelected());
                     cbxSaveProject.setVisible(this.isSelected());
@@ -883,7 +903,12 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
         final int LABEL_WIDTH = 72;
 
         this.panelStatusContent = new JPanel() {
-            @Override
+            /**
+			 * 
+			 */
+			private static final long serialVersionUID = -1481838304987157059L;
+
+			@Override
             public void paintComponent(Graphics g) {
 
                 super.paintComponent(g);
@@ -1096,7 +1121,8 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
                 	ProjectSettingDockerAction docker_action = new ProjectSettingDockerAction(this.controller);
                     docker_action.openDialog(this.frame, Message.getString("projectsettingsshconnect.setup.need_parameters"));
                 }
-                docker_settings_panel.setVisible(useDockerIaaS());
+                boolean useDIAAS = useDockerIaaS();
+                docker_settings_panel.setVisible(useDIAAS);
             }
             if (this.txtProjectFolder.getText().length() < 1) {
                 this.btnNext.setEnabled(false);  // Disable until project folder selected    		
@@ -1735,7 +1761,12 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
     @SuppressWarnings("serial")
     private class IconListRenderer extends DefaultListCellRenderer {
 
-        @Override
+        /**
+		 * 
+		 */
+		private static final long serialVersionUID = 8908060279825366210L;
+
+		@Override
         public Component getListCellRendererComponent(
                 JList list, Object value,
                 int index, boolean isSelected,
