@@ -441,7 +441,7 @@ public class SwingUtils {
 
 		
 		boolean remote=(commands[0].indexOf("makeRemote.sh")>=0);
-		System.out.println(commands);
+		//System.out.println(commands);
 		System.out.println("Remote="+remote);
 		try {
 			String[] validcommand = commands.clone();
