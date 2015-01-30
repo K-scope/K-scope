@@ -12,7 +12,7 @@
 # Created by Bryzgalov Peter
 # Copyright (c) 2015 RIKEN AICS. All rights reserved
 
-version="0.10"
+version="0.11"
 
 usage="Usage:\nmakeRemote.sh -u <username> -h <server address> \
 -p <local directory to mount> -k <path to ssh-key> -m <remote command>"
@@ -114,22 +114,43 @@ ssh_tunnel=$!
 echo "tunnel PID=$ssh_tunnel"
 
 # ssh
-remote_commands="mkdir -p $path\nsshfs -p $free_port $local_user@$hostIP:$path $path\ncd $path\necho \"ver \$version\";pwd;ls -l;export PATH=\$PATH:$add_path;$remote_commands"
-echo -e $remote_commands
+if [ -z $remote_commands]
+then  # No commands -- interactive shell login
+    remote_commands="mkdir -p $path\nsshfs -p $free_port $local_user@$hostIP:$path $path\ncd $path\necho \"ver \$version\";pwd;ls -l;export PATH=\$PATH:$add_path;"
+    echo -e $remote_commands
 
-# Save remote commands to a file. Execute it in container. 
-cmd_file="rcom.sh"
-echo "#!/bin/bash" > $cmd_file
-echo "version=$version" >> $cmd_file
-echo -e $remote_commands >> $cmd_file
-chmod +x $cmd_file
-# Copy command file into container using container SSH port number as seen from server-side.
-cp_command="scp $keyoption -P $container_port $cmd_file root@$server:/"
-echo $cp_command
-$cp_command
-command="ssh -A -o StrictHostKeyChecking=no $remoteuser@$server '/$cmd_file'"
-echo $command
-$command
+    # Save remote commands to a file. Execute it in container. 
+    cmd_file="rcom.sh"
+    echo "#!/bin/bash" > $cmd_file
+    echo "version=$version" >> $cmd_file
+    echo -e $remote_commands >> $cmd_file
+    chmod +x $cmd_file
+    # Copy command file into container using container SSH port number as seen from server-side.
+    cp_command="scp $keyoption -P $container_port $cmd_file root@$server:/"
+    echo $cp_command
+    $cp_command
+    command="ssh -A -o StrictHostKeyChecking=no $remoteuser@$server '/$cmd_file'"
+    $command
+    command="ssh -A -o StrictHostKeyChecking=no $remoteuser@$server"
+    $command
+else # Execute remote commands. No interactive shell login.
+    remote_commands="mkdir -p $path\nsshfs -p $free_port $local_user@$hostIP:$path $path\ncd $path\necho \"ver \$version\";pwd;ls -l;export PATH=\$PATH:$add_path;$remote_commands"
+    echo -e $remote_commands
+
+    # Save remote commands to a file. Execute it in container. 
+    cmd_file="rcom.sh"
+    echo "#!/bin/bash" > $cmd_file
+    echo "version=$version" >> $cmd_file
+    echo -e $remote_commands >> $cmd_file
+    chmod +x $cmd_file
+    # Copy command file into container using container SSH port number as seen from server-side.
+    cp_command="scp $keyoption -P $container_port $cmd_file root@$server:/"
+    echo $cp_command
+    $cp_command
+    command="ssh -A -o StrictHostKeyChecking=no $remoteuser@$server '/$cmd_file'"
+    echo $command
+    $command
+fi
 
 # Remove file with commands
 rm $cmd_file
