@@ -10,7 +10,7 @@
 !/.git
 !/.gitignore
 !/.settings
-
+!/ks
 !/build.xml
 !/ChangeLog.txt
 !/license-headers.txt
