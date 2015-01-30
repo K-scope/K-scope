@@ -5,26 +5,29 @@
 # Parameters:
 #  remote user
 #  server address
-#  server port number (must be free)
-#  path to directory to mount
-#
-# Ex.:
-# makeSetup.sh user@server:port /path
+#  local path to mount inside container
+#  path to ssh-key (optional)
+#  commands to be executed in container (optional)
 #
 # Created by Bryzgalov Peter
-# Copyright (c) 2015 Japan Riken AICS. All rights reserved
+# Copyright (c) 2015 RIKEN AICS. All rights reserved
 
-usage="Usage:\nmakeRemote.sh -u <username> -h <server address> -p <local path to code> -k <path to ssh-key> -m <build command>"
+version="0.10"
+
+usage="Usage:\nmakeRemote.sh -u <username> -h <server address> \
+-p <local directory to mount> -k <path to ssh-key> -m <remote command>"
 
 remote_port=0
 local_user=$USER
+hostIP="172.17.42.1"  # server IP as seen from inside containers
 
 
 # Defauts
-make_command="make"
+remote_commands=""
 add_path="/opt/omnixmp/bin"
 
-echo "Called with $@"
+echo "$0 ver.$version"
+echo "Called with parameters: $@"
 
 while getopts "u:h:p:k:m:a:" opt; do
   case $opt in
@@ -38,7 +41,7 @@ while getopts "u:h:p:k:m:a:" opt; do
       path=$OPTARG
       ;;
     m)
-      make_command=$OPTARG
+      remote_commands=$OPTARG
       ;;
     k)
       ssh_key=$OPTARG
@@ -93,9 +96,10 @@ container_port=$(ssh $remoteuser@$server port 2>/dev/null)
 
 if [ $container_port = "null" ]
 then
-	echo "Container is not running"
+	echo "Starting container in daemon mode"
 	ssh $keyoption $remoteuser@$server "daemon" 2>/dev/null
 	container_started="true"
+	container_port=$(ssh $remoteuser@$server port 2>/dev/null)
 fi
 
 
@@ -110,27 +114,34 @@ ssh_tunnel=$!
 echo "tunnel PID=$ssh_tunnel"
 
 # ssh
-remote_commands="mkdir -p $path\nsshfs -p $free_port $local_user@172.17.42.1:$path $path\ncd $path\necho \"ver \$version\";pwd;ls -l;export PATH=\$PATH:$add_path;$make_command"
-echo $remote_commands
+remote_commands="mkdir -p $path\nsshfs -p $free_port $local_user@$hostIP:$path $path\ncd $path\necho \"ver \$version\";pwd;ls -l;export PATH=\$PATH:$add_path;$remote_commands"
+echo -e $remote_commands
 
+# Save remote commands to a file. Execute it in container. 
 cmd_file="rcom.sh"
 echo "#!/bin/bash" > $cmd_file
-echo "version=0.1" >> $cmd_file
+echo "version=$version" >> $cmd_file
 echo -e $remote_commands >> $cmd_file
 chmod +x $cmd_file
+# Copy command file into container using container SSH port number as seen from server-side.
 cp_command="scp $keyoption -P $container_port $cmd_file root@$server:/"
 echo $cp_command
 $cp_command
 command="ssh -A -o StrictHostKeyChecking=no $remoteuser@$server '/$cmd_file'"
 echo $command
 $command
+
+# Remove file with commands
 rm $cmd_file
+
+# Stop container if it was started or unmount local folder
 if [ -n "$container_started" ]
 then
-	ssh $remoteuser@$server "nodaemon" 2>/dev/null
+	ssh $remoteuser@$server "stopnow" 2>/dev/null
 	echo "Container will stop"
+else
+	# Unmount SSHFS mount
+	echo "Unmount SSHFS"
+	ssh $remoteuser@$server "umount $path" 2>/dev/null
 fi
 kill "$ssh_tunnel"
-
-
-

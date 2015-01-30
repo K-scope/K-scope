@@ -49,13 +49,19 @@ We provide build.xml to compile.
 After the compiling, you may obtain jar-executable or classes.
 Run is simple as follows.
 
-  $ java -jar kscope.jar
+  $ java -jar -Xmx1024m kscope.jar
 
 K-scope requires specific folders for properties.
 If the program cannot find that folders, it may terminate abnormally.
 In the normally process, you may obtained start screen.
 
 Tips on usage) "-Duser.language" VM-option is language selecter, English(en) and Japanese(ja).
+
+Build jar file
+==============
+Run in bin directory:
+jar cfe ../kscope.jar jp.riken.kscope.Kscope *
+
 
 License
 =======
