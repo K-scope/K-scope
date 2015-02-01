@@ -114,7 +114,7 @@ ssh_tunnel=$!
 echo "tunnel PID=$ssh_tunnel"
 
 # ssh
-if [ -z $remote_commands]
+if [ -z $remote_commands ]
 then  # No commands -- interactive shell login
     remote_commands="mkdir -p $path\nsshfs -p $free_port $local_user@$hostIP:$path $path\ncd $path\necho \"ver \$version\";pwd;ls -l;export PATH=\$PATH:$add_path;"
     echo -e $remote_commands
