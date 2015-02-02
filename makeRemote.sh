@@ -12,7 +12,7 @@
 # Created by Bryzgalov Peter
 # Copyright (c) 2015 RIKEN AICS. All rights reserved
 
-version="0.11"
+version="0.12quotes"
 
 usage="Usage:\nmakeRemote.sh -u <username> -h <server address> \
 -p <local directory to mount> -k <path to ssh-key> -m <remote command>"
@@ -116,7 +116,7 @@ echo "tunnel PID=$ssh_tunnel"
 # ssh
 if [ -z $remote_commands ]
 then  # No commands -- interactive shell login
-    remote_commands="mkdir -p $path\nsshfs -p $free_port $local_user@$hostIP:$path $path\ncd $path\necho \"ver \$version\";pwd;ls -l;export PATH=\$PATH:$add_path;"
+    remote_commands="mkdir -p \"$path\"\nsshfs -p $free_port $local_user@$hostIP:\"$path\" \"$path\"\ncd \"$path\"\necho \"ver \$version\";pwd;ls -l;export PATH=\$PATH:$add_path;"
     echo -e $remote_commands
 
     # Save remote commands to a file. Execute it in container. 
@@ -134,7 +134,7 @@ then  # No commands -- interactive shell login
     command="ssh -A -o StrictHostKeyChecking=no $remoteuser@$server"
     $command
 else # Execute remote commands. No interactive shell login.
-    remote_commands="mkdir -p $path\nsshfs -p $free_port $local_user@$hostIP:$path $path\ncd $path\necho \"ver \$version\";pwd;ls -l;export PATH=\$PATH:$add_path;$remote_commands"
+    remote_commands="mkdir -p \"$path\"\nsshfs -p $free_port $local_user@$hostIP:\"$path\" \"$path\"\ncd \"$path\"\necho \"ver \$version\";pwd;ls -l;export PATH=\$PATH:$add_path;$remote_commands"
     echo -e $remote_commands
 
     # Save remote commands to a file. Execute it in container. 
