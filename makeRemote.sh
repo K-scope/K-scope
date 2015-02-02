@@ -11,10 +11,8 @@
 #
 # Created by Bryzgalov Peter
 # Copyright (c) 2015 RIKEN AICS. All rights reserved
-set -e
-set -x
 
-version="0.20"
+version="0.11"
 
 usage="Usage:\nmakeRemote.sh -u <username> -h <server address> \
 -p <local directory to mount> -k <path to ssh-key> -m <remote command>"
@@ -31,43 +29,36 @@ add_path="/opt/omnixmp/bin"
 echo "$0 ver.$version"
 echo "Called with parameters: $@"
 
-# Trim quotes around a string
-trimQuotes() {
-	v=$1
-	val=$(echo $v | sed 's/^\"/1/' | sed 's/\"$/1/')
-	echo "$val"
-}
-
 while getopts "u:h:p:k:m:a:" opt; do
   case $opt in
-	u)
-	  remoteuser=$(trimQuotes "$OPTARG")
-	  ;;
-	h)
-	  server=$(trimQuotes "$OPTARG")
-	  ;;
-	p)
-	  path=$OPTARG
-	  ;;
-	m)
-	  remote_commands=$OPTARG
-	  ;;
-	k)
-	  ssh_key=$OPTARG
-	  ;;
-	a)
-	  add_path=$OPTARG
-	  ;;
-	\?)
-	  echo "Invalid option: -$OPTARG" >&2
-	  echo -e "$usage"
-	  exit 1
-	  ;;
-	:)
-	  echo "Option -$OPTARG requires an argument." >&2
-	  echo -e "$usage"
-	  exit 1
-	  ;;
+    u)
+      remoteuser=$OPTARG
+      ;;
+    h)
+      server=$OPTARG
+      ;;
+    p)
+      path=$OPTARG
+      ;;
+    m)
+      remote_commands=$OPTARG
+      ;;
+    k)
+      ssh_key=$OPTARG
+      ;;
+    a)
+      add_path=$OPTARG
+      ;;
+    \?)
+      echo "Invalid option: -$OPTARG" >&2
+      echo -e "$usage"
+      exit 1
+      ;;
+    :)
+      echo "Option -$OPTARG requires an argument." >&2
+      echo -e "$usage"
+      exit 1
+      ;;
   esac
 done
 
@@ -118,68 +109,48 @@ echo "SSH server port: $free_port, container port:$container_port"
 
 command="ssh $remoteuser@$server -R $free_port:localhost:22 -N"
 echo $command
-#$command &
-#ssh_tunnel=$!
-#echo "tunnel PID=$ssh_tunnel"
+$command &
+ssh_tunnel=$!
+echo "tunnel PID=$ssh_tunnel"
 
 # ssh
-if [ -z "$remote_commands" ]
-then  
-	# No commands -- interactive shell login
-	read -r -d '' rmcd <<-EOF
-	mkdir -p "$path"
-	sshfs -p $free_port $local_user@$hostIP:"$path" "$path"
-	cd "$path"
-	echo "ver $version"
-	pwd
-	ls -l
-	export PATH="$PATH:$add_path"
-EOF
-	# Save remote commands to a file. Execute it in container. 
-	cmd_file="rcom.sh"
-	echo "#!/bin/bash" > $cmd_file
-	echo "version=$version" >> $cmd_file
-	echo -e $rmcd >> $cmd_file
-	chmod +x $cmd_file
-	# Copy command file into container using container SSH port number as seen from server-side.
-	cp_command="scp $keyoption -P $container_port $cmd_file root@$server:/"
-	echo $cp_command
-	$cp_command
-	command="ssh -A -o StrictHostKeyChecking=no $remoteuser@$server '/$cmd_file'"
-	$command
-	command="ssh -A -o StrictHostKeyChecking=no $remoteuser@$server"
-	$command
-else 
-	# Execute remote commands. No interactive shell login.
-	read -r -d '' rmcd <<-EOF2
-	#mkdir -p "$path"
-	#sshfs -p $free_port $local_user@$hostIP:"$path" "$path"
-	#cd "$path"
-	#echo "ver $version"
-	#pwd
-	#ls -l
-	#export PATH="$PATH:$add_path"
-	$remote_commands
-EOF2
-	echo -e $rmcd
+if [ -z $remote_commands ]
+then  # No commands -- interactive shell login
+    remote_commands="mkdir -p $path\nsshfs -p $free_port $local_user@$hostIP:$path $path\ncd $path\necho \"ver \$version\";pwd;ls -l;export PATH=\$PATH:$add_path;"
+    echo -e $remote_commands
 
-	# Save remote commands to a file. Execute it in container. 
-	cmd_file="rcom.sh"
-	echo "#!/bin/bash" > $cmd_file
-	echo "set -x" > $cmd_file
-	echo "version=$version" >> $cmd_file
-	echo -e "$rmcd" >> $cmd_file
-	chmod +x $cmd_file
-	# Copy command file into container using container SSH port number as seen from server-side.
-	cp_command="scp $keyoption -P $container_port $cmd_file root@$server:/"
-	echo $cp_command
-	$cp_command
-	command="ssh -A -o StrictHostKeyChecking=no $remoteuser@$server '/$cmd_file'"
-	echo $command
-	$command
+    # Save remote commands to a file. Execute it in container. 
+    cmd_file="rcom.sh"
+    echo "#!/bin/bash" > $cmd_file
+    echo "version=$version" >> $cmd_file
+    echo -e $remote_commands >> $cmd_file
+    chmod +x $cmd_file
+    # Copy command file into container using container SSH port number as seen from server-side.
+    cp_command="scp $keyoption -P $container_port $cmd_file root@$server:/"
+    echo $cp_command
+    $cp_command
+    command="ssh -A -o StrictHostKeyChecking=no $remoteuser@$server '/$cmd_file'"
+    $command
+    command="ssh -A -o StrictHostKeyChecking=no $remoteuser@$server"
+    $command
+else # Execute remote commands. No interactive shell login.
+    remote_commands="mkdir -p $path\nsshfs -p $free_port $local_user@$hostIP:$path $path\ncd $path\necho \"ver \$version\";pwd;ls -l;export PATH=\$PATH:$add_path;$remote_commands"
+    echo -e $remote_commands
+
+    # Save remote commands to a file. Execute it in container. 
+    cmd_file="rcom.sh"
+    echo "#!/bin/bash" > $cmd_file
+    echo "version=$version" >> $cmd_file
+    echo -e $remote_commands >> $cmd_file
+    chmod +x $cmd_file
+    # Copy command file into container using container SSH port number as seen from server-side.
+    cp_command="scp $keyoption -P $container_port $cmd_file root@$server:/"
+    echo $cp_command
+    $cp_command
+    command="ssh -A -o StrictHostKeyChecking=no $remoteuser@$server '/$cmd_file'"
+    echo $command
+    $command
 fi
-
-echo -e "$rmcd"
 
 # Remove file with commands
 rm $cmd_file
@@ -192,6 +163,6 @@ then
 else
 	# Unmount SSHFS mount
 	echo "Unmount SSHFS"
-	ssh $remoteuser@$server "umount \"$path\"" 2>/dev/null
+	ssh $remoteuser@$server "umount $path" 2>/dev/null
 fi
 kill "$ssh_tunnel"
