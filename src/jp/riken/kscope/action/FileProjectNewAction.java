@@ -376,6 +376,10 @@ public class FileProjectNewAction extends ActionBase {
                         		treeModel = controller.getSourceTreeModel();
                         	}
                         	SourceFile [] srcs = projectService.getSourceFiles(sourceFiles.toArray(new File[0]), filter, true);
+                            if (srcs == null) {
+                                System.err.println("No XML files for project in execMake call.");
+                                return Constant.ERROR_RESULT;
+                            }
                         	if (srcs.length<1) return Constant.ERROR_RESULT;
                         	ArrayList<SourceFile> ls = new ArrayList<SourceFile>(Arrays.asList(srcs));
 
