@@ -345,6 +345,7 @@ public class FileProjectNewAction extends ActionBase {
     	final File settingFolder = new File(prjFolder.getAbsoluteFile() + File.separator + KscopeProperties.SETTINGS_FOLDER);
     	final ProjectModel prjModel = model;
     	final List<File> sourceFiles = xmls;
+    	final String build_c = build_command;
 
         // スレッドタスクサービスの生成を行う。
         FutureService<Integer> future = new FutureService<Integer>(
@@ -375,11 +376,19 @@ public class FileProjectNewAction extends ActionBase {
                         		filter = FILE_TYPE.FORTRANLANG;
                         		treeModel = controller.getSourceTreeModel();
                         	}
-                        	SourceFile [] srcs = projectService.getSourceFiles(sourceFiles.toArray(new File[0]), filter, true);
-                            if (srcs == null) {
-                                System.err.println("No XML files for project in execMake call.");
-                                return Constant.ERROR_RESULT;
+                        	/* TODO: Do we need to define array size to 0: new File[0] below? */
+                        	SourceFile [] srcs = projectService.getSourceFiles(sourceFiles.toArray(new File[sourceFiles.size()]), filter, true);
+                        	if (true) {
+                            	System.out.println("Check source files in in kscope/action/FileProjectNewAction.execMake() call :");
+                            	for (File fs : sourceFiles) {
+                            		System.out.println(fs.toString());
+                            	}
                             }
+                            if (srcs == null) {
+                                System.err.println("No XML files for project in FileProjectNewAction: kscope/action/FileProjectNewAction.execMake call.");
+                                System.err.println("sourceFiles="+sourceFiles+" build_command="+build_c+" filer="+filter);
+                            }
+                            
                         	if (srcs.length<1) return Constant.ERROR_RESULT;
                         	ArrayList<SourceFile> ls = new ArrayList<SourceFile>(Arrays.asList(srcs));
 
