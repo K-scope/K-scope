@@ -49,6 +49,9 @@ public class Kscope {
     public static void main(String args[]) {
         // 初期設定
         // MacOSXでのJava実行環境用のシステムプロパティの設定.
+        String version = "1.01docker";
+        System.out.println("Kscope v"+version);
+
         if (isMac()) {
         	// JFrameにメニューをつけるのではなく、一般的なOSXアプリ同様に画面上端のスクリーンメニューにする.
             System.setProperty("apple.laf.useScreenMenuBar", "true");

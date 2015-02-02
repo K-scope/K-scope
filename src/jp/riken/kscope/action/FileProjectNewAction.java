@@ -65,6 +65,8 @@ public class FileProjectNewAction extends ActionBase {
     /** プロジェクト構築サービス */
     private ProjectService projectService;
 
+    private Boolean debug=true;
+
     /**
      * コンストラクタ
      *
@@ -265,6 +267,14 @@ public class FileProjectNewAction extends ActionBase {
             }
             // プロジェクトプロパティ設定
             this.controller.getPropertiesProject().setProjectTitle(dialog.getPeojectTitle());
+
+            if (this.debug) {
+                List<File> xmls = dialog.getProjectXmlList();
+                if (xmls==null) {
+                    System.err.println("Error getting XML project files.");
+                }
+                System.out.println("Calling execMake build_command="+build_command+" xmlList="+xmls);
+            }
 
             /** 新規作成実行 */
             execMake(build_command, work, dialog.getProjectXmlList(), project, dialog.isBuild(), dialog.isSave(), genCode, (project.getFileType() == FILE_TYPE.XCODEML_XML));
