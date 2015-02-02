@@ -1,0 +1,123 @@
+./makeRemote.sh ver.0.11
+Called with parameters: -h power -u nic -k /Users/peterbryzgalov/work/tmp/docker_rsa -a /opt/omnixmp/bin -m make -p /Users/peterbryzgalov/work/Kscope projects/NICAM3
+Identity added: /Users/peterbryzgalov/work/tmp/docker_rsa (/Users/peterbryzgalov/work/tmp/docker_rsa)
+SSH server port: 49152, container port:49193
+ssh nic@power -R 49152:localhost:22 -N
+tunnel PID=3647
+mkdir -p /Users/peterbryzgalov/work/Kscope projects/NICAM3
+sshfs -p 49152 peterbryzgalov@172.17.42.1:/Users/peterbryzgalov/work/Kscope projects/NICAM3 /Users/peterbryzgalov/work/Kscope projects/NICAM3
+cd /Users/peterbryzgalov/work/Kscope projects/NICAM3
+echo "ver $version";pwd;ls -l;export PATH=$PATH:/opt/omnixmp/bin;make
+Warning: Permanently added 'poweredge320.aics10.riken.jp,172.19.5.5' (RSA) to the list of known hosts.
+scp -i /Users/peterbryzgalov/work/tmp/docker_rsa -P 49193 rcom.sh root@power:/
+Warning: Permanently added '[poweredge320.aics10.riken.jp]:49193,[172.19.5.5]:49193' (RSA) to the list of known hosts.
+ssh -A -o StrictHostKeyChecking=no nic@power '/rcom.sh'
+Warning: remote port forwarding failed for listen port 49152
+Warning: Permanently added 'poweredge320.aics10.riken.jp,172.19.5.5' (RSA) to the list of known hosts.
+ver 0.11
+fuse: invalid argument `/Users/peterbryzgalov/work/Kscope'
+/Users/peterbryzgalov/work/Kscope
+total 0
+make: *** No targets specified and no makefile found.  Stop.
+
+/Users/peterbryzgalov/work/Kscope projects/NICAM3/./nhm/physics/mod_ae_share.f90/Users/peterbryzgalov/work/Kscope projects/NICAM3/./nhm/physics/mod_mp_sb06.f90/Users/peterbryzgalov/work/Kscope projects/NICAM3/./nhm/physics/mod_rd_mstrnx_ver060205_dummy.f90	/Users/peterbryzgalov/work/Kscope projects/NICAM3/./nhm/physics/mod_tb_my25.f90 filtered/Users/peterbryzgalov/work/Kscope projects/NICAM3/./share/chgedn.c
+/Users/peterbryzgalov/work/Kscope projects/NICAM3/./share/fio.c
+/Users/peterbryzgalov/work/Kscope projects/NICAM3/./share/fio.h
+/Users/peterbryzgalov/work/Kscope projects/NICAM3/./share/fio_def.h
+/Users/peterbryzgalov/work/Kscope projects/NICAM3/./share/fiof.c
+/Users/peterbryzgalov/work/Kscope projects/NICAM3/./share/fiof.h
+/Users/peterbryzgalov/work/Kscope projects/NICAM3/./share/Makefile
+/Users/peterbryzgalov/work/Kscope projects/NICAM3/./share/Makefile.ORG
+/Users/peterbryzgalov/work/Kscope projects/NICAM3/./share/mod_adm.f90
+/Users/peterbryzgalov/work/Kscope projects/NICAM3/./share/mod_calendar.f90
+/Users/peterbryzgalov/work/Kscope projects/NICAM3/./share/mod_cnst.f90
+/Users/peterbryzgalov/work/Kscope projects/NICAM3/./share/mod_comm.f90
+/Users/peterbryzgalov/work/Kscope projects/NICAM3/./share/mod_comp.f90
+/Users/peterbryzgalov/work/Kscope projects/NICAM3/./share/mod_fft.f90
+/Users/peterbryzgalov/work/Kscope projects/NICAM3/./share/mod_fio.f90
+/Users/peterbryzgalov/work/Kscope projects/NICAM3/./share/mod_gmtr.f90
+/Users/peterbryzgalov/work/Kscope projects/NICAM3/./share/mod_grads.f90
+/Users/peterbryzgalov/work/Kscope projects/NICAM3/./share/mod_grd.f90
+/Users/peterbryzgalov/work/Kscope projects/NICAM3/./share/mod_gtl.f90
+/Users/peterbryzgalov/work/Kscope projects/NICAM3/./share/mod_gtopo30.f90
+/Users/peterbryzgalov/work/Kscope projects/NICAM3/./share/mod_landdata.f90
+/Users/peterbryzgalov/work/Kscope projects/NICAM3/./share/mod_latlon.f90
+/Users/peterbryzgalov/work/Kscope projects/NICAM3/./share/mod_latlon2.f90
+/Users/peterbryzgalov/work/Kscope projects/NICAM3/./share/mod_misc.f90
+/Users/peterbryzgalov/work/Kscope projects/NICAM3/./share/mod_oprt.f90
+/Users/peterbryzgalov/work/Kscope projects/NICAM3/./share/mod_oprt.f90.DEF
+/Users/peterbryzgalov/work/Kscope projects/NICAM3/./share/mod_oprt.f90.K
+/Users/peterbryzgalov/work/Kscope projects/NICAM3/./share/mod_oprt.f90.SX
+/Users/peterbryzgalov/work/Kscope projects/NICAM3/./share/mod_oprt3d.f90
+/Users/peterbryzgalov/work/Kscope projects/NICAM3/./share/mod_oprt3d.f90.DEF
+/Users/peterbryzgalov/work/Kscope projects/NICAM3/./share/mod_oprt3d.f90.K
+/Users/peterbryzgalov/work/Kscope projects/NICAM3/./share/mod_oprt3d.f90.SX
+/Users/peterbryzgalov/work/Kscope projects/NICAM3/./share/mod_oprt3d_plane.f90
+/Users/peterbryzgalov/work/Kscope projects/NICAM3/./share/mod_oprt_plane.f90
+/Users/peterbryzgalov/work/Kscope projects/NICAM3/./share/mod_sharmonics.f90
+/Users/peterbryzgalov/work/Kscope projects/NICAM3/./share/mod_splitrgn.f90
+/Users/peterbryzgalov/work/Kscope projects/NICAM3/./share/mod_time.f90
+/Users/peterbryzgalov/work/Kscope projects/NICAM3/./share/mod_vintrpl.f90
+/Users/peterbryzgalov/work/Kscope projects/NICAM3/./share/mod_vmtr.f90
+/Users/peterbryzgalov/work/Kscope projects/NICAM3/./share/mpi.h
+/Users/peterbryzgalov/work/Kscope projects/NICAM3/./share/mpif.h
+/Users/peterbryzgalov/work/Kscope projects/NICAM3/./share/mpio.h
+/Users/peterbryzgalov/work/Kscope projects/NICAM3/./share/mpiof.h
+/Users/peterbryzgalov/work/Kscope projects/NICAM3/./share/prep.sh
+/Users/peterbryzgalov/work/Kscope projects/NICAM3/./share/z_tool_timer.f90
+	/Users/peterbryzgalov/work/Kscope projects/NICAM3/./share/chgedn.c filtered
+	/Users/peterbryzgalov/work/Kscope projects/NICAM3/./share/fio.c filtered
+	/Users/peterbryzgalov/work/Kscope projects/NICAM3/./share/fio.h filtered
+	/Users/peterbryzgalov/work/Kscope projects/NICAM3/./share/fio_def.h filtered
+	/Users/peterbryzgalov/work/Kscope projects/NICAM3/./share/fiof.c filtered
+	/Users/peterbryzgalov/work/Kscope projects/NICAM3/./share/fiof.h filtered
+	/Users/peterbryzgalov/work/Kscope projects/NICAM3/./share/Makefile filtered
+	/Users/peterbryzgalov/work/Kscope projects/NICAM3/./share/Makefile.ORG filtered
+	/Users/peterbryzgalov/work/Kscope projects/NICAM3/./share/mod_adm.f90 filtered
+	/Users/peterbryzgalov/work/Kscope projects/NICAM3/./share/mod_calendar.f90 filtered
+	/Users/peterbryzgalov/work/Kscope projects/NICAM3/./share/mod_cnst.f90 filtered
+	/Users/peterbryzgalov/work/Kscope projects/NICAM3/./share/mod_comm.f90 filtered
+	/Users/peterbryzgalov/work/Kscope projects/NICAM3/./share/mod_comp.f90 filtered
+	/Users/peterbryzgalov/work/Kscope projects/NICAM3/./share/mod_fft.f90 filtered
+	/Users/peterbryzgalov/work/Kscope projects/NICAM3/./share/mod_fio.f90 filtered
+	/Users/peterbryzgalov/work/Kscope projects/NICAM3/./share/mod_gmtr.f90 filtered
+	/Users/peterbryzgalov/work/Kscope projects/NICAM3/./share/mod_grads.f90 filtered
+	/Users/peterbryzgalov/work/Kscope projects/NICAM3/./share/mod_grd.f90 filtered
+	/Users/peterbryzgalov/work/Kscope projects/NICAM3/./share/mod_gtl.f90 filtered
+	/Users/peterbryzgalov/work/Kscope projects/NICAM3/./share/mod_gtopo30.f90 filtered
+	/Users/peterbryzgalov/work/Kscope projects/NICAM3/./share/mod_landdata.f90 filtered
+	/Users/peterbryzgalov/work/Kscope projects/NICAM3/./share/mod_latlon.f90 filtered
+	/Users/peterbryzgalov/work/Kscope projects/NICAM3/./share/mod_latlon2.f90 filtered
+	/Users/peterbryzgalov/work/Kscope projects/NICAM3/./share/mod_misc.f90 filtered
+	/Users/peterbryzgalov/work/Kscope projects/NICAM3/./share/mod_oprt.f90 filtered
+	/Users/peterbryzgalov/work/Kscope projects/NICAM3/./share/mod_oprt.f90.DEF filtered
+	/Users/peterbryzgalov/work/Kscope projects/NICAM3/./share/mod_oprt.f90.K filtered
+	/Users/peterbryzgalov/work/Kscope projects/NICAM3/./share/mod_oprt.f90.SX filtered
+	/Users/peterbryzgalov/work/Kscope projects/NICAM3/./share/mod_oprt3d.f90 filtered
+	/Users/peterbryzgalov/work/Kscope projects/NICAM3/./share/mod_oprt3d.f90.DEF filtered
+	/Users/peterbryzgalov/work/Kscope projects/NICAM3/./share/mod_oprt3d.f90.K filtered
+	/Users/peterbryzgalov/work/Kscope projects/NICAM3/./share/mod_oprt3d.f90.SX filtered
+	/Users/peterbryzgalov/work/Kscope projects/NICAM3/./share/mod_oprt3d_plane.f90 filtered
+	/Users/peterbryzgalov/work/Kscope projects/NICAM3/./share/mod_oprt_plane.f90 filtered
+	/Users/peterbryzgalov/work/Kscope projects/NICAM3/./share/mod_sharmonics.f90 filtered
+	/Users/peterbryzgalov/work/Kscope projects/NICAM3/./share/mod_splitrgn.f90 filtered
+	/Users/peterbryzgalov/work/Kscope projects/NICAM3/./share/mod_time.f90 filtered
+	/Users/peterbryzgalov/work/Kscope projects/NICAM3/./share/mod_vintrpl.f90 filtered
+	/Users/peterbryzgalov/work/Kscope projects/NICAM3/./share/mod_vmtr.f90 filtered
+	/Users/peterbryzgalov/work/Kscope projects/NICAM3/./share/mpi.h filtered
+	/Users/peterbryzgalov/work/Kscope projects/NICAM3/./share/mpif.h filtered
+	/Users/peterbryzgalov/work/Kscope projects/NICAM3/./share/mpio.h filtered
+	/Users/peterbryzgalov/work/Kscope projects/NICAM3/./share/mpiof.h filtered
+	/Users/peterbryzgalov/work/Kscope projects/NICAM3/./share/prep.sh filtered
+	/Users/peterbryzgalov/work/Kscope projects/NICAM3/./share/z_tool_timer.f90 filtered
+Check source files in in kscope/action/FileProjectNewAction.execMake() call :
+/Users/peterbryzgalov/work/Kscope projects/NICAM3/.
+No XML files for project in FileProjectNewAction: kscope/action/FileProjectNewAction.execMake call.
+sourceFiles=[/Users/peterbryzgalov/work/Kscope projects/NICAM3/.] build_command=make filer=Intermediate code
+java.lang.NullPointerException
+	at jp.riken.kscope.action.FileProjectNewAction$1.call(FileProjectNewAction.java:392)
+	at jp.riken.kscope.action.FileProjectNewAction$1.call(FileProjectNewAction.java:355)
+	at java.util.concurrent.FutureTask$Sync.innerRun(FutureTask.java:334)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:166)
+	at java.lang.Thread.run(Thread.java:724)
+

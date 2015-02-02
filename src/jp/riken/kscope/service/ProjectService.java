@@ -196,6 +196,10 @@ public class ProjectService extends BaseService {
      * @return サブディレクトリのファイルリスト
      */
     private File[] searchFiles(File dir, FILE_TYPE ftype, boolean subDir) {
+    	if (true) {
+    		System.out.println("Search files in "+dir);
+    		System.out.println("KscopeProperties.SETTINGS_FOLDER=" +KscopeProperties.SETTINGS_FOLDER);
+    	}
     	if (dir == null) return null;
     	// settings.ppaフォルダは追加しない。
     	if (dir.isDirectory() && KscopeProperties.SETTINGS_FOLDER.equalsIgnoreCase(dir.getName())) {
@@ -204,8 +208,17 @@ public class ProjectService extends BaseService {
 
         ArrayList<File> sublist = new ArrayList<File>();
         FileFilter filter = ftype.getFileFilter();
+        if (true) {
+        	System.out.println("File filter: "+filter.toString());
+        }
         // ディレクトリ内のファイル一覧を取得する。
         File[] fileList = dir.listFiles();
+        if (true) {
+        	System.out.println("File list:");
+        	for (File f : fileList) {
+        		System.out.println(f.toString());
+        	}
+        }
         for (int i = 0; i < fileList.length; i++) {
             // サブディレクトリ検索フラグがtrueの場合のみ、サブディレクトリを検索する。
             if (subDir && fileList[i].isDirectory()) {
@@ -219,6 +232,8 @@ public class ProjectService extends BaseService {
                     sublist.add(fileList[i]);
                 } else if (filter.accept(fileList[i])) {
                     sublist.add(fileList[i]);
+                } else if (true) {
+                	System.out.println("\t"+fileList[i].toString()+" filtered");
                 }
             }
         }
@@ -237,6 +252,7 @@ public class ProjectService extends BaseService {
     public SourceFile[] getSourceFiles(File files[], FILE_TYPE ftype,
             boolean subDir) {
 
+    	System.err.println("Call to ProjectService.getSourceFiles\nfiles ="+files.toString()+" ftype="+ftype+" subdir="+subDir); 
         ArrayList<File> filelist = new ArrayList<File>();
         ArrayList<SourceFile> sourcelist = new ArrayList<SourceFile>();
         for (int i = 0; i < files.length; i++) {

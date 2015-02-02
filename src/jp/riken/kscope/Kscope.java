@@ -49,7 +49,7 @@ public class Kscope {
     public static void main(String args[]) {
         // 初期設定
         // MacOSXでのJava実行環境用のシステムプロパティの設定.
-        String version = "1.02docker";
+        String version = "1.08docker";
         
         System.out.println("Kscope v"+version);
 

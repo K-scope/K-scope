@@ -304,7 +304,7 @@ public class DockerIaaSProperties extends PropertiesBase {
     		try {
     			if (value.length() > 0) {
     				command_options.add(commandline_option);
-    				command_options.add(value);
+    				command_options.add("\""+value+"\"");
     			} else {
     				System.err.println("makeRemote.sh option "+sshdata.getKey()+" is empty.");
     			}

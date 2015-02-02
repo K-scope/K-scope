@@ -1,0 +1,34 @@
+#!/bin/bash
+
+
+path="sfasdf sdfasdf"
+
+if [ -z "$path" ]
+then
+	read -r -d '' remote <<-EEE
+	echo "test "
+	mkdir -p "$path"
+	sshfs -p $free_port $local_user@$hostIP:"$path" "$path"
+	cd "$path"
+	echo "ver $version"
+	pwd
+	ls -l
+	export PATH="$PATH:$add_path"
+EEE
+	echo "true"
+else 
+	read -r -d '' remote <<-EOF2
+	#mkdir -p "$path"
+	#sshfs -p $free_port $local_user@$hostIP:"$path" "$path"
+	#cd "$path"
+	#echo "ver $version"
+	#pwd
+	#ls -l
+	#export PATH="$PATH:$add_path"
+	$remote_commands
+EOF2
+	echo -e "false"
+fi
+
+echo -e "$remote"
+
