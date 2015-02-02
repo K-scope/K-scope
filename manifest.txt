@@ -1,0 +1,2 @@
+Main-Class: jp.riken.kscope.Kscope
+
