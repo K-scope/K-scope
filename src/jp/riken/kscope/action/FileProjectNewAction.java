@@ -378,7 +378,7 @@ public class FileProjectNewAction extends ActionBase {
                         	}
                         	/* TODO: Do we need to define array size to 0: new File[0] below? */
                         	SourceFile [] srcs = projectService.getSourceFiles(sourceFiles.toArray(new File[sourceFiles.size()]), filter, true);
-                        	if (true) {
+                        	if (false) {
                             	System.out.println("Check source files in in kscope/action/FileProjectNewAction.execMake() call :");
                             	for (File fs : sourceFiles) {
                             		System.out.println(fs.toString());

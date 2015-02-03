@@ -196,7 +196,7 @@ public class ProjectService extends BaseService {
      * @return サブディレクトリのファイルリスト
      */
     private File[] searchFiles(File dir, FILE_TYPE ftype, boolean subDir) {
-    	if (true) {
+    	if (false) {
     		System.out.println("Search files in "+dir);
     		System.out.println("KscopeProperties.SETTINGS_FOLDER=" +KscopeProperties.SETTINGS_FOLDER);
     	}
@@ -208,12 +208,12 @@ public class ProjectService extends BaseService {
 
         ArrayList<File> sublist = new ArrayList<File>();
         FileFilter filter = ftype.getFileFilter();
-        if (true) {
+        if (false) {
         	System.out.println("File filter: "+filter.toString());
         }
         // ディレクトリ内のファイル一覧を取得する。
         File[] fileList = dir.listFiles();
-        if (true) {
+        if (false) {
         	System.out.println("File list:");
         	for (File f : fileList) {
         		System.out.println(f.toString());
@@ -232,7 +232,7 @@ public class ProjectService extends BaseService {
                     sublist.add(fileList[i]);
                 } else if (filter.accept(fileList[i])) {
                     sublist.add(fileList[i]);
-                } else if (true) {
+                } else if (false) {
                 	System.out.println("\t"+fileList[i].toString()+" filtered");
                 }
             }

@@ -12,7 +12,7 @@
 # Created by Bryzgalov Peter
 # Copyright (c) 2015 RIKEN AICS. All rights reserved
 
-version="0.12quotes"
+version="0.15"
 
 usage="Usage:\nmakeRemote.sh -u <username> -h <server address> \
 -p <local directory to mount> -k <path to ssh-key> -m <remote command>"
@@ -29,25 +29,32 @@ add_path="/opt/omnixmp/bin"
 echo "$0 ver.$version"
 echo "Called with parameters: $@"
 
+# Trim quotes around a string
+trimQuotes() {
+	v=$1
+	val=$(echo $v | sed 's/^\"//' | sed 's/\"$//')
+	echo "$val"
+}
+
 while getopts "u:h:p:k:m:a:" opt; do
   case $opt in
     u)
-      remoteuser=$OPTARG
+	  remoteuser=$(trimQuotes "$OPTARG")
       ;;
     h)
-      server=$OPTARG
+	  server=$(trimQuotes "$OPTARG")
       ;;
     p)
-      path=$OPTARG
+      path=$(trimQuotes "$OPTARG")
       ;;
     m)
-      remote_commands=$OPTARG
+      remote_commands=$(trimQuotes "$OPTARG")
       ;;
     k)
-      ssh_key=$OPTARG
+      ssh_key=$(trimQuotes "$OPTARG")
       ;;
     a)
-      add_path=$OPTARG
+      add_path=$(trimQuotes "$OPTARG")
       ;;
     \?)
       echo "Invalid option: -$OPTARG" >&2
@@ -91,6 +98,9 @@ then
 	ssh-add $ssh_key
 	keyoption="-i $ssh_key"
 fi
+
+echo "path=$path"
+
 
 container_port=$(ssh $remoteuser@$server port 2>/dev/null)
 
@@ -163,6 +173,6 @@ then
 else
 	# Unmount SSHFS mount
 	echo "Unmount SSHFS"
-	ssh $remoteuser@$server "umount $path" 2>/dev/null
+	ssh $remoteuser@$server "umount \"$path\"" 2>/dev/null
 fi
 kill "$ssh_tunnel"
