@@ -1,6 +1,7 @@
 ## default is ignore for all files
 /.*
 *.ksx
+/*
 
 ## not ignore
 !/src
@@ -18,8 +19,5 @@
 !/NOTICE.txt
 !/README.txt
 !**/*.jar
-!**/*.class
 !**/*.xml
 
-## ignore
-.DS*
