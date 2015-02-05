@@ -72,6 +72,7 @@ public class ProjectService extends BaseService {
     
     private DockerIaaSProperties propertiesDIAAS;
     
+    private Boolean debug = false;
     /**
      * コンストラクタ
      */
@@ -196,7 +197,7 @@ public class ProjectService extends BaseService {
      * @return サブディレクトリのファイルリスト
      */
     private File[] searchFiles(File dir, FILE_TYPE ftype, boolean subDir) {
-    	if (false) {
+    	if (debug) {
     		System.out.println("Search files in "+dir);
     		System.out.println("KscopeProperties.SETTINGS_FOLDER=" +KscopeProperties.SETTINGS_FOLDER);
     	}
@@ -208,12 +209,12 @@ public class ProjectService extends BaseService {
 
         ArrayList<File> sublist = new ArrayList<File>();
         FileFilter filter = ftype.getFileFilter();
-        if (false) {
+        if (debug) {
         	System.out.println("File filter: "+filter.toString());
         }
         // ディレクトリ内のファイル一覧を取得する。
         File[] fileList = dir.listFiles();
-        if (false) {
+        if (debug) {
         	System.out.println("File list:");
         	for (File f : fileList) {
         		System.out.println(f.toString());
@@ -232,7 +233,7 @@ public class ProjectService extends BaseService {
                     sublist.add(fileList[i]);
                 } else if (filter.accept(fileList[i])) {
                     sublist.add(fileList[i]);
-                } else if (false) {
+                } else if (debug) {
                 	System.out.println("\t"+fileList[i].toString()+" filtered");
                 }
             }
@@ -252,7 +253,7 @@ public class ProjectService extends BaseService {
     public SourceFile[] getSourceFiles(File files[], FILE_TYPE ftype,
             boolean subDir) {
 
-    	System.err.println("Call to ProjectService.getSourceFiles\nfiles ="+files.toString()+" ftype="+ftype+" subdir="+subDir); 
+    	if (debug) System.err.println("Call to ProjectService.getSourceFiles\nfiles ="+files.toString()+" ftype="+ftype+" subdir="+subDir); 
         ArrayList<File> filelist = new ArrayList<File>();
         ArrayList<SourceFile> sourcelist = new ArrayList<SourceFile>();
         for (int i = 0; i < files.length; i++) {
