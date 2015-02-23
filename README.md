@@ -19,23 +19,11 @@ In addition, this tool uses intermediate codes created by front end of
 the Omni XcalableMP compiler. There exists a download site as follow.
 http://www.hpcs.cs.tsukuba.ac.jp/omni-compiler/xcalablemp/download.html
 
-If you can access a server installed with Omni XcalableMP compiler, 
-you can build intermediate codes on the server remotely via SSH service by
-SSHconnect.jar. This software is an utility for remote command execution with
-automatic transfer. It is developed by RIKEN AICS HPC Usability Team in
-collaboration to enhance the K-scope's feature, and is bundled with the binary
-package of the K-scope.
-
-This setup is easy. Firstly, SSHconnect.jar is placed in the same directory as
-kscope.jar. After starting the K-scope, new option is enabled in new project
-wizard.
 
 ### K-scope with Docker IaaS tools
 
-
-If you have a computer with Docker installed, you can use Docker IaaS Tools and peter/atool 
-image to quickly make a setup for building code with Omni XcalableMP compiler 
-running inside a Docker container.
+If you have a computer with Docker installed, you can use Docker IaaS Tools to quickly 
+make a setup for building code inside a Docker container.
 K-scope uses makeRemote.sh to build source code in a Docker container. If makeRemote.sh
 is in the same directory as kcope.jar, additional options are enabled in new 
 project wizard.
@@ -56,11 +44,6 @@ with Docker IaaS Tools:
 docker load < atool.tar.gz
 ```
 
-Make sure image is created:
-
-```
-docker images
-```
 
 Prepare K-scope user public SSH-key, copy it to the directory with Docker IaaS Tools 
 on the server. cd into Docker IaaS Tools directory and run:
@@ -72,8 +55,8 @@ sudo ./createuser.sh <user name> <image with Omni XMP> <public key file>
 
 
 Make sure you have makeRemote.sh file in your K-scope directory.
-In new project vizard or in Project / Server settings menu set up server parameters:
-server address, K-scope user name on the server, path to SSH private key for K-scope
+In new project vizard or in Project/Server settings menu set up:
+server address, K-scope user name on the server, local path to SSH private key for K-scope
 user. 
 
 
