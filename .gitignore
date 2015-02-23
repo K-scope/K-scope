@@ -20,4 +20,4 @@
 !/README.txt
 !**/*.jar
 !**/*.xml
-
+!*.md
