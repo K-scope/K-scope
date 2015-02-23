@@ -115,7 +115,6 @@ jar cfe ../kscope.jar jp.riken.kscope.Kscope *
 
 
 
-
 License
 =======
  K-scope
