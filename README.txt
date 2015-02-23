@@ -32,6 +32,57 @@ This setup is easy. Firstly, SSHconnect.jar is placed in the same directory as
 kscope.jar. After starting the K-scope, new option is enabled in new project
 wizard.
 
+K-scope with Docker IaaS tools
+==============================
+
+If you have a computer with Docker installed, you can use Docker IaaS Tools and peter/atool 
+image to quickly make a setup for building code with Omni XcalableMP compiler 
+running inside a Docker container.
+K-scope uses makeRemote.sh to build source code in a Docker container. If makeRemote.sh
+is in the same directory as kcope.jar, additional options are enabled in new 
+project wizard.
+
+Server-side setup for using K-scope with Docker IaaS Tools
+----------------------------------------------------------
+
+Clone Docker IaaS Tools.
+Make new directory on your server machine, cd into it and run:
+```
+git clone git@github.com:pyotr777/dockerIaaSTools.git .
+```
+If you don't have image with Omni XMP compiler in you docker registry, run in directory
+with Docker IaaS Tools:
+```
+docker load < atool.tar.gz
+```
+Make sure image is created:
+```
+docker images
+```
+
+Prepare K-scope user public SSH-key, copy it to the directory with Docker IaaS Tools 
+on the server. cd into Docker IaaS Tools directory and run:
+```
+sudo ./createuser.sh <user name> <image with Omni XMP> <public key file>
+```
+
+Local computer setup
+--------------------
+
+Make sure you have makeRemote.sh file in your K-scope directory.
+In new project vizard or in Project / Server settings menu set up server parameters:
+server address, K-scope user name on the server, path to SSH private key for K-scope
+user. 
+
+
+Demonstration http://youtu.be/86ybJdnNvUc
+
+Docker IaaS Tools and makeRemote.sh are developed by RIKEN AICS HPC Usability Research Team
+http://github.com/pyotr777/dockerIaaSTools
+
+Docker http://docker.com
+
+
 Compile and Run
 ===============
 
@@ -61,6 +112,11 @@ Build jar file
 ==============
 Run in bin directory:
 jar cfe ../kscope.jar jp.riken.kscope.Kscope *
+
+
+
+
+
 
 
 License
