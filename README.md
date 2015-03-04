@@ -37,18 +37,16 @@ Make new directory on your server machine, cd into it and run:
 git clone git@github.com:pyotr777/dockerIaaSTools.git .
 ```
 
-If you don't have image with Omni XMP compiler in you docker registry, run in directory
-with Docker IaaS Tools:
+If you don't have image with Omni XMP compiler in you docker registry, run:
 
 ```
-docker load < atool.tar.gz
+docker pull pyotr777/omnixmp
 ```
-
 
 Prepare K-scope user public SSH-key, copy it to the directory with Docker IaaS Tools 
 on the server. cd into Docker IaaS Tools directory and run:
 ```
-sudo ./createuser.sh <user name> <image with Omni XMP> <public key file>
+sudo ./createuser.sh <user name> pyotr777/omnixmp <public key file>
 ```
 
 #### Local computer setup
