@@ -20,7 +20,7 @@ the Omni XcalableMP compiler. There exists a download site as follow.
 http://www.hpcs.cs.tsukuba.ac.jp/omni-compiler/xcalablemp/download.html
 
 
-### K-scope with Docker IaaS tools
+### K-scope with Docker IaaS Tools and Omni XMP Compiler
 
 If you have a computer with Docker installed, you can use Docker IaaS Tools to quickly 
 make a setup for building code inside a Docker container.
@@ -28,23 +28,22 @@ K-scope uses makeRemote.sh to build source code in a Docker container. If makeRe
 is in the same directory as kcope.jar, additional options are enabled in new 
 project wizard.
 
-#### Server-side setup for using K-scope with Docker IaaS Tools
+#### Server-side setup for using K-scope with Docker IaaS Tools (DIT) and Omni XMP Compiler (OmniXMP)
 
-Clone Docker IaaS Tools.
-Make new directory on your server machine, cd into it and run:
+Make new directory on your server machine for DIT, cd into it and clone git repository:
 
 ```
 git clone git@github.com:pyotr777/dockerIaaSTools.git .
 ```
 
-If you don't have image with Omni XMP compiler in you docker registry, run:
+Download OmniXMP Docker image:
 
 ```
 docker pull pyotr777/omnixmp
 ```
 
-Prepare K-scope user public SSH-key, copy it to the directory with Docker IaaS Tools 
-on the server. cd into Docker IaaS Tools directory and run:
+Prepare K-scope user public SSH-key, copy it to the directory with DIT 
+on the server. cd into DIT directory and run:
 ```
 sudo ./createuser.sh <user name> pyotr777/omnixmp <public key file>
 ```
@@ -53,7 +52,7 @@ sudo ./createuser.sh <user name> pyotr777/omnixmp <public key file>
 
 
 Make sure you have makeRemote.sh file in your K-scope directory.
-In new project vizard or in Project/Server settings menu set up:
+In new project vizard or in Project > Server settings menu set up:
 server address, K-scope user name on the server, local path to SSH private key for K-scope
 user. 
 
@@ -66,7 +65,7 @@ http://github.com/pyotr777/dockerIaaSTools
 Docker http://docker.com
 
 
-## Compile and Run
+## Compile and Run K-scope
 
 This software is written by pure Java to improve the portability.
 We provide two-type packages: jar-executable package and source code package
