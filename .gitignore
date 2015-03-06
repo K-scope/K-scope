@@ -8,6 +8,7 @@
 !/resources
 !/properties/properties.xml
 !/*.sh
+!/properties
 !/.git
 !/.gitignore
 !/.settings
@@ -18,6 +19,6 @@
 !/LICENSE.txt
 !/NOTICE.txt
 !/README.txt
-!**/*.jar
 !**/*.xml
 !*.md
+
