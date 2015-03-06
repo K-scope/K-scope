@@ -20,7 +20,7 @@ import java.util.List;
 
 /**
  * MPI情報
- * @author riken
+ * @author RIKEN
  */
 public class MpiInfo {
     /** MPI関数の数	int */

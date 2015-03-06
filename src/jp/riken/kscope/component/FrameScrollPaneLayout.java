@@ -23,6 +23,7 @@ import java.awt.*;
 
 /**
  * FrameScrollPaneのレイアウトマネージャ
+ * @author RIKEN
  */
 public class FrameScrollPaneLayout extends ScrollPaneLayout  {
     /** シリアル番号 */
@@ -851,7 +852,7 @@ public class FrameScrollPaneLayout extends ScrollPaneLayout  {
 
     /**
      * ScrollPaneLayout の UI リソースバージョン
-     * @author riken
+     * @author RIKEN
      */
     static class UIResource extends FrameScrollPaneLayout implements javax.swing.plaf.UIResource {
         /** シリアル番号 */

@@ -37,7 +37,7 @@ import jp.riken.kscope.profiler.eprof.HardwarePaTable;
 
 /**
  * プロファイラ:イベントカウンタ情報モデル
- * @author riken
+ * @author RIKEN
  *
  */
 public class ProfilerEventCounterModel extends ProfilerTableBaseModel {

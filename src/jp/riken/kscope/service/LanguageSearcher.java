@@ -36,7 +36,7 @@ import jp.riken.kscope.language.Selection;
 
 /**
  * フォートランデータベース検索クラス
- * @author riken
+ * @author RIKEN
  */
 public class LanguageSearcher {
 
@@ -417,9 +417,9 @@ public class LanguageSearcher {
 
         // 検索行番号がブロックのと一致するか？
         int searchStartno = this.searchCode.getStartLine();
-        int searchEndno = this.searchCode.getEndLine();
+        //int searchEndno = this.searchCode.getEndLine();
         int blockStartno = block.getStartCodeLine().getStartLine();
-        int blockEndno = block.getEndCodeLine().getEndLine();
+        //int blockEndno = block.getEndCodeLine().getEndLine();
 
         // 開始行が一致したら、一致したと見なす。
         if (blockStartno != searchStartno) return false;

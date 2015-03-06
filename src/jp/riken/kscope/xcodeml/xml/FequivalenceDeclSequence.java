@@ -21,7 +21,7 @@ import jp.riken.kscope.xcodeml.xml.gen.VarRef;
 
 /**
  * FequivalenceDecl要素(EQUIVALENCE文)クラス
- * @author riken
+ * @author RIKEN
  *
  */
 public class FequivalenceDeclSequence implements IXmlNode {

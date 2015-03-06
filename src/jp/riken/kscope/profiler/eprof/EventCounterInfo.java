@@ -20,7 +20,7 @@ import java.util.List;
 
 /**
  * イベントカウンタ情報
- * @author riken
+ * @author RIKEN
  */
 public class EventCounterInfo {
     /** イベントカウンタ数 */

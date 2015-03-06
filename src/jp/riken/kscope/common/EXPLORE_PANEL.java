@@ -20,7 +20,7 @@ import jp.riken.kscope.Message;
 
 /**
  * エクスプローラ（ツリー）パネルの識別文字列
- * @author riken
+ * @author RIKEN
  */
 public enum EXPLORE_PANEL {
     // パネル一覧

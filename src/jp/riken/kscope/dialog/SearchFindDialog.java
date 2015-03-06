@@ -17,7 +17,7 @@
 
 package jp.riken.kscope.dialog;
 import java.awt.BorderLayout;
-import java.awt.Color;
+//import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.Frame;
 import java.awt.GridBagConstraints;
@@ -40,7 +40,7 @@ import jp.riken.kscope.common.Constant;
 
 /**
  * 検索ダイアログクラス
- * @author riken
+ * @author RIKEN
  */
 public class SearchFindDialog extends javax.swing.JDialog implements ActionListener {
     /** シリアル番号 */
@@ -290,7 +290,7 @@ public class SearchFindDialog extends javax.swing.JDialog implements ActionListe
         if (text == null || text.isEmpty()) {
             JOptionPane.showMessageDialog(this, Message.getString("searchfinddialog.errordialog.empty.message"), //検索文字列を入力してください。
                                                 Message.getString("dialog.common.error"), //エラー
-                                JOptionPane.ERROR_MESSAGE);
+                                                JOptionPane.ERROR_MESSAGE);
             return false;
         }
 

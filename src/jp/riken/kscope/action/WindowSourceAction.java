@@ -18,14 +18,14 @@ package jp.riken.kscope.action;
 
 import java.awt.event.ActionEvent;
 
-import javax.swing.JOptionPane;
+//import javax.swing.JOptionPane;
 
 import jp.riken.kscope.data.SourceFile;
 import jp.riken.kscope.service.AppController;
 
 /**
  * ソースパネルを表示する.
- * @author riken
+ * @author RIKEN
  */
 public class WindowSourceAction extends ActionBase {
 

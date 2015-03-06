@@ -43,18 +43,18 @@ import javax.swing.border.TitledBorder;
 
 import jp.riken.kscope.Message;
 import jp.riken.kscope.common.Constant;
-import jp.riken.kscope.data.RequiredByteFlopResult;
+import jp.riken.kscope.data.RequiredBFResult;
 import jp.riken.kscope.language.IBlock;
-import jp.riken.kscope.properties.MemorybandProperties;
-import jp.riken.kscope.properties.MemorybandProperties.UNIT_TYPE;
+import jp.riken.kscope.properties.RequiredBFProperties;
+import jp.riken.kscope.properties.RequiredBFProperties.BF_CALC_TYPE;
 import jp.riken.kscope.properties.VariableMemoryProperties;
 import jp.riken.kscope.service.AnalysisMemoryService;
 
 /**
  * メモリ性能算出結果ダイアログクラス
- * @author riken
+ * @author RIKEN
  */
-public class MemoryPerformanceDialog extends javax.swing.JDialog implements ActionListener {
+public class RequiredBFDialog extends javax.swing.JDialog implements ActionListener {
 
     /** シリアル番号 */
     private static final long serialVersionUID = 1L;
@@ -66,7 +66,7 @@ public class MemoryPerformanceDialog extends javax.swing.JDialog implements Acti
     /** 変数アクセス先設定ボタン */
     private JButton btnVariable;
     /** 要求Byte/FLOP設定プロパティ */
-    private MemorybandProperties propertiesMemoryband;
+    private RequiredBFProperties propertiesMemoryband;
     /** 変数アクセス先メモリ設定 */
     private VariableMemoryProperties propertiesVariable;
     /** ダイアログの戻り値 */
@@ -122,7 +122,7 @@ public class MemoryPerformanceDialog extends javax.swing.JDialog implements Acti
      * コンストラクタ
      * @param frame		親フレーム
      */
-    public MemoryPerformanceDialog(JFrame frame) {
+    public RequiredBFDialog(JFrame frame) {
         super(frame);
         nextDialog = null;
         this.ownerDialog = true;
@@ -134,7 +134,7 @@ public class MemoryPerformanceDialog extends javax.swing.JDialog implements Acti
      * @param frame		親フレーム
      * @param modal		true=モーダルダイアログを表示する
      */
-    public MemoryPerformanceDialog(Frame frame, boolean modal) {
+    public RequiredBFDialog(Frame frame, boolean modal) {
         super(frame, modal);
         nextDialog = null;
         this.ownerDialog = true;
@@ -171,7 +171,7 @@ public class MemoryPerformanceDialog extends javax.swing.JDialog implements Acti
                 {
                 	chkAddList = new JCheckBox();
                 	panelButtons.add(this.chkAddList, new GridBagConstraints(2, 0, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 14, 0, 0), 0, 0));
-                	String text = Message.getString("memoryperformancedialog.checkbox.addlist");  // リストに追加して閉じる
+                	String text = Message.getString("requiredbfdialog.checkbox.addlist");  // リストに追加して閉じる
                     chkAddList.setText(text);
                     chkAddList.setSelected(true);
                 }
@@ -195,7 +195,7 @@ public class MemoryPerformanceDialog extends javax.swing.JDialog implements Acti
                     panelHeader.setLayout(layout);
                 	JPanel panel = new JPanel();
                 	panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
-                	String text = Message.getString("memoryperformancedialog.label.calculateatea");  // 算出範囲
+                	String text = Message.getString("requiredbfdialog.label.calculateatea");  // 算出範囲
                 	JLabel label = new JLabel(text);
                 	this.lblBlock = new JLabel("jacobi[962] do loop=1, nn");
                 	panel.add(Box.createGlue());
@@ -217,7 +217,7 @@ public class MemoryPerformanceDialog extends javax.swing.JDialog implements Acti
                 {
                     JPanel panelList = new JPanel(new BorderLayout());
                     panelContent.add(panelList, BorderLayout.CENTER);
-                    String text = Message.getString("memoryperformancedialog.frame.performance");  // メモリ性能算出結果
+                    String text = Message.getString("requiredbfdialog.frame.performance");  // メモリ性能算出結果
                     TitledBorder titleBorder = new TitledBorder(BorderFactory.createEtchedBorder(), text);
                     panelList.setBorder(titleBorder);
                     {
@@ -251,7 +251,7 @@ public class MemoryPerformanceDialog extends javax.swing.JDialog implements Acti
                         }
                         // FLOP
                         {
-                            String textlabel = Message.getString("memoryperformancedialog.label.flop");  // 演算数
+                            String textlabel = Message.getString("requiredbfdialog.label.flop");  // 演算数
                         	JLabel header = new JLabel(textlabel);
                         	panelMemory.add(header, new GridBagConstraints(0, 2, 1, 1, 0.0, 0.0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 8, 0, 8), 0, 0));
                         	this.txtFlop = new LabeledTextFeild(columns);
@@ -261,7 +261,7 @@ public class MemoryPerformanceDialog extends javax.swing.JDialog implements Acti
                         }
                         // 要求B/F
                         {
-                        	String textlabel = Message.getString("memoryperformancedialog.label.required");  // 要求B/F
+                        	String textlabel = Message.getString("requiredbfdialog.label.required");  // 要求B/F
                         	JLabel header = new JLabel(textlabel);
                         	panelMemory.add(header, new GridBagConstraints(0, 3, 1, 1, 0.0, 0.0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 8, 0, 8), 0, 0));
                         	this.txtRequired = new LabeledTextFeild(columns);
@@ -271,7 +271,7 @@ public class MemoryPerformanceDialog extends javax.swing.JDialog implements Acti
                         }
                         // スループット
                         {
-                        	String textlabel = Message.getString("memoryperformancedialog.label.throughput");  //スループット
+                        	String textlabel = Message.getString("requiredbfdialog.label.throughput");  //スループット
                         	JLabel header = new JLabel(textlabel);
                         	panelMemory.add(header, new GridBagConstraints(0, 4, 1, 1, 0.0, 0.0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 8, 0, 8), 0, 0));
                         	this.txtThroughput = new LabeledTextFeild(columns);
@@ -281,7 +281,7 @@ public class MemoryPerformanceDialog extends javax.swing.JDialog implements Acti
                         }
                         // 実効B/F
                         {
-                        	String textlabel = Message.getString("memoryperformancedialog.label.effective");  //実効B/F
+                        	String textlabel = Message.getString("requiredbfdialog.label.effective");  //実効B/F
                         	JLabel header = new JLabel(textlabel);
                         	panelMemory.add(header, new GridBagConstraints(0, 5, 1, 1, 0.0, 0.0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 8, 0, 8), 0, 0));
                         	this.txtEffective = new LabeledTextFeild(columns);
@@ -291,7 +291,7 @@ public class MemoryPerformanceDialog extends javax.swing.JDialog implements Acti
                         }
                         // ピーク性能比
                         {
-                        	String textlabel = Message.getString("memoryperformancedialog.label.peak");  //ピーク性能比
+                        	String textlabel = Message.getString("requiredbfdialog.label.peak");  //ピーク性能比
                         	JLabel header = new JLabel(textlabel);
                         	panelMemory.add(header, new GridBagConstraints(0, 6, 1, 1, 0.0, 0.0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 8, 0, 8), 0, 0));
                         	this.txtPeak = new LabeledTextFeild(columns);
@@ -315,7 +315,7 @@ public class MemoryPerformanceDialog extends javax.swing.JDialog implements Acti
 	                    layout.setHgap(24);
 	                    panel.setLayout(layout);
 	                    panelSettings.add(panel);
-	                    String text = Message.getString("memoryperformancedialog.setting.label.throughput");  //スループット設定
+	                    String text = Message.getString("requiredbfdialog.setting.label.throughput");  //スループット設定
 	                	JLabel header = new JLabel(text);
 	                	panel.add(header);
 	                	this.btnSetting = new JButton(Message.getString("dialog.common.button.setting"));  //設定);
@@ -331,7 +331,7 @@ public class MemoryPerformanceDialog extends javax.swing.JDialog implements Acti
 	                    layout.setHgap(24);
 	                    panelVariable.setLayout(layout);
 	                    panelSettings.add(panelVariable);
-	                    String text = Message.getString("memoryperformancedialog.setting.label.variable");  // 変数アクセス設定
+	                    String text = Message.getString("requiredbfdialog.setting.label.variable");  // 変数アクセス設定
 	                	JLabel header = new JLabel(text);
 	                	panelVariable.add(header);
 	                    // 変数アクセス先設定ボタン
@@ -342,7 +342,7 @@ public class MemoryPerformanceDialog extends javax.swing.JDialog implements Acti
 	                }
                 }
             }
-            String text = Message.getString("memoryperformancedialog.title");  // 要求Byte/FLOP算出
+            String text = Message.getString("requiredbfdialog.title");  // 要求Byte/FLOP算出
             setTitle(text);
             this.pack();
 
@@ -418,7 +418,7 @@ public class MemoryPerformanceDialog extends javax.swing.JDialog implements Acti
         // スループット設定
         else if (event.getSource() == this.btnSetting) {
             // 要求Byte/FLOP設定ダイアログを表示する。
-            SettingMemoryDialog dialog = new SettingMemoryDialog(this, true, this.propertiesMemoryband);
+            SettingRequiredBFDialog dialog = new SettingRequiredBFDialog(this, true, this.propertiesMemoryband);
             dialog.showDialog();
         	// 要求Byte/FLOPの算出を行う.
     		if (this.selectedblocks != null && this.selectedblocks.length > 0) {
@@ -485,7 +485,7 @@ public class MemoryPerformanceDialog extends javax.swing.JDialog implements Acti
     /**
      * ラベル代替テキストフィールドクラス.
      * 編集不可透明なテキストボックス
-     * @author riken
+     * @author RIKEN
      */
     class LabeledTextFeild extends JTextField {
     	/** シリアル番号 */
@@ -569,7 +569,7 @@ public class MemoryPerformanceDialog extends javax.swing.JDialog implements Acti
 	 * 要求Byte/FLOP設定プロパティを設定する.
 	 * @param properities 要求Byte/FLOP設定プロパティ
 	 */
-	public void setPropertiesMemoryband(MemorybandProperties properities) {
+	public void setPropertiesMemoryband(RequiredBFProperties properities) {
 		this.propertiesMemoryband = properities;
 	}
 
@@ -607,7 +607,7 @@ public class MemoryPerformanceDialog extends javax.swing.JDialog implements Acti
 	private void calculateRequiredByteFlop(IBlock block) {
 		if (block == null) return;
 		// 要求Byte/FLOPを算出する
-		RequiredByteFlopResult result = this.serviceMemory.calculateRequiredByteFlop(block);
+		RequiredBFResult result = this.serviceMemory.calcRequiredBF(block);
 		// 要求Byte/FLOP算出結果を表示する
 		setRequiredByteFlopResult(result);
 	}
@@ -616,7 +616,7 @@ public class MemoryPerformanceDialog extends javax.swing.JDialog implements Acti
 	 * 要求Byte/FLOP算出結果を表示する.
 	 * @param result    要求Byte/FLOP算出結果
 	 */
-	private void setRequiredByteFlopResult(RequiredByteFlopResult result) {
+	private void setRequiredByteFlopResult(RequiredBFResult result) {
 		clearRequiredByteFlopResult();
 		if (result == null) return;
 
@@ -630,7 +630,7 @@ public class MemoryPerformanceDialog extends javax.swing.JDialog implements Acti
 		this.txtFlop.setText(String.format("%d", result.getOperand()));
 		// 要求B/F算出結果
 		float required = result.getRequiredBF();
-		if (this.propertiesMemoryband.getUnitType() == UNIT_TYPE.FLOP_BYTE) {
+		if (this.propertiesMemoryband.getBFCalcType() == BF_CALC_TYPE.FLOP_BYTE) {
 			required = result.getRequiredFB();
 		}
 		this.txtRequired.setText(String.format("%.2f", required));
@@ -638,13 +638,13 @@ public class MemoryPerformanceDialog extends javax.swing.JDialog implements Acti
 		this.txtThroughput.setText(String.format("%.2f", result.getThroughput()));
 		// 実効B/F算出結果ラベル
 		float effective = result.getEffectiveBF();
-		if (this.propertiesMemoryband.getUnitType() == UNIT_TYPE.FLOP_BYTE) {
+		if (this.propertiesMemoryband.getBFCalcType() == BF_CALC_TYPE.FLOP_BYTE) {
 			effective = result.getEffectiveFB();
 		}
 		this.txtEffective.setText(String.format("%.2f", effective));
 		// ピーク性能比算出結果ラベル
 		float peak = result.getPeakBF();
-		if (this.propertiesMemoryband.getUnitType() == UNIT_TYPE.FLOP_BYTE) {
+		if (this.propertiesMemoryband.getBFCalcType() == BF_CALC_TYPE.FLOP_BYTE) {
 			peak = result.getPeakFB();
 		}
 		peak *= 100.0F;  // %表示
@@ -652,7 +652,7 @@ public class MemoryPerformanceDialog extends javax.swing.JDialog implements Acti
 		// 単位表示
 		this.lblUnitRequired.setText(UNIT_BITE_FLOP);
 		this.lblUnitEffective.setText(UNIT_BITE_FLOP);
-		if (this.propertiesMemoryband.getUnitType() == UNIT_TYPE.FLOP_BYTE) {
+		if (this.propertiesMemoryband.getBFCalcType() == BF_CALC_TYPE.FLOP_BYTE) {
 			this.lblUnitRequired.setText(UNIT_FLOP_BITE);
 			this.lblUnitEffective.setText(UNIT_FLOP_BITE);
 		}
@@ -687,17 +687,17 @@ public class MemoryPerformanceDialog extends javax.swing.JDialog implements Acti
 	private void setAnalysisPanel() {
 		if (this.selectedblocks == null) return;
 
-		List<RequiredByteFlopResult> list = new ArrayList<RequiredByteFlopResult>();
+		List<RequiredBFResult> list = new ArrayList<RequiredBFResult>();
 		for (IBlock block : this.selectedblocks) {
 			// 要求Byte/FLOPを算出する
-			RequiredByteFlopResult result = this.serviceMemory.calculateRequiredByteFlop(block);
+			RequiredBFResult result = this.serviceMemory.calcRequiredBF(block);
 			if (result != null) {
 				list.add(result);
 			}
 		}
 
 		if (list.size() <= 0) return;
-		this.serviceMemory.setAnalysisPanel(list.toArray(new RequiredByteFlopResult[0]));
+		this.serviceMemory.setAnalysisPanel(list.toArray(new RequiredBFResult[0]));
 
 	}
 

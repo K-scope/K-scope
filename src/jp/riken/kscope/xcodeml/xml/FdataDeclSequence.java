@@ -23,7 +23,7 @@ import jp.riken.kscope.xcodeml.xml.gen.VarList;
 
 /**
  * FdataDecl要素(DATA文)クラス
- * @author riken
+ * @author RIKEN
  *
  */
 public class FdataDeclSequence implements IXmlNode {

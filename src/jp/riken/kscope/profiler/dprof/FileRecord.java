@@ -21,7 +21,7 @@ import java.util.List;
 
 /**
  * ファイル情報レコード
- * @author riken
+ * @author RIKEN
  */
 public class FileRecord {
 	

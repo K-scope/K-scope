@@ -23,7 +23,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import jp.riken.kscope.data.OperandCount;
+import jp.riken.kscope.data.OperationCount;
 import jp.riken.kscope.language.Block;
 import jp.riken.kscope.language.BlockType;
 import jp.riken.kscope.language.Condition;
@@ -38,13 +38,13 @@ import jp.riken.kscope.language.Selection;
 import jp.riken.kscope.language.Substitution;
 import jp.riken.kscope.language.Variable;
 import jp.riken.kscope.language.VariableDefinition;
-import jp.riken.kscope.language.utils.OperandCounterUtils;
+import jp.riken.kscope.language.utils.OperationCounterUtils;
 import jp.riken.kscope.model.OperandTableModel;
-import jp.riken.kscope.properties.OperandProperties;
+import jp.riken.kscope.properties.OperationProperties;
 
 /**
  * 分析：演算カウントを行う
- * @author riken
+ * @author RIKEN
  */
 public class AnalysisOperandService extends AnalysisBaseService {
 
@@ -52,7 +52,7 @@ public class AnalysisOperandService extends AnalysisBaseService {
     private OperandTableModel modelOperand;
 
     /** 組込み関数演算カウントプロパティ */
-    private OperandProperties propertiesOperand;
+    private OperationProperties propertiesOperand;
 
     /**
      * コンストラクタ
@@ -74,7 +74,7 @@ public class AnalysisOperandService extends AnalysisBaseService {
      * 組込み関数演算カウントプロパティを取得する
      * @param propertiesOperand		組込み関数演算カウントプロパティ
      */
-    public void setPropertiesOperand(OperandProperties propertiesOperand) {
+    public void setPropertiesOperand(OperationProperties propertiesOperand) {
         this.propertiesOperand = propertiesOperand;
     }
 
@@ -129,11 +129,11 @@ public class AnalysisOperandService extends AnalysisBaseService {
             }
 
             // ブロックのカウント取得
-            OperandCounterUtils utils = new OperandCounterUtils(this.propertiesOperand);
+            OperationCounterUtils utils = new OperationCounterUtils(this.propertiesOperand);
             utils.countBlock(block);
 
             // 結果のセット
-            OperandCount loop = new OperandCount();
+            OperationCount loop = new OperationCount();
             loop.setName(loopName.toString());
             loop.setF(utils.getOperandFlop());
             loop.setAdd(utils.getAddFlop());
@@ -197,6 +197,7 @@ public class AnalysisOperandService extends AnalysisBaseService {
      * @param block 処理ブロック
      * @return カウント情報の整数配列
      */
+    @SuppressWarnings("unused")
     private CountResult countBlock(IBlock block) {
         CountResult result = new CountResult();
         this.countChildren(block, result);

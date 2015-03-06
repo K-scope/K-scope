@@ -38,8 +38,8 @@ import jp.riken.kscope.model.ProjectModel;
 import jp.riken.kscope.model.PropertiesTableModel;
 import jp.riken.kscope.properties.KscopeProperties;
 import jp.riken.kscope.properties.KeywordProperties;
-import jp.riken.kscope.properties.MemorybandProperties;
-import jp.riken.kscope.properties.OperandProperties;
+import jp.riken.kscope.properties.RequiredBFProperties;
+import jp.riken.kscope.properties.OperationProperties;
 import jp.riken.kscope.properties.ProfilerProperties;
 import jp.riken.kscope.properties.ProgramProperties;
 import jp.riken.kscope.properties.ProjectProperties;
@@ -49,7 +49,7 @@ import jp.riken.kscope.properties.SourceProperties;
 
 /**
  * プロジェクトの管理を行うサービスクラス
- * @author riken
+ * @author RIKEN
  */
 public class ProjectService extends BaseService {
 
@@ -60,7 +60,7 @@ public class ProjectService extends BaseService {
     /** 外部ツールプロパティ */
     private ProgramProperties propertiesExtension;
     /** 演算カウントプロパティ */
-    private OperandProperties propertiesOperand;
+    private OperationProperties propertiesOperand;
     /** ソースビュー設定 */
     private SourceProperties propertiesSource;
     /** プロファイラプロパティ設定 */
@@ -68,7 +68,7 @@ public class ProjectService extends BaseService {
     /** プロジェクト設定 */
     private ProjectProperties propertiesProject;
     /** 要求Byte/FLOP設定プロパティ */
-    private MemorybandProperties propertiesMemory;
+    private RequiredBFProperties propertiesMemory;
     
     private DockerIaaSProperties propertiesDIAAS;
     
@@ -464,7 +464,7 @@ public class ProjectService extends BaseService {
      * 演算カウントプロパティを設定する
      * @param propertiesOperand			演算カウントプロパティ
      */
-    public void setPropertiesOperand(OperandProperties propertiesOperand) {
+    public void setPropertiesOperand(OperationProperties propertiesOperand) {
         this.propertiesOperand = propertiesOperand;
     }
 
@@ -496,7 +496,7 @@ public class ProjectService extends BaseService {
      * 要求Byte/FLOP設定プロパティ設定を設定する
      * @param propertiesMemory		要求Byte/FLOP設定プロパティ
      */
-    public void setPropertiesMemory(MemorybandProperties propertiesMemory) {
+    public void setPropertiesMemory(RequiredBFProperties propertiesMemory) {
     	this.propertiesMemory = propertiesMemory;
     }
     

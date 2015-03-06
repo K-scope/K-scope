@@ -31,7 +31,7 @@ import jp.riken.kscope.utils.XmlUtils;
 
 /**
  * プロジェクト情報クラス
- * @author riken
+ * @author RIKEN
  */
 public class ProjectModel  {
 

@@ -63,7 +63,7 @@ import jp.riken.kscope.properties.SourceProperties;
 
 /**
  * ソースビュー設定ダイアログ
- * @author riken
+ * @author RIKEN
  */
 public class SettingViewDialog extends javax.swing.JDialog implements ActionListener, ListSelectionListener {
     /** シリアル番号 */
@@ -790,7 +790,7 @@ public class SettingViewDialog extends javax.swing.JDialog implements ActionList
 
     /**
      * プロパティテーブルの色セルの描画クラス
-     * @author riken
+     * @author RIKEN
      *
      */
     private class PropertiesTableRenderer extends DefaultTableCellRenderer {

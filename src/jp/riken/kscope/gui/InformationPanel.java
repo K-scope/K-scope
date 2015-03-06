@@ -61,14 +61,14 @@ import jp.riken.kscope.language.IBlock;
 import jp.riken.kscope.language.IInformation;
 import jp.riken.kscope.menu.MainMenu;
 import jp.riken.kscope.model.InformationModel;
-import jp.riken.kscope.properties.KscopeProperties;
+//import jp.riken.kscope.properties.KscopeProperties;
 import jp.riken.kscope.properties.SourceProperties;
 import jp.riken.kscope.utils.ResourceUtils;
 import jp.riken.kscope.utils.SwingUtils;
 
 /**
  * 付加情報パネルクラス
- * @author riken
+ * @author RIKEN
  *
  */
 public class InformationPanel extends AnalisysPanelBase implements Observer, IAnalisysComponent, HyperlinkListener, ActionListener, MouseListener {
@@ -575,7 +575,7 @@ public class InformationPanel extends AnalisysPanelBase implements Observer, IAn
 
     /**
      * 付加情報展開ボタンアクションリスナ
-     * @author riken
+     * @author RIKEN
      */
     private class InformationExpandAction implements ActionListener {
         /** 付加情報本文パネル */
@@ -614,7 +614,7 @@ public class InformationPanel extends AnalisysPanelBase implements Observer, IAn
 
     /**
      * 付加情報ノードパネル
-     * @author riken
+     * @author RIKEN
      */
     private class NodePanel extends JPanel {
 

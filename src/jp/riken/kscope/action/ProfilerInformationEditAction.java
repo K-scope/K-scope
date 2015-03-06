@@ -35,7 +35,7 @@ import jp.riken.kscope.service.AppController;
 
 /**
  * プロファイラ情報の付加情報追加アクションクラス
- * @author riken
+ * @author RIKEN
  *
  */
 public class ProfilerInformationEditAction extends ActionBase {

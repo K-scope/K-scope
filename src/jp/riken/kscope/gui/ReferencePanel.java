@@ -51,7 +51,7 @@ import jp.riken.kscope.utils.SwingUtils;
 
 /**
  * 参照一覧パネルクラス
- * @author riken
+ * @author RIKEN
  *
  */
 public class ReferencePanel extends AnalisysPanelBase implements Observer, IAnalisysComponent, ActionListener {

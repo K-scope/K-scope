@@ -33,7 +33,7 @@ import jp.riken.kscope.common.ANALYSIS_PANEL;
 import jp.riken.kscope.common.Constant;
 import jp.riken.kscope.common.EXPLORE_PANEL;
 import jp.riken.kscope.data.CodeLine;
-import jp.riken.kscope.data.ErrorInfo;
+//import jp.riken.kscope.data.ErrorInfo;
 import jp.riken.kscope.data.FILE_TYPE;
 import jp.riken.kscope.data.SourceFile;
 import jp.riken.kscope.dialog.SearchGrepDialog;
@@ -47,7 +47,7 @@ import jp.riken.kscope.utils.StringUtils;
 
 /**
  * 検索アクション
- * @author riken
+ * @author RIKEN
  */
 public class SearchGrepAction extends ActionBase {
 

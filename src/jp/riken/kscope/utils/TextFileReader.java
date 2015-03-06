@@ -27,7 +27,7 @@ import java.nio.charset.Charset;
  * テキストファイルリーダクラス.<br/>
  * 文字コードを判別して読み込む
  * 
- * @author riken
+ * @author RIKEN
  */
 public class TextFileReader {
 	/** バッファーサイズ(KB)*1024 = 1MB */

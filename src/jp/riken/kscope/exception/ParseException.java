@@ -23,7 +23,7 @@ import jp.riken.kscope.utils.Logger;
  * 構文解析例外クラス 構文解析部(jp.go.riken.ppa.parse)の例外クラス 構文解析例外は、例外発生箇所、又は呼出側にて例外処理,
  * 又はthrowsを行わなければならない。
  * 
- * @author riken
+ * @author RIKEN
  */
 public class ParseException extends Exception {
 

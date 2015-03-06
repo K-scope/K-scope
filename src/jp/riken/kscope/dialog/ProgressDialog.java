@@ -38,7 +38,7 @@ import jp.riken.kscope.service.FutureService;
 
 /**
  * 進捗状況表示ダイアログ
- * @author riken
+ * @author RIKEN
  */
 public class ProgressDialog extends javax.swing.JDialog implements ActionListener, Observer {
 

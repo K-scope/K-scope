@@ -24,7 +24,7 @@ import jp.riken.kscope.service.AppController;
 
 /**
  * ツリーすべて展開アクションイベント
- * @author riken
+ * @author RIKEN
  *
  */
 public class TreeExpandAllAction extends ActionBase {

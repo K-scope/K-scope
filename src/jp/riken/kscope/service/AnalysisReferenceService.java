@@ -43,7 +43,7 @@ import jp.riken.kscope.model.ReferenceModel;
  * 宣言・定義・参照サービスクラス.<br/>
  * 宣言・定義・参照一覧を作成する
  *
- * @author riken
+ * @author RIKEN
  */
 public class AnalysisReferenceService extends AnalysisBaseService {
 

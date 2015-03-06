@@ -39,7 +39,7 @@ import jp.riken.kscope.model.LanguageTreeModel;
 import jp.riken.kscope.model.ModuleTreeModel;
 import jp.riken.kscope.model.ProjectModel;
 import jp.riken.kscope.properties.KscopeProperties;
-import jp.riken.kscope.properties.VariableMemoryProperties;
+//import jp.riken.kscope.properties.VariableMemoryProperties;
 import jp.riken.kscope.service.AnalysisMemoryService;
 import jp.riken.kscope.service.AppController;
 import jp.riken.kscope.service.FutureService;
@@ -50,7 +50,7 @@ import jp.riken.kscope.xcodeml.XcodeMLParserStax;
 
 /**
  * プロジェクトを開くアクション
- * @author riken
+ * @author RIKEN
  */
 public class FileProjectOpenAction extends ActionBase {
 
@@ -148,7 +148,7 @@ public class FileProjectOpenAction extends ActionBase {
             // 外部ツールプロパティ
             service.setPropertiesExtension(this.controller.getPropertiesExtension());
             // 演算カウントプロパティ
-            service.setPropertiesOperand(this.controller.getPropertiesOperand());
+            service.setPropertiesOperand(this.controller.getPropertiesOperation());
             // ソースビュー設定プロパティ
             service.setPropertiesSource(this.controller.getPropertiesSource());
             // プロファイラプロパティ設定プロパティ

@@ -36,7 +36,7 @@ import jp.riken.kscope.utils.SwingUtils;
 
 /**
  * トレース結果モデル
- * @author riken
+ * @author RIKEN
  *
  */
 public class TraceResultModel extends Observable {

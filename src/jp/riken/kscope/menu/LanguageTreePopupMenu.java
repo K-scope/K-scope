@@ -51,7 +51,7 @@ import jp.riken.kscope.service.AppController;
 
 /**
  * 構造ツリーポップアップメニュークラス
- * @author riken
+ * @author RIKEN
  */
 public class LanguageTreePopupMenu extends JPopupMenu implements PopupMenuListener, ITreePopupMenu {
 

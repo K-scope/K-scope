@@ -31,7 +31,7 @@ import jp.riken.kscope.language.Program;
 
 /**
  * 構造ツリーモデル
- * @author riken
+ * @author RIKEN
  *
  */
 public class LanguageTreeModel extends Observable {

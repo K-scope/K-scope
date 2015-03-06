@@ -52,7 +52,7 @@ import jp.riken.kscope.common.Constant;
 
 /**
  * フォント選択ダイアログ
- * @author riken
+ * @author RIKEN
  */
 public class JFontChooserDialog extends javax.swing.JDialog implements ActionListener, ListSelectionListener, DocumentListener {
 
@@ -61,11 +61,11 @@ public class JFontChooserDialog extends javax.swing.JDialog implements ActionLis
     /** フォントプレビュー */
     private JTextField txtPreview;
     /** フォントサイズリスト */
-    private JList lstSize;
+    private JList<String> lstSize;
     /** フォントスタイルリスト */
-    private JList lstStyle;
+    private JList<String> lstStyle;
     /** フォントリスト */
-    private JList lstFont;
+    private JList<String> lstFont;
     /** フォントサイズテキストボックス */
     private JTextField txtSize;
     /** キャンセルボタン */
@@ -255,10 +255,10 @@ public class JFontChooserDialog extends javax.swing.JDialog implements ActionLis
                         JScrollPane scrollFont = new JScrollPane();
                         panelFont.add(scrollFont, new GridBagConstraints(0, 1, 1, 2, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 10, 10, 0), 0, 0));
                         {
-                            ListModel llstFontModel =
-                                    new DefaultComboBoxModel(
+                            ListModel<String> llstFontModel =
+                                    new DefaultComboBoxModel<String>(
                                             new String[] { "Item One", "Item Two" });
-                            lstFont = new JList();
+                            lstFont = new JList<String>();
                             scrollFont.setViewportView(lstFont);
                             lstFont.setModel(llstFontModel);
                             lstFont.addListSelectionListener(this);
@@ -276,10 +276,10 @@ public class JFontChooserDialog extends javax.swing.JDialog implements ActionLis
                         JScrollPane scrollStyle = new JScrollPane();
                         panelFont.add(scrollStyle, new GridBagConstraints(1, 1, 1, 2, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 10, 10, 0), 0, 0));
                         {
-                            ListModel lstStyleModel =
-                                    new DefaultComboBoxModel(
+                            ListModel<String> lstStyleModel =
+                                    new DefaultComboBoxModel<String>(
                                             new String[] { FONTSTYLE_PLAIN, FONTSTYLE_BOLD, FONTSTYLE_ITALIC, FONTSTYLE_BOLDITALIC });
-                            lstStyle = new JList();
+                            lstStyle = new JList<String>();
                             scrollStyle.setViewportView(lstStyle);
                             lstStyle.setModel(lstStyleModel);
                             lstStyle.addListSelectionListener(this);
@@ -297,10 +297,10 @@ public class JFontChooserDialog extends javax.swing.JDialog implements ActionLis
                         JScrollPane scrollSize = new JScrollPane();
                         panelFont.add(scrollSize, new GridBagConstraints(2, 2, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 10, 10, 10), 0, 0));
                         {
-                            ListModel lstSizeModel =
-                                    new DefaultComboBoxModel(
+                            ListModel<String> lstSizeModel =
+                                    new DefaultComboBoxModel<String>(
                                             new String[] { "8", "9", "10", "11", "12", "13", "14", "16", "18", "20", "22", "24", "26", "28", "32", "36", "40", "48", "56", "64", "72" });
-                            lstSize = new JList();
+                            lstSize = new JList<String>();
                             scrollSize.setViewportView(lstSize);
                             lstSize.setModel(lstSizeModel);
                             lstSize.addListSelectionListener(this);
@@ -358,7 +358,7 @@ public class JFontChooserDialog extends javax.swing.JDialog implements ActionLis
         String[] fontNames = env.getAvailableFontFamilyNames();
 
         // リストモデルの作成
-        DefaultListModel model = new DefaultListModel();
+        DefaultListModel<String> model = new DefaultListModel<String>();
         if (fontNames != null && fontNames.length > 0) {
             for(int i=0;i<fontNames.length;i++) {
                 model.addElement(fontNames[i]);
@@ -409,11 +409,11 @@ public class JFontChooserDialog extends javax.swing.JDialog implements ActionLis
      */
     private void previewFont() {
         // フォント名
-        String name = (String)this.lstFont.getSelectedValue();
+        String name = this.lstFont.getSelectedValue();
         if (name == null || name.isEmpty()) return;
 
         // スタイル
-        String stylevalue = (String)this.lstStyle.getSelectedValue();
+        String stylevalue = this.lstStyle.getSelectedValue();
         int style = Font.PLAIN;
         if (stylevalue != null) {
             if (stylevalue.equalsIgnoreCase(this.FONTSTYLE_BOLD)) {
@@ -475,7 +475,7 @@ public class JFontChooserDialog extends javax.swing.JDialog implements ActionLis
     public void valueChanged(ListSelectionEvent event) {
 
         if (event.getSource() == this.lstSize) {
-            String value = (String)this.lstSize.getSelectedValue();
+            String value = this.lstSize.getSelectedValue();
             this.txtSize.setText(value);
         }
 

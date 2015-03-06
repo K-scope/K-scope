@@ -48,7 +48,7 @@ import jp.riken.kscope.utils.ResourceUtils;
 
 /**
  * ツリー選択ダイアログ
- * @author riken
+ * @author RIKEN
  *
  */
 public class TreeChooserDialog extends javax.swing.JDialog implements ActionListener {

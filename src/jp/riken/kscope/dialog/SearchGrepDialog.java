@@ -18,7 +18,7 @@
 package jp.riken.kscope.dialog;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
+//import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.Frame;
 import java.awt.GridBagConstraints;
@@ -44,7 +44,7 @@ import jp.riken.kscope.common.EXPLORE_PANEL;
 
 /**
  * 検索ダイアログクラス
- * @author riken
+ * @author RIKEN
  */
 public class SearchGrepDialog extends javax.swing.JDialog implements ActionListener {
     /** シリアル番号 */

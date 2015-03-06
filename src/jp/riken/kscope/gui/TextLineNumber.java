@@ -47,7 +47,7 @@ import javax.swing.text.Utilities;
 
 /**
  * ソースコード行番号表示クラス
- * @author riken
+ * @author RIKEN
  */
 public class TextLineNumber extends JPanel implements CaretListener, DocumentListener, PropertyChangeListener {
 

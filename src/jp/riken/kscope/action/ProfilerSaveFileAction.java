@@ -35,7 +35,7 @@ import jp.riken.kscope.service.ProfilerService;
 
 /**
  * プロファイラ測定区間上書き保存アクションクラス
- * @author riken
+ * @author RIKEN
  *
  */
 public class ProfilerSaveFileAction extends ActionBase {

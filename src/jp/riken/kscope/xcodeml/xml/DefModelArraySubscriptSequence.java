@@ -21,7 +21,7 @@ import java.util.List;
 
 /**
  * 配列要素クラス
- * @author riken
+ * @author RIKEN
  */
 public class DefModelArraySubscriptSequence implements IXmlNode {
 

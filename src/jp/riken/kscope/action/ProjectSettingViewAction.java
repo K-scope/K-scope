@@ -28,7 +28,7 @@ import jp.riken.kscope.service.AppController;
 
 /**
  * ソースビュー設定アクションクラス
- * @author riken
+ * @author RIKEN
  */
 public class ProjectSettingViewAction extends ActionBase {
 

@@ -34,7 +34,7 @@ import javax.swing.table.JTableHeader;
 
 /**
  * ストライプテーブルコンポーネント
- * @author riken
+ * @author RIKEN
  */
 public class JStripeTable extends JTable implements MouseListener {
 
@@ -50,6 +50,7 @@ public class JStripeTable extends JTable implements MouseListener {
     /** セルの左側マージン */
     private final int CELL_MARGIN = 5;
     /** 列サイズ変更フラグ */
+    @SuppressWarnings("unused")
     private boolean resizing = false;
 
     /**
@@ -121,7 +122,7 @@ public class JStripeTable extends JTable implements MouseListener {
 
     /**
      * 偶数、奇数行で背景色をストライプ描画クラス
-     * @author riken
+     * @author RIKEN
      *
      */
     class StripeTableRenderer extends DefaultTableCellRenderer {

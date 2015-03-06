@@ -20,7 +20,7 @@ import jp.riken.kscope.utils.Logger;
 
 /**
  * XcodeMLのXMLファイルの解析エラー
- * @author riken
+ * @author RIKEN
  */
 public class XcodeMLException extends Exception {
 

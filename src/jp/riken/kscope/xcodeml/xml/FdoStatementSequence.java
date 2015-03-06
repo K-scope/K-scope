@@ -22,7 +22,7 @@ import jp.riken.kscope.xcodeml.xml.gen.*;
 
 /**
  * FdoStatement要素(DO文)クラス
- * @author riken
+ * @author RIKEN
  *
  */
 public class FdoStatementSequence implements IXmlNode {

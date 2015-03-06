@@ -17,7 +17,7 @@
 package jp.riken.kscope.data;
 
 import java.io.File;
-import java.io.IOException;
+//import java.io.IOException;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -26,7 +26,7 @@ import jp.riken.kscope.utils.FileUtils;
 /**
  * ソースファイルクラス ソースファイル名、ファイルタイプを持つ。
  *
- * @author riken
+ * @author RIKEN
  *
  */
 public class SourceFile implements Serializable {

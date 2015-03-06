@@ -24,7 +24,7 @@ import jp.riken.kscope.utils.LanguageTokenizer;
 
 /**
  * ソースコードを文字列分解するクラス
- * @author riken
+ * @author RIKEN
  *
  */
 public class LineSpliter {

@@ -34,7 +34,7 @@ import jp.riken.kscope.model.ErrorInfoModel;
 import jp.riken.kscope.model.FileTreeModel;
 import jp.riken.kscope.model.LanguageTreeModel;
 import jp.riken.kscope.model.ModuleTreeModel;
-import jp.riken.kscope.model.ProjectModel;
+//import jp.riken.kscope.model.ProjectModel;
 import jp.riken.kscope.service.AppController;
 import jp.riken.kscope.service.FutureService;
 import jp.riken.kscope.service.LanguageService;
@@ -43,7 +43,7 @@ import jp.riken.kscope.xcodeml.XcodeMLParserStax;
 /**
  * 構造解析実行アクション.<br/>
  * 構造解析を別スレッドで行う。
- * @author riken
+ * @author RIKEN
  */
 public class ProjectBuildAction extends ActionBase {
     /** データベースの構築、探索を行うクラス */

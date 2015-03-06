@@ -47,7 +47,7 @@ import jp.riken.kscope.utils.SwingUtils;
 /**
  * エクスプローラビュークラス.<br/>
  * 構造、モジュール、ソース、XMLタブを配置する。
- * @author riken
+ * @author RIKEN
  */
 public class ExploreView extends ClosableTabbedPane implements ITabComponent, PropertyChangeListener {
 

@@ -18,11 +18,11 @@ package jp.riken.kscope;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Method;
+//import java.lang.reflect.Method;
 
 import java.awt.EventQueue;
 import java.awt.Toolkit;
-import java.util.Locale;
+//import java.util.Locale;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import javax.swing.plaf.metal.MetalLookAndFeel;
@@ -37,7 +37,7 @@ import jp.riken.kscope.utils.ResourceUtils;
 /**
  * メインクラス
  *
- * @author riken
+ * @author RIKEN
  */
 public class Kscope {
 
@@ -47,6 +47,7 @@ public class Kscope {
      * @param args 起動引数
      */
     public static void main(String args[]) {
+<<<<<<< HEAD
         // 初期設定
         // MacOSXでのJava実行環境用のシステムプロパティの設定.
         String version = "1.11docker";
@@ -63,20 +64,24 @@ public class Kscope {
             // (何も設定しないとクラス名になる。)
             String title = Message.getString("application.name");
             
+=======
+>>>>>>> origin/master
 
-            // システム標準のL&Fを設定.
-            // MacOSXならAqua、WindowsXPならLuna、Vista/Windows7ならばAeroになる.
+    	if (KscopeProperties.isMac()) {
+        	// JFrameにメニューをつけるのではなく、一般的なOSXアプリ同様に画面上端のスクリーンメニューにする.
+        	System.setProperty("apple.laf.useScreenMenuBar", "true");
+            System.setProperty("com.apple.macos.smallTabs", "true");           
             try {
                 UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
             } catch (Exception ex) {
                 ex.printStackTrace();
                 return;
             }
+            // スクリーンメニュー左端に表記されるアプリケーション名を設定する (何も設定しないとクラス名になる。)
+            String title = Message.getString("application.name");
             System.setProperty( "com.apple.mrj.application.apple.menu.about.name",title);
-        } // Windowsの場合
+        }
         else if (KscopeProperties.isWindows()) {
-            //(2012/4/10) changed by teraim
-            //MetalのL&Fを設定（フォントを変更）
             try {
                 UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
                 MetalLookAndFeel.setCurrentTheme(new ThemeWindows());
@@ -90,10 +95,9 @@ public class Kscope {
 
         Kscope app = new Kscope();
         app.initApp();
-        // Logger.info("parallel_tool start");
+
         // メインフレーム表示
         EventQueue.invokeLater(new Runnable() {
-
             @Override
             public void run() {
                 try {
@@ -125,20 +129,6 @@ public class Kscope {
            
             String status = Message.getString("go.status.start");
             Application.status.setMessageMain(status);
-
-            /****
-            if (isMac()) {
-            	// MacOSXMenuHandler.javaは存在しない為に常にExceptionが発生する.
-                try {
-                	// MacOSX用のメニューを作成する
-                    Class<?> clz = Class.forName("jp.riken.kscope.menu.MacOSXMenuHandler");
-                    Method mtd = clz.getMethod("setupScreenMenu", new Class[]{MainFrame.class});
-                    mtd.invoke(null, new Object[]{frame});
-                } catch (Exception ex) {
-                    // ex.printStackTrace();
-                }
-            }
-            ****/
 
             // メインフレームの表示
             frame.setVisible(true);
@@ -173,26 +163,18 @@ public class Kscope {
         // true=デバッグモードログ出力（CONFIGレベルも出力する)
         inititalizeLogging(true);
 
-        //ロケールを取得してプロパティファイルの切り替えを行う　プロパティファイル統一　2013.03.28 yabe
-//        Locale locale = java.util.Locale.getDefault();
-//        if (locale.getLanguage() == java.util.Locale.JAPANESE.getLanguage()) {
-//            KscopeProperties.PROPERTIES_FILE = KscopeProperties.PROPERTIES_FILE_JA;
-//        } else {
-//            KscopeProperties.PROPERTIES_FILE = KscopeProperties.PROPERTIES_FILE_DEFAULT;
-//        }
-          KscopeProperties.PROPERTIES_FILE = KscopeProperties.PROPERTIES_FILE_DEFAULT;
+        KscopeProperties.PROPERTIES_FILE = KscopeProperties.PROPERTIES_FILE_DEFAULT;
 
         try {
             ResourceUtils.setRootAppClass(this.getClass());
-            //ResourceUtils.addFile("./icons");
-            ResourceUtils.addFile("resources/icons"); //(2012/4/15) changed by teraim
+            ResourceUtils.addFile("resources/icons");
         } catch (IOException e) {
         	JOptionPane.showMessageDialog(null, e, "Error", JOptionPane.ERROR_MESSAGE);
             e.printStackTrace();
         }
 
         // プロパティファイルの読込
-        loadProperties();
+        KscopeProperties.loadXml();
     }
 
     /**
@@ -226,20 +208,4 @@ public class Kscope {
         Logger.info(desktopProps + "=" + Toolkit.getDefaultToolkit().getDesktopProperty(desktopProps));
     }
 
-    /**
-     * アプリケーションプロパティの取得を行う。
-     */
-    private void loadProperties() {
-        KscopeProperties.loadXml();
-    }
-
-    /**
-     * MacOSであるかチェックする。<br/> システムプロパティからOS名を取得する。
-     *
-     * @return true=MacOSである。
-     */
-    protected static boolean isMac() {
-        String lcOSName = System.getProperty("os.name").toLowerCase();
-        return lcOSName.startsWith("mac os x");
-    }
 }

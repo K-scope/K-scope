@@ -25,7 +25,7 @@ import jp.riken.kscope.Message;
 /**
  * バイト列を各種のデータ型に変換するためのメソッドを提供するユーティリティクラス
  *
- * @author riken
+ * @author RIKEN
  *
  */
 public class ProfilerReaderUtil {

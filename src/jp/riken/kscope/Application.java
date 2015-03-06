@@ -24,7 +24,7 @@ import javax.swing.SwingUtilities;
 /**
  * アプリケーションの進捗メッセージ、進捗状況等のグローバル設定クラス
  *
- * @author riken
+ * @author RIKEN
  */
 public class Application {
 
@@ -50,7 +50,7 @@ public class Application {
     /**
      * 進捗情報クラス
      *
-     * @author riken
+     * @author RIKEN
      *
      */
     public static class StatusPrint extends Observable {

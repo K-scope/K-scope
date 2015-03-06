@@ -17,7 +17,7 @@
 package jp.riken.kscope.service;
 
 import java.util.ArrayList;
-import java.util.Collection;
+//import java.util.Collection;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Set;
@@ -26,7 +26,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 
 import jp.riken.kscope.data.CodeLine;
-import jp.riken.kscope.data.SourceFile;
+//import jp.riken.kscope.data.SourceFile;
 import jp.riken.kscope.language.Block;
 import jp.riken.kscope.language.Condition;
 import jp.riken.kscope.language.ExecutableBody;
@@ -45,7 +45,7 @@ import jp.riken.kscope.model.TraceResultModel;
 /**
  * 分析：変数トレースを行う。
  *
- * @author riken
+ * @author RIKEN
  */
 public class AnalysisTraceService extends AnalysisBaseService {
 

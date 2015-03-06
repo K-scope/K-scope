@@ -58,7 +58,7 @@ import jp.riken.kscope.utils.ResourceUtils;
 
 /**
  * ファイルツリータブパネルクラス.
- * @author riken
+ * @author RIKEN
  *
  */
 public class FileTreePanel extends javax.swing.JPanel implements ITabComponent, ITreeComponent, Observer {
@@ -87,6 +87,7 @@ public class FileTreePanel extends javax.swing.JPanel implements ITabComponent, 
     private ITabComponent parentCompornent = null;
 
     /** XMLファイルツリーポップアップメニュー */
+    @SuppressWarnings("unused")
     private ITreePopupMenu menuPopup;
 
     /**

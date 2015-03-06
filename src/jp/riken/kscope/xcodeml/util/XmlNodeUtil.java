@@ -24,7 +24,7 @@ import jp.riken.kscope.xcodeml.xml.gen.*;
 
 /**
  * XML要素ユーティリティクラス
- * @author riken
+ * @author RIKEN
  */
 public class XmlNodeUtil {
 

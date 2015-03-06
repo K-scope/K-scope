@@ -17,11 +17,11 @@
 package jp.riken.kscope.action;
 
 import java.awt.event.ActionEvent;
-import java.io.File;
+//import java.io.File;
 
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import javax.swing.tree.DefaultMutableTreeNode;
+//import javax.swing.tree.DefaultMutableTreeNode;
 
 import jp.riken.kscope.common.ANALYSIS_PANEL;
 import jp.riken.kscope.gui.IAnalisysComponent;
@@ -29,7 +29,7 @@ import jp.riken.kscope.service.AppController;
 
 /**
  * 分析タブ変更アクションクラス
- * @author riken
+ * @author RIKEN
  */
 public class AnalysisTabChangeAction extends ActionBase implements ChangeListener {
 

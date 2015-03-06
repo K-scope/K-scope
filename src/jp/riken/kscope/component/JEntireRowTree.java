@@ -49,7 +49,7 @@ import jp.riken.kscope.utils.SwingUtils;
 
 /**
  * 行ハイライトツリーコンポーネント
- * @author riken
+ * @author RIKEN
  */
 public class JEntireRowTree extends javax.swing.JTree implements TreeWillExpandListener {
 
@@ -162,7 +162,7 @@ public class JEntireRowTree extends javax.swing.JTree implements TreeWillExpandL
     /**
      * ツリーのLook & Feelクラス.<br/>
      * ツリーの行選択によりノード選択とする。
-     * @author riken
+     * @author RIKEN
      *
      */
     private class EntireRowTreeUI extends javax.swing.plaf.basic.BasicTreeUI {
@@ -237,7 +237,7 @@ public class JEntireRowTree extends javax.swing.JTree implements TreeWillExpandL
 
     /**
      * ツリーのノード描画クラス
-     * @author riken
+     * @author RIKEN
      */
     public class EntireRowCellRenderer extends DefaultTreeCellRenderer {
         /** シリアル番号 */

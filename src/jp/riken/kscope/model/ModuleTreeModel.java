@@ -34,7 +34,7 @@ import jp.riken.kscope.utils.SwingUtils;
 
 /**
  * モジュールツリーモデル
- * @author riken
+ * @author RIKEN
  *
  */
 public class ModuleTreeModel extends Observable {

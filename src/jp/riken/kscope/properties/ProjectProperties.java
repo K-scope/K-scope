@@ -41,7 +41,7 @@ import org.w3c.dom.NodeList;
 
 /**
  * プロジェクトプロパティ設定クラス
- * @author riken
+ * @author RIKEN
  */
 public class ProjectProperties extends PropertiesBase {
 
@@ -54,11 +54,20 @@ public class ProjectProperties extends PropertiesBase {
     
     /** プロジェクトタイトルプロパティキー */
     public static final String PRJ_TITLE = "project-title";
+<<<<<<< HEAD
     /** New properties for building on server */
     public static final String USE_SERVER = "use-server";
+=======
     
-    public static final String GENERATE_XML = "genXML";
-    public static final String FULL_PROJECT = "full_project";
+    /** SSHconnect */
+    public static final String USE_SSHCONNECT = "use-sshconnect";
+>>>>>>> origin/master
+    
+    //中間コードの生成
+    public static final String GENERATE_XML = "generate-XML";
+
+    //フルモード
+    public static final String FULL_PROJECT = "full-project";
 
     /** プロパティ設定リスト */
     private List<ProjectPropertyValue> listProperty = new ArrayList<ProjectPropertyValue>();
@@ -114,7 +123,6 @@ public class ProjectProperties extends PropertiesBase {
      * @throws Exception     プロパティ読込エラー
      */
     public void loadProperties(InputStream stream ) throws Exception {
-    	
         // XMLファイルのパース
     	List<ProjectPropertyValue> list = null;
     	list = parseProjectProperty(stream, "//project");
@@ -132,8 +140,7 @@ public class ProjectProperties extends PropertiesBase {
     	// Read project hidden properties
     	this.listHiddenProperty = new BasicPropertyList(stream, "//project_other");
     }
-    
-    
+        
      /**
      * キーワードを取得する
      * @param stream		XML入力ストリーム
@@ -344,7 +351,7 @@ public class ProjectProperties extends PropertiesBase {
 
         	node.appendChild(elem);
         }
-     // コメントを追加
+        // コメントを追加
         {
             org.w3c.dom.Comment comment = document.createComment("Project hidden properties"); // Project hidden properties
             node.appendChild(comment);
@@ -381,24 +388,11 @@ public class ProjectProperties extends PropertiesBase {
     public ProjectPropertyValue[] getPropertyValues() {
     	return this.listProperty.toArray(new ProjectPropertyValue[0]);
     }
-
-    /**
-     * make コマンドの設定
-     * @param  command    makeコマンド
-     */
-    /*public void setMakeCommand(String command) {
-    	System.out.println("Set make command: " + command);
-    	setValueByKey(MAKE_COMMAND, command);
-    }*/
-
-    /**
-     * makefileパスの設定
-     * @param   path    makefileパス
-     */
-    /*public void setMakefilePath(String path) {
-    	setValueByKey(MAKEFILE_PATH, path);
-    }*/
     
+    /**
+     * build コマンドの設定
+     * @param  command    makeコマンド
+     */    
     public void setBuildCommand(String build_command) {
     	setValueByKey(BUILD_COMMAND, build_command);
 	}
@@ -462,7 +456,7 @@ public class ProjectProperties extends PropertiesBase {
      * True if need to build the project (locally or remotely) to generate intermediate code.
      * @return
      */
-    public boolean genXML() {
+    public boolean generateXML() {
     	return testValue(getHiddenPropertyValue(ProjectProperties.GENERATE_XML));    	
 	}
     
@@ -490,7 +484,7 @@ public class ProjectProperties extends PropertiesBase {
 		}
 	}
 	
-	// NO MORE NEED IN REBUILD FLAG. "REBUILD" MENU DEPENDS ONLY ON GENXML AND FULL_PROJECT PROPERTIES
+	// NO MORE NEED IN REBUILD FLAG. "REBUILD" MENU DEPENDS ONLY ON GENERATEXML AND FULL_PROJECT PROPERTIES
 	// DELETED : public void setRebuildFlag(boolean flag) {}
 		
 	/**

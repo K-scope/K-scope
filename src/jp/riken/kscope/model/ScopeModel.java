@@ -33,7 +33,7 @@ import jp.riken.kscope.utils.SwingUtils;
 
 /**
  * 変数有効域モデル
- * @author riken
+ * @author RIKEN
  *
  */
 public class ScopeModel extends Observable {

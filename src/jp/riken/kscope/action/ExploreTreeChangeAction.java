@@ -18,7 +18,7 @@ package jp.riken.kscope.action;
 
 import java.awt.event.ActionEvent;
 import java.io.File;
-import java.util.List;
+//import java.util.List;
 
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -28,19 +28,19 @@ import javax.swing.tree.DefaultMutableTreeNode;
 
 import jp.riken.kscope.common.ANALYSIS_PANEL;
 import jp.riken.kscope.common.EXPLORE_PANEL;
-import jp.riken.kscope.information.InformationBlock;
-import jp.riken.kscope.information.TextInfo;
+//import jp.riken.kscope.information.InformationBlock;
+//import jp.riken.kscope.information.TextInfo;
 import jp.riken.kscope.language.IInformation;
-import jp.riken.kscope.language.Program;
+//import jp.riken.kscope.language.Program;
 import jp.riken.kscope.language.utils.InformationEntry;
 import jp.riken.kscope.language.utils.LanguageVisitor;
-import jp.riken.kscope.language.utils.VariableMemoryEntry;
+//import jp.riken.kscope.language.utils.VariableMemoryEntry;
 import jp.riken.kscope.model.InformationModel;
 import jp.riken.kscope.service.AppController;
 
 /**
  * エクスプローラツリー変更アクションクラス
- * @author riken
+ * @author RIKEN
  */
 public class ExploreTreeChangeAction extends ActionBase implements TreeSelectionListener, ChangeListener {
 

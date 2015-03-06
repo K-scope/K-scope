@@ -28,8 +28,6 @@ import jp.riken.kscope.common.ANALYSIS_PANEL;
 import jp.riken.kscope.common.Constant;
 import jp.riken.kscope.common.FRAME_VIEW;
 import jp.riken.kscope.dialog.InformationDialog;
-import jp.riken.kscope.information.ReplacementResult;
-import jp.riken.kscope.information.ReplacementResult.RESULT_STATUS;
 import jp.riken.kscope.information.TextInfo;
 import jp.riken.kscope.language.IInformation;
 import jp.riken.kscope.language.Program;
@@ -39,7 +37,7 @@ import jp.riken.kscope.service.AppController;
 
 /**
  * 付加情報編集アクションクラス
- * @author riken
+ * @author RIKEN
  *
  */
 public class EditInformationEditAction extends ActionBase {
@@ -87,16 +85,9 @@ public class EditInformationEditAction extends ActionBase {
         // 選択付加情報を取得する
         IInformation infoNode = getSelectedInformation();
         if (infoNode == null) return;
-        // 選択付加情報差替結果を取得する
-        ReplacementResult result = getSelectedReplacementResult();
-        boolean editable = true;
-        if (result != null) {
-        	if (result.getStatus() == RESULT_STATUS.FAILURE) {
-        		editable = false;
-        	}
-        }
+
         // 付加情報の編集を行う
-        if (!editInformation(infoNode, editable)) {
+        if (!editInformation(infoNode)) {
             // 付加情報の編集のキャンセル
         	Application.status.setMessageMain(message +
         			Message.getString("action.common.cancel.status")); //:キャンセル
@@ -145,21 +136,6 @@ public class EditInformationEditAction extends ActionBase {
         return info;
     }
 
-    /**
-     * 選択付加情報差替結果を取得する
-     * @return		選択付加情報差替結果
-     */
-    private ReplacementResult getSelectedReplacementResult() {
-    	ReplacementResult result = null;
-        if (this.view == FRAME_VIEW.EXPLORE_VIEW) return null;
-        if (this.view == FRAME_VIEW.ANALYSIS_VIEW) {
-        	if (this.controller.getMainframe().getPanelAnalysisView().getSelectedPanel() == null) return null;
-        	if (this.controller.getMainframe().getPanelAnalysisView().getSelectedPanel().getEnumPanel() != ANALYSIS_PANEL.REPLACE) return null;
-        	result = this.controller.getReplaceTableModel().getSelectedReplacementResult();
-            if (result == null) return null;
-        }
-        return result;
-    }
 
     /**
      * 選択付加情報を取得する
@@ -207,9 +183,11 @@ public class EditInformationEditAction extends ActionBase {
      * @param editable		付加情報編集の可否
      * @return    付加情報の編集の可否
      */
+    /*
     public boolean editInformation(IInformation infoNode, boolean editable) {
         return editInformation(infoNode, null, editable);
     }
+     */
 
     /**
      * 付加情報の編集を行う

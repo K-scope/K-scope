@@ -25,9 +25,9 @@ import javax.swing.plaf.metal.MetalComboBoxButton;
 /**
  * 背景色付きコンボボックス.
  * コンボボックスのテキストエリアは編集（入力）は不可.
- * @author riken
+ * @author RIKEN
  */
-public class JBackgroundComboBox extends JComboBox {
+public class JBackgroundComboBox extends JComboBox<Object> {
 
 	/** シリアル番号 */
 	private static final long serialVersionUID = 1L;
@@ -62,6 +62,7 @@ public class JBackgroundComboBox extends JComboBox {
 	/**
 	 * コンストラクタ
 	 */
+	@SuppressWarnings("unchecked")
 	public JBackgroundComboBox() {
 		super();
 		setRenderer(new ColorRenderer());
@@ -118,11 +119,11 @@ public class JBackgroundComboBox extends JComboBox {
 
 	/**
 	 * コンボボックスリストセル描画クラス
-	 * @author riken
+	 * @author RIKEN
 	 */
+	@SuppressWarnings("rawtypes")
 	class ColorRenderer extends JLabel implements javax.swing.ListCellRenderer {
-		/** シリアル番号 */
-		private static final long serialVersionUID = 1L;
+		private static final long serialVersionUID = -5992989439503239647L;
 
 		/**
 		 * コンストラクタ

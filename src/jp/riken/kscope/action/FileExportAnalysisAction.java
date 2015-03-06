@@ -32,7 +32,7 @@ import jp.riken.kscope.utils.SwingUtils;
 
 /**
  * 分析情報エクスポートアクションクラス
- * @author riken
+ * @author RIKEN
  *
  */
 public class FileExportAnalysisAction extends ActionBase {

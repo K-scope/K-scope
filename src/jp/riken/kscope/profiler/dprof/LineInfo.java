@@ -18,7 +18,7 @@ package jp.riken.kscope.profiler.dprof;
 
 /**
  * DPROF:コストライン情報クラス
- * @author riken
+ * @author RIKEN
  */
 public class LineInfo {
     private float sampNum;

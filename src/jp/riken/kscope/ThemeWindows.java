@@ -25,7 +25,7 @@ import javax.swing.plaf.metal.OceanTheme;
 
 /**
  * Windows用ルックアンドフィール
- * @author riken
+ * @author RIKEN
  */
 public class ThemeWindows extends OceanTheme {
 

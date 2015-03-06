@@ -28,7 +28,7 @@ import jp.riken.kscope.utils.XmlUtils;
 
 /**
  * プロファイラプロパティクラス
- * @author riken
+ * @author RIKEN
  *
  */
 public class ProfilerProperties extends PropertiesBase {

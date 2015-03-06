@@ -30,7 +30,7 @@ import jp.riken.kscope.service.AppController;
 
 /**
  * プロジェクトの閉じるアクション
- * @author riken
+ * @author RIKEN
  */
 public class FileProjectCloseAction extends ActionBase {
 

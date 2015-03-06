@@ -23,7 +23,7 @@ import jp.riken.kscope.service.AppController;
 
 /**
  * プログレスダイアログの表示アクションクラス
- * @author riken
+ * @author RIKEN
  */
 public class WindowProgressAction extends ActionBase {
 

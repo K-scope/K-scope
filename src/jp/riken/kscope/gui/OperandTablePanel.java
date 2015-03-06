@@ -53,7 +53,7 @@ import jp.riken.kscope.utils.SwingUtils;
 
 /**
  * 演算カウントパネルクラス
- * @author riken
+ * @author RIKEN
  *
  */
 public class OperandTablePanel extends AnalisysPanelBase implements Observer, IAnalisysComponent {

@@ -37,7 +37,7 @@ import jp.riken.kscope.utils.SwingUtils;
 
 /**
  * 変数特性情報一覧モデル
- * @author riken
+ * @author RIKEN
  *
  */
 public class VariableTableModel extends Observable {
@@ -75,7 +75,7 @@ public class VariableTableModel extends Observable {
 
     /**
      * プロシージャ変数特性情報クラス
-     * @author riken
+     * @author RIKEN
      */
     public class ProcedureInfo {
         private IBlock block;
@@ -154,7 +154,7 @@ public class VariableTableModel extends Observable {
 
     /**
      * 変数特性情報クラス
-     * @author riken
+     * @author RIKEN
      */
     public class VariableInfo {
         /** 変数宣言文・構造体クラス */

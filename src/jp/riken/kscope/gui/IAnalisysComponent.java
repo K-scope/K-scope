@@ -29,7 +29,7 @@ import jp.riken.kscope.properties.SourceProperties;
 /**
  * 分析情報パネルコンポーネントインターフェイス.<br/>
  * 分析情報パネルコンポーネントのインターフェイス
- * @author riken
+ * @author RIKEN
  */
 public interface IAnalisysComponent {
 

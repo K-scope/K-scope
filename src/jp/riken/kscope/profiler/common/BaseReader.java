@@ -23,7 +23,7 @@ import jp.riken.kscope.profiler.utils.ProfilerReaderUtil;
 
 /**
  * プロファイラ読込基底クラス
- * @author riken
+ * @author RIKEN
  */
 public abstract class BaseReader {
 

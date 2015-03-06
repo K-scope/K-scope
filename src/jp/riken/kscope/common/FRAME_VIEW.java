@@ -20,7 +20,7 @@ import jp.riken.kscope.Message;
 
 /**
  * メインフレームのビュー画面識別列挙クラス
- * @author riken
+ * @author RIKEN
  */
 public enum FRAME_VIEW {
     // ビュー一覧

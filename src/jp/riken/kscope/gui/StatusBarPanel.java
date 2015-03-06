@@ -35,7 +35,7 @@ import jp.riken.kscope.Application;
 
 /**
  * ステータスバーパネル
- * @author riken
+ * @author RIKEN
  *
  */
 public class StatusBarPanel extends javax.swing.JPanel implements Observer {

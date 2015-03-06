@@ -82,7 +82,7 @@ import jp.riken.kscope.utils.SwingUtils;
 
 /**
  * プロファイラ:コスト情報パネルクラス
- * @author riken
+ * @author RIKEN
  *
  */
 public class ProfilerTablePanel extends AnalisysPanelBase implements Observer, IAnalisysComponent, MouseListener, ActionListener {
@@ -133,6 +133,7 @@ public class ProfilerTablePanel extends AnalisysPanelBase implements Observer, I
     private JPopupMenu menuVisibledColumns;
 
     /** ソート状態 */
+    @SuppressWarnings("unused")
     private boolean viewSort = false;
     /** 選択パネル背景色 */
     private Color colorSelectedPanel;
@@ -538,7 +539,7 @@ public class ProfilerTablePanel extends AnalisysPanelBase implements Observer, I
 
     /**
      * コスト情報ノードパネル
-     * @author riken
+     * @author RIKEN
      */
     private class NodePanel extends JPanel {
         /** シリアル番号 */
@@ -561,6 +562,7 @@ public class ProfilerTablePanel extends AnalisysPanelBase implements Observer, I
          * コスト情報識別文字列を取得する
          * @return		コスト情報識別文字列
          */
+        @SuppressWarnings("unused")
         public String getKey() {
             return key;
         }
@@ -569,6 +571,7 @@ public class ProfilerTablePanel extends AnalisysPanelBase implements Observer, I
          * コスト情報識別文字列を設定する
          * @param key		コスト情報識別文字列
          */
+        @SuppressWarnings("unused")
         public void setKey(String key) {
             this.key = key;
         }
@@ -644,7 +647,7 @@ public class ProfilerTablePanel extends AnalisysPanelBase implements Observer, I
 
     /**
      * コスト情報パネル展開ボタンアクションリスナ
-     * @author riken
+     * @author RIKEN
      */
     private class ProfilerInfoExpandAction implements ActionListener {
         /** プロファイラ:コスト情報テーブルパネル */
@@ -777,7 +780,7 @@ public class ProfilerTablePanel extends AnalisysPanelBase implements Observer, I
 
     /**
      * コスト情報テーブル選択変更リスナ
-     * @author riken
+     * @author RIKEN
      */
     private class ProfilerInfoListSelectionListener implements ListSelectionListener {
         /** リスナ対象テーブル */

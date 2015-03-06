@@ -49,7 +49,7 @@ import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
 import javax.swing.JViewport;
-import javax.swing.ScrollPaneConstants;
+//import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import javax.swing.border.CompoundBorder;
@@ -77,7 +77,7 @@ import jp.riken.kscope.utils.SwingUtils;
 
 /**
  * コンソール画面クラス
- * @author riken
+ * @author RIKEN
  */
 public class ConsolePanel extends AnalisysPanelBase implements FocusListener, IAnalisysComponent, ComponentListener{
 
@@ -104,7 +104,7 @@ public class ConsolePanel extends AnalisysPanelBase implements FocusListener, IA
 
     /**
      * コンソール出力キュー
-     * @author riken
+     * @author RIKEN
      */
     private class PrintQueue {
         public String text = null;
@@ -344,7 +344,7 @@ public class ConsolePanel extends AnalisysPanelBase implements FocusListener, IA
 
     /**
      * キューの情報をテキストボックスに表示を行うスレッドクラス
-     * @author riken
+     * @author RIKEN
      */
     private class WorkerThread  extends SwingWorker<Object, Object> {
 
@@ -451,12 +451,13 @@ public class ConsolePanel extends AnalisysPanelBase implements FocusListener, IA
 
     /**
      * テキストボックス出力クラス（未使用）.
-     * @author riken
+     * @author RIKEN
      *
      */
     public class JTextAreaOutputStream extends OutputStream {
         private ByteArrayOutputStream os;
         /** 出力テキストボックス */
+        @SuppressWarnings("unused")
         private JTextPane textBox;
         /** エンコード */
         private String encode;

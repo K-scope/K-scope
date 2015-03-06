@@ -19,7 +19,7 @@ package jp.riken.kscope.profiler.dprof;
 /**
  * ファイル情報を保持する
  *
- * @author riken
+ * @author RIKEN
  *
  */
 public class FileInfo {

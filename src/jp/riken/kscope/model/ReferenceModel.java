@@ -32,7 +32,7 @@ import jp.riken.kscope.utils.SwingUtils;
 
 /**
  * 参照一覧モデル
- * @author riken
+ * @author RIKEN
  *
  */
 public class ReferenceModel extends Observable {

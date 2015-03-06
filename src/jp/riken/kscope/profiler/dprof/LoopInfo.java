@@ -18,7 +18,7 @@ package jp.riken.kscope.profiler.dprof;
 
 /**
  * DPROF:コストループ情報クラス
- * @author riken
+ * @author RIKEN
  */
 public class LoopInfo {
     private float sampNum;

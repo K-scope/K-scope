@@ -19,7 +19,7 @@ package jp.riken.kscope.profiler.dprof;
 /**
  * コールグラフ情報のスタック情報を保持する
  *
- * @author riken
+ * @author RIKEN
  */
 public class StackInfo {
     /** ネストレベル */

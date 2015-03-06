@@ -26,7 +26,7 @@ import jp.riken.kscope.language.generic.*;
 /**
  * Entryインターフェイスクラス.
  * データベースの探索を行う.
- * @author riken
+ * @author RIKEN
  */
 public interface ILanguageEntry {
 

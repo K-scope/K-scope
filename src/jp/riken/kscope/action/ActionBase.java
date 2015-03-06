@@ -30,7 +30,7 @@ import jp.riken.kscope.service.AppController;
 
 /**
  * 基底アクションクラス
- * @author riken
+ * @author RIKEN
  *
  */
 public abstract class ActionBase implements ActionListener {

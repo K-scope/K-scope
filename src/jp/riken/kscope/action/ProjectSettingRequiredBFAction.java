@@ -22,24 +22,24 @@ import java.awt.event.ActionEvent;
 import jp.riken.kscope.Application;
 import jp.riken.kscope.Message;
 import jp.riken.kscope.common.Constant;
-import jp.riken.kscope.dialog.SettingKeywordDialog;
-import jp.riken.kscope.dialog.SettingMemoryDialog;
-import jp.riken.kscope.properties.KeywordProperties;
-import jp.riken.kscope.properties.MemorybandProperties;
+//import jp.riken.kscope.dialog.SettingKeywordDialog;
+import jp.riken.kscope.dialog.SettingRequiredBFDialog;
+//import jp.riken.kscope.properties.KeywordProperties;
+import jp.riken.kscope.properties.RequiredBFProperties;
 import jp.riken.kscope.service.AppController;
 
 
 /**
  * 要求Byte/FLOP設定アクションクラス
- * @author riken
+ * @author RIKEN
  */
-public class ProjectSettingMemoryAction  extends ActionBase {
+public class ProjectSettingRequiredBFAction  extends ActionBase {
 
     /**
      * コンストラクタ
      * @param controller	アプリケーションコントローラ
      */
-    public ProjectSettingMemoryAction(AppController controller) {
+    public ProjectSettingRequiredBFAction(AppController controller) {
         super(controller);
     }
 
@@ -57,9 +57,9 @@ public class ProjectSettingMemoryAction  extends ActionBase {
         Frame frame = getWindowAncestor( event );
 
         // 要求Byte/FLOP設定ダイアログを表示する。
-        MemorybandProperties properities = this.controller.getPropertiesMemory();
+        RequiredBFProperties properities = this.controller.getPropertiesMemory();
 
-        SettingMemoryDialog dialog = new SettingMemoryDialog(frame, true, properities);
+        SettingRequiredBFDialog dialog = new SettingRequiredBFDialog(frame, true, properities);
         int result = dialog.showDialog();
         if (result != Constant.OK_DIALOG) {
         	Application.status.setMessageMain(message +

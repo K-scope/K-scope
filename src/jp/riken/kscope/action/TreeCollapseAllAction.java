@@ -24,7 +24,7 @@ import jp.riken.kscope.service.AppController;
 
 /**
  * ツリーすべて収納アクションイベント
- * @author riken
+ * @author RIKEN
  *
  */
 public class TreeCollapseAllAction extends ActionBase {

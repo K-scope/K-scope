@@ -53,7 +53,7 @@ import jp.riken.kscope.xcodeml.XcodeMLParserStax;
 
 /**
  * プロジェクトの新規作成アクション
- * @author riken
+ * @author RIKEN
  */
 public class FileProjectNewAction extends ActionBase {
     /** 中間コードを生成するクラス */
@@ -220,7 +220,7 @@ public class FileProjectNewAction extends ActionBase {
             // 外部ツールプロパティ設定
             projectService.setPropertiesExtension(this.controller.getPropertiesExtension());
             // 演算カウントプロパティ設定
-            projectService.setPropertiesOperand(this.controller.getPropertiesOperand());
+            projectService.setPropertiesOperand(this.controller.getPropertiesOperation());
             // ソースビュープロパティ設定
             projectService.setPropertiesSource(this.controller.getPropertiesSource());
             // プロファイラプロパティ設定

@@ -37,10 +37,9 @@ import jp.riken.kscope.service.AppController;
 import jp.riken.kscope.service.LanguageService;
 import jp.riken.kscope.utils.SwingUtils;
 
-
 /**
  * エクスポートアクションクラス
- * @author riken
+ * @author RIKEN
  *
  */
 public class FileExportExploreAction extends ActionBase {

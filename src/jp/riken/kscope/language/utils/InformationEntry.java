@@ -29,7 +29,7 @@ import jp.riken.kscope.language.generic.*;
 /**
  * 付加情報探索クラス.
  * 指定ブロック配下のすべての付加情報を取得する.
- * @author riken
+ * @author RIKEN
  */
 public class InformationEntry implements ILanguageEntry {
 	/** 付加情報リスト */

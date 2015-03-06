@@ -20,7 +20,7 @@ import jp.riken.kscope.Message;
 
 /**
  * トレース方向
- * @author riken
+ * @author RIKEN
  */
 public enum TRACE_DIR {
     // トレース方向

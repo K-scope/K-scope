@@ -26,9 +26,10 @@ import jp.riken.kscope.common.Constant;
 
 /**
  * スレッドタスクサービスクラス
- * @author riken
+ * @author RIKEN
  * @param <Integer>		スレッド終了コード
  */
+@SuppressWarnings("hiding")
 public class FutureService<Integer> extends FutureTask<Integer> {
 
     /** スレッド終了通知 */
@@ -82,6 +83,7 @@ public class FutureService<Integer> extends FutureTask<Integer> {
      * スレッド実行終了
      */
     @Override
+    @SuppressWarnings("unchecked")
     protected void done() {
         super.done();
 

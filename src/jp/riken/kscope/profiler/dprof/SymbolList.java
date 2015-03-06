@@ -22,7 +22,7 @@ import java.util.List;
 
 /**
  * シンボル情報リストクラス
- * @author riken
+ * @author RIKEN
  */
 public class SymbolList {
     /** シンボル情報リスト */

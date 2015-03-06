@@ -30,13 +30,13 @@ import javax.swing.table.DefaultTableColumnModel;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 
-import jp.riken.kscope.data.OperandCount;
+import jp.riken.kscope.data.OperationCount;
 import jp.riken.kscope.language.IBlock;
 import jp.riken.kscope.utils.SwingUtils;
 
 /**
  * 演算カウントモデル
- * @author riken
+ * @author RIKEN
  *
  */
 public class OperandTableModel extends Observable {
@@ -65,13 +65,13 @@ public class OperandTableModel extends Observable {
 
     /**
      * ブロック演算カウント情報クラス
-     * @author riken
+     * @author RIKEN
      */
     public class OperandBlock {
         /** ブロックノード */
         private IBlock block;
         /** 演算カウント */
-        private OperandCount count;
+        private OperationCount count;
 
         /**
          * コンストラクタ
@@ -93,7 +93,7 @@ public class OperandTableModel extends Observable {
          * @param block			ブロック
          * @param count		演算カウント
          */
-        public OperandBlock(IBlock block, OperandCount count) {
+        public OperandBlock(IBlock block, OperationCount count) {
             this.block = block;
             this.count = count;
         }
@@ -110,7 +110,7 @@ public class OperandTableModel extends Observable {
          * 演算カウントを取得する
          * @return		演算カウント
          */
-        public OperandCount getCount() {
+        public OperationCount getCount() {
             return count;
         }
 
@@ -118,7 +118,7 @@ public class OperandTableModel extends Observable {
          * 演算カウントを設定する
          * @param count		演算カウント
          */
-        public void setCount(OperandCount count) {
+        public void setCount(OperationCount count) {
             this.count = count;
         }
 
@@ -218,7 +218,7 @@ public class OperandTableModel extends Observable {
      * @param block		ブロック
      * @param count	ブロック演算カウント
      */
-    public void addOperandBlock(IBlock block, OperandCount count) {
+    public void addOperandBlock(IBlock block, OperationCount count) {
 
         if (block == null) return;
         if (count == null) return;
@@ -311,27 +311,27 @@ public class OperandTableModel extends Observable {
         // 演算カウントリストからテーブルモデルの作成を行う。
         if (listOperandBlock == null) return tableModel;
 
-        for (OperandBlock operand : this.listOperandBlock) {
+        for (OperandBlock opblock : this.listOperandBlock) {
             // テーブル行配列の作成
             Object[] row = new Object[HEADER_COLUMNS.length];
 
             // 演算カウントブロック
             int col = 0;
-            row[col++] = operand.getBlock();;
+            row[col++] = opblock.getBlock();;
             // ループ名
-            row[col++] = operand.getCount().getName();
+            row[col++] = opblock.getCount().getName();
             // F
-            row[col++] = operand.getCount().getF();
+            row[col++] = opblock.getCount().getF();
             // add
-            row[col++] = operand.getCount().getAdd();
+            row[col++] = opblock.getCount().getAdd();
             // sub
-            row[col++] = operand.getCount().getSub();
+            row[col++] = opblock.getCount().getSub();
             // mul
-            row[col++] = operand.getCount().getMul();
+            row[col++] = opblock.getCount().getMul();
             // div
-            row[col++] = operand.getCount().getDiv();
+            row[col++] = opblock.getCount().getDiv();
             // Intrinsic
-            row[col++] = operand.getCount().getIntrinsic();
+            row[col++] = opblock.getCount().getIntrinsic();
 
             // テーブル行追加
             tableModel.addRow(row);

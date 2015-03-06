@@ -24,7 +24,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Observable;
 
-import javax.swing.JOptionPane;
+//import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 import jp.riken.kscope.Message;
@@ -32,7 +32,7 @@ import jp.riken.kscope.utils.SwingUtils;
 
 /**
  * プロパティテーブルモデル
- * @author riken
+ * @author RIKEN
  *
  */
 public class PropertiesTableModel extends Observable {

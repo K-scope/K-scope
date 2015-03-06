@@ -27,7 +27,7 @@ import jp.riken.kscope.service.AppController;
 
 /**
  * 構造ツリーフィルタアクションクラス
- * @author riken
+ * @author RIKEN
  */
 public class ViewLangugeFilterAction extends ActionBase {
 

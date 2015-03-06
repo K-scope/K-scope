@@ -1,7 +1,7 @@
 
    K-scope: A Java-Based Fortran Source Code Analyzer
    with Graphical User Interface for Performance Improvement
-   Copyright 2012-2013 RIKEN, Japan
+   Copyright 2012-2014 RIKEN, Japan
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -19,5 +19,5 @@ limitations under the License.
    Peter Bryzgalov, HPC Usability Research Team, AICS, RIKEN
    under the Apache License 2.0
 
-   SSHconnect 1.03 (http://www.aics.riken.jp/ungi/soft/kscope/)
+   SSHconnect 1.18 (http://www.aics.riken.jp/ungi/soft/kscope/)
 

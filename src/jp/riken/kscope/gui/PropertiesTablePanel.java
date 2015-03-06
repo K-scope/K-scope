@@ -51,7 +51,7 @@ import jp.riken.kscope.utils.SwingUtils;
 
 /**
  * プロパティパネルクラス
- * @author riken
+ * @author RIKEN
  *
  */
 public class PropertiesTablePanel extends AnalisysPanelBase implements Observer, IAnalisysComponent {

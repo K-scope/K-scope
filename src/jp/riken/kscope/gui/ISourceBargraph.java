@@ -23,7 +23,7 @@ import jp.riken.kscope.data.SourceFile;
 
 /**
  * ソースビューのバーグラフインターフェイスクラス
- * @author riken
+ * @author RIKEN
  */
 public interface ISourceBargraph {
 

@@ -21,37 +21,37 @@ import java.util.Arrays;
 import java.util.List;
 
 import jp.riken.kscope.common.ACCESSMEMORY_TYPE;
-import jp.riken.kscope.data.Memoryband;
-import jp.riken.kscope.data.RequiredByteFlopResult;
+import jp.riken.kscope.data.RequiredBF;
+import jp.riken.kscope.data.RequiredBFResult;
 import jp.riken.kscope.language.Fortran;
 import jp.riken.kscope.language.IBlock;
 import jp.riken.kscope.language.Substitution;
 import jp.riken.kscope.language.Variable;
 import jp.riken.kscope.language.fortran.VariableType;
 import jp.riken.kscope.language.utils.LanguageVisitor;
-import jp.riken.kscope.language.utils.OperandCounterUtils;
+import jp.riken.kscope.language.utils.OperationCounterUtils;
 import jp.riken.kscope.language.utils.VariableMemoryEntry;
-import jp.riken.kscope.model.RequiredByteFlopModel;
-import jp.riken.kscope.properties.MemorybandProperties;
-import jp.riken.kscope.properties.MemorybandProperties.THROUGHPUT_STORE_MODE;
-import jp.riken.kscope.properties.OperandProperties;
+import jp.riken.kscope.model.RequiredBFModel;
+import jp.riken.kscope.properties.RequiredBFProperties;
+import jp.riken.kscope.properties.RequiredBFProperties.MEM_THROUGHPUT_CALC_MODE;
+import jp.riken.kscope.properties.OperationProperties;
 import jp.riken.kscope.properties.VariableMemoryProperties;
 import jp.riken.kscope.utils.StringUtils;
 
 /**
  * メモリ性能算出を行う
- * @author riken
+ * @author RIKEN
  */
 public class AnalysisMemoryService extends AnalysisBaseService {
 
     /** 要求Byte/FLOP設定プロパティ */
-    private MemorybandProperties properitiesMemoryband;
+    private RequiredBFProperties properitiesRequiredBF;
     /** 組込み関数演算カウントプロパティ */
-    private OperandProperties propertiesOperand;
+    private OperationProperties propertiesOperation;
     /** 要求Byte/FLOPテーブルモデル */
-    private RequiredByteFlopModel modelRequired;
+    private RequiredBFModel modelRequiredBF;
     /** 要求Byte/FLOP算出結果 */
-    private List<RequiredByteFlopResult> reqiedResults;
+    private List<RequiredBFResult> requiedBFResults;
     /** 選択ブロック */
     private List<IBlock> blocks;
     /** 変数アクセス先メモリ設定プロパティ */
@@ -68,32 +68,32 @@ public class AnalysisMemoryService extends AnalysisBaseService {
 	 * 要求Byte/FLOP設定プロパティを取得する.
 	 * @return 要求Byte/FLOP設定プロパティ
 	 */
-	public MemorybandProperties getProperitiesMemoryband() {
-		return properitiesMemoryband;
+	public RequiredBFProperties getProperitiesRequiredBF() {
+		return properitiesRequiredBF;
 	}
 
 	/**
 	 * 要求Byte/FLOP設定プロパティを設定する.
 	 * @param properities 要求Byte/FLOP設定プロパティ
 	 */
-	public void setProperitiesMemoryband(MemorybandProperties properities) {
-		this.properitiesMemoryband = properities;
+	public void setProperitiesRequiredBF(RequiredBFProperties properities) {
+		this.properitiesRequiredBF = properities;
 	}
 
 	/**
 	 * 組込み関数演算カウントプロパティを取得する.
 	 * @return 組込み関数演算カウントプロパティ
 	 */
-	public OperandProperties getPropertiesOperand() {
-		return propertiesOperand;
+	public OperationProperties getPropertiesOperand() {
+		return propertiesOperation;
 	}
 
 	/**
 	 * 組込み関数演算カウントプロパティを設定する.
 	 * @param properities 組込み関数演算カウントプロパティ
 	 */
-	public void setPropertiesOperand(OperandProperties properities) {
-		this.propertiesOperand = properities;
+	public void setPropertiesOperand(OperationProperties properities) {
+		this.propertiesOperation = properities;
 	}
 
 	/**
@@ -119,32 +119,32 @@ public class AnalysisMemoryService extends AnalysisBaseService {
 	 * 要求Byte/FLOPテーブルモデルを取得する.
 	 * @return 要求Byte/FLOPテーブルモデル
 	 */
-	public RequiredByteFlopModel getModelRequired() {
-		return modelRequired;
+	public RequiredBFModel getModelRequiredBF() {
+		return modelRequiredBF;
 	}
 
 	/**
 	 * 要求Byte/FLOPテーブルモデルを設定する.
 	 * @param model 要求Byte/FLOPテーブルモデル
 	 */
-	public void setModelRequired(RequiredByteFlopModel model) {
-		this.modelRequired = model;
+	public void setModelRequiredBF(RequiredBFModel model) {
+		this.modelRequiredBF = model;
 	}
 
 	/**
 	 * 要求Byte/FLOP算出結果を取得する.
 	 * @return 要求Byte/FLOP算出結果
 	 */
-	public List<RequiredByteFlopResult> getReqiedResults() {
-		return reqiedResults;
+	public List<RequiredBFResult> getReqiedBFResults() {
+		return requiedBFResults;
 	}
 
 	/**
 	 * 要求Byte/FLOP算出結果を設定する.
-	 * @param reqiedResults  要求Byte/FLOP算出結果
+	 * @param reqiedBFResults  要求Byte/FLOP算出結果
 	 */
-	public void setReqiedResults(List<RequiredByteFlopResult> reqiedResults) {
-		this.reqiedResults = reqiedResults;
+	public void setReqiedBFResults(List<RequiredBFResult> reqiedBFResults) {
+		this.requiedBFResults = reqiedBFResults;
 	}
 
 	/**
@@ -152,15 +152,15 @@ public class AnalysisMemoryService extends AnalysisBaseService {
 	 * @param block    算出ブロック
 	 * @return    要求Byte/FLOP算出結果
 	 */
-	public RequiredByteFlopResult calculateRequiredByteFlop(IBlock block) {
+	public RequiredBFResult calcRequiredBF(IBlock block) {
 		if (block == null) return null;
 
 		// 演算数,Load,Storeをカウントする.
-		OperandCounterUtils utils = new OperandCounterUtils();
-		utils.setPropertiesOperand(this.propertiesOperand);
+		OperationCounterUtils utils = new OperationCounterUtils();
+		utils.setPropertiesOperation(this.propertiesOperation);
 		utils.countBlock(block);
 
-		RequiredByteFlopResult result = new RequiredByteFlopResult();
+		RequiredBFResult result = new RequiredBFResult();
 		// 算出ブロック
 		result.setBlock(block);
 		// 右辺変数
@@ -170,24 +170,24 @@ public class AnalysisMemoryService extends AnalysisBaseService {
 		// Load, Store
 		setStoreLoad(result, lefts, rights);
         // 演算数
-		setOperand(result, utils.getAddFlop(),
-							utils.getSubFlop(),
-							utils.getMulFlop(),
-							utils.getDivFlop(),
-							utils.getPowFlop(),
-							utils.getFunctionFlop());
+		setOperation(result, utils.getAddFlop(),
+						   utils.getSubFlop(),
+						   utils.getMulFlop(),
+						   utils.getDivFlop(),
+						   utils.getPowFlop(),
+						   utils.getFunctionFlop());
         // 要求Byte/FLOP,要求FLOP/Byte
-		result.calculateRequired();
-		// スループット
-		setThroughput(result, lefts, rights);
+		result.calcRequiredBF();
+		// メモリスループット
+		setMemThroughput(result, lefts, rights);
 		// 実効Byte/FLOP,実効FLOP/Byte
-		result.calculateEffective(this.properitiesMemoryband.getOperationPerformance());
+		result.calcRequiredBF(this.properitiesRequiredBF.getFlopPerformance());
 		// ピーク性能
-		result.calculatePeak();
+		result.calcPeakPerformance();
 		// アクセス先メモリカウント
 		setAccessCount(result, lefts, rights);
-		// 算出単位
-		result.setUnitType(this.properitiesMemoryband.getUnitType());
+		// BF算出単位
+		result.setBFCalcType(this.properitiesRequiredBF.getBFCalcType());
 
 		return result;
 	}
@@ -202,12 +202,12 @@ public class AnalysisMemoryService extends AnalysisBaseService {
 	 * @param pow		累乗
 	 * @param function	組込関数の加算(+) + 乗算(*)
 	 */
-	private void setOperand(RequiredByteFlopResult result, int add, int sub, int mul, int div, int pow, int function) {
+	private void setOperation(RequiredBFResult result, int add, int sub, int mul, int div, int pow, int function) {
 		if (result == null) return;
 
 		// 演算数(FLOP) = add(F) + mul(F) + intrinsic(F)
-		int operand = add + sub + mul + div + pow + function;
-		result.setOperand(operand);
+		int op = add + sub + mul + div + pow + function;
+		result.setOperation(op);
 		// 浮動小数点データ型の変数に対する加算(+)の数
 		result.setAddCount(add);
 		// 浮動小数点データ型の変数に対する減算(-)の数
@@ -228,7 +228,7 @@ public class AnalysisMemoryService extends AnalysisBaseService {
 	 * @param lefts			左辺変数リスト
 	 * @param rights		右辺変数リスト
 	 */
-	private void setStoreLoad(RequiredByteFlopResult result, List<Variable> lefts, List<Variable> rights) {
+	private void setStoreLoad(RequiredBFResult result, List<Variable> lefts, List<Variable> rights) {
 		if (result == null) return;
 		// すべての変数リスト
 		List<Variable> all = getMargeVariable(lefts, rights);
@@ -250,7 +250,7 @@ public class AnalysisMemoryService extends AnalysisBaseService {
 	 */
 	private List<Variable> getMargeVariable(List<Variable> lefts, List<Variable> rights) {
 		List<Variable> all = new ArrayList<Variable>();
-		OperandCounterUtils utils = new OperandCounterUtils();
+		OperationCounterUtils utils = new OperationCounterUtils();
 		if (lefts != null) {
 			for (Variable var : lefts) {
 				if (utils.getVariables(all, var) == null) {
@@ -270,12 +270,12 @@ public class AnalysisMemoryService extends AnalysisBaseService {
 	}
 
 	/**
-	 * スループットを設定する.
+	 * メモリスループットを設定する.
 	 * @param result		算出結果
 	 * @param lefts			左辺変数リスト
 	 * @param rights		右辺変数リスト
 	 */
-	private void setThroughput(RequiredByteFlopResult result, List<Variable> lefts, List<Variable> rights) {
+	private void setMemThroughput(RequiredBFResult result, List<Variable> lefts, List<Variable> rights) {
 		if (result == null) return;
 
 		// Store有り、無しの判定
@@ -285,36 +285,36 @@ public class AnalysisMemoryService extends AnalysisBaseService {
 		// スループット(GB/s)
 		float throughput = 0.0F;
 		if (isstore) {
-			throughput= this.properitiesMemoryband.getThroughputStore();
+			throughput= this.properitiesRequiredBF.getMemThroughputStore();
 		}
 		else {
-			throughput= this.properitiesMemoryband.getThroughputNoneStore();
+			throughput= this.properitiesRequiredBF.getMemThroughputNostore();
 		}
 		result.setThroughput(throughput);
 
-		// スループットモード
-		result.setStoreMode(this.properitiesMemoryband.getStoreMode());
+		// メモリスループット算出モード
+		result.setMemThroughputCalcMode(this.properitiesRequiredBF.getMemThroughputCalcMode());
 		// 算出元のスループット値(GB/s)（ストア有り or ストアなし）
-		Memoryband memory = this.properitiesMemoryband.getMemoryband(ACCESSMEMORY_TYPE.MEMORY);
-		Memoryband l1 = this.properitiesMemoryband.getMemoryband(ACCESSMEMORY_TYPE.L1_CACHE);
-		Memoryband l2 = this.properitiesMemoryband.getMemoryband(ACCESSMEMORY_TYPE.L2_CACHE);
-		Memoryband register = this.properitiesMemoryband.getMemoryband(ACCESSMEMORY_TYPE.REGISTER);
-		Memoryband custom = this.properitiesMemoryband.getMemoryband(ACCESSMEMORY_TYPE.CUSTOM);
+		RequiredBF memory = this.properitiesRequiredBF.getRequiredBF(ACCESSMEMORY_TYPE.MEMORY);
+		RequiredBF l1 = this.properitiesRequiredBF.getRequiredBF(ACCESSMEMORY_TYPE.L1_CACHE);
+		RequiredBF l2 = this.properitiesRequiredBF.getRequiredBF(ACCESSMEMORY_TYPE.L2_CACHE);
+		RequiredBF register = this.properitiesRequiredBF.getRequiredBF(ACCESSMEMORY_TYPE.REGISTER);
+		RequiredBF custom = this.properitiesRequiredBF.getRequiredBF(ACCESSMEMORY_TYPE.CUSTOM);
 		if (isstore) {
 			// 算出元のスループット値(GB/s)（ストア有り）
-			result.setMemoryMBW(memory.getThroughputStore());
-			result.setL1MBW(l1.getThroughputStore());
-			result.setL2MBW(l2.getThroughputStore());
-			result.setRegisterMBW(register.getThroughputStore());
-			result.setCustomMBW(custom.getThroughputStore());
+			result.setMemoryMBW(memory.getMemThroughputStore());
+			result.setL1MBW(l1.getMemThroughputStore());
+			result.setL2MBW(l2.getMemThroughputStore());
+			result.setRegisterMBW(register.getMemThroughputStore());
+			result.setCustomMBW(custom.getMemThroughputStore());
 		}
 		else {
 			// 算出元のスループット値(GB/s)（ストアなし）
-			result.setMemoryMBW(memory.getThroughputNonestore());
-			result.setL1MBW(l1.getThroughputNonestore());
-			result.setL2MBW(l2.getThroughputNonestore());
-			result.setRegisterMBW(register.getThroughputNonestore());
-			result.setCustomMBW(custom.getThroughputNonestore());
+			result.setMemoryMBW(memory.getMemThroughputNostore());
+			result.setL1MBW(l1.getMemThroughputNostore());
+			result.setL2MBW(l2.getMemThroughputNostore());
+			result.setRegisterMBW(register.getMemThroughputNostore());
+			result.setCustomMBW(custom.getMemThroughputNostore());
 		}
 		// 係数
 		result.setMemoryCoef(memory.getCoef());
@@ -325,12 +325,12 @@ public class AnalysisMemoryService extends AnalysisBaseService {
 	}
 
 	/**
-	 * アクセス先メモリを設定する.
+	 * メモリアクセス先メモリを設定する.
 	 * @param result		算出結果
 	 * @param lefts			左辺変数リスト
 	 * @param rights		右辺変数リスト
 	 */
-	private void setAccessCount(RequiredByteFlopResult result, List<Variable> lefts, List<Variable> rights) {
+	private void setAccessCount(RequiredBFResult result, List<Variable> lefts, List<Variable> rights) {
 		if (result == null) return;
 		int memory = 0;
 		int l1 = 0;
@@ -379,13 +379,13 @@ public class AnalysisMemoryService extends AnalysisBaseService {
 	private boolean isStore(List<Variable> lefts) {
 		// Store有り、無しの判定
 		boolean isstore = false;
-		if (this.properitiesMemoryband.getStoreMode() == THROUGHPUT_STORE_MODE.NONESTORE) {
+		if (this.properitiesRequiredBF.getMemThroughputCalcMode() == MEM_THROUGHPUT_CALC_MODE.NOSTORE) {
 			isstore = false;
 		}
-		else if (this.properitiesMemoryband.getStoreMode() == THROUGHPUT_STORE_MODE.STORE) {
+		else if (this.properitiesRequiredBF.getMemThroughputCalcMode() == MEM_THROUGHPUT_CALC_MODE.STORE) {
 			isstore = true;
 		}
-		else if (this.properitiesMemoryband.getStoreMode() == THROUGHPUT_STORE_MODE.AUTO) {
+		else if (this.properitiesRequiredBF.getMemThroughputCalcMode() == MEM_THROUGHPUT_CALC_MODE.AUTO) {
 			int leftbyte = getVariableMemoryByte(lefts);
 			if (leftbyte > 0) {
 				isstore = true;
@@ -424,8 +424,8 @@ public class AnalysisMemoryService extends AnalysisBaseService {
 			if (kind > 0) {
 				byteValue = kind;
 			}
-			else if (this.properitiesMemoryband.getDefaultSizeInteger() > 0) {
-				byteValue = this.properitiesMemoryband.getDefaultSizeInteger();
+			else if (this.properitiesRequiredBF.getDefaultSizeInteger() > 0) {
+				byteValue = this.properitiesRequiredBF.getDefaultSizeInteger();
 			}
 		}
 		else if (type.getPrimitiveDataType() == VariableType.PrimitiveDataType.REAL) {
@@ -433,8 +433,8 @@ public class AnalysisMemoryService extends AnalysisBaseService {
 			if (kind > 0) {
 				byteValue = kind;
 			}
-			else if (this.properitiesMemoryband.getDefaultSizeReal() > 0) {
-				byteValue = this.properitiesMemoryband.getDefaultSizeReal();
+			else if (this.properitiesRequiredBF.getDefaultSizeReal() > 0) {
+				byteValue = this.properitiesRequiredBF.getDefaultSizeReal();
 			}
 		}
 		else if (type.getPrimitiveDataType() == VariableType.PrimitiveDataType.DOUBLE_PRECISION) {
@@ -456,6 +456,7 @@ public class AnalysisMemoryService extends AnalysisBaseService {
 	 * @param var		変数
 	 * @return		バイト数
 	 */
+	@SuppressWarnings("unused")
 	private boolean isRightVariable(Variable var) {
 		if (var == null) return false;
 		if (var.getParentStatement() == null) return false;
@@ -475,6 +476,7 @@ public class AnalysisMemoryService extends AnalysisBaseService {
 	 * @param var		変数
 	 * @return		バイト数
 	 */
+    @SuppressWarnings("unused")
 	private boolean isLeftVariable(Variable var) {
 		if (var == null) return false;
 		if (var.getParentStatement() == null) return false;
@@ -493,10 +495,11 @@ public class AnalysisMemoryService extends AnalysisBaseService {
 	 * @param  vars  変数リスト
 	 * @return		要求B/F対象の変数の数
 	 */
+    @SuppressWarnings("unused")
 	private int getVariableMemoryCount(List<Variable> vars) {
 		if (vars == null) return 0;
 		if (vars.size() <= 0) return 0;
-		if (this.properitiesMemoryband == null) return vars.size();
+		if (this.properitiesRequiredBF == null) return vars.size();
 		int count = 0;
 		for (Variable var : vars) {
 			ACCESSMEMORY_TYPE type = getMemoryType(var);
@@ -504,9 +507,9 @@ public class AnalysisMemoryService extends AnalysisBaseService {
 				type = ACCESSMEMORY_TYPE.getDefaultType(var);
 			}
 			if (type == null) continue;
-			Memoryband mem = this.properitiesMemoryband.getMemoryband(type);
+			RequiredBF mem = this.properitiesRequiredBF.getRequiredBF(type);
 			if (mem == null) continue;
-			if (mem.isRequired()) {
+			if (mem.isRequiredBF()) {
 				count++;
 			}
 		}
@@ -524,7 +527,7 @@ public class AnalysisMemoryService extends AnalysisBaseService {
 		if (vars.size() <= 0) return 0;
 		int varbyte = 0;
 		for (Variable var : vars) {
-			if (this.properitiesMemoryband != null) {
+			if (this.properitiesRequiredBF != null) {
 				ACCESSMEMORY_TYPE type = getMemoryType(var);
 				if (type == null) {
 					// 設定済み変数からアクセス先メモリを取得する
@@ -535,9 +538,9 @@ public class AnalysisMemoryService extends AnalysisBaseService {
 					}
 				}
 				if (type == null) continue;
-				Memoryband mem = this.properitiesMemoryband.getMemoryband(type);
+				RequiredBF mem = this.properitiesRequiredBF.getRequiredBF(type);
 				if (mem == null) continue;
-				if (mem.isRequired()) {
+				if (mem.isRequiredBF()) {
 					varbyte += getVariableByte(var);
 				}
 			}
@@ -566,13 +569,13 @@ public class AnalysisMemoryService extends AnalysisBaseService {
 	 * 分析ビューに算出結果を追加する.
 	 * @param  results    算出結果リスト
 	 */
-	public void setAnalysisPanel(RequiredByteFlopResult[] results) {
-		if (this.modelRequired == null) return;
-		if (this.properitiesMemoryband != null) {
+	public void setAnalysisPanel(RequiredBFResult[] results) {
+		if (this.modelRequiredBF == null) return;
+		if (this.properitiesRequiredBF != null) {
 			// 算出単位を設定する
-			this.modelRequired.setUnitType(this.properitiesMemoryband.getUnitType());
+			this.modelRequiredBF.setUnitType(this.properitiesRequiredBF.getBFCalcType());
 		}
-		this.modelRequired.addRequiredByteFlopResults(results);
+		this.modelRequiredBF.addRequiredByteFlopResults(results);
 	}
 
 	/**

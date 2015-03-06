@@ -38,7 +38,7 @@ import jp.riken.kscope.utils.TextFileReader;
 
 /**
  * ソースコードモデルクラス
- * @author riken
+ * @author RIKEN
  *
  */
 public class SourceCodeModel extends Observable {

@@ -57,7 +57,7 @@ import jp.riken.kscope.utils.StringUtils;
 
 /**
  * プロファイラサービス
- * @author riken
+ * @author RIKEN
  *
  */
 public class ProfilerService extends BaseService {
@@ -485,6 +485,7 @@ public class ProfilerService extends BaseService {
      *            コード行情報
      * @return プログラム単位。無ければnullを返す。
      */
+    @SuppressWarnings("unused")
     private IBlock searchCodeLine(CodeLine line) {
         if (line == null) return null;
         if (this.fortranDb == null) return null;

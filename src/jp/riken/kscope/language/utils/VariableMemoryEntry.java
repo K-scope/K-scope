@@ -27,7 +27,7 @@ import jp.riken.kscope.language.generic.*;
 /**
  * アクセス先メモリ設定変数探索クラス.
  * アクセス先メモリ設定変数を取得する.
- * @author riken
+ * @author RIKEN
  */
 public class VariableMemoryEntry implements ILanguageEntry {
 	/** アクセス先メモリ設定変数 */

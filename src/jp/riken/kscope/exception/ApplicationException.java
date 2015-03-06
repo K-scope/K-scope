@@ -22,7 +22,7 @@ import jp.riken.kscope.data.CodeLine;
  * アプリケーション例外クラス GUIその他、アプリケーション全体の例外クラス アプリケーション例外は、例外発生箇所、又は呼出側にて例外処理,
  * 又はthrowsを行わなければならない。
  *
- * @author riken
+ * @author RIKEN
  *
  */
 public class ApplicationException extends Exception {

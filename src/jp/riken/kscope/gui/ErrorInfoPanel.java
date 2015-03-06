@@ -53,7 +53,7 @@ import jp.riken.kscope.utils.SwingUtils;
 
 /**
  * エラーパネルクラス
- * @author riken
+ * @author RIKEN
  *
  */
 public class ErrorInfoPanel extends AnalisysPanelBase implements Observer, IAnalisysComponent {

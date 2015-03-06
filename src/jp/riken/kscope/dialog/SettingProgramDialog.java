@@ -61,7 +61,7 @@ import jp.riken.kscope.utils.SwingUtils;
 
 /**
  * 外部ツール設定ダイアログクラス
- * @author riken
+ * @author RIKEN
  *
  */
 public class SettingProgramDialog extends javax.swing.JDialog implements ActionListener, ListSelectionListener, ItemListener {

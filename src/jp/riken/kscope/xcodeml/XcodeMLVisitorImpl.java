@@ -26,7 +26,7 @@ import jp.riken.kscope.xcodeml.xml.gen.*;
 
 /**
  * XcodeMLノード探索クラス
- * @author riken
+ * @author RIKEN
  *
  */
 public class XcodeMLVisitorImpl implements IXmlVisitor {

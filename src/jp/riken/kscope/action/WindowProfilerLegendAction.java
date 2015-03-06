@@ -29,7 +29,7 @@ import jp.riken.kscope.service.AppController;
 
 /**
  * プロファイラ凡例の表示アクションクラス
- * @author riken
+ * @author RIKEN
  */
 public class WindowProfilerLegendAction extends ActionBase {
 

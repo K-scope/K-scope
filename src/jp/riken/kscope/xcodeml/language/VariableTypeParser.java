@@ -40,7 +40,7 @@ import jp.riken.kscope.xcodeml.xml.gen.Var;
 
 /**
  * VariableTypeパーサクラス
- * @author riken
+ * @author RIKEN
  */
 public class VariableTypeParser {
 
@@ -261,7 +261,7 @@ public class VariableTypeParser {
     public VariableType parseVarDefStructType(FstructType structType) {
 
         // 構造体名
-        String structTypeName = structType.getType();
+        //String structTypeName = structType.getType();
         String structName = this.typeManager.getAliasTypeName(structType.getType());
 
         // modify by @hira at 2013/02/01

@@ -36,7 +36,7 @@ import jp.riken.kscope.utils.SwingUtils;
 
 /**
  * XMLファイル追加アクションクラス
- * @author riken
+ * @author RIKEN
  *
  */
 public class ProjectAddFileAction extends ActionBase {

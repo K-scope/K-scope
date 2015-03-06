@@ -24,7 +24,7 @@ import jp.riken.kscope.model.ErrorInfoModel;
 
 /**
  * サービス基底クラス
- * @author riken
+ * @author RIKEN
  */
 public abstract class BaseService {
     /** エラーメッセージモデル */

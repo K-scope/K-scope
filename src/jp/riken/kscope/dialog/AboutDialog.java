@@ -48,7 +48,7 @@ import jp.riken.kscope.utils.ResourceUtils;
 /**
  * バージョンダイアログ
  *
- * @author riken
+ * @author RIKEN
  *
  */
 public class AboutDialog extends javax.swing.JDialog implements ActionListener, HyperlinkListener {

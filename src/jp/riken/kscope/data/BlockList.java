@@ -28,7 +28,7 @@ import jp.riken.kscope.language.Variable;
 
 /**
  * Blockのリストクラス
- * @author riken
+ * @author RIKEN
  */
 public class BlockList implements IBlock {
 	/** ブロックリスト */

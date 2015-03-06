@@ -40,7 +40,7 @@ import jp.riken.kscope.utils.SwingUtils;
 
 /**
  * エラー情報モデル
- * @author riken
+ * @author RIKEN
  *
  */
 public class ErrorInfoModel extends Observable {

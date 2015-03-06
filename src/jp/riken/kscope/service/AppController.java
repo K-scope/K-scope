@@ -58,8 +58,7 @@ import jp.riken.kscope.model.OperandTableModel;
 import jp.riken.kscope.model.ProjectModel;
 import jp.riken.kscope.model.PropertiesTableModel;
 import jp.riken.kscope.model.ReferenceModel;
-import jp.riken.kscope.model.ReplacementResultTableModel;
-import jp.riken.kscope.model.RequiredByteFlopModel;
+import jp.riken.kscope.model.RequiredBFModel;
 import jp.riken.kscope.model.ScopeModel;
 import jp.riken.kscope.model.SearchResultModel;
 import jp.riken.kscope.model.VariableTableModel;
@@ -67,8 +66,8 @@ import jp.riken.kscope.profiler.ProfilerInfo;
 import jp.riken.kscope.properties.KscopeProperties;
 import jp.riken.kscope.properties.ApplicationProperties;
 import jp.riken.kscope.properties.KeywordProperties;
-import jp.riken.kscope.properties.MemorybandProperties;
-import jp.riken.kscope.properties.OperandProperties;
+import jp.riken.kscope.properties.RequiredBFProperties;
+import jp.riken.kscope.properties.OperationProperties;
 import jp.riken.kscope.properties.ProfilerProperties;
 import jp.riken.kscope.properties.ProgramProperties;
 import jp.riken.kscope.properties.ProjectProperties;
@@ -78,7 +77,7 @@ import jp.riken.kscope.properties.VariableMemoryProperties;
 
 /**
  * アプリケーションコントローラクラス
- * @author riken
+ * @author RIKEN
  *
  */
 public class AppController implements PropertyChangeListener {
@@ -104,13 +103,13 @@ public class AppController implements PropertyChangeListener {
     private ProgramProperties propertiesProgram;
 
     /** 演算カウントプロパティ */
-    private OperandProperties propertiesOperand;
+    private OperationProperties propertiesOperand;
 
     /** プロファイラプロパティ */
     private ProfilerProperties propertiesProfiler;
 
     /** 要求Byte/FLOP設定プロパティ */
-    private MemorybandProperties propertiesMemory;
+    private RequiredBFProperties propertiesMemory;
     
     // Docker IaaS properties
     private DockerIaaSProperties docker_iaas_properties = null;
@@ -155,9 +154,17 @@ public class AppController implements PropertyChangeListener {
         haveDockerIaaS = checkDockerIaaS();
     }
 
+<<<<<<< HEAD
     /**/
     private boolean checkDockerIaaS() {
         File f = new File(remote_make_file);
+=======
+    /** 
+     * SSHconnect.jarが存在するかチェック
+     */
+    private boolean checkSSHconnect() {
+        File f = new File("SSHconnect.jar");
+>>>>>>> origin/master
         if (f.exists()) {
             System.out.println(f.getAbsolutePath());
             return true;
@@ -269,7 +276,7 @@ public class AppController implements PropertyChangeListener {
         	this.propertiesProgram = new ProgramProperties();
         }
         if (this.propertiesOperand == null) {
-        	this.propertiesOperand = new OperandProperties();
+        	this.propertiesOperand = new OperationProperties();
         }
         if (this.propertiesApplication == null) {
         	this.propertiesApplication = new ApplicationProperties();
@@ -290,9 +297,9 @@ public class AppController implements PropertyChangeListener {
         PROFILERINFO_TYPE.setProfilerProperties(this.propertiesProfiler);
         // 要求Byte/FLOP設定プロパティ:デフォルト設定を保持する為に生成済みの場合は、newしない。
         if (this.propertiesMemory == null) {
-        	this.propertiesMemory = new MemorybandProperties();
+        	this.propertiesMemory = new RequiredBFProperties();
         	// デフォルト設定を設定する.
-        	MemorybandProperties defaultProperties = new MemorybandProperties();
+        	RequiredBFProperties defaultProperties = new RequiredBFProperties();
         	this.propertiesMemory.setDefaultProperties(defaultProperties);
         }
         // 要求Byte/FLOP変数設定データ
@@ -346,7 +353,7 @@ public class AppController implements PropertyChangeListener {
      * 演算カウントプロパティを取得する
      * @return		演算カウントプロパティ
      */
-    public OperandProperties getPropertiesOperand() {
+    public OperationProperties getPropertiesOperation() {
         return this.propertiesOperand;
     }
 
@@ -362,7 +369,7 @@ public class AppController implements PropertyChangeListener {
      * 要求Byte/FLOP設定プロパティを取得する
      * @return		要求Byte/FLOP設定プロパティ
      */
-    public MemorybandProperties getPropertiesMemory() {
+    public RequiredBFProperties getPropertiesMemory() {
         return this.propertiesMemory;
     }
 
@@ -467,7 +474,6 @@ public class AppController implements PropertyChangeListener {
     public VariableTableModel getVariableTableModel() {
         // 変数特性情報一覧モデル
         VariableTableModel model = this.mainframe.getPanelAnalysisView().getPanelVariable().getModel();
-
         return model;
     }
 
@@ -751,20 +757,9 @@ public class AppController implements PropertyChangeListener {
      * 要求Byte/FLOP算出結果モデルを取得する
      * @return		要求Byte/FLOP算出結果モデル
      */
-    public RequiredByteFlopModel getRequiredByteFlopModel() {
+    public RequiredBFModel getRequiredByteFlopModel() {
         // 要求Byte/FLOP算出結果モデル
-    	RequiredByteFlopModel model = this.mainframe.getPanelAnalysisView().getPanelRequiredByteFlop().getModel();
-
-        return model;
-    }
-
-    /**
-     * 構造情報差替結果テーブルモデルを取得する
-     * @return 構造情報差替結果テーブルモデル
-     */
-    public ReplacementResultTableModel getReplaceTableModel() {
-        // 差替結果テーブルモデル
-        ReplacementResultTableModel model = this.mainframe.getPanelAnalysisView().getPanelReplace().getModel();
+    	RequiredBFModel model = this.mainframe.getPanelAnalysisView().getPanelRequiredByteFlop().getModel();
 
         return model;
     }
@@ -805,10 +800,15 @@ public class AppController implements PropertyChangeListener {
         //this.propertiesSSH = null;
     }
 
+<<<<<<< HEAD
     
 
     public void setSSHproperties(DockerIaaSProperties docker_iaas_properties) {
     	this.docker_iaas_properties = docker_iaas_properties;
+=======
+    public void setSSHproperties(SSHconnectProperties ssh_properties) {
+    	this.propertiesSSH = ssh_properties;
+>>>>>>> origin/master
     }
     
     /**
@@ -985,7 +985,6 @@ public class AppController implements PropertyChangeListener {
         return;
     }
 
-
     /**
      * プロファイラ情報をクリアする
      */
@@ -1040,7 +1039,7 @@ public class AppController implements PropertyChangeListener {
     		this.actionVariable.refresh();
     	}
     	// 要求Byte/FLOP算出結果モデル
-    	RequiredByteFlopModel requiredModel = this.getRequiredByteFlopModel();
+    	RequiredBFModel requiredModel = this.getRequiredByteFlopModel();
     	requiredModel.notifyModel();
 
     }

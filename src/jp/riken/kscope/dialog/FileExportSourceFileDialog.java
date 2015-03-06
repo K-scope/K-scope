@@ -42,7 +42,7 @@ import jp.riken.kscope.utils.SwingUtils;
 
 /**
  * ソースファイルエクスポートダイアログクラス
- * @author riken
+ * @author RIKEN
  */
 public class FileExportSourceFileDialog extends javax.swing.JDialog implements
 		ActionListener {

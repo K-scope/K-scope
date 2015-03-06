@@ -33,7 +33,7 @@ import jp.riken.kscope.properties.KscopeProperties;
 /**
  * リソースユーティリティクラス
  * 
- * @author riken
+ * @author RIKEN
  */
 public class ResourceUtils {
 

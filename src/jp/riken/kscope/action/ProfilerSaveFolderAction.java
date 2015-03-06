@@ -30,7 +30,7 @@ import jp.riken.kscope.utils.SwingUtils;
 
 /**
  * プロファイラ測定区間フォルダ保存アクションクラス
- * @author riken
+ * @author RIKEN
  *
  */
 public class ProfilerSaveFolderAction extends ActionBase {

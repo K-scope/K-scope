@@ -26,7 +26,7 @@ import jp.riken.kscope.service.AppController;
 
 /**
  * タブパネルを表示する.
- * @author riken
+ * @author RIKEN
  */
 public class WindowViewAction extends ActionBase {
 

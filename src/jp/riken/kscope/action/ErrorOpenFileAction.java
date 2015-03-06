@@ -33,7 +33,7 @@ import jp.riken.kscope.service.AppController;
 
 /**
  * エラー箇所を開くアクション
- * @author riken
+ * @author RIKEN
  *
  */
 public class ErrorOpenFileAction extends ActionBase implements MouseListener {

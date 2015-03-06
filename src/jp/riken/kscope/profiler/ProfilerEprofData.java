@@ -22,7 +22,7 @@ import jp.riken.kscope.profiler.eprof.HardwareMonitorInfo;
 /**
  * プロファイライベントカウンタ(Eprof)データクラス.
  * EProfのプロファイラデータ
- * @author riken
+ * @author RIKEN
  */
 public class ProfilerEprofData extends ProfilerBaseData {
 

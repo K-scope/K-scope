@@ -28,7 +28,7 @@ import jp.riken.kscope.service.AppController;
 
 /**
  * 終了アクション
- * @author riken
+ * @author RIKEN
  */
 public class FileExitAction extends ActionBase implements WindowListener {
 

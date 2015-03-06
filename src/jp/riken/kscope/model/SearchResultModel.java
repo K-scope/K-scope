@@ -36,7 +36,7 @@ import jp.riken.kscope.utils.SwingUtils;
 
 /**
  * 検索結果情報モデル
- * @author riken
+ * @author RIKEN
  *
  */
 public class SearchResultModel extends Observable {

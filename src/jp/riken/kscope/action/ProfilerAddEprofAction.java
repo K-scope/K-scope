@@ -39,7 +39,7 @@ import jp.riken.kscope.service.ProfilerService;
 
 /**
  * プロファイラ:Eprofの測定区間挿入アクションクラス
- * @author riken
+ * @author RIKEN
  */
 public class ProfilerAddEprofAction extends ActionBase {
 

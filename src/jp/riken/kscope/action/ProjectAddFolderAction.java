@@ -35,7 +35,7 @@ import jp.riken.kscope.utils.SwingUtils;
 
 /**
  * XMLフォルダ追加アクションクラス
- * @author riken
+ * @author RIKEN
  *
  */
 public class ProjectAddFolderAction extends ActionBase {

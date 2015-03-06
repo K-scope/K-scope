@@ -24,7 +24,7 @@ import jp.riken.kscope.utils.SwingUtils;
 /**
  * フレームスクロールパインクラス.
  * 右側、下側にビューを設置可能なスクロールパイン
- * @author riken
+ * @author RIKEN
  */
 public class FrameScrollPane extends JScrollPane {
 

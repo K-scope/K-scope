@@ -26,7 +26,7 @@ import javax.swing.JButton;
 
 /**
  * カラーボタン
- * @author riken
+ * @author RIKEN
  */
 public class JColorButton extends JButton {
 
@@ -97,7 +97,7 @@ public class JColorButton extends JButton {
 
     /**
      * カラーボタン用のカラーアイコン作成クラス
-     * @author riken
+     * @author RIKEN
      */
     private static class ColorIcon implements Icon {
     	/** アイコン幅 */

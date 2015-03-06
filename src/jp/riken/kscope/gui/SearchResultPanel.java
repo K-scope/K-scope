@@ -66,7 +66,7 @@ import jp.riken.kscope.utils.SwingUtils;
 
 /**
  * 検索結果パネルクラス
- * @author riken
+ * @author RIKEN
  *
  */
 public class SearchResultPanel extends AnalisysPanelBase implements Observer, IAnalisysComponent, ActionListener, MouseListener {
@@ -764,7 +764,7 @@ public class SearchResultPanel extends AnalisysPanelBase implements Observer, IA
                 CodeLine line = (CodeLine)treeNode.getUserObject();
                 Keyword word = new Keyword(KEYWORD_TYPE.SEARCH);
                 word.setKeyword(option.getSearchText());
-                word.setSensitivecase(option.isSensitivecase());
+                word.setCaseSensitive(option.isSensitivecase());
                 word.setRegex(option.isRegex());
                 word.setSearchWord(option.isWord());
                 word.setSearchVariable(false);

@@ -26,7 +26,7 @@ import jp.riken.kscope.service.FileService;
 
 /**
  * ファイルプロパティアクションクラス
- * @author riken
+ * @author RIKEN
  */
 public class FilePropertiesAction extends ActionBase {
 

@@ -37,7 +37,7 @@ import jp.riken.kscope.model.ScopeModel;
  * 変数有効域サービスクラス.<br/>
  * 変数有効域テーブルを作成する
  *
- * @author riken
+ * @author RIKEN
  */
 public class AnalysisScopeService extends AnalysisBaseService {
 

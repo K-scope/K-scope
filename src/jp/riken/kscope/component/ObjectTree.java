@@ -59,7 +59,7 @@ import jp.riken.kscope.utils.ResourceUtils;
 /**
  * オブジェクトツリークラス.<br/>
  * ノードオブジェクトに合わせてアイコンを表示する.
- * @author riken
+ * @author RIKEN
  */
 public class ObjectTree extends JEntireRowTree {
 
@@ -91,7 +91,7 @@ public class ObjectTree extends JEntireRowTree {
 
     /**
      * オブジェクトツリーノードのレンダリングクラス
-     * @author riken
+     * @author RIKEN
      */
     public class ObjectTreeCellRenderer extends EntireRowCellRenderer {
 
@@ -119,6 +119,7 @@ public class ObjectTree extends JEntireRowTree {
         /** doブロックアイコン */
         private Icon  returnIcon;
         /** その他ブロックアイコン */
+        @SuppressWarnings("unused")
         private Icon otherIcon;
 
         /**

@@ -20,7 +20,7 @@ import jp.riken.kscope.xcodeml.xml.gen.*;
 
 /**
  * 式モデルインターフェイスクラス
- * @author riken
+ * @author RIKEN
  *
  */
 public interface IDefModelExpr {

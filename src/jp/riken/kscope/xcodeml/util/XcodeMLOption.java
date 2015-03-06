@@ -19,13 +19,13 @@ package jp.riken.kscope.xcodeml.util;
 
 /**
  * XcodeMLパースオプション
- * @author riken
+ * @author RIKEN
  */
 public class XcodeMLOption {
 
     /**
      * 言語タイプ
-     * @author riken
+     * @author RIKEN
      *
      */
     public enum LanguageType {

@@ -22,7 +22,7 @@ import jp.riken.kscope.information.TextInfo;
 
 /**
  * 付加情報の取得、設定を行うインターフェイス
- * @author riken
+ * @author RIKEN
  */
 public interface IInformation {
     /**

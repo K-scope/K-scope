@@ -18,7 +18,7 @@ package jp.riken.kscope.profiler.eprof;
 
 /**
  * MPI情報:MPI関数
- * @author riken
+ * @author RIKEN
  */
 public class MpiFunction {
 

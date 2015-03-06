@@ -27,7 +27,7 @@ import jp.riken.kscope.utils.StringUtils;
 
 /**
  * ソースコードの変数メモリデータクラス
- * @author riken
+ * @author RIKEN
  *
  */
 public class VariableMemory extends Keyword {
@@ -35,19 +35,19 @@ public class VariableMemory extends Keyword {
 	/** 変数 */
 	private Variable variable;
 	/** アクセス先メモリ */
-	private Memoryband memoryband;
+	private RequiredBF reqbf;
 
     /**
      * コンストラクタ
      * @param variable		変数
-     * @param memoryband    アクセス先メモリ
+     * @param reqbf    アクセス先メモリ
      */
-    public VariableMemory(Variable variable, Memoryband memoryband) {
+    public VariableMemory(Variable variable, RequiredBF reqbf) {
     	super(KEYWORD_TYPE.VARIABLE);
         this.variable = variable;
-        this.memoryband = memoryband;
+        this.reqbf = reqbf;
         // 大文字・小文字の区別を設定する
-        setSensitivecase(false);
+        setCaseSensitive(false);
         // 正規表現を設定する
         setRegex(true);
         // 単語検索を設定する
@@ -106,8 +106,8 @@ public class VariableMemory extends Keyword {
 	 */
 	@Override
 	public Color getBackgroundcolor() {
-		if (memoryband == null) return null;
-		return memoryband.getBackColor();
+		if (reqbf == null) return null;
+		return reqbf.getBackColor();
 	}
 
 	/**
@@ -128,16 +128,16 @@ public class VariableMemory extends Keyword {
 	 * アクセス先メモリを取得する.
 	 * @return アクセス先メモリ
 	 */
-	public Memoryband getMemoryband() {
-		return memoryband;
+	public RequiredBF getRequiredBF() {
+		return reqbf;
 	}
 
 	/**
 	 * アクセス先メモリを設定する
-	 * @param memoryband    アクセス先メモリ
+	 * @param reqbf    アクセス先メモリ
 	 */
-	public void setMemoryband(Memoryband memoryband) {
-		this.memoryband = memoryband;
+	public void setRequiredBF(RequiredBF reqbf) {
+		this.reqbf = reqbf;
 	}
 
 }

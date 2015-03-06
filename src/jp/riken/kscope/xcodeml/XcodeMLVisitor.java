@@ -33,7 +33,7 @@ import jp.riken.kscope.xcodeml.xml.gen.*;
 
 /**
  * XMLノード探索クラス
- * @author riken
+ * @author RIKEN
  */
 public class XcodeMLVisitor extends XcodeMLVisitorImpl {
 
@@ -71,6 +71,7 @@ public class XcodeMLVisitor extends XcodeMLVisitorImpl {
      * @return true if the current context is undef FmoduleDefinition's
      *         grandchild
      */
+    @SuppressWarnings("unused")
     private boolean _isUnderModuleDef() {
         return _context.isInvokeNodeOf(FmoduleDefinition.class, 2);
     }
@@ -116,6 +117,7 @@ public class XcodeMLVisitor extends XcodeMLVisitorImpl {
      *            Instance of IXmlNode
      * @return true if node represents a constant expression.
      */
+    @SuppressWarnings("unused")
     private boolean _isConstantExpr(IXmlNode node, IXmlNode parent) {
         if (node instanceof UnaryMinusExpr) {
             assert (parent != null);

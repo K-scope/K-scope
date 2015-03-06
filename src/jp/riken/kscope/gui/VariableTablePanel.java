@@ -76,7 +76,7 @@ import jp.riken.kscope.utils.SwingUtils;
 
 /**
  * 変数特性一覧パネルクラス
- * @author riken
+ * @author RIKEN
  *
  */
 public class VariableTablePanel extends AnalisysPanelBase implements Observer, IAnalisysComponent, MouseListener, ActionListener {
@@ -513,7 +513,7 @@ public class VariableTablePanel extends AnalisysPanelBase implements Observer, I
 
     /**
      * 変数特性ノードパネル
-     * @author riken
+     * @author RIKEN
      */
     private class NodePanel extends JPanel {
         /** シリアル番号 */
@@ -536,6 +536,7 @@ public class VariableTablePanel extends AnalisysPanelBase implements Observer, I
          * 変数特性ブロックを取得する
          * @return		変数特性ブロック
          */
+        @SuppressWarnings("unused")
         public VariableTableModel.ProcedureInfo getBlock() {
             return this.block;
         }
@@ -615,7 +616,7 @@ public class VariableTablePanel extends AnalisysPanelBase implements Observer, I
 
     /**
      * 変数特性パネル展開ボタンアクションリスナ
-     * @author riken
+     * @author RIKEN
      */
     private class VariableExpandAction implements ActionListener {
         /** 変数特性一覧テーブルパネル */

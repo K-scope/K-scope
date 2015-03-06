@@ -19,7 +19,7 @@ package jp.riken.kscope.xcodeml.xml;
 
 /**
  * データ型識別子
- * @author riken
+ * @author RIKEN
  */
 public enum EnumType {
     /** void型 */

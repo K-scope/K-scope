@@ -67,7 +67,7 @@ import jp.riken.kscope.utils.SwingUtils;
 
 /**
  * トレース結果パネルクラス
- * @author riken
+ * @author RIKEN
  *
  */
 public class TraceResultPanel extends AnalisysPanelBase implements Observer, IAnalisysComponent, ActionListener, MouseListener, TreeSelectionListener {
@@ -679,7 +679,7 @@ public class TraceResultPanel extends AnalisysPanelBase implements Observer, IAn
                 Keyword word = new Keyword(KEYWORD_TYPE.TRACE);
                 word.setKeyword(variable);
                 word.setSearchWord(true);
-                word.setSensitivecase(false);
+                word.setCaseSensitive(false);
                 word.setSearchVariable(true);
                 word.setSearchLine(line);
 

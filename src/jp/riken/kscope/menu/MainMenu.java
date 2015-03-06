@@ -31,6 +31,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 
 import jp.riken.kscope.Message;
 import jp.riken.kscope.action.ActionBase;
+import jp.riken.kscope.action.AllAnalysisMemoryAction;
 import jp.riken.kscope.action.AnalysisMemoryAction;
 import jp.riken.kscope.action.AnalysisOperandAction;
 import jp.riken.kscope.action.AnalysisReferenceAction;
@@ -64,8 +65,8 @@ import jp.riken.kscope.action.ProjectDeleteFileAction;
 import jp.riken.kscope.action.ProjectPropertyAction;
 import jp.riken.kscope.action.ProjectRebuildAction;
 import jp.riken.kscope.action.ProjectSettingKeywordAction;
-import jp.riken.kscope.action.ProjectSettingMemoryAction;
-import jp.riken.kscope.action.ProjectSettingOperandAction;
+import jp.riken.kscope.action.ProjectSettingRequiredBFAction;
+import jp.riken.kscope.action.ProjectSettingOperationAction;
 import jp.riken.kscope.action.ProjectSettingProfilerAction;
 import jp.riken.kscope.action.ProjectSettingProjectAction;
 import jp.riken.kscope.action.ProjectSettingDockerAction;
@@ -104,7 +105,7 @@ import jp.riken.kscope.service.AppController;
 
 /**
  * メインメニューバークラス
- * @author riken
+ * @author RIKEN
  *
  */
 public class MainMenu extends JMenuBar implements  MenuListener {
@@ -187,6 +188,7 @@ public class MainMenu extends JMenuBar implements  MenuListener {
         JMenu menuFile = new JMenu(Message.getString("mainmenu.file")); //ファイル
         this.add(menuFile);
         menuFile.addMenuListener(this);
+        
         // ファイル:プロジェクトの新規作成
         JMenuItem menuFileProjectNew = new JMenuItem(Message.getString("mainmenu.file.newproject")); //プロジェクトの新規作成
         menuFileProjectNew.addActionListener(new FileProjectNewAction(this.controller));
@@ -209,23 +211,22 @@ public class MainMenu extends JMenuBar implements  MenuListener {
 
         // セパレータ
         menuFile.addSeparator();
-        // ファイル:構造情報の差替 : delete 構造情報の差替 at 2013/04/10 by @hira
-        // JMenuItem menuFileImport = new JMenuItem(Message.getString("mainmenu.file.replaceproject")); //構造情報の差替
-        // menuFileImport.addActionListener(new FileProjectImportAction(this.controller));
-        // menuFile.add(menuFileImport);
 
         // ファイル:エクスポート
         JMenu menuFileExport = new JMenu(Message.getString("mainmenu.file.export")); //エクスポート
         menuFile.add(menuFileExport);
+        
         // ファイル:エクスポート:構造情報(TEXT)
         JMenuItem menuFileExportLanguage = new JMenuItem(Message.getString("mainmenu.file.export.structure")); //構造情報(TEXT)
         menuFileExport.add(menuFileExportLanguage);
         menuFileExportLanguage.addActionListener(new FileExportExploreAction(this.controller));
+        
         // ファイル:エクスポート:分析情報
         JMenuItem menuFileExportAnalysis = new JMenuItem(Message.getString("mainmenu.file.export.analysis")); //分析情報
         menuFileExport.add(menuFileExportAnalysis);
         actionExportAnalysis = new FileExportAnalysisAction(this.controller);
         menuFileExportAnalysis.addActionListener(actionExportAnalysis);
+        
         // ファイル：エクスポート：ソースファイル
         JMenuItem menuFileExportSourceFile = new JMenuItem(Message.getString("mainmenu.file.export.source")); //ソースファイル
         menuFileExport.add(menuFileExportSourceFile);
@@ -240,6 +241,7 @@ public class MainMenu extends JMenuBar implements  MenuListener {
 
         // セパレータ
         menuFile.addSeparator();
+        
         // ファイル:終了
         JMenuItem menuFileExit = new JMenuItem(Message.getString("mainmenu.file.close")); //終了
         menuFile.add(menuFileExit);
@@ -318,6 +320,7 @@ public class MainMenu extends JMenuBar implements  MenuListener {
         JMenuItem menuProjectBuild = new JMenuItem(Message.getString("mainmenu.project.startanalysis"));//構造解析実行
         menuProject.add(menuProjectBuild);
         menuProjectBuild.addActionListener(new ProjectBuildAction((this.controller)));
+        
         // プロジェクト:構造解析キャンセル
         menuProjectCancel = new JMenuItem(Message.getString("mainmenu.project.endanalysis"));//構造解析キャンセル
         menuProject.add(menuProjectCancel);
@@ -377,7 +380,7 @@ public class MainMenu extends JMenuBar implements  MenuListener {
         // プロジェクト:設定:演算カウント
         JMenuItem menuProjectSettingOperation = new JMenuItem(Message.getString("mainmenu.project.config.operation"));//演算カウント
         menuProjectSetting.add(menuProjectSettingOperation);
-        menuProjectSettingOperation.addActionListener(new ProjectSettingOperandAction(this.controller));
+        menuProjectSettingOperation.addActionListener(new ProjectSettingOperationAction(this.controller));
 
         // プロジェクト:設定:外部ツール
         JMenuItem menuProjectSettingTools = new JMenuItem(Message.getString("mainmenu.project.config.program"));//外部ツール
@@ -390,9 +393,9 @@ public class MainMenu extends JMenuBar implements  MenuListener {
         menuProjectSettingProfiler.addActionListener(new ProjectSettingProfilerAction(this.controller));
 
         // プロジェクト:設定:要求Bye/FLOP設定
-        JMenuItem menuProjectSettingMemory = new JMenuItem(Message.getString("mainmenu.project.config.memoryband"));//要求Bye/FLOP
-        menuProjectSetting.add(menuProjectSettingMemory);
-        menuProjectSettingMemory.addActionListener(new ProjectSettingMemoryAction(this.controller));
+        JMenuItem menuProjectSettingRequiredBF = new JMenuItem(Message.getString("mainmenu.project.config.requiredbf"));//要求Bye/FLOP
+        menuProjectSetting.add(menuProjectSettingRequiredBF);
+        menuProjectSettingRequiredBF.addActionListener(new ProjectSettingRequiredBFAction(this.controller));
         
         if (this.controller.haveDIAAS()) {
         	// セパレータ
@@ -499,6 +502,12 @@ public class MainMenu extends JMenuBar implements  MenuListener {
 									this.controller,
 									AnalysisMemoryAction.ACTION_MODE.MEMORY_CALCULATE,
 									FRAME_VIEW.EXPLORE_VIEW));
+
+        //分析:要求Byte/FLOP算出  (2014/4/8追加 ohichi)
+        JMenuItem menuAllAMC = new JMenuItem(Message.getString("mainmenu.analysis.allcalculate"));
+        menuAnalysis.add(menuAllAMC);
+        menuAllAMC.addActionListener(new AllAnalysisMemoryAction((this.controller)));
+     
 
         // プロファイラ
         JMenu menuProfiler = new JMenu(Message.getString("mainmenu.project.profiler"));

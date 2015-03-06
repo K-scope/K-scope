@@ -26,7 +26,7 @@ import jp.riken.kscope.language.IBlock;
 
 /**
  * プロファイラデータ基底クラス
- * @author riken
+ * @author RIKEN
  */
 public abstract class ProfilerBaseData {
 

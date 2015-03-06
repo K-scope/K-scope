@@ -24,7 +24,7 @@ import jp.riken.kscope.service.AppController;
 
 /**
  * ツリーの選択ノード配下のみすべて展開アクションイベント
- * @author riken
+ * @author RIKEN
  *
  */
 public class TreeExpandSelectAction extends ActionBase {

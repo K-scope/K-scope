@@ -22,7 +22,7 @@ import java.util.Properties;
 
 /**
  * プロパティ基底クラス
- * @author riken
+ * @author RIKEN
  *
  */
 public abstract class PropertiesBase extends Properties {

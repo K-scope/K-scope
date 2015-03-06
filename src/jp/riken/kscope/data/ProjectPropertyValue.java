@@ -19,7 +19,7 @@ package jp.riken.kscope.data;
 
 /**
  * プロジェクトプロパティ設定値クラス
- * @author riken
+ * @author RIKEN
  */
 public class ProjectPropertyValue {
 	/** タイプ */

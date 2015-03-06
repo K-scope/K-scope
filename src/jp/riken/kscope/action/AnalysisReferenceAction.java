@@ -34,7 +34,7 @@ import jp.riken.kscope.service.AppController;
 
 /**
  * 宣言・定義・参照一覧アクション
- * @author riken
+ * @author RIKEN
  */
 public class AnalysisReferenceAction extends ActionBase {
 

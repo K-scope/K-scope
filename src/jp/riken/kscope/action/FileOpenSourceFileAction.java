@@ -19,7 +19,7 @@ package jp.riken.kscope.action;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
+//import java.util.Arrays;
 import java.util.List;
 
 import javax.swing.JOptionPane;
@@ -35,10 +35,9 @@ import jp.riken.kscope.service.AppController;
 import jp.riken.kscope.utils.StringUtils;
 import jp.riken.kscope.utils.SwingUtils;
 
-
 /**
  * ソースファイルを開くアクションクラス
- * @author riken
+ * @author RIKEN
  *
  */
 public class FileOpenSourceFileAction extends ActionBase {

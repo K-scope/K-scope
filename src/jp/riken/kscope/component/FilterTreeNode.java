@@ -27,7 +27,7 @@ import jp.riken.kscope.common.FILTER_TYPE;
 
 /**
  * フィルタノードクラス
- * @author riken
+ * @author RIKEN
  */
 public class FilterTreeNode extends DefaultMutableTreeNode {
 

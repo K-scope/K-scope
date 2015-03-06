@@ -34,26 +34,26 @@ import javax.swing.table.TableColumn;
 import javax.swing.tree.DefaultMutableTreeNode;
 
 import jp.riken.kscope.Message;
-import jp.riken.kscope.data.RequiredByteFlopResult;
+import jp.riken.kscope.data.RequiredBFResult;
 import jp.riken.kscope.information.TextInfo;
 import jp.riken.kscope.language.IInformation;
-import jp.riken.kscope.properties.MemorybandProperties.UNIT_TYPE;
+import jp.riken.kscope.properties.RequiredBFProperties.BF_CALC_TYPE;
 import jp.riken.kscope.utils.StringUtils;
 import jp.riken.kscope.utils.SwingUtils;
 
 /**
  * 要求Byte/FLOPテーブルモデル
- * @author riken
+ * @author RIKEN
  *
  */
-public class RequiredByteFlopModel extends Observable {
+public class RequiredBFModel extends Observable {
 
     /** タイトル */
     private String title;
     /** 要求Byte/FLOP算出結果リスト:追加毎にグループ化する. */
-    private List<List<RequiredByteFlopResult>> listResults;
+    private List<List<RequiredBFResult>> listResults;
     /** 算出単位 */
-    private UNIT_TYPE unitType;
+    private BF_CALC_TYPE unitType;
     /** 構造ツリーモデル. */
     private LanguageTreeModel modelLanguageTree = null;
 
@@ -86,7 +86,7 @@ public class RequiredByteFlopModel extends Observable {
     /**
      * コンストラクタ
      */
-    public RequiredByteFlopModel() {
+    public RequiredBFModel() {
         super();
     }
 
@@ -117,12 +117,12 @@ public class RequiredByteFlopModel extends Observable {
      * @param   index    リストインデックス
      * @return		要求Byte/FLOP算出結果
      */
-    public RequiredByteFlopResult getRequiredByteFlopResult(int groupId, int index) {
+    public RequiredBFResult getRequiredByteFlopResult(int groupId, int index) {
         if (this.listResults == null) {
             return null;
         }
         if (this.listResults.size() <= groupId) return null;
-        List<RequiredByteFlopResult> group = this.listResults.get(groupId);
+        List<RequiredBFResult> group = this.listResults.get(groupId);
         if (group == null || group.size() <= index) return null;
         return group.get(index);
     }
@@ -133,9 +133,9 @@ public class RequiredByteFlopModel extends Observable {
      * @param   block    ブロック
      * @return		要求Byte/FLOP算出結果
      */
-    public RequiredByteFlopResult getRequiredByteFlopResult(List<RequiredByteFlopResult> group, Object block) {
+    public RequiredBFResult getRequiredByteFlopResult(List<RequiredBFResult> group, Object block) {
         if (group == null || block == null) return null;
-        for (RequiredByteFlopResult result : group) {
+        for (RequiredBFResult result : group) {
         	if (result.getBlock() == block) {
         		return result;
         	}
@@ -185,12 +185,12 @@ public class RequiredByteFlopModel extends Observable {
      * 要求Byte/FLOP算出結果テーブル行を追加する
      * @param results		要求Byte/FLOP算出結果リスト
      */
-    public void addRequiredByteFlopResults(RequiredByteFlopResult[] results) {
+    public void addRequiredByteFlopResults(RequiredBFResult[] results) {
         if (results == null) return;
         if (this.listResults == null) {
-            this.listResults = new ArrayList<List<RequiredByteFlopResult>>();
+            this.listResults = new ArrayList<List<RequiredBFResult>>();
         }
-        List<RequiredByteFlopResult> list = new ArrayList<RequiredByteFlopResult>();
+        List<RequiredBFResult> list = new ArrayList<RequiredBFResult>();
         list.addAll(Arrays.asList(results));
         this.listResults.add(list);
 
@@ -203,7 +203,7 @@ public class RequiredByteFlopModel extends Observable {
      */
     public void clearModel() {
         // テーブルモデルのクリア
-        this.listResults = new ArrayList<List<RequiredByteFlopResult>>();
+        this.listResults = new ArrayList<List<RequiredBFResult>>();
         // タイトルのクリア
         title = null;
 
@@ -272,10 +272,10 @@ public class RequiredByteFlopModel extends Observable {
         // 演算カウントリストからテーブルモデルの作成を行う。
         if (this.listResults == null) return tableModel;
 
-        for (List<RequiredByteFlopResult> group : this.listResults) {
+        for (List<RequiredBFResult> group : this.listResults) {
         	// ブロックリストを作成する
         	List<Object> listObj = new ArrayList<Object>();
-        	for (RequiredByteFlopResult result : group) {
+        	for (RequiredBFResult result : group) {
         		listObj.add(result.getBlock());
         	}
         	// ツリーノードを作成する
@@ -288,7 +288,7 @@ public class RequiredByteFlopModel extends Observable {
                 if (treeNode == null || treeNode.getUserObject() == null) {
                     continue;
                 }
-                RequiredByteFlopResult result = getRequiredByteFlopResult(group, treeNode.getUserObject());
+                RequiredBFResult result = getRequiredByteFlopResult(group, treeNode.getUserObject());
                 if (result == null) continue;
 
                 int depthCount = treeNode.getLevel() - 1;
@@ -310,7 +310,7 @@ public class RequiredByteFlopModel extends Observable {
                 row[col++] = result.getOperand();
                 // Required B/F
                 float required = 0.0F;
-                if (unitType == UNIT_TYPE.FLOP_BYTE) {
+                if (unitType == BF_CALC_TYPE.FLOP_BYTE) {
                 	required = result.getRequiredFB();
                 }
                 else {
@@ -322,7 +322,7 @@ public class RequiredByteFlopModel extends Observable {
                 row[col++] = Float.valueOf(String.format("%.2f", throughput));
                 // Effective B/F
                 float effective = 0.0F;
-                if (unitType == UNIT_TYPE.FLOP_BYTE) {
+                if (unitType == BF_CALC_TYPE.FLOP_BYTE) {
                 	effective = result.getEffectiveFB();
                 }
                 else {
@@ -331,7 +331,7 @@ public class RequiredByteFlopModel extends Observable {
                 row[col++] = Float.valueOf(String.format("%.2f", effective));
                 // Peak Ratio(%)
                 float peak = 0.0F;
-                if (unitType == UNIT_TYPE.FLOP_BYTE) {
+                if (unitType == BF_CALC_TYPE.FLOP_BYTE) {
                 	peak = result.getPeakFB();
                 }
                 else {
@@ -415,19 +415,19 @@ public class RequiredByteFlopModel extends Observable {
 	 * 算出単位を取得する.
 	 * @return 算出単位
 	 */
-	public UNIT_TYPE getUnitType() {
+	public BF_CALC_TYPE getUnitType() {
 		return unitType;
 	}
 	/**
 	 * 算出単位を設定する.
 	 * @param type 算出単位
 	 */
-	public void setUnitType(UNIT_TYPE type) {
+	public void setUnitType(BF_CALC_TYPE type) {
 		this.unitType = type;
 
 		// ヘッダー表示単位を変更する.
 		for (int i=0; i<this.HEADER_COLUMNS.length; i++) {
-			if (type == UNIT_TYPE.FLOP_BYTE) {
+			if (type == BF_CALC_TYPE.FLOP_BYTE) {
 				this.HEADER_COLUMNS[i] = this.HEADER_COLUMNS[i].replaceAll("B/F", "F/B");
 			}
 			else {

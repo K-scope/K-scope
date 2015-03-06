@@ -35,16 +35,20 @@ import jp.riken.kscope.data.SourceFile;
 import jp.riken.kscope.menu.SourcePanelPopupMenu;
 import jp.riken.kscope.model.SourceCodeModel;
 import jp.riken.kscope.properties.KeywordProperties;
-import jp.riken.kscope.properties.MemorybandProperties;
+import jp.riken.kscope.properties.RequiredBFProperties;
 import jp.riken.kscope.properties.ProfilerProperties;
 import jp.riken.kscope.properties.SourceProperties;
+<<<<<<< HEAD
+=======
+//import jp.riken.kscope.properties.SSHconnectProperties;
+>>>>>>> origin/master
 import jp.riken.kscope.properties.VariableMemoryProperties;
 import jp.riken.kscope.utils.FileUtils;
 
 /**
  * ソースコードビュークラス.<br/>
  * ソースコードタブを配置する。
- * @author riken
+ * @author RIKEN
  *
  */
 public class SourceView extends ClosableTabbedPane implements  PropertyChangeListener  {
@@ -407,7 +411,7 @@ public class SourceView extends ClosableTabbedPane implements  PropertyChangeLis
             }
         }
         // 要求B/F設定の変更
-        else if (event.getNewValue() instanceof MemorybandProperties) {
+        else if (event.getNewValue() instanceof RequiredBFProperties) {
             int count = this.getTabCount();
             for (int i=0; i<count; i++) {
             	SourceCodePanel pane = getTab(i);

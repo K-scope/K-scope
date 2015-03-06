@@ -30,7 +30,7 @@ import jp.riken.kscope.gui.ISourceBargraph;
 
 /**
  * プロファイラ情報クラス
- * @author riken
+ * @author RIKEN
  */
 public class ProfilerInfo {
     /** プロファイラ:コスト情報(手続) */

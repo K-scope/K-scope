@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Set;
 
 import jp.riken.kscope.data.BlockList;
-import jp.riken.kscope.data.OperandCount;
+import jp.riken.kscope.data.OperationCount;
 import jp.riken.kscope.language.Block;
 import jp.riken.kscope.language.Expression;
 import jp.riken.kscope.language.IBlock;
@@ -30,31 +30,31 @@ import jp.riken.kscope.language.Procedure;
 import jp.riken.kscope.language.ProcedureUsage;
 import jp.riken.kscope.language.Substitution;
 import jp.riken.kscope.language.Variable;
-import jp.riken.kscope.properties.OperandProperties;
+import jp.riken.kscope.properties.OperationProperties;
 
 /**
  * 演算数カウントユーティリティクラス
- * @author riken
+ * @author RIKEN
  */
-public class OperandCounterUtils {
+public class OperationCounterUtils {
 
     /** 組込み関数演算カウントプロパティ */
-    private OperandProperties propertiesOperand;
+    private OperationProperties propertiesOperation;
     /** 演算カウント結果 */
     private OperandCountResult result;
 
 	/**
 	 * コンストラクタ
 	 */
-	public OperandCounterUtils() {
+	public OperationCounterUtils() {
 	}
 
 	/**
 	 * コンストラクタ
 	 * @param   properties    組込み関数演算カウントプロパティ
 	 */
-	public OperandCounterUtils(OperandProperties properties) {
-		this.propertiesOperand = properties;
+	public OperationCounterUtils(OperationProperties properties) {
+		this.propertiesOperation = properties;
 	}
 
 	/**
@@ -139,8 +139,8 @@ public class OperandCounterUtils {
 	public int getPowCount() {
 		if (this.result == null) return 0;
 		int count = this.result.getCountPow();
-		if (this.propertiesOperand == null) return count;
-        OperandCount pow = propertiesOperand.getOperandProperty("pow");
+		if (this.propertiesOperation == null) return count;
+        OperationCount pow = propertiesOperation.getOperationProperty("pow");
         int flop = 1;
         if (pow != null) {
         	flop = pow.getAdd() + pow.getMul();
@@ -158,13 +158,13 @@ public class OperandCounterUtils {
 		if (this.result.getFunctions() == null) return 0;
 		int count = this.result.getFunctions().size();
 		if (count <= 0) return 0;
-		if (this.propertiesOperand == null) return count;
+		if (this.propertiesOperation == null) return count;
 		int flop = 0;
 		for (ProcedureUsage func : this.result.getFunctions()) {
 			String name = func.getCallName();
-            OperandCount operand = propertiesOperand.getOperandProperty(name);
-            if (operand != null) {
-            	flop += operand.getAdd() + operand.getMul();
+            OperationCount opc = propertiesOperation.getOperationProperty(name);
+            if (opc != null) {
+            	flop += opc.getAdd() + opc.getMul();
             }
 		}
 		return flop;
@@ -184,8 +184,8 @@ public class OperandCounterUtils {
 	 */
 	public int getAddFlop() {
 		int count = this.getAddCount();
-		if (this.propertiesOperand == null) return count;
-		int flop = this.propertiesOperand.getFlopAdd();
+		if (this.propertiesOperation == null) return count;
+		int flop = this.propertiesOperation.getFlopAdd();
 		return count*flop;
 	}
 
@@ -195,8 +195,8 @@ public class OperandCounterUtils {
 	 */
 	public int getSubFlop() {
 		int count = this.getSubCount();
-		if (this.propertiesOperand == null) return count;
-		int flop = this.propertiesOperand.getFlopSub();
+		if (this.propertiesOperation == null) return count;
+		int flop = this.propertiesOperation.getFlopSub();
 		return count*flop;
 	}
 
@@ -206,8 +206,8 @@ public class OperandCounterUtils {
 	 */
 	public int getMulFlop() {
 		int count = this.getMulCount();
-		if (this.propertiesOperand == null) return count;
-		int flop = this.propertiesOperand.getFlopMul();
+		if (this.propertiesOperation == null) return count;
+		int flop = this.propertiesOperation.getFlopMul();
 		return count*flop;
 	}
 
@@ -217,8 +217,8 @@ public class OperandCounterUtils {
 	 */
 	public int getDivFlop() {
 		int count = this.getDivCount();
-		if (this.propertiesOperand == null) return count;
-		int flop = this.propertiesOperand.getFlopDiv();
+		if (this.propertiesOperation == null) return count;
+		int flop = this.propertiesOperation.getFlopDiv();
 		return count*flop;
 	}
 
@@ -229,12 +229,12 @@ public class OperandCounterUtils {
 	public int getPowFlop() {
 		if (this.result == null) return 0;
 		int count = this.result.getCountPow();
-		if (this.propertiesOperand == null) return count;
-        OperandCount pow = propertiesOperand.getOperandProperty("pow");
+		if (this.propertiesOperation == null) return count;
+        OperationCount pow = propertiesOperation.getOperationProperty("pow");
         int flop = 1;
         if (pow != null) {
-    		int add = this.propertiesOperand.getFlopAdd();
-    		int mul = this.propertiesOperand.getFlopMul();
+    		int add = this.propertiesOperation.getFlopAdd();
+    		int mul = this.propertiesOperation.getFlopMul();
         	flop = pow.getAdd()*add + pow.getMul()*mul;
         }
 		return count*flop;
@@ -247,15 +247,15 @@ public class OperandCounterUtils {
 	public int getFunctionFlop() {
 		int count = this.getFunctionCount();
 		if (count <= 0) return 0;
-		if (this.propertiesOperand == null) return count;
+		if (this.propertiesOperation == null) return count;
 		int flop = 0;
-		int add = this.propertiesOperand.getFlopAdd();
-		int mul = this.propertiesOperand.getFlopMul();
+		int add = this.propertiesOperation.getFlopAdd();
+		int mul = this.propertiesOperation.getFlopMul();
 		for (ProcedureUsage func : this.result.getFunctions()) {
 			String name = func.getCallName();
-            OperandCount operand = propertiesOperand.getOperandProperty(name);
-            if (operand != null) {
-            	flop += operand.getAdd()*add + operand.getMul()*mul;
+            OperationCount opc = propertiesOperation.getOperationProperty(name);
+            if (opc != null) {
+            	flop += opc.getAdd()*add + opc.getMul()*mul;
             }
 		}
 		return flop;
@@ -353,7 +353,7 @@ public class OperandCounterUtils {
 
     /**
      * 演算カウント結果クラス
-     * @author riken
+     * @author RIKEN
      */
     public class OperandCountResult {
     	/** 演算カウント:加算 */
@@ -611,7 +611,7 @@ public class OperandCounterUtils {
         private boolean containsVariable(List<Variable> list, Variable var) {
         	if (list == null || list.size() <= 0) return false;
         	if (var == null) return false;
-        	List<Variable> results = OperandCounterUtils.this.getVariables(list, var);
+        	List<Variable> results = OperationCounterUtils.this.getVariables(list, var);
         	if (results != null && results.size() > 0) return true;
 
         	return false;
@@ -647,8 +647,8 @@ public class OperandCounterUtils {
 	 * 組込み関数演算カウントプロパティを設定する.
 	 * @param properties    組込み関数演算カウントプロパティ
 	 */
-	public void setPropertiesOperand(OperandProperties properties) {
-		this.propertiesOperand = properties;
+	public void setPropertiesOperation(OperationProperties properties) {
+		this.propertiesOperation = properties;
 	}
 
 

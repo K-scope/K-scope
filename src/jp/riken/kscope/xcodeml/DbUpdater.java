@@ -111,7 +111,7 @@ import jp.riken.kscope.xcodeml.xml.gen.VarRef;
 
 /**
  * フォートランデータベースにパース結果を格納する
- * @author riken
+ * @author RIKEN
  *
  */
 public class DbUpdater extends XcodeMLVisitorImpl {
@@ -120,6 +120,7 @@ public class DbUpdater extends XcodeMLVisitorImpl {
     /** XcodeMLパーサ実行状況クラス */
     private XcodeMLContext m_context;
     /** 前ノードの文番号ノード */
+    @SuppressWarnings("unused")
     private StatementLabel prevLabel = null;
     /** エラー情報リスト */
     private List<ErrorInfo> listErrorInfo;
@@ -332,7 +333,7 @@ public class DbUpdater extends XcodeMLVisitorImpl {
             if (typeChoice != null) {
                 FfunctionType functionTypeElem = (FfunctionType) typeChoice;
                 String returnTypeName = functionTypeElem.getReturnType();
-                EnumType typeId = EnumType.getTypeIdFromXcodemlTypeName(returnTypeName);
+                //EnumType typeId = EnumType.getTypeIdFromXcodemlTypeName(returnTypeName);
                 is_intrinsic = XmlNodeUtil.isBoolean(functionTypeElem.isIsIntrinsic());
                 is_external = XmlNodeUtil.isBoolean(functionTypeElem.isIsExternal());
                 is_recursive = XmlNodeUtil.isBoolean(functionTypeElem.isIsRecursive());
@@ -1763,10 +1764,10 @@ public class DbUpdater extends XcodeMLVisitorImpl {
                 IXmlTypeTableChoice typeChoice = typeManager.findType(itemName);
                 FfunctionType functionTypeElem = (FfunctionType) typeChoice;
                 String returnTypeName = functionTypeElem.getReturnType();
-                EnumType typeId = EnumType.getTypeIdFromXcodemlTypeName(returnTypeName);
-                boolean is_recursive = XmlNodeUtil.isBoolean(functionTypeElem.isIsRecursive());
-                boolean is_puiblic = XmlNodeUtil.isBoolean(functionTypeElem.isIsPublic());
-                boolean is_private = XmlNodeUtil.isBoolean(functionTypeElem.isIsPrivate());
+                //EnumType typeId = EnumType.getTypeIdFromXcodemlTypeName(returnTypeName);
+                //boolean is_recursive = XmlNodeUtil.isBoolean(functionTypeElem.isIsRecursive());
+                //boolean is_puiblic = XmlNodeUtil.isBoolean(functionTypeElem.isIsPublic());
+                //boolean is_private = XmlNodeUtil.isBoolean(functionTypeElem.isIsPrivate());
                 // result
                 String result = functionTypeElem.getResultName();
 

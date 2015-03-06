@@ -18,14 +18,14 @@
 package jp.riken.kscope.data;
 
 import jp.riken.kscope.language.IBlock;
-import jp.riken.kscope.properties.MemorybandProperties.THROUGHPUT_STORE_MODE;
-import jp.riken.kscope.properties.MemorybandProperties.UNIT_TYPE;
+import jp.riken.kscope.properties.RequiredBFProperties.MEM_THROUGHPUT_CALC_MODE;
+import jp.riken.kscope.properties.RequiredBFProperties.BF_CALC_TYPE;
 
 /**
  * 要求Byte/FLOP算出結果
- * @author riken
+ * @author RIKEN
  */
-public class RequiredByteFlopResult {
+public class RequiredBFResult {
 	/** 算出ブロック */
 	private IBlock block;
 	/** Load変数の算出Byte */
@@ -33,7 +33,7 @@ public class RequiredByteFlopResult {
 	/** Store変数の算出Byte */
 	private int store;
 	/** 演算数(FLOP) = add(F) + mul(F) + intrinsic(F) */
-	private int operand;
+	private int op;
 	/** 要求Byte/FLOP =(Load+Store) / FLOP */
 	private float requiredBF; 		///<
 	/** 要求FLOP/Byte = FLOP/(Load+Store) */
@@ -91,9 +91,9 @@ public class RequiredByteFlopResult {
 	/** 算出元のCustom係数 */
 	private float customCoef;
 	/** スループットストア設定 */
-    private THROUGHPUT_STORE_MODE storeMode;
+    private MEM_THROUGHPUT_CALC_MODE storeMode;
     /** 算出単位 */
-    private UNIT_TYPE unitType;
+    private BF_CALC_TYPE unitType;
 
 	/**
 	 * 算出ブロックを取得する.
@@ -144,15 +144,15 @@ public class RequiredByteFlopResult {
 	 * @return 演算数(FLOP)
 	 */
 	public int getOperand() {
-		return operand;
+		return op;
 	}
 	/**
 	 * 演算数(FLOP)を設定する.
 	 * 演算数(FLOP) = add(F) + mul(F) + intrinsic(F)
-	 * @param operand 演算数(FLOP)
+	 * @param op 演算数(FLOP)
 	 */
-	public void setOperand(int operand) {
-		this.operand = operand;
+	public void setOperation(int op) {
+		this.op = op;
 	}
 	/**
 	 * 要求Byte/FLOPを取得する.
@@ -431,14 +431,14 @@ public class RequiredByteFlopResult {
 	 * スループットストア設定を取得する.
 	 * @return スループットストア設定
 	 */
-	public THROUGHPUT_STORE_MODE getStoreMode() {
+	public MEM_THROUGHPUT_CALC_MODE getStoreMode() {
 		return storeMode;
 	}
 	/**
 	 * スループットストア設定を設定する.
 	 * @param storeMode スループットストア設定
 	 */
-	public void setStoreMode(THROUGHPUT_STORE_MODE storeMode) {
+	public void setMemThroughputCalcMode(MEM_THROUGHPUT_CALC_MODE storeMode) {
 		this.storeMode = storeMode;
 	}
 	/**
@@ -598,14 +598,14 @@ public class RequiredByteFlopResult {
 	 * 算出単位を取得する.
 	 * @return 算出単位
 	 */
-	public UNIT_TYPE getUnitType() {
+	public BF_CALC_TYPE getUnitType() {
 		return unitType;
 	}
 	/**
 	 * 算出単位を設定する.
 	 * @param unitType 算出単位
 	 */
-	public void setUnitType(UNIT_TYPE type) {
+	public void setBFCalcType(BF_CALC_TYPE type) {
 		this.unitType = type;
 	}
 
@@ -614,10 +614,10 @@ public class RequiredByteFlopResult {
 	 * Required = (Load + Store) / FLOP
 	 * @return  計算結果:要求Byte/FLOP
 	 */
-	public float calculateRequired() {
+	public float calcRequiredBF() {
 		float flop = 0.0F;
-		if (this.operand > 0) {
-			flop = (float)(this.load + this.store) / (float)this.operand;
+		if (this.op > 0) {
+			flop = (float)(this.load + this.store) / (float)this.op;
 		}
 		this.requiredBF = flop;
 		if (flop > 0.0F) {
@@ -636,7 +636,7 @@ public class RequiredByteFlopResult {
 	 * @param performance   演算性能
 	 * @return 実効Byte/FLOP
 	 */
-	public float calculateEffective(float performance) {
+	public float calcRequiredBF(float performance) {
 		this.performance = performance;
 		if (performance == 0 || this.throughput == 0) {
 			this.effectiveBF = 0.0F;
@@ -653,7 +653,7 @@ public class RequiredByteFlopResult {
 	 * ピーク性能比 = 実効B/F / 要求B/F
 	 * @return ピーク性能比
 	 */
-	public float calculatePeak() {
+	public float calcPeakPerformance() {
 		if (this.requiredBF == 0.0F) {
 			this.peakBF = 0.0F;
 		}

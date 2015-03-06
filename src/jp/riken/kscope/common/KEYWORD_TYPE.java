@@ -20,7 +20,7 @@ import jp.riken.kscope.Message;
 
 /**
  * キーワードタイプ
- * @author riken
+ * @author RIKEN
  */
 public enum KEYWORD_TYPE {
     // キーワードタイプ

@@ -34,7 +34,7 @@ import jp.riken.kscope.xcodeml.xml.gen.*;
 
 /**
  * ソースコード生成クラス
- * @author riken
+ * @author RIKEN
  */
 public class CodeBuilder extends XcodeMLVisitorImpl {
     /** スペース文字 */
@@ -97,6 +97,7 @@ public class CodeBuilder extends XcodeMLVisitorImpl {
      * @param s		文字列
      * @return		バイト数
      */
+    @SuppressWarnings("unused")
     private static int _getColumnCount(String s) {
         return _getColumnCount(s.toCharArray());
     }
@@ -1435,7 +1436,7 @@ public class CodeBuilder extends XcodeMLVisitorImpl {
      */
     @Override
 	public boolean enter(FallocateStatement visitable) {
-        XcodeMLVisitor visiter = _context.getVisitor();
+        //XcodeMLVisitor visiter = _context.getVisitor();
         // DONE: FallocateStatement
         writeLineDirective(visitable.getLineno(), visitable.getFile());
 
@@ -1910,7 +1911,7 @@ public class CodeBuilder extends XcodeMLVisitorImpl {
     @Override
     public boolean enter(FdataDecl visitable) {
 
-        XcodeMLVisitor visiter = _context.getVisitor();
+        //XcodeMLVisitor visiter = _context.getVisitor();
 
         // DONE: FdataDecl
         writeLineDirective(visitable.getLineno(), visitable.getFile());
@@ -2932,7 +2933,7 @@ public class CodeBuilder extends XcodeMLVisitorImpl {
     public boolean enter(FlogicalConstant visitable) {
         // DONE: FlogicalConstant
         String content = visitable.getValue();
-        String typeName = visitable.getType();
+        //String typeName = visitable.getType();
         String kind = visitable.getKind();
         if (StringUtils.isNullOrEmpty(kind) == false) {
             writeToken(content + "_" + kind);
@@ -3356,7 +3357,7 @@ public class CodeBuilder extends XcodeMLVisitorImpl {
     public boolean enter(FrealConstant visitable) {
         // DONE: FrealConstant
         String content = visitable.getValue();
-        String typeName = visitable.getType();
+        //String typeName = visitable.getType();
         String kind = visitable.getKind();
         // gfortran rejects kind with 'd' exponent
         if (StringUtils.isNullOrEmpty(kind) == false
@@ -3777,7 +3778,7 @@ public class CodeBuilder extends XcodeMLVisitorImpl {
      */
     @Override
     public boolean enter(FuseDecl visitable) {
-        XcodeMLVisitor visiter = _context.getVisitor();
+        //XcodeMLVisitor visiter = _context.getVisitor();
 
         // DONE: FuseDecl
         writeLineDirective(visitable.getLineno(), visitable.getFile());

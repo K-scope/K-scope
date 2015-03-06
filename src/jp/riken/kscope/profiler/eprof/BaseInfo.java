@@ -18,7 +18,7 @@ package jp.riken.kscope.profiler.eprof;
 
 /**
  * 基本情報
- * @author riken
+ * @author RIKEN
  */
 public class BaseInfo {
     /** カウンタの呼び出し回数	int */
