@@ -43,7 +43,7 @@ import jp.riken.kscope.properties.OperationProperties;
 import jp.riken.kscope.properties.ProfilerProperties;
 import jp.riken.kscope.properties.ProgramProperties;
 import jp.riken.kscope.properties.ProjectProperties;
-import jp.riken.kscope.properties.DockerIaaSProperties;
+import jp.riken.kscope.properties.RemoteBuildProperties;
 import jp.riken.kscope.properties.SourceProperties;
 
 
@@ -70,7 +70,7 @@ public class ProjectService extends BaseService {
     /** 要求Byte/FLOP設定プロパティ */
     private RequiredBFProperties propertiesMemory;
     
-    private DockerIaaSProperties propertiesDIAAS;
+    private RemoteBuildProperties rb_properties;
     
     private Boolean debug = false;
     /**
@@ -401,7 +401,7 @@ public class ProjectService extends BaseService {
         this.propertiesProject.writeProperties(elemSettings, this.projectModel.getProjectFolder());
         // 要求Byte/FLOP設定プロパティ設定出力
         this.propertiesMemory.writeProperties(elemSettings);
-        this.propertiesDIAAS.writeProperties(elemSettings);
+        this.rb_properties.writeProperties(elemSettings);
 
         // settingsフォルダ作成
         File settingsFolder = new File(saveFolder.getAbsoluteFile() + File.separator + KscopeProperties.SETTINGS_FOLDER);
@@ -500,8 +500,8 @@ public class ProjectService extends BaseService {
     	this.propertiesMemory = propertiesMemory;
     }
     
-    public void setPropertiesDIAAS(DockerIaaSProperties propertiesDIAAS) {
-    	this.propertiesDIAAS = propertiesDIAAS;
+    public void setRBproperties(RemoteBuildProperties rb_properties) {
+    	this.rb_properties = rb_properties;
     }
 
     /**
@@ -537,7 +537,7 @@ public class ProjectService extends BaseService {
             this.propertiesProject.loadProperties(settingsXml);
             // 要求Byte/FLOP設定プロパティ
             this.propertiesMemory.loadProperties(settingsXml);
-            this.propertiesDIAAS.loadProperties(settingsXml);
+            this.rb_properties.loadProperties(settingsXml);
 
         } catch (Exception ex) {
             // エラーメッセージ出力

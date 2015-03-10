@@ -25,8 +25,8 @@ import java.awt.event.ActionEvent;
 import jp.riken.kscope.Application;
 import jp.riken.kscope.Message;
 import jp.riken.kscope.common.Constant;
-import jp.riken.kscope.dialog.DockerIaaSPropertiesDialog;
-import jp.riken.kscope.properties.DockerIaaSProperties;
+import jp.riken.kscope.dialog.RemoteBuildPropertiesDialog;
+import jp.riken.kscope.properties.RemoteBuildProperties;
 import jp.riken.kscope.service.AppController;
 
 public class ProjectSettingDockerAction extends ActionBase {
@@ -39,7 +39,7 @@ public class ProjectSettingDockerAction extends ActionBase {
 	@Override
 	public void actionPerformed(ActionEvent event) {
 		// ステータスメッセージ
-        final String message = Message.getString("projectsettingsshconnect.setup.status");  
+        final String message = Message.getString("projectsettingremote.setup.status");  
         Application.status.setMessageMain(message);
 
         // 親Frameの取得を行う。
@@ -53,11 +53,11 @@ public class ProjectSettingDockerAction extends ActionBase {
 	 * @param frame
 	 */
 	public void openDialog(Frame frame) {
-		String status = Message.getString("projectsettingsshconnect.setup.status");
+		String status = Message.getString("projectsettingremote.setup.status");
 		
-        DockerIaaSProperties docker_iaas_properties = this.controller.getPropertiesDIAAS();
+        RemoteBuildProperties rb_properties = this.controller.getRBproperties();
         
-		DockerIaaSPropertiesDialog dialog = new DockerIaaSPropertiesDialog(frame, docker_iaas_properties);
+		RemoteBuildPropertiesDialog dialog = new RemoteBuildPropertiesDialog(frame, rb_properties);
 		dialog.setModal(true);
 		int result = dialog.showDialog(); 
 		if (result != Constant.OK_DIALOG) {
@@ -65,7 +65,7 @@ public class ProjectSettingDockerAction extends ActionBase {
         			Message.getString("action.common.cancel.status")); //キャンセル
         	return;
         }
-        this.controller.setSSHproperties(docker_iaas_properties);
+        this.controller.setRBproperties(rb_properties);
         // Save properties
         // TODO write code to save settings to properties.xml
        
@@ -76,11 +76,11 @@ public class ProjectSettingDockerAction extends ActionBase {
 	 * @param frame
 	 */
 	public void openDialog(Frame frame, String message) {
-		String status = Message.getString("projectsettingsshconnect.setup.status");
+		String status = Message.getString("projectsettingremote.setup.status");
 		
-		DockerIaaSProperties docker_iaas_properties = this.controller.getPropertiesDIAAS();
+		RemoteBuildProperties rb_properties = this.controller.getRBproperties();
         
-		DockerIaaSPropertiesDialog dialog = new DockerIaaSPropertiesDialog(frame, docker_iaas_properties, message);
+		RemoteBuildPropertiesDialog dialog = new RemoteBuildPropertiesDialog(frame, rb_properties, message);
 		dialog.setModal(true);
 		int result = dialog.showDialog(); 
 		if (result != Constant.OK_DIALOG) {
@@ -88,7 +88,7 @@ public class ProjectSettingDockerAction extends ActionBase {
         			Message.getString("action.common.cancel.status")); //キャンセル
         	return;
         }
-        this.controller.setSSHproperties(docker_iaas_properties);
+        this.controller.setRBproperties(rb_properties);
 	}
 	
 	

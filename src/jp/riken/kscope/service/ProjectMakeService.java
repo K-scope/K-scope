@@ -34,20 +34,17 @@ import jp.riken.kscope.data.SourceFile;
 import jp.riken.kscope.exception.LanguageException;
 import jp.riken.kscope.information.InformationBlock;
 import jp.riken.kscope.information.InformationBlocks;
-import jp.riken.kscope.information.TextInfo;
 import jp.riken.kscope.language.BlockType;
 import jp.riken.kscope.language.Fortran;
 import jp.riken.kscope.language.IBlock;
 import jp.riken.kscope.language.IInformation;
 import jp.riken.kscope.language.Module;
-import jp.riken.kscope.language.Procedure;
 import jp.riken.kscope.language.ProgramUnit;
-import jp.riken.kscope.language.utils.InformationEntry;
 import jp.riken.kscope.language.utils.LanguageVisitor;
 import jp.riken.kscope.language.utils.ValidateLanguage;
 import jp.riken.kscope.model.ProjectModel;
 import jp.riken.kscope.properties.ProjectProperties;
-import jp.riken.kscope.properties.DockerIaaSProperties;
+import jp.riken.kscope.properties.RemoteBuildProperties;
 import jp.riken.kscope.utils.Logger;
 import jp.riken.kscope.utils.SwingUtils;
 import jp.riken.kscope.xcodeml.XcodeMLParserStax;
@@ -340,20 +337,46 @@ public class ProjectMakeService  extends BaseService {
 		// ステータスメッセージ
         Application.status.setProgressStart(true);
         ProjectProperties pproperties = this.controller.getPropertiesProject();
-        DockerIaaSProperties docker_iaas_properties = this.controller.getPropertiesDIAAS();
+        RemoteBuildProperties rb_properties = this.controller.getRBproperties();
         String build_command = pproperties.getBuildCommand(); 
         if (build_command == null || build_command.length() <= 0) return false;
         String[] exec_commands = null;
         
         
-        if (useDockerIaaS(pproperties, docker_iaas_properties)) {
-        	// inject remote build command
-        	String[] sshc_cl = docker_iaas_properties.getCommandLineOptions();
-        	int formal_commands = 1;
-        	exec_commands = new String [formal_commands + sshc_cl.length];
-        	exec_commands[0] = "./makeRemote.sh";
-        	for (int i = 0; i < sshc_cl.length; i++) {
-        		exec_commands[i + formal_commands] = sshc_cl[i];
+        if (useServer(pproperties, rb_properties)) {
+        	if (this.controller.haveDIAAS()) {
+	        	// inject remote build command
+	        	String[] diaas_cl = rb_properties.getCommandLineOptions();
+	        	int formal_commands = 1;
+	        	exec_commands = new String [formal_commands + diaas_cl.length];
+	        	exec_commands[0] = "./makeRemote.sh";
+	        	for (int i = 0; i < diaas_cl.length; i++) {
+	        		exec_commands[i + formal_commands] = diaas_cl[i];
+	        	}
+        	}
+        	else if (this.controller.haveSSHconnect()) {
+        		// inject remote build command
+	        	String[] sshc_cl = rb_properties.getCommandLineOptions();
+	            int formal_commands = 3;
+	            exec_commands = new String [formal_commands + sshc_cl.length];
+	            exec_commands[0] = "java";
+	            exec_commands[1] = "-jar";
+	            exec_commands[2] = "SSHconnect.jar";
+	            for (int i = 0; i < sshc_cl.length; i++) {
+	                exec_commands[i + formal_commands] = sshc_cl[i];
+	            }	        	
+        	}
+        	else {
+        		/*
+        		 * This case should never happen.
+        		 * useServer() and remote_build should only be set to TRUE
+        		 * in case either makeRemote or SSHconnect are present.
+        		 */
+        		Exception ex = new Exception("Incosistent settings:\nProjectProperties.useServer() " + pproperties.useServer()
+        				+ "\nRemoteBuildProperties.remote_build "+rb_properties.remote_build
+        				+ "\nAppController.haveDIAAS() "+ this.controller.haveDIAAS()
+        				+ "\nAppController.haveSSHconnect() "+ this.controller.haveSSHconnect());
+        		throw ex;
         	}
         } 
         Application.status.setMessageStatus(build_command);
@@ -361,7 +384,7 @@ public class ProjectMakeService  extends BaseService {
         // makeコマンド実行
     	int result = -1;
 		try {
-			if (useDockerIaaS(pproperties, docker_iaas_properties)) result = SwingUtils.processRun(exec_commands, this.workdirectory, this.outStream);
+			if (useServer(pproperties, rb_properties)) result = SwingUtils.processRun(exec_commands, this.workdirectory, this.outStream);
 			else result = SwingUtils.processRun(build_command.split(" "), this.workdirectory, this.outStream);
 			if (result != 0) { // 中間コードの生成に失敗した場合は継続するか確認
 				if (JOptionPane.showConfirmDialog(null,
@@ -383,12 +406,12 @@ public class ProjectMakeService  extends BaseService {
 
 	/**
 	 * @param pproperties
-	 * @param docker_iaas_properties
+	 * @param rb_properties
 	 * @return
 	 */
-	private boolean useDockerIaaS(ProjectProperties pproperties, DockerIaaSProperties docker_iaas_properties) {
-		if (docker_iaas_properties == null || pproperties == null) return false;
-		return docker_iaas_properties.have_docker_iaas && pproperties.useServer();
+	private boolean useServer(ProjectProperties pproperties, RemoteBuildProperties rb_properties) {
+		if (rb_properties == null || pproperties == null) return false;
+		return rb_properties.remote_build && pproperties.useServer();
 	}
 
 	/**

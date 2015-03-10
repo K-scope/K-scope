@@ -38,10 +38,6 @@ import jp.riken.kscope.properties.KeywordProperties;
 import jp.riken.kscope.properties.RequiredBFProperties;
 import jp.riken.kscope.properties.ProfilerProperties;
 import jp.riken.kscope.properties.SourceProperties;
-<<<<<<< HEAD
-=======
-//import jp.riken.kscope.properties.SSHconnectProperties;
->>>>>>> origin/master
 import jp.riken.kscope.properties.VariableMemoryProperties;
 import jp.riken.kscope.utils.FileUtils;
 

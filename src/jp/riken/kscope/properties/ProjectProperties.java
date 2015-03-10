@@ -54,14 +54,9 @@ public class ProjectProperties extends PropertiesBase {
     
     /** プロジェクトタイトルプロパティキー */
     public static final String PRJ_TITLE = "project-title";
-<<<<<<< HEAD
+
     /** New properties for building on server */
-    public static final String USE_SERVER = "use-server";
-=======
-    
-    /** SSHconnect */
-    public static final String USE_SSHCONNECT = "use-sshconnect";
->>>>>>> origin/master
+    public static final String USE_SERVER = "remote-build";
     
     //中間コードの生成
     public static final String GENERATE_XML = "generate-XML";

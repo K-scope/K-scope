@@ -126,7 +126,7 @@ public class FileProjectSaveAction extends ActionBase {
         // 要求Byte/FLOP設定プロパティ
         service.setPropertiesMemory(this.controller.getPropertiesMemory());
         //
-        service.setPropertiesDIAAS(this.controller.getPropertiesDIAAS());
+        service.setRBproperties(this.controller.getRBproperties());
         // エラーモデル
         service.setErrorInfoModel(this.controller.getErrorInfoModel());
 

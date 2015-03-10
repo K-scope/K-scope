@@ -43,7 +43,7 @@ import jp.riken.kscope.model.ModuleTreeModel;
 import jp.riken.kscope.model.ProjectModel;
 import jp.riken.kscope.properties.KscopeProperties;
 import jp.riken.kscope.properties.ProjectProperties;
-import jp.riken.kscope.properties.DockerIaaSProperties;
+import jp.riken.kscope.properties.RemoteBuildProperties;
 import jp.riken.kscope.service.AppController;
 import jp.riken.kscope.service.FutureService;
 import jp.riken.kscope.service.LanguageService;
@@ -118,17 +118,17 @@ public class FileProjectNewAction extends ActionBase {
     	}
     	
         final String message = Message.getString("mainmenu.file.newproject"); //プロジェクトの新規作成
-        DockerIaaSProperties docker_iaas_properties = null;
+        RemoteBuildProperties rb_properties = null;
         Application.status.setMessageMain(message);
 
         // 最終アクセスフォルダ
         String currentFolder = this.controller.getLastAccessFolder();
         // Read default value of use_sshconnect
         ProjectProperties pproperties = this.controller.getPropertiesProject();
-        docker_iaas_properties = this.controller.getPropertiesDIAAS();
+        rb_properties = this.controller.getRBproperties();
         
         // プロジェクトの新規作成ダイアログを表示する。
-        FileProjectNewDialog dialog = new FileProjectNewDialog(frame, true, pproperties,docker_iaas_properties, this.controller);
+        FileProjectNewDialog dialog = new FileProjectNewDialog(frame, true, pproperties,rb_properties, this.controller);
         dialog.setLastAccessFolder(currentFolder);
         // 除外パス名を設定する
         dialog.addExcludeName(KscopeProperties.SETTINGS_FOLDER);
@@ -230,7 +230,7 @@ public class FileProjectNewAction extends ActionBase {
             // 要求Byte/FLOP設定プロパティ
             projectService.setPropertiesMemory(this.controller.getPropertiesMemory());
             
-            projectService.setPropertiesDIAAS(this.controller.getPropertiesDIAAS());
+            projectService.setRBproperties(this.controller.getRBproperties());
 
             // Make関連情報
             File work = null;
@@ -246,8 +246,8 @@ public class FileProjectNewAction extends ActionBase {
                 this.controller.getPropertiesProject().setBuildCommand(build_command);
                 
                 if (use_docker_iaas) { // Set command line options for remote build command
-                	docker_iaas_properties = this.controller.getPropertiesDIAAS();
-                	docker_iaas_properties.setLocalPath(work.getAbsolutePath());                	
+                	rb_properties = this.controller.getRBproperties();
+                	rb_properties.setLocalPath(work.getAbsolutePath());                	
                 }
             }
             // 中間コードの生成を行わない
@@ -378,7 +378,8 @@ public class FileProjectNewAction extends ActionBase {
                         	}
                         	/* TODO: Do we need to define array size to 0: new File[0] below? */
                         	SourceFile [] srcs = projectService.getSourceFiles(sourceFiles.toArray(new File[sourceFiles.size()]), filter, true);
-                        	if (false) {
+                        	boolean debug=false;
+                        	if (debug) {
                             	System.out.println("Check source files in in kscope/action/FileProjectNewAction.execMake() call :");
                             	for (File fs : sourceFiles) {
                             		System.out.println(fs.toString());

@@ -34,10 +34,6 @@ import jp.riken.kscope.menu.SourcePanelPopupMenu;
 import jp.riken.kscope.model.SourceCodeModel;
 import jp.riken.kscope.properties.KeywordProperties;
 import jp.riken.kscope.properties.ProfilerProperties;
-<<<<<<< HEAD
-=======
-//import jp.riken.kscope.properties.SSHconnectProperties;
->>>>>>> origin/master
 import jp.riken.kscope.properties.SourceProperties;
 import jp.riken.kscope.properties.VariableMemoryProperties;
 

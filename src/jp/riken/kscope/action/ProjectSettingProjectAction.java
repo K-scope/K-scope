@@ -25,13 +25,7 @@ import jp.riken.kscope.common.Constant;
 import jp.riken.kscope.data.ProjectPropertyValue;
 import jp.riken.kscope.dialog.SettingProjectDialog;
 import jp.riken.kscope.properties.ProjectProperties;
-<<<<<<< HEAD
-import jp.riken.kscope.properties.DockerIaaSProperties;
-import jp.riken.kscope.properties.SourceProperties;
-=======
-import jp.riken.kscope.properties.SSHconnectProperties;
-//import jp.riken.kscope.properties.SourceProperties;
->>>>>>> origin/master
+import jp.riken.kscope.properties.RemoteBuildProperties;
 import jp.riken.kscope.service.AppController;
 
 public class ProjectSettingProjectAction extends ActionBase {
@@ -56,8 +50,8 @@ public class ProjectSettingProjectAction extends ActionBase {
 		
 		// プロジェクト設定ダイアログを表示する。
         ProjectProperties properties = this.controller.getPropertiesProject();
-        DockerIaaSProperties docker_iaas_properties = this.controller.getPropertiesDIAAS();
-		if (!docker_iaas_properties.have_docker_iaas) {
+        RemoteBuildProperties rb_properties = this.controller.getRBproperties();
+		if (!rb_properties.remote_build) {
 			ProjectPropertyValue use_server = properties.getPropertyValue(ProjectProperties.USE_SERVER);
 			use_server.setType("fixed-text");
 			use_server.setValue("false");

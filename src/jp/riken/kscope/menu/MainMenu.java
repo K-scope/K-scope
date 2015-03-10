@@ -397,7 +397,7 @@ public class MainMenu extends JMenuBar implements  MenuListener {
         menuProjectSetting.add(menuProjectSettingRequiredBF);
         menuProjectSettingRequiredBF.addActionListener(new ProjectSettingRequiredBFAction(this.controller));
         
-        if (this.controller.haveDIAAS()) {
+        if (this.controller.haveDIAAS() || this.controller.haveSSHconnect()) {
         	// セパレータ
         	menuProjectSetting.addSeparator();
         	// Remote connection

@@ -71,7 +71,7 @@ import jp.riken.kscope.properties.OperationProperties;
 import jp.riken.kscope.properties.ProfilerProperties;
 import jp.riken.kscope.properties.ProgramProperties;
 import jp.riken.kscope.properties.ProjectProperties;
-import jp.riken.kscope.properties.DockerIaaSProperties;
+import jp.riken.kscope.properties.RemoteBuildProperties;
 import jp.riken.kscope.properties.SourceProperties;
 import jp.riken.kscope.properties.VariableMemoryProperties;
 
@@ -82,7 +82,14 @@ import jp.riken.kscope.properties.VariableMemoryProperties;
  */
 public class AppController implements PropertyChangeListener {
 	
-	private String remote_make_file = "makeRemote.sh";
+	/**
+	 * These files are necessary for building source code on remote server
+	 * by the corresponding program.
+	 * If these files are present in the current directory (with kscope.jar), 
+	 * we set flags haveDockerIaaS and haveSSHconnect to TRUE.
+	 */
+	private String docker_iaas_file = "makeRemote.sh";
+	private String sshconnect_file = "SSHconnect.jar";
 
     /** メインフレーム */
     private MainFrame mainframe;
@@ -111,8 +118,8 @@ public class AppController implements PropertyChangeListener {
     /** 要求Byte/FLOP設定プロパティ */
     private RequiredBFProperties propertiesMemory;
     
-    // Docker IaaS properties
-    private DockerIaaSProperties docker_iaas_properties = null;
+    // Remote build properties
+    private RemoteBuildProperties rb_properties = null;
     
     /** アプリケーションプロパティ */
     private ApplicationProperties propertiesApplication;
@@ -144,27 +151,25 @@ public class AppController implements PropertyChangeListener {
     /** 変数特性一覧アクション（更新用） */
     private AnalysisVariableAction actionVariable = null;
 
-    /**/
+    /*
+     * Two flags show if we have external programs necessary to build code on remote server
+     * */
     private boolean haveDockerIaaS = false;
+    private boolean haveSSHconnect = false;
 
     /**
      * コンストラクタ
      */
     public AppController() {
         haveDockerIaaS = checkDockerIaaS();
+        haveSSHconnect = checkSSHconnect();
     }
 
-<<<<<<< HEAD
-    /**/
+    /**
+     * True if we can use makeRemote with Docker IaaS tools for remote code build 
+     * */
     private boolean checkDockerIaaS() {
-        File f = new File(remote_make_file);
-=======
-    /** 
-     * SSHconnect.jarが存在するかチェック
-     */
-    private boolean checkSSHconnect() {
-        File f = new File("SSHconnect.jar");
->>>>>>> origin/master
+        File f = new File(docker_iaas_file);
         if (f.exists()) {
             System.out.println(f.getAbsolutePath());
             return true;
@@ -172,9 +177,28 @@ public class AppController implements PropertyChangeListener {
         return false;
     }
 
-    /**/
+    /** 
+     * True if we can use SSHconnect for remote code build
+     */
+    private boolean checkSSHconnect() {
+        File f = new File(sshconnect_file);
+        if (f.exists()) {
+            System.out.println(f.getAbsolutePath());
+            return true;
+        }
+        return false;
+    }
+       
+
+    /*
+     * Use these functions to check if remote build is possible
+     * */
     public boolean haveDIAAS() {
         return this.haveDockerIaaS;
+    }
+    
+    public boolean haveSSHconnect() {
+    	return this.haveSSHconnect;
     }
 
     /**
@@ -281,9 +305,10 @@ public class AppController implements PropertyChangeListener {
         if (this.propertiesApplication == null) {
         	this.propertiesApplication = new ApplicationProperties();
         }
-        if (this.docker_iaas_properties == null) { //  always true!! --> || this.propertiesSSH.isEmpty()) {
-        		this.docker_iaas_properties = new DockerIaaSProperties(this);
-        		this.docker_iaas_properties.have_docker_iaas = this.haveDockerIaaS; // set Flag if SSHconnect is present
+        if (this.rb_properties == null) {
+        		this.rb_properties = new RemoteBuildProperties(this);
+        		// set Remote Build is possible Flag to TRUE if either SSHconnect or makeRemote for DockerIaaS are present
+        		this.rb_properties.remote_build = (this.haveDockerIaaS || this.haveSSHconnect); 
         }
         // メニュー表示選択をコピーする
         this.mainframe.getMenuMain().clearSelectedMenu();
@@ -390,11 +415,11 @@ public class AppController implements PropertyChangeListener {
     }
     
     /**
-     * Get SSH properties
-     * @return SSH properties
+     * Get RemoteBuildProperties properties
+     * @return RemoteBuildProperties
      */
-    public DockerIaaSProperties getPropertiesDIAAS() {
-    	return docker_iaas_properties;
+    public RemoteBuildProperties getRBproperties() {
+    	return rb_properties;
     }
     
     /**
@@ -800,15 +825,8 @@ public class AppController implements PropertyChangeListener {
         //this.propertiesSSH = null;
     }
 
-<<<<<<< HEAD
-    
-
-    public void setSSHproperties(DockerIaaSProperties docker_iaas_properties) {
-    	this.docker_iaas_properties = docker_iaas_properties;
-=======
-    public void setSSHproperties(SSHconnectProperties ssh_properties) {
-    	this.propertiesSSH = ssh_properties;
->>>>>>> origin/master
+    public void setRBproperties(RemoteBuildProperties rb_properties) {
+    	this.rb_properties = rb_properties;
     }
     
     /**

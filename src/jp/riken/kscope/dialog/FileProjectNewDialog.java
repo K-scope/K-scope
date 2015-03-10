@@ -37,6 +37,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+
 //import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
@@ -68,7 +69,7 @@ import jp.riken.kscope.common.Constant;
 import jp.riken.kscope.data.FILE_TYPE;
 import jp.riken.kscope.properties.KscopeProperties;
 import jp.riken.kscope.properties.ProjectProperties;
-import jp.riken.kscope.properties.DockerIaaSProperties;
+import jp.riken.kscope.properties.RemoteBuildProperties;
 import jp.riken.kscope.service.AppController;
 import jp.riken.kscope.utils.FileUtils;
 import jp.riken.kscope.utils.ResourceUtils;
@@ -82,10 +83,8 @@ import jp.riken.kscope.utils.SwingUtils;
  */
 public class FileProjectNewDialog extends javax.swing.JDialog implements ActionListener {
 
-    /** シリアル番号 */
-    private static final long serialVersionUID = 1L;
-
-    /** 中間コード・フォルダ・ファイルリスト */
+	private static final long serialVersionUID = 6096475381851486225L;
+/** 中間コード・フォルダ・ファイルリスト */
     private JList<String> listProjectXml;
     /** プロジェクトタイトル */
     private JTextField txtProjectTitle;
@@ -118,27 +117,19 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
     private JRadioButton radioSimpleMode;
     
     /** Panel holds file_filter and process_files fields */
-<<<<<<< HEAD
+
     private JPanel docker_settings_panel;
     /** プロジェクトプロパティ*/
     private ProjectProperties pproperties;
     /** Server プロパティ */
-    private DockerIaaSProperties docker_iaas_properties;
-=======
-    private JPanel sshc_settings_panel;
-    /** SSH connectプロパティ */
-    private SSHconnectProperties sproperties;
+    private RemoteBuildProperties rb_properties;
 
-    /** プロジェクトプロパティ*/
-    private ProjectProperties pproperties;
->>>>>>> origin/master
-    
     /** Parent action */
     private AppController controller;
         
     /** Serverを利用する */
     private JCheckBox checkUseRemote;
-    private JButton ssh_settings_button;
+    private JButton rb_settings_button;
         
     /** makefile テキストフィールド*/
     //private JTextField txtMakefile;
@@ -184,10 +175,10 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
      * @param modal		true=モーダルダイアログを表示する
      * @wbp.parser.constructor
      */
-    public FileProjectNewDialog(Frame owner, boolean modal, ProjectProperties pproperties, DockerIaaSProperties docker_iaas_properties, AppController controller) {
+    public FileProjectNewDialog(Frame owner, boolean modal, ProjectProperties pproperties, RemoteBuildProperties rb_properties, AppController controller) {
         super(owner, modal);
         this.pproperties = pproperties;
-        this.docker_iaas_properties = docker_iaas_properties;
+        this.rb_properties = rb_properties;
         this.controller = controller;
         this.frame = owner;
         initGUI();
@@ -335,24 +326,16 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
             layoutSelect.columnWidths = new int[]{32, 32, 64, 128};
             panelSelect.setLayout(layoutSelect);
 
-            if (this.docker_iaas_properties != null && this.docker_iaas_properties.have_docker_iaas) {
-                ssh_settings_button = new JButton(Message.getString("fileprojectnewdialog.kindpanel.SSHsettings"));
-<<<<<<< HEAD
+            if (this.rb_properties != null && this.rb_properties.remote_build) {
+                rb_settings_button = new JButton(Message.getString("fileprojectnewdialog.kindpanel.RBsettings"));
                 // Remote build の使用切り替え
                 checkUseRemote = new JCheckBox(Message.getString("fileprojectnewdialog.kindpanel.checkbox.useServer")) {
-                    /**
-					 * 
-					 */
-=======
-                // SSHconnectの使用切り替え
-                checkUseSSHconnect = new JCheckBox(Message.getString("fileprojectnewdialog.kindpanel.checkbox.useSSHconnect")) {
->>>>>>> origin/master
 					private static final long serialVersionUID = -1195485757658963243L;
 
 					@Override
                     protected void fireStateChanged() {
-                        if (haveDockerIAAS(docker_iaas_properties)) {
-                            ssh_settings_button.setEnabled(this.isSelected());
+                        if (haveDockerIAAS(rb_properties)) {
+                            rb_settings_button.setEnabled(this.isSelected());
                         }
                     }
                 };
@@ -367,12 +350,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
 
             //ビルドコマンドを用いて中間コード生成ラジオボタン(フルモードII)
             radioGenXML = new JRadioButton(Message.getString("fileprojectnewdialog.kindpanel.radiobutton.genxml")) {
-<<<<<<< HEAD
-                /**
-				 * 
-				 */
-=======
->>>>>>> origin/master
+
 				private static final long serialVersionUID = 8187608139294097396L;
 
 				@Override
@@ -382,7 +360,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
                     } else {
                         pproperties.setHiddenPropertyValue(ProjectProperties.GENERATE_XML, "false");
                     }
-                    if (haveDockerIAAS(docker_iaas_properties)) {
+                    if (haveDockerIAAS(rb_properties)) {
                         checkUseRemote.setEnabled(this.isSelected());
                     }
                     if (labelStatus[2] != null) {
@@ -400,12 +378,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
             
             //フルモードのラジオボタン
             radioFullMode = new JRadioButton(Message.getString("fileprojectnewdialog.kindpanel.radiobutton.fullmode"), true) {
-<<<<<<< HEAD
-                /**
-				 * 
-				 */
-=======
->>>>>>> origin/master
+
 				private static final long serialVersionUID = 346406280524706387L;
 
 				@Override
@@ -430,10 +403,10 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
                         checkbox_StructureAnalysis.setEnabled(this.isSelected());
                         checkbox_StructureAnalysis.setSelected(this.isSelected());
                     }
-                    if (haveDockerIAAS(docker_iaas_properties)) {
+                    if (haveDockerIAAS(rb_properties)) {
                         boolean enabled = this.isSelected() && radioGenXML.isSelected() && radioGenXML.isEnabled();
                         checkUseRemote.setEnabled(enabled);
-                        ssh_settings_button.setEnabled(enabled);                                              
+                        rb_settings_button.setEnabled(enabled);                                              
                     }
                 }
             };
@@ -459,10 +432,10 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
             panelSelect.add(radioFullMode, new GridBagConstraints(0, 0, 3, 1, 1.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
             panelSelect.add(radioNotGenXML, new GridBagConstraints(1, 1, 2, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
             panelSelect.add(radioGenXML, new GridBagConstraints(1, 2, 3, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
-            if (this.docker_iaas_properties != null && this.docker_iaas_properties.have_docker_iaas) {
+            if (this.rb_properties != null && this.rb_properties.remote_build) {
                 panelSelect.add(checkUseRemote, new GridBagConstraints(2, 3, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
-                panelSelect.add(ssh_settings_button, new GridBagConstraints(3, 3, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
-                ssh_settings_button.addActionListener(this);
+                panelSelect.add(rb_settings_button, new GridBagConstraints(3, 3, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
+                rb_settings_button.addActionListener(this);
             }
             panelSelect.add(radioSimpleMode, new GridBagConstraints(0, 4, 3, 1, 1.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
             panelSelect.add(new JLabel(Message.getString("fileprojectnewdialog.kindpanel.label.fortranonly")),
@@ -475,11 +448,11 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
         return panelContent;
     }
 
-    protected boolean haveDockerIAAS(DockerIaaSProperties docker_iaas_properties) {
+    protected boolean haveDockerIAAS(RemoteBuildProperties docker_iaas_properties) {
         if (docker_iaas_properties == null) {
             return false;
         }
-        return docker_iaas_properties.have_docker_iaas;
+        return docker_iaas_properties.remote_build;
     }
 
     /**
@@ -572,7 +545,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
 
 
         // Process files & File filter
-        if (this.docker_iaas_properties != null && this.docker_iaas_properties.have_docker_iaas) {
+        if (this.rb_properties != null && this.rb_properties.remote_build) {
 
         	docker_settings_panel = new JPanel();
             GridBagLayout sshc_panel_layout = new GridBagLayout();
@@ -681,12 +654,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
             layout.columnWidths = new int[]{7, 7};
             panelAdvanced.setLayout(layout);
             btnAdvancedXml = new JToggleButton("Advanced >>", false) {
-<<<<<<< HEAD
-                /**
-				 * 
-				 */
-=======
->>>>>>> origin/master
+
 				private static final long serialVersionUID = 8408253832919667943L;
 
 				@Override
@@ -927,12 +895,6 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
         final int LABEL_WIDTH = 72;
 
         this.panelStatusContent = new JPanel() {
-<<<<<<< HEAD
-            /**
-			 * 
-			 */
-=======
->>>>>>> origin/master
 			private static final long serialVersionUID = -1481838304987157059L;
 
 			@Override
@@ -1143,7 +1105,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
             this.btnBack.setEnabled(false);
         } else if (index == 1) { // open BasePanel
             // hide file_filter and process_files fields
-            if (this.docker_iaas_properties.have_docker_iaas) {
+            if (this.rb_properties.remote_build) {
                 if (useDockerIaaS() && !haveAllSettings2connect()) {
                 	ProjectSettingDockerAction docker_action = new ProjectSettingDockerAction(this.controller);
                     docker_action.openDialog(this.frame, Message.getString("projectsettingsshconnect.setup.need_parameters"));
@@ -1217,21 +1179,14 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
 
     //
     private boolean haveAllSettings2connect() {
-        if (this.docker_iaas_properties == null) {
+        if (this.rb_properties == null) {
             return false;
         }
-        try {
-            String host = this.docker_iaas_properties.getPropertySet(DockerIaaSProperties.HOST).getValue();
-            if (host == null || host.length() < 1) {
-                return false;
-            }
-            String user = this.docker_iaas_properties.getPropertySet(DockerIaaSProperties.USER).getValue();
-            if (user == null || user.length() < 1) {
-                return false;
-            }
+        /*try {
+        	//TODO: Check if we have all settings in config file
         } catch (NullPointerException e) {
             return false;
-        }
+        }*/
         return true;
     }
 
@@ -1603,7 +1558,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
             }
         }
         // SSHサーバへの接続パラメタを設定するボタンを選択
-        else if (event.getSource() == this.ssh_settings_button) {
+        else if (event.getSource() == this.rb_settings_button) {
         	ProjectSettingDockerAction psssh_action = new ProjectSettingDockerAction(this.controller);
             psssh_action.openDialog(this.frame);
         }
@@ -1612,7 +1567,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
 
     private void enableButtons() {
         this.btnNext.setEnabled(true);
-        if (this.docker_iaas_properties != null && this.docker_iaas_properties.have_docker_iaas) {
+        if (this.rb_properties != null && this.rb_properties.remote_build) {
           //this.addprerocessfile_button.setEnabled(true);
         }
     }
@@ -1785,12 +1740,9 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
      * @author RIKEN
      *
      */
-    @SuppressWarnings("serial")
+
     private class IconListRenderer extends DefaultListCellRenderer {
 
-        /**
-		 * 
-		 */
 		private static final long serialVersionUID = 8908060279825366210L;
 
 		@Override
