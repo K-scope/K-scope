@@ -309,6 +309,8 @@ public class AppController implements PropertyChangeListener {
         		this.rb_properties = new RemoteBuildProperties(this);
         		// set Remote Build is possible Flag to TRUE if either SSHconnect or makeRemote for DockerIaaS are present
         		this.rb_properties.remote_build = (this.haveDockerIaaS || this.haveSSHconnect); 
+        		this.rb_properties.haveDockerIaaS = this.haveDockerIaaS;
+        		this.rb_properties.haveSSHconnect = this.haveSSHconnect;
         }
         // メニュー表示選択をコピーする
         this.mainframe.getMenuMain().clearSelectedMenu();

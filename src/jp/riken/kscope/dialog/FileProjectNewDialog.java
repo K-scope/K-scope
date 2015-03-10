@@ -36,13 +36,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-
-
-
-
-
-
-
 //import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
@@ -123,16 +116,17 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
     private JRadioButton radioSimpleMode;
     
     /** Panel holds file_filter and process_files fields */
+    private JPanel sshc_settings_panel;
 
-    private JPanel rb_settings_panel;
+    private JTextArea sshc_text;
+    private JTextField txt_preprocess_files;
+    private JButton addprerocessfile_button;
+    
     /** プロジェクトプロパティ*/
     private ProjectProperties pproperties;
     /** Server プロパティ */
     private RemoteBuildProperties rb_properties;
 
-    /** Parent action */
-    private AppController controller;
-        
     /** Serverを利用する */
     private JCheckBox checkUseRemote;
     private JButton rb_settings_button;
@@ -173,8 +167,8 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
     /** 参照ボタンサイズ */
     private final java.awt.Dimension REFER_BUTTON_SIZE = new java.awt.Dimension(64, 22);
     /** ビルドコマンドテキストボックス */
-    private JTextField txtMakeCommand;
-    private Frame frame;
+    private JTextField txtBuildCommand;
+    private String glue="/"; // symbol to use instead of "/" in paths
 
     /**
      * コンストラクタ
@@ -186,8 +180,6 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
         super(owner, modal);
         this.pproperties = pproperties;
         this.rb_properties = rb_properties;
-        this.controller = controller;
-        this.frame = owner;
         initGUI();
     }
 
@@ -296,7 +288,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
     }
 
     /**
-     * プロジェクト種別選択画面を作成する.
+     * New Project Wizard / First screen
      *
      * @return プロジェクト種別選択画面
      */
@@ -445,10 +437,8 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
             panelSelect.add(radioGenXML, new GridBagConstraints(1, 2, 3, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
             if (this.rb_properties != null && this.rb_properties.remote_build) {
                 panelSelect.add(checkUseRemote, new GridBagConstraints(2, 3, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
-                //panelSelect.add(rb_settings_button, new GridBagConstraints(3, 3, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
-                //rb_settings_button.addActionListener(this);
                 panelSelect.add(settings_list, new GridBagConstraints(3, 3, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
-                //settings_list.addActionListener(this);
+                settings_list.addActionListener(this);
             }
             panelSelect.add(radioSimpleMode, new GridBagConstraints(0, 4, 3, 1, 1.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
             panelSelect.add(new JLabel(Message.getString("fileprojectnewdialog.kindpanel.label.fortranonly")),
@@ -486,7 +476,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
      */
 	private List<String> getFiles(File dir, List<String> list, String path_prefix, String[] ignore) throws IOException {
 		File [] flist = dir.listFiles();
-		String glue="/"; // symbol to use instead of "/" in paths
+		
 		Boolean trunk_extensions = true;  // remove extensions from file names
 		for (File f : flist) {
 			boolean ignore_me = false;
@@ -541,7 +531,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
     }
 
     /**
-     * プロジェクト基本情報画面を作成する.
+     * New Project Wizard / Second screen
      *
      * @return プロジェクト基本情報画面
      */
@@ -609,23 +599,56 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
         }
 
 
-
+        
         // Process files & File filter
         if (this.rb_properties != null && this.rb_properties.remote_build) {
-
-        	rb_settings_panel = new JPanel();
+        	
+    		// Process files & File filter
+        
+            sshc_settings_panel = new JPanel();
             GridBagLayout sshc_panel_layout = new GridBagLayout();
             sshc_panel_layout.columnWidths = new int[]{7, 160, 7, 7};
             sshc_panel_layout.columnWeights = new double[]{0.0, 0.0, 1.0, 0.0};
             sshc_panel_layout.rowHeights = new int[]{16, 16, 16};
-            rb_settings_panel.setLayout(sshc_panel_layout);
-      
+            sshc_settings_panel.setLayout(sshc_panel_layout);
+ 
+            sshc_text = new JTextArea(Message.getString("fileprojectnewdialog.basepanel.filefilter.desc"));
+            sshc_text.setLineWrap(true);
+            sshc_text.setWrapStyleWord(true);
+            sshc_text.setOpaque(false);
+            sshc_text.setEditable(false);
+ 
+            JLabel ffl = new JLabel(Message.getString("fileprojectnewdialog.basepanel.filefilter.label"));
+            JTextField txt_filefilter = new JTextField();
+            String ffilter = this.rb_properties.getPropertySet(RemoteBuildProperties.FILE_FILTER).getValue();
+            txt_filefilter.setText(ffilter);
+            JLabel procfl = new JLabel(Message.getString("fileprojectnewdialog.basepanel.processfiles.label"));
+            txt_preprocess_files = new JTextField();
+            addprerocessfile_button = new JButton(Message.getString("fileprojectnewdialog.basepanel.processfiles.addbutton"));
+            addprerocessfile_button.setEnabled(false);
+            addprerocessfile_button.addActionListener(this);
+ 
+            sshc_settings_panel.add(sshc_text, new GridBagConstraints(0, 0, 4, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 7, 10, 7), 0, 0));
+            sshc_settings_panel.add(ffl, new GridBagConstraints(1, 1, 1, 1, 0.0, 0.0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 7, 0, 7), 0, 0));
+            sshc_settings_panel.add(txt_filefilter, new GridBagConstraints(2, 1, 2, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
+            sshc_settings_panel.add(procfl, new GridBagConstraints(1, 2, 1, 1, 0.0, 0.0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 7, 0, 7), 0, 0));
+            sshc_settings_panel.add(txt_preprocess_files, new GridBagConstraints(2, 2, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
+            sshc_settings_panel.add(addprerocessfile_button, new GridBagConstraints(3, 2, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
+ 
+            panelContent.add(sshc_settings_panel, new GridBagConstraints(1, 4, 3, 2, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(7, 0, 0, 7), 0, 0));       
+        	 
         }
 
         return panelContent;
     }
 
-    /**
+    private String getRemoteService(String settings_file) {
+		int pos = settings_file.indexOf(glue);
+		String service = settings_file.substring(0, pos);
+		return service;
+	}
+
+	/**
      * プロジェクトXML追加画面を作成する.
      *
      * @return プロジェクトXML追加画面
@@ -789,8 +812,8 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
 
             panelContent.add(new JLabel(Message.getString("fileprojectnewdialog.makefilepanel.label.makecommand")), //ビルドコマンド
                     new GridBagConstraints(1, 2, 1, 1, 0.0, 0.0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 7, 0, 7), 0, 0));
-            txtMakeCommand = new JTextField();
-            panelMakeCmd.add(txtMakeCommand,
+            txtBuildCommand = new JTextField();
+            panelMakeCmd.add(txtBuildCommand,
                     new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
             btnMakeCmd = new JButton();
             panelMakeCmd.add(btnMakeCmd,
@@ -887,7 +910,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
             {
                 panelContent.add(new JLabel(Message.getString("fileprojectnewdialog.makefilepanel.label.makecommand")), //Makeコマンド
                         new GridBagConstraints(1, row, 1, 1, 0.0, 0.0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 0, 7), 0, 0));
-                makecmd = this.txtMakeCommand.getText();
+                makecmd = this.txtBuildCommand.getText();
                 /*String filename = this.txtMakefile.getText();
                  if (!filename.isEmpty()) {
                  File file = new File(filename);
@@ -1170,14 +1193,23 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
         if (index == 0) {
             this.btnBack.setEnabled(false);
         } else if (index == 1) { // open BasePanel
-            // hide file_filter and process_files fields
-            if (this.rb_properties.remote_build) {
-                if (useDockerIaaS() && !haveAllSettings2connect()) {
-                	ProjectSettingDockerAction docker_action = new ProjectSettingDockerAction(this.controller);
-                    docker_action.openDialog(this.frame, Message.getString("projectsettingsshconnect.setup.need_parameters"));
+            // file_filter and process_files fields
+            if (this.rb_properties.remote_build && checkUseRemote.isSelected()) {
+            	
+            	String settings_file = (String)this.settings_list.getSelectedItem();
+            	String remote_service = getRemoteService(settings_file);
+            	System.out.println("Remote service is "+remote_service);
+            	if (remote_service.equalsIgnoreCase("sshconnect")) {
+                	//ProjectSettingDockerAction docker_action = new ProjectSettingDockerAction(this.controller);
+                    //docker_action.openDialog(this.frame, Message.getString("projectsettingsshconnect.setup.need_parameters"));
+                    sshc_settings_panel.setVisible(true);
                 }
-                boolean useDIAAS = useDockerIaaS();
-                rb_settings_panel.setVisible(useDIAAS);
+                else {
+                	sshc_settings_panel.setVisible(false);
+                }
+            }
+            else {
+            	sshc_settings_panel.setVisible(false);
             }
             if (this.txtProjectFolder.getText().length() < 1) {
                 this.btnNext.setEnabled(false);  // Disable until project folder selected    		
@@ -1243,19 +1275,6 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
         }
     }
 
-    //
-    private boolean haveAllSettings2connect() {
-        if (this.rb_properties == null) {
-            return false;
-        }
-        /*try {
-        	//TODO: Check if we have all settings in config file
-        } catch (NullPointerException e) {
-            return false;
-        }*/
-        return true;
-    }
-
     /**
      * 設定パラメータチェック
      *
@@ -1285,7 +1304,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
             }
         } else if (index == 2) {
             // makeコマンド
-            String m = getMakeCommand();
+            String m = getBuildCommand();
             if (StringUtils.isNullOrEmpty(m)) {
                 msg = Message.getString("fileprojectnewdialog.errordialog.message.makecommandempty"); //Makeコマンドが設定されていません。
                 ret = false;
@@ -1388,7 +1407,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
                     DefaultListModel<String> model = (DefaultListModel<String>) this.listProjectXml.getModel();
                     String mk = null;
                     if (isGenerateIntermediateCode()) {
-                        mk = this.txtMakeCommand.getText();
+                        mk = this.txtBuildCommand.getText();
                     }
                     if (model.size() > 0 || !StringUtils.isNullOrEmpty(mk)) {
                         String desc = Message.getString("fileprojectnewdialog.confirmdialog.projectfolderchange.xmlclear.message"); //プロジェクトフォルダが変更されました。すでに設定されている中間コードは...
@@ -1513,13 +1532,13 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
                     return;
                 }
                 if (path.length() > 0) {
-                    String text_make_comm = this.txtMakeCommand.getText();
+                    String text_make_comm = this.txtBuildCommand.getText();
                     if (!StringUtils.isNullOrEmpty(text_make_comm)) {
                         text_make_comm = text_make_comm + " " + path;
                     } else {
                         text_make_comm = "./'" + path + "'";
                     }
-                    this.txtMakeCommand.setText(text_make_comm);
+                    this.txtBuildCommand.setText(text_make_comm);
                 }
             }
         }
@@ -1622,12 +1641,11 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
                     }
                 }
             }
-        }
-        // SSHサーバへの接続パラメタを設定するボタンを選択
-        else if (event.getSource() == this.rb_settings_button) {
-        	ProjectSettingDockerAction psssh_action = new ProjectSettingDockerAction(this.controller);
-            psssh_action.openDialog(this.frame);
-        }
+        }        
+        // Remote Build settings
+        /*else if (event.getSource() == this.settings_list) {
+        	
+        }*/
 
     }
 
@@ -1957,7 +1975,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
     }
 
     /**
-     * プロジェクトタイトルをセットする
+     * Set Text Field text to project title
      *
      * @param title	プロジェクトタイトル
      */
@@ -1966,21 +1984,12 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
     }
     
     /**
-     * ビルドコマンド取得
-     *
-     * @return ビルドコマンド
-     */
-    public String getMakeCommand() {
-        return this.txtMakeCommand.getText();
-    }
-
-    /**
      * ビルドコマンド設定
      *
      * @param	str	ビルドコマンド
      */
-    public void setMakeCommand(String str) {
-        this.txtMakeCommand.setText(str);
+    public void setBuildCommand(String str) {
+        this.txtBuildCommand.setText(str);
     }
 
     /**
@@ -1989,9 +1998,17 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
      * @return String としてのbuildコマンド
      */
     public String getBuildCommand() {
-        return this.txtMakeCommand.getText();
+        return this.txtBuildCommand.getText();
     }
-
+    
+    /**
+     * Return value of settings_file ComboBox (Drop-down list) 
+     */
+    public String getSettingsFile() {
+    	return (String)this.settings_list.getSelectedItem();
+    	//return this.pproperties.getRemoteSettingsFile();
+    }
+    
      /**
      * 選択ファイルが中間コードファイルであるかチェックする。
      *

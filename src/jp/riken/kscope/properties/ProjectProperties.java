@@ -49,14 +49,17 @@ public class ProjectProperties extends PropertiesBase {
     private static final long serialVersionUID = 1L;
 
     // プロパティキー
-    /** Build command */
-    public static final String BUILD_COMMAND = "build-command";
-    
     /** プロジェクトタイトルプロパティキー */
     public static final String PRJ_TITLE = "project-title";
+    /** Build command */
+    public static final String BUILD_COMMAND = "build-command";
+       
+    public static String LOCAL_PATH = "local_path";
 
     /** New properties for building on server */
     public static final String USE_SERVER = "remote-build";
+    
+    public static final String SETTINGS_FILE = "settings-file";
     
     //中間コードの生成
     public static final String GENERATE_XML = "generate-XML";
@@ -399,7 +402,24 @@ public class ProjectProperties extends PropertiesBase {
     public void setProjectTitle(String title) {
     	setValueByKey(PRJ_TITLE, title);
     }
+    
+    /**
+	 * Set local path. Similar to setBuildCommand function.
+	 * @param absolutePath
+	 */
+	public void setLocalPath(String absolutePath) {
+		setValueByKey(LOCAL_PATH, absolutePath);		
+	}
 
+	/**
+	 * Set local path. Similar to setBuildCommand function.
+	 * @param absolutePath
+	 */
+	public void setSettingsFile(String name) {
+		setValueByKey(SETTINGS_FILE, name);		
+	}
+	
+	
     /**
 	 * キーを指定してプロパティを設定
 	 * @param  key    キー
@@ -428,6 +448,15 @@ public class ProjectProperties extends PropertiesBase {
     	ProjectPropertyValue bc = getPropertyValue(BUILD_COMMAND);
     	String bcs = bc.getValue();
     	return bcs;
+    }
+    
+    /**
+     * Get SETTINGS_FILE
+     */
+    public String getRemoteSettingsFile() {
+    	ProjectPropertyValue ppv = getPropertyValue(SETTINGS_FILE);
+    	String s = ppv.getValue();
+    	return s;
     }
 
     /** 

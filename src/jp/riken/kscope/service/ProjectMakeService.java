@@ -344,7 +344,7 @@ public class ProjectMakeService  extends BaseService {
         
         
         if (useServer(pproperties, rb_properties)) {
-        	if (this.controller.haveDIAAS()) {
+        	if (rb_properties.haveDockerIaaS) {
 	        	// inject remote build command
 	        	String[] diaas_cl = rb_properties.getCommandLineOptions();
 	        	int formal_commands = 1;
@@ -354,7 +354,7 @@ public class ProjectMakeService  extends BaseService {
 	        		exec_commands[i + formal_commands] = diaas_cl[i];
 	        	}
         	}
-        	else if (this.controller.haveSSHconnect()) {
+        	else if (rb_properties.haveSSHconnect) {
         		// inject remote build command
 	        	String[] sshc_cl = rb_properties.getCommandLineOptions();
 	            int formal_commands = 3;
@@ -374,8 +374,8 @@ public class ProjectMakeService  extends BaseService {
         		 */
         		Exception ex = new Exception("Incosistent settings:\nProjectProperties.useServer() " + pproperties.useServer()
         				+ "\nRemoteBuildProperties.remote_build "+rb_properties.remote_build
-        				+ "\nAppController.haveDIAAS() "+ this.controller.haveDIAAS()
-        				+ "\nAppController.haveSSHconnect() "+ this.controller.haveSSHconnect());
+        				+ "\nAppController.haveDIAAS() "+ rb_properties.haveDockerIaaS
+        				+ "\nAppController.haveSSHconnect() "+ rb_properties.haveSSHconnect);
         		throw ex;
         	}
         } 
