@@ -464,9 +464,10 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
     private String[] getRemoteSettings() {
     	List<String> list = new ArrayList<String>();
     	String[] list_ar = null;
+    	String[] ignore = { "(\\.).*" };
 		File dir = new File("remote");
 		try {
-			list = getFiles(dir, list);			
+			list = getFiles(dir, list, "", ignore);			
 			list_ar=new String[list.size()];
 		}
 		catch (IOException e) {
@@ -476,19 +477,38 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
 		return list.toArray(list_ar);
 	}
 
-	private List<String> getFiles(File dir, List<String> list) throws IOException {
-		String start_path = dir.getCanonicalPath();
-		
+    /*
+     * Return list of files in directory with subdirectories.
+     * @dir - starting directory
+     * @list - list of files found before (empty for the first call)
+     * @path_prefix - path from starting directory to current directory
+     * ignore - pattern for ignoring files and directories names
+     */
+	private List<String> getFiles(File dir, List<String> list, String path_prefix, String[] ignore) throws IOException {
 		File [] flist = dir.listFiles();
+		String glue="/"; // symbol to use instead of "/" in paths
+		Boolean trunk_extensions = true;  // remove extensions from file names
 		for (File f : flist) {
+			boolean ignore_me = false;
+			for (String p : ignore) {
+				if (f.getName().matches(p)) {
+					ignore_me = true;
+					break;
+				}
+			}
+			if (ignore_me) continue;
 			if (f.isFile()) {
-				String path = f.getCanonicalPath();
-				String rel_path = path.substring(start_path.length());
-				rel_path = rel_path.replace("/", ".");
-				list.add(rel_path);
+				String name = f.getName();
+				if (trunk_extensions) {
+					int pos = name.lastIndexOf(".");
+					if (pos > 0) {
+					    name = name.substring(0, pos);
+					}
+				}
+				list.add(path_prefix+name);
 			} 
 			else if (f.isDirectory()) {
-				list = getFiles(f,list);
+				list = getFiles(f,list,f.getName()+glue, ignore);
 			}
 		}
 		return list;		
