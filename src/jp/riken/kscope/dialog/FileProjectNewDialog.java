@@ -38,6 +38,11 @@ import java.util.List;
 
 
 
+
+
+
+
+
 //import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
@@ -46,6 +51,7 @@ import javax.swing.DefaultListModel;
 import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -118,7 +124,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
     
     /** Panel holds file_filter and process_files fields */
 
-    private JPanel docker_settings_panel;
+    private JPanel rb_settings_panel;
     /** プロジェクトプロパティ*/
     private ProjectProperties pproperties;
     /** Server プロパティ */
@@ -130,6 +136,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
     /** Serverを利用する */
     private JCheckBox checkUseRemote;
     private JButton rb_settings_button;
+    private JComboBox<String> settings_list;
         
     /** makefile テキストフィールド*/
     //private JTextField txtMakefile;
@@ -327,6 +334,8 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
             panelSelect.setLayout(layoutSelect);
 
             if (this.rb_properties != null && this.rb_properties.remote_build) {
+            	String[] selections = getRemoteSettings(); 
+            	settings_list = new JComboBox<String>(selections);
                 rb_settings_button = new JButton(Message.getString("fileprojectnewdialog.kindpanel.RBsettings"));
                 // Remote build の使用切り替え
                 checkUseRemote = new JCheckBox(Message.getString("fileprojectnewdialog.kindpanel.checkbox.useServer")) {
@@ -334,8 +343,9 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
 
 					@Override
                     protected void fireStateChanged() {
-                        if (haveDockerIAAS(rb_properties)) {
-                            rb_settings_button.setEnabled(this.isSelected());
+                        if (remoteBuild(rb_properties)) {
+                            // rb_settings_button.setEnabled(this.isSelected());
+                        	settings_list.setEnabled(this.isSelected());
                         }
                     }
                 };
@@ -360,7 +370,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
                     } else {
                         pproperties.setHiddenPropertyValue(ProjectProperties.GENERATE_XML, "false");
                     }
-                    if (haveDockerIAAS(rb_properties)) {
+                    if (remoteBuild(rb_properties)) {
                         checkUseRemote.setEnabled(this.isSelected());
                     }
                     if (labelStatus[2] != null) {
@@ -403,10 +413,11 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
                         checkbox_StructureAnalysis.setEnabled(this.isSelected());
                         checkbox_StructureAnalysis.setSelected(this.isSelected());
                     }
-                    if (haveDockerIAAS(rb_properties)) {
+                    if (remoteBuild(rb_properties)) {
                         boolean enabled = this.isSelected() && radioGenXML.isSelected() && radioGenXML.isEnabled();
                         checkUseRemote.setEnabled(enabled);
-                        rb_settings_button.setEnabled(enabled);                                              
+                        rb_settings_button.setEnabled(enabled);     
+                        settings_list.setEnabled(enabled); 
                     }
                 }
             };
@@ -434,8 +445,10 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
             panelSelect.add(radioGenXML, new GridBagConstraints(1, 2, 3, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
             if (this.rb_properties != null && this.rb_properties.remote_build) {
                 panelSelect.add(checkUseRemote, new GridBagConstraints(2, 3, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
-                panelSelect.add(rb_settings_button, new GridBagConstraints(3, 3, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
-                rb_settings_button.addActionListener(this);
+                //panelSelect.add(rb_settings_button, new GridBagConstraints(3, 3, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
+                //rb_settings_button.addActionListener(this);
+                panelSelect.add(settings_list, new GridBagConstraints(3, 3, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
+                //settings_list.addActionListener(this);
             }
             panelSelect.add(radioSimpleMode, new GridBagConstraints(0, 4, 3, 1, 1.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
             panelSelect.add(new JLabel(Message.getString("fileprojectnewdialog.kindpanel.label.fortranonly")),
@@ -448,11 +461,44 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
         return panelContent;
     }
 
-    protected boolean haveDockerIAAS(RemoteBuildProperties docker_iaas_properties) {
-        if (docker_iaas_properties == null) {
+    private String[] getRemoteSettings() {
+    	List<String> list = new ArrayList<String>();
+    	String[] list_ar = null;
+		File dir = new File("remote");
+		try {
+			list = getFiles(dir, list);			
+			list_ar=new String[list.size()];
+		}
+		catch (IOException e) {
+			System.err.println("Error reading settings files from remote directory");
+			e.printStackTrace();			
+		}
+		return list.toArray(list_ar);
+	}
+
+	private List<String> getFiles(File dir, List<String> list) throws IOException {
+		String start_path = dir.getCanonicalPath();
+		
+		File [] flist = dir.listFiles();
+		for (File f : flist) {
+			if (f.isFile()) {
+				String path = f.getCanonicalPath();
+				String rel_path = path.substring(start_path.length());
+				rel_path = rel_path.replace("/", ".");
+				list.add(rel_path);
+			} 
+			else if (f.isDirectory()) {
+				list = getFiles(f,list);
+			}
+		}
+		return list;		
+	}
+
+	protected boolean remoteBuild(RemoteBuildProperties rb_properties) {
+        if (rb_properties == null) {
             return false;
         }
-        return docker_iaas_properties.remote_build;
+        return rb_properties.remote_build;
     }
 
     /**
@@ -547,12 +593,12 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
         // Process files & File filter
         if (this.rb_properties != null && this.rb_properties.remote_build) {
 
-        	docker_settings_panel = new JPanel();
+        	rb_settings_panel = new JPanel();
             GridBagLayout sshc_panel_layout = new GridBagLayout();
             sshc_panel_layout.columnWidths = new int[]{7, 160, 7, 7};
             sshc_panel_layout.columnWeights = new double[]{0.0, 0.0, 1.0, 0.0};
             sshc_panel_layout.rowHeights = new int[]{16, 16, 16};
-            docker_settings_panel.setLayout(sshc_panel_layout);
+            rb_settings_panel.setLayout(sshc_panel_layout);
       
         }
 
@@ -1111,7 +1157,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
                     docker_action.openDialog(this.frame, Message.getString("projectsettingsshconnect.setup.need_parameters"));
                 }
                 boolean useDIAAS = useDockerIaaS();
-                docker_settings_panel.setVisible(useDIAAS);
+                rb_settings_panel.setVisible(useDIAAS);
             }
             if (this.txtProjectFolder.getText().length() < 1) {
                 this.btnNext.setEnabled(false);  // Disable until project folder selected    		
