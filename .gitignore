@@ -1,8 +1,6 @@
 ## default is ignore for all files
 *
-/.*
-*.ksx
-/*
+.*
 
 ## not ignore
 !src/*
@@ -13,12 +11,10 @@
 !.gitignore
 !.settings
 !ks/*
-!/build.xml
-!/ChangeLog.txt
-!/license-headers.txt
-!/LICENSE.txt
-!/NOTICE.txt
-!/README.txt
-!**/*.xml
+!build.xml
+!ChangeLog.txt
+!license-headers.txt
+!LICENSE.txt
+!NOTICE.txt
+!README.txt
 !*.md
-
