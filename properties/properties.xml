@@ -226,55 +226,16 @@
         <operation name="char"               add="0" div="0" mul="0" sub="1" />
         <operation name="transpose"          add="0" div="0" mul="0" sub="1" />
         
-        <!-- SSHconnectプロパティ -->
-<<<<<<< HEAD
-        <sshconnect key="server_address" value="172.19.6.85" type="system" commandline_option="-h" description="property.sshparameters.server_address" />
-        <sshconnect key="port" value="49204" type="system" commandline_option="-p" description="property.sshparameters.port" />
-        <sshconnect key="user" value="root" type="system" commandline_option="-u" description="property.sshparameters.user"/>
-        <sshconnect key="password" value="docker" type="system" commandline_option="-pw" description="property.sshparameters.password"/>
-        <sshconnect key="key" value="" type="system" commandline_option="-k" description="property.sshparameters.key"/>
-        <sshconnect key="passphrase" value="" type="system" commandline_option="-ph" description="property.sshparameters.passphrase"/>
-        <sshconnect key="add_path" value="/opt/omnixmp/bin" type="system" commandline_option="-ap" description="property.sshparameters.add_path"  />
-        <sshconnect key="remote_path" value="/tmp/" type="system" commandline_option="-rp" description="property.sshparameters.remote_path"/>
-        <sshconnect key="build_command" type="project" commandline_option="-m" description="property.sshparameters.build_command"/>
-        <sshconnect key="local_path" value="" type="project" commandline_option="-lp" description="property.sshparameters.local_path"/>
-=======
-        <sshconnect key="server_address"   value="k.aics.riken.jp" type="system" commandline_option="-h" description="property.sshparameters.server_address" />
-        <sshconnect key="port"             value="22" type="system" commandline_option="-p" description="property.sshparameters.port" />
-        <sshconnect key="user"             value="a01004" type="system" commandline_option="-u" description="property.sshparameters.user"/>
-        <sshconnect key="password"         value="" type="system" commandline_option="-pw" description="property.sshparameters.password"/>
-        <sshconnect key="key"              value="/Users/teraim/.ssh/id_rsa" type="system" commandline_option="-k" description="property.sshparameters.key"/>
-        <sshconnect key="passphrase"       value="" type="system" commandline_option="-ph" description="property.sshparameters.passphrase"/>
-        <sshconnect key="add_path"         value="/opt/aics/omni/bin" type="system" commandline_option="-ap" description="property.sshparameters.add_path"  />
-        <sshconnect key="remote_path"      value="/home/aics-sft/a01004/" type="system" commandline_option="-rp" description="property.sshparameters.remote_path"/>
-        <sshconnect key="build_command"    value="" type="project" commandline_option="-m" description="property.sshparameters.build_command"/>
-        <sshconnect key="local_path"       value="" type="project" commandline_option="-lp" description="property.sshparameters.local_path"/>
->>>>>>> origin/master
-        <sshconnect key="preprocess_files" value="" type="project" commandline_option="-pf" description="property.sshparameters.preprocess_files"/>		
-        <sshconnect key="file_filter"      value="*.tar,*.tgz,*.zip,*.txt,*.html,*.xml,*.o,*.mod,*.xmod,.DS*,*.ksx" type="project" commandline_option="-ff" description="property.sshparameters.file_filter"/>
-		
-<<<<<<< HEAD
-		
-		<!-- Docker IaaS プロパティ -->
-        <server key="server_address" value="power" type="system" commandline_option="-h" description="property.serverparameters.server_address" />
-        <server key="user" value="nic" type="system" commandline_option="-u" description="property.serverparameters.user"/>
-        <server key="key" value="/Users/peterbryzgalov/work/tmp/docker_rsa" type="system" commandline_option="-k" description="property.serverparameters.key"/>
-        <server key="add_path" value="/opt/omnixmp/bin" type="system" commandline_option="-a" description="property.serverparameters.add_path" />
-        <server key="build_command" value="make" type="project" commandline_option="-m" description="property.serverparameters.build_command"/>
-        <server key="local_path" value="/Users/peterbryzgalov/work/Kscope_projects/NICAMdock" type="project" commandline_option="-p" description="property.serverparameters.local_path"/>
-		
-		
-		
-	<!--  プロジェクトプロパティ -->
-	<project key="build-command" name="property.project.build-command.name" value="make" type="file" message="property.project.build-command.message" />
-	<project key="project-title" name="property.project.title.name" value="" type="text" message="property.project.title.message" />
-	<project key="use-server" name="property.project.is_remote.name" value="true" type="text" message="property.project.local_remote.message" />
-=======
-	    <!--  プロジェクトプロパティ -->
-        <project key="build-command" name="property.project.build-command.name" value="make" type="file" message="property.project.build-command.message" />
-        <project key="project-title" name="property.project.title.name" value="" type="text" message="property.project.title.message" />
-        <project key="use-sshconnect" name="property.project.is_remote.name" value="true" type="text" message="property.project.local_remote.message" />
->>>>>>> origin/master
+        <!--  Project Properties -->
+		<project key="project-title" name="property.project.title.name" value="" type="text" message="property.project.title.message" />
+		<project key="local_path" value="" type="project" description="property.project.local_path"/>
+		<project key="build-command" name="property.project.build-command.name" value="make" type="file" message="property.project.build-command.message" />
+		<project key="remote-build" name="property.project.is_remote.name" value="true" type="text" message="property.project.local_remote.message" />
+
+		<!-- Remote Build Properties -->
+        <remotebuild key="settings_file" type="project" description="property.remotebuild.settings_file" />
+        <remotebuild key="preprocess_files" value="" type="project" description="property.remotebuild.preprocess_files"/>		
+        <remotebuild key="file_filter" value="*.tar,*.tgz,*.zip,*.txt,*.html,*.xml,*.o,*.mod,*.xmod,.DS*,*.ksx" type="project" description="property.remotebuild.file_filter"/>
 	
         <!-- Project hidden properties -->
         <project_other key="generate-XML" value="false" />

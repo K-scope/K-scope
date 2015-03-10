@@ -1,18 +1,18 @@
 ## default is ignore for all files
+*
 /.*
 *.ksx
 /*
 
 ## not ignore
-!/src
-!/resources
-!/properties/properties.xml
-!/*.sh
-!/properties
-!/.git
-!/.gitignore
-!/.settings
-!/ks
+!src/*
+!resources/*
+!properties/properties.xml
+!*.sh
+!.git
+!.gitignore
+!.settings
+!ks/*
 !/build.xml
 !/ChangeLog.txt
 !/license-headers.txt
