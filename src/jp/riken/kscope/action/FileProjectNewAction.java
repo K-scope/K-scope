@@ -154,7 +154,7 @@ public class FileProjectNewAction extends ActionBase {
         // 中間コードの生成を行うか否か
         boolean genCode = dialog.isGenerateIntermediateCode();
         
-        boolean use_docker_iaas = dialog.useDockerIaaS();
+        boolean use_docker_iaas = dialog.buildOnServer();
         // Set Project property
         this.controller.getPropertiesProject().getPropertyValue(ProjectProperties.USE_SERVER).setValue(use_docker_iaas ? "true" : "false");
         

@@ -342,7 +342,7 @@ public class ProjectMakeService  extends BaseService {
         if (build_command == null || build_command.length() <= 0) return false;
         String[] exec_commands = null;
         
-        
+        System.out.println("Remote service "+ rb_properties.getPropertySet(RemoteBuildProperties.SETTINGS_FILE).getValue());
         if (useServer(pproperties, rb_properties)) {
         	if (rb_properties.haveDockerIaaS) {
 	        	// inject remote build command

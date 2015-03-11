@@ -850,6 +850,15 @@ public class AppController implements PropertyChangeListener {
         // キーワードを設定する
         this.getMainframe().getPanelSourceView().setSearchWords(words);
     }
+    
+    /**
+     * Set settings file path to RemoteBuildProperties rb_properties
+     * @param path
+     */
+    /*public void setSettingsFile(String path) {
+    	this.rb_properties.setSettingsFile(path);
+    }*/
+    
 
     /**
      * 構造ツリーフィルタリストを取得する

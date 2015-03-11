@@ -169,6 +169,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
     /** ビルドコマンドテキストボックス */
     private JTextField txtBuildCommand;
     private String glue="/"; // symbol to use instead of "/" in paths
+    
 
     /**
      * コンストラクタ
@@ -625,7 +626,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
             JLabel procfl = new JLabel(Message.getString("fileprojectnewdialog.basepanel.processfiles.label"));
             txt_preprocess_files = new JTextField();
             addprerocessfile_button = new JButton(Message.getString("fileprojectnewdialog.basepanel.processfiles.addbutton"));
-            addprerocessfile_button.setEnabled(false);
+            addprerocessfile_button.setEnabled(true);
             addprerocessfile_button.addActionListener(this);
  
             sshc_settings_panel.add(sshc_text, new GridBagConstraints(0, 0, 4, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 7, 10, 7), 0, 0));
@@ -1252,7 +1253,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
             
             //(2013/10/16) added by teraim
             // Remote buildを使う場合は、既存中間コードの追加をdisableにする。
-            if (useDockerIaaS()) {
+            if (buildOnServer()) {
                 listProjectXml.setEnabled(false);
                 btnXmlFolder.setEnabled(false);
                 btnXmlFile.setEnabled(false);
@@ -1455,6 +1456,32 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
             enableButtons();
 
         }         
+        // Add files to be preprocessed プレースホルダの処理対象のファイルを追加
+        else if (event.getSource() == this.addprerocessfile_button) {
+            // フォルダ選択ダイアログを表示する。
+            File[] selected = SwingUtils.showOpenFileDialog(this, "Add preprocess files", currentFolder, null, true);
+            if (selected == null || selected.length <= 0) {
+                return;
+            }
+            for (File file : selected) {
+                String path = "";
+                try {
+                    path = file.getCanonicalPath();
+                    path = FileUtils.getRelativePath(this.txtProjectFolder.getText(), path);
+                } catch (IOException e) {
+                    return;
+                }
+                if (path.length() > 0) {
+                    String preprocess_files = this.txt_preprocess_files.getText();
+                    if (!StringUtils.isNullOrEmpty(preprocess_files)) {
+                        preprocess_files = preprocess_files + ";" + path;
+                    } else {
+                        preprocess_files = path;
+                    }
+                    this.txt_preprocess_files.setText(preprocess_files);
+                }
+            }
+        } 
         // フルモード: 中間コードフォルダ追加、簡易モード: Fortranコードフォルダの追加
         else if (event.getSource() == this.btnXmlFolder) {
             // フォルダ選択ダイアログを表示する。
@@ -1642,10 +1669,10 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
                 }
             }
         }        
-        // Remote Build settings
-        /*else if (event.getSource() == this.settings_list) {
-        	
-        }*/
+        // Set Remote Build settings file path to RemoteBuildProperties class instance rb_properties
+        else if (event.getSource() == this.settings_list) {
+        	rb_properties.setSettingsFile((String)this.settings_list.getSelectedItem());
+        }
 
     }
 
@@ -2044,7 +2071,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
      *
      * @return true = 利用する
      */
-    public boolean useDockerIaaS() {
+    public boolean buildOnServer() {
         if (this.checkUseRemote == null) {
             return false;
         }
