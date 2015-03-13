@@ -56,9 +56,7 @@ public class ProjectProperties extends PropertiesBase {
        
     public static String LOCAL_PATH = "local_path";
 
-    /** New properties for building on server */
-    public static final String USE_SERVER = "remote-build";
-    
+    /** File with settings for building on server */
     public static final String SETTINGS_FILE = "settings-file";
     
     //中間コードの生成
@@ -517,6 +515,7 @@ public class ProjectProperties extends PropertiesBase {
 	 * @return
 	 */
 	public boolean useServer() {
-		return getPropertyValue(USE_SERVER).getValue().equalsIgnoreCase("true");
+		String rs_file = getPropertyValue(ProjectProperties.SETTINGS_FILE).getValue();
+        return (rs_file != null && rs_file.length() > 0); 
 	}
 }

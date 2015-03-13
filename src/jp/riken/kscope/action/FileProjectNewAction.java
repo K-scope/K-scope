@@ -154,9 +154,9 @@ public class FileProjectNewAction extends ActionBase {
         // 中間コードの生成を行うか否か
         boolean genCode = dialog.isGenerateIntermediateCode();
         
-        boolean use_docker_iaas = dialog.buildOnServer();
+        String rs_file = dialog.remoteSettingsFile();
         // Set Project property
-        this.controller.getPropertiesProject().getPropertyValue(ProjectProperties.USE_SERVER).setValue(use_docker_iaas ? "true" : "false");
+        pproperties.getPropertyValue(ProjectProperties.SETTINGS_FILE).setValue(rs_file);
         
         // 選択ソース
         boolean selectedXml = dialog.isSelectedXml();
@@ -245,7 +245,7 @@ public class FileProjectNewAction extends ActionBase {
                 // プロジェクトプロパティ設定
                 this.controller.getPropertiesProject().setBuildCommand(build_command);
                 
-                if (use_docker_iaas) { // Set command line options for remote build command
+                if (rs_file != null && rs_file.length()>0) { // Set command line options for remote build command
                 	rb_properties = this.controller.getRBproperties();
                 	rb_properties.setLocalPath(work.getAbsolutePath());                	
                 }
@@ -268,12 +268,8 @@ public class FileProjectNewAction extends ActionBase {
             // Set PRJ_TITLE property of ProjectProperties to value from txtProjectTitle TextField
             this.controller.getPropertiesProject().setProjectTitle(dialog.getPeojectTitle());
 
-            if (this.debug) {
-                List<File> xmls = dialog.getProjectXmlList();
-                if (xmls==null) {
-                    System.err.println("Error getting XML project files.");
-                }
-                System.out.println("Calling execMake build_command="+build_command+" xmlList="+xmls);
+            if (this.debug) {                
+                System.out.println("Calling execMake build_command="+build_command+". Use remote service "+rb_properties.getRemoteService());
             }
 
             /** 新規作成実行 */

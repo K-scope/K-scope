@@ -174,7 +174,6 @@ public class MainMenu extends JMenuBar implements  MenuListener {
      */
     public MainMenu(AppController controller) {
         this.controller = controller;
-
         // メニューの作成を行う。
         initialize();
     }
@@ -397,13 +396,14 @@ public class MainMenu extends JMenuBar implements  MenuListener {
         menuProjectSetting.add(menuProjectSettingRequiredBF);
         menuProjectSettingRequiredBF.addActionListener(new ProjectSettingRequiredBFAction(this.controller));
         
-        if (this.controller.haveDIAAS() || this.controller.haveSSHconnect()) {
+        if (this.controller.haveDockerIaaS() || this.controller.haveSSHconnect()) {
         	// セパレータ
         	menuProjectSetting.addSeparator();
         	// Remote connection
         	JMenuItem menuProjectSettingSSH = new JMenuItem(Message.getString("mainmenu.project.config.server")); 
         	menuProjectSetting.add(menuProjectSettingSSH);
-        	menuProjectSettingSSH.addActionListener(new ProjectSettingDockerAction(this.controller));
+        	// Before remote settings manager is implemented remove action listener for this menu 
+        	// menuProjectSettingSSH.addActionListener(new ProjectSettingDockerAction(this.controller));
         }
         
         // 分析

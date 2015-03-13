@@ -51,10 +51,10 @@ public class ProjectSettingProjectAction extends ActionBase {
 		// プロジェクト設定ダイアログを表示する。
         ProjectProperties properties = this.controller.getPropertiesProject();
         RemoteBuildProperties rb_properties = this.controller.getRBproperties();
-		if (!rb_properties.remote_build) {
-			ProjectPropertyValue use_server = properties.getPropertyValue(ProjectProperties.USE_SERVER);
-			use_server.setType("fixed-text");
-			use_server.setValue("false");
+		if (!rb_properties.remoteBuild()) {
+			ProjectPropertyValue settings_file = properties.getPropertyValue(ProjectProperties.SETTINGS_FILE);
+			settings_file.setType("fixed-text");
+			settings_file.setValue("false");
 		}
 		SettingProjectDialog dialog = new SettingProjectDialog(frame, true, properties);
 		dialog.setLastAccessFolder(currentFolder);

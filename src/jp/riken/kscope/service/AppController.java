@@ -82,15 +82,6 @@ import jp.riken.kscope.properties.VariableMemoryProperties;
  */
 public class AppController implements PropertyChangeListener {
 	
-	/**
-	 * These files are necessary for building source code on remote server
-	 * by the corresponding program.
-	 * If these files are present in the current directory (with kscope.jar), 
-	 * we set flags haveDockerIaaS and haveSSHconnect to TRUE.
-	 */
-	private String docker_iaas_file = "makeRemote.sh";
-	private String sshconnect_file = "SSHconnect.jar";
-
     /** メインフレーム */
     private MainFrame mainframe;
 
@@ -151,57 +142,20 @@ public class AppController implements PropertyChangeListener {
     /** 変数特性一覧アクション（更新用） */
     private AnalysisVariableAction actionVariable = null;
 
-    /*
-     * Two flags show if we have external programs necessary to build code on remote server
-     * */
-    private boolean haveDockerIaaS = false;
-    private boolean haveSSHconnect = false;
+    
 
     /**
      * コンストラクタ
+     * @throws Exception 
      */
-    public AppController() {
-        haveDockerIaaS = checkDockerIaaS();
-        haveSSHconnect = checkSSHconnect();
+    public AppController() throws Exception {
+    	if (this.rb_properties == null) {
+    		this.rb_properties = new RemoteBuildProperties(this);        		
+    	}
     }
 
-    /**
-     * True if we can use makeRemote with Docker IaaS tools for remote code build 
-     * */
-    private boolean checkDockerIaaS() {
-        File f = new File(docker_iaas_file);
-        if (f.exists()) {
-            System.out.println(f.getAbsolutePath());
-            return true;
-        }
-        return false;
-    }
-
-    /** 
-     * True if we can use SSHconnect for remote code build
-     */
-    private boolean checkSSHconnect() {
-        File f = new File(sshconnect_file);
-        if (f.exists()) {
-            System.out.println(f.getAbsolutePath());
-            return true;
-        }
-        return false;
-    }
-       
-
-    /*
-     * Use these functions to check if remote build is possible
-     * */
-    public boolean haveDIAAS() {
-        return this.haveDockerIaaS;
-    }
     
-    public boolean haveSSHconnect() {
-    	return this.haveSSHconnect;
-    }
-
-    /**
+     /**
      * 初期化を行う。
      *
      * @throws Exception 初期起動エラー
@@ -305,13 +259,7 @@ public class AppController implements PropertyChangeListener {
         if (this.propertiesApplication == null) {
         	this.propertiesApplication = new ApplicationProperties();
         }
-        if (this.rb_properties == null) {
-        		this.rb_properties = new RemoteBuildProperties(this);
-        		// set Remote Build is possible Flag to TRUE if either SSHconnect or makeRemote for DockerIaaS are present
-        		this.rb_properties.remote_build = (this.haveDockerIaaS || this.haveSSHconnect); 
-        		this.rb_properties.haveDockerIaaS = this.haveDockerIaaS;
-        		this.rb_properties.haveSSHconnect = this.haveSSHconnect;
-        }
+        
         // メニュー表示選択をコピーする
         this.mainframe.getMenuMain().clearSelectedMenu();
         if (this.propertiesProfiler == null) {
@@ -805,7 +753,6 @@ public class AppController implements PropertyChangeListener {
     		clear = true;
     	}
     	createProperties(clear);
-
         // 初期化を行う
         initialize();
     }
@@ -858,6 +805,21 @@ public class AppController implements PropertyChangeListener {
     /*public void setSettingsFile(String path) {
     	this.rb_properties.setSettingsFile(path);
     }*/
+    
+    /*
+     * Use these functions to check if remote build is possible
+     * */
+    public boolean haveDockerIaaS() {
+        return this.rb_properties.haveDockerIaaS();
+    }
+    
+    public boolean haveSSHconnect() {
+    	return this.rb_properties.haveSSHconnect();
+    }
+    
+    public boolean remoteBuild() {
+    	return this.rb_properties.remoteBuild();
+    }
     
 
     /**

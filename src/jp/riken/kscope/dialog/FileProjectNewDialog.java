@@ -117,7 +117,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
     
     /** Panel holds file_filter and process_files fields */
     private JPanel sshc_settings_panel;
-
+    private JTextField txt_filefilter;
     private JTextArea sshc_text;
     private JTextField txt_preprocess_files;
     private JButton addprerocessfile_button;
@@ -168,8 +168,6 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
     private final java.awt.Dimension REFER_BUTTON_SIZE = new java.awt.Dimension(64, 22);
     /** ビルドコマンドテキストボックス */
     private JTextField txtBuildCommand;
-    private String glue="/"; // symbol to use instead of "/" in paths
-    
 
     /**
      * コンストラクタ
@@ -326,7 +324,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
             layoutSelect.columnWidths = new int[]{32, 32, 64, 128};
             panelSelect.setLayout(layoutSelect);
 
-            if (this.rb_properties != null && this.rb_properties.remote_build) {
+            if (this.rb_properties != null && this.rb_properties.remoteBuild()) {
             	String[] selections = getRemoteSettings(); 
             	settings_list = new JComboBox<String>(selections);
                 rb_settings_button = new JButton(Message.getString("fileprojectnewdialog.kindpanel.RBsettings"));
@@ -436,7 +434,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
             panelSelect.add(radioFullMode, new GridBagConstraints(0, 0, 3, 1, 1.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
             panelSelect.add(radioNotGenXML, new GridBagConstraints(1, 1, 2, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
             panelSelect.add(radioGenXML, new GridBagConstraints(1, 2, 3, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
-            if (this.rb_properties != null && this.rb_properties.remote_build) {
+            if (this.rb_properties != null && this.rb_properties.remoteBuild()) {
                 panelSelect.add(checkUseRemote, new GridBagConstraints(2, 3, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
                 panelSelect.add(settings_list, new GridBagConstraints(3, 3, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
                 settings_list.addActionListener(this);
@@ -499,7 +497,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
 				list.add(path_prefix+name);
 			} 
 			else if (f.isDirectory()) {
-				list = getFiles(f,list,f.getName()+glue, ignore);
+				list = getFiles(f,list,f.getName()+RemoteBuildProperties.settigns_path_separator, ignore);
 			}
 		}
 		return list;		
@@ -509,7 +507,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
         if (rb_properties == null) {
             return false;
         }
-        return rb_properties.remote_build;
+        return rb_properties.remoteBuild();
     }
 
     /**
@@ -602,7 +600,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
 
         
         // Process files & File filter
-        if (this.rb_properties != null && this.rb_properties.remote_build) {
+        if (this.rb_properties != null && this.rb_properties.remoteBuild()) {
         	
     		// Process files & File filter
         
@@ -620,34 +618,26 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
             sshc_text.setEditable(false);
  
             JLabel ffl = new JLabel(Message.getString("fileprojectnewdialog.basepanel.filefilter.label"));
-            JTextField txt_filefilter = new JTextField();
+            txt_filefilter = new JTextField();
             String ffilter = this.rb_properties.getPropertySet(RemoteBuildProperties.FILE_FILTER).getValue();
             txt_filefilter.setText(ffilter);
             JLabel procfl = new JLabel(Message.getString("fileprojectnewdialog.basepanel.processfiles.label"));
             txt_preprocess_files = new JTextField();
+            String proc_files = this.rb_properties.getPropertySet(RemoteBuildProperties.PREPROCESS_FILES).getValue();
+            txt_preprocess_files.setText(proc_files);
             addprerocessfile_button = new JButton(Message.getString("fileprojectnewdialog.basepanel.processfiles.addbutton"));
             addprerocessfile_button.setEnabled(true);
             addprerocessfile_button.addActionListener(this);
- 
             sshc_settings_panel.add(sshc_text, new GridBagConstraints(0, 0, 4, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 7, 10, 7), 0, 0));
             sshc_settings_panel.add(ffl, new GridBagConstraints(1, 1, 1, 1, 0.0, 0.0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 7, 0, 7), 0, 0));
             sshc_settings_panel.add(txt_filefilter, new GridBagConstraints(2, 1, 2, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
             sshc_settings_panel.add(procfl, new GridBagConstraints(1, 2, 1, 1, 0.0, 0.0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 7, 0, 7), 0, 0));
             sshc_settings_panel.add(txt_preprocess_files, new GridBagConstraints(2, 2, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
             sshc_settings_panel.add(addprerocessfile_button, new GridBagConstraints(3, 2, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
- 
-            panelContent.add(sshc_settings_panel, new GridBagConstraints(1, 4, 3, 2, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(7, 0, 0, 7), 0, 0));       
-        	 
+            panelContent.add(sshc_settings_panel, new GridBagConstraints(1, 4, 3, 2, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(7, 0, 0, 7), 0, 0));          	 
         }
-
         return panelContent;
     }
-
-    private String getRemoteService(String settings_file) {
-		int pos = settings_file.indexOf(glue);
-		String service = settings_file.substring(0, pos);
-		return service;
-	}
 
 	/**
      * プロジェクトXML追加画面を作成する.
@@ -1194,11 +1184,11 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
         if (index == 0) {
             this.btnBack.setEnabled(false);
         } else if (index == 1) { // open BasePanel
-            // file_filter and process_files fields
-            if (this.rb_properties.remote_build && checkUseRemote.isSelected()) {
+            // file_filter and process_files fields on sshc_settings_panel
+            if (this.rb_properties.remoteBuild() && checkUseRemote.isSelected()) {
             	
             	String settings_file = (String)this.settings_list.getSelectedItem();
-            	String remote_service = getRemoteService(settings_file);
+            	String remote_service = RemoteBuildProperties.getRemoteService(settings_file);
             	System.out.println("Remote service is "+remote_service);
             	if (remote_service.equalsIgnoreCase("sshconnect")) {
                 	//ProjectSettingDockerAction docker_action = new ProjectSettingDockerAction(this.controller);
@@ -1253,7 +1243,8 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
             
             //(2013/10/16) added by teraim
             // Remote buildを使う場合は、既存中間コードの追加をdisableにする。
-            if (buildOnServer()) {
+            String rs_file = remoteSettingsFile();
+            if (rs_file != null && rs_file.length() > 0) {
                 listProjectXml.setEnabled(false);
                 btnXmlFolder.setEnabled(false);
                 btnXmlFile.setEnabled(false);
@@ -1574,7 +1565,19 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
             if (!checkParams(this.wizardIndex)) {
                 return;
             }
-            if (this.wizardIndex == this.panelWizards.length - 1) {
+            if (this.wizardIndex == this.panelWizards.length - 1) {        
+            	String settings_file = (String)this.settings_list.getSelectedItem();
+            	String remote_service = RemoteBuildProperties.getRemoteService(settings_file);
+            	System.out.println("Remote service is "+remote_service);
+            	if (remote_service.equalsIgnoreCase("sshconnect")) {
+	            	// Save File filter and Preprocess files fields to RemoteBuildProperties
+	            	if (this.txt_preprocess_files.getText().length() > 0) {
+	            		rb_properties.setPreprocessFiles(this.txt_preprocess_files.getText());
+	            	}
+	            	if (this.txt_filefilter.getText().length() > 0) {
+	            		rb_properties.setFileFilter(this.txt_filefilter.getText());
+	            	}
+            	}            	
                 // 入力チェックを行う
                 if (!validateProject()) {
                     return;
@@ -1673,12 +1676,21 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
         else if (event.getSource() == this.settings_list) {
         	rb_properties.setSettingsFile((String)this.settings_list.getSelectedItem());
         }
-
+        // Set File Filter option to RBProperties
+        else if (event.getSource() == this.txt_filefilter) {
+        	rb_properties.setFileFilter(this.txt_filefilter.getText());
+        }
+        // Set Preprocess files option to RBP
+        else if (event.getSource() == this.txt_preprocess_files) {
+        	rb_properties.setPreprocessFiles(this.txt_preprocess_files.getText());
+        	System.out.println("Checking RBdata after setting ppfiles to "+ this.txt_preprocess_files.getText());
+        	rb_properties.checkData();
+        }
     }
 
     private void enableButtons() {
         this.btnNext.setEnabled(true);
-        if (this.rb_properties != null && this.rb_properties.remote_build) {
+        if (this.rb_properties != null && this.rb_properties.remoteBuild()) {
           //this.addprerocessfile_button.setEnabled(true);
         }
     }
@@ -2067,18 +2079,24 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
     }
 
     /**
-     * Docker IaaS を利用するか否か
+     * Where source code must be built.
      *
-     * @return true = 利用する
+     * @return remote settings file path -- if build on remote server,
+     * null if build locally.
      */
-    public boolean buildOnServer() {
+    public String remoteSettingsFile() {
         if (this.checkUseRemote == null) {
-            return false;
+            return null;
         }
         if (this.checkUseRemote.isEnabled()) {
-            return this.checkUseRemote.isSelected();
+            if (this.checkUseRemote.isSelected()) {
+            	String settings_file=(String)this.settings_list.getSelectedItem();
+            	if (settings_file != null || settings_file.length() > 0) {
+            		return settings_file;
+            	}
+            }
         }
-        return false;
+        return null;
     }
 
     /**
