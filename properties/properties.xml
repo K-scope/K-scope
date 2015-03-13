@@ -233,9 +233,9 @@
 		<project key="settings-file" name="property.remotebuild.settings_file.name" value="" type="text" description="property.remotebuild.settings_file.message" />
 		<!-- Remote Build Properties -->
         <remotebuild key="settings_file" type="project" commandline_option="-s" description="property.remotebuild.settings_file" />
-        <remotebuild key="preprocess_files" value="" type="project" commandline_option="-p" description="property.remotebuild.preprocess_files"/>		
-        <remotebuild key="file_filter" type="project" commandline_option="-f" description="property.remotebuild.file_filter"  value="*.tar,*.tgz,*.zip,*.txt,*.html,*.xml,*.o,*.mod,*.xmod,.DS*,*.ksx"/>
-		<remotebuild key="local_path" type="project" value="" commandline_option="-d" description="property.project.local_path"/>
+        <remotebuild key="preprocess_files" value="" type="project" commandline_option="-pf" description="property.remotebuild.preprocess_files"/>		
+        <remotebuild key="file_filter" type="project" commandline_option="-ff" description="property.remotebuild.file_filter"  value="*.tar,*.tgz,*.zip,*.txt,*.html,*.xml,*.o,*.mod,*.xmod,.DS*,*.ksx"/>
+		<remotebuild key="local_path" type="project" value="" commandline_option="-lp" description="property.project.local_path"/>
 			
         <!-- Project hidden properties -->
         <project_other key="generate-XML" value="false" />
