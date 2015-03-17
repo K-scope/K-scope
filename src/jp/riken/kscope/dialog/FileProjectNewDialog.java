@@ -129,8 +129,9 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
 
     /** Serverを利用する */
     private JCheckBox checkUseRemote;
-    private JButton rb_settings_button;
     private JComboBox<String> settings_list;
+    /** 選択XMLフォルダ・ファイル削除ボタン */
+    private JButton manage_settgins_files;
         
     /** makefile テキストフィールド*/
     //private JTextField txtMakefile;
@@ -327,7 +328,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
             if (this.rb_properties != null && this.rb_properties.remoteBuild()) {
             	String[] selections = getRemoteSettings(); 
             	settings_list = new JComboBox<String>(selections);
-                rb_settings_button = new JButton(Message.getString("fileprojectnewdialog.kindpanel.RBsettings"));
+            	manage_settgins_files = new JButton(Message.getString("fileprojectnewdialog.kindpanel.button.manage_settings_files"));
                 // Remote build の使用切り替え
                 checkUseRemote = new JCheckBox(Message.getString("fileprojectnewdialog.kindpanel.checkbox.useServer")) {
 					private static final long serialVersionUID = -1195485757658963243L;
@@ -407,7 +408,6 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
                     if (remoteBuild(rb_properties)) {
                         boolean enabled = this.isSelected() && radioGenXML.isSelected() && radioGenXML.isEnabled();
                         checkUseRemote.setEnabled(enabled);
-                        rb_settings_button.setEnabled(enabled);     
                         settings_list.setEnabled(enabled); 
                     }
                 }
@@ -431,17 +431,18 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
             ButtonGroup groupGenMake = new ButtonGroup();
             groupGenMake.add(radioGenXML);
             groupGenMake.add(radioNotGenXML);
-            panelSelect.add(radioFullMode, new GridBagConstraints(0, 0, 3, 1, 1.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
-            panelSelect.add(radioNotGenXML, new GridBagConstraints(1, 1, 2, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
+            panelSelect.add(radioFullMode, new GridBagConstraints(0, 0, 4, 1, 1.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
+            panelSelect.add(radioNotGenXML, new GridBagConstraints(1, 1, 3, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
             panelSelect.add(radioGenXML, new GridBagConstraints(1, 2, 3, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
             if (this.rb_properties != null && this.rb_properties.remoteBuild()) {
-                panelSelect.add(checkUseRemote, new GridBagConstraints(2, 3, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
-                panelSelect.add(settings_list, new GridBagConstraints(3, 3, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
+                panelSelect.add(checkUseRemote, new GridBagConstraints(2, 3, 2, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
+                panelSelect.add(settings_list, new GridBagConstraints(2, 4, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
                 settings_list.addActionListener(this);
+                panelSelect.add(manage_settgins_files, new GridBagConstraints(3, 4, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
             }
-            panelSelect.add(radioSimpleMode, new GridBagConstraints(0, 4, 3, 1, 1.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
+            panelSelect.add(radioSimpleMode, new GridBagConstraints(0, 5, 4, 1, 1.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
             panelSelect.add(new JLabel(Message.getString("fileprojectnewdialog.kindpanel.label.fortranonly")),
-                    new GridBagConstraints(1, 5, 2, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
+                    new GridBagConstraints(1, 6, 3, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
 
             panelContent.add(panelSelect, new GridBagConstraints(1, 2, 3, 5, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 7, 0, 0), 0, 0));
 
@@ -2091,7 +2092,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
         if (this.checkUseRemote.isEnabled()) {
             if (this.checkUseRemote.isSelected()) {
             	String settings_file=(String)this.settings_list.getSelectedItem();
-            	if (settings_file != null || settings_file.length() > 0) {
+            	if (settings_file != null && settings_file.length() > 0) {
             		return settings_file;
             	}
             }
