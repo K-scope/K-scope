@@ -442,10 +442,10 @@ public class ExecutableBody extends Block {
     public String getID() {
         String result = "";
         if (this.parent != null) {
-        	// modify by @hira at 2013/03/01
+            // modify by @hira at 2013/03/01
             // int offset = this.getStartPos() - this.parent.getStartPos();
             // result = this.parent.getID() + "#" + offset + ":" + this.toStringBase();
-        	result = this.parent.getID() + ":" + this.toStringBase();
+            result = this.parent.getID() + ":" + this.toStringBase();
         } else {
             result = this.toStringBase();
         }
@@ -475,9 +475,51 @@ public class ExecutableBody extends Block {
     public String getLayoutID() {
         String result = "";
         if (this.parent != null) {
-        	result = this.parent.getLayoutID() + ":";
+            result = this.parent.getLayoutID() + ":";
         }
         return result;
     }
 
+    /**
+     * ファイルタイプ（C言語、Fortran)を取得する.
+     * @return		ファイルタイプ（C言語、Fortran)
+     */
+    public jp.riken.kscope.data.FILE_TYPE getFileType() {
+        jp.riken.kscope.data.FILE_TYPE type = jp.riken.kscope.data.FILE_TYPE.UNKNOWN;
+        if (this.parent != null) {
+            type = this.parent.getFileType();
+        }
+        if (type != jp.riken.kscope.data.FILE_TYPE.UNKNOWN) {
+            return type;
+        }
+
+        return super.getFileType();
+    }
+
+
+    /**
+     * ファイルタイプがC言語であるかチェックする.
+     * @return		 true = C言語
+     */
+    public boolean isClang() {
+        jp.riken.kscope.data.FILE_TYPE type = this.getFileType();
+        if (type == jp.riken.kscope.data.FILE_TYPE.UNKNOWN) return false;
+        if (type == jp.riken.kscope.data.FILE_TYPE.XCODEML_XML) return false;
+        if (type == jp.riken.kscope.data.FILE_TYPE.CLANG) return true;
+
+        return false;
+    }
+
+    /**
+     * ファイルタイプがFortranであるかチェックする.
+     * @return		 true = Fortran
+     */
+    public boolean isFortran() {
+        jp.riken.kscope.data.FILE_TYPE type = this.getFileType();
+        if (type == jp.riken.kscope.data.FILE_TYPE.UNKNOWN) return false;
+        if (type == jp.riken.kscope.data.FILE_TYPE.XCODEML_XML) return false;
+        if (type == jp.riken.kscope.data.FILE_TYPE.CLANG) return false;
+
+        return true;
+    }
 }

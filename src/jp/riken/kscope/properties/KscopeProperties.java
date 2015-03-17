@@ -50,8 +50,9 @@ public class KscopeProperties {
      * version : 0.2.4        2013/10/30 release
      * version : 0.2.5        2013/12/27 release
      * version : 0.2.6        2014/11/10 release
+     * version : 0.3.0        2015/02/01
      */
-    public static final String APPLICATION_VERSION = "0.2.6";
+    public static final String APPLICATION_VERSION = "0.3.0";
 
     /** データベースファイル */
     public static final String DATABASE_FILE = "db.ksx";
@@ -122,10 +123,10 @@ public class KscopeProperties {
             InputStream is = null;
             is = ResourceUtils.getPropertiesFile(PROPERTIES_FILE);
             if (is == null) {
-            	JOptionPane.showMessageDialog(null,
-            			Message.getString("kscopeproperties.errdialog.cannnotopenpropertyfile"), //プロパティファイルを開くことができませんでした。
-            			Message.getString("dialog.common.error"), //エラー
-            			JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(null,
+                        Message.getString("kscopeproperties.errdialog.cannnotopenpropertyfile"), //プロパティファイルを開くことができませんでした。
+                        Message.getString("dialog.common.error"), //エラー
+                        JOptionPane.ERROR_MESSAGE);
             }
 
             // XMLパース
@@ -146,13 +147,13 @@ public class KscopeProperties {
             parseClangComment(doc);
 
         } catch (IOException e) {
-        	JOptionPane.showMessageDialog(null, e, "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, e, "Error", JOptionPane.ERROR_MESSAGE);
             e.printStackTrace();
         } catch (ParserConfigurationException e) {
-        	JOptionPane.showMessageDialog(null, e, "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, e, "Error", JOptionPane.ERROR_MESSAGE);
             e.printStackTrace();
         } catch (SAXException e) {
-        	JOptionPane.showMessageDialog(null, e, "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, e, "Error", JOptionPane.ERROR_MESSAGE);
             e.printStackTrace();
         }
     }
@@ -487,11 +488,11 @@ public class KscopeProperties {
      * @return    true=Javaバージョンが1.7以上である。
      */
     public static boolean isJava18Later() {
-    	String version = System.getProperty("java.specification.version");
-    	double verno = Double.parseDouble(version);
+        String version = System.getProperty("java.specification.version");
+        double verno = Double.parseDouble(version);
         return verno >= 1.8;
     }
-    
+
     /*
      * AppleScriptが使用可能かチェックする
      * @retrun true=AppleScriptが使用可能である。
@@ -502,7 +503,7 @@ public class KscopeProperties {
             return false;
         } else {
             return true;
-        }        
+        }
     }
 
 }

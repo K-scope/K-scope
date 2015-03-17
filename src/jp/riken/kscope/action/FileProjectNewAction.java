@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.concurrent.Callable;
 
 import javax.swing.JOptionPane;
+
 import jp.riken.kscope.Application;
 import jp.riken.kscope.Message;
 import jp.riken.kscope.common.ANALYSIS_PANEL;
@@ -49,7 +50,7 @@ import jp.riken.kscope.service.FutureService;
 import jp.riken.kscope.service.LanguageService;
 import jp.riken.kscope.service.ProjectMakeService;
 import jp.riken.kscope.service.ProjectService;
-import jp.riken.kscope.xcodeml.XcodeMLParserStax;
+import jp.riken.kscope.xcodeml.fortran.XcodeMLParserStax;
 
 /**
  * プロジェクトの新規作成アクション
@@ -202,8 +203,6 @@ public class FileProjectNewAction extends ActionBase {
             ModuleTreeModel moduleModel = this.controller.getModuleTreeModel();
             // データベースの構築、探索を行うクラス
             languageService = new LanguageService(fortran);
-            // パーサの設定
-            languageService.setPerser(xmlParser);
             // 構造ツリーモデルを設定する
             languageService.setLanguageTreeModel(languageModel);
             // モジュールツリーモデルを設定する

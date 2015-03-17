@@ -46,7 +46,7 @@ import jp.riken.kscope.service.FutureService;
 import jp.riken.kscope.service.LanguageService;
 import jp.riken.kscope.service.ProjectService;
 import jp.riken.kscope.utils.SwingUtils;
-import jp.riken.kscope.xcodeml.XcodeMLParserStax;
+import jp.riken.kscope.xcodeml.fortran.XcodeMLParserStax;
 
 /**
  * プロジェクトを開くアクション
@@ -236,14 +236,12 @@ public class FileProjectOpenAction extends ActionBase {
         LanguageTreeModel languageModel = this.controller.getLanguageTreeModel();
         // モジュールツリーモデル
         ModuleTreeModel moduleModel = this.controller.getModuleTreeModel();
-        // XMLパーサの作成
-        XcodeMLParserStax xmlParser = new XcodeMLParserStax();
 
         ProjectModel model = this.controller.getProjectModel();
         final File prjFolder = model.getProjectFolder();
 
         // 構造解析サービス
-        serviceLanguage = new LanguageService(xmlfiles, fortran, xmlParser);
+        serviceLanguage = new LanguageService(xmlfiles, fortran);
         // エラー情報モデルを設定する。
         serviceLanguage.setErrorInfoModel(errorModel);
         // ソースツリーモデルを設定する。

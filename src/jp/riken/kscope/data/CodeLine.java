@@ -110,10 +110,7 @@ public class CodeLine implements Comparable<CodeLine>, Serializable {
     /**
      * コンストラクタ
      *
-     * @param statement
-     *            コード行
-     * @param strSourceFile
-     *            ソースファイル（存在しなくてもＸＭＬ情報から格納）
+     * @param statement         コード行
      */
     public CodeLine(String statement) {
         this(null, statement, -1, null);
@@ -349,7 +346,7 @@ public class CodeLine implements Comparable<CodeLine>, Serializable {
      * @return コード行の情報
      */
     @Override
-	public String toString() {
+    public String toString() {
 
         String text = this.getStatement();
         String prefix = String.valueOf(this.getStartLine());
@@ -388,7 +385,7 @@ public class CodeLine implements Comparable<CodeLine>, Serializable {
             buf.append(m_sourceFile.toString());
         }
         else {
-        	buf.append("\n");
+            buf.append("\n");
             buf.append("[file(not exist)] ");
             buf.append(m_strSourceFile);
         }
@@ -413,7 +410,7 @@ public class CodeLine implements Comparable<CodeLine>, Serializable {
             buf.append(":");
         }
         else {
-        	String file = m_strSourceFile;
+            String file = m_strSourceFile;
             file = String.format("%-16s", file);
             file += "(not exist)";
             buf.append(file);
@@ -484,16 +481,16 @@ public class CodeLine implements Comparable<CodeLine>, Serializable {
      * @return			ソースファイル名（存在しないファイルでも設定があればかえす）
      */
     public String getStrSourceFile() {
-    	if (m_statement != null) {
-			if (m_statement.startsWith("COMMON")){
-    			String [] array = m_statement.split("/", 0);
-    			return StringUtils.join(array, "/", array.length - 1);
-			}
-    	}
-    	if (m_sourceFile != null && m_sourceFile.getPath() != null) {
-    		return m_sourceFile.getPath();
-    	}
-    	return m_strSourceFile;
+        if (m_statement != null) {
+            if (m_statement.startsWith("COMMON")){
+                String [] array = m_statement.split("/", 0);
+                return StringUtils.join(array, "/", array.length - 1);
+            }
+        }
+        if (m_sourceFile != null && m_sourceFile.getPath() != null) {
+            return m_sourceFile.getPath();
+        }
+        return m_strSourceFile;
     }
 
     /**
@@ -501,7 +498,7 @@ public class CodeLine implements Comparable<CodeLine>, Serializable {
      * @param			ソースファイル名（ヘッダーなどの存在しないファイルでも設定があれば設定する）
      */
     public void setStrSourceFile(String strSourceFile) {
-    	m_strSourceFile = strSourceFile;
+        m_strSourceFile = strSourceFile;
     }
 
     @Override
@@ -519,22 +516,22 @@ public class CodeLine implements Comparable<CodeLine>, Serializable {
      * @return			true=重なりあう
      */
     public boolean isOverlap(CodeLine start, CodeLine end) {
-		if (this.getSourceFile() == null) return false;
-		if (start == null) return false;
-		if (end == null) return false;
-		if (!this.getSourceFile().equals(start.getSourceFile())) return false;
-		if (!this.getSourceFile().equals(end.getSourceFile())) return false;
+        if (this.getSourceFile() == null) return false;
+        if (start == null) return false;
+        if (end == null) return false;
+        if (!this.getSourceFile().equals(start.getSourceFile())) return false;
+        if (!this.getSourceFile().equals(end.getSourceFile())) return false;
 
-		if ( (this.getStartLine() >= start.getStartLine()
-			&& this.getStartLine() <= start.getEndLine())
-			|| (this.getEndLine() >= end.getStartLine()
-					&& this.getEndLine() <= end.getEndLine()) ) {
-			return true;
-		}
-		else if (this.getStartLine() <= start.getStartLine()
-				&& this.getEndLine() >= end.getEndLine()) {
-			return true;
-		}
-		return false;
+        if ( (this.getStartLine() >= start.getStartLine()
+            && this.getStartLine() <= start.getEndLine())
+            || (this.getEndLine() >= end.getStartLine()
+                    && this.getEndLine() <= end.getEndLine()) ) {
+            return true;
+        }
+        else if (this.getStartLine() <= start.getStartLine()
+                && this.getEndLine() >= end.getEndLine()) {
+            return true;
+        }
+        return false;
     }
 }

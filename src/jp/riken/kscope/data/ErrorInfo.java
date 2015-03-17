@@ -38,17 +38,27 @@ public class ErrorInfo {
 
     /**
      * コンストラクタ
+     * @param line			エラー行情報
+     * @param message		エラーメッセージ
+     */
+    public ErrorInfo(String message) {
+        this.codeLine = null;
+        this.message = message;
+    }
+
+    /**
+     * コンストラクタ
      * @param ex			例外情報
      */
     public ErrorInfo(Exception ex) {
         this.codeLine = null;
         if (ex != null) {
-	        if (ex.getMessage() != null) {
-	        	this.message = ex.getMessage();
-	        }
-	        else {
-	        	this.message = ex.toString();
-	        }
+            if (ex.getMessage() != null) {
+                this.message = ex.getMessage();
+            }
+            else {
+                this.message = ex.toString();
+            }
         }
     }
 

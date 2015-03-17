@@ -47,8 +47,10 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import jp.riken.kscope.Application;
 import jp.riken.kscope.Message;
 import jp.riken.kscope.component.FilterTreeNode;
+import jp.riken.kscope.data.FILE_TYPE;
 import jp.riken.kscope.data.SourceFile;
 import jp.riken.kscope.exception.LanguageException;
+import jp.riken.kscope.exception.XcodeMLException;
 import jp.riken.kscope.information.InformationBase;
 import jp.riken.kscope.information.InformationBlock;
 import jp.riken.kscope.information.InformationBlocks;
@@ -103,6 +105,7 @@ import jp.riken.kscope.properties.KscopeProperties;
 import jp.riken.kscope.utils.Logger;
 import jp.riken.kscope.utils.StringUtils;
 import jp.riken.kscope.utils.SwingUtils;
+import jp.riken.kscope.xcodeml.FactoryXcodeMLParser;
 
 
 /**
@@ -115,8 +118,10 @@ public class LanguageService extends BaseService {
     private SourceFile[] files = null;
     /** フォートラン構文解析結果格納データベース. */
     private Fortran fortranDb = null;
-    /** フォートラン/XcodeML構文解析パーサー. */
+    /** フォートラン-XcodeML構文解析パーサー. */
     private IAnalyseParser fortranParser = null;
+    /** C言語-XcodeML構文解析パーサー. */
+    private IAnalyseParser clangParser = null;
     /** 構造ツリーモデル. */
     private LanguageTreeModel modelLanguage = null;
     /** モジュールツリーモデル. */
@@ -156,7 +161,8 @@ public class LanguageService extends BaseService {
     public LanguageService() {
         this.files = null;
         this.fortranDb = null;
-        this.fortranParser = null;
+        // XcodeMLパーサーを作成する.
+        this.initializeXcodemlPerser();
     }
 
     /**
@@ -166,20 +172,8 @@ public class LanguageService extends BaseService {
     public LanguageService(Fortran fortran) {
         this.files = null;
         this.fortranDb = fortran;
-        this.fortranParser = null;
-    }
-
-    /**
-     * コンストラクタ.
-     *
-     * @param files            読込ソースファイル
-     * @param fortran            フォートラン構文解析結果格納データベース
-     * @param parser            フォートラン構文解析パーサー
-     */
-    public LanguageService(SourceFile[] files, Fortran fortran, IAnalyseParser parser) {
-        this.files = files;
-        this.fortranDb = fortran;
-        this.fortranParser = parser;
+        // XcodeMLパーサーを作成する.
+        this.initializeXcodemlPerser();
     }
 
     /**
@@ -191,6 +185,10 @@ public class LanguageService extends BaseService {
     public LanguageService(SourceFile[] files, Fortran fortran) {
         this.files = files;
         this.fortranDb = fortran;
+        this.fortranParser = null;
+        this.clangParser = null;
+        // XcodeMLパーサーを作成する.
+        this.initializeXcodemlPerser();
     }
 
     /**
@@ -231,17 +229,11 @@ public class LanguageService extends BaseService {
     public void parseSourceFile() {
         if (this.files == null) return;
         if (this.fortranDb == null) return;
-        if (this.fortranParser == null) return;
-        this.fortranParser.setCancel(false);
-        this.fortranParser.setConfirmInclude(true);
 
         // キャンセルチェック
         if (this.isCancel()) {
             return;
         }
-        // プロジェクトフォルダを設定する
-        this.fortranParser.setBaseFolder(this.projectFolder);
-
         // 解析ファイルから重複ファイルを削除する
         List<SourceFile> filelist = validFileList(this.files);
         if (filelist == null) return;
@@ -250,6 +242,22 @@ public class LanguageService extends BaseService {
             ArrayList<SourceFile> sourceFileList = new ArrayList<SourceFile>();
             for (SourceFile file : filelist) {
                 try {
+                    // フォートラン/C言語-XcodeML構文解析パーサーの選択
+                    IAnalyseParser xcodemlParser = null;
+                    FILE_TYPE lang_type = FactoryXcodeMLParser.parserLanguage(file);
+                    if (lang_type == FILE_TYPE.FORTRANLANG) {
+                        xcodemlParser = this.fortranParser;
+                    }
+                    else if (lang_type == FILE_TYPE.CLANG) {
+                        xcodemlParser = this.clangParser;
+                    }
+                    else {
+                        // XcodeMLパーサの生成に失敗しました(languge属性の取得失敗)。
+                        throw new LanguageException(
+                                new Exception(Message.getString("xcodemlparserstax.error.null")),
+                                file);
+                    }
+
                     String filename = file.toString();
                     Pattern pattern = Pattern.compile("^[^\\.].*$");
                     Matcher matcher = pattern.matcher(filename);
@@ -258,17 +266,17 @@ public class LanguageService extends BaseService {
                         Application.status.setMessageStatus(filename);
 
                         // ソースファイルからファイルを読み込む
-                        fortranParser.readFile(file);
+                        xcodemlParser.readFile(file);
 
                         // 読込コード行を構文解析する。
-                        fortranParser.parseFile(fortranDb);
+                        xcodemlParser.parseFile(fortranDb);
 
                         // オリジナルフォートランソースファイルの取得
-                        sourceFileList.add(fortranParser.getLanguageFile());
+                        sourceFileList.add(xcodemlParser.getLanguageFile());
 
                         // パースエラーの取得
-                        if (fortranParser.getErrorInfos() != null) {
-                        	this.addErrorInfos(fortranParser.getErrorInfos());
+                        if (xcodemlParser.getErrorInfos() != null) {
+                            this.addErrorInfos(xcodemlParser.getErrorInfos());
                         }
                     }
                 } catch (LanguageException lang_ex) {
@@ -312,15 +320,15 @@ public class LanguageService extends BaseService {
 
             // データベースの検証を行う.
             {
-	            ValidateLanguage validate = new ValidateLanguage(fortranDb);
-	            LanguageVisitor visitor = new LanguageVisitor(validate);
-	            visitor.entry();
-	            int error = validate.analyseTypes();
-	            if (error > 0) {
-	            	this.getErrorInfoModel().addErrorInfos(validate.getErrorList());
-	            	String msg = Message.getString("validatelanguage.final.error", error);
-	            	this.addErrorInfo(msg);
-	            }
+                ValidateLanguage validate = new ValidateLanguage(fortranDb);
+                LanguageVisitor visitor = new LanguageVisitor(validate);
+                visitor.entry();
+                int error = validate.analyseTypes();
+                if (error > 0) {
+                    this.getErrorInfoModel().addErrorInfos(validate.getErrorList());
+                    String msg = Message.getString("validatelanguage.final.error", error);
+                    this.addErrorInfo(msg);
+                }
             }
 
             // ソースファイルリストの設定
@@ -380,19 +388,22 @@ public class LanguageService extends BaseService {
     public void cancelRunning() {
 
         m_running = false;
-        if (fortranParser != null) {
-            fortranParser.setCancel(true);
+        if (this.fortranParser != null) {
+            this.fortranParser.setCancel(true);
+        }
+        if (this.clangParser != null) {
+            this.clangParser.setCancel(true);
         }
         if (this.fortranDb != null) {
-        	this.fortranDb.setCancel(true);
+            this.fortranDb.setCancel(true);
         }
         try {
-	        if (this.languageStream != null) {
-	        	this.languageStream.close();
-	        	this.languageStream = null;
-	        }
-		} catch (IOException ex) {
-		}
+            if (this.languageStream != null) {
+                this.languageStream.close();
+                this.languageStream = null;
+            }
+        } catch (IOException ex) {
+        }
     }
 
     /**
@@ -400,11 +411,14 @@ public class LanguageService extends BaseService {
      *
      * @param listener      ステータス表示用リスナ
      */
-    public void addStatusPropertyChangeListener(
-            PropertyChangeListener listener) {
-        fortranParser.addPropertyChangeListener(listener);
+    public void addStatusPropertyChangeListener(PropertyChangeListener listener) {
+        if (this.fortranParser != null) {
+            this.fortranParser.addPropertyChangeListener(listener);
+        }
+        if (this.clangParser != null) {
+            this.clangParser.addPropertyChangeListener(listener);
+        }
     }
-
 
     /**
      * 構造ツリーを作成する
@@ -550,7 +564,7 @@ public class LanguageService extends BaseService {
                         }
                         // 循環のチェック
                         if (SwingUtils.recursiveTreeNode(procNode)) {
-                        	continue;
+                            continue;
                         }
                         else if (this.recursiveSub.contains(callName)) {
                             continue;
@@ -575,27 +589,29 @@ public class LanguageService extends BaseService {
                     }
                     // IF,WHERE文の場合
                 } else {
-                    Block cond0 = selec.getConditions().get(0);
-                    writeBlocks(cond0, child, flag, depth+1);
-                    for (int j = 1; j < selec.getConditions().size(); j++) {
-                        Condition cond = selec.getConditions().get(j);
-                        child = new FilterTreeNode(cond, depth);
-                        child = parent.add(child);
-                        writeBlocks(cond, child, flag, depth+1);
+                    if (selec.getConditions() != null && selec.getConditions().size() > 0) {
+                        Block cond0 = selec.getConditions().get(0);
+                        writeBlocks(cond0, child, flag, depth+1);
+                        for (int j = 1; j < selec.getConditions().size(); j++) {
+                            Condition cond = selec.getConditions().get(j);
+                            child = new FilterTreeNode(cond, depth);
+                            child = parent.add(child);
+                            writeBlocks(cond, child, flag, depth+1);
+                        }
                     }
                 }
             } else if (blk instanceof Substitution) {
-        		child = new FilterTreeNode(blk, depth);
-        		child = parent.add(child);
-        		int childdepth = depth+1;
-        		// 代入文の関数呼び出しが存在する場合は、必ず挿入する様にする.
-        		if (childdepth > this.treeDepth) {
-        	        List<Block> childblocks = block.getBlocks();
-        			if (childblocks != null && childblocks.size() > 0) {
-        				childdepth = this.treeDepth;
-        			}
-        		}
-        		writeBlocks(blk, parent, flag, childdepth); // 代入文の関数呼び出しはparentの子要素とする
+                child = new FilterTreeNode(blk, depth);
+                child = parent.add(child);
+                int childdepth = depth+1;
+                // 代入文の関数呼び出しが存在する場合は、必ず挿入する様にする.
+                if (childdepth > this.treeDepth) {
+                    List<Block> childblocks = block.getBlocks();
+                    if (childblocks != null && childblocks.size() > 0) {
+                        childdepth = this.treeDepth;
+                    }
+                }
+                writeBlocks(blk, parent, flag, childdepth); // 代入文の関数呼び出しはparentの子要素とする
             } else {
                 child = new FilterTreeNode(blk, depth);
                 child = parent.add(child);
@@ -624,10 +640,10 @@ public class LanguageService extends BaseService {
         }
         // 循環のチェック
         if (SwingUtils.recursiveTreeNode(parent)) {
-        	return;
+            return;
         }
         if (this.recursiveSub.contains(callName)) {
-        	return;
+            return;
         } else {
             recursiveSub.add(callName);
             writeBlocks(proc.getBody(), parent, flag, depth+1);
@@ -886,8 +902,8 @@ public class LanguageService extends BaseService {
         }
         if (procs.size() <= 0) {
             // エラーメッセージ
-        	// languageservice.exportlanguage.procedure.error=出力プロシージャが存在しません。
-        	// languageservice.error=エラー
+            // languageservice.exportlanguage.procedure.error=出力プロシージャが存在しません。
+            // languageservice.error=エラー
             JOptionPane.showMessageDialog(null,
                     Message.getString("languageservice.exportlanguage.procedure.error"), //出力プロシージャが存在しません。
                     Message.getString("languageservice.error"), //エラー
@@ -934,7 +950,7 @@ public class LanguageService extends BaseService {
         } else if (proc == null) {
             // エラーメッセージ : languageservice.procedure.error=[%s]は存在しません。
             JOptionPane.showMessageDialog(null,
-            		Message.getString("languageservice.procedure.error", procName),
+                    Message.getString("languageservice.procedure.error", procName),
                     Message.getString("languageservice.error"),
                     JOptionPane.ERROR_MESSAGE);
             return null;
@@ -1061,7 +1077,13 @@ public class LanguageService extends BaseService {
             // ステートメント
             values.add(((IBlock) node).toString());
 
-            if (node instanceof VariableDefinition) {
+            if (node instanceof Module) {
+                items.addAll(Arrays.asList(
+                        Message.getString("languageservice.properties.language")));
+                // 言語
+                values.add(((Module)node).getFileType().toString());
+            }
+            else if (node instanceof VariableDefinition) {
                 items.addAll(Arrays.asList(
                         Message.getString("languageservice.properties.variablename"), //変数名
                         Message.getString("languageservice.properties.datatype"), //データ型
@@ -1069,7 +1091,12 @@ public class LanguageService extends BaseService {
                 // 変数名
                 values.add(((VariableDefinition) node).get_name());
                 // データ型
-                values.add(((VariableDefinition) node).getType().toString());
+                String var_type = "";
+                if (((VariableDefinition) node).getType() != null) {
+                    var_type = ((VariableDefinition) node).getType().toString();
+                }
+                values.add(var_type);
+
                 // 属性
                 String attribute = null;
                 if (((VariableDefinition) node).getAttribute() != null) {
@@ -1130,9 +1157,9 @@ public class LanguageService extends BaseService {
             }
             else if (node instanceof Procedure) {
                 items.addAll(Arrays.asList(
-                		Message.getString("languageservice.properties.dummyargument"), //仮引数
-                		Message.getString("languageservice.properties.returnvalue"), //戻り値
-                		Message.getString("languageservice.properties.attribute"), //属性
+                        Message.getString("languageservice.properties.dummyargument"), //仮引数
+                        Message.getString("languageservice.properties.returnvalue"), //戻り値
+                        Message.getString("languageservice.properties.attribute"), //属性
                         Message.getString("languageservice.properties.result"))); //結果
                 // 仮引数
                 Variable[] args = ((Procedure) node).get_args();
@@ -1334,7 +1361,10 @@ public class LanguageService extends BaseService {
 
         String line = "";
         int start = node.getStartCodeLine().getStartLine();
-        int end = node.getEndCodeLine().getEndLine();
+        int end = 0;
+        if (node.getEndCodeLine() != null) {
+            end = node.getEndCodeLine().getEndLine();
+        }
         if (start > 0) {
             line = String.valueOf(start);
             if (start < end) {
@@ -1350,7 +1380,7 @@ public class LanguageService extends BaseService {
      * @param folder		Languageクラスのシリアライズフォルダ
      */
     public void readLanguage(File folder) {
-    	// languageservice.deserialize.start.status=Languageデシリアライズ:開始
+        // languageservice.deserialize.start.status=Languageデシリアライズ:開始
         Application.status.setMessageStatus(Message.getString("languageservice.deserialize.start.status"));
         Application.status.setProgressStart(true);
 
@@ -1358,10 +1388,10 @@ public class LanguageService extends BaseService {
          *  folderからLanguageクラスのデシリアライズを行う
          */
         try {
-        	if (!new File(folder.getPath() + File.separator + KscopeProperties.DATABASE_FILE).exists()) {
-        		String error = Message.getString("languageservice.readlanguage.notexists.database.error", KscopeProperties.DATABASE_FILE);
-        		throw new LanguageException(error);
-        	}
+            if (!new File(folder.getPath() + File.separator + KscopeProperties.DATABASE_FILE).exists()) {
+                String error = Message.getString("languageservice.readlanguage.notexists.database.error", KscopeProperties.DATABASE_FILE);
+                throw new LanguageException(error);
+            }
             // (2012/5/24) changed by Tomiyama
             languageStream = new ObjectInputStream(new FileInputStream(folder.getPath() + File.separator + KscopeProperties.DATABASE_FILE));
             this.fortranDb = (Fortran) languageStream.readObject();
@@ -1370,27 +1400,27 @@ public class LanguageService extends BaseService {
 
             this.fortranDb.analyseDB();
 
-	        // ソースファイルリストの設定を行う
-	    	List<SourceFile> listSrc = this.fortranDb.getProcedureFileList();
-	    	SourceFile[] sourceFiles = null;
-	    	if (listSrc != null) {
-	    		sourceFiles = listSrc.toArray(new SourceFile[0]);
-	    	}
+            // ソースファイルリストの設定を行う
+            List<SourceFile> listSrc = this.fortranDb.getProcedureFileList();
+            SourceFile[] sourceFiles = null;
+            if (listSrc != null) {
+                sourceFiles = listSrc.toArray(new SourceFile[0]);
+            }
 
-	        if (sourceFiles != null && sourceFiles.length > 0) {
-	            this.modelFile.setSourceFile(sourceFiles);
-	        }
+            if (sourceFiles != null && sourceFiles.length > 0) {
+                this.modelFile.setSourceFile(sourceFiles);
+            }
 
-	        /*
-	         * Languageクラスのデシリアライズ後、 構造ツリー、モジュールツリーの作成を行う。
-	         */
-	        // 構造ツリーへの作成
-	        writeTree();
-	        this.modelLanguage.notifyModel();
+            /*
+             * Languageクラスのデシリアライズ後、 構造ツリー、モジュールツリーの作成を行う。
+             */
+            // 構造ツリーへの作成
+            writeTree();
+            this.modelLanguage.notifyModel();
 
-	        // モジュールツリーの作成
-	        setFortranModules();
-	        this.modelModule.notifyModel();
+            // モジュールツリーの作成
+            setFortranModules();
+            this.modelModule.notifyModel();
 
         } catch (LanguageException lang_ex) {
             Logger.error(lang_ex);
@@ -1400,16 +1430,16 @@ public class LanguageService extends BaseService {
             this.addErrorInfo(lang_ex);
             throw  lang_ex;
         } catch (IOException io_ex) {
-        	if (!this.isCancel()) {
-	            Logger.error(io_ex);
-	            io_ex.printStackTrace();
-	            String error_message = io_ex.getMessage();
-	            if (error_message == null) {
-	                error_message = io_ex.toString();
-	            }
-	            // エラー箇所の情報をセットする
-	            this.addErrorInfo(error_message);
-        	}
+            if (!this.isCancel()) {
+                Logger.error(io_ex);
+                io_ex.printStackTrace();
+                String error_message = io_ex.getMessage();
+                if (error_message == null) {
+                    error_message = io_ex.toString();
+                }
+                // エラー箇所の情報をセットする
+                this.addErrorInfo(error_message);
+            }
         } catch (Exception ex) {
             Logger.error(ex);
             ex.printStackTrace();
@@ -1432,7 +1462,7 @@ public class LanguageService extends BaseService {
      * @param folder		Languageクラスのシリアライズフォルダ
      */
     public void writeLanguage(File folder) {
-    	// languageservice.serialize.start.status=Languageシリアライズ:開始
+        // languageservice.serialize.start.status=Languageシリアライズ:開始
         Application.status.setMessageStatus(Message.getString("languageservice.serialize.start.status"));
         Application.status.setProgressStart(true);
 
@@ -1487,6 +1517,12 @@ public class LanguageService extends BaseService {
      */
     public void setProjectFolder(File folder) {
         this.projectFolder = folder;
+
+        // プロジェクトフォルダを設定する
+        if (this.fortranParser != null)
+            this.fortranParser.setBaseFolder(this.projectFolder);
+        if (this.clangParser != null)
+            this.clangParser.setBaseFolder(this.projectFolder);
     }
 
     /**
@@ -1494,15 +1530,26 @@ public class LanguageService extends BaseService {
      * @param files
      */
     public void setSourceFiles(SourceFile [] files) {
-    	this.files = files;
+        this.files = files;
     }
 
     /**
-     * パーサーを設定する
-     * @param parser		パーサー
+     * XcodeMLパーサーを作成する.
+     * Fortran,C言語用のXcodeMLパーサを生成する
      */
-    public void setPerser(IAnalyseParser parser) {
-    	this.fortranParser = parser;
+    private void initializeXcodemlPerser() {
+        // Fortran用のXcodeMLパーサ
+        this.fortranParser = new jp.riken.kscope.xcodeml.fortran.XcodeMLParserStax();
+        // C言語用のXcodeMLパーサ
+        this.clangParser = new jp.riken.kscope.xcodeml.clang.XcodeMLParserStax();
+
+        this.fortranParser.setCancel(false);
+        this.fortranParser.setConfirmInclude(true);
+
+        this.clangParser.setCancel(false);
+        this.clangParser.setConfirmInclude(true);
+
+        return;
     }
 
     /**
@@ -1510,59 +1557,58 @@ public class LanguageService extends BaseService {
      * @return   true=実行可
      */
     public boolean canParse() {
-    	if (this.files == null) return false;
-    	if (this.files.length <= 0) return false;
-    	if (this.fortranDb == null) return false;
-    	if (this.fortranParser == null) return false;
-    	if (this.projectFolder == null) return false;
-    	if (!this.projectFolder.exists()) return false;
-    	if (!this.projectFolder.isDirectory()) return false;
-    	if (this.modelFile == null) return false;
-    	if (this.modelLanguage == null) return false;
+        if (this.files == null) return false;
+        if (this.files.length <= 0) return false;
+        if (this.fortranDb == null) return false;
+        if (this.projectFolder == null) return false;
+        if (!this.projectFolder.exists()) return false;
+        if (!this.projectFolder.isDirectory()) return false;
+        if (this.modelFile == null) return false;
+        if (this.modelLanguage == null) return false;
 
-    	return true;
+        return true;
     }
 
     /**
      * エクスプローラビューをセットする.
      */
     public void setExplorerView() {
-    	if (this.fortranDb == null) return;
+        if (this.fortranDb == null) return;
 
         // キャンセルチェック
         if (this.isCancel()) return;
 
-    	// ソースファイルリスト
-    	List<SourceFile> listSrc = this.fortranDb.getProcedureFileList();
-    	SourceFile[] srcs = null;
-    	if (listSrc != null) {
-    		srcs = listSrc.toArray(new SourceFile[0]);
-    	}
+        // ソースファイルリスト
+        List<SourceFile> listSrc = this.fortranDb.getProcedureFileList();
+        SourceFile[] srcs = null;
+        if (listSrc != null) {
+            srcs = listSrc.toArray(new SourceFile[0]);
+        }
 
         Application.status.setMessageStatus("creating XML List...");
-    	// XMLファイルリスト
-    	SourceFile[] xmls = null;
-    	if (srcs != null && srcs.length > 0) {
-    		List<SourceFile> listXml = new ArrayList<SourceFile>();
-    		xmls = new SourceFile[srcs.length];
-    		for (int i=0; i<srcs.length; i++) {
-    			if (srcs[i] != null && srcs[i].getRelationFile() != null
-    				&& !listXml.contains(srcs[i].getRelationFile())) {
-    				listXml.add(srcs[i].getRelationFile());
-    			}
-    		}
-        	if (listXml.size() > 0) {
-        		xmls = listXml.toArray(new SourceFile[0]);
-        	}
-    	}
+        // XMLファイルリスト
+        SourceFile[] xmls = null;
+        if (srcs != null && srcs.length > 0) {
+            List<SourceFile> listXml = new ArrayList<SourceFile>();
+            xmls = new SourceFile[srcs.length];
+            for (int i=0; i<srcs.length; i++) {
+                if (srcs[i] != null && srcs[i].getRelationFile() != null
+                    && !listXml.contains(srcs[i].getRelationFile())) {
+                    listXml.add(srcs[i].getRelationFile());
+                }
+            }
+            if (listXml.size() > 0) {
+                xmls = listXml.toArray(new SourceFile[0]);
+            }
+        }
 
         // キャンセルチェック
         if (this.isCancel()) return;
         Application.status.setMessageStatus("creating Source tree...");
-    	// ソースファイルツリーの作成
+        // ソースファイルツリーの作成
         if (this.modelFile != null) {
-        	this.modelFile.clearTreeModel();
-	        this.modelFile.setSourceFile(srcs);
+            this.modelFile.clearTreeModel();
+            this.modelFile.setSourceFile(srcs);
         }
 
         // キャンセルチェック
@@ -1570,8 +1616,8 @@ public class LanguageService extends BaseService {
         Application.status.setMessageStatus("creating XML tree...");
         // XMLファイルツリーの作成
         if (this.modelXml != null) {
-        	this.modelXml.clearTreeModel();
-	        this.modelXml.setSourceFile(xmls);
+            this.modelXml.clearTreeModel();
+            this.modelXml.setSourceFile(xmls);
         }
 
         // キャンセルチェック
@@ -1579,9 +1625,9 @@ public class LanguageService extends BaseService {
         Application.status.setMessageStatus("creating Language tree...");
         // 構造ツリーへの作成
         if (this.modelLanguage != null) {
-        	this.modelLanguage.clearTreeModel();
-	        writeTree();
-	        this.modelLanguage.notifyModel();
+            this.modelLanguage.clearTreeModel();
+            writeTree();
+            this.modelLanguage.notifyModel();
         }
 
         // キャンセルチェック
@@ -1589,9 +1635,9 @@ public class LanguageService extends BaseService {
         Application.status.setMessageStatus("creating Module tree...");
         // モジュールツリーの作成
         if (this.modelModule != null) {
-        	this.modelModule.clearTreeModel();
-	        setFortranModules();
-	        this.modelModule.notifyModel();
+            this.modelModule.clearTreeModel();
+            setFortranModules();
+            this.modelModule.notifyModel();
         }
 
         return;
@@ -1603,22 +1649,22 @@ public class LanguageService extends BaseService {
      * @return          重複削除ファイルリスト
      */
     private List<SourceFile> validFileList(SourceFile[] list) {
-    	if (list == null) return null;
-    	List<SourceFile> results = new ArrayList<SourceFile>();
-    	for (SourceFile file : list) {
-    		if (!results.contains(file)) {
-    			results.add(file);
-    		}
-    	}
-    	if (results.size() <= 0) return null;
-    	return results;
+        if (list == null) return null;
+        List<SourceFile> results = new ArrayList<SourceFile>();
+        for (SourceFile file : list) {
+            if (!results.contains(file)) {
+                results.add(file);
+            }
+        }
+        if (results.size() <= 0) return null;
+        return results;
     }
 
     /**
      * 構造ツリー展開深さをクリアする.
      */
     public void clearTreeDepth() {
-    	this.treeDepth = 0;
+        this.treeDepth = 0;
     }
 
 }

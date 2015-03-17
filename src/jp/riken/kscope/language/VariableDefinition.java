@@ -29,12 +29,14 @@ import jp.riken.kscope.data.CodeLine;
 import jp.riken.kscope.information.InformationBlock;
 import jp.riken.kscope.information.InformationBlocks;
 import jp.riken.kscope.information.TextInfo;
+import jp.riken.kscope.language.fortran.VariableAttribute;
+import jp.riken.kscope.utils.StringUtils;
 /**
  * 変数・構造体の宣言を表現するクラス。
  */
 public class VariableDefinition implements Serializable, IInformation, IBlock {
-	/** シリアル番号 */
-	private static final long serialVersionUID = 8694203337559301954L;
+    /** シリアル番号 */
+    private static final long serialVersionUID = 8694203337559301954L;
     /** 変数名. */
     private String name;
     /** データ型. */
@@ -319,6 +321,91 @@ public class VariableDefinition implements Serializable, IInformation, IBlock {
      * @return 変数宣言の文字列表現
      */
     protected String toStringBase() {
+        if (this.isClang()) {
+            return this.toStringClang();
+        }
+        else {
+            return this.toStringFortran();
+        }
+
+    }
+
+    /**
+     * 変数宣言のC言語文字列表現を返す。
+     *
+     * @return 変数宣言のC言語文字列表現
+     */
+    public String toStringClang() {
+        StringBuilder var = new StringBuilder();
+
+        // 属性
+        boolean is_pointer = false;
+        boolean is_prioritypointer = false;
+        String var_attr = "";
+        if (this.attribute != null) {
+            is_pointer = this.attribute.contains("pointer");
+            var_attr = this.attribute.toStringClang();
+            // ポインタと配列との優先
+
+            is_prioritypointer = ((VariableAttribute)this.attribute).isPointerArrayPriority();
+        }
+        if (!StringUtils.isNullOrEmpty(var_attr)) {
+            var.append(var_attr);
+            var.append(" ");
+        }
+
+        if (this.type != null) {
+            // データ型
+            var.append(this.type.toStringClang());
+        }
+
+        var.append(" ");
+
+        if (is_prioritypointer) {
+            if (is_pointer) var.append("(");
+        }
+        // ポインタ
+        if (is_pointer) var.append("*");
+
+        // 変数名
+        var.append(name);
+        if (is_prioritypointer) {
+            if (is_pointer) var.append(")");
+        }
+
+        if (this.dimension != null) {
+            String dims = "";
+            for (int i = 0; i < this.dimension.get_index_size(); i++) {
+                String start = this.dimension.get_index_start(i).toString();
+                String end = this.dimension.get_index_end(i).toString();
+                dims += "[";
+                // C言語はend配列のみ
+                if (end != null) {
+                    dims += end;
+                }
+                dims += "]";
+            }
+            var.append(dims);
+        }
+
+        // 初期値
+        if (this.initValue != null) {
+            var.append(" ");
+            var.append("=");
+            var.append(" ");
+            var.append(this.initValue);
+        }
+        return var.toString();
+    }
+
+
+    /**
+     * 変数宣言のFortran文字列表現を返す。
+     *
+     * @return 変数宣言のFortran文字列表現
+     */
+    public String toStringFortran() {
+
         StringBuilder var = new StringBuilder();
 
         if (type != null) {
@@ -388,10 +475,10 @@ public class VariableDefinition implements Serializable, IInformation, IBlock {
 
         // modify by @hira at 2013/02/01
         if (actualArgument.getType() == null) {
-        	return false;
+            return false;
         }
         if (this.getType() == null) {
-        	return false;
+            return false;
         }
         return actualArgument.getType().matches(this.getType());
     }
@@ -622,24 +709,24 @@ public class VariableDefinition implements Serializable, IInformation, IBlock {
         return this.getMother();
     }
 
-	/**
-	 * 同一VariableDefinitionであるかチェックする.
-	 * 変数宣言の文字列表現にて同一かチェックする.
-	 * @param definition		変数・構造体の宣言
-	 * @return		true=一致
-	 */
-	public boolean equalsBlocks(VariableDefinition definition) {
-	     // 変数宣言の文字列表現にて同一かチェックする.
-		String thisVar = toStringBase();
-		String destVar = definition.toStringBase();
-		if (thisVar == null && destVar == null) {
-			return true;
-		}
-		else if (thisVar == null) {
-			return false;
-		}
-		return thisVar.equalsIgnoreCase(destVar);
-	}
+    /**
+     * 同一VariableDefinitionであるかチェックする.
+     * 変数宣言の文字列表現にて同一かチェックする.
+     * @param definition		変数・構造体の宣言
+     * @return		true=一致
+     */
+    public boolean equalsBlocks(VariableDefinition definition) {
+         // 変数宣言の文字列表現にて同一かチェックする.
+        String thisVar = toStringBase();
+        String destVar = definition.toStringBase();
+        if (thisVar == null && destVar == null) {
+            return true;
+        }
+        else if (thisVar == null) {
+            return false;
+        }
+        return thisVar.equalsIgnoreCase(destVar);
+    }
 
 
     /**
@@ -651,7 +738,7 @@ public class VariableDefinition implements Serializable, IInformation, IBlock {
     public IInformation[] searchInformationBlocks(IInformation block) {
         List<IInformation> list = new ArrayList<IInformation>();
         if (block instanceof VariableDefinition) {
-        	if (this.equalsBlocks((VariableDefinition)block)) {
+            if (this.equalsBlocks((VariableDefinition)block)) {
                 list.addAll(Arrays.asList(this));
             }
         }
@@ -672,36 +759,85 @@ public class VariableDefinition implements Serializable, IInformation, IBlock {
     }
 
 
-	/**
-	 * 行番号のブロックを検索する
-	 * @param line			行番号
-	 * @return		行番号のブロック
-	 */
-	public IBlock[] searchCodeLine(CodeLine line) {
-		if (line == null) return null;
-		if (line.getSourceFile() == null) return null;
-		if (this.getStartCodeLine() == null) return null;
-		if (!line.getSourceFile().equals(this.getStartCodeLine().getSourceFile())) return null;
+    /**
+     * 行番号のブロックを検索する
+     * @param line			行番号
+     * @return		行番号のブロック
+     */
+    public IBlock[] searchCodeLine(CodeLine line) {
+        if (line == null) return null;
+        if (line.getSourceFile() == null) return null;
+        if (this.getStartCodeLine() == null) return null;
+        if (!line.getSourceFile().equals(this.getStartCodeLine().getSourceFile())) return null;
 
-		List<IBlock> list = new ArrayList<IBlock>();
-		CodeLine thisstart = this.getStartCodeLine();
-		CodeLine thisend = this.getEndCodeLine();
-		if ( line.isOverlap(thisstart, thisend) ) {
-			list.add(this);
-		}
-
-        if (list.size() <= 0) {
-        	return null;
+        List<IBlock> list = new ArrayList<IBlock>();
+        CodeLine thisstart = this.getStartCodeLine();
+        CodeLine thisend = this.getEndCodeLine();
+        if ( line.isOverlap(thisstart, thisend) ) {
+            list.add(this);
         }
 
-		return list.toArray(new IBlock[0]);
-	}
+        if (list.size() <= 0) {
+            return null;
+        }
 
- 	/**
- 	 * 変数リストを取得する.
- 	 */
- 	@Override
- 	public Set<Variable> getAllVariables() {
- 		return null;
- 	}
+        return list.toArray(new IBlock[0]);
+    }
+
+     /**
+      * 変数リストを取得する.
+      */
+     @Override
+     public Set<Variable> getAllVariables() {
+         return null;
+     }
+
+
+     /**
+      * ファイルタイプ（C言語、Fortran)を取得する.
+      * @return		ファイルタイプ（C言語、Fortran)
+      */
+     public jp.riken.kscope.data.FILE_TYPE getFileType() {
+         jp.riken.kscope.data.FILE_TYPE type = jp.riken.kscope.data.FILE_TYPE.UNKNOWN;
+         if (this.mother != null) {
+             type = this.mother.getFileType();
+         }
+         if (type != jp.riken.kscope.data.FILE_TYPE.UNKNOWN) {
+             return type;
+         }
+
+         if (start == null) return type;
+         if (start.lineInfo == null) return type;
+         if (start.lineInfo.getSourceFile() == null) return type;
+
+         return this.start.lineInfo.getSourceFile().getFileType();
+     }
+
+
+     /**
+      * ファイルタイプがC言語であるかチェックする.
+      * @return		 true = C言語
+      */
+     public boolean isClang() {
+         jp.riken.kscope.data.FILE_TYPE type = this.getFileType();
+         if (type == jp.riken.kscope.data.FILE_TYPE.UNKNOWN) return false;
+         if (type == jp.riken.kscope.data.FILE_TYPE.XCODEML_XML) return false;
+         if (type == jp.riken.kscope.data.FILE_TYPE.CLANG) return true;
+
+         return false;
+     }
+
+     /**
+      * ファイルタイプがFortranであるかチェックする.
+      * @return		 true = Fortran
+      */
+     public boolean isFortran() {
+         jp.riken.kscope.data.FILE_TYPE type = this.getFileType();
+         if (type == jp.riken.kscope.data.FILE_TYPE.UNKNOWN) return false;
+         if (type == jp.riken.kscope.data.FILE_TYPE.XCODEML_XML) return false;
+         if (type == jp.riken.kscope.data.FILE_TYPE.CLANG) return false;
+
+
+         return true;
+     }
 }

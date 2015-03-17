@@ -22,8 +22,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * union型クラス。
- *
+ * Fortran:union型クラス。
+ * C言語:unionでは使用しない.
  * @author RIKEN
  *
  */
@@ -52,4 +52,5 @@ public class Union implements Serializable {
     public Set<jp.riken.kscope.language.fortran.Map> getMaps() {
         return maps;
     }
+
 }

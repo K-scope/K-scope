@@ -63,15 +63,22 @@ public interface IVariableType {
      */
     boolean matches(IVariableType value);
 
-	/**
-	 * 実数変数であるかチェックする.
-	 * @return		true=実数
-	 */
-	boolean isRealType();
+    /**
+     * 実数変数であるかチェックする.
+     * @return		true=実数
+     */
+    boolean isRealType();
 
-	/**
-	 * 整数変数であるかチェックする.
-	 * @return		true=整数
-	 */
-	boolean isIntegerType();
+    /**
+     * 整数変数であるかチェックする.
+     * @return		true=整数
+     */
+    boolean isIntegerType();
+
+
+    /**
+     * C言語データ型文字列表現を取得する
+     * @return		C言語データ型文字列表現
+     */
+    String toStringClang();
 }

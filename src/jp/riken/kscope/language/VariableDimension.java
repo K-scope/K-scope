@@ -26,8 +26,8 @@ import java.io.Serializable;
  *
  */
 public class VariableDimension implements Serializable {
-	/** シリアル番号 */
-	private static final long serialVersionUID = 1309109368271186155L;
+    /** シリアル番号 */
+    private static final long serialVersionUID = 1309109368271186155L;
     private DimensionIndex[] indices = null;
 
     /**

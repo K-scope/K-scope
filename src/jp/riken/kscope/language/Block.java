@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Set;
 
 import jp.riken.kscope.data.CodeLine;
+import jp.riken.kscope.data.SourceFile;
 import jp.riken.kscope.information.InformationBlock;
 import jp.riken.kscope.information.InformationBlocks;
 import jp.riken.kscope.information.TextInfo;
@@ -101,7 +102,7 @@ public abstract class Block implements Serializable, IInformation, IBlock {
 //            }
 //        }
         //return (info + this.toStringBase());
-    	return this.get_start_str();
+        return this.get_start_str();
     }
 
     /**
@@ -110,7 +111,7 @@ public abstract class Block implements Serializable, IInformation, IBlock {
      */
     protected String toStringBase() {
         //return this.get_start_str().toLowerCase();
-    	return this.get_start_str();
+        return this.get_start_str();
     }
 
     /**
@@ -404,9 +405,9 @@ public abstract class Block implements Serializable, IInformation, IBlock {
     public String getID() {
         String result = "";
         if (this.mother != null) {
-        	// modify by @hira at 2013/03/01
+            // modify by @hira at 2013/03/01
             // int offset = this.getStartPos() - this.mother.getStartPos();
-        	int offset = this.mother.indexOfChildren(this);
+            int offset = this.mother.indexOfChildren(this);
             result = this.mother.getID() + "$" + offset + ":" + this.toStringBase();
         } else {
             result = this.toStringBase();
@@ -427,161 +428,161 @@ public abstract class Block implements Serializable, IInformation, IBlock {
      * 同一ブロックであるかチェックする.
      * childrenが同じサイズ、同じ文字列であること.
      * @param block		ブロック
-	 * @return		true=一致
+     * @return		true=一致
      */
-	public boolean equalsBlocks(Block block) {
-		if (block == null) return false;
-		if (this.children == null && block.children == null) {
-			return true;
-		}
-		else if (this.children == null) {
-			return false;
-		}
-		else if (this.children != null && block.children != null) {
-			if (this.children.size() != block.children.size()) {
-				return false;
-			}
-		}
-		if (!this.toString().equalsIgnoreCase(block.toString())) {
-			return false;
-		}
+    public boolean equalsBlocks(Block block) {
+        if (block == null) return false;
+        if (this.children == null && block.children == null) {
+            return true;
+        }
+        else if (this.children == null) {
+            return false;
+        }
+        else if (this.children != null && block.children != null) {
+            if (this.children.size() != block.children.size()) {
+                return false;
+            }
+        }
+        if (!this.toString().equalsIgnoreCase(block.toString())) {
+            return false;
+        }
 
-		int count = this.children.size();
-		for (int i=0; i<count; i++) {
-			Block thisChildren = this.children.get(i);
-			Block destChildren = block.get_child(i);
-			if (thisChildren == destChildren) continue;
-			else if (thisChildren == null) {
-				return false;
-			}
-			if (!thisChildren.equalsBlocks(destChildren)) {
-				return false;
-			}
-		}
-		return true;
-	}
+        int count = this.children.size();
+        for (int i=0; i<count; i++) {
+            Block thisChildren = this.children.get(i);
+            Block destChildren = block.get_child(i);
+            if (thisChildren == destChildren) continue;
+            else if (thisChildren == null) {
+                return false;
+            }
+            if (!thisChildren.equalsBlocks(destChildren)) {
+                return false;
+            }
+        }
+        return true;
+    }
 
     /**
      * 子ブロックのインデックスを返す.
      * 存在しない場合は、-1を返す。
      * @param block		ブロック
-	 * @return			インデックス
+     * @return			インデックス
      */
-	protected int indexOfChildren(Block block) {
-		return this.children.indexOf(block);
-	}
+    protected int indexOfChildren(Block block) {
+        return this.children.indexOf(block);
+    }
 
 
-	/**
-	 * 同一ブロックを検索する
-	 * @param block			IInformationブロック
-	 * @return		同一ブロック
-	 */
-	public IInformation[] searchInformationBlocks(IInformation block) {
-		if (!(block instanceof Block)) {
-			return null;
-		}
-		List<IInformation> list = new ArrayList<IInformation>();
-		if (this.equalsBlocks((Block)block)) {
-			list.add(this);
-		}
+    /**
+     * 同一ブロックを検索する
+     * @param block			IInformationブロック
+     * @return		同一ブロック
+     */
+    public IInformation[] searchInformationBlocks(IInformation block) {
+        if (!(block instanceof Block)) {
+            return null;
+        }
+        List<IInformation> list = new ArrayList<IInformation>();
+        if (this.equalsBlocks((Block)block)) {
+            list.add(this);
+        }
 
         ArrayList<Block> blocks = this.getChildren();
         for (Block blockChildren : blocks) {
-        	IInformation[] infos = blockChildren.searchInformationBlocks(block);
-	        if (infos != null) {
-	        	list.addAll(Arrays.asList(infos));
-	        }
+            IInformation[] infos = blockChildren.searchInformationBlocks(block);
+            if (infos != null) {
+                list.addAll(Arrays.asList(infos));
+            }
         }
         if (list.size() <= 0) {
-        	return null;
+            return null;
         }
 
-		return list.toArray(new IInformation[0]);
-	}
+        return list.toArray(new IInformation[0]);
+    }
 
-	/**
-	 * 同一ブロック階層であるかチェックする.
-	 * @param block		チェック対象Block
-	 * @return   true=一致
-	 */
-	public boolean equalsLayout(Block block) {
-		if (block == null) return false;
+    /**
+     * 同一ブロック階層であるかチェックする.
+     * @param block		チェック対象Block
+     * @return   true=一致
+     */
+    public boolean equalsLayout(Block block) {
+        if (block == null) return false;
 
-		String layoutIdThis = this.getLayoutID();
-		String layoutIdBlock = block.getLayoutID();
-		if (layoutIdThis == null) return false;
-		if (!layoutIdThis.equalsIgnoreCase(layoutIdBlock)) {
-			return false;
-		}
+        String layoutIdThis = this.getLayoutID();
+        String layoutIdBlock = block.getLayoutID();
+        if (layoutIdThis == null) return false;
+        if (!layoutIdThis.equalsIgnoreCase(layoutIdBlock)) {
+            return false;
+        }
 
-		if (this.children == null && block.children == null) {
-			return true;
-		}
-		else if (this.children == null) {
-			return false;
-		}
-		else if (block.children == null) {
-			return false;
-		}
+        if (this.children == null && block.children == null) {
+            return true;
+        }
+        else if (this.children == null) {
+            return false;
+        }
+        else if (block.children == null) {
+            return false;
+        }
 
-		int idThis = 0;
-		int idBlock = 0;
-		int countThis = this.children.size();
-		int countBlock = block.children.size();
-		Block thisChildren = null;
-		Block blockChildren = null;
-		while (true) {
-			thisChildren = null;
-			blockChildren = null;
-			if (idThis < countThis) {
-				thisChildren = this.children.get(idThis);
-			}
-			if (idBlock < countBlock) {
-				blockChildren = block.children.get(idBlock);
-			}
+        int idThis = 0;
+        int idBlock = 0;
+        int countThis = this.children.size();
+        int countBlock = block.children.size();
+        Block thisChildren = null;
+        Block blockChildren = null;
+        while (true) {
+            thisChildren = null;
+            blockChildren = null;
+            if (idThis < countThis) {
+                thisChildren = this.children.get(idThis);
+            }
+            if (idBlock < countBlock) {
+                blockChildren = block.children.get(idBlock);
+            }
 
-			if (thisChildren != null) {
-				if (thisChildren.getBlockType() != BlockType.SELECTION
-					&& thisChildren.getBlockType() != BlockType.REPETITION) {
-					idThis++;
-					continue;
-				}
-			}
-			if (blockChildren != null) {
-				if (blockChildren.getBlockType() != BlockType.SELECTION
-					&& blockChildren.getBlockType() != BlockType.REPETITION) {
-					idBlock++;
-					continue;
-				}
-			}
+            if (thisChildren != null) {
+                if (thisChildren.getBlockType() != BlockType.SELECTION
+                    && thisChildren.getBlockType() != BlockType.REPETITION) {
+                    idThis++;
+                    continue;
+                }
+            }
+            if (blockChildren != null) {
+                if (blockChildren.getBlockType() != BlockType.SELECTION
+                    && blockChildren.getBlockType() != BlockType.REPETITION) {
+                    idBlock++;
+                    continue;
+                }
+            }
 
-			if (idThis >= countThis || idBlock >= countBlock) {
-				break;
-			}
-			if (thisChildren == null && blockChildren == null) {
-				break;
-			}
-			else if (thisChildren == null) {
-				idThis++;
-				continue;
-			}
-			else if (blockChildren == null) {
-				idBlock++;
-				continue;
-			}
-			if (!thisChildren.equalsLayout(blockChildren)) {
-				return false;
-			}
-			idThis++;
-			idBlock++;
-		}
+            if (idThis >= countThis || idBlock >= countBlock) {
+                break;
+            }
+            if (thisChildren == null && blockChildren == null) {
+                break;
+            }
+            else if (thisChildren == null) {
+                idThis++;
+                continue;
+            }
+            else if (blockChildren == null) {
+                idBlock++;
+                continue;
+            }
+            if (!thisChildren.equalsLayout(blockChildren)) {
+                return false;
+            }
+            idThis++;
+            idBlock++;
+        }
 
-		if (thisChildren != null || blockChildren != null) {
-			return false;
-		}
-		return true;
-	}
+        if (thisChildren != null || blockChildren != null) {
+            return false;
+        }
+        return true;
+    }
 
 
     /**
@@ -596,26 +597,26 @@ public abstract class Block implements Serializable, IInformation, IBlock {
         BlockType type = this.getBlockType();
         String typeText = null;
         if (type == BlockType.REPETITION) {
-        	typeText = "do";
+            typeText = "do";
         }
         else if (type == BlockType.SELECTION) {
-        	if (this instanceof Selection) {
-        		if (((Selection)this).isSelect()) {
-        			typeText = "select";
-        		}
-        		else if (((Selection)this).isIF()) {
-        			typeText = "if";
-        		}
-        		else if (((Selection)this).isWHERE()) {
-        			typeText = "where";
-        		}
-        	}
+            if (this instanceof Selection) {
+                if (((Selection)this).isSelect()) {
+                    typeText = "select";
+                }
+                else if (((Selection)this).isIF()) {
+                    typeText = "if";
+                }
+                else if (((Selection)this).isWHERE()) {
+                    typeText = "where";
+                }
+            }
         }
         else {
-			typeText = type.name().toLowerCase();
+            typeText = type.name().toLowerCase();
         }
         if (this.mother != null) {
-        	int offset = this.mother.indexOfLayout(this);
+            int offset = this.mother.indexOfLayout(this);
             result = this.mother.getLayoutID() + "$" + offset + ":" + typeText;
         } else {
             result = typeText;
@@ -628,24 +629,24 @@ public abstract class Block implements Serializable, IInformation, IBlock {
      * DO, SELECT, IF文の出現回数とする
      * 存在しない場合は、-1を返す。
      * @param block		ブロック
-	 * @return			インデックス
+     * @return			インデックス
      */
     protected int indexOfLayout(Block block) {
-		int index = -1;
+        int index = -1;
         for (Block child : this.children) {
             BlockType type = child.getBlockType();
             if (type == BlockType.REPETITION) {
-            	index++;
+                index++;
             }
             else if (type == BlockType.SELECTION) {
-            	index++;
+                index++;
             }
             if (child == block) {
-            	return index;
+                return index;
             }
         }
         return -1;
-	}
+    }
 
     /**
      * layoutIDにマッチした構造ブロックを検索する。
@@ -653,7 +654,7 @@ public abstract class Block implements Serializable, IInformation, IBlock {
      * @return 見つかった構造ブロック
      */
     public IInformation findInformationLayoutID(String id) {
-    	if (id == null || id.isEmpty()) return null;
+        if (id == null || id.isEmpty()) return null;
         IInformation result = null;
         String layoutId = this.getLayoutID();
         if (layoutId == null) return null;
@@ -671,64 +672,112 @@ public abstract class Block implements Serializable, IInformation, IBlock {
     }
 
 
-	/**
-	 * 行番号のブロックを検索する
-	 * @param line			行番号
-	 * @return		行番号のブロック
-	 */
-	public IBlock[] searchCodeLine(CodeLine line) {
-		if (line == null) return null;
+    /**
+     * 行番号のブロックを検索する
+     * @param line			行番号
+     * @return		行番号のブロック
+     */
+    public IBlock[] searchCodeLine(CodeLine line) {
+        if (line == null) return null;
 
-		CodeLine thisstart = this.getStartCodeLine();
-		CodeLine thisend = this.getEndCodeLine();
-		Block addblock = null;
-		if ( line.isOverlap(thisstart, thisend) ) {
-			addblock = this;
-		}
-		List<IBlock> list = new ArrayList<IBlock>();
+        CodeLine thisstart = this.getStartCodeLine();
+        CodeLine thisend = this.getEndCodeLine();
+        Block addblock = null;
+        if ( line.isOverlap(thisstart, thisend) ) {
+            addblock = this;
+        }
+        List<IBlock> list = new ArrayList<IBlock>();
         ArrayList<Block> blocks = this.getChildren();
         if (blocks == null || blocks.size() <= 0) {
-        	if (addblock != null) {
-        		list.add(addblock);
-        	}
+            if (addblock != null) {
+                list.add(addblock);
+            }
         }
-		else {
-	        for (Block blockChildren : blocks) {
-	        	IBlock[] childlist = blockChildren.searchCodeLine(line);
-		        if (childlist != null) {
-		        	list.addAll(Arrays.asList(childlist));
-		        }
-	        }
-	        if (list.size() <= 0) {
-	        	if (addblock != null) {
-	        		list.add(addblock);
-	        	}
-	        }
-		}
+        else {
+            for (Block blockChildren : blocks) {
+                IBlock[] childlist = blockChildren.searchCodeLine(line);
+                if (childlist != null) {
+                    list.addAll(Arrays.asList(childlist));
+                }
+            }
+            if (list.size() <= 0) {
+                if (addblock != null) {
+                    list.add(addblock);
+                }
+            }
+        }
 
         if (list.size() <= 0) {
-        	return null;
+            return null;
         }
 
-		return list.toArray(new IBlock[0]);
-	}
+        return list.toArray(new IBlock[0]);
+    }
 
-	/**
-	 * 変数リストを取得する.
-	 */
-	@Override
-	public Set<Variable> getAllVariables() {
-		Set<Variable> list = new HashSet<Variable>();
+    /**
+     * 変数リストを取得する.
+     */
+    @Override
+    public Set<Variable> getAllVariables() {
+        Set<Variable> list = new HashSet<Variable>();
         ArrayList<Block> blocks = this.getChildren();
         for (Block block : blocks) {
-        	Set<Variable> vars = block.getAllVariables();
-	        if (vars != null) {
-	        	list.addAll(vars);
-	        }
+            Set<Variable> vars = block.getAllVariables();
+            if (vars != null) {
+                list.addAll(vars);
+            }
         }
         if (list.size() <= 0) return null;
-		return list;
-	}
+        return list;
+    }
 
+
+    /**
+     * ファイルタイプ（C言語、Fortran)を取得する.
+     * @return		ファイルタイプ（C言語、Fortran)
+     */
+    public jp.riken.kscope.data.FILE_TYPE getFileType() {
+        jp.riken.kscope.data.FILE_TYPE type = jp.riken.kscope.data.FILE_TYPE.UNKNOWN;
+        if (this.mother != null) {
+            type = this.mother.getFileType();
+        }
+        if (type != jp.riken.kscope.data.FILE_TYPE.UNKNOWN) {
+            return type;
+        }
+
+        if (this.start != null) {
+            SourceFile file = start.get_sourcefile();
+            type = file.getFileType();
+        }
+        return type;
+    }
+
+
+    /**
+     * ファイルタイプがC言語であるかチェックする.
+     * @return		 true = C言語
+     */
+    public boolean isClang() {
+        jp.riken.kscope.data.FILE_TYPE type = this.getFileType();
+        if (type == jp.riken.kscope.data.FILE_TYPE.UNKNOWN) return false;
+        if (type == jp.riken.kscope.data.FILE_TYPE.XCODEML_XML) return false;
+        if (type == jp.riken.kscope.data.FILE_TYPE.CLANG) return true;
+
+        return false;
+    }
+
+    /**
+     * ファイルタイプがFortranであるかチェックする.
+     * @return		 true = Fortran
+     */
+    public boolean isFortran() {
+        jp.riken.kscope.data.FILE_TYPE type = this.getFileType();
+        if (type == jp.riken.kscope.data.FILE_TYPE.UNKNOWN) return false;
+        if (type == jp.riken.kscope.data.FILE_TYPE.XCODEML_XML) return false;
+        if (type == jp.riken.kscope.data.FILE_TYPE.CLANG) return false;
+
+
+        return true;
+    }
 
 }

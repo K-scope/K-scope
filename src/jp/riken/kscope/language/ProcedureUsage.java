@@ -32,9 +32,9 @@ import jp.riken.kscope.information.InformationBlocks;
  *
  */
 public class ProcedureUsage extends Block {
-	/** シリアル番号 */
-	private static final long serialVersionUID = 2385929813029019761L;
-	/** サブルーチン、関数呼出名 */
+    /** シリアル番号 */
+    private static final long serialVersionUID = 2385929813029019761L;
+    /** サブルーチン、関数呼出名 */
     private String callName;
     /** サブルーチン、関数定義 */
     private transient Procedure callDefinition;
@@ -111,10 +111,15 @@ public class ProcedureUsage extends Block {
     @Override
     protected String toStringBase() {
         StringBuilder myString = new StringBuilder();
-        String call = "call ";
-        if (this.isFunctionCall) {
-            call = "function call ";
+        String call = "";
+        if (this.isFortran()) {
+            // Fortran表記
+            call = "call ";
+            if (this.isFunctionCall) {
+                call = "function call ";
+            }
         }
+
         myString.append(call + this.callName);
         if (this.arguments != null) {
             myString.append("(");
@@ -134,7 +139,7 @@ public class ProcedureUsage extends Block {
     public void setCallDefinition(Procedure proc) {
         callDefinition = proc;
         if (proc != null) {
-        	proc.addCallMember(this);
+            proc.addCallMember(this);
         }
     }
 
@@ -174,6 +179,14 @@ public class ProcedureUsage extends Block {
             return new ArrayList<Expression>();
         }
         return arguments;
+    }
+
+    /**
+     * 実引数のリストを設定する。
+     * @param    args   実引数のリスト
+     */
+    public void setArguments(List<Expression> args) {
+        this.arguments = args;
     }
 
     /**
@@ -414,81 +427,101 @@ public class ProcedureUsage extends Block {
     /**
      * 同一ブロックであるかチェックする.
      * @param block		ブロック
-	 * @return		true=一致
+     * @return		true=一致
      */
     @Override
-	public boolean equalsBlocks(Block block) {
-		if (block == null) return false;
-		if (!(block instanceof ProcedureUsage)) return false;
-		if (!super.equalsBlocks(block)) return false;
+    public boolean equalsBlocks(Block block) {
+        if (block == null) return false;
+        if (!(block instanceof ProcedureUsage)) return false;
+        if (!super.equalsBlocks(block)) return false;
 
-		String thisname = this.callName;
-		String destname = ((ProcedureUsage)block).callName;
-		if (!thisname.equalsIgnoreCase(destname)) {
-			return false;
-		}
-		if (this.arguments != null && ((ProcedureUsage)block).arguments != null) {
-			if (this.arguments.size() == ((ProcedureUsage)block).arguments.size()) {
-				for (int i=0; i<this.arguments.size(); i++) {
-					Expression thisArg = this.arguments.get(i);
-					Expression destArg = ((ProcedureUsage)block).arguments.get(i);
-					if (thisArg == destArg) {
-						continue;
-					}
-					else if (thisArg == null) {
-						return false;
-					}
-					else if (!thisArg.equalsExpression(destArg)) {
-						return false;
-					}
-				}
-			}
-		}
-		else if (this.arguments != null || ((ProcedureUsage)block).arguments != null) {
-			return false;
-		}
+        String thisname = this.callName;
+        String destname = ((ProcedureUsage)block).callName;
+        if (!thisname.equalsIgnoreCase(destname)) {
+            return false;
+        }
+        if (this.arguments != null && ((ProcedureUsage)block).arguments != null) {
+            if (this.arguments.size() == ((ProcedureUsage)block).arguments.size()) {
+                for (int i=0; i<this.arguments.size(); i++) {
+                    Expression thisArg = this.arguments.get(i);
+                    Expression destArg = ((ProcedureUsage)block).arguments.get(i);
+                    if (thisArg == destArg) {
+                        continue;
+                    }
+                    else if (thisArg == null) {
+                        return false;
+                    }
+                    else if (!thisArg.equalsExpression(destArg)) {
+                        return false;
+                    }
+                }
+            }
+        }
+        else if (this.arguments != null || ((ProcedureUsage)block).arguments != null) {
+            return false;
+        }
 
-		return true;
+        return true;
     }
 
 
-	/**
-	 * 同一ブロックを検索する
-	 * @param block			IInformationブロック
-	 * @return		同一ブロック
-	 */
+    /**
+     * 同一ブロックを検索する
+     * @param block			IInformationブロック
+     * @return		同一ブロック
+     */
     @Override
-	public IInformation[] searchInformationBlocks(IInformation block) {
-		List<IInformation> list = new ArrayList<IInformation>();
-		{
-	    	IInformation[] infos = super.searchInformationBlocks(block);
-	    	if (infos != null) {
-	        	list.addAll(Arrays.asList(infos));
-	        }
-		}
+    public IInformation[] searchInformationBlocks(IInformation block) {
+        List<IInformation> list = new ArrayList<IInformation>();
+        {
+            IInformation[] infos = super.searchInformationBlocks(block);
+            if (infos != null) {
+                list.addAll(Arrays.asList(infos));
+            }
+        }
 
         if (this.callDefinition != null) {
             // 自己参照の場合は外す
             if (!this.getNamespace().equals(this.callDefinition.getNamespace())) {
-    	    	IInformation[] infos = this.callDefinition.searchInformationBlocks(block);
-    	    	if (infos != null) {
-    	        	list.addAll(Arrays.asList(infos));
-    	        }
+                IInformation[] infos = this.callDefinition.searchInformationBlocks(block);
+                if (infos != null) {
+                    list.addAll(Arrays.asList(infos));
+                }
             }
         }
         if (this.arguments != null) {
             for (Expression argument : this.arguments) {
-    	    	IInformation[] infos = argument.searchInformationBlocks(block);
-    	    	if (infos != null) {
-    	        	list.addAll(Arrays.asList(infos));
-    	        }
+                IInformation[] infos = argument.searchInformationBlocks(block);
+                if (infos != null) {
+                    list.addAll(Arrays.asList(infos));
+                }
             }
         }
 
         if (list.size() <= 0) {
-        	return null;
+            return null;
         }
 
-		return list.toArray(new IInformation[0]);
-	}
+        return list.toArray(new IInformation[0]);
+    }
+
+
+    /**
+     * プログラム名、モジュール名、サブルーチン名、関数名が同一であるかチェックする.
+     * ファイルタイプから文字列に一致条件を変更する.
+     *     C言語  : 大文字・小文字を区別する.
+     *     Fortran : 大文字・小文字を区別しない.
+     * @param value		チェックプログラム名、モジュール名、サブルーチン名、関数名
+     * @return		true = 一致
+     */
+    public boolean equalsName(String value) {
+        if (value == null) return false;
+        if (this.callName == null) return false;
+        if (this.isClang()) {
+            return (value.equals(this.callName));
+        }
+        else {
+            return (value.equalsIgnoreCase(this.callName));
+        }
+    }
 }

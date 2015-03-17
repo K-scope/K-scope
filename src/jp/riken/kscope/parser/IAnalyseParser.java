@@ -115,4 +115,11 @@ public interface IAnalyseParser extends PropertyChangeListener {
      * @return		エラー情報リスト
      */
     public ErrorInfo[] getErrorInfos();
+
+
+    /**
+     * ソースファイルの基準フォルダを取得する
+     * @return   ソースファイルの基準フォルダ
+     */
+    public File getBaseFolder();
 }

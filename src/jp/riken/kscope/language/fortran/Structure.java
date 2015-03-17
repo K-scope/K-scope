@@ -20,20 +20,23 @@ package jp.riken.kscope.language.fortran;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import jp.riken.kscope.data.CodeLine;
+import jp.riken.kscope.language.BlockType;
 //import jp.riken.kscope.language.Block;
 import jp.riken.kscope.language.IBlock;
 import jp.riken.kscope.language.Statement;
+import jp.riken.kscope.language.Variable;
 import jp.riken.kscope.language.VariableDefinition;
 
 /**
- * structure型クラス。
- *
+ * structure型クラス.
+ * C言語:構造体、共同体、列挙体を表現する.
  * @author RIKEN
  *
  */
-public class Structure implements Serializable {
+public class Structure implements IBlock, Serializable {
     /** シリアル番号 */
     private static final long serialVersionUID = 6682888216005792092L;
     /** 変数名 */
@@ -46,6 +49,8 @@ public class Structure implements Serializable {
     private Statement end;
     /** 親ブロック */
     private IBlock mother;
+    /** 構造タイプ:STRUCT,UNION,ENUM */
+    private BlockType block_type = BlockType.STRUCT;
 
     /**
      * コンストラクタ。
@@ -55,12 +60,10 @@ public class Structure implements Serializable {
 
     /**
      * コンストラクタ。
-     *
-     * @param nm
-     *         構造体の名前
+     * @param nm        構造体の名前:無名(null,空文字)の場合もある。
      */
     public Structure(String nm) {
-        name = nm;
+        this.name = nm;
     }
 
     /**
@@ -139,7 +142,7 @@ public class Structure implements Serializable {
      * @return 構造体の名前
      */
     public String getName() {
-        return name;
+        return this.name;
     }
 
     /**
@@ -176,6 +179,7 @@ public class Structure implements Serializable {
      */
     public boolean matches(Structure value) {
         if (value == null) { return false; }
+        if (this.name == null) { return false; }
         // 名前のチェックのみ
         return this.name.equalsIgnoreCase(value.getName());
     }
@@ -228,7 +232,65 @@ public class Structure implements Serializable {
      * 親ブロックを取得する
      * @return        親ブロック
      */
+    @Override
     public IBlock getMotherBlock() {
         return this.mother;
     }
+
+
+    @Override
+    public CodeLine getStartCodeLine() {
+        if (this.getStartStatement() == null)
+            return null;
+        return this.getStartStatement().getLineInfo();
+    }
+
+    @Override
+    public CodeLine getEndCodeLine() {
+        if (this.getEndStatement() == null)
+            return null;
+        return this.getEndStatement().getLineInfo();
+    }
+
+    /**
+     * 開始コード行情報を設定する。
+     * @param line	開始コード行情報を設定する。
+     */
+    public void setStartCodeLine(CodeLine line) {
+        this.setStartStatement(line);
+    }
+
+    /**
+     * 終了コード行情報を設定する。
+     * @param line	終了コード行情報を設定する。
+     */
+    public void setEndCodeLine(CodeLine line) {
+        this.setEndStatement(line);
+    }
+
+    /**
+     * ブロックタイプを返す。
+     * @return    構造体タイプ:STRUCT or UNION
+     */
+    @Override
+    public BlockType getBlockType() {
+        return this.block_type;
+    }
+
+    /**
+     * ブロックタイプを設定する.
+     * @param   type    構造体タイプ:STRUCT or UNION
+     */
+    public void setBlockType(BlockType type) {
+        this.block_type = type;
+    }
+
+
+     /**
+      * 変数リストを取得する.
+      */
+     @Override
+     public Set<Variable> getAllVariables() {
+         return null;
+     }
 }

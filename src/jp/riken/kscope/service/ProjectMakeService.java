@@ -50,7 +50,7 @@ import jp.riken.kscope.properties.ProjectProperties;
 import jp.riken.kscope.properties.SSHconnectProperties;
 import jp.riken.kscope.utils.Logger;
 import jp.riken.kscope.utils.SwingUtils;
-import jp.riken.kscope.xcodeml.XcodeMLParserStax;
+import jp.riken.kscope.xcodeml.fortran.XcodeMLParserStax;
 
 
 /**

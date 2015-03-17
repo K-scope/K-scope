@@ -42,9 +42,9 @@ import jp.riken.kscope.language.generic.Procedures;
  *
  */
 public abstract class ProgramUnit implements Serializable, IInformation, IBlock {
-	/** シリアル番号 */
-	private static final long serialVersionUID = -4778301667477615867L;
-	/** プログラム名、モジュール名、サブルーチン名、関数名 */
+    /** シリアル番号 */
+    private static final long serialVersionUID = -4778301667477615867L;
+    /** プログラム名、モジュール名、サブルーチン名、関数名 */
     private String name;
     /** プログラム単位の種類:program, module, subroutine, function */
     private String type;
@@ -128,15 +128,15 @@ public abstract class ProgramUnit implements Serializable, IInformation, IBlock 
      * @return		構造体定義
      */
     public Type getType(String name) {
-    	if (this.typeDefinitions == null) return null;
-    	if (name == null) return null;
+        if (this.typeDefinitions == null) return null;
+        if (name == null) return null;
 
-    	for (Type type : this.typeDefinitions) {
-    		String typename = type.getName();
-    		if (name.equalsIgnoreCase(typename)) {
-    			return type;
-    		}
-    	}
+        for (Type type : this.typeDefinitions) {
+            String typename = type.getName();
+            if (name.equalsIgnoreCase(typename)) {
+                return type;
+            }
+        }
         return null;
     }
 
@@ -223,7 +223,7 @@ public abstract class ProgramUnit implements Serializable, IInformation, IBlock 
 //            }
 //        }
         // return (info + this.toStringBase());
-    	return this.toStringBase();
+        return this.toStringBase();
     }
 
     /**
@@ -897,7 +897,7 @@ public abstract class ProgramUnit implements Serializable, IInformation, IBlock 
      * @return 変数宣言。無ければnullを返す。
      */
     public VariableDefinition getVariableMap(String nm) {
-    	if (nm == null || nm.isEmpty()) return null;
+        if (nm == null || nm.isEmpty()) return null;
         if (this.variableMap == null) {
             this.createVariableMap();
         }
@@ -990,144 +990,144 @@ public abstract class ProgramUnit implements Serializable, IInformation, IBlock 
      * @param unit		検索ProgramUnit
      * @return			true=同一ProgramUnitが存在する
      */
-	public boolean containsChildren(ProgramUnit unit) {
-		if (this == unit) return true;
-		String thisID = this.getID();
-		String unitID = unit.getID();
-		if (thisID.equalsIgnoreCase(unitID)) {
-			return true;
-		}
-		if (this.children == null) return false;
-		boolean result = false;
-		for (String key : this.children.keySet()) {
-			ProgramUnit childrenUnit = this.children.get(key);
-			if (childrenUnit == null) continue;
-			result = childrenUnit.containsChildren(unit);
-			if (result) {
-				return result;
-			}
-		}
-		return result;
-	}
+    public boolean containsChildren(ProgramUnit unit) {
+        if (this == unit) return true;
+        String thisID = this.getID();
+        String unitID = unit.getID();
+        if (thisID.equalsIgnoreCase(unitID)) {
+            return true;
+        }
+        if (this.children == null) return false;
+        boolean result = false;
+        for (String key : this.children.keySet()) {
+            ProgramUnit childrenUnit = this.children.get(key);
+            if (childrenUnit == null) continue;
+            result = childrenUnit.containsChildren(unit);
+            if (result) {
+                return result;
+            }
+        }
+        return result;
+    }
 
-	/**
-	 * 同一ProgramUnitであるかチェックする.
-	 * 副プログラム単位(children)と変数宣言(variables)のみチェックする.
-	 * 付加情報の差替用であるので、createInformationBlocksにて取得ブロックのみチェックする.
-	 * @param unit		モジュール、サブルーチン
-	 * @return		true=一致
-	 */
-	public boolean equalsBlocks(ProgramUnit unit) {
-		if (unit == null) return false;
+    /**
+     * 同一ProgramUnitであるかチェックする.
+     * 副プログラム単位(children)と変数宣言(variables)のみチェックする.
+     * 付加情報の差替用であるので、createInformationBlocksにて取得ブロックのみチェックする.
+     * @param unit		モジュール、サブルーチン
+     * @return		true=一致
+     */
+    public boolean equalsBlocks(ProgramUnit unit) {
+        if (unit == null) return false;
 
-		// モジュール、サブルーチン名
-		if (this.name != null) {
-			if (!this.name.equalsIgnoreCase(unit.name)) {
-				return false;
-			}
-		}
-		// タイプ
-		if (this.type != null) {
-			if (!this.type.equalsIgnoreCase(unit.type)) {
-				return false;
-			}
-		}
-		// 副プログラム
-		if (this.children != null && unit.children != null) {
-			if (this.children.size() != unit.children.size()) {
-				return false;
-			}
-		}
-		else if (!(this.children == null && unit.children == null)) {
-			return false;
-		}
-		if (this.children != null && unit.children != null) {
-			for (String key : this.children.keySet()) {
-				Procedure srcProc = this.children.get(key);
-				Procedure destProc = unit.children.get(key);
-				if (srcProc == null || destProc == null) {
-					return false;
-				}
-				if (!srcProc.equalsBlocks(destProc)) {
-					return false;
-				}
-			}
-		}
-
-
-		// 変数宣言文
-		if (this.variables != null && unit.variables != null) {
-			if (this.variables.size() != unit.variables.size()) {
-				return false;
-			}
-		}
-		else if (!(this.variables == null && unit.variables == null)) {
-			return false;
-		}
-		if (this.variables != null && unit.variables != null) {
-			for (String key : this.variables.keySet()) {
-				VariableDefinition srcVar = this.variables.get(key);
-				VariableDefinition destVar = unit.variables.get(key);
-				if (srcVar == null || destVar == null) {
-					return false;
-				}
-				if (!srcVar.equalsBlocks(destVar)) {
-					return false;
-				}
-			}
-		}
-
-		return true;
-	}
-
-	/**
-	 * 同一ブロックを取得する
-	 * @param block			IInformationブロック
-	 * @return		同一ブロック
-	 */
-	public IInformation findBlock(IInformation block) {
-		if (block == null) return null;
-		String id = block.getID();
-		return this.findInformationBlockBy(id);
-	}
-
-	/**
-	 * 子ブロック、変数宣言が存在するかチェックする.
-	 * @return		true=空モジュール、サブルーチン
-	 */
-	public boolean isEmpty() {
-		if (this.children != null && this.children.size() > 0) {
-			return false;
-		}
-		if (this.variables != null && this.variables.size() > 0) {
-			return false;
-		}
-		return true;
-	}
+        // モジュール、サブルーチン名
+        if (this.name != null) {
+            if (!this.name.equalsIgnoreCase(unit.name)) {
+                return false;
+            }
+        }
+        // タイプ
+        if (this.type != null) {
+            if (!this.type.equalsIgnoreCase(unit.type)) {
+                return false;
+            }
+        }
+        // 副プログラム
+        if (this.children != null && unit.children != null) {
+            if (this.children.size() != unit.children.size()) {
+                return false;
+            }
+        }
+        else if (!(this.children == null && unit.children == null)) {
+            return false;
+        }
+        if (this.children != null && unit.children != null) {
+            for (String key : this.children.keySet()) {
+                Procedure srcProc = this.children.get(key);
+                Procedure destProc = unit.children.get(key);
+                if (srcProc == null || destProc == null) {
+                    return false;
+                }
+                if (!srcProc.equalsBlocks(destProc)) {
+                    return false;
+                }
+            }
+        }
 
 
-	/**
-	 * 同一ブロックを検索する
-	 * @param block			IInformationブロック
-	 * @return		同一ブロック
-	 */
-	public IInformation[] searchInformationBlocks(IInformation block) {
-		if (block == null) return null;
+        // 変数宣言文
+        if (this.variables != null && unit.variables != null) {
+            if (this.variables.size() != unit.variables.size()) {
+                return false;
+            }
+        }
+        else if (!(this.variables == null && unit.variables == null)) {
+            return false;
+        }
+        if (this.variables != null && unit.variables != null) {
+            for (String key : this.variables.keySet()) {
+                VariableDefinition srcVar = this.variables.get(key);
+                VariableDefinition destVar = unit.variables.get(key);
+                if (srcVar == null || destVar == null) {
+                    return false;
+                }
+                if (!srcVar.equalsBlocks(destVar)) {
+                    return false;
+                }
+            }
+        }
 
-		List<IInformation> list = new ArrayList<IInformation>();
-		if (block instanceof ProgramUnit) {
-			if (this.equalsBlocks((ProgramUnit)block)) {
-				list.add(this);
-			}
-		}
+        return true;
+    }
 
-		// 変数宣言文
+    /**
+     * 同一ブロックを取得する
+     * @param block			IInformationブロック
+     * @return		同一ブロック
+     */
+    public IInformation findBlock(IInformation block) {
+        if (block == null) return null;
+        String id = block.getID();
+        return this.findInformationBlockBy(id);
+    }
+
+    /**
+     * 子ブロック、変数宣言が存在するかチェックする.
+     * @return		true=空モジュール、サブルーチン
+     */
+    public boolean isEmpty() {
+        if (this.children != null && this.children.size() > 0) {
+            return false;
+        }
+        if (this.variables != null && this.variables.size() > 0) {
+            return false;
+        }
+        return true;
+    }
+
+
+    /**
+     * 同一ブロックを検索する
+     * @param block			IInformationブロック
+     * @return		同一ブロック
+     */
+    public IInformation[] searchInformationBlocks(IInformation block) {
+        if (block == null) return null;
+
+        List<IInformation> list = new ArrayList<IInformation>();
+        if (block instanceof ProgramUnit) {
+            if (this.equalsBlocks((ProgramUnit)block)) {
+                list.add(this);
+            }
+        }
+
+        // 変数宣言文
         if (this.variables != null) {
             Collection<VariableDefinition> definitions = this.variables.values();
             for (VariableDefinition definition : definitions) {
-            	IInformation[] infos = definition.searchInformationBlocks(block);
+                IInformation[] infos = definition.searchInformationBlocks(block);
                 if (infos != null) {
-                	list.addAll(Arrays.asList(infos));
+                    list.addAll(Arrays.asList(infos));
                 }
             }
         }
@@ -1136,74 +1136,74 @@ public abstract class ProgramUnit implements Serializable, IInformation, IBlock 
         if (this.getChildren() != null) {
             Collection<Procedure> procedures = this.getChildren();
             for (Procedure procedure : procedures) {
-            	IInformation[] infos = procedure.searchInformationBlocks(block);
+                IInformation[] infos = procedure.searchInformationBlocks(block);
                 if (infos != null) {
-                	list.addAll(Arrays.asList(infos));
+                    list.addAll(Arrays.asList(infos));
                 }
             }
         }
         if (list.size() <= 0) {
-        	return null;
+            return null;
         }
 
-		return list.toArray(new IInformation[0]);
-	}
+        return list.toArray(new IInformation[0]);
+    }
 
-	/**
-	 * 同一ブロック階層であるかチェックする.
-	 * @param unit		チェック対象programUnit
-	 * @return   true=一致
-	 */
-	public boolean equalsLayout(ProgramUnit unit) {
-		// モジュール、サブルーチン名
-		if (this.name != null) {
-			if (!this.name.equalsIgnoreCase(unit.name)) {
-				return false;
-			}
-		}
-		// タイプ
-		if (this.type != null) {
-			if (!this.type.equalsIgnoreCase(unit.type)) {
-				return false;
-			}
-		}
+    /**
+     * 同一ブロック階層であるかチェックする.
+     * @param unit		チェック対象programUnit
+     * @return   true=一致
+     */
+    public boolean equalsLayout(ProgramUnit unit) {
+        // モジュール、サブルーチン名
+        if (this.name != null) {
+            if (!this.name.equalsIgnoreCase(unit.name)) {
+                return false;
+            }
+        }
+        // タイプ
+        if (this.type != null) {
+            if (!this.type.equalsIgnoreCase(unit.type)) {
+                return false;
+            }
+        }
 
-		// 副プログラム
-		if (this.children != null && unit.children != null) {
-			if (this.children.size() != unit.children.size()) {
-				return false;
-			}
-		}
-		else if (!(this.children == null && unit.children == null)) {
-			return false;
-		}
-		if (this.children != null && unit.children != null) {
-			for (String key : this.children.keySet()) {
-				Procedure srcProc = this.children.get(key);
-				Procedure destProc = unit.children.get(key);
-				if (srcProc == null || destProc == null) {
-					return false;
-				}
-				if (!srcProc.equalsLayout(destProc)) {
-					return false;
-				}
-			}
-		}
+        // 副プログラム
+        if (this.children != null && unit.children != null) {
+            if (this.children.size() != unit.children.size()) {
+                return false;
+            }
+        }
+        else if (!(this.children == null && unit.children == null)) {
+            return false;
+        }
+        if (this.children != null && unit.children != null) {
+            for (String key : this.children.keySet()) {
+                Procedure srcProc = this.children.get(key);
+                Procedure destProc = unit.children.get(key);
+                if (srcProc == null || destProc == null) {
+                    return false;
+                }
+                if (!srcProc.equalsLayout(destProc)) {
+                    return false;
+                }
+            }
+        }
 
-		// ブロック階層チェックの場合は変数宣言文はチェックしない。
+        // ブロック階層チェックの場合は変数宣言文はチェックしない。
 
-		return true;
-	}
+        return true;
+    }
 
     /**
      * 構造IDを取得する。
      *
      * @return 構造ID
      */
-	@Override
-	public String getLayoutID() {
+    @Override
+    public String getLayoutID() {
         return getID();
-	}
+    }
 
     /**
      * layoutIDにマッチした構造ブロックを検索する。
@@ -1211,7 +1211,7 @@ public abstract class ProgramUnit implements Serializable, IInformation, IBlock 
      * @return 見つかった構造ブロック
      */
     public IInformation findInformationLayoutID(String id) {
-    	if (id == null || id.isEmpty()) return null;
+        if (id == null || id.isEmpty()) return null;
         IInformation result = null;
         if (this.getLayoutID().equalsIgnoreCase(id)) {
             result = this;
@@ -1228,32 +1228,32 @@ public abstract class ProgramUnit implements Serializable, IInformation, IBlock 
         return result;
     }
 
-	/**
-	 * 行番号のブロックを検索する
-	 * @param line			行番号
-	 * @return		行番号のブロック
-	 */
-	public IBlock[] searchCodeLine(CodeLine line) {
-		if (line == null) return null;
+    /**
+     * 行番号のブロックを検索する
+     * @param line			行番号
+     * @return		行番号のブロック
+     */
+    public IBlock[] searchCodeLine(CodeLine line) {
+        if (line == null) return null;
 
-		List<IBlock> list = new ArrayList<IBlock>();
-		CodeLine thisstart = this.getStartCodeLine();
-		CodeLine thisend = this.getEndCodeLine();
-		if ( line.isOverlap(thisstart, thisend) ) {
-			;  // nothing
-		}
-		else {
-			// このブロックが範囲外であるので、子ブロックも範囲外
-        	return null;
-		}
+        List<IBlock> list = new ArrayList<IBlock>();
+        CodeLine thisstart = this.getStartCodeLine();
+        CodeLine thisend = this.getEndCodeLine();
+        if ( line.isOverlap(thisstart, thisend) ) {
+            ;  // nothing
+        }
+        else {
+            // このブロックが範囲外であるので、子ブロックも範囲外
+            return null;
+        }
 
-		// 変数宣言文
+        // 変数宣言文
         if (this.variables != null) {
             Collection<VariableDefinition> definitions = this.variables.values();
             for (VariableDefinition definition : definitions) {
-            	IBlock[] blocks = definition.searchCodeLine(line);
+                IBlock[] blocks = definition.searchCodeLine(line);
                 if (blocks != null) {
-                	list.addAll(Arrays.asList(blocks));
+                    list.addAll(Arrays.asList(blocks));
                 }
             }
         }
@@ -1262,53 +1262,120 @@ public abstract class ProgramUnit implements Serializable, IInformation, IBlock 
         if (this.getChildren() != null) {
             Collection<Procedure> procedures = this.getChildren();
             for (Procedure procedure : procedures) {
-            	IBlock[] blocks = procedure.searchCodeLine(line);
+                IBlock[] blocks = procedure.searchCodeLine(line);
                 if (blocks != null) {
-                	list.addAll(Arrays.asList(blocks));
+                    list.addAll(Arrays.asList(blocks));
                 }
             }
         }
         if (list.size() <= 0) {
-        	return null;
+            return null;
         }
 
-		return list.toArray(new IBlock[0]);
-	}
+        return list.toArray(new IBlock[0]);
+    }
 
- 	/**
- 	 * 変数リストを取得する.
- 	 */
- 	@Override
- 	public Set<Variable> getAllVariables() {
+     /**
+      * 変数リストを取得する.
+      */
+     @Override
+     public Set<Variable> getAllVariables() {
         // サブルーチン
- 		Set<Variable> list = new HashSet<Variable>();
+         Set<Variable> list = new HashSet<Variable>();
         if (this.getChildren() != null) {
             Collection<Procedure> procedures = this.getChildren();
             for (Procedure procedure : procedures) {
-            	Set<Variable> vars = procedure.getAllVariables();
+                Set<Variable> vars = procedure.getAllVariables();
                 if (vars != null) {
-                	list.addAll(vars);
+                    list.addAll(vars);
                 }
             }
         }
         if (list.size() <= 0) return null;
-		return list;
- 	}
+        return list;
+     }
 
 
- 	/**
- 	 * 変数に変数定義をセットする
- 	 */
-	public void setVariableDefinitions() {
-		Set<Variable> vars = getAllVariables();
-		if (vars == null || vars.size() <= 0) return;
-		for (Variable var : vars) {
-			String name = var.getName();
-			VariableDefinition def = getVariableMap(name);
-			if (def != null) {
-				var.setDefinition(def);
-			}
-		}
-	}
+     /**
+      * 変数に変数定義をセットする
+      */
+    public void setVariableDefinitions() {
+        Set<Variable> vars = getAllVariables();
+        if (vars == null || vars.size() <= 0) return;
+        for (Variable var : vars) {
+            String name = var.getName();
+            VariableDefinition def = getVariableMap(name);
+            if (def != null) {
+                var.setDefinition(def);
+            }
+        }
+    }
+
+    /**
+     * ファイルタイプ（C言語、Fortran)を取得する.
+     * @return		ファイルタイプ（C言語、Fortran)
+     */
+    public jp.riken.kscope.data.FILE_TYPE getFileType() {
+        jp.riken.kscope.data.FILE_TYPE type = jp.riken.kscope.data.FILE_TYPE.UNKNOWN;
+        if (this.mother != null) {
+            type = this.mother.getFileType();
+        }
+        if (type != jp.riken.kscope.data.FILE_TYPE.UNKNOWN) {
+            return type;
+        }
+
+        if (start == null) return type;
+        if (start.lineInfo == null) return type;
+        if (start.lineInfo.getSourceFile() == null) return type;
+
+        return this.start.lineInfo.getSourceFile().getFileType();
+    }
+
+
+    /**
+     * ファイルタイプがC言語であるかチェックする.
+     * @return		 true = C言語
+     */
+    public boolean isClang() {
+        jp.riken.kscope.data.FILE_TYPE type = this.getFileType();
+        if (type == jp.riken.kscope.data.FILE_TYPE.UNKNOWN) return false;
+        if (type == jp.riken.kscope.data.FILE_TYPE.XCODEML_XML) return false;
+        if (type == jp.riken.kscope.data.FILE_TYPE.CLANG) return true;
+
+        return false;
+    }
+
+    /**
+     * ファイルタイプがFortranであるかチェックする.
+     * @return		 true = Fortran
+     */
+    public boolean isFortran() {
+        jp.riken.kscope.data.FILE_TYPE type = this.getFileType();
+        if (type == jp.riken.kscope.data.FILE_TYPE.UNKNOWN) return false;
+        if (type == jp.riken.kscope.data.FILE_TYPE.XCODEML_XML) return false;
+        if (type == jp.riken.kscope.data.FILE_TYPE.CLANG) return false;
+
+
+        return true;
+    }
+
+    /**
+     * プログラム名、モジュール名、サブルーチン名、関数名が同一であるかチェックする.
+     * ファイルタイプから文字列に一致条件を変更する.
+     *     C言語  : 大文字・小文字を区別する.
+     *     Fortran : 大文字・小文字を区別しない.
+     * @param value		チェックプログラム名、モジュール名、サブルーチン名、関数名
+     * @return		true = 一致
+     */
+    public boolean equalsName(String value) {
+        if (value == null) return false;
+        if (this.name == null) return false;
+        if (this.isClang()) {
+            return (value.equals(this.name));
+        }
+        else {
+            return (value.equalsIgnoreCase(this.name));
+        }
+    }
 }
 

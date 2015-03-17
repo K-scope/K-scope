@@ -40,10 +40,12 @@ public class VariableAttribute
     public enum ScopeAttribute {
         /** 未指定. */
         NONE,
-        /** public. */
+        /** public/global */
         PUBLIC,
-        /** private. */
+        /** private/local. */
         PRIVATE,
+        /** param:C */
+        PARAM
     }
 
     /**
@@ -56,6 +58,8 @@ public class VariableAttribute
         POINTER,
         /** target. */
         TARGET,
+        /** array : C言語のみ:表示出力は行わない. */
+        ARRAY,
     }
 
     /**
@@ -82,6 +86,36 @@ public class VariableAttribute
         OUT,
         /** 入出力. */
         INOUT,
+    }
+
+    /**
+     * 記憶クラス:sclass属性 : C言語
+     */
+    public enum SclassAttribute {
+        /** 未指定. */
+        NONE,
+        /** 自動変数 */
+        AUTO,
+        /** 引数 */
+        PARAM,
+        /** 外部変数 */
+        EXTERN,
+        /**  extern省略外部変数 */
+        EXTERN_DEF,
+        /** 静的変数 */
+        STATIC,
+        /** レジスタ */
+        REGISTER,
+        /** ラベル */
+        LABEL,
+        /** タグ名 */
+        TAGNAME,
+        /** 構造体メンバ */
+        MOE,
+        /** 別名定義 : typedef */
+        TYPEDEF_NAME,
+        /** GCC拡張ラベル */
+        GCCLABEL,
     }
 
     /** 全属性の情報. */
@@ -127,6 +161,12 @@ public class VariableAttribute
             result = ScopeAttribute.PUBLIC;
         } else if (this.contains("private")) {
             result = ScopeAttribute.PRIVATE;
+        } else if (this.contains("global")) {
+            result = ScopeAttribute.PUBLIC;
+        } else if (this.contains("local")) {
+            result = ScopeAttribute.PRIVATE;
+        } else if (this.contains("param")) {
+            result = ScopeAttribute.PARAM;
         }
         return result;
     }
@@ -311,6 +351,7 @@ public class VariableAttribute
         String result = "";
 
         for (String attrbt : attributes) {
+            if (PointerAttribute.ARRAY.toString().equalsIgnoreCase(attrbt)) continue;
             result = result + ", " + attrbt;
         }
         result = result.trim();
@@ -319,6 +360,45 @@ public class VariableAttribute
         if (result.startsWith(",")) {
             result = result.substring(1);
             result = result.trim();
+        }
+
+        return result;
+    }
+
+    /**
+     * C言語変数の属性を返す.
+     * @return 変数の属性文字列
+     */
+    @Override
+    public String toStringClang() {
+        if (this.attributes == null || this.attributes.size() <= 0) return null;
+        StringBuffer buf = new StringBuffer();
+
+        // sclass
+        SclassAttribute sclass_value = this.getSclass();
+
+        // その他の属性
+        for (String attr : this.attributes) {
+            if (attr == null) continue;
+            if (PointerAttribute.POINTER.toString().equalsIgnoreCase(attr)) continue;
+            if (PointerAttribute.ARRAY.toString().equalsIgnoreCase(attr)) continue;
+            if (attr.equalsIgnoreCase(sclass_value.toString())) continue;
+            buf.append(attr);
+            buf.append(" ");
+        }
+        String result = buf.toString().trim().toLowerCase();
+
+        // sclass
+        String sclass = null;
+        // 外部変数
+        if (sclass_value == SclassAttribute.EXTERN) sclass = sclass_value.toString().toLowerCase();
+        // 静的変数
+        if (sclass_value == SclassAttribute.STATIC) sclass = sclass_value.toString().toLowerCase();
+        // レジスタ
+        if (sclass_value == SclassAttribute.REGISTER) sclass = sclass_value.toString().toLowerCase();
+
+        if (sclass != null) {
+            result = sclass + " " + result;
         }
 
         return result;
@@ -349,7 +429,7 @@ public class VariableAttribute
         String result = "";
         for (String item : attributes) {
             // すべて小文字にして比較する
-            if (item.toLowerCase().contains(keyword.toLowerCase())) {
+            if (item.toLowerCase().equals(keyword.toLowerCase())) {
                 result = item;
                 break;
             }
@@ -394,5 +474,48 @@ public class VariableAttribute
         VariableAttribute target = (VariableAttribute) value;
 
         return (this.getDimensionNum() == target.getDimensionNum());
+    }
+
+
+    /**
+     * 記憶クラス属性(sclass)の取得.
+     * @return 記憶クラス:SclassAttribute
+     */
+    public SclassAttribute getSclass() {
+        SclassAttribute result = SclassAttribute.NONE;
+        for (SclassAttribute sclass : SclassAttribute.values()) {
+            if (this.contains(sclass.name().toLowerCase())) {
+                result = sclass;
+                break;
+            }
+        }
+
+        return result;
+    }
+
+    /**
+     * ポインタと配列との優先順位をチェックする.
+     * true : ポインタ優先  =  (*plist)[10]
+     * false : 配列優先  =  *parray[10]
+     * @return		true : ポインタ優先
+     */
+    public boolean  isPointerArrayPriority() {
+        int pointer = -1;
+        int array = -1;
+        int count = 0;
+        for (String attr : this.attributes) {
+            if (PointerAttribute.POINTER.toString().equalsIgnoreCase(attr)) {
+                pointer = count;
+            }
+            if (PointerAttribute.ARRAY.toString().equalsIgnoreCase(attr)) {
+                array = count;
+            }
+            count++;
+        }
+        if (pointer < 0) return false;
+        if (array < 0) return false;
+        if (array < pointer) return false;
+
+        return true;
     }
 }

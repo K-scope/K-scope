@@ -78,8 +78,14 @@ public enum BlockType implements Serializable {
     VARIABLEDEFINITION,
     /** USE文 */
     USE,
-    /** 構造体 */
+    /** Fortran:構造体 */
     TYPE,
+    /** C:構造体 */
+    STRUCT,
+    /** C:共同体 */
+    UNION,
+    /** C:列挙体 */
+    ENUM,
     /** 不明 */
     UNKNOWN;
 }

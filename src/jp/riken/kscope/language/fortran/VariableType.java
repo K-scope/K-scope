@@ -19,7 +19,10 @@ package jp.riken.kscope.language.fortran;
 
 import java.io.Serializable;
 
+import jp.riken.kscope.language.BlockType;
 import jp.riken.kscope.language.Expression;
+import jp.riken.kscope.language.IVariableAttribute;
+import jp.riken.kscope.utils.StringUtils;
 
 /**
 *
@@ -32,7 +35,7 @@ public class VariableType implements Serializable,
         jp.riken.kscope.language.IVariableType {
 
     /** シリアル番号 */
-	private static final long serialVersionUID = -7257691935972191261L;
+    private static final long serialVersionUID = -7257691935972191261L;
 
     /**
      * 基本データ型を示すenum。
@@ -66,7 +69,55 @@ public class VariableType implements Serializable,
         /** structure型. */
         STRUCTURE("structure"),
         /** union型. */
-        UNION("union");
+        UNION("union"),
+
+        /** C:void型 */
+        CVOID("void"),
+        /** C:char型 */
+        CHAR("char"),
+        /** C:short型 */
+        SHORT("short"),
+        /** C:int型 */
+        INT("int"),
+        /** C:long型 */
+        LONG("long"),
+        /** C:long long型 */
+        LONG_LONG("long long"),
+        /** C:unsigned char型 */
+        UNSIGNED_CHAR("unsigned char"),
+        /** C:unsigned short型 */
+        UNSIGNED_SHORT("unsigned short"),
+        /** C:unsigned int型 */
+        UNSIGNED("unsigned int"),
+        /** C:unsigned long型 */
+        UNSIGNED_LONG("unsigned long"),
+        /** C:unsigned long long型 */
+        UNSIGNED_LONG_LONG("unsigned long long"),
+        /** C:float型 */
+        FLOAT("float"),
+        /** C:double型 */
+        DOUBLE("double"),
+        /** C:long double型 */
+        LONG_DOUBLE("long double"),
+        /** C:bool型 */
+        BOOL("bool"),
+        /** C:wchar_t型 */
+        WCHAR_T("wchar_t"),
+        /** C:float complex型 */
+        FLOAT_COMPLEX("float complex"),
+        /** C:double complex型 */
+        // DOUBLE_COMPLEX("double complex"),
+        /** C:long double complex型 */
+        LONG_DOUBLE_COMPLEX("long double complex"),
+        /** C:float complex型 */
+        FLOAT_IMAGINARY("float complex"),
+        /** C:double complex型 */
+        DOUBLE_IMAGINARY("double complex"),
+        /** C:long double complex型 */
+        LONG_DOUBLE_IMAGINARY("long double complex"),
+        /** C:__builtin_va_list型 */
+        __BUILTIN_VA_ARG("__builtin_va_list")
+        ;
 
         /** データ型名 */
         private String name = "";
@@ -91,18 +142,36 @@ public class VariableType implements Serializable,
         }
 
         /**
-         * 型名からVariableTypeを検索する.
+         * タイプ名からVariableTypeを検索する.
+         * UNSIGNED("unsigned int") = タイプ名(データ型名)
+         * @param typeName          タイプ名
          *
-         * @param typeName
-         *          型名
-         *
-         * @return 型名に対応したVariableType
+         * @return タイプ名に対応したVariableType
          *
          */
-        public static PrimitiveDataType findTypeBy(String typeName) {
+        public static PrimitiveDataType findByTypeName(String typeName) {
             PrimitiveDataType result = PrimitiveDataType.UNKOWN;
             for (PrimitiveDataType type : PrimitiveDataType.values()) {
-                if (type.getName().equalsIgnoreCase(typeName)) {
+                if (type.toString().equalsIgnoreCase(typeName)) {
+                    result = type;
+                    break;
+                }
+            }
+            return result;
+        }
+
+        /**
+         * データ型名からVariableTypeを検索する.
+         * UNSIGNED("unsigned int") = タイプ名(データ型名)
+         * @param dataName          データ型名
+         *
+         * @return データ型名に対応したVariableType
+         *
+         */
+        public static PrimitiveDataType findByDataName(String dataName) {
+            PrimitiveDataType result = PrimitiveDataType.UNKOWN;
+            for (PrimitiveDataType type : PrimitiveDataType.values()) {
+                if (type.getName().equalsIgnoreCase(dataName)) {
                     result = type;
                     break;
                 }
@@ -117,12 +186,14 @@ public class VariableType implements Serializable,
     private Expression kind = null;
     /** LEN属性値 */
     private Expression len = null;
-    /** TYPE文 */
+    /** TYPE文:Fortran構造体  */
     private Type type = null;
-    /** STRUCTURE文 */
+    /** STRUCTURE文:C言語構造体,共同体 */
     private Structure structure = null;
-    /** UNION文 */
+    /** UNION文:Fortranのみ （C言語では未使用） */
     private Union union = null;
+    /** 属性. */
+    private IVariableAttribute attribute;
 
     /**
      * コンストラクタ。
@@ -285,7 +356,7 @@ public class VariableType implements Serializable,
     @Override
     public VariableType findTypeBy(String typeName) {
         VariableType result = new VariableType(PrimitiveDataType.UNKOWN);
-        result.primitiveDataType = PrimitiveDataType.findTypeBy(typeName);
+        result.primitiveDataType = PrimitiveDataType.findByTypeName(typeName);
         return result;
     }
 
@@ -368,32 +439,151 @@ public class VariableType implements Serializable,
         return buf.toString();
     }
 
-	/**
-	 * 実数変数であるかチェックする.
-	 * @return		true=実数
-	 */
     @Override
-	public boolean isRealType() {
-	    if (this.primitiveDataType == null) return false;
-	    if (this.primitiveDataType == PrimitiveDataType.REAL) return true;
-	    if (this.primitiveDataType == PrimitiveDataType.DOUBLE_PRECISION) return true;
-	    if (this.primitiveDataType == PrimitiveDataType.COMPLEX) return true;
-	    if (this.primitiveDataType == PrimitiveDataType.DOUBLE_COMPLEX) return true;
+    public String toStringClang() {
+        StringBuffer buf = new StringBuffer();
+        if (primitiveDataType != null) {
+            if (structure != null) {
+                if (this.primitiveDataType == PrimitiveDataType.STRUCTURE) {
+                    BlockType block_type = structure.getBlockType();
+                    if (block_type == BlockType.STRUCT
+                        || block_type == BlockType.UNION
+                        || block_type == BlockType.ENUM) {
+                        buf.append(block_type.toString().toLowerCase());
+                        buf.append(" ");
+                    }
+                }
+            }
+            if (this.isVoid() && this.isPointer()) {
+                buf.append("void*");
+            }
+            else {
+                buf.append(this.getName());
+            }
+        }
 
-	    return false;
-	}
+        return buf.toString();
+    }
 
-	/**
-	 * 整数変数であるかチェックする.
-	 * @return		true=整数
-	 */
+    public String toStringFull() {
+        StringBuffer buf = new StringBuffer();
+        if (primitiveDataType != null) {
+            if (structure != null) {
+                if (this.primitiveDataType == PrimitiveDataType.STRUCTURE) {
+                    BlockType block_type = structure.getBlockType();
+                    if (block_type == BlockType.STRUCT
+                        || block_type == BlockType.UNION
+                        || block_type == BlockType.ENUM) {
+                        buf.append(block_type.toString().toLowerCase());
+                        buf.append(" ");
+                    }
+                }
+            }
+            if (this.primitiveDataType == PrimitiveDataType.VOID) {
+                buf.append("void");
+            }
+            else {
+                buf.append(this.getName());
+            }
+        }
+
+        // 属性
+        String var_attr = null;
+        if (this.attribute != null) {
+            boolean is_pointer = this.attribute.contains("pointer");
+            var_attr = this.attribute.toStringClang();
+            if (is_pointer) {
+                buf.append("*");
+            }
+        }
+        if (StringUtils.isNullOrEmpty(var_attr)) {
+            return buf.toString();
+        }
+
+        return var_attr + " " + buf.toString();
+    }
+
+    /**
+     * 実数変数であるかチェックする.
+     * @return		true=実数
+     */
     @Override
-	public boolean isIntegerType() {
-	    if (this.primitiveDataType == null) return false;
-	    if (this.primitiveDataType == PrimitiveDataType.INTEGER) return true;
-	    if (this.primitiveDataType == PrimitiveDataType.BYTE) return true;
+    public boolean isRealType() {
+        if (this.primitiveDataType == null) return false;
+        if (this.primitiveDataType == PrimitiveDataType.REAL) return true;
+        if (this.primitiveDataType == PrimitiveDataType.DOUBLE_PRECISION) return true;
+        if (this.primitiveDataType == PrimitiveDataType.COMPLEX) return true;
+        if (this.primitiveDataType == PrimitiveDataType.DOUBLE_COMPLEX) return true;
+        if (this.primitiveDataType == PrimitiveDataType.FLOAT) return true;
+        if (this.primitiveDataType == PrimitiveDataType.DOUBLE) return true;
+        if (this.primitiveDataType == PrimitiveDataType.LONG_DOUBLE) return true;
+        if (this.primitiveDataType == PrimitiveDataType.FLOAT_COMPLEX) return true;
+        if (this.primitiveDataType == PrimitiveDataType.LONG_DOUBLE_COMPLEX) return true;
+        if (this.primitiveDataType == PrimitiveDataType.FLOAT_IMAGINARY) return true;
+        if (this.primitiveDataType == PrimitiveDataType.DOUBLE_IMAGINARY) return true;
+        if (this.primitiveDataType == PrimitiveDataType.LONG_DOUBLE_IMAGINARY) return true;
 
-	    return false;
-	}
+        return false;
+    }
 
+    /**
+     * 整数変数であるかチェックする.
+     * @return		true=整数
+     */
+    @Override
+    public boolean isIntegerType() {
+        if (this.primitiveDataType == null) return false;
+        if (this.primitiveDataType == PrimitiveDataType.INTEGER) return true;
+        if (this.primitiveDataType == PrimitiveDataType.BYTE) return true;
+
+        return false;
+    }
+
+    /**
+     * 属性をセットする。
+     *
+     * @param att
+     *            属性
+     */
+    public void setVariableAttributes(IVariableAttribute att) {
+        attribute = att;
+    }
+
+    /**
+     * 属性を取得する
+     *
+     * @return 属性
+     */
+    public IVariableAttribute getAttribute() {
+        return attribute;
+    }
+
+    /**
+     * ポインタであるかチェックする
+     * @return		true=pointer
+     */
+    public boolean isPointer() {
+        if (this.attribute == null) return false;
+        return this.attribute.contains("pointer");
+    }
+
+    /**
+     * voidデータ型であるかチェックする
+     * @return		true=pointer
+     */
+    public boolean isVoid() {
+        if (this.primitiveDataType == PrimitiveDataType.VOID) return true;
+        if (this.primitiveDataType == PrimitiveDataType.CVOID) return true;
+        return false;
+    }
+
+
+    /**
+     * Functionデータ型であるかチェックする
+     * @return		true=function
+     */
+    public boolean isFunction() {
+        if (this.attribute == null) return false;
+        return this.attribute.contains("function");
+    }
 }

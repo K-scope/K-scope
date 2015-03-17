@@ -78,6 +78,13 @@ public interface IVariableAttribute {
     String toString();
 
     /**
+     * 変数の属性（修飾子）文字列を返す.
+     *
+     * @return 属性（修飾子）文字列
+     */
+    String toStringClang();
+
+    /**
      * 属性が適合しているかどうか。<br>
      *
      * 多重定義されている関数群の中から対応する関数を探索する際に、<br>

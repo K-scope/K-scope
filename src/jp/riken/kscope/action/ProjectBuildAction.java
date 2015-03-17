@@ -38,7 +38,7 @@ import jp.riken.kscope.model.ModuleTreeModel;
 import jp.riken.kscope.service.AppController;
 import jp.riken.kscope.service.FutureService;
 import jp.riken.kscope.service.LanguageService;
-import jp.riken.kscope.xcodeml.XcodeMLParserStax;
+import jp.riken.kscope.xcodeml.fortran.XcodeMLParserStax;
 
 /**
  * 構造解析実行アクション.<br/>
@@ -137,8 +137,6 @@ public class ProjectBuildAction extends ActionBase {
 
         // フォートランデータベース
         Fortran fortran = this.controller.getFortranLanguage();
-        // XMLパーサの作成
-        XcodeMLParserStax xmlParser = new XcodeMLParserStax();
         // ソースツリーモデル
         FileTreeModel fileModel = this.controller.getSourceTreeModel();
         // XMLツリーモデル
@@ -149,7 +147,7 @@ public class ProjectBuildAction extends ActionBase {
         ModuleTreeModel moduleModel = this.controller.getModuleTreeModel();
 
         // 構造解析サービス
-        service = new LanguageService(listXml.toArray(new SourceFile[0]), fortran, xmlParser);
+        service = new LanguageService(listXml.toArray(new SourceFile[0]), fortran);
         // 構造ツリーモデルを設定する
         service.setLanguageTreeModel(languageModel);
         // モジュールツリーモデルを設定する

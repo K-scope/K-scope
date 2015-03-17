@@ -42,8 +42,8 @@ import jp.riken.kscope.language.generic.Procedures;
  * プログラムを表現する抽象クラス
  */
 public abstract class Program implements Serializable {
-	/** シリアル番号 */
-	private static final long serialVersionUID = 6765615822590486646L;
+    /** シリアル番号 */
+    private static final long serialVersionUID = 6765615822590486646L;
     /**
      * モジュールに含まれないProcedureを格納するためのModuleオブジェクトの名前。
      */
@@ -79,10 +79,10 @@ public abstract class Program implements Serializable {
      * @param   modules  モジュール
      */
     public void setModules(Map<String, Module> modules) {
-		this.modules = modules;
-	}
+        this.modules = modules;
+    }
 
-	/**
+    /**
      * main名を返す。
      * @return main名
      */
@@ -162,8 +162,21 @@ public abstract class Program implements Serializable {
      * @param sub_name		プロシージャ名
      * @param args			プロシージャ仮引数
      */
-    protected void init_procedure(String type_name, String sub_name,
-            String[] args) {
+    protected void init_procedure(String type_name, String sub_name, String[] args) {
+        Procedure sub = new Procedure(type_name, sub_name, args);
+        ProgramUnit mama = currentUnit;
+        currentUnit.put_child(sub);
+        currentUnit = currentUnit.get_child(sub_name);
+        currentUnit.set_mother(mama);
+    }
+
+    /**
+     * プロシージャブロックを開始する。
+     * @param type_name		プロシージャ種別
+     * @param sub_name		プロシージャ名
+     * @param args			プロシージャ仮引数
+     */
+    protected void init_procedure(String type_name, String sub_name, Variable[] args) {
         Procedure sub = new Procedure(type_name, sub_name, args);
         ProgramUnit mama = currentUnit;
         currentUnit.put_child(sub);
@@ -552,6 +565,14 @@ public abstract class Program implements Serializable {
      */
     public void setSubstitution(Variable left, Expression right,
             CodeLine lineInfo, String label) {
+
+        // for debug
+        if (left == null || right == null) {
+            String msg = lineInfo.toDetailString();
+            System.err.println(msg);
+            return;
+        }
+
         Block block = this.getCurrentBlock();
         Substitution blk = new Substitution(block);
         if (left.isArrayExpression() || right.isArrayExpression()) {
@@ -873,6 +894,16 @@ public abstract class Program implements Serializable {
         ((Procedure) (this.currentUnit)).setPublic();
     }
 
+    /**
+     * カレントユニットに記憶クラス:sclass属性をセットする。
+     * @param    sclass    記憶クラス:sclass属性
+     */
+    public void setSclassToCurrentUnit(String sclass) {
+        if (!(currentUnit instanceof Procedure))
+            return;
+        ((Procedure) (this.currentUnit)).setSclass(sclass);
+    }
+
     // ----------------------------------------
     /**
      * TYPE宣言を登録する。
@@ -995,7 +1026,7 @@ public abstract class Program implements Serializable {
      * @return プログラム単位のリスト。無ければ空のリストを返す。
      */
     public List<ProgramUnit> getProgramUnits(SourceFile file) {
-    	if (file == null) return null;
+        if (file == null) return null;
         ArrayList<ProgramUnit> units = new ArrayList<ProgramUnit>();
 
         Collection<Module> mods = this.modules.values();
@@ -1087,79 +1118,79 @@ public abstract class Program implements Serializable {
      * シャローコピーを行う.
      * @param program		コピー元データベース
      */
-	public void copyShallow(Program program) {
-	    this.mainName = program.mainName;
-	    this.modules = program.modules;
-	    this.commonMap = program.commonMap;
-	    this.informationBlocks = program.informationBlocks;
-	}
+    public void copyShallow(Program program) {
+        this.mainName = program.mainName;
+        this.modules = program.modules;
+        this.commonMap = program.commonMap;
+        this.informationBlocks = program.informationBlocks;
+    }
 
-	/**
-	 * データベースの現在格納中のProgramUnitを取得する.
-	 * @return		現在格納中のProgramUnit
-	 */
-	public ProgramUnit getCurrentUnit() {
-		return this.currentUnit;
-	}
+    /**
+     * データベースの現在格納中のProgramUnitを取得する.
+     * @return		現在格納中のProgramUnit
+     */
+    public ProgramUnit getCurrentUnit() {
+        return this.currentUnit;
+    }
 
-	/**
-	 * メインプログラムを取得する.
-	 * @return		メインプログラム
-	 */
-	public Procedure getMainProgram() {
-		return getProcedureByName(NO_MODULE, this.mainName);
-	}
+    /**
+     * メインプログラムを取得する.
+     * @return		メインプログラム
+     */
+    public Procedure getMainProgram() {
+        return getProcedureByName(NO_MODULE, this.mainName);
+    }
 
-	/**
-	 * プロシージャを取得する.<br/>
-	 * モジュールは、NO_MODULEから検索する.
-	 * @param procudurename		プロシージャ名
-	 * @return		プロシージャ
-	 */
-	public Procedure getProcedure(String procudurename) {
-		return getProcedureByName(null, procudurename);
-	}
+    /**
+     * プロシージャを取得する.<br/>
+     * モジュールは、NO_MODULEから検索する.
+     * @param procudurename		プロシージャ名
+     * @return		プロシージャ
+     */
+    public Procedure getProcedure(String procudurename) {
+        return getProcedureByName(null, procudurename);
+    }
 
-	/**
-	 * プロシージャを取得する.<br/>
-	 * モジュール名がnullの場合は、NO_MODULEから検索する.
-	 * @param modulename		モジュール名
-	 * @param procudurename		プロシージャ名
-	 * @return		プロシージャ
-	 */
-	public Procedure getProcedureByName(String modulename, String procudurename) {
-		if (procudurename == null) return null;
-		Module module = null;
-		if (modulename == null) {
-			module = this.module(NO_MODULE);
-		}
-		else {
-			module = this.module(modulename);
-		}
-		if (module == null) return null;
-		ProgramUnit proc = module.get_child(procudurename);
-		if (proc instanceof Procedure) {
-			return (Procedure)proc;
-		}
-		return null;
-	}
+    /**
+     * プロシージャを取得する.<br/>
+     * モジュール名がnullの場合は、NO_MODULEから検索する.
+     * @param modulename		モジュール名
+     * @param procudurename		プロシージャ名
+     * @return		プロシージャ
+     */
+    public Procedure getProcedureByName(String modulename, String procudurename) {
+        if (procudurename == null) return null;
+        Module module = null;
+        if (modulename == null) {
+            module = this.module(NO_MODULE);
+        }
+        else {
+            module = this.module(modulename);
+        }
+        if (module == null) return null;
+        ProgramUnit proc = module.get_child(procudurename);
+        if (proc instanceof Procedure) {
+            return (Procedure)proc;
+        }
+        return null;
+    }
 
-	/**
-	 * プロシージャを取得する.<br/>
-	 * 親モジュールがnullの場合は、NO_MODULEから検索する.
-	 * @param parent			親モジュール
-	 * @param procudurename		プロシージャ名
-	 * @return		プロシージャ
-	 */
-	public Procedure getProcedure(ProgramUnit parent, String procudurename) {
-		ProgramUnit parentUnit = parent;
-		if (parentUnit == null) {
-			parentUnit = this.module(NO_MODULE);
-		}
-		ProgramUnit proc = parentUnit.get_child(procudurename);
-		if (proc instanceof Procedure) {
-			return (Procedure)proc;
-		}
-		return null;
-	}
+    /**
+     * プロシージャを取得する.<br/>
+     * 親モジュールがnullの場合は、NO_MODULEから検索する.
+     * @param parent			親モジュール
+     * @param procudurename		プロシージャ名
+     * @return		プロシージャ
+     */
+    public Procedure getProcedure(ProgramUnit parent, String procudurename) {
+        ProgramUnit parentUnit = parent;
+        if (parentUnit == null) {
+            parentUnit = this.module(NO_MODULE);
+        }
+        ProgramUnit proc = parentUnit.get_child(procudurename);
+        if (proc instanceof Procedure) {
+            return (Procedure)proc;
+        }
+        return null;
+    }
 }

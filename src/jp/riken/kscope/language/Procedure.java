@@ -1,6 +1,6 @@
 /*
  * K-scope
- * Copyright 2012-2013 RIKEN, Japan
+ * Copyright 2012-2015 RIKEN, Japan
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,20 +26,22 @@ import java.util.Set;
 
 import jp.riken.kscope.data.CodeLine;
 import jp.riken.kscope.information.InformationBlocks;
+import jp.riken.kscope.language.fortran.VariableAttribute.SclassAttribute;
 import jp.riken.kscope.language.fortran.VariableAttribute.ScopeAttribute;
+import jp.riken.kscope.language.fortran.VariableAttribute;
 import jp.riken.kscope.language.fortran.VariableType;
 import jp.riken.kscope.language.fortran.VariableType.PrimitiveDataType;
 
 /**
  * 手続きを表現するクラス。
  * Fortranにおけるsubroutine,function,entryに対応する。
- *
  * @author RIKEN
- *
+ * @date    2015/03/01   	関数表記(toString)をC言語とFortranにて振分
+ * @date    2015/03/01   	仮引数の変数検索をC言語にて大文字・小文字を区別する様に変更(getNumOfDummyArgument)
  */
 public class Procedure extends ProgramUnit {
-	/** シリアル番号 */
-	private static final long serialVersionUID = -6409164910117026406L;
+    /** シリアル番号 */
+    private static final long serialVersionUID = -6409164910117026406L;
     /** 仮引数. */
     private Variable[] arguments;
     /**
@@ -62,8 +64,8 @@ public class Procedure extends ProgramUnit {
      * 手続きの実行文を表現するメンバー変数。
      */
     private ExecutableBody body = new ExecutableBody(this);
-    /** scope属性：private, public */
-    private ScopeAttribute scope = ScopeAttribute.NONE;
+    /** 属性:scope属性,sclass属性. */
+    private IVariableAttribute attribute;
 
     /**
      * @return returnValueType
@@ -114,14 +116,16 @@ public class Procedure extends ProgramUnit {
      * Public属性をセットする。
      */
     public void setPublic() {
-        scope = ScopeAttribute.PUBLIC;
+        VariableAttribute attr = (VariableAttribute) this.attribute;
+        attr.addAttribute("public");
     }
 
     /**
      * Private属性をセットする。
      */
     public void setPrivate() {
-        scope = ScopeAttribute.PRIVATE;
+        VariableAttribute attr = (VariableAttribute) this.attribute;
+        attr.addAttribute("private");
     }
     /**
      * ブロックタイプの取得。
@@ -133,8 +137,63 @@ public class Procedure extends ProgramUnit {
         return BlockType.PROCEDURE;
     }
 
+    /**
+     * 関数の文字列表現を取得する.
+     */
     @Override
     protected String toStringBase() {
+        if (this.isClang()) {
+            // C言語
+            return this.toStringClang();
+        }
+        else {
+            // Fortran
+            return this.toStringFortran();
+        }
+    }
+
+    /**
+     * C言語関数の文字列表現を取得する.
+     */
+    private String toStringClang() {
+        StringBuffer buf = new StringBuffer();
+        IVariableType func_type = this.getReturnValueType();
+        if (func_type != null) {
+            buf.append(func_type.toString());
+        }
+        else {
+            buf.append("void");
+        }
+        buf.append(" ");
+        buf.append(this.get_name());
+
+        buf.append("(");
+        if (arguments != null && arguments.length > 0) {
+            int count = 0;
+            for (Variable var : this.arguments) {
+                if (count > 0) {
+                    buf.append(", ");
+                }
+                VariableDefinition def = var.getDefinition();
+                if (def != null) {
+                    buf.append(def.toStringClang());
+                }
+                else if (var != null) {
+                    buf.append(var.toString());
+                }
+                count++;
+            }
+
+        }
+        buf.append(")");
+
+        return buf.toString();
+    }
+
+    /**
+     * Fortran関数の文字列表現を取得する.
+     */
+    private String toStringFortran() {
         return (this.get_type() + " " + this.get_name());
     }
 
@@ -168,6 +227,19 @@ public class Procedure extends ProgramUnit {
         for (int i = 0; i < arguments.length; i++) {
             arguments[i] = new Variable(args[i]);
         }
+    }
+
+    /**
+     * コンストラクタ。
+     *
+     * @param type_name      手続の種類
+     * @param sub_name		手続の名前
+     * @param args			仮引数の配列
+     */
+    public Procedure(String type_name, String sub_name, Variable[] args) {
+        super(type_name, sub_name);
+        arguments = new Variable[args.length];
+        arguments = args;
     }
 
     // ++++++++++++++++++++++++++++++++++++++++++++
@@ -585,7 +657,9 @@ public class Procedure extends ProgramUnit {
      * @return		scope属性
      */
     public ScopeAttribute getScope() {
-        return this.scope;
+        if (this.attribute == null) return null;
+        VariableAttribute attr = (VariableAttribute) this.attribute;
+        return attr.getScope();
     }
 
     /**
@@ -597,8 +671,17 @@ public class Procedure extends ProgramUnit {
         Variable[] args = this.arguments;
         if (args != null) {
             for (int i = 0;i < args.length;i++) {
-                if (args[i].getName().equalsIgnoreCase(dummyArg)) {
-                    return i;
+                if (this.isClang()) {
+                    // C言語
+                    if (args[i].getName().equals(dummyArg)) {
+                        return i;
+                    }
+                }
+                else {
+                    // Fortran
+                    if (args[i].getName().equalsIgnoreCase(dummyArg)) {
+                        return i;
+                    }
                 }
             }
         }
@@ -648,90 +731,90 @@ public class Procedure extends ProgramUnit {
         return informationBlocks;
     }
 
-	/**
-	 * 同一Procedureであるかチェックする.
-	 * 引数についてはチェックしない。
-	 * @param proc		subroutine, function
-	 * @return		true=一致
-	 */
-	public boolean equalsBlocks(Procedure proc) {
-		if (proc == null) return false;
+    /**
+     * 同一Procedureであるかチェックする.
+     * 引数についてはチェックしない。
+     * @param proc		subroutine, function
+     * @return		true=一致
+     */
+    public boolean equalsBlocks(Procedure proc) {
+        if (proc == null) return false;
 
-		if (!super.equalsBlocks(proc)) {
-			return false;
-		}
+        if (!super.equalsBlocks(proc)) {
+            return false;
+        }
 
-		if (this.getBody() == null && proc.getBody() == null) {
-			return true;
-		}
-		else if (this.getBody() == null) {
-			return false;
-		}
+        if (this.getBody() == null && proc.getBody() == null) {
+            return true;
+        }
+        else if (this.getBody() == null) {
+            return false;
+        }
 
-		if (!this.getBody().equalsBlocks(proc.getBody())) {
-			return false;
-		}
+        if (!this.getBody().equalsBlocks(proc.getBody())) {
+            return false;
+        }
 
-		return true;
-	}
+        return true;
+    }
 
-	/**
-	 * 同一ブロックを検索する
-	 * @param block			IInformationブロック
-	 * @return		同一ブロック
-	 */
+    /**
+     * 同一ブロックを検索する
+     * @param block			IInformationブロック
+     * @return		同一ブロック
+     */
     @Override
-	public IInformation[] searchInformationBlocks(IInformation block) {
-		List<IInformation> list = new ArrayList<IInformation>();
+    public IInformation[] searchInformationBlocks(IInformation block) {
+        List<IInformation> list = new ArrayList<IInformation>();
 
-		// 変数宣言文、副プログラム
-		{
-	        IInformation[] infos = super.searchInformationBlocks(block);
-	        if (infos != null) {
-	        	list.addAll(Arrays.asList(infos));
-	        }
-		}
+        // 変数宣言文、副プログラム
+        {
+            IInformation[] infos = super.searchInformationBlocks(block);
+            if (infos != null) {
+                list.addAll(Arrays.asList(infos));
+            }
+        }
         if (this.body != null) {
-        	IInformation[] infos = body.searchInformationBlocks(block);
-	        if (infos != null) {
-	        	list.addAll(Arrays.asList(infos));
-	        }
+            IInformation[] infos = body.searchInformationBlocks(block);
+            if (infos != null) {
+                list.addAll(Arrays.asList(infos));
+            }
         }
         if (list.size() <= 0) {
-        	return null;
+            return null;
         }
 
-		return list.toArray(new IInformation[0]);
-	}
+        return list.toArray(new IInformation[0]);
+    }
 
 
-	/**
-	 * 同一ブロック階層であるかチェックする.
-	 * @param proc		チェック対象Procedure
-	 * @return   true=一致
-	 */
+    /**
+     * 同一ブロック階層であるかチェックする.
+     * @param proc		チェック対象Procedure
+     * @return   true=一致
+     */
     @Override
-	public boolean equalsLayout(ProgramUnit proc) {
-		if (proc == null) return false;
-		if (!(proc instanceof Procedure)) return false;
+    public boolean equalsLayout(ProgramUnit proc) {
+        if (proc == null) return false;
+        if (!(proc instanceof Procedure)) return false;
 
-		if (!super.equalsLayout(proc)) {
-			return false;
-		}
+        if (!super.equalsLayout(proc)) {
+            return false;
+        }
 
-		if (this.getBody() == null && ((Procedure)proc).getBody() == null) {
-			return true;
-		}
-		else if (this.getBody() == null) {
-			return false;
-		}
+        if (this.getBody() == null && ((Procedure)proc).getBody() == null) {
+            return true;
+        }
+        else if (this.getBody() == null) {
+            return false;
+        }
 
-		if (!this.getBody().equalsLayout(((Procedure)proc).getBody())) {
-			return false;
-		}
+        if (!this.getBody().equalsLayout(((Procedure)proc).getBody())) {
+            return false;
+        }
 
-		return true;
-	}
+        return true;
+    }
 
     /**
      * layoutIDにマッチした構造ブロックを検索する。
@@ -740,7 +823,7 @@ public class Procedure extends ProgramUnit {
      */
     @Override
     public IInformation findInformationLayoutID(String id) {
-    	if (id == null || id.isEmpty()) return null;
+        if (id == null || id.isEmpty()) return null;
         IInformation infoBlock = super.findInformationLayoutID(id);
         if (infoBlock == null) {
             infoBlock = body.findInformationLayoutID(id);
@@ -749,97 +832,116 @@ public class Procedure extends ProgramUnit {
         return infoBlock;
     }
 
-	/**
-	 * 行番号のブロックを検索する
-	 * @param line			行番号
-	 * @return		行番号のブロック
-	 */
+    /**
+     * 行番号のブロックを検索する
+     * @param line			行番号
+     * @return		行番号のブロック
+     */
     @Override
-	public IBlock[] searchCodeLine(CodeLine line) {
-		if (line == null) return null;
+    public IBlock[] searchCodeLine(CodeLine line) {
+        if (line == null) return null;
 
-		List<IBlock> list = new ArrayList<IBlock>();
-		IBlock addblock = null;
-		CodeLine thisstart = this.getStartCodeLine();
-		CodeLine thisend = this.getEndCodeLine();
-		if ( line.isOverlap(thisstart, thisend) ) {
-			addblock = this;
-		}
-		// 変数宣言文、副プログラム
-		{
-			IBlock[] blocks = super.searchCodeLine(line);
-	        if (blocks != null) {
-	        	list.addAll(Arrays.asList(blocks));
-	        }
-		}
+        List<IBlock> list = new ArrayList<IBlock>();
+        IBlock addblock = null;
+        CodeLine thisstart = this.getStartCodeLine();
+        CodeLine thisend = this.getEndCodeLine();
+        if ( line.isOverlap(thisstart, thisend) ) {
+            addblock = this;
+        }
+        // 変数宣言文、副プログラム
+        {
+            IBlock[] blocks = super.searchCodeLine(line);
+            if (blocks != null) {
+                list.addAll(Arrays.asList(blocks));
+            }
+        }
         if (this.body != null) {
-        	IBlock[] blocks = body.searchCodeLine(line);
-	        if (blocks != null) {
-	        	list.addAll(Arrays.asList(blocks));
-	        }
+            IBlock[] blocks = body.searchCodeLine(line);
+            if (blocks != null) {
+                list.addAll(Arrays.asList(blocks));
+            }
         }
         if (list.size() <= 0) {
-        	if (addblock != null) {
-        		list.add(addblock);
-        	}
-        	else {
-        		return null;
-        	}
+            if (addblock != null) {
+                list.add(addblock);
+            }
+            else {
+                return null;
+            }
         }
 
-		return list.toArray(new IBlock[0]);
-	}
+        return list.toArray(new IBlock[0]);
+    }
 
- 	/**
- 	 * 変数リストを取得する.
- 	 */
- 	@Override
- 	public Set<Variable> getAllVariables() {
- 		Set<Variable> list = new HashSet<Variable>();
-		// 変数宣言文、副プログラム
-		{
-			Set<Variable> vars = super.getAllVariables();
-	        if (vars != null) {
-	        	list.addAll(vars);
-	        }
-		}
+     /**
+      * 変数リストを取得する.
+      */
+     @Override
+     public Set<Variable> getAllVariables() {
+         Set<Variable> list = new HashSet<Variable>();
+        // 変数宣言文、副プログラム
+        {
+            Set<Variable> vars = super.getAllVariables();
+            if (vars != null) {
+                list.addAll(vars);
+            }
+        }
         if (this.body != null) {
-        	Set<Variable> vars = body.getAllVariables();
-	        if (vars != null) {
-	        	list.addAll(vars);
-	        }
+            Set<Variable> vars = body.getAllVariables();
+            if (vars != null) {
+                list.addAll(vars);
+            }
         }
         if (list.size() <= 0) return null;
-		return list;
- 	}
+        return list;
+     }
 
- 	/**
- 	 * program文であるかチェックする.
- 	 * @return    true=program文
- 	 */
- 	public boolean isProgram() {
- 		if (this.get_type() == null) return false;
- 		if (this.get_type().equalsIgnoreCase("program")) return true;
- 		return false;
- 	}
+     /**
+      * program文であるかチェックする.
+      * @return    true=program文
+      */
+     public boolean isProgram() {
+         if (this.get_type() == null) return false;
+         if (this.get_type().equalsIgnoreCase("program")) return true;
+         return false;
+     }
 
- 	/**
- 	 * subroutine文であるかチェックする.
- 	 * @return    true=subroutine文
- 	 */
- 	public boolean isSubroutine() {
- 		if (this.get_type() == null) return false;
- 		if (this.get_type().equalsIgnoreCase("subroutine")) return true;
- 		return false;
- 	}
+     /**
+      * subroutine文であるかチェックする.
+      * @return    true=subroutine文
+      */
+     public boolean isSubroutine() {
+         if (this.get_type() == null) return false;
+         if (this.get_type().equalsIgnoreCase("subroutine")) return true;
+         return false;
+     }
 
- 	/**
- 	 * function文であるかチェックする.
- 	 * @return    true=function文
- 	 */
- 	public boolean isFunction() {
- 		if (this.get_type() == null) return false;
- 		if (this.get_type().equalsIgnoreCase("function")) return true;
- 		return false;
- 	}
+     /**
+      * function文であるかチェックする.
+      * @return    true=function文
+      */
+     public boolean isFunction() {
+         if (this.get_type() == null) return false;
+         if (this.get_type().equalsIgnoreCase("function")) return true;
+         return false;
+     }
+
+     /**
+      * 記憶クラスを設定する.
+      * @param sclass		記憶クラス
+      */
+     public void setSclass(String sclass) {
+         VariableAttribute attr = (VariableAttribute) this.attribute;
+         attr.addAttribute(sclass);
+     }
+
+     /**
+      * 記憶クラスを取得する.
+      * @return   記憶クラス : sclass
+      */
+     public SclassAttribute getSclass() {
+         VariableAttribute attr = (VariableAttribute) this.attribute;
+         return attr.getSclass();
+
+     }
 }

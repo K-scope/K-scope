@@ -100,12 +100,24 @@ public class Expression implements Serializable {
     public void setVariables(List<Variable> vars) {
         this.variables = vars;
     }
+
     /**
      * 式に現れる変数を追加する。
      * @param var 変数
      */
     public void addVariable(Variable var) {
         variables.add(var);
+    }
+
+    /**
+     * 式に現れる変数を追加する。
+     * @param var 変数
+     */
+    public void addVariables(List<Variable> vars) {
+        if (vars == null) return;
+        if (vars.size() <= 0) return;
+
+        variables.addAll(vars);
     }
 
     /**
@@ -146,7 +158,7 @@ public class Expression implements Serializable {
     public Set<ProcedureUsage> getAllFunctions() {
         Set<ProcedureUsage> pus = new HashSet<ProcedureUsage>();
         for (Variable var: this.variables) {
-        	Set<ProcedureUsage> list = var.getAllFunctions();
+            Set<ProcedureUsage> list = var.getAllFunctions();
             if (list != null && list.size() > 0) {
                 pus.addAll(list);
             }
@@ -375,80 +387,80 @@ public class Expression implements Serializable {
      * @param destExp		式
      * @return			true=同一
      */
-	public boolean equalsExpression(Expression destExp) {
-		if (destExp == null) return false;
-		String thisLine = this.getLine();
-		String destLine = destExp.getLine();
-		if (thisLine == destLine) {
-			return true;
-		}
-		else if (thisLine == null) {
-			return false;
-		}
-		else if (!thisLine.equalsIgnoreCase(destLine)) {
-			return false;
-		}
-		return true;
-	}
+    public boolean equalsExpression(Expression destExp) {
+        if (destExp == null) return false;
+        String thisLine = this.getLine();
+        String destLine = destExp.getLine();
+        if (thisLine == destLine) {
+            return true;
+        }
+        else if (thisLine == null) {
+            return false;
+        }
+        else if (!thisLine.equalsIgnoreCase(destLine)) {
+            return false;
+        }
+        return true;
+    }
 
 
-	/**
-	 * 同一ブロックを検索する
-	 * @param block			IInformationブロック
-	 * @return		同一ブロック
-	 */
-	public IInformation[] searchInformationBlocks(IInformation block) {
+    /**
+     * 同一ブロックを検索する
+     * @param block			IInformationブロック
+     * @return		同一ブロック
+     */
+    public IInformation[] searchInformationBlocks(IInformation block) {
 
-		List<IInformation> list = new ArrayList<IInformation>();
+        List<IInformation> list = new ArrayList<IInformation>();
         if (this.funcCalls != null) {
             for (ProcedureUsage call : this.funcCalls) {
-            	IInformation[] infos = call.searchInformationBlocks(block);
-            	if (infos != null) {
-    	        	list.addAll(Arrays.asList(infos));
-    	        }
+                IInformation[] infos = call.searchInformationBlocks(block);
+                if (infos != null) {
+                    list.addAll(Arrays.asList(infos));
+                }
             }
         }
         if (list.size() <= 0) {
-        	return null;
+            return null;
         }
 
-		return list.toArray(new IInformation[0]);
-	}
+        return list.toArray(new IInformation[0]);
+    }
 
 
-	/**
-	 * 親ブロックを取得する.
-	 * 親ブロックは変数が属する代入文(Substitution),構文とする.
-	 * @return 親ブロック
-	 */
-	public IBlock getParentStatement() {
-		return parentStatement;
-	}
+    /**
+     * 親ブロックを取得する.
+     * 親ブロックは変数が属する代入文(Substitution),構文とする.
+     * @return 親ブロック
+     */
+    public IBlock getParentStatement() {
+        return parentStatement;
+    }
 
-	/**
-	 * 親ブロックを設定する.
-	 * 親ブロックは変数が属する代入文(Substitution),構文とする.
-	 * @param parent 親ブロック
-	 */
-	public void setParentStatement(IBlock parent) {
-		this.parentStatement = parent;
-		// 子変数に対して設定する
-		if (this.variables != null) {
-			for (Variable var : this.variables) {
-				if (var == null) continue;
-				var.setParentStatement(parent);
-			}
-		}
-		if (this.funcCalls != null) {
-			for (ProcedureUsage call : this.funcCalls) {
-				if (call == null) continue;
+    /**
+     * 親ブロックを設定する.
+     * 親ブロックは変数が属する代入文(Substitution),構文とする.
+     * @param parent 親ブロック
+     */
+    public void setParentStatement(IBlock parent) {
+        this.parentStatement = parent;
+        // 子変数に対して設定する
+        if (this.variables != null) {
+            for (Variable var : this.variables) {
+                if (var == null) continue;
+                var.setParentStatement(parent);
+            }
+        }
+        if (this.funcCalls != null) {
+            for (ProcedureUsage call : this.funcCalls) {
+                if (call == null) continue;
                 List<Expression> args = call.getArguments();
                 for (Expression arg : args) {
-                	arg.setParentStatement(parent);
+                    arg.setParentStatement(parent);
                 }
-			}
-		}
-	}
+            }
+        }
+    }
 
 
     /**
@@ -457,18 +469,18 @@ public class Expression implements Serializable {
      * @return 加算カウント
      */
     public int getOperandAddCount() {
-    	int count = this.addCount;
-    	if (this.variables != null) {
-	        for (Variable var: this.variables) {
-	        	count += var.getOperandAddCount();
-	        }
-    	}
+        int count = this.addCount;
+        if (this.variables != null) {
+            for (Variable var: this.variables) {
+                count += var.getOperandAddCount();
+            }
+        }
         List<ProcedureUsage> calls = this.funcCalls;
         if (calls != null) {
             for (ProcedureUsage call : calls) {
                 List<Expression> args = call.getArguments();
                 for (Expression arg : args) {
-                	count += arg.getOperandAddCount();
+                    count += arg.getOperandAddCount();
                 }
             }
         }
@@ -480,18 +492,18 @@ public class Expression implements Serializable {
      * @return 減算カウント
      */
     public int getOperandSubCount() {
-    	int count = this.subCount;
-    	if (this.variables != null) {
-	        for (Variable var: this.variables) {
-	        	count += var.getOperandSubCount();
-	        }
-    	}
+        int count = this.subCount;
+        if (this.variables != null) {
+            for (Variable var: this.variables) {
+                count += var.getOperandSubCount();
+            }
+        }
         List<ProcedureUsage> calls = this.funcCalls;
         if (calls != null) {
             for (ProcedureUsage call : calls) {
                 List<Expression> args = call.getArguments();
                 for (Expression arg : args) {
-                	count += arg.getOperandSubCount();
+                    count += arg.getOperandSubCount();
                 }
             }
         }
@@ -503,18 +515,18 @@ public class Expression implements Serializable {
      * @return 乗算カウント
      */
     public int getOperandMulCount() {
-    	int count = this.mulCount;
-    	if (this.variables != null) {
-	        for (Variable var: this.variables) {
-	        	count += var.getOperandMulCount();
-	        }
-    	}
+        int count = this.mulCount;
+        if (this.variables != null) {
+            for (Variable var: this.variables) {
+                count += var.getOperandMulCount();
+            }
+        }
         List<ProcedureUsage> calls = this.funcCalls;
         if (calls != null) {
             for (ProcedureUsage call : calls) {
                 List<Expression> args = call.getArguments();
                 for (Expression arg : args) {
-                	count += arg.getOperandMulCount();
+                    count += arg.getOperandMulCount();
                 }
             }
         }
@@ -527,18 +539,18 @@ public class Expression implements Serializable {
      * @return 除算カウント
      */
     public int getOperandDivCount() {
-    	int count = this.divCount;
-    	if (this.variables != null) {
-	        for (Variable var: this.variables) {
-	        	count += var.getOperandDivCount();
-	        }
-    	}
+        int count = this.divCount;
+        if (this.variables != null) {
+            for (Variable var: this.variables) {
+                count += var.getOperandDivCount();
+            }
+        }
         List<ProcedureUsage> calls = this.funcCalls;
         if (calls != null) {
             for (ProcedureUsage call : calls) {
                 List<Expression> args = call.getArguments();
                 for (Expression arg : args) {
-                	count += arg.getOperandDivCount();
+                    count += arg.getOperandDivCount();
                 }
             }
         }
@@ -551,18 +563,18 @@ public class Expression implements Serializable {
      * @return 累算カウント
      */
     public int getOperandPowCount() {
-    	int count = this.powCount;
-    	if (this.variables != null) {
-	        for (Variable var: this.variables) {
-	        	count += var.getOperandPowCount();
-	        }
-    	}
+        int count = this.powCount;
+        if (this.variables != null) {
+            for (Variable var: this.variables) {
+                count += var.getOperandPowCount();
+            }
+        }
         List<ProcedureUsage> calls = this.funcCalls;
         if (calls != null) {
             for (ProcedureUsage call : calls) {
                 List<Expression> args = call.getArguments();
                 for (Expression arg : args) {
-                	count += arg.getOperandPowCount();
+                    count += arg.getOperandPowCount();
                 }
             }
         }
