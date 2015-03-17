@@ -268,7 +268,8 @@ public class FileProjectNewAction extends ActionBase {
             // Set PRJ_TITLE property of ProjectProperties to value from txtProjectTitle TextField
             this.controller.getPropertiesProject().setProjectTitle(dialog.getPeojectTitle());
 
-            if (this.debug) {                
+            if (this.debug) {            
+            	// TODO: check why rb_properties.getRemoteService() is null
                 System.out.println("Calling execMake build_command="+build_command+". Use remote service "+rb_properties.getRemoteService());
             }
 
@@ -372,7 +373,6 @@ public class FileProjectNewAction extends ActionBase {
                         		filter = FILE_TYPE.FORTRANLANG;
                         		treeModel = controller.getSourceTreeModel();
                         	}
-                        	/* TODO: Do we need to define array size to 0: new File[0] below? */
                         	SourceFile [] srcs = projectService.getSourceFiles(sourceFiles.toArray(new File[sourceFiles.size()]), filter, true);
                         	boolean debug=false;
                         	if (debug) {

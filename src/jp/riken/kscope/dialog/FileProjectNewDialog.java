@@ -1190,7 +1190,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
             	
             	String settings_file = (String)this.settings_list.getSelectedItem();
             	String remote_service = RemoteBuildProperties.getRemoteService(settings_file);
-            	System.out.println("Remote service is "+remote_service);
+            	// System.out.println("Remote service is "+remote_service);
             	if (remote_service.equalsIgnoreCase("sshconnect")) {
                 	//ProjectSettingDockerAction docker_action = new ProjectSettingDockerAction(this.controller);
                     //docker_action.openDialog(this.frame, Message.getString("projectsettingsshconnect.setup.need_parameters"));
@@ -1569,7 +1569,8 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
             if (this.wizardIndex == this.panelWizards.length - 1) {        
             	String settings_file = (String)this.settings_list.getSelectedItem();
             	String remote_service = RemoteBuildProperties.getRemoteService(settings_file);
-            	System.out.println("Remote service is "+remote_service);
+            	this.rb_properties.setSettingsFile(settings_file);
+            	System.out.println("Remote service is set to "+remote_service);
             	if (remote_service.equalsIgnoreCase("sshconnect")) {
 	            	// Save File filter and Preprocess files fields to RemoteBuildProperties
 	            	if (this.txt_preprocess_files.getText().length() > 0) {

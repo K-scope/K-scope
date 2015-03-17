@@ -344,7 +344,7 @@ public class ProjectMakeService  extends BaseService {
         String RS = RemoteBuildProperties.getRemoteService(rb_properties.getPropertySet(RemoteBuildProperties.SETTINGS_FILE).getValue());
         System.out.println("Remote service "+ RS);
         if (useServer(pproperties, rb_properties)) {
-        	if (RS.equalsIgnoreCase("makeremote")) {
+        	if (RS.equalsIgnoreCase("dockeriaas")) {
 	        	// inject remote build command
 	        	String[] diaas_cl = rb_properties.getCommandLineOptions(RS);
 	        	int formal_commands = 1;
@@ -378,7 +378,7 @@ public class ProjectMakeService  extends BaseService {
         				+ "\nAppController.haveSSHconnect() "+ rb_properties.haveSSHconnect());
         		throw ex;
         	}
-        	System.out.println("Executing command "+ Arrays.toString(exec_commands));
+        	// System.out.println("Executing command "+ Arrays.toString(exec_commands));
         } 
         Application.status.setMessageStatus(build_command);
 
