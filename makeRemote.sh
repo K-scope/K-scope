@@ -47,9 +47,11 @@ while getopts "u:h:l:k:m:a:" opt; do
       ;;
     l)
       path=$(trimQuotes "$OPTARG")
+      echo "path $path"
       ;;
     m)
       remote_commands=$(trimQuotes "$OPTARG")
+      echo "command $command"
       ;;
     k)
       ssh_key=$(trimQuotes "$OPTARG")
@@ -125,7 +127,7 @@ echo "tunnel PID=$ssh_tunnel"
 # ssh
 if [ -z $remote_commands ]
 then  # No commands -- interactive shell login
-    remote_commands="mkdir -p \"$path\"\nsshfs -p $free_port $local_user@$hostIP:\"$path\" \"$path\"\ncd \"$path\"\necho \"ver \$version\";pwd;ls -l;export PATH=\$PATH:$add_path;"
+    remote_commands="mkdir -p \"$path\"\nsshfs -p $free_port $local_user@$hostIP:$path $path\ncd \"$path\"\necho \"ver \$version\";pwd;ls -l;export PATH=\$PATH:$add_path;"
     echo -e $remote_commands
 
     # Save remote commands to a file. Execute it in container. 
@@ -143,8 +145,9 @@ then  # No commands -- interactive shell login
     command="ssh -A -o StrictHostKeyChecking=no $remoteuser@$server"
     $command
 else # Execute remote commands. No interactive shell login.
-    all_commands="mkdir -p \"$path\"\nsshfs -p $free_port $local_user@$hostIP:\"$path\" \"$path\"\ncd \"$path\"\necho \"ver \$version\";pwd;ls -l;export PATH=\$PATH:$add_path"
-    all_commands="$all_commands\nls -al .."
+    all_commands="mkdir -p \"$path\"\nsshfs -o StrictHostKeyChecking=no -p $free_port $local_user@$hostIP:\"$path\" \"$path\"\ncd \"$path\"\necho \"ver \$version\";pwd;ls -la;export PATH=\$PATH:$add_path"
+    all_commands="$all_commands\nmount"
+    all_commands="$all_commands\nps aux | grep ssh"
     all_commands="$all_commands\n$remote_commands"
     echo -e $all_commands
 
@@ -163,7 +166,7 @@ else # Execute remote commands. No interactive shell login.
     $command
 fi
 
-sleep 5
+
 
 # Remove file with commands
 rm $cmd_file
