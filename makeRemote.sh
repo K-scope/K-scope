@@ -145,17 +145,18 @@ then  # No commands -- interactive shell login
     command="ssh -A -o StrictHostKeyChecking=no $remoteuser@$server"
     $command
 else # Execute remote commands. No interactive shell login.
-    all_commands="mkdir -p \"$path\"\nsshfs -o StrictHostKeyChecking=no -p $free_port $local_user@$hostIP:\"$path\" \"$path\"\ncd \"$path\"\necho \"ver \$version\";pwd;ls -la;export PATH=\$PATH:$add_path"
-    all_commands="$all_commands\nmount"
-    all_commands="$all_commands\nps aux | grep ssh"
-    all_commands="$all_commands\n$remote_commands"
-    echo -e $all_commands
+    # testcommand ="ssh -vv -p $free_port $local_user@$histIP;echo "'$HOST'";exit;\n"
+    setup_commands="mkdir -p \"$path\"\nsshfs -o StrictHostKeyChecking=no -p $free_port $local_user@$hostIP:\"$path\" \"$path\"\ncd \"$path\"\necho \"ver \$version\";pwd;ls -l | wc -l;export PATH=\$PATH:$add_path"
+    # setup_commands="$setup_commands\nmount"
+    # setup_commands="$setup_commands\nps aux | grep ssh"
+    setup_commands="$setup_commands\n$remote_commands"
+    echo -e $setup_commands
 
     # Save remote commands to a file. Execute it in container. 
     cmd_file="rcom.sh"
     echo "#!/bin/bash" > $cmd_file
     echo "version=$version" >> $cmd_file    
-    echo -e $all_commands >> $cmd_file    
+    echo -e $setup_commands >> $cmd_file    
     chmod +x $cmd_file
     # Copy command file into container using container SSH port number as seen from server-side.
     cp_command="scp $keyoption -P $container_port $cmd_file root@$server:/"
@@ -175,7 +176,7 @@ rm $cmd_file
 if [ -n "$container_started" ]
 then
   ssh $remoteuser@$server "stopnow" 2>/dev/null
-  echo "Container will stop"
+  echo "Container will stop now"
 else
   # Unmount SSHFS mount
   echo "Unmount SSHFS"
