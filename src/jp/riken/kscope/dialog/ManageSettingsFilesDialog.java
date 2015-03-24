@@ -126,6 +126,7 @@ public class ManageSettingsFilesDialog extends javax.swing.JDialog implements Ac
                 {
                     JPanel panelList = new JPanel();
                     panelList.setPreferredSize(new Dimension(220, 250));
+                    panelList.setBorder(new EmptyBorder(7,7,0,7));
                     BorderLayout panelListLayout = new BorderLayout();
                     panelList.setLayout(panelListLayout);
                     panelContent.add(panelList, BorderLayout.WEST);
@@ -158,9 +159,9 @@ public class ManageSettingsFilesDialog extends javax.swing.JDialog implements Ac
                 {
                 	JPanel panelSettings = new JPanel();
                 	panelSettings.setPreferredSize(new Dimension(500, 250));
+                	panelSettings.setBorder(new EmptyBorder(7,0,0,7));
                 	BorderLayout panelSettingsLayout = new BorderLayout();
                 	panelContent.add(panelSettings, BorderLayout.CENTER);
-                	//Border borderSettings = new EmptyBorder(0,7,0,0);
                 	panelSettings.setLayout(panelSettingsLayout);
 
                 	{
