@@ -129,7 +129,7 @@ public class ManageSettingsFilesDialog extends javax.swing.JDialog implements Ac
                     docker_list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
                     docker_list.setLayoutOrientation(JList.VERTICAL);
                     JScrollPane listScroller = new JScrollPane(docker_list);
-                    //listScroller.setPreferredSize(new Dimension(200, 100));
+                    listScroller.setPreferredSize(new Dimension(200, 100));
                     panelListNorth.add(listScroller,BorderLayout.CENTER);
                     panelList.add(panelListNorth,BorderLayout.NORTH);
                 }
@@ -153,7 +153,7 @@ public class ManageSettingsFilesDialog extends javax.swing.JDialog implements Ac
                 	JPanel panelProperty = new JPanel();                	
                 	panelSettings.add(panelProperty, BorderLayout.CENTER);
                 	panelProperty.setLayout(new BorderLayout());
-                	//panelProperty.setPreferredSize(new java.awt.Dimension(320, 234));
+                	panelProperty.setPreferredSize(new java.awt.Dimension(320, 234));
                 	EtchedBorder titleBorder = (EtchedBorder) BorderFactory.createEtchedBorder();
                 	Border borderKeyword = new CompoundBorder( titleBorder, new EmptyBorder(17,7,0,7));
                 	panelProperty.setBorder(borderKeyword);
@@ -167,6 +167,7 @@ public class ManageSettingsFilesDialog extends javax.swing.JDialog implements Ac
                         }
 
                         public int getRowCount() {
+                        	if (settings == null) return 0;
                             return settings.size();
                         }
 
