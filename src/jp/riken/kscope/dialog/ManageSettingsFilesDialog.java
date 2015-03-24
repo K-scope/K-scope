@@ -38,6 +38,8 @@ import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
@@ -64,6 +66,7 @@ public class ManageSettingsFilesDialog extends javax.swing.JDialog implements Ac
 	};
 	private String selected_file;
 	TreeMap<String,String> settings;
+	private JList<String> file_list;
 	
 	public ManageSettingsFilesDialog(FileProjectNewDialog FPNdialog) {
 		this.FPNdialog = FPNdialog;
@@ -140,10 +143,14 @@ public class ManageSettingsFilesDialog extends javax.swing.JDialog implements Ac
                     title.setTitleJustification(TitledBorder.CENTER);
                     panelListNorth.setBorder(title);
                     
-                    JList<String> docker_list = new JList<String>(FPNdialog.getRemoteSettings());
-                    docker_list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-                    docker_list.setLayoutOrientation(JList.VERTICAL);
-                    JScrollPane listScroller = new JScrollPane(docker_list);
+                    // List of files with settings in "remote" folder
+                    file_list = new JList<String>(FPNdialog.getRemoteSettings());
+                    file_list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+                    file_list.setLayoutOrientation(JList.VERTICAL);
+                    file_list.addListSelectionListener(new SharedListSelectionHandler()  {
+                    	
+                    });
+                    JScrollPane listScroller = new JScrollPane(file_list);
                     listScroller.setPreferredSize(new Dimension(200, 100));
                     panelListNorth.add(listScroller,BorderLayout.CENTER);
                     panelList.add(panelListNorth,BorderLayout.NORTH);
@@ -318,5 +325,22 @@ public class ManageSettingsFilesDialog extends javax.swing.JDialog implements Ac
             dispose();            
         }
 		if (debug) System.out.println("actionPerformed() of ManageSettingsFilesDialog exited");
-	}		
+	}	
+	
+	class SharedListSelectionHandler implements ListSelectionListener {
+
+		@Override
+		public void valueChanged(ListSelectionEvent e) {
+			String file = file_list.getSelectedValue();
+			if (file == selected_file) return;
+			selected_file = file;
+			System.out.println("Selected "+file);
+			try {
+				settings = getSettingsFromFile(file);
+			}
+			catch (FileNotFoundException ex) {
+				System.err.println("File "+file+" not found");
+			}
+		}
+	}
 }
