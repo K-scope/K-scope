@@ -259,12 +259,12 @@ public class ManageSettingsFilesDialog extends javax.swing.JDialog implements Ac
                     String filter_expr = "^((?!" + ProjectProperties.BUILD_COMMAND + ").)*$";
                     sorter.setRowFilter(RowFilter.regexFilter(filter_expr, 1));
 
-                    sorter.setComparator(0, new Comparator<Integer>() {
+                    /*sorter.setComparator(0, new Comparator<Integer>() {
                         @Override
                         public int compare(Integer o1, Integer o2) {
                             return o1 - o2;
                         }
-                    });
+                    });*/
 
                     ArrayList<SortKey> list = new ArrayList<SortKey>();
                     list.add(new RowSorter.SortKey(0, SortOrder.ASCENDING));
@@ -301,13 +301,12 @@ public class ManageSettingsFilesDialog extends javax.swing.JDialog implements Ac
 	 * @return key String or null
 	 */
 	protected String getParameterName(int n) {
-		Set<String> key_set = settings.keySet();
-		String[] keys = (String[]) key_set.toArray();
-		if (n > keys.length) {
-			System.err.println("Too large row number ("+n+"). Have only "+keys.length+" settings.");
+		if (n > settings.size()) {
+			System.err.println("Too large row number ("+n+"). Have only "+settings.size()+" settings.");
 			return null;
 		}
-		return keys[n];
+		String key = (String) settings.keySet().toArray()[n];
+		return key;
 	}
 	
 	
@@ -337,6 +336,7 @@ public class ManageSettingsFilesDialog extends javax.swing.JDialog implements Ac
 			System.out.println("Selected "+file);
 			try {
 				settings = getSettingsFromFile(file);
+				modelProperties.fireTableDataChanged();
 			}
 			catch (FileNotFoundException ex) {
 				System.err.println("File "+file+" not found");
