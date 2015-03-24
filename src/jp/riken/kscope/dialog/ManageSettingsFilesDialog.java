@@ -10,6 +10,8 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -23,16 +25,29 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JViewport;
 import javax.swing.ListSelectionModel;
+import javax.swing.RowFilter;
+import javax.swing.RowSorter;
+import javax.swing.ScrollPaneConstants;
+import javax.swing.SortOrder;
+import javax.swing.RowSorter.SortKey;
 import javax.swing.border.Border;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableModel;
+import javax.swing.table.TableRowSorter;
 
 import jp.riken.kscope.Message;
 import jp.riken.kscope.common.Constant;
+import jp.riken.kscope.dialog.RemoteBuildPropertiesDialog.CustomCellRenderer;
+import jp.riken.kscope.properties.ProjectProperties;
 import jp.riken.kscope.properties.RemoteBuildProperties;
 
 public class ManageSettingsFilesDialog extends javax.swing.JDialog implements ActionListener {
@@ -153,7 +168,7 @@ public class ManageSettingsFilesDialog extends javax.swing.JDialog implements Ac
                 	JPanel panelProperty = new JPanel();                	
                 	panelSettings.add(panelProperty, BorderLayout.CENTER);
                 	panelProperty.setLayout(new BorderLayout());
-                	panelProperty.setPreferredSize(new java.awt.Dimension(320, 234));
+                	panelProperty.setPreferredSize(new java.awt.Dimension(450, 234));
                 	EtchedBorder titleBorder = (EtchedBorder) BorderFactory.createEtchedBorder();
                 	Border borderKeyword = new CompoundBorder( titleBorder, new EmptyBorder(17,7,0,7));
                 	panelProperty.setBorder(borderKeyword);
@@ -203,6 +218,67 @@ public class ManageSettingsFilesDialog extends javax.swing.JDialog implements Ac
                         }
                     };
                     // end modelProperties
+
+                    modelProperties.setColumnIdentifiers(COLUMN_HEADERS);
+                    final CustomCellRenderer ccr = new CustomCellRenderer();
+                    JTable tblProperties = new JTable(modelProperties) {
+                    	/**
+    					 * JTabe class with customizable CellRenderer for hiding passwords.
+    					 * Hides cell in column 2 if value in column 1 contains string "pass".
+    					 */
+    					private static final long serialVersionUID = 1L;
+    					
+    					public TableCellRenderer getCellRenderer(int row, int column) {
+    						String value = (String) this.getValueAt(row, 0);
+    						if (column == 1 && value.indexOf("pass") >=0 ) { 
+                    			return ccr;
+                    		}
+                    		return super.getCellRenderer(row, column);
+                    	}
+                    };
+                    tblProperties.getColumnModel().getColumn(0).setMinWidth(150);
+                    tblProperties.getColumnModel().getColumn(1).setMinWidth(250);
+                    tblProperties.setRowMargin(5);
+                    tblProperties.setRowHeight(20);
+                    
+                    DefaultTableCellRenderer num_cell_renderer = new DefaultTableCellRenderer();
+                    num_cell_renderer.setHorizontalAlignment(JLabel.CENTER);
+                    num_cell_renderer.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 5));
+                    tblProperties.getColumnModel().getColumn(0).setCellRenderer(num_cell_renderer);
+                    
+                    TableRowSorter<TableModel> sorter;
+                    sorter = new TableRowSorter<TableModel>(modelProperties);
+
+                    String filter_expr = "^((?!" + ProjectProperties.BUILD_COMMAND + ").)*$";
+                    sorter.setRowFilter(RowFilter.regexFilter(filter_expr, 1));
+
+                    sorter.setComparator(0, new Comparator<Integer>() {
+                        @Override
+                        public int compare(Integer o1, Integer o2) {
+                            return o1 - o2;
+                        }
+                    });
+
+                    ArrayList<SortKey> list = new ArrayList<SortKey>();
+                    list.add(new RowSorter.SortKey(0, SortOrder.ASCENDING));
+                    sorter.setSortKeys(list);
+                    tblProperties.setRowSorter(sorter);
+
+                    JScrollPane scrollList = new JScrollPane(tblProperties);
+                    scrollList.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+                    scrollList.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+                    scrollList.setColumnHeader(new JViewport() {
+    					private static final long serialVersionUID = -8778306342340592940L;
+
+    					@Override
+                        public Dimension getPreferredSize() {
+                            Dimension d = super.getPreferredSize();
+                            d.height = 30;
+                            return d;
+                        }
+                    });
+                    panelProperty.add(scrollList, BorderLayout.CENTER);
+                    
                 }
             }
             setTitle(Message.getString("managesettingsfiles.title"));
