@@ -1,11 +1,11 @@
 ## default is ignore for all files
-*
-.*
+/*
+/.*
 
 ## not ignore
-!src/*
-!resources/*
-!properties/properties.xml
+!/src
+!/resources/*
+!/properties/properties.xml
 !*.sh
 !.git
 !.gitignore
