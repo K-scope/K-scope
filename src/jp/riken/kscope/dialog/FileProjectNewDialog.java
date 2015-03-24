@@ -39,6 +39,7 @@ import java.util.List;
 
 
 
+
 //import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
@@ -89,6 +90,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
 
 	private static final long serialVersionUID = 6096475381851486225L;
 	private static boolean debug = true;
+	private static String REMOTE_SETTINGS_DIR = "remote";
 	
 /** 中間コード・フォルダ・ファイルリスト */
     private JList<String> listProjectXml;
@@ -453,11 +455,11 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
         return panelContent;
     }
 
-    private String[] getRemoteSettings() {
+    public String[] getRemoteSettings() {
     	List<String> list = new ArrayList<String>();
     	String[] list_ar = null;
     	String[] ignore = { "(\\.).*" };
-		File dir = new File("remote");
+		File dir = new File(REMOTE_SETTINGS_DIR);
 		try {
 			list = getFiles(dir, list, "", ignore);			
 			list_ar=new String[list.size()];
@@ -468,7 +470,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
 		}
 		return list.toArray(list_ar);
 	}
-
+    
     /*
      * Return list of files in directory with subdirectories.
      * @dir - starting directory

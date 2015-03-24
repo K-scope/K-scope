@@ -342,15 +342,6 @@ public class MainFrame extends javax.swing.JFrame implements ITabComponent {
         HelpVersionAction action = new HelpVersionAction(this.controller);
         action.showAboutDialog();
     }
-
-    
-    /**
-     * Show Manage Remote Settings Files dialog
-     */
-    public void showManageSettingsFiles() {
-    	ManageSettingsFilesDialog manage_files_dialog = new ManageSettingsFilesDialog(this);
-    	manage_files_dialog.showDialog();
-    }
     
     /**
      * アプリケーションを終了する
