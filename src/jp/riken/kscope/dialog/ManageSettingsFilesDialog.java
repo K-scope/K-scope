@@ -76,10 +76,10 @@ public class ManageSettingsFilesDialog extends javax.swing.JDialog implements Ac
 	public int showDialog() {
         // Center on screen
         this.setLocationRelativeTo(null);
-        //this.pack();
         this.setModal(true);
         //this.toFront();
         this.setVisible(true);        
+        
         return this.result;
     }
 
@@ -101,7 +101,7 @@ public class ManageSettingsFilesDialog extends javax.swing.JDialog implements Ac
                 jPanel1Layout.setVgap(10);
                 panelButtons.setLayout(jPanel1Layout);
                 getContentPane().add(panelButtons, BorderLayout.SOUTH);
-                panelButtons.setPreferredSize(new java.awt.Dimension(390, 46));
+                panelButtons.setPreferredSize(new java.awt.Dimension(500, 46));
                 panelButtons.setBorder(BorderFactory.createLineBorder(Color.white));
 
                 java.awt.Dimension buttonSize = new java.awt.Dimension(96, 22);               
@@ -120,9 +120,6 @@ public class ManageSettingsFilesDialog extends javax.swing.JDialog implements Ac
                 BorderLayout panelContentLayout = new BorderLayout();
                 getContentPane().add(panelContent, BorderLayout.CENTER);
                 //Border border = new EmptyBorder(7,7,0,7);
-                TitledBorder title = BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.gray), "panelContent");
-                title.setTitleJustification(TitledBorder.CENTER);
-                panelContent.setBorder(title);
                 panelContent.setLayout(panelContentLayout);
 
                 // Left panel
@@ -131,17 +128,18 @@ public class ManageSettingsFilesDialog extends javax.swing.JDialog implements Ac
                     panelList.setPreferredSize(new Dimension(220, 250));
                     BorderLayout panelListLayout = new BorderLayout();
                     panelList.setLayout(panelListLayout);
-                    title = BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.darkGray), "panelList");
-                    title.setTitleJustification(TitledBorder.CENTER);
-                    panelList.setBorder(title);
                     panelContent.add(panelList, BorderLayout.WEST);
+                    
+                    // Label 
+                    {
+                		JLabel lblList = new JLabel();
+                		lblList.setText(Message.getString("managesettingsfiles.filelist.title"));
+                		panelList.add(lblList, BorderLayout.NORTH);
+                	}
                     
                     // North panel
                     JPanel panelListNorth = new JPanel();
                     panelListNorth.setLayout(new BorderLayout());
-                    title = BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.darkGray), Message.getString("managesettingsfiles.dockeriaas.title"));
-                    title.setTitleJustification(TitledBorder.CENTER);
-                    panelListNorth.setBorder(title);
                     
                     // List of files with settings in "remote" folder
                     file_list = new JList<String>(FPNdialog.getRemoteSettings());
@@ -151,20 +149,18 @@ public class ManageSettingsFilesDialog extends javax.swing.JDialog implements Ac
                     	
                     });
                     JScrollPane listScroller = new JScrollPane(file_list);
-                    listScroller.setPreferredSize(new Dimension(200, 100));
+                    //listScroller.setPreferredSize(new Dimension(200, 100));
                     panelListNorth.add(listScroller,BorderLayout.CENTER);
-                    panelList.add(panelListNorth,BorderLayout.NORTH);
+                    panelList.add(panelListNorth,BorderLayout.CENTER);
                 }
                 
                 // Right (Settings) panel
                 {
                 	JPanel panelSettings = new JPanel();
+                	panelSettings.setPreferredSize(new Dimension(500, 250));
                 	BorderLayout panelSettingsLayout = new BorderLayout();
                 	panelContent.add(panelSettings, BorderLayout.CENTER);
                 	//Border borderSettings = new EmptyBorder(0,7,0,0);
-                	title = BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.darkGray), "panelSettings");
-                    title.setTitleJustification(TitledBorder.CENTER);
-                	panelSettings.setBorder(title);
                 	panelSettings.setLayout(panelSettingsLayout);
 
                 	{
@@ -174,11 +170,7 @@ public class ManageSettingsFilesDialog extends javax.swing.JDialog implements Ac
                 	}
                 	JPanel panelProperty = new JPanel();                	
                 	panelSettings.add(panelProperty, BorderLayout.CENTER);
-                	panelProperty.setLayout(new BorderLayout());
-                	panelProperty.setPreferredSize(new java.awt.Dimension(450, 234));
-                	EtchedBorder titleBorder = (EtchedBorder) BorderFactory.createEtchedBorder();
-                	Border borderKeyword = new CompoundBorder( titleBorder, new EmptyBorder(17,7,0,7));
-                	panelProperty.setBorder(borderKeyword);
+                	panelProperty.setLayout(new BorderLayout());                	
                 	
                 	// Displays settings from "settings" variable
                 	modelProperties = new DefaultTableModel() {
@@ -249,7 +241,7 @@ public class ManageSettingsFilesDialog extends javax.swing.JDialog implements Ac
                     tblProperties.setRowHeight(20);
                     
                     DefaultTableCellRenderer num_cell_renderer = new DefaultTableCellRenderer();
-                    num_cell_renderer.setHorizontalAlignment(JLabel.CENTER);
+                    num_cell_renderer.setHorizontalAlignment(JLabel.LEFT);
                     num_cell_renderer.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 5));
                     tblProperties.getColumnModel().getColumn(0).setCellRenderer(num_cell_renderer);
                     
@@ -271,7 +263,7 @@ public class ManageSettingsFilesDialog extends javax.swing.JDialog implements Ac
                 }
             }
             setTitle(Message.getString("managesettingsfiles.title"));
-            setSize(640, 300);
+            setSize(750, 400);
 		} catch (Exception e) {
             e.printStackTrace();
         }		
