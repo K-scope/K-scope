@@ -19,6 +19,7 @@ package jp.riken.kscope.gui;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Frame;
 
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
@@ -34,6 +35,7 @@ import jp.riken.kscope.action.ExploreTreeChangeAction;
 import jp.riken.kscope.action.FileExitAction;
 import jp.riken.kscope.action.HelpVersionAction;
 import jp.riken.kscope.common.FRAME_VIEW;
+import jp.riken.kscope.dialog.ManageSettingsFilesDialog;
 import jp.riken.kscope.dialog.ProfilerLegendDialog;
 import jp.riken.kscope.dialog.ProgressDialog;
 import jp.riken.kscope.dialog.SearchFindDialog;
@@ -341,6 +343,15 @@ public class MainFrame extends javax.swing.JFrame implements ITabComponent {
         action.showAboutDialog();
     }
 
+    
+    /**
+     * Show Manage Remote Settings Files dialog
+     */
+    public void showManageSettingsFiles() {
+    	ManageSettingsFilesDialog manage_files_dialog = new ManageSettingsFilesDialog(this);
+    	manage_files_dialog.showDialog();
+    }
+    
     /**
      * アプリケーションを終了する
      */

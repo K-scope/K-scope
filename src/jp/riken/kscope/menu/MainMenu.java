@@ -403,7 +403,7 @@ public class MainMenu extends JMenuBar implements  MenuListener {
         	JMenuItem menuProjectSettingSSH = new JMenuItem(Message.getString("mainmenu.project.config.server")); 
         	menuProjectSetting.add(menuProjectSettingSSH);
         	// Before remote settings manager is implemented remove action listener for this menu 
-        	// menuProjectSettingSSH.addActionListener(new ProjectSettingDockerAction(this.controller));
+        	menuProjectSettingSSH.addActionListener(new ProjectSettingDockerAction(this.controller));
         }
         
         // 分析

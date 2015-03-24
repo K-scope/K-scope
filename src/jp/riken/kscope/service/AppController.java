@@ -508,6 +508,7 @@ public class AppController implements PropertyChangeListener {
     public void openSourceFile(SourceFile file) throws Exception {
         openSourceFile(new CodeLine(file, file.getPath()));
     }
+    
 
     /**
      * ソースファイルビューにソースファイルを表示する

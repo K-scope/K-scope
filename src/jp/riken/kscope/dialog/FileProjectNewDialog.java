@@ -36,6 +36,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+
+
+
 //import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
@@ -57,6 +60,7 @@ import javax.swing.JTextField;
 import javax.swing.JToggleButton;
 import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
+import javax.swing.SwingUtilities;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
@@ -66,6 +70,7 @@ import jp.riken.kscope.Message;
 import jp.riken.kscope.action.ProjectSettingDockerAction;
 import jp.riken.kscope.common.Constant;
 import jp.riken.kscope.data.FILE_TYPE;
+import jp.riken.kscope.gui.MainFrame;
 import jp.riken.kscope.properties.KscopeProperties;
 import jp.riken.kscope.properties.ProjectProperties;
 import jp.riken.kscope.properties.RemoteBuildProperties;
@@ -83,6 +88,8 @@ import jp.riken.kscope.utils.SwingUtils;
 public class FileProjectNewDialog extends javax.swing.JDialog implements ActionListener {
 
 	private static final long serialVersionUID = 6096475381851486225L;
+	private static boolean debug = true;
+	
 /** 中間コード・フォルダ・ファイルリスト */
     private JList<String> listProjectXml;
     /** プロジェクトタイトル */
@@ -131,7 +138,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
     private JCheckBox checkUseRemote;
     private JComboBox<String> settings_list;
     /** 選択XMLフォルダ・ファイル削除ボタン */
-    private JButton manage_settgins_files;
+    private JButton manage_settings_files;
         
     /** makefile テキストフィールド*/
     //private JTextField txtMakefile;
@@ -169,6 +176,8 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
     private final java.awt.Dimension REFER_BUTTON_SIZE = new java.awt.Dimension(64, 22);
     /** ビルドコマンドテキストボックス */
     private JTextField txtBuildCommand;
+    
+    private AppController controller;
 
     /**
      * コンストラクタ
@@ -180,19 +189,11 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
         super(owner, modal);
         this.pproperties = pproperties;
         this.rb_properties = rb_properties;
+        this.controller = controller;
         initGUI();
     }
 
-    /**
-     * コンストラクタ
-     * @param frame		親フレーム
-     */
-    public FileProjectNewDialog(JFrame frame) {
-        super(frame);
-        initGUI();
-    }
-
-    /**
+     /**
      * GUI初期化を行う。
      */
     private void initGUI() {
@@ -328,7 +329,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
             if (this.rb_properties != null && this.rb_properties.remoteBuild()) {
             	String[] selections = getRemoteSettings(); 
             	settings_list = new JComboBox<String>(selections);
-            	manage_settgins_files = new JButton(Message.getString("fileprojectnewdialog.kindpanel.button.manage_settings_files"));
+            	manage_settings_files = new JButton(Message.getString("fileprojectnewdialog.kindpanel.button.manage_settings_files"));
                 // Remote build の使用切り替え
                 checkUseRemote = new JCheckBox(Message.getString("fileprojectnewdialog.kindpanel.checkbox.useServer")) {
 					private static final long serialVersionUID = -1195485757658963243L;
@@ -438,7 +439,8 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
                 panelSelect.add(checkUseRemote, new GridBagConstraints(2, 3, 2, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
                 panelSelect.add(settings_list, new GridBagConstraints(2, 4, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
                 settings_list.addActionListener(this);
-                panelSelect.add(manage_settgins_files, new GridBagConstraints(3, 4, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
+                panelSelect.add(manage_settings_files, new GridBagConstraints(3, 4, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
+                manage_settings_files.addActionListener(this);
             }
             panelSelect.add(radioSimpleMode, new GridBagConstraints(0, 5, 4, 1, 1.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
             panelSelect.add(new JLabel(Message.getString("fileprojectnewdialog.kindpanel.label.fortranonly")),
@@ -1688,6 +1690,15 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
         	System.out.println("Checking RBdata after setting ppfiles to "+ this.txt_preprocess_files.getText());
         	rb_properties.checkData();
         }
+        else if (event.getSource() == this.manage_settings_files) {
+        	if (debug) {
+        		System.out.println("Button manage_settings_files pressed");
+        	}
+        	this.setModal(false);
+        	ManageSettingsFilesDialog manage_files_dialog = new ManageSettingsFilesDialog(this);
+        	manage_files_dialog.showDialog();        	        	
+        }
+        if (debug) System.out.println("actionPerformed() of FileProjectNewDialog exited");
     }
 
     private void enableButtons() {
