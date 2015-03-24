@@ -253,24 +253,6 @@ public class ManageSettingsFilesDialog extends javax.swing.JDialog implements Ac
                     num_cell_renderer.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 5));
                     tblProperties.getColumnModel().getColumn(0).setCellRenderer(num_cell_renderer);
                     
-                    TableRowSorter<TableModel> sorter;
-                    sorter = new TableRowSorter<TableModel>(modelProperties);
-
-                    String filter_expr = "^((?!" + ProjectProperties.BUILD_COMMAND + ").)*$";
-                    sorter.setRowFilter(RowFilter.regexFilter(filter_expr, 1));
-
-                    /*sorter.setComparator(0, new Comparator<Integer>() {
-                        @Override
-                        public int compare(Integer o1, Integer o2) {
-                            return o1 - o2;
-                        }
-                    });*/
-
-                    ArrayList<SortKey> list = new ArrayList<SortKey>();
-                    list.add(new RowSorter.SortKey(0, SortOrder.ASCENDING));
-                    sorter.setSortKeys(list);
-                    tblProperties.setRowSorter(sorter);
-
                     JScrollPane scrollList = new JScrollPane(tblProperties);
                     scrollList.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
                     scrollList.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
