@@ -422,10 +422,9 @@ public class RemoteBuildProperties extends PropertiesBase {
 	
 	
 	public static void saveSettingsToFile(Map<String,String> data, String file ) throws IOException {
-		if (debug) System.out.println("Writing to file "+file);
-		
+		if (debug) System.out.println("Writing to file "+location4file(file));		
 		Yaml yaml = new Yaml();
-		FileWriter writer = new FileWriter(file);
+		FileWriter writer = new FileWriter(location4file(file));
 		yaml.dump(data, writer);
 	}
 

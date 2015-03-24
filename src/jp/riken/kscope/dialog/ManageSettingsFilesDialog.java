@@ -10,6 +10,7 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -312,14 +313,14 @@ public class ManageSettingsFilesDialog extends javax.swing.JDialog implements Ac
 		@Override
 		public void valueChanged(ListSelectionEvent e) {
 			String file = file_list.getSelectedValue();
-			if (file == selected_file) return;
-			selected_file = file;
+			if (file == selected_file) return;			
 			if (debug) System.out.println("Selected "+file);
 			try {
 				if (edited) {
 					saveSettingsToFile(selected_file);
 				}
 				edited = false;
+				selected_file = file;
 				settings = getSettingsFromFile(file);
 				modelProperties.fireTableDataChanged();
 			}
@@ -329,18 +330,26 @@ public class ManageSettingsFilesDialog extends javax.swing.JDialog implements Ac
 		}
 	}
 
+	/**
+	 * Save changed values to YAML file
+	 * @param file
+	 */
 	public void saveSettingsToFile(String file) {
-		//Custom button text
+		// Confirmation dialog
 		Object[] options = {Message.getString("dialog.common.button.ok"),
 				Message.getString("dialog.common.button.cancel")};
 		int n = JOptionPane.showOptionDialog(this,Message.getString("managesettingsfiles.confirm"),
 				Message.getString("managesettingsfiles.confirm.title"),
 				JOptionPane.YES_NO_CANCEL_OPTION,
-				JOptionPane.QUESTION_MESSAGE,
-				null,
-				options,
-				options[1]);
-		// TODO Auto-generated method stub
-		System.out.println("Save to file "+file+" "+n);
+				JOptionPane.QUESTION_MESSAGE, null,	options, options[1]);
+		if (debug) System.out.println(n);  // OK is 0
+		if (n==0) {
+			try {
+				RemoteBuildProperties.saveSettingsToFile(settings, file);
+			} catch (IOException e) {
+				System.err.println("Error writing to file "+file);
+				e.printStackTrace();
+			}
+		}
 	}
 }
