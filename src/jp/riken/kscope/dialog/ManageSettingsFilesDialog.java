@@ -23,6 +23,7 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -67,6 +68,7 @@ public class ManageSettingsFilesDialog extends javax.swing.JDialog implements Ac
 	private String selected_file;
 	TreeMap<String,String> settings;
 	private JList<String> file_list;
+	private boolean edited = false;  // Values in table has been changed
 	
 	public ManageSettingsFilesDialog(FileProjectNewDialog FPNdialog) {
 		this.FPNdialog = FPNdialog;
@@ -213,6 +215,7 @@ public class ManageSettingsFilesDialog extends javax.swing.JDialog implements Ac
                             }
                             if (column == 1) {
                                 settings.put(getParameterName(row), value.toString());
+                                edited = true;
                             }
                             fireTableCellUpdated(row, column);
                         }
@@ -294,6 +297,9 @@ public class ManageSettingsFilesDialog extends javax.swing.JDialog implements Ac
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() == this.btnOk) {
+			if (edited) {
+				saveSettingsToFile(selected_file);
+			}
 			this.result = Constant.CLOSE_DIALOG;
              // ダイアログを閉じる。
             dispose();            
@@ -308,8 +314,12 @@ public class ManageSettingsFilesDialog extends javax.swing.JDialog implements Ac
 			String file = file_list.getSelectedValue();
 			if (file == selected_file) return;
 			selected_file = file;
-			System.out.println("Selected "+file);
+			if (debug) System.out.println("Selected "+file);
 			try {
+				if (edited) {
+					saveSettingsToFile(selected_file);
+				}
+				edited = false;
 				settings = getSettingsFromFile(file);
 				modelProperties.fireTableDataChanged();
 			}
@@ -317,5 +327,20 @@ public class ManageSettingsFilesDialog extends javax.swing.JDialog implements Ac
 				System.err.println("File "+file+" not found");
 			}
 		}
+	}
+
+	public void saveSettingsToFile(String file) {
+		//Custom button text
+		Object[] options = {Message.getString("dialog.common.button.ok"),
+				Message.getString("dialog.common.button.cancel")};
+		int n = JOptionPane.showOptionDialog(this,Message.getString("managesettingsfiles.confirm"),
+				Message.getString("managesettingsfiles.confirm.title"),
+				JOptionPane.YES_NO_CANCEL_OPTION,
+				JOptionPane.QUESTION_MESSAGE,
+				null,
+				options,
+				options[1]);
+		// TODO Auto-generated method stub
+		System.out.println("Save to file "+file+" "+n);
 	}
 }

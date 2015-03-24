@@ -20,6 +20,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -416,6 +418,15 @@ public class RemoteBuildProperties extends PropertiesBase {
 		@SuppressWarnings("unchecked")	    				    
 		Map<String, String> map = (Map<String, String>) yaml.load(input);
 		return map;
+	}
+	
+	
+	public static void saveSettingsToFile(Map<String,String> data, String file ) throws IOException {
+		if (debug) System.out.println("Writing to file "+file);
+		
+		Yaml yaml = new Yaml();
+		FileWriter writer = new FileWriter(file);
+		yaml.dump(data, writer);
 	}
 
 	/**
