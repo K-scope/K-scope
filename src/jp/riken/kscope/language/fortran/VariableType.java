@@ -1,6 +1,6 @@
 /*
  * K-scope
- * Copyright 2012-2013 RIKEN, Japan
+ * Copyright 2012-2015 RIKEN, Japan
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,6 +29,7 @@ import jp.riken.kscope.utils.StringUtils;
 * 変数のデータ型を示すクラス.<br>
 *
 * @author RIKEN
+ * @version    2015/03/15     C言語データ型の追加
 *
 */
 public class VariableType implements Serializable,
@@ -459,6 +460,9 @@ public class VariableType implements Serializable,
             }
             else {
                 buf.append(this.getName());
+                if (this.isPointer()) {
+                    buf.append("*");
+                }
             }
         }
 
@@ -571,6 +575,7 @@ public class VariableType implements Serializable,
      * voidデータ型であるかチェックする
      * @return		true=pointer
      */
+    @Override
     public boolean isVoid() {
         if (this.primitiveDataType == PrimitiveDataType.VOID) return true;
         if (this.primitiveDataType == PrimitiveDataType.CVOID) return true;

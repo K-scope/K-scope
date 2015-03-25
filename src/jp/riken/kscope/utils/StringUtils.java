@@ -35,8 +35,7 @@ import jp.riken.kscope.properties.KscopeProperties;
 /**
  * 文字列操作ユーティリティクラス
  *
- * @author RIKEN
- *
+ * @version    2015/03/01   	ブーリアン文字列から真偽値の変換メソッドの追加
  */
 public class StringUtils {
 

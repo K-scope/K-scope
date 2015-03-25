@@ -1,6 +1,6 @@
 /*
  * K-scope
- * Copyright 2012-2013 RIKEN, Japan
+ * Copyright 2012-2015 RIKEN, Japan
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,6 +43,7 @@ import jp.riken.kscope.data.SourceFile;
 import jp.riken.kscope.information.InformationBlock;
 import jp.riken.kscope.information.InformationBlocks;
 import jp.riken.kscope.language.ArrayExpression;
+import jp.riken.kscope.language.CompoundBlock;
 import jp.riken.kscope.language.Condition;
 import jp.riken.kscope.language.ExecutableBody;
 import jp.riken.kscope.language.IBlock;
@@ -60,6 +61,7 @@ import jp.riken.kscope.utils.ResourceUtils;
  * オブジェクトツリークラス.<br/>
  * ノードオブジェクトに合わせてアイコンを表示する.
  * @author RIKEN
+ * @version    2015/03/15     C言語対応によりC言語ファイルのアイコン追加
  */
 public class ObjectTree extends JEntireRowTree {
 
@@ -121,6 +123,10 @@ public class ObjectTree extends JEntireRowTree {
         /** その他ブロックアイコン */
         @SuppressWarnings("unused")
         private Icon otherIcon;
+        /** C言語ファイルアイコン */
+        private Icon iconClang;
+        /** ヘッダファイルアイコン */
+        private Icon iconHeader;
 
         /**
          * コンストラクタ
@@ -135,6 +141,10 @@ public class ObjectTree extends JEntireRowTree {
             iconXml = ResourceUtils.getIcon("xmldoc.gif");
             /** Fortranファイルアイコン */
             iconFortran = ResourceUtils.getIcon("fortran.gif");
+            /** C言語ファイルアイコン */
+            iconClang = ResourceUtils.getIcon("clang.gif");
+            /** ヘッダファイルアイコン */
+            iconHeader = ResourceUtils.getIcon("header.gif");
 
             callIcon = ResourceUtils.getIcon("call.gif");
             callnullIcon = ResourceUtils.getIcon("call_null.gif");
@@ -207,6 +217,9 @@ public class ObjectTree extends JEntireRowTree {
                 else if (FILE_TYPE.isXcodemlFile(file.getFile())) {
                     this.setIcon(iconXml);
                 }
+                else if (FILE_TYPE.isClangFile(file.getFile())) {
+                    this.setIcon(iconClang);
+                }
             } else if (obj instanceof File) {
                 File file = (File) ((DefaultMutableTreeNode) value).getUserObject();
                 // フォルダ
@@ -225,30 +238,30 @@ public class ObjectTree extends JEntireRowTree {
                 setIcon(null);
                 // ローカルにファイルがないヘッダ定義の場合リーフ文字色をグレーにする処理
                 IBlock val = (IBlock)obj;
-            	CodeLine code = val.getStartCodeLine();
-            	if (code == null) {
-            		code = val.getEndCodeLine();
-            	}
-            	if (code != null && (code.getSourceFile() == null || (code.getSourceFile() != null && code.getSourceFile().getFile() == null))) {
-            		this.setForeground(fontColorBrokenLink);
-            	}
+                CodeLine code = val.getStartCodeLine();
+                if (code == null) {
+                    code = val.getEndCodeLine();
+                }
+                if (code != null && (code.getSourceFile() == null || (code.getSourceFile() != null && code.getSourceFile().getFile() == null))) {
+                    this.setForeground(fontColorBrokenLink);
+                }
             }
-	        else {
-	            setIcon(null);
-	        }
+            else {
+                setIcon(null);
+            }
 
             // 付加情報の存在するノードをフォント色の変更
             if (fontColorInformation != null && obj instanceof IInformation) {
-        		IInformation info = (IInformation)obj;
-        		if (info.getInformation() != null && !(info.getInformation().getContent().equals(""))) {
-        			// ノードフォント色の変更
-        			drawInformationColor(c);
-        		}
-        		// 複数範囲指定の付加情報に含まれているかチェックする
-        		if (containsInformationBlocks(info)) {
-    				// ノードフォント色の変更
-        			drawInformationColor(c);
-        		}
+                IInformation info = (IInformation)obj;
+                if (info.getInformation() != null && !(info.getInformation().getContent().equals(""))) {
+                    // ノードフォント色の変更
+                    drawInformationColor(c);
+                }
+                // 複数範囲指定の付加情報に含まれているかチェックする
+                if (containsInformationBlocks(info)) {
+                    // ノードフォント色の変更
+                    drawInformationColor(c);
+                }
             }
             if ( c instanceof JLabel ) {
                 JLabel label = ( JLabel ) c;
@@ -275,10 +288,10 @@ public class ObjectTree extends JEntireRowTree {
          * @param label		ノードコンポーネント
          */
         private void drawInformationColor(JComponent label) {
-        	if (fontColorInformation != null) {
-				label.setForeground(fontColorInformation);
-				label.setOpaque(true);
-        	}
+            if (fontColorInformation != null) {
+                label.setForeground(fontColorInformation);
+                label.setOpaque(true);
+            }
         }
 
         /**
@@ -287,19 +300,19 @@ public class ObjectTree extends JEntireRowTree {
          * @return			true=複数範囲指定の付加情報に含まれている
          */
         private boolean containsInformationBlocks(IInformation info) {
-        	if (languageDb == null) return false;
-        	if (info == null) return false;
-        	InformationBlocks infos = languageDb.getInformationBlocks();
-        	if (infos == null || infos.size() <= 0) return false;
-        	for (InformationBlock block : infos) {
-        		if (block.getInformation() == null
-        			|| block.getInformation().getContent() == null
-        			|| block.getInformation().getContent().isEmpty()) continue;
-        		if (block.getStartBlock() == info) {
-        			return true;
-        		}
-        	}
-        	return false;
+            if (languageDb == null) return false;
+            if (info == null) return false;
+            InformationBlocks infos = languageDb.getInformationBlocks();
+            if (infos == null || infos.size() <= 0) return false;
+            for (InformationBlock block : infos) {
+                if (block.getInformation() == null
+                    || block.getInformation().getContent() == null
+                    || block.getInformation().getContent().isEmpty()) continue;
+                if (block.getStartBlock() == info) {
+                    return true;
+                }
+            }
+            return false;
         }
     }
 
@@ -390,7 +403,7 @@ public class ObjectTree extends JEntireRowTree {
         }
         if (this.isVisible(path)) {
             super.setSelectionPath(path);
-        	return;
+            return;
         }
 
         Object[] objs = path.getPath();
@@ -420,7 +433,7 @@ public class ObjectTree extends JEntireRowTree {
         for (int i=0; i<objs.length; i++) {
             if (!(objs[i] instanceof DefaultMutableTreeNode)) continue;
             FilterTreeNode node = new FilterTreeNode(
-            			((DefaultMutableTreeNode)objs[i]).getUserObject());
+                        ((DefaultMutableTreeNode)objs[i]).getUserObject());
             list.add(node);
             // TreePath select = SwingUtils.getTreePath(node);
             TreePath select = new TreePath(list.toArray());
@@ -433,19 +446,19 @@ public class ObjectTree extends JEntireRowTree {
      * @param properties		ソースビュープロパティ
      */
     public void setSourceProperties(SourceProperties properties) {
-    	// ツリー選択ノード背景色
-    	if (properties.getBackgoundSelectNodeColor() != null) {
-    		this.setSelectionBackground(properties.getBackgoundSelectNodeColor());
-    	}
-    	// 付加情報ノードフォント色
-    	if (properties.getInformationNodeFontColor() != null) {
-    		this.setInformationNodeFontColor(properties.getInformationNodeFontColor());
-    	}
+        // ツリー選択ノード背景色
+        if (properties.getBackgoundSelectNodeColor() != null) {
+            this.setSelectionBackground(properties.getBackgoundSelectNodeColor());
+        }
+        // 付加情報ノードフォント色
+        if (properties.getInformationNodeFontColor() != null) {
+            this.setInformationNodeFontColor(properties.getInformationNodeFontColor());
+        }
 
-    	// リンク切れ文字色
-    	if (properties.getBrokenLinkNodeFontColor() != null) {
-    		this.setBrokenLinkNodeFontColor(properties.getBrokenLinkNodeFontColor());
-    	}
+        // リンク切れ文字色
+        if (properties.getBrokenLinkNodeFontColor() != null) {
+            this.setBrokenLinkNodeFontColor(properties.getBrokenLinkNodeFontColor());
+        }
 
         this.repaint();
     }
@@ -456,7 +469,7 @@ public class ObjectTree extends JEntireRowTree {
      * @param color		付加情報ノードフォント色
      */
     public void setInformationNodeFontColor(Color color) {
-    	fontColorInformation = color;
+        fontColorInformation = color;
     }
 
     /**
@@ -465,21 +478,21 @@ public class ObjectTree extends JEntireRowTree {
      * @param selectnode		選択ノードユーザオブジェクト
      */
     public void expandObjectPath(Object selectnode) {
-    	if (selectnode == null) return;
+        if (selectnode == null) return;
 
-    	// 選択ノードの階層を取得する
-    	clearParentLists();
-    	List<Object> parents = getLanguagePath(selectnode);
-    	if (parents == null || parents.size() <= 0) return;
+        // 選択ノードの階層を取得する
+        clearParentLists();
+        List<Object> parents = getLanguagePath(selectnode);
+        if (parents == null || parents.size() <= 0) return;
 
-    	// ルートから展開を行う
+        // ルートから展開を行う
         TreeModel model = this.getModel();
         DefaultMutableTreeNode node = (DefaultMutableTreeNode)model.getRoot();
         for (int i=parents.size()-1; i>=0; i--) {
-        	DefaultMutableTreeNode expandnode =  expandObjectPath(parents.get(i), node);
-        	if (expandnode != null) {
-        		node = expandnode;
-        	}
+            DefaultMutableTreeNode expandnode =  expandObjectPath(parents.get(i), node);
+            if (expandnode != null) {
+                node = expandnode;
+            }
         }
     }
 
@@ -490,9 +503,9 @@ public class ObjectTree extends JEntireRowTree {
     public void setSelectedNode(Object selectnode) {
         if (selectnode == null) return;
 
-    	// 選択ノードの階層を取得する
-    	clearParentLists();
-    	List<Object> parents = getLanguagePath(selectnode);
+        // 選択ノードの階層を取得する
+        clearParentLists();
+        List<Object> parents = getLanguagePath(selectnode);
 
         TreeModel model = this.getModel();
         DefaultMutableTreeNode root = (DefaultMutableTreeNode)model.getRoot();
@@ -509,9 +522,9 @@ public class ObjectTree extends JEntireRowTree {
             }
             if (treeNode.getUserObject().equals(selectnode)) {
                 if (treeNode instanceof FilterTreeNode) {
-                	if (!((FilterTreeNode)treeNode).isPassed()) {
-                		break;
-                	}
+                    if (!((FilterTreeNode)treeNode).isPassed()) {
+                        break;
+                    }
                 }
                 TreePath path = new TreePath(treeNode.getPath());
                 this.setSelectionPath(path);
@@ -520,26 +533,26 @@ public class ObjectTree extends JEntireRowTree {
                 break;
             }
             if (parents != null) {
-	            for (Object obj : parents) {
-	                if (treeNode.getUserObject().equals(obj)) {
-	                	if (lastpath != null) {
-	                		Object lastObj = ((DefaultMutableTreeNode)lastpath.getLastPathComponent()).getUserObject();
-	                		if (lastObj == obj) {
-	                			break NODE_LOOP;
-	                		}
-	                	}
-	                    TreePath path = new TreePath(treeNode.getPath());
-	                    this.setSelectionPath(path);
-	                    this.scrollPathToVisibleForVertical(path);
-	                    lastpath = path;
-	                    break;
-	                }
-	            }
+                for (Object obj : parents) {
+                    if (treeNode.getUserObject().equals(obj)) {
+                        if (lastpath != null) {
+                            Object lastObj = ((DefaultMutableTreeNode)lastpath.getLastPathComponent()).getUserObject();
+                            if (lastObj == obj) {
+                                break NODE_LOOP;
+                            }
+                        }
+                        TreePath path = new TreePath(treeNode.getPath());
+                        this.setSelectionPath(path);
+                        this.scrollPathToVisibleForVertical(path);
+                        lastpath = path;
+                        break;
+                    }
+                }
             }
         }
         this.eventBlocked = false;
         if (lastpath != null) {
-        	// ツリーノード変更イベントを発生させる.
+            // ツリーノード変更イベントを発生させる.
             super.setSelectionPath(null);
             super.setSelectionPath(lastpath);
             super.scrollPathToVisibleForVertical(lastpath);
@@ -554,102 +567,102 @@ public class ObjectTree extends JEntireRowTree {
      * @return			データベース構造階層リスト
      */
     private List<Object> getLanguagePath(Object block) {
-    	if (block == null) return null;
+        if (block == null) return null;
 
-    	// 選択ノードの階層を取得する
-    	List<Object> parents = new ArrayList<Object>();
-    	Object child = block;
-    	while (child != null) {
-    		if (child instanceof ExecutableBody) {
-    	    	parents.add(child);
-    			child = ((ExecutableBody)child).getParent();
-    	    	if (child instanceof Procedure) {
-	    			if (((Procedure) child).isProgram()) {
-	        	    	parents.add(child);
-	    				break;
-	    			}
-    	    	}
-    		}
-    		else if (child instanceof Procedure) {
-    			if (((Procedure) child).isProgram()) {
-    				break;
-    			}
-    			// 検索済みProcedure
-    			List<Object> searched = getParentLists((Procedure)child);
-    			if (searched != null) {
-					parents.add(child);
-        	    	parents.addAll(searched);
-    	    		child = searched.get(searched.size()-1);
-        	    	continue;
-    			}
-    			if (parents.size() > 0) {
-    				if (parents.get(parents.size()-1) != child) {
-    					parents.add(child);
-    				}
-    				else {
-    					break;
-    				}
-    			}
-    	    	Set<ProcedureUsage> calls = ((Procedure)child).getCallMember();
-    	    	if (calls != null && calls.size() > 0) {
-    	    		ProcedureUsage[] array = calls.toArray(new ProcedureUsage[0]);
-    	    		List<Object> listMax = null;
-    	    		List<Object> listProg = null;
-    	    		for (ProcedureUsage useage : array) {
-    	    			// 循環参照となっていないかチェックする.
-    	    			if (isRecursiveBlock(parents, useage)) {
-    	    				return null;
-    	    			}
-    	    			List<Object> listPath = getLanguagePath(useage);
-    	    			if (listPath == null) continue;
-    	    			if (listMax == null) listMax = listPath;
-    	    			else if (listMax.size() < listPath.size()) listMax = listPath;
-    	    			if (listPath.get(listPath.size()-1) instanceof Procedure) {
-        	    			Object last = listPath.get(listPath.size()-1);
-    	        			if (((Procedure) last).isProgram()) {
-    	        				if (listProg == null) listProg = listPath;
-    	        				else if (listProg.size() > listPath.size()) listProg = listPath;
-    	        			}
-    	    			}
-    	    		}
-    	    		if (listProg != null ) {
-    	    			Object last = listProg.get(listProg.size()-1);
-    	        		if (last instanceof Procedure) {
-    	        			if (((Procedure) last).isProgram()) {
-    	            	    	addParentLists((Procedure)child, listMax);
-    	        	    		child = listProg.get(listProg.size()-1);
-    	            	    	parents.addAll(listProg);
-    	            	    	return parents;
-    	        			}
-    	        		}
-    	    		}
-    	    		if (listMax != null ) {
-            	    	addParentLists((Procedure)child, listMax);
-        	    		child = listMax.get(listMax.size()-1);
-            	    	parents.addAll(listMax);
-    	    		}
-    	    		else {
-    	    			child = null;
-    	    		}
-    	    	}
-    	    	else {
-    	    		child = null;
-    	    	}
-    		}
-    		else if (child instanceof IBlock) {
-    	    	parents.add(child);
-    			child = ((IBlock)child).getMotherBlock();
-    		}
-    		else {
-    			child = null;
-    		}
-    	}
-    	if (parents.size() <= 0) return null;
+        // 選択ノードの階層を取得する
+        List<Object> parents = new ArrayList<Object>();
+        Object child = block;
+        while (child != null) {
+            if (child instanceof ExecutableBody) {
+                parents.add(child);
+                child = ((ExecutableBody)child).getParent();
+                if (child instanceof Procedure) {
+                    if (((Procedure) child).isProgram()) {
+                        parents.add(child);
+                        break;
+                    }
+                }
+            }
+            else if (child instanceof Procedure) {
+                if (((Procedure) child).isProgram()) {
+                    break;
+                }
+                // 検索済みProcedure
+                List<Object> searched = getParentLists((Procedure)child);
+                if (searched != null) {
+                    parents.add(child);
+                    parents.addAll(searched);
+                    child = searched.get(searched.size()-1);
+                    continue;
+                }
+                if (parents.size() > 0) {
+                    if (parents.get(parents.size()-1) != child) {
+                        parents.add(child);
+                    }
+                    else {
+                        break;
+                    }
+                }
+                Set<ProcedureUsage> calls = ((Procedure)child).getCallMember();
+                if (calls != null && calls.size() > 0) {
+                    ProcedureUsage[] array = calls.toArray(new ProcedureUsage[0]);
+                    List<Object> listMax = null;
+                    List<Object> listProg = null;
+                    for (ProcedureUsage useage : array) {
+                        // 循環参照となっていないかチェックする.
+                        if (isRecursiveBlock(parents, useage)) {
+                            return null;
+                        }
+                        List<Object> listPath = getLanguagePath(useage);
+                        if (listPath == null) continue;
+                        if (listMax == null) listMax = listPath;
+                        else if (listMax.size() < listPath.size()) listMax = listPath;
+                        if (listPath.get(listPath.size()-1) instanceof Procedure) {
+                            Object last = listPath.get(listPath.size()-1);
+                            if (((Procedure) last).isProgram()) {
+                                if (listProg == null) listProg = listPath;
+                                else if (listProg.size() > listPath.size()) listProg = listPath;
+                            }
+                        }
+                    }
+                    if (listProg != null ) {
+                        Object last = listProg.get(listProg.size()-1);
+                        if (last instanceof Procedure) {
+                            if (((Procedure) last).isProgram()) {
+                                addParentLists((Procedure)child, listMax);
+                                child = listProg.get(listProg.size()-1);
+                                parents.addAll(listProg);
+                                return parents;
+                            }
+                        }
+                    }
+                    if (listMax != null ) {
+                        addParentLists((Procedure)child, listMax);
+                        child = listMax.get(listMax.size()-1);
+                        parents.addAll(listMax);
+                    }
+                    else {
+                        child = null;
+                    }
+                }
+                else {
+                    child = null;
+                }
+            }
+            else if (child instanceof IBlock) {
+                parents.add(child);
+                child = ((IBlock)child).getMotherBlock();
+            }
+            else {
+                child = null;
+            }
+        }
+        if (parents.size() <= 0) return null;
 
-    	return parents;
+        return parents;
     }
 
-	/**
+    /**
      * ノード範囲を選択する
      * @param startnode		選択開始ノード
      * @param endnode		選択終了ノード
@@ -657,22 +670,22 @@ public class ObjectTree extends JEntireRowTree {
     @Override
     public void setSelectedNodeArea(Object startnode, Object endnode) {
         expandObjectPath(startnode);
-    	setSelectedNode(startnode);
+        setSelectedNode(startnode);
         expandObjectPath(endnode);
-    	setSelectedNode(endnode);
+        setSelectedNode(endnode);
 
-    	super.setSelectedNodeArea(startnode, endnode);
+        super.setSelectedNodeArea(startnode, endnode);
 
         return;
     }
 
-	/**
-	 * データベースを設定する.
-	 * @param language データベース
-	 */
-	public void setLanguageDb(Program language) {
-		this.languageDb = language;
-	}
+    /**
+     * データベースを設定する.
+     * @param language データベース
+     */
+    public void setLanguageDb(Program language) {
+        this.languageDb = language;
+    }
 
 
     /**
@@ -680,12 +693,12 @@ public class ObjectTree extends JEntireRowTree {
      * @param selectnodes		選択ノードユーザオブジェクト
      */
     public void setSelectedNodes(Object[] selectnodes) {
-    	if (selectnodes == null) return;
-    	for (Object obj : selectnodes) {
+        if (selectnodes == null) return;
+        for (Object obj : selectnodes) {
             expandObjectPath(obj);
-        	setSelectedNode(obj);
-    	}
-    	super.setSelectedNodes(selectnodes, false);
+            setSelectedNode(obj);
+        }
+        super.setSelectedNodes(selectnodes, false);
         return;
     }
 
@@ -694,15 +707,15 @@ public class ObjectTree extends JEntireRowTree {
      * @param color		リンク切れ文字色
      */
     public void setBrokenLinkNodeFontColor(Color color) {
-    	fontColorBrokenLink = color;
+        fontColorBrokenLink = color;
     }
 
-	@Override
-	protected void fireValueChanged(TreeSelectionEvent e) {
-		if (!this.eventBlocked) {
-			super.fireValueChanged(e);
-		}
-	}
+    @Override
+    protected void fireValueChanged(TreeSelectionEvent e) {
+        if (!this.eventBlocked) {
+            super.fireValueChanged(e);
+        }
+    }
 
 
     /**
@@ -712,15 +725,15 @@ public class ObjectTree extends JEntireRowTree {
      * @return				true=循環参照
      */
     private boolean isRecursiveBlock(List<Object> list, Object block) {
-		if (list == null) return false;
-		if (block == null) return false;
-		for (Object obj : list) {
-			if (obj == block) {
-				return true;
-			}
-		}
-		return false;
-	}
+        if (list == null) return false;
+        if (block == null) return false;
+        for (Object obj : list) {
+            if (obj == block) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     /**
      * ノード検索済みProcedureリストに追加する.
@@ -728,18 +741,18 @@ public class ObjectTree extends JEntireRowTree {
      * @param objs		検索結果親リスト
      */
     private void addParentLists(Procedure proc, List<Object> objs) {
-    	if (this.parentLists == null) {
-    		this.parentLists = new java.util.HashMap<Procedure, List<Object>>();
-    	}
-    	this.parentLists.put(proc, objs);
+        if (this.parentLists == null) {
+            this.parentLists = new java.util.HashMap<Procedure, List<Object>>();
+        }
+        this.parentLists.put(proc, objs);
     }
 
     /**
      * ノード検索済みProcedureリストをクリアする
      */
     private void clearParentLists() {
-    	this.parentLists = null;
-    	this.parentLists = new java.util.HashMap<Procedure, List<Object>>();
+        this.parentLists = null;
+        this.parentLists = new java.util.HashMap<Procedure, List<Object>>();
     }
 
     /**
@@ -748,18 +761,18 @@ public class ObjectTree extends JEntireRowTree {
      * @return   検索結果親リスト
      */
     private List<Object> getParentLists(Procedure proc) {
-    	if (this.parentLists == null) return null;
-    	return this.parentLists.get(proc);
+        if (this.parentLists == null) return null;
+        return this.parentLists.get(proc);
     }
 
     /**
      * 選択ノードの変更イベントを発生させる
      */
-	public void fireSelectNodeChanged() {
-		TreePath[] paths = this.getSelectionPaths();
-		super.setSelectionPaths(null);
-		super.setSelectionPaths(paths);
-	}
+    public void fireSelectNodeChanged() {
+        TreePath[] paths = this.getSelectionPaths();
+        super.setSelectionPaths(null);
+        super.setSelectionPaths(paths);
+    }
 }
 
 

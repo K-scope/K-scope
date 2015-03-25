@@ -18,17 +18,16 @@
 package jp.riken.kscope.language;
 
 /**
- * 繰り返し処理の最後に飛ぶ制御文クラス。
+ * 複文クラス。
  *
  * @author RIKEN
- * @version    2015/03/15     C言語, FortranにてtoString出力文字列の変更
+ * @version    2015/03/15     C言語用複文（空文）新規作成
  *
  */
-public class Continue extends jp.riken.kscope.language.Block {
+public class CompoundBlock extends jp.riken.kscope.language.Block {
+
     /** シリアル番号 */
-    private static final long serialVersionUID = 1600666700399053469L;
-    /** ラベル */
-    private String label;
+    private static final long serialVersionUID = 8400596882091353264L;
 
     /**
      * コンストラクタ。
@@ -36,63 +35,33 @@ public class Continue extends jp.riken.kscope.language.Block {
      * @param parent
      *          親ブロック
      */
-    public Continue(Block parent) {
+    public CompoundBlock(Block parent) {
         super(parent);
     }
 
     /**
      * コンストラクタ。
-     *
-     * @param parent
-     *          親ブロック
-     * @param lbl
-     *          ラベル
      */
-    public Continue(Block parent, String lbl) {
-        super(parent);
-        label = lbl;
-    }
-
-    /**
-     * コンストラクタ。
-     */
-    public Continue() {
+    public CompoundBlock() {
         super();
     }
 
     /**
      * ブロックタイプの取得。
      *
-     * @return BlockType.CONTINUE
+     * @return BlockType.DO_NOTHING
      */
     public BlockType getBlockType() {
-        return BlockType.CONTINUE;
-    }
-
-    /**
-     * ラベルの取得。
-     *
-     * @return ラベル
-     */
-    public String getLabel() {
-        return label;
+        return BlockType.COMPOUND;
     }
 
     @Override
     public String toString() {
         return this.toStringBase();
     }
+
     @Override
     protected String toStringBase() {
-        if (this.isFortran()) {
-            if (this.label == null) {
-                return "cycle";
-            } else {
-                return "cycle " + this.label;
-            }
-        }
-        else {
-            return "continue";
-        }
+        return "{";
     }
 }

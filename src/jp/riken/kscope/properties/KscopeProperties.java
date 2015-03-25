@@ -1,6 +1,18 @@
 /*
- * Copyright (c) 2011 RIKEN, Japan. All right reserved.
- * release date : 2012/03/15
+ * K-scope
+ * Copyright 2012-2015 RIKEN, Japan
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package jp.riken.kscope.properties;
 
@@ -33,6 +45,7 @@ import org.xml.sax.SAXException;
 /**
  * K-scopeプロパティクラス アプリケーションプロパティを"properties.xml"から読み込む。 アプリケーションプロパティ値の取得を行う。
  * @author RIKEN
+ * @version    2015/03/15      アプリケーションバージョンを0.3.0にする
  */
 public class KscopeProperties {
 
@@ -50,7 +63,7 @@ public class KscopeProperties {
      * version : 0.2.4        2013/10/30 release
      * version : 0.2.5        2013/12/27 release
      * version : 0.2.6        2014/11/10 release
-     * version : 0.3.0        2015/02/01
+     * version : 0.3.0        2015/03/01
      */
     public static final String APPLICATION_VERSION = "0.3.0";
 

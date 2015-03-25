@@ -1,6 +1,6 @@
 /*
  * K-scope
- * Copyright 2012-2013 RIKEN, Japan
+ * Copyright 2012-2015 RIKEN, Japan
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,18 +18,20 @@
 package jp.riken.kscope.language.fortran;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
-*
-* 変数の属性を示すクラス.<br>
-*
-* @author RIKEN
-*
-*/
-public class VariableAttribute
- implements Serializable,
+ *
+ * 変数の属性を示すクラス.<br>
+ *
+ * @author RIKEN
+ * @version    2015/03/15     C言語変数属性の追加
+ *
+ */
+public class VariableAttribute implements Serializable,
         jp.riken.kscope.language.IVariableAttribute {
     /** シリアル番号 */
     private static final long serialVersionUID = 3279154150773399072L;
@@ -119,7 +121,7 @@ public class VariableAttribute
     }
 
     /** 全属性の情報. */
-    private Set<String> attributes = new HashSet<String>();
+    private List<String> attributes = new ArrayList<String>();
 
     /**
      * デフォルトコンストラクタ。
@@ -134,7 +136,7 @@ public class VariableAttribute
      * @param attrbts
      *            全属性リスト
      */
-    public VariableAttribute(Set<String> attrbts) {
+    public VariableAttribute(List<String> attrbts) {
         this.setAttributes(attrbts);
     }
 
@@ -295,7 +297,7 @@ public class VariableAttribute
      *            設定すべき全属性
      */
     @Override
-    public void setAttributes(Set<String> attrbts) {
+    public void setAttributes(List<String> attrbts) {
         if (attrbts != null) {
             attributes = attrbts;
         }
@@ -323,7 +325,7 @@ public class VariableAttribute
      * @return 全属性
      */
     @Override
-    public Set<String> getAttributes() {
+    public List<String> getAttributes() {
         return attributes;
     }
 
@@ -517,5 +519,24 @@ public class VariableAttribute
         if (array < pointer) return false;
 
         return true;
+    }
+
+    /**
+     * 対象文字列が属性内に含まれている数を取得する。<br>
+     * ただし、対象文字列の大文字小文字は無視する。<br>
+     * @param keyword              対象文字列
+     * @return  count: 対象文字列が含まれる数
+     */
+    @Override
+    public int countOf(String keyword) {
+
+        int count = 0;
+        for (String item : attributes) {
+            // すべて小文字にして比較する
+            if (item.toLowerCase().equals(keyword.toLowerCase())) {
+                count++;
+            }
+        }
+        return count;
     }
 }

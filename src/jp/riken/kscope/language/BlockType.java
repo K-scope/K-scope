@@ -1,6 +1,6 @@
 /*
  * K-scope
- * Copyright 2012-2013 RIKEN, Japan
+ * Copyright 2012-2015 RIKEN, Japan
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,6 +23,7 @@ import java.io.Serializable;
  * Blockの型を表すenum。
  *
  * @author RIKEN
+ * @version    2015/03/15     C言語構造体、共同体、列挙体の追加
  *
  */
 public enum BlockType implements Serializable {
@@ -87,5 +88,9 @@ public enum BlockType implements Serializable {
     /** C:列挙体 */
     ENUM,
     /** 不明 */
-    UNKNOWN;
+    UNKNOWN,
+    /** 複文 */
+    COMPOUND;
 }
+
+

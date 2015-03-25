@@ -1,6 +1,6 @@
 /*
  * K-scope
- * Copyright 2012-2013 RIKEN, Japan
+ * Copyright 2012-2015 RIKEN, Japan
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,6 +33,7 @@ import jp.riken.kscope.language.fortran.VariableAttribute;
 import jp.riken.kscope.utils.StringUtils;
 /**
  * 変数・構造体の宣言を表現するクラス。
+ * @version    2015/03/15      C言語, FortranにてtoString出力文字列の変更
  */
 public class VariableDefinition implements Serializable, IInformation, IBlock {
     /** シリアル番号 */
@@ -356,7 +357,7 @@ public class VariableDefinition implements Serializable, IInformation, IBlock {
 
         if (this.type != null) {
             // データ型
-            var.append(this.type.toStringClang());
+            var.append(this.type.getName());
         }
 
         var.append(" ");
@@ -365,7 +366,12 @@ public class VariableDefinition implements Serializable, IInformation, IBlock {
             if (is_pointer) var.append("(");
         }
         // ポインタ
-        if (is_pointer) var.append("*");
+        if (is_pointer) {
+            int pointer_count = this.attribute.countOf("pointer");
+            for (int i=0; i<pointer_count; i++) {
+                var.append("*");
+            }
+        }
 
         // 変数名
         var.append(name);

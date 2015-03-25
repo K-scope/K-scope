@@ -30,31 +30,31 @@ public enum FILTER_TYPE {
     // 構造ツリーフィルタタイプ
     /** サブルーチン・関数 */
     PROCEDURE(Message.getString("mainmenu.view.filter.subroutine-function"), //サブルーチン・関数
-    		new Class<?>[]{jp.riken.kscope.language.Procedure.class}), 
+            new Class<?>[]{jp.riken.kscope.language.Procedure.class}),
     /** CALL文 */
     PROCEDUREUSAGE(Message.getString("filter_type.enum.call"), //CALL文
-    		new Class<?>[]{jp.riken.kscope.language.ProcedureUsage.class}),
+            new Class<?>[]{jp.riken.kscope.language.ProcedureUsage.class}),
     /** DO文 */
-    REPETITION(Message.getString("filter_type.enum.do"), //DO文 
-    		new Class<?>[]{
-    								jp.riken.kscope.language.Repetition.class,
-            						jp.riken.kscope.language.ArrayExpression.class}),
+    REPETITION(Message.getString("filter_type.enum.do"), //DO文
+            new Class<?>[]{
+                                    jp.riken.kscope.language.Repetition.class,
+                                    jp.riken.kscope.language.ArrayExpression.class}),
     /** SELECT文 */
-    SELECTION_SELECT(Message.getString("filter_type.enum.selection"), //SELECT,CASE文 
-    		new Class<?>[]{
+    SELECTION_SELECT(Message.getString("filter_type.enum.selection"), //SELECT,CASE文
+            new Class<?>[]{
                                     jp.riken.kscope.language.Selection.class,
                                     jp.riken.kscope.language.Condition.class}),
     /** IF文 */
     SELECTION_IF(Message.getString("filter_type.enum.if"), //IF,WHERE,ELSE文
-    		new Class<?>[]{
+            new Class<?>[]{
                                     jp.riken.kscope.language.Selection.class,
                                     jp.riken.kscope.language.Condition.class}),
     /** 代入文 */
     SUBSTITUTION(Message.getString("filter_type.enum.assign"), //代入文
-    		new Class<?>[]{jp.riken.kscope.language.Substitution.class}),
+            new Class<?>[]{jp.riken.kscope.language.Substitution.class}),
     /** フロー制御文 */
     FLOW(Message.getString("filter_type.enum.flow"), //フロー制御文
-    		new Class<?>[]{jp.riken.kscope.language.Return.class,
+            new Class<?>[]{jp.riken.kscope.language.Return.class,
                                      jp.riken.kscope.language.Break.class,
                                      jp.riken.kscope.language.Continue.class,
                                      jp.riken.kscope.language.GoTo.class,
@@ -62,10 +62,10 @@ public enum FILTER_TYPE {
                                      }),
     /** ディレクティブ文:OpenMP */
     DIRECTIVE_OPENML(Message.getString("mainmenu.view.filter.openmp"), //OpenMP
-    		new Class<?>[]{jp.riken.kscope.language.Directive.class}),
+            new Class<?>[]{jp.riken.kscope.language.Directive.class}),
     /** ディレクティブ文:OCL */
     DIRECTIVE_OCL(Message.getString("mainmenu.view.filter.ocl"), //OCL
-    		new Class<?>[]{jp.riken.kscope.language.Directive.class}),
+            new Class<?>[]{jp.riken.kscope.language.Directive.class}),
     /** デフォルト */
     DEFAULT(Message.getString("mainmenu.view.filter.default"), null), //デフォルト
     /** すべて表示(フィルタ無し) */

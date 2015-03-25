@@ -1,6 +1,6 @@
 /*
  * K-scope
- * Copyright 2012-2013 RIKEN, Japan
+ * Copyright 2012-2015 RIKEN, Japan
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,7 @@ package jp.riken.kscope.language;
  * 繰り返し処理を抜ける制御文に対応したクラス。
  *
  * @author RIKEN
+ * @version    2015/03/15     C言語, FortranにてtoString出力文字列の変更
  *
  */
 public class Break extends jp.riken.kscope.language.Block {
@@ -81,12 +82,19 @@ public class Break extends jp.riken.kscope.language.Block {
     public String toString() {
         return this.toStringBase();
     }
+
     @Override
     protected String toStringBase() {
-        if (this.label == null) {
-            return "exit";
-        } else {
-            return "exit " + this.label;
+        if (this.isFortran()) {
+            if (this.label == null) {
+                return "exit";
+            } else {
+                return "exit " + this.label;
+            }
+        }
+        else {
+            return "break";
         }
     }
+
 }

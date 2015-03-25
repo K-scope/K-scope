@@ -1,6 +1,6 @@
 /*
  * K-scope
- * Copyright 2012-2013 RIKEN, Japan
+ * Copyright 2012-2015 RIKEN, Japan
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,6 +27,7 @@ import jp.riken.kscope.language.generic.*;
  * Entryインターフェイスクラス.
  * データベースの探索を行う.
  * @author RIKEN
+ * @version    2015/03/15     探索履歴リストチェックメソッドの追加
  */
 public interface ILanguageEntry {
 

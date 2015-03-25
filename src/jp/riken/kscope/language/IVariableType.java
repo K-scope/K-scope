@@ -1,6 +1,6 @@
 /*
  * K-scope
- * Copyright 2012-2013 RIKEN, Japan
+ * Copyright 2012-2015 RIKEN, Japan
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@ package jp.riken.kscope.language;
 * データ型を示すインターフェース.<br>
 * 各言語に対応したVariableType(enum型)がこのインターフェースを実装して使用する。
 *
-* @author RIKEN
+* @author RIKEN * @version    2015/03/15     C言語, FortranにてtoString出力文字列の変更
 *
 */
 public interface IVariableType {
@@ -81,4 +81,10 @@ public interface IVariableType {
      * @return		C言語データ型文字列表現
      */
     String toStringClang();
+
+    /**
+     * void型であるかチェックする
+     * @return		true=void
+     */
+    boolean isVoid();
 }

@@ -35,6 +35,7 @@ import jp.riken.kscope.information.InformationBlocks;
 import jp.riken.kscope.information.TextInfo;
 import jp.riken.kscope.language.fortran.Type;
 import jp.riken.kscope.language.generic.Procedures;
+
 /**
  * プログラム単位を表現するクラス。
  *

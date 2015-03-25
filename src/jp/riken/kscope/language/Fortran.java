@@ -1,6 +1,6 @@
 /*
  * K-scope
- * Copyright 2012-2013 RIKEN, Japan
+ * Copyright 2012-2015 RIKEN, Japan
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,6 +37,8 @@ import jp.riken.kscope.parser.IAnalyseParser;
  * Fortranプログラムを表現するクラス。 ソースファイルをパースして得られた情報は、全てこのクラス(superクラスも含む)のメソッドを用いて生成する。
  * クラスFortranはProgramUnit、Blockの派生クラスで構成され、
  * オブジェクト生成メソッドは常にcurrentUnit、currentBlockに対して実行される。
+ * @version    2015/03/15     探索失敗スタックの追加
+ *                                関数定義探索方法のC言語対応
  */
 public final class Fortran extends Program {
     /** シリアル番号 */

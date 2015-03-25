@@ -1,6 +1,6 @@
 /*
  * K-scope
- * Copyright 2012-2013 RIKEN, Japan
+ * Copyright 2012-2015 RIKEN, Japan
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,15 +19,22 @@ package jp.riken.kscope.language;
 
 /**
  * 手続きの終了を表すクラス。
- * 
+ *
  * @author RIKEN
- * 
+ * @version    2015/03/15     C言語：return式の追加
+ *
  */
 public class Return extends Block {
-	/** シリアル番号 */
-	private static final long serialVersionUID = 2144326483810706905L;
+    /** シリアル番号 */
+    private static final long serialVersionUID = 2144326483810706905L;
+
     /**
-     * 
+     * リターン式
+     */
+    private Expression expression;
+
+    /**
+     *
      * コンストラクタ。
      */
     Return() {
@@ -35,7 +42,16 @@ public class Return extends Block {
     }
 
     /**
-     * 
+     * コンストラクタ。
+     * @param expression リターン式
+     */
+    Return(Expression expression) {
+        super();
+        this.expression = expression;
+    }
+
+    /**
+     *
      * コンストラクタ。
      */
     Return(Block mama) {
@@ -49,12 +65,20 @@ public class Return extends Block {
     public BlockType getBlockType() {
         return BlockType.RETURN;
     }
-    @Override
-    public String toString() {
-        return this.toStringBase();
+
+    /**
+     * リターン式を取得する.
+     * @return expression		リターン式
+     */
+    public Expression getExpression() {
+        return expression;
     }
-    @Override
-    protected String toStringBase() {
-        return "return";
+
+    /**
+     * リターン式を設定する.
+     * @param expression リターン式
+     */
+    public void setExpression(Expression expression) {
+        this.expression = expression;
     }
 }

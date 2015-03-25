@@ -30,6 +30,7 @@ import jp.riken.kscope.language.generic.*;
  * 付加情報探索クラス.
  * 指定ブロック配下のすべての付加情報を取得する.
  * @author RIKEN
+ * @version    2015/03/15     探索履歴リストチェックメソッドの追加
  */
 public class InformationEntry implements ILanguageEntry {
     /** 付加情報リスト */

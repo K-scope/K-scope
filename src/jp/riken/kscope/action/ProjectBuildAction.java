@@ -1,6 +1,6 @@
 /*
  * K-scope
- * Copyright 2012-2013 RIKEN, Japan
+ * Copyright 2012-2015 RIKEN, Japan
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,6 +44,7 @@ import jp.riken.kscope.xcodeml.fortran.XcodeMLParserStax;
  * 構造解析実行アクション.<br/>
  * 構造解析を別スレッドで行う。
  * @author RIKEN
+ * @version    2015/03/15     C言語対応によりパーサ設定の変更
  */
 public class ProjectBuildAction extends ActionBase {
     /** データベースの構築、探索を行うクラス */

@@ -1,6 +1,6 @@
 /*
  * K-scope
- * Copyright 2012-2013 RIKEN, Japan
+ * Copyright 2012-2015 RIKEN, Japan
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@
 
 package jp.riken.kscope.language;
 
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -25,6 +26,8 @@ import java.util.Set;
 * 各言語に対応したVariableAttributeクラスが、このインターフェースを実装して使用する。
 *
 * @author RIKEN
+ * @version    2015/03/15     C言語, FortranにてtoString出力文字列の変更
+ *                                属性値リストをSet(重複不可）からList(重複可)に変更
 *
 */
 public interface IVariableAttribute {
@@ -35,7 +38,7 @@ public interface IVariableAttribute {
      * @param attrbts
      *            設定すべき全属性
      */
-    void setAttributes(Set<String> attrbts);
+    void setAttributes(List<String> attrbts);
 
     /**
      * 属性の設定.
@@ -50,7 +53,7 @@ public interface IVariableAttribute {
      *
      * @return 全属性
      */
-    Set<String> getAttributes();
+    List<String> getAttributes();
 
     /**
      * 属性の追加.
@@ -100,4 +103,14 @@ public interface IVariableAttribute {
      *
      */
     boolean matches(IVariableAttribute value);
+
+
+    /**
+     * 対象文字列が属性内に含まれている数を取得する。<br>
+     * ただし、対象文字列の大文字小文字は無視する。<br>
+     * @param keyword              対象文字列
+     * @return  count: 対象文字列が含まれる数
+     */
+    int countOf(String keyword);
+
 }

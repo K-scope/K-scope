@@ -1,6 +1,6 @@
 /*
  * K-scope
- * Copyright 2012-2013 RIKEN, Japan
+ * Copyright 2012-2015 RIKEN, Japan
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -70,6 +70,7 @@ import jp.riken.kscope.language.generic.Procedures;
  * データベースの検証クラス.
  * 未定義構造体を検索し、定義を設定する.
  * @author RIKEN
+ * @version    2015/03/15     探索履歴リストチェックメソッドの追加
  */
 public class ValidateLanguage implements ILanguageEntry {
     /** 探索履歴リスト */

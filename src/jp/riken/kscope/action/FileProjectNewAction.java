@@ -1,6 +1,6 @@
 /*
  * K-scope
- * Copyright 2012-2013 RIKEN, Japan
+ * Copyright 2012-2015 RIKEN, Japan
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -55,6 +55,7 @@ import jp.riken.kscope.xcodeml.fortran.XcodeMLParserStax;
 /**
  * プロジェクトの新規作成アクション
  * @author RIKEN
+ * @version    2015/03/15     C言語対応によりパーサ設定の変更
  */
 public class FileProjectNewAction extends ActionBase {
     /** 中間コードを生成するクラス */

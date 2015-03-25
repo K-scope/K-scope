@@ -1,6 +1,6 @@
 /*
  * K-scope
- * Copyright 2012-2013 RIKEN, Japan
+ * Copyright 2012-2015 RIKEN, Japan
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,6 +40,7 @@ import jp.riken.kscope.language.generic.Procedures;
 
 /**
  * プログラムを表現する抽象クラス
+ * @version    2015/03/01   	複文ブロックの登録インターフェイス追加
  */
 public abstract class Program implements Serializable {
     /** シリアル番号 */
@@ -541,7 +542,7 @@ public abstract class Program implements Serializable {
      *
      * @return カレントブロック.カレントユニットがサブルーチンではない場合はnullを返す.
      */
-    private Block getCurrentBlock() {
+    public Block getCurrentBlock() {
         if (currentUnit instanceof Procedure) {
             return ((Procedure) currentUnit).getCurrentBlock();
         } else {
@@ -634,6 +635,18 @@ public abstract class Program implements Serializable {
      */
     public void setReturn(CodeLine lineInfo, String label) {
         Return blk = new Return();
+        setBlockToCurrent(blk, lineInfo, label);
+    }
+
+    /**
+     * Return文をセットする。
+     *
+     * @param lineInfo           行情報
+     * @param exp リターン式
+     * @param label       ラベル。ない場合はStatement.NO_LABELをセットする。
+     */
+    public void setReturn(CodeLine lineInfo, Expression exp, String label) {
+        Return blk = new Return(exp);
         setBlockToCurrent(blk, lineInfo, label);
     }
 
@@ -1193,4 +1206,22 @@ public abstract class Program implements Serializable {
         }
         return null;
     }
+
+
+    /**
+     * 複文の処理ブロックを開始する。
+     * @param lineInfo 行情報
+     */
+    public void startCompoundBlock(CodeLine lineInfo) {
+        ((Procedure) currentUnit).startCompoundBlock(lineInfo);
+    }
+
+    /**
+     * 複文の処理ブロックを終了する。
+     * @param lineInfo 行情報
+     */
+    public void endCompoundBlock(CodeLine lineInfo) {
+        ((Procedure) currentUnit).endCompoundBlock(lineInfo);
+    }
+
 }

@@ -1,6 +1,6 @@
 /*
  * K-scope
- * Copyright 2012-2013 RIKEN, Japan
+ * Copyright 2012-2015 RIKEN, Japan
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,6 +30,7 @@ import jp.riken.kscope.language.generic.*;
  * データベースリセットクラス.
  * サブルーチン、関数、変数の定義参照をクリアする.
  * @author RIKEN
+ * @version    2015/03/15     探索履歴リストチェックメソッドの追加
  */
 public class ClearDefinitions implements ILanguageEntry {
     /** 探索履歴リスト */

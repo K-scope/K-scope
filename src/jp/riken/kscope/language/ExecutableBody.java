@@ -1,6 +1,6 @@
 /*
  * K-scope
- * Copyright 2012-2013 RIKEN, Japan
+ * Copyright 2012-2015 RIKEN, Japan
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,6 +26,8 @@ import jp.riken.kscope.data.CodeLine;
  * 手続きの実行文領域を表現するクラス。 ソースコードの対象領域と行情報に基づく対応付けは実施しない。
  *
  * @author RIKEN
+ * @version    2015/03/15     C言語, Fortranのチェックメソッドの追加
+ *                                 複文(空文)登録インターフェイス追加
  *
  */
 public class ExecutableBody extends Block {
@@ -434,6 +436,18 @@ public class ExecutableBody extends Block {
     }
 
     /**
+     * Return文を設定する。
+     * @param lineInfo           コード行情報
+     * @param exp           リターン式
+     */
+    protected void setReturn(CodeLine lineInfo, Expression exp) {
+        Return new_block = new Return(currentBlock);
+        new_block.setExpression(exp);
+        start_block(lineInfo, new_block);
+        end_block(lineInfo);
+    }
+
+    /**
      * IDを取得する。
      *
      * @return ID
@@ -522,4 +536,25 @@ public class ExecutableBody extends Block {
 
         return true;
     }
+
+
+    /**
+     * 複文(空文)の開始を行う
+     * @param lineInfo    コード行情報
+     */
+    protected void startCompoundBlock(CodeLine lineInfo) {
+        CompoundBlock block = new CompoundBlock(currentBlock);
+        block.set_block_start(lineInfo);
+        currentBlock.add_child(block);
+        currentBlock = block;
+    }
+
+    /**
+     * 複文(空文)の終了を行う
+     * @param lineInfo    コード行情報
+     */
+    protected void endCompoundBlock(CodeLine lineInfo) {
+        end_block(lineInfo);
+    }
+
 }

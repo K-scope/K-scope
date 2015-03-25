@@ -36,8 +36,8 @@ import jp.riken.kscope.language.fortran.VariableType.PrimitiveDataType;
  * 手続きを表現するクラス。
  * Fortranにおけるsubroutine,function,entryに対応する。
  * @author RIKEN
- * @date    2015/03/01   	関数表記(toString)をC言語とFortranにて振分
- * @date    2015/03/01   	仮引数の変数検索をC言語にて大文字・小文字を区別する様に変更(getNumOfDummyArgument)
+ * @version    2015/03/01   	関数表記(toString)をC言語とFortranにて振分
+ *                              	仮引数の変数検索をC言語にて大文字・小文字を区別する様に変更(getNumOfDummyArgument)
  */
 public class Procedure extends ProgramUnit {
     /** シリアル番号 */
@@ -159,7 +159,12 @@ public class Procedure extends ProgramUnit {
         StringBuffer buf = new StringBuffer();
         IVariableType func_type = this.getReturnValueType();
         if (func_type != null) {
-            buf.append(func_type.toString());
+            if (func_type.isVoid()) {
+                buf.append("void");
+            }
+            else {
+                buf.append(func_type.toString());
+            }
         }
         else {
             buf.append("void");
@@ -517,6 +522,16 @@ public class Procedure extends ProgramUnit {
     public void setReturn(CodeLine lineInfo) {
         body.setReturn(lineInfo);
     }
+
+    /**
+     * Return文を設定する。
+     * @param lineInfo           コード行情報
+     * @param exp           リターン式
+     */
+    protected void setReturn(CodeLine lineInfo, Expression exp) {
+        body.setReturn(lineInfo, exp);
+    }
+
     /**
      * 実引数リストが適合しているかどうか。<br>
      *
@@ -943,5 +958,22 @@ public class Procedure extends ProgramUnit {
          VariableAttribute attr = (VariableAttribute) this.attribute;
          return attr.getSclass();
 
+     }
+
+     /**
+      * 複文(空文)の開始を行う
+      * @param lineInfo    コード行情報
+      */
+     protected void startCompoundBlock(CodeLine lineInfo) {
+         body.startCompoundBlock(lineInfo);
+     }
+
+
+     /**
+      * 複文(空文)の終了を行う
+      * @param lineInfo    コード行情報
+      */
+     protected void endCompoundBlock(CodeLine lineInfo) {
+         body.endCompoundBlock(lineInfo);
      }
 }

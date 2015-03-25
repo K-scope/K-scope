@@ -1,6 +1,6 @@
 /*
  * K-scope
- * Copyright 2012-2013 RIKEN, Japan
+ * Copyright 2012-2015 RIKEN, Japan
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,6 +34,7 @@ import jp.riken.kscope.language.VariableDefinition;
  * structure型クラス.
  * C言語:構造体、共同体、列挙体を表現する.
  * @author RIKEN
+ * @version    2015/03/15     C言語構造体、共同体、列挙体の追加
  *
  */
 public class Structure implements IBlock, Serializable {

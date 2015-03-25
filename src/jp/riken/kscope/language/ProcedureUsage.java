@@ -1,6 +1,6 @@
 /*
  * K-scope
- * Copyright 2012-2013 RIKEN, Japan
+ * Copyright 2012-2015 RIKEN, Japan
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,7 +28,8 @@ import jp.riken.kscope.information.InformationBlocks;
 /**
  * 手続き呼び出しを表現するクラス。
  *
- * @author RIKEN
+ * @author RIKEN 
+ * @version    2015/03/15     関数名同一チェックメソッド追加
  *
  */
 public class ProcedureUsage extends Block {
@@ -120,6 +121,8 @@ public class ProcedureUsage extends Block {
             }
         }
 
+        myString.append(call + super.toString());
+        /*
         myString.append(call + this.callName);
         if (this.arguments != null) {
             myString.append("(");
@@ -129,6 +132,7 @@ public class ProcedureUsage extends Block {
             }
             myString.replace(myString.length() - 2, myString.length(), ")");
         }
+        */
         return myString.toString();
     }
 

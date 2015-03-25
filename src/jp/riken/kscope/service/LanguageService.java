@@ -1,6 +1,6 @@
 /*
  * K-scope
- * Copyright 2012-2013 RIKEN, Japan
+ * Copyright 2012-2015 RIKEN, Japan
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -58,6 +58,7 @@ import jp.riken.kscope.information.TextInfo;
 import jp.riken.kscope.language.Block;
 import jp.riken.kscope.language.Break;
 import jp.riken.kscope.language.Common;
+import jp.riken.kscope.language.CompoundBlock;
 import jp.riken.kscope.language.Condition;
 import jp.riken.kscope.language.Continue;
 import jp.riken.kscope.language.Data;
@@ -111,6 +112,7 @@ import jp.riken.kscope.xcodeml.FactoryXcodeMLParser;
 /**
  * データベースの構築、探索を行うクラス。
  * @author RIKEN
+ * @version    2015/03/15      C言語対応による変更
  */
 public class LanguageService extends BaseService {
 
@@ -154,6 +156,8 @@ public class LanguageService extends BaseService {
     private int treeDepth = 2;
     /** データベースシリアライズストリーム */
     private volatile ObjectInputStream languageStream;
+    /** デバッグ判断フラグ */
+    private final boolean _DEBUG = true;
 
     /**
      * コンストラクタ.
@@ -612,6 +616,19 @@ public class LanguageService extends BaseService {
                     }
                 }
                 writeBlocks(blk, parent, flag, childdepth); // 代入文の関数呼び出しはparentの子要素とする
+
+            } else if (blk instanceof CompoundBlock) {
+                // for debug
+                if (this._DEBUG) {
+                    child = new FilterTreeNode(blk, depth);
+                    child = parent.add(child);
+                    writeBlocks(blk, child, flag, depth+1);
+                    continue;
+                }
+
+                // 複文の場合、ツリー上に表現しない
+                writeBlocks(blk, parent, flag, depth);
+
             } else {
                 child = new FilterTreeNode(blk, depth);
                 child = parent.add(child);
@@ -939,15 +956,7 @@ public class LanguageService extends BaseService {
         checkProgramUnitFlag.clear();
 
         Procedure proc = this.fortranDb.search_subroutine(procName);
-        boolean flag = true;
-        StringBuilder out = new StringBuilder();
-        checkProgramUnitFlag.add(proc);
-        if (proc != null && proc.get_name().equals(this.fortranDb.getMainName())) {
-            out.append("program " + procName + "\n");
-            writeTexts(proc.getBody(), 0, flag, out);
-            out.append("end program\n");
-            return out.toString();
-        } else if (proc == null) {
+        if (proc == null) {
             // エラーメッセージ : languageservice.procedure.error=[%s]は存在しません。
             JOptionPane.showMessageDialog(null,
                     Message.getString("languageservice.procedure.error", procName),
@@ -955,6 +964,22 @@ public class LanguageService extends BaseService {
                     JOptionPane.ERROR_MESSAGE);
             return null;
         }
+        boolean flag = true;
+        StringBuilder out = new StringBuilder();
+        checkProgramUnitFlag.add(proc);
+        if (proc.isFortran() && proc.get_name().equals(this.fortranDb.getMainName())) {
+            out.append("program " + procName + "\n");
+            writeTexts(proc.getBody(), 0, flag, out);
+            out.append("end program\n");
+            return out.toString();
+        }
+        else if (proc.isClang()) {
+            out.append(proc.toString() + "\n");
+            writeTexts(proc.getBody(), 0, flag, out);
+            out.append("}\n");
+            return out.toString();
+        }
+
         out.append(procName + "\n");
         writeTexts(proc.getBody(), 0, flag, out);
         out.append("end\n");
@@ -974,6 +999,12 @@ public class LanguageService extends BaseService {
      *            出力String
      */
     private void writeTexts(Block parent, int depth, boolean flag, StringBuilder out) {
+        final String STATEMENT_LEFT = " {\n";
+        final String STATEMENT_RIGHT = "}\n";
+        String end_left = "\n";
+        boolean is_clang = parent.isClang();
+        if (is_clang) end_left = STATEMENT_LEFT;
+
         StringBuilder indent = new StringBuilder("");
         for (int i = 0; i < depth; i++) {
             indent.append("|  ");
@@ -984,12 +1015,18 @@ public class LanguageService extends BaseService {
             if (block instanceof ProcedureUsage) {
                 ProcedureUsage call = (ProcedureUsage) block;
                 String callName = call.getCallName();
-                out.append(indentString + "+-" + call + "\n");
+                out.append(indentString + "+-" + call);
+                if (flag && call.getCallDefinition() != null) {
+                    out.append(end_left);
+                }
+                else {
+                    out.append("\n");
+                }
                 // フラグが真なら呼び出し手続きに対して処理を実行する
                 if (flag) {
                     if (call.getCallDefinition() != null) {
                         Procedure proc = call.getCallDefinition();
-                        out.append(indentString + "|  " + proc + "\n");
+                        out.append(indentString + "|  " + proc + end_left);
                         boolean flagToWriteOnce = false; // 手続の宣言を最初だけ生成する場合はtrue
                         if (flagToWriteOnce) {
                             if (this.checkProgramUnitFlag.contains(proc)) {
@@ -1005,7 +1042,12 @@ public class LanguageService extends BaseService {
                             writeTexts(proc.getBody(), depth + 1, flag, out);
                             recursiveSub.remove(callName);
                         }
-                        out.append(indentString + "|  end\n");
+                        if (is_clang) {
+                            out.append(indentString + "|  " + STATEMENT_RIGHT);
+                        }
+                        else {
+                            out.append(indentString + "|  end\n");
+                        }
                     }
                 }
                 // 分岐に対する処理
@@ -1013,14 +1055,19 @@ public class LanguageService extends BaseService {
                 // TODO 条件式のExpressionに対応する
                 Selection selec = (Selection) block;
                 if (selec.isSelect()) {
-                    out.append(indentString + "T-" + selec + "\n");
+                    out.append(indentString + "T-" + selec + end_left);
                     for (Condition cond : selec.getConditions()) {
-                        out.append(indentString + "+-" + cond + "\n");
+                        out.append(indentString + "+-" + cond + end_left);
                         writeTexts(cond, depth + 2, flag, out);
                     }
-                    out.append(indentString + "V-endselect\n");
+                    if (is_clang) {
+                        out.append(indentString + "V-" + STATEMENT_RIGHT);
+                    }
+                    else {
+                        out.append(indentString + "V-endselect\n");
+                    }
                 } else {
-                    out.append(indentString + "T-" + selec + "\n");
+                    out.append(indentString + "T-" + selec + end_left);
                     writeTexts(selec.getConditions().get(0), depth + 1,
                             flag, out);
                     for (int j = 1; j < selec.getConditions().size(); j++) {
@@ -1029,13 +1076,23 @@ public class LanguageService extends BaseService {
                         writeTexts(selec.getConditions().get(j),
                                 depth + 1, flag, out);
                     }
-                    out.append(indentString + "V-endif\n");
+                    if (is_clang) {
+                        out.append(indentString + "V-" + STATEMENT_RIGHT);
+                    }
+                    else {
+                        out.append(indentString + "V-endif\n");
+                    }
                 }
                 // 反復に対する処理
             } else if (block instanceof Repetition) {
-                out.append(indentString + "T-" + block + "\n");
+                out.append(indentString + "T-" + block + end_left);
                 writeTexts(block, depth + 1, flag, out);
-                out.append(indentString + "V-enddo\n");
+                if (is_clang) {
+                    out.append(indentString + "V-" + STATEMENT_RIGHT);
+                }
+                else {
+                    out.append(indentString + "V-enddo\n");
+                }
                 // 子要素を持たない制御文に対する処理
             } else if (block instanceof Break || block instanceof GoTo
                     || block instanceof Pause || block instanceof Return
@@ -1043,6 +1100,9 @@ public class LanguageService extends BaseService {
                     || block instanceof Continue) {
                 out.append(indentString + "+-" + block + "\n");
             } else if (block instanceof Substitution) {
+                writeTexts(block, depth, flag, out);
+            } else if (block instanceof CompoundBlock) {
+                // 複文（空文）
                 writeTexts(block, depth, flag, out);
             }
         }
