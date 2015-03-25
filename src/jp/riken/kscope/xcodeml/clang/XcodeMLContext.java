@@ -1,6 +1,6 @@
 /*
  * K-scope
- * Copyright 2012-2013 RIKEN, Japan
+ * Copyright 2012-2015 RIKEN, Japan
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -330,8 +330,7 @@ public class XcodeMLContext {
      * @param parentRank		指定インデックス
      * @return		true=一致する
      */
-    public boolean isInvokeNodeOf(Class<? extends IXmlNode> clazz,
-            int parentRank) {
+    public boolean isInvokeNodeOf(Class<? extends IXmlNode> clazz, int parentRank) {
         IXmlNode node = getInvokeNode(parentRank);
         if (node == null)
             return false;

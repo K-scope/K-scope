@@ -1,6 +1,6 @@
 /*
  * K-scope
- * Copyright 2012-2013 RIKEN, Japan
+ * Copyright 2012-2015 RIKEN, Japan
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
  */
 
 /**
- * XcodeMLのXML解析、データベースへの登録クラスを提供します.
+ * XcodeML/FのXML解析、データベースへの登録クラスを提供します.
+ * @version    2015/03/15     C言語対応によりパッケージ構成の変更
  */
 package jp.riken.kscope.xcodeml.fortran;

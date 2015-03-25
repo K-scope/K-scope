@@ -1,6 +1,6 @@
 /*
  * K-scope
- * Copyright 2012-2013 RIKEN, Japan
+ * Copyright 2012-2015 RIKEN, Japan
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -500,7 +500,7 @@ public class VariableTypeParser {
         if (var_type == null) return null;
 
         // 属性
-        Set<String> listAttr = new LinkedHashSet<String>();
+        List<String> listAttr = new ArrayList<String>();
 
         boolean is_pointer = false;
         boolean is_array = false;

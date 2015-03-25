@@ -1,6 +1,6 @@
 /*
  * K-scope
- * Copyright 2012-2013 RIKEN, Japan
+ * Copyright 2012-2015 RIKEN, Japan
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,6 +37,7 @@ import jp.riken.kscope.xcodeml.clang.xml.gen.AsgMulExpr;
 import jp.riken.kscope.xcodeml.clang.xml.gen.AsgPlusExpr;
 import jp.riken.kscope.xcodeml.clang.xml.gen.AsgRshiftExpr;
 import jp.riken.kscope.xcodeml.clang.xml.gen.AssignExpr;
+import jp.riken.kscope.xcodeml.clang.xml.gen.BinaryExpression;
 import jp.riken.kscope.xcodeml.clang.xml.gen.BitAndExpr;
 import jp.riken.kscope.xcodeml.clang.xml.gen.BitNotExpr;
 import jp.riken.kscope.xcodeml.clang.xml.gen.BitOrExpr;
@@ -90,6 +91,7 @@ import jp.riken.kscope.xcodeml.clang.xml.gen.SizeOfExpr;
 import jp.riken.kscope.xcodeml.clang.xml.gen.StringConstant;
 import jp.riken.kscope.xcodeml.clang.xml.gen.SubArrayRef;
 import jp.riken.kscope.xcodeml.clang.xml.gen.Then;
+import jp.riken.kscope.xcodeml.clang.xml.gen.UnaryExpression;
 import jp.riken.kscope.xcodeml.clang.xml.gen.UnaryMinusExpr;
 import jp.riken.kscope.xcodeml.clang.xml.gen.Var;
 import jp.riken.kscope.xcodeml.clang.xml.gen.VarAddr;
@@ -469,4 +471,58 @@ public class XmlNodeUtil {
 
         return node;
     }
+
+
+    /**
+     * ポインタ構造体であるかチェックする
+     * @param expr		親要素：構造体メンバ要素
+     * @return			true : ポインタ構造体
+     */
+    public static boolean isPointerStruct(IXmlNode parent) {
+        if (parent == null) return false;
+
+        if (XmlNodeUtil.isFindFirstChildNode(parent, MemberRef.class)) {
+            return true;
+        }
+        if (XmlNodeUtil.isFindFirstChildNode(parent, Var.class)) {
+            return true;
+        }
+        if (XmlNodeUtil.isFindFirstChildNode(parent, ArrayAddr.class)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * 子要素から変数要素を検索する
+     * @param expr		親要素
+     * @return			子要素変数要素
+     */
+    public static boolean isFindFirstChildNode(IXmlNode parent, Class<? extends IXmlNode> clazz) {
+
+        if (parent == null) return false;
+        if (clazz == null) return false;
+
+        IXmlNode node = null;
+        if (parent instanceof UnaryExpression) {
+            node = XmlNodeUtil.getXmlNodeChoice((UnaryExpression)parent);
+        }
+        else if (parent instanceof BinaryExpression) {
+            List<IXmlNode> content = ((BinaryExpression)parent).getContent();
+            if (content != null && content.size() > 0) {
+                node = content.get(0);
+            }
+        }
+        if (node == null) return false;
+
+        if (clazz.equals(node.getClass())) {
+            return true;
+        }
+        // 次の子ノードを検索する
+        boolean result = XmlNodeUtil.isFindFirstChildNode(node, clazz);
+
+        return result;
+    }
 }
+

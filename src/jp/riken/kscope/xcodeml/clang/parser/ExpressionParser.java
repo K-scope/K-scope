@@ -1,6 +1,6 @@
 /*
  * K-scope
- * Copyright 2012-2013 RIKEN, Japan
+ * Copyright 2012-2015 RIKEN, Japan
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -224,6 +224,14 @@ public class ExpressionParser {
     private final String EXPR_SPACE = " ";
     /** ArrayRef 配列区切りコロン : */
     private final String EXPR_ARRAYCOLON = ":";
+    /** ポインタ * */
+    private final String EXPR_POINTER = "*";
+    /** 左中括弧 [ */
+    private final String EXPR_COMPOUNDLEFT = "{";
+    /** 右中括弧 ] */
+    private final String EXPR_COMPOUNDRIGHT = "}";
+    /** NULL */
+    private final String EXPR_NULL = "NULL";
 
 
     /**
@@ -843,8 +851,23 @@ public class ExpressionParser {
         // キャストデータ型の設定
         expr.setVariableType(cast_type);
 
+        // NULLであるかチェックする
+        boolean is_null = false;
+        if (cast_type != null && cast_type.isVoid() && cast_type.isPointer()) {
+            if (child instanceof IntConstant) {
+                String value = ((IntConstant)child).getValue();
+                if ("0".equals(value)) {
+                    is_null = true;
+                }
+            }
+        }
         // CastExpr:式文字列
-        expr.setLine(buf.toString());
+        if (is_null) {
+            expr.setLine(EXPR_NULL);
+        }
+        else {
+            expr.setLine(buf.toString());
+        }
 
         return expr;
     }
@@ -1084,7 +1107,7 @@ public class ExpressionParser {
         // 式バッファ
         StringBuffer buf = new StringBuffer();
         buf.append(structure_expr.getLine());
-        buf.append(EXPR_STRUCTURE_REF);
+        buf.append(EXPR_STRUCTURE_MEM);
         buf.append(member);
 
         // 構造体参照の設定
@@ -1741,6 +1764,15 @@ public class ExpressionParser {
         IXmlNode unary_expr = XmlNodeUtil.getXmlNodeChoice(node);
         Expression expr = getExpression(unary_expr);
 
+        boolean is_group = true;
+        if (unary_expr instanceof Var) {
+            is_group = false;
+        }
+        buf.append(EXPR_POINTER);
+        if (is_group) buf.append(EXPR_PARENLEFT);
+        buf.append(expr.getLine());
+        if (is_group) buf.append(EXPR_PARENRIGHT);
+
         // Expressionクラス生成
         expr.setVariableType(varType);
 
@@ -1884,16 +1916,30 @@ public class ExpressionParser {
      * @throws XcodeMLException  パースエラー
      */
     private Expression getExpression(Value node) throws XcodeMLException {
-        IXmlNode nodeModel = XmlNodeUtil.getXmlNodeChoice(node);
+        // IXmlNode nodeModel = XmlNodeUtil.getXmlNodeChoice(node);
         Expression expr = null;
-        if (nodeModel != null) {
-            expr = getExpression(nodeModel);
+        if (node.getExpressionsOrValues() != null) {
+            List<IXmlNode> list = node.getExpressionsOrValues();
+            StringBuffer buf = new StringBuffer();
+            Expression exprs[] = getExpressions(list);
+            if (exprs != null) {
+                if (list.size() > 1) {
+                    buf.append(EXPR_COMPOUNDLEFT);
+                }
+                for (int i=0; i<exprs.length; i++) {
+                    if (i != 0) buf.append(EXPR_COMMA);
+                    buf.append(exprs[i].getLine());
+                }
+                if (list.size() > 1) {
+                    buf.append(EXPR_COMPOUNDRIGHT);
+                }
+                // 1つのExpressionの生成
+                expr = mergeExpression(exprs);
+                expr.setLine(buf.toString());
+            }
         }
         else if (node.getDesignatedValue() != null) {
-            expr = getExpression(nodeModel);
-        }
-        else if (node.getValue() != null) {
-            expr = getExpression(node.getValue() );
+            expr = getExpression(node.getDesignatedValue());
         }
 
         return expr;

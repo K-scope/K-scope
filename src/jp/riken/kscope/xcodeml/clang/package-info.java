@@ -1,6 +1,6 @@
 /*
  * K-scope
- * Copyright 2012-2013 RIKEN, Japan
+ * Copyright 2012-2015 RIKEN, Japan
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
  */
 
 /**
- * XcodeMLのXML要素を提供します.
+ * C言語XcodeML/Cのパーサークラス群です.
  */
-package jp.riken.kscope.xcodeml.xml;
+package jp.riken.kscope.xcodeml.clang;
+

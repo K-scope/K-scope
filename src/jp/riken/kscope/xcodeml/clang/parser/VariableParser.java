@@ -1,6 +1,6 @@
 /*
  * K-scope
- * Copyright 2012-2013 RIKEN, Japan
+ * Copyright 2012-2015 RIKEN, Japan
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,6 +36,7 @@ import jp.riken.kscope.xcodeml.clang.xml.gen.MemberArrayRef;
 import jp.riken.kscope.xcodeml.clang.xml.gen.MemberRef;
 import jp.riken.kscope.xcodeml.clang.xml.gen.PointerRef;
 import jp.riken.kscope.xcodeml.clang.xml.gen.SubArrayRef;
+import jp.riken.kscope.xcodeml.clang.xml.gen.UnaryExpression;
 import jp.riken.kscope.xcodeml.clang.xml.gen.Value;
 import jp.riken.kscope.xcodeml.clang.xml.gen.Var;
 import jp.riken.kscope.xcodeml.clang.xml.gen.VarAddr;
@@ -105,30 +106,21 @@ public class VariableParser {
         else if (node instanceof VarAddr) {
             var = getVariable((VarAddr)node);
         }
-        else if (node instanceof Value) {
-            var = getVariable((Value)node);
+        else if (node instanceof BinaryExpression) {
+            // 先頭の変数のみを取得する
+            List<IXmlNode> list = ((BinaryExpression)node).getContent();
+            if (list != null && list.size() > 0) {
+                var = getVariable(list.get(0));
+            }
         }
-
-        return var;
-    }
-
-    /**
-     * Value要素からDB::Variableクラスをパース、生成する。
-     *
-     * @param node          Value要素
-     * @return DB::Variableクラス
-     */
-    public Variable getVariable(Value node) {
-
-        if (node == null) {
-            return null;
+        else if (node instanceof UnaryExpression) {
+            // 先頭の変数のみを取得する
+            IXmlNode expr_node = XmlNodeUtil.getXmlNodeChoice((UnaryExpression)node);
+            var = getVariable(expr_node);
         }
-
-        // 変数名
-        IXmlNode value = XmlNodeUtil.getXmlNodeChoice(node);
-
-        // Variableクラス生成
-        Variable var = getVariable(value);
+        // else if (node instanceof Value) {
+        //     var = getVariable((Value)node);
+        // }
 
         return var;
     }

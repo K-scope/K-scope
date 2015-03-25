@@ -1,3 +1,19 @@
+/*
+ * K-scope
+ * Copyright 2012-2015 RIKEN, Japan
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package jp.riken.kscope.xcodeml.clang;
 
 import java.util.List;
@@ -12,14 +28,37 @@ import jp.riken.kscope.xcodeml.clang.utils.XmlNodeUtil;
 import jp.riken.kscope.xcodeml.clang.xml.IXmlNode;
 import jp.riken.kscope.xcodeml.clang.XcodeMLValidator;
 import jp.riken.kscope.xcodeml.clang.XcodeMLTypeManager;
+import jp.riken.kscope.xcodeml.clang.xml.gen.AddrOfExpr;
 import jp.riken.kscope.xcodeml.clang.xml.gen.Arguments;
+import jp.riken.kscope.xcodeml.clang.xml.gen.ArrayAddr;
+import jp.riken.kscope.xcodeml.clang.xml.gen.ArrayRef;
 import jp.riken.kscope.xcodeml.clang.xml.gen.ArrayType;
+import jp.riken.kscope.xcodeml.clang.xml.gen.AsgBitAndExpr;
+import jp.riken.kscope.xcodeml.clang.xml.gen.AsgBitOrExpr;
+import jp.riken.kscope.xcodeml.clang.xml.gen.AsgBitXorExpr;
+import jp.riken.kscope.xcodeml.clang.xml.gen.AsgDivExpr;
+import jp.riken.kscope.xcodeml.clang.xml.gen.AsgLshiftExpr;
+import jp.riken.kscope.xcodeml.clang.xml.gen.AsgMinusExpr;
+import jp.riken.kscope.xcodeml.clang.xml.gen.AsgModExpr;
+import jp.riken.kscope.xcodeml.clang.xml.gen.AsgMulExpr;
+import jp.riken.kscope.xcodeml.clang.xml.gen.AsgPlusExpr;
+import jp.riken.kscope.xcodeml.clang.xml.gen.AsgRshiftExpr;
 import jp.riken.kscope.xcodeml.clang.xml.gen.AssignExpr;
 import jp.riken.kscope.xcodeml.clang.xml.gen.BasicType;
+import jp.riken.kscope.xcodeml.clang.xml.gen.BitAndExpr;
+import jp.riken.kscope.xcodeml.clang.xml.gen.BitNotExpr;
+import jp.riken.kscope.xcodeml.clang.xml.gen.BitOrExpr;
+import jp.riken.kscope.xcodeml.clang.xml.gen.BitXorExpr;
 import jp.riken.kscope.xcodeml.clang.xml.gen.Body;
+import jp.riken.kscope.xcodeml.clang.xml.gen.BreakStatement;
+import jp.riken.kscope.xcodeml.clang.xml.gen.CaseLabel;
 import jp.riken.kscope.xcodeml.clang.xml.gen.CastExpr;
+import jp.riken.kscope.xcodeml.clang.xml.gen.CommaExpr;
 import jp.riken.kscope.xcodeml.clang.xml.gen.CompoundStatement;
+import jp.riken.kscope.xcodeml.clang.xml.gen.CondExpr;
+import jp.riken.kscope.xcodeml.clang.xml.gen.ContinueStatement;
 import jp.riken.kscope.xcodeml.clang.xml.gen.Declarations;
+import jp.riken.kscope.xcodeml.clang.xml.gen.DefaultLabel;
 import jp.riken.kscope.xcodeml.clang.xml.gen.DivExpr;
 import jp.riken.kscope.xcodeml.clang.xml.gen.DoStatement;
 import jp.riken.kscope.xcodeml.clang.xml.gen.EnumType;
@@ -30,6 +69,7 @@ import jp.riken.kscope.xcodeml.clang.xml.gen.Function;
 import jp.riken.kscope.xcodeml.clang.xml.gen.FunctionDefinition;
 import jp.riken.kscope.xcodeml.clang.xml.gen.FunctionType;
 import jp.riken.kscope.xcodeml.clang.xml.gen.GlobalSymbols;
+import jp.riken.kscope.xcodeml.clang.xml.gen.GotoStatement;
 import jp.riken.kscope.xcodeml.clang.xml.gen.IfStatement;
 import jp.riken.kscope.xcodeml.clang.xml.gen.Init;
 import jp.riken.kscope.xcodeml.clang.xml.gen.IntConstant;
@@ -44,20 +84,35 @@ import jp.riken.kscope.xcodeml.clang.xml.gen.LogNEQExpr;
 import jp.riken.kscope.xcodeml.clang.xml.gen.LogNotExpr;
 import jp.riken.kscope.xcodeml.clang.xml.gen.LogOrExpr;
 import jp.riken.kscope.xcodeml.clang.xml.gen.LonglongConstant;
+import jp.riken.kscope.xcodeml.clang.xml.gen.LshiftExpr;
+import jp.riken.kscope.xcodeml.clang.xml.gen.MemberAddr;
+import jp.riken.kscope.xcodeml.clang.xml.gen.MemberArrayAddr;
+import jp.riken.kscope.xcodeml.clang.xml.gen.MemberArrayRef;
+import jp.riken.kscope.xcodeml.clang.xml.gen.MemberRef;
 import jp.riken.kscope.xcodeml.clang.xml.gen.MinusExpr;
 import jp.riken.kscope.xcodeml.clang.xml.gen.ModExpr;
 import jp.riken.kscope.xcodeml.clang.xml.gen.MoeConstant;
 import jp.riken.kscope.xcodeml.clang.xml.gen.MulExpr;
 import jp.riken.kscope.xcodeml.clang.xml.gen.Params;
 import jp.riken.kscope.xcodeml.clang.xml.gen.PlusExpr;
+import jp.riken.kscope.xcodeml.clang.xml.gen.PointerRef;
 import jp.riken.kscope.xcodeml.clang.xml.gen.PointerType;
 import jp.riken.kscope.xcodeml.clang.xml.gen.PostDecrExpr;
 import jp.riken.kscope.xcodeml.clang.xml.gen.PostIncrExpr;
+import jp.riken.kscope.xcodeml.clang.xml.gen.Pragma;
 import jp.riken.kscope.xcodeml.clang.xml.gen.PreDecrExpr;
 import jp.riken.kscope.xcodeml.clang.xml.gen.PreIncrExpr;
+import jp.riken.kscope.xcodeml.clang.xml.gen.ReturnStatement;
+import jp.riken.kscope.xcodeml.clang.xml.gen.RshiftExpr;
+import jp.riken.kscope.xcodeml.clang.xml.gen.SizeOfExpr;
 import jp.riken.kscope.xcodeml.clang.xml.gen.StringConstant;
 import jp.riken.kscope.xcodeml.clang.xml.gen.StructType;
+import jp.riken.kscope.xcodeml.clang.xml.gen.SwitchStatement;
+import jp.riken.kscope.xcodeml.clang.xml.gen.UnaryMinusExpr;
 import jp.riken.kscope.xcodeml.clang.xml.gen.UnionType;
+import jp.riken.kscope.xcodeml.clang.xml.gen.Value;
+import jp.riken.kscope.xcodeml.clang.xml.gen.VarAddr;
+import jp.riken.kscope.xcodeml.clang.xml.gen.WhileStatement;
 import jp.riken.kscope.xcodeml.clang.xml.gen.XcodeProgram;
 import jp.riken.kscope.xcodeml.clang.xml.gen.TypeTable;
 import jp.riken.kscope.xcodeml.clang.xml.gen.Id;
@@ -127,8 +182,8 @@ public class XcodeMLVisitor extends XcodeMLVisitorImpl {
         _context.popInvokeNode();
 
         // 途中エラー発生しても最後まで処理する。
-        if (result == false) {
-            System.err.println("Error:invokeEnter : error node[" + node.toString() + "]");
+        if (result == false && node != null) {
+            System.err.println("Error:invokeEnter : error node[" + node.getClass().getName() + "]");
         }
 
         return true;
@@ -563,16 +618,33 @@ public class XcodeMLVisitor extends XcodeMLVisitorImpl {
     @Override
     public boolean enter(CompoundStatement visitable) {
         // DONE: CompoundStatement
+
+        boolean result = true;
+        CodeBuilder writer = _context.getCodeBuilder();
+        result = writer.enter(visitable);
+        if (!result)
+            return result;
+
+        DbUpdater updater = _context.getDbUpdater();
+        result = updater.enter(visitable);
+        if (!result)
+            return result;
+
         Symbols symbols = visitable.getSymbols();
         Declarations declarations = visitable.getDeclarations();
         Body body = visitable.getBody();
 
+        // シンボル
         if (!this.invokeEnter(symbols)) {
             return false;
         }
+
+        // 宣言文
         if (!this.invokeEnter(declarations)) {
             return false;
         }
+
+        // 本文
         if (!this.invokeEnter(body)) {
             return false;
         }
@@ -622,16 +694,6 @@ public class XcodeMLVisitor extends XcodeMLVisitorImpl {
         result = writer.enter(visitable);
         if (!result)
             return result;
-
-        // 1つ上のノードがExprStatementの場合のみDB更新
-        if (_context.isInvokeNodeOf(ExprStatement.class, 1)) {
-            writer.updateCodeLine();
-
-            DbUpdater updater = _context.getDbUpdater();
-            result = updater.enter(visitable);
-            if (!result)
-                return result;
-        }
 
         return true;
     }
@@ -824,27 +886,16 @@ public class XcodeMLVisitor extends XcodeMLVisitorImpl {
                         XmlNodeUtil.getElementName(function)));
                 return false;
             }
-
-            // Note:
-            // If it is built-in function, it is not on the type table.
-            boolean result = true;
-            CodeBuilder writer = _context.getCodeBuilder();
-
-            result = writer.enter(visitable);
-            if (!result)
-                return result;
-
-            // 1つ上のノードがExprStatementの場合のみDB更新
-            if (!_context.isInvokeNodeOf(ExprStatement.class, 1)) {
-                return true;
-            }
-
-            writer.updateCodeLine();
-            DbUpdater updater = _context.getDbUpdater();
-            result = updater.enter(visitable);
-            if (!result)
-                return result;
         }
+
+        // Note:
+        // If it is built-in function, it is not on the type table.
+        boolean result = true;
+        CodeBuilder writer = _context.getCodeBuilder();
+
+        result = writer.enter(visitable);
+        if (!result)
+            return result;
 
         return true;
     }
@@ -1281,16 +1332,6 @@ public class XcodeMLVisitor extends XcodeMLVisitorImpl {
         if (!result)
             return result;
 
-        // 1つ上のノードがExprStatementの場合のみDB更新
-        if (!_context.isInvokeNodeOf(ExprStatement.class, 1)) {
-            return true;
-        }
-
-        writer.updateCodeLine();
-        DbUpdater updater = _context.getDbUpdater();
-        result = updater.enter(visitable);
-        if (!result) return result;
-
         return result;
     }
 
@@ -1306,16 +1347,6 @@ public class XcodeMLVisitor extends XcodeMLVisitorImpl {
         result = writer.enter(visitable);
         if (!result)
             return result;
-
-        // 1つ上のノードがExprStatementの場合のみDB更新
-        if (!_context.isInvokeNodeOf(ExprStatement.class, 1)) {
-            return true;
-        }
-
-        writer.updateCodeLine();
-        DbUpdater updater = _context.getDbUpdater();
-        result = updater.enter(visitable);
-        if (!result) return result;
 
         return result;
     }
@@ -1333,16 +1364,6 @@ public class XcodeMLVisitor extends XcodeMLVisitorImpl {
         if (!result)
             return result;
 
-        // 1つ上のノードがExprStatementの場合のみDB更新
-        if (!_context.isInvokeNodeOf(ExprStatement.class, 1)) {
-            return true;
-        }
-
-        writer.updateCodeLine();
-        DbUpdater updater = _context.getDbUpdater();
-        result = updater.enter(visitable);
-        if (!result) return result;
-
         return result;
     }
 
@@ -1358,16 +1379,6 @@ public class XcodeMLVisitor extends XcodeMLVisitorImpl {
         result = writer.enter(visitable);
         if (!result)
             return result;
-
-        // 1つ上のノードがExprStatementの場合のみDB更新
-        if (!_context.isInvokeNodeOf(ExprStatement.class, 1)) {
-            return true;
-        }
-
-        writer.updateCodeLine();
-        DbUpdater updater = _context.getDbUpdater();
-        result = updater.enter(visitable);
-        if (!result) return result;
 
         return result;
     }
@@ -1386,5 +1397,698 @@ public class XcodeMLVisitor extends XcodeMLVisitorImpl {
 
         return result;
     }
+
+    /**
+     * Decompile "SwitchStatement" element in XcodeML/C.
+     */
+    @Override
+    public boolean enter(SwitchStatement visitable) {
+        // DONE: SwitchStatement
+        boolean result = true;
+        CodeBuilder writer = _context.getCodeBuilder();
+        result = writer.enter(visitable);
+        if (!result)
+            return result;
+
+        DbUpdater updater = _context.getDbUpdater();
+        result = updater.enter(visitable);
+        if (!result)
+            return result;
+
+        Body body = visitable.getBody();
+        if (invokeEnter(body) == false) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Decompile "CaseLabel" element in XcodeML/C.
+     */
+    @Override
+    public boolean enter(CaseLabel visitable) {
+        // DONE: CaseLabel
+        boolean result = true;
+        CodeBuilder writer = _context.getCodeBuilder();
+        result = writer.enter(visitable);
+        if (!result)
+            return result;
+
+        DbUpdater updater = _context.getDbUpdater();
+        result = updater.enter(visitable);
+        if (!result)
+            return result;
+
+        return true;
+    }
+
+    /**
+     * Decompile "DefaultLabel" element in XcodeML/C.
+     */
+    @Override
+    public boolean enter(DefaultLabel visitable) {
+        // DONE: DefaultLabel
+        boolean result = true;
+        CodeBuilder writer = _context.getCodeBuilder();
+        result = writer.enter(visitable);
+        if (!result)
+            return result;
+
+        DbUpdater updater = _context.getDbUpdater();
+        result = updater.enter(visitable);
+        if (!result)
+            return result;
+
+        return true;
+    }
+
+    /**
+     * Decompile "BreakStatement" element in XcodeML/C.
+     */
+    @Override
+    public boolean enter(BreakStatement visitable) {
+        // DONE: BreakStatement
+        boolean result = true;
+        CodeBuilder writer = _context.getCodeBuilder();
+        result = writer.enter(visitable);
+        if (!result)
+            return result;
+
+        DbUpdater updater = _context.getDbUpdater();
+        result = updater.enter(visitable);
+        if (!result)
+            return result;
+
+        return true;
+    }
+
+    /**
+     * Decompile "ContinueStatement" element in XcodeML/C.
+     */
+    @Override
+    public boolean enter(ContinueStatement visitable) {
+        // DONE: BreakStatement
+        boolean result = true;
+        CodeBuilder writer = _context.getCodeBuilder();
+        result = writer.enter(visitable);
+        if (!result)
+            return result;
+
+        DbUpdater updater = _context.getDbUpdater();
+        result = updater.enter(visitable);
+        if (!result)
+            return result;
+
+        return true;
+    }
+
+    /**
+     * Decompile "SwitchStatement" element in XcodeML/C.
+     */
+    @Override
+    public void leave(SwitchStatement visitable) {
+
+        CodeBuilder writer = _context.getCodeBuilder();
+        writer.leave(visitable);
+
+        DbUpdater updater = _context.getDbUpdater();
+        updater.leave(visitable);
+    }
+
+    /**
+     * Decompile "WhileStatement" element in XcodeML/C.
+     */
+    @Override
+    public boolean enter(WhileStatement visitable) {
+        // DONE: WhileStatement
+        boolean result = true;
+        CodeBuilder writer = _context.getCodeBuilder();
+        result = writer.enter(visitable);
+        if (!result)
+            return result;
+
+        DbUpdater updater = _context.getDbUpdater();
+        result = updater.enter(visitable);
+        if (!result)
+            return result;
+
+        if (invokeEnter(visitable.getBody()) == false) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Decompile "WhileStatement" element in XcodeML/C.
+     */
+    @Override
+    public void leave(WhileStatement visitable) {
+        boolean result = true;
+        CodeBuilder writer = _context.getCodeBuilder();
+        writer.leave(visitable);
+        if (!result)
+            return;
+
+        DbUpdater updater = _context.getDbUpdater();
+        updater.leave(visitable);
+
+        return;
+    }
+
+
+    /**
+     * Decompile "CompoundStatement" element in XcodeML/C.
+     */
+    @Override
+    public void leave(CompoundStatement visitable) {
+        boolean result = true;
+        CodeBuilder writer = _context.getCodeBuilder();
+        writer.leave(visitable);
+        if (!result)
+            return;
+
+        DbUpdater updater = _context.getDbUpdater();
+        updater.leave(visitable);
+
+        return;
+    }
+
+
+    /**
+     * Decompile "LshiftExpr" element in XcodeML/C.
+     */
+    @Override
+    public boolean enter(LshiftExpr visitable) {
+        // DONE: LshiftExpr
+        boolean result = true;
+        CodeBuilder writer = _context.getCodeBuilder();
+        result = writer.enter(visitable);
+        if (!result)
+            return result;
+
+        return result;
+    }
+
+    /**
+     * Decompile "RshiftExpr" element in XcodeML/C.
+     */
+    @Override
+    public boolean enter(RshiftExpr visitable) {
+        // DONE: RshiftExpr
+        boolean result = true;
+        CodeBuilder writer = _context.getCodeBuilder();
+        result = writer.enter(visitable);
+        if (!result)
+            return result;
+
+        return result;
+    }
+
+    /**
+     * Decompile "BitAndExpr" element in XcodeML/C.
+     */
+    @Override
+    public boolean enter(BitAndExpr visitable) {
+        // DONE: BitAndExpr
+        boolean result = true;
+        CodeBuilder writer = _context.getCodeBuilder();
+        result = writer.enter(visitable);
+        if (!result)
+            return result;
+
+        return result;
+    }
+
+    /**
+     * Decompile "BitOrExpr" element in XcodeML/C.
+     */
+    @Override
+    public boolean enter(BitOrExpr visitable) {
+        // DONE: BitOrExpr
+        boolean result = true;
+        CodeBuilder writer = _context.getCodeBuilder();
+        result = writer.enter(visitable);
+        if (!result)
+            return result;
+
+        return result;
+    }
+
+    /**
+     * Decompile "BitXorExpr" element in XcodeML/C.
+     */
+    @Override
+    public boolean enter(BitXorExpr visitable) {
+        // DONE: BitXorExpr
+        boolean result = true;
+        CodeBuilder writer = _context.getCodeBuilder();
+        result = writer.enter(visitable);
+        if (!result)
+            return result;
+
+        return result;
+    }
+
+    /**
+     * Decompile "BitNotExpr" element in XcodeML/C.
+     */
+    @Override
+    public boolean enter(BitNotExpr visitable) {
+        // DONE: BitNotExpr
+        boolean result = true;
+        CodeBuilder writer = _context.getCodeBuilder();
+        result = writer.enter(visitable);
+        if (!result)
+            return result;
+
+        return result;
+    }
+
+    /**
+     * Decompile "AsgPlusExpr" element in XcodeML/C.
+     */
+    @Override
+    public boolean enter(AsgPlusExpr visitable) {
+        // DONE: AsgPlusExpr
+        boolean result = true;
+        CodeBuilder writer = _context.getCodeBuilder();
+        result = writer.enter(visitable);
+        if (!result)
+            return result;
+
+        return result;
+    }
+
+    /**
+     * Decompile "AsgModExpr" element in XcodeML/C.
+     */
+    @Override
+    public boolean enter(AsgModExpr visitable) {
+        // DONE: AsgModExpr
+        boolean result = true;
+        CodeBuilder writer = _context.getCodeBuilder();
+        result = writer.enter(visitable);
+        if (!result)
+            return result;
+
+        return result;
+    }
+
+    /**
+     * Decompile "AsgBitOrExpr" element in XcodeML/C.
+     */
+    @Override
+    public boolean enter(AsgBitOrExpr visitable) {
+        // DONE: AsgBitOrExpr
+        boolean result = true;
+        CodeBuilder writer = _context.getCodeBuilder();
+        result = writer.enter(visitable);
+        if (!result)
+            return result;
+
+        return result;
+    }
+
+    /**
+     * Decompile "AsgBitXorExpr" element in XcodeML/C.
+     */
+    @Override
+    public boolean enter(AsgBitXorExpr visitable) {
+        // DONE: AsgBitXorExpr
+        boolean result = true;
+        CodeBuilder writer = _context.getCodeBuilder();
+        result = writer.enter(visitable);
+        if (!result)
+            return result;
+
+        return result;
+    }
+
+    /**
+     * Decompile "AsgMulExpr" element in XcodeML/C.
+     */
+    @Override
+    public boolean enter(AsgMulExpr visitable) {
+        // DONE: AsgMulExpr
+        boolean result = true;
+        CodeBuilder writer = _context.getCodeBuilder();
+        result = writer.enter(visitable);
+        if (!result)
+            return result;
+
+        return result;
+    }
+
+    /**
+     * Decompile "AsgRshiftExpr" element in XcodeML/C.
+     */
+    @Override
+    public boolean enter(AsgRshiftExpr visitable) {
+        // DONE: AsgRshiftExpr
+        boolean result = true;
+        CodeBuilder writer = _context.getCodeBuilder();
+        result = writer.enter(visitable);
+        if (!result)
+            return result;
+
+        return result;
+    }
+
+    /**
+     * Decompile "AsgBitAndExpr" element in XcodeML/C.
+     */
+    @Override
+    public boolean enter(AsgBitAndExpr visitable) {
+        // DONE: AsgBitAndExpr
+        boolean result = true;
+        CodeBuilder writer = _context.getCodeBuilder();
+        result = writer.enter(visitable);
+        if (!result)
+            return result;
+
+        return result;
+    }
+
+    /**
+     * Decompile "AsgDivExpr" element in XcodeML/C.
+     */
+    @Override
+    public boolean enter(AsgDivExpr visitable) {
+        // DONE: AsgDivExpr
+        boolean result = true;
+        CodeBuilder writer = _context.getCodeBuilder();
+        result = writer.enter(visitable);
+        if (!result)
+            return result;
+
+        return result;
+    }
+
+    /**
+     * Decompile "AsgMinusExpr" element in XcodeML/C.
+     */
+    @Override
+    public boolean enter(AsgMinusExpr visitable) {
+        // DONE: AsgMinusExpr
+        boolean result = true;
+        CodeBuilder writer = _context.getCodeBuilder();
+        result = writer.enter(visitable);
+        if (!result)
+            return result;
+
+        return result;
+    }
+
+    /**
+     * Decompile "AsgLshiftExpr" element in XcodeML/C.
+     */
+    @Override
+    public boolean enter(AsgLshiftExpr visitable) {
+        // DONE: AsgLshiftExpr
+        boolean result = true;
+        CodeBuilder writer = _context.getCodeBuilder();
+        result = writer.enter(visitable);
+        if (!result)
+            return result;
+
+        return result;
+    }
+
+
+    /**
+     * Decompile "unaryMinusExpr" element in XcodeML/C.
+     */
+    @Override
+    public boolean enter(UnaryMinusExpr visitable) {
+        // DONE: unaryMinusExpr
+        boolean result = true;
+        CodeBuilder writer = _context.getCodeBuilder();
+        result = writer.enter(visitable);
+        if (!result)
+            return result;
+
+        return result;
+    }
+
+    /**
+     * Decompile "SizeOfExpr" element in XcodeML/C.
+     */
+    @Override
+    public boolean enter(SizeOfExpr visitable) {
+        // DONE: SizeOfExpr
+        boolean result = true;
+        CodeBuilder writer = _context.getCodeBuilder();
+        result = writer.enter(visitable);
+        if (!result)
+            return result;
+
+        return result;
+    }
+
+    /**
+     * Decompile "CommaExpr" element in XcodeML/C.
+     */
+    @Override
+    public boolean enter(CommaExpr visitable) {
+        // DONE: CommaExpr
+        boolean result = true;
+        CodeBuilder writer = _context.getCodeBuilder();
+        result = writer.enter(visitable);
+        if (!result)
+            return result;
+
+        return result;
+    }
+
+
+    /**
+     * Decompile "CondExpr" element in XcodeML/C.
+     */
+    @Override
+    public boolean enter(CondExpr visitable) {
+        // DONE: CondExpr
+        boolean result = true;
+        CodeBuilder writer = _context.getCodeBuilder();
+        result = writer.enter(visitable);
+        if (!result)
+            return result;
+
+        return result;
+    }
+
+    /**
+     * Decompile "ArrayRef" element in XcodeML/C.
+     */
+    @Override
+    public boolean enter(ArrayRef visitable) {
+        // DONE: ArrayRef
+        boolean result = true;
+        CodeBuilder writer = _context.getCodeBuilder();
+        result = writer.enter(visitable);
+        if (!result)
+            return result;
+
+        return result;
+    }
+
+    /**
+     * Decompile "ArrayAddr" element in XcodeML/C.
+     */
+    @Override
+    public boolean enter(ArrayAddr visitable) {
+        // DONE: ArrayRef
+        boolean result = true;
+        CodeBuilder writer = _context.getCodeBuilder();
+        result = writer.enter(visitable);
+        if (!result)
+            return result;
+
+        return result;
+    }
+
+    /**
+     * Decompile "pointerRef" element in XcodeML/C.
+     */
+    @Override
+    public boolean enter(PointerRef visitable) {
+        // DONE: PointerRef
+        boolean result = true;
+        CodeBuilder writer = _context.getCodeBuilder();
+        result = writer.enter(visitable);
+        if (!result)
+            return result;
+
+        return result;
+    }
+
+    /**
+     * Decompile "value" element in XcodeML/C.
+     */
+    @Override
+    public boolean enter(Value visitable) {
+        // DONE: PointerRef
+        boolean result = true;
+        CodeBuilder writer = _context.getCodeBuilder();
+        result = writer.enter(visitable);
+        if (!result)
+            return result;
+
+        return result;
+
+    }
+
+    /**
+     * Decompile "VarAddr" element in XcodeML/C.
+     */
+    @Override
+    public boolean enter(VarAddr visitable) {
+        // DONE: VarAddr
+        boolean result = true;
+        CodeBuilder writer = _context.getCodeBuilder();
+        result = writer.enter(visitable);
+        if (!result)
+            return result;
+
+        return result;
+    }
+
+    /**
+     * Decompile "MemberRef" element in XcodeML/C.
+     */
+    @Override
+    public boolean enter(MemberRef visitable) {
+        // DONE: MemberRef
+        boolean result = true;
+        CodeBuilder writer = _context.getCodeBuilder();
+        result = writer.enter(visitable);
+        if (!result)
+            return result;
+
+        return result;
+    }
+
+    /**
+     * Decompile "MemberAddr" element in XcodeML/C.
+     */
+    @Override
+    public boolean enter(MemberAddr visitable) {
+        // DONE: MemberAddr
+        boolean result = true;
+        CodeBuilder writer = _context.getCodeBuilder();
+        result = writer.enter(visitable);
+        if (!result)
+            return result;
+
+        return result;
+    }
+
+    /**
+     * Decompile "MemberArrayRef" element in XcodeML/C.
+     */
+    @Override
+    public boolean enter(MemberArrayRef visitable) {
+        // DONE: MemberArrayRef
+        boolean result = true;
+        CodeBuilder writer = _context.getCodeBuilder();
+        result = writer.enter(visitable);
+        if (!result)
+            return result;
+
+        return result;
+    }
+
+    /**
+     * Decompile "MemberArrayAddr" element in XcodeML/C.
+     */
+    @Override
+    public boolean enter(MemberArrayAddr visitable) {
+        // DONE: MemberArrayAddr
+        boolean result = true;
+        CodeBuilder writer = _context.getCodeBuilder();
+        result = writer.enter(visitable);
+        if (!result)
+            return result;
+
+        return result;
+    }
+
+    /**
+     * Decompile "MemberArrayAddr" element in XcodeML/C.
+     */
+    @Override
+    public boolean enter(AddrOfExpr visitable) {
+        // DONE: AddrOfExpr
+        boolean result = true;
+        CodeBuilder writer = _context.getCodeBuilder();
+        result = writer.enter(visitable);
+        if (!result)
+            return result;
+
+        return result;
+    }
+
+    /**
+     * Decompile "ReturnStatement" element in XcodeML/C.
+     */
+    @Override
+    public boolean enter(ReturnStatement visitable) {
+        // DONE: ReturnStatement
+        boolean result = true;
+        CodeBuilder writer = _context.getCodeBuilder();
+        result = writer.enter(visitable);
+        if (!result)
+            return result;
+
+        DbUpdater updater = _context.getDbUpdater();
+        result = updater.enter(visitable);
+        if (!result)
+            return result;
+
+        return true;
+    }
+
+    /**
+     * Decompile "GotoStatement" element in XcodeML/C.
+     */
+    @Override
+    public boolean enter(GotoStatement visitable) {
+        // DONE: GotoStatement
+        boolean result = true;
+        CodeBuilder writer = _context.getCodeBuilder();
+        result = writer.enter(visitable);
+        if (!result)
+            return result;
+
+        DbUpdater updater = _context.getDbUpdater();
+        result = updater.enter(visitable);
+        if (!result)
+            return result;
+
+        return true;
+    }
+
+    /**
+     * Decompile "Pragma" element in XcodeML/C.
+     */
+    @Override
+    public boolean enter(Pragma visitable) {
+        // DONE: Pragma
+        boolean result = true;
+        CodeBuilder writer = _context.getCodeBuilder();
+        result = writer.enter(visitable);
+        if (!result)
+            return result;
+
+        DbUpdater updater = _context.getDbUpdater();
+        result = updater.enter(visitable);
+        if (!result)
+            return result;
+
+        return true;
+    }
+
+
 
 }

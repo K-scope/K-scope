@@ -1,3 +1,19 @@
+/*
+ * K-scope
+ * Copyright 2012-2015 RIKEN, Japan
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package jp.riken.kscope.xcodeml.clang;
 
 import java.io.File;
@@ -9,6 +25,7 @@ import jp.riken.kscope.data.CodeLine;
 import jp.riken.kscope.data.SourceFile;
 import jp.riken.kscope.language.Expression;
 import jp.riken.kscope.language.Variable;
+import jp.riken.kscope.language.VariableDefinition;
 import jp.riken.kscope.language.fortran.VariableType;
 import jp.riken.kscope.utils.FileUtils;
 import jp.riken.kscope.utils.StringUtils;
@@ -17,18 +34,43 @@ import jp.riken.kscope.xcodeml.clang.XcodeMLContext;
 import jp.riken.kscope.xcodeml.clang.XcodeMLVisitorImpl;
 import jp.riken.kscope.xcodeml.clang.XcodeMLVisitor;
 import jp.riken.kscope.xcodeml.clang.parser.ExpressionParser;
+import jp.riken.kscope.xcodeml.clang.parser.VariableDefinitionParser;
 import jp.riken.kscope.xcodeml.clang.parser.VariableParser;
 import jp.riken.kscope.xcodeml.clang.parser.VariableTypeParser;
 import jp.riken.kscope.xcodeml.clang.utils.XmlNodeUtil;
 import jp.riken.kscope.xcodeml.clang.xml.IBaseStatement;
 import jp.riken.kscope.xcodeml.clang.xml.IXmlTypeTableChoice;
+import jp.riken.kscope.xcodeml.clang.xml.gen.AddrOfExpr;
 import jp.riken.kscope.xcodeml.clang.xml.gen.Arguments;
+import jp.riken.kscope.xcodeml.clang.xml.gen.ArrayAddr;
+import jp.riken.kscope.xcodeml.clang.xml.gen.ArrayRef;
 import jp.riken.kscope.xcodeml.clang.xml.gen.ArrayType;
+import jp.riken.kscope.xcodeml.clang.xml.gen.AsgBitAndExpr;
+import jp.riken.kscope.xcodeml.clang.xml.gen.AsgBitOrExpr;
+import jp.riken.kscope.xcodeml.clang.xml.gen.AsgBitXorExpr;
+import jp.riken.kscope.xcodeml.clang.xml.gen.AsgDivExpr;
+import jp.riken.kscope.xcodeml.clang.xml.gen.AsgLshiftExpr;
+import jp.riken.kscope.xcodeml.clang.xml.gen.AsgMinusExpr;
+import jp.riken.kscope.xcodeml.clang.xml.gen.AsgModExpr;
+import jp.riken.kscope.xcodeml.clang.xml.gen.AsgMulExpr;
+import jp.riken.kscope.xcodeml.clang.xml.gen.AsgPlusExpr;
+import jp.riken.kscope.xcodeml.clang.xml.gen.AsgRshiftExpr;
 import jp.riken.kscope.xcodeml.clang.xml.gen.AssignExpr;
 import jp.riken.kscope.xcodeml.clang.xml.gen.BaseType;
 import jp.riken.kscope.xcodeml.clang.xml.gen.BasicType;
+import jp.riken.kscope.xcodeml.clang.xml.gen.BitAndExpr;
+import jp.riken.kscope.xcodeml.clang.xml.gen.BitNotExpr;
+import jp.riken.kscope.xcodeml.clang.xml.gen.BitOrExpr;
+import jp.riken.kscope.xcodeml.clang.xml.gen.BitXorExpr;
+import jp.riken.kscope.xcodeml.clang.xml.gen.BreakStatement;
+import jp.riken.kscope.xcodeml.clang.xml.gen.CaseLabel;
 import jp.riken.kscope.xcodeml.clang.xml.gen.CastExpr;
+import jp.riken.kscope.xcodeml.clang.xml.gen.CommaExpr;
+import jp.riken.kscope.xcodeml.clang.xml.gen.CompoundStatement;
+import jp.riken.kscope.xcodeml.clang.xml.gen.CondExpr;
 import jp.riken.kscope.xcodeml.clang.xml.gen.Condition;
+import jp.riken.kscope.xcodeml.clang.xml.gen.ContinueStatement;
+import jp.riken.kscope.xcodeml.clang.xml.gen.DefaultLabel;
 import jp.riken.kscope.xcodeml.clang.xml.gen.DivExpr;
 import jp.riken.kscope.xcodeml.clang.xml.gen.DoStatement;
 import jp.riken.kscope.xcodeml.clang.xml.gen.Else;
@@ -39,6 +81,7 @@ import jp.riken.kscope.xcodeml.clang.xml.gen.ForStatement;
 import jp.riken.kscope.xcodeml.clang.xml.gen.Function;
 import jp.riken.kscope.xcodeml.clang.xml.gen.FunctionCall;
 import jp.riken.kscope.xcodeml.clang.xml.gen.FunctionDefinition;
+import jp.riken.kscope.xcodeml.clang.xml.gen.GotoStatement;
 import jp.riken.kscope.xcodeml.clang.xml.gen.Id;
 import jp.riken.kscope.xcodeml.clang.xml.gen.IfStatement;
 import jp.riken.kscope.xcodeml.clang.xml.gen.Init;
@@ -54,22 +97,36 @@ import jp.riken.kscope.xcodeml.clang.xml.gen.LogNEQExpr;
 import jp.riken.kscope.xcodeml.clang.xml.gen.LogNotExpr;
 import jp.riken.kscope.xcodeml.clang.xml.gen.LogOrExpr;
 import jp.riken.kscope.xcodeml.clang.xml.gen.LonglongConstant;
+import jp.riken.kscope.xcodeml.clang.xml.gen.LshiftExpr;
+import jp.riken.kscope.xcodeml.clang.xml.gen.MemberAddr;
+import jp.riken.kscope.xcodeml.clang.xml.gen.MemberArrayAddr;
+import jp.riken.kscope.xcodeml.clang.xml.gen.MemberArrayRef;
+import jp.riken.kscope.xcodeml.clang.xml.gen.MemberRef;
 import jp.riken.kscope.xcodeml.clang.xml.gen.MinusExpr;
 import jp.riken.kscope.xcodeml.clang.xml.gen.ModExpr;
 import jp.riken.kscope.xcodeml.clang.xml.gen.MoeConstant;
 import jp.riken.kscope.xcodeml.clang.xml.gen.MulExpr;
 import jp.riken.kscope.xcodeml.clang.xml.gen.Name;
 import jp.riken.kscope.xcodeml.clang.xml.gen.PlusExpr;
+import jp.riken.kscope.xcodeml.clang.xml.gen.PointerRef;
 import jp.riken.kscope.xcodeml.clang.xml.gen.PointerType;
 import jp.riken.kscope.xcodeml.clang.xml.gen.PostDecrExpr;
 import jp.riken.kscope.xcodeml.clang.xml.gen.PostIncrExpr;
+import jp.riken.kscope.xcodeml.clang.xml.gen.Pragma;
 import jp.riken.kscope.xcodeml.clang.xml.gen.PreDecrExpr;
 import jp.riken.kscope.xcodeml.clang.xml.gen.PreIncrExpr;
+import jp.riken.kscope.xcodeml.clang.xml.gen.ReturnStatement;
+import jp.riken.kscope.xcodeml.clang.xml.gen.RshiftExpr;
+import jp.riken.kscope.xcodeml.clang.xml.gen.SizeOfExpr;
 import jp.riken.kscope.xcodeml.clang.xml.gen.StringConstant;
 import jp.riken.kscope.xcodeml.clang.xml.gen.StructType;
+import jp.riken.kscope.xcodeml.clang.xml.gen.SwitchStatement;
+import jp.riken.kscope.xcodeml.clang.xml.gen.UnaryMinusExpr;
 import jp.riken.kscope.xcodeml.clang.xml.gen.UnionType;
 import jp.riken.kscope.xcodeml.clang.xml.gen.Value;
+import jp.riken.kscope.xcodeml.clang.xml.gen.VarAddr;
 import jp.riken.kscope.xcodeml.clang.xml.gen.VarDecl;
+import jp.riken.kscope.xcodeml.clang.xml.gen.WhileStatement;
 import jp.riken.kscope.xcodeml.clang.xml.IXmlNode;
 import jp.riken.kscope.xcodeml.clang.xml.gen.Params;
 import jp.riken.kscope.xcodeml.clang.xml.gen.Var;
@@ -147,9 +204,11 @@ public class CodeBuilder extends XcodeMLVisitorImpl {
         // DONE: VarDecl
         writeLineDirective(visitable.getLineno(), visitable.getFile());
 
-        if (writeVarDecl(visitable) == false) {
-            return false;
-        }
+        // 変数宣言文
+        VariableDefinitionParser varParser = new VariableDefinitionParser(this._context.getTypeManager(), null);
+        VariableDefinition varDef = varParser.parseVariableDefinition(visitable);
+        if (varDef == null) return true;
+        writeToken(varDef.toStringClang());
 
         Value valueElem = visitable.getValue();
         if (valueElem != null) {
@@ -668,11 +727,19 @@ public class CodeBuilder extends XcodeMLVisitorImpl {
         // DONE: FdoStatement
         writeLineDirective(visitable.getLineno(), visitable.getFile());
 
-        writeToken("do");
+        writeToken("do...while");
+        writeToken("(");
 
+        // condition
+        if (visiter.invokeEnter(visitable.getCondition()) == false) {
+            return false;
+        }
+
+        writeToken(")");
         if (!updateCodeLine(visitable)) {
             return false;
         }
+
         return true;
     }
 
@@ -718,6 +785,9 @@ public class CodeBuilder extends XcodeMLVisitorImpl {
         return true;
     }
 
+    /**
+     * Decompile "Else" element in XcodeML/C.
+     */
     @Override
     public boolean enter(Else visitable) {
         if (visitable != null) {
@@ -794,6 +864,10 @@ public class CodeBuilder extends XcodeMLVisitorImpl {
 
         IXmlNode node = XmlNodeUtil.getXmlNodeChoice(visitable);
         if (visiter.invokeEnter(node) == false) {
+            return false;
+        }
+
+        if (!updateCodeLine(visitable)) {
             return false;
         }
 
@@ -1103,17 +1177,23 @@ public class CodeBuilder extends XcodeMLVisitorImpl {
         String functionName = null;
         if (function.getFuncAddr() != null) {
             functionName = function.getFuncAddr().getValue();
+
+            writeToken(functionName);
+        }
+        else {
+            IXmlNode node = XmlNodeUtil.getXmlNodeChoice(function);
+            if (visiter.invokeEnter(node) == false) {
+                return false;
+            }
         }
 
-        writeToken(functionName);
         writeToken("(");
 
         if (visiter.invokeEnter(visitable.getArguments()) == false) {
             return false;
         }
-
         writeToken(")");
-
+        
         return true;
     }
 
@@ -1431,5 +1511,912 @@ public class CodeBuilder extends XcodeMLVisitorImpl {
 
         return true;
     }
+
+    /**
+     * Decompile "SwitchStatement" element in XcodeML/C.
+     */
+    @Override
+    public boolean enter(SwitchStatement visitable) {
+
+        XcodeMLVisitor visiter = _context.getVisitor();
+
+        // DONE: SwitchStatement
+        writeLineDirective(visitable.getLineno(), visitable.getFile());
+
+
+        writeToken("switch ");
+        writeToken("(");
+        if (visiter.invokeEnter(visitable.getValue()) == false) {
+            return false;
+        }
+
+        writeToken(")");
+
+        if (!updateCodeLine(visitable)) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Decompile "CaseLabel" element in XcodeML/C.
+     */
+    @Override
+    public boolean enter(CaseLabel visitable) {
+        XcodeMLVisitor visiter = _context.getVisitor();
+
+        // DONE: SwitchStatement
+        writeLineDirective(visitable.getLineno(), visitable.getFile());
+
+        writeToken("case ");
+        if (visiter.invokeEnter(visitable.getValue()) == false) {
+            return false;
+        }
+
+        writeToken(":");
+
+        if (!updateCodeLine(visitable)) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Decompile "IfStatement" element in XcodeML/C.
+     */
+    @Override
+    public void leave(IfStatement visitable) {
+        writeToken("}");
+        updateCodeLine(visitable);
+    }
+
+    /**
+     * Decompile "SwitchStatement" element in XcodeML/C.
+     */
+    @Override
+    public void leave(SwitchStatement visitable) {
+        writeToken("}");
+        updateCodeLine(visitable);
+    }
+
+    /**
+     * Decompile "ForStatement" element in XcodeML/C.
+     */
+    @Override
+    public void leave(ForStatement visitable) {
+        writeToken("}");
+        updateCodeLine(visitable);
+    }
+
+    /**
+     * Decompile "DefaultLabel" element in XcodeML/C.
+     */
+    @Override
+    public boolean enter(DefaultLabel visitable) {
+        XcodeMLVisitor visiter = _context.getVisitor();
+
+        // DONE: DefaultLabel
+        writeLineDirective(visitable.getLineno(), visitable.getFile());
+
+        writeToken("default:");
+
+        if (!updateCodeLine(visitable)) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Decompile "BreakStatement" element in XcodeML/C.
+     */
+    @Override
+    public boolean enter(BreakStatement visitable) {
+        XcodeMLVisitor visiter = _context.getVisitor();
+
+        // DONE: BreakStatement
+        writeLineDirective(visitable.getLineno(), visitable.getFile());
+
+        writeToken("break");
+
+        if (!updateCodeLine(visitable)) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Decompile "ContinueStatement" element in XcodeML/C.
+     */
+    @Override
+    public boolean enter(ContinueStatement visitable) {
+        XcodeMLVisitor visiter = _context.getVisitor();
+
+        // DONE: BreakStatement
+        writeLineDirective(visitable.getLineno(), visitable.getFile());
+
+        writeToken("continue");
+
+        if (!updateCodeLine(visitable)) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Decompile "WhileStatement" element in XcodeML/C.
+     */
+    @Override
+    public boolean enter(WhileStatement visitable) {
+
+        XcodeMLVisitor visiter = _context.getVisitor();
+        // DONE: ForStatement
+        writeLineDirective(visitable.getLineno(), visitable.getFile());
+
+        writeToken("while ");
+        writeToken("(");
+
+        // condition
+        if (visiter.invokeEnter(visitable.getCondition()) == false) {
+            return false;
+        }
+
+        writeToken(")");
+        if (!updateCodeLine(visitable)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Decompile "WhileStatement" element in XcodeML/C.
+     */
+    @Override
+    public void leave(WhileStatement visitable) {
+        writeToken("}");
+        updateCodeLine(visitable);
+    }
+
+    /**
+     * Decompile "CompoundStatement" element in XcodeML/C.
+     */
+    @Override
+    public boolean enter(CompoundStatement visitable) {
+        XcodeMLVisitor visiter = _context.getVisitor();
+        // DONE: ForStatement
+        writeLineDirective(visitable.getLineno(), visitable.getFile());
+
+        // 複文（空文）
+        writeToken("{");
+        if (!updateCodeLine(visitable)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Decompile "CompoundStatement" element in XcodeML/C.
+     */
+    @Override
+    public void leave(CompoundStatement visitable) {
+        // 複文（空文）
+        writeToken("}");
+        updateCodeLine(visitable);
+    }
+
+    /**
+     * Decompile "LshiftExpr" element in XcodeML/C.
+     */
+    @Override
+    public boolean enter(LshiftExpr visitable) {
+        // DONE: LshiftExpr
+        List<IXmlNode> list = visitable.getContent();
+        IXmlNode leftExpr = list.size() >= 1 ? list.get(0) : null;
+        IXmlNode rightExpr = list.size() >= 2 ? list.get(1) : null;
+        if (writeBinaryExpr(leftExpr, rightExpr, "<<", true) == false) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Decompile "RshiftExpr" element in XcodeML/C.
+     */
+    @Override
+    public boolean enter(RshiftExpr visitable) {
+        // DONE: RshiftExpr
+        List<IXmlNode> list = visitable.getContent();
+        IXmlNode leftExpr = list.size() >= 1 ? list.get(0) : null;
+        IXmlNode rightExpr = list.size() >= 2 ? list.get(1) : null;
+        if (writeBinaryExpr(leftExpr, rightExpr, ">>", true) == false) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Decompile "BitAndExpr" element in XcodeML/C.
+     */
+    @Override
+    public boolean enter(BitAndExpr visitable) {
+        // DONE: BitAndExpr
+        List<IXmlNode> list = visitable.getContent();
+        IXmlNode leftExpr = list.size() >= 1 ? list.get(0) : null;
+        IXmlNode rightExpr = list.size() >= 2 ? list.get(1) : null;
+        if (writeBinaryExpr(leftExpr, rightExpr, "&", true) == false) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Decompile "BitOrExpr" element in XcodeML/C.
+     */
+    @Override
+    public boolean enter(BitOrExpr visitable) {
+        // DONE: BitOrExpr
+        List<IXmlNode> list = visitable.getContent();
+        IXmlNode leftExpr = list.size() >= 1 ? list.get(0) : null;
+        IXmlNode rightExpr = list.size() >= 2 ? list.get(1) : null;
+        if (writeBinaryExpr(leftExpr, rightExpr, "|", true) == false) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Decompile "BitXorExpr" element in XcodeML/C.
+     */
+    @Override
+    public boolean enter(BitXorExpr visitable) {
+        // DONE: BitXorExpr
+        List<IXmlNode> list = visitable.getContent();
+        IXmlNode leftExpr = list.size() >= 1 ? list.get(0) : null;
+        IXmlNode rightExpr = list.size() >= 2 ? list.get(1) : null;
+        if (writeBinaryExpr(leftExpr, rightExpr, "^", true) == false) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Decompile "BitNotExpr" element in XcodeML/C.
+     */
+    @Override
+    public boolean enter(BitNotExpr visitable) {
+        // DONE: BitNotExpr
+        IXmlNode node = XmlNodeUtil.getXmlNodeChoice(visitable);
+        // NOTは優先順位が高いので()は付けない
+        if (writeUnaryExpr(node, "~", false) == false) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Decompile "AsgPlusExpr" element in XcodeML/C.
+     */
+    @Override
+    public boolean enter(AsgPlusExpr visitable) {
+        // DONE: AsgPlusExpr
+        List<IXmlNode> list = visitable.getContent();
+        IXmlNode leftExpr = list.size() >= 1 ? list.get(0) : null;
+        IXmlNode rightExpr = list.size() >= 2 ? list.get(1) : null;
+        if (writeBinaryExpr(leftExpr, rightExpr, "+=", true) == false) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Decompile "AsgModExpr" element in XcodeML/C.
+     */
+    @Override
+    public boolean enter(AsgModExpr visitable) {
+        // DONE: AsgModExpr
+        List<IXmlNode> list = visitable.getContent();
+        IXmlNode leftExpr = list.size() >= 1 ? list.get(0) : null;
+        IXmlNode rightExpr = list.size() >= 2 ? list.get(1) : null;
+        if (writeBinaryExpr(leftExpr, rightExpr, "%=", true) == false) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Decompile "AsgBitOrExpr" element in XcodeML/C.
+     */
+    @Override
+    public boolean enter(AsgBitOrExpr visitable) {
+        // DONE: AsgBitOrExpr
+        List<IXmlNode> list = visitable.getContent();
+        IXmlNode leftExpr = list.size() >= 1 ? list.get(0) : null;
+        IXmlNode rightExpr = list.size() >= 2 ? list.get(1) : null;
+        if (writeBinaryExpr(leftExpr, rightExpr, "|=", true) == false) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Decompile "AsgBitXorExpr" element in XcodeML/C.
+     */
+    @Override
+    public boolean enter(AsgBitXorExpr visitable) {
+        // DONE: AsgBitXorExpr
+        List<IXmlNode> list = visitable.getContent();
+        IXmlNode leftExpr = list.size() >= 1 ? list.get(0) : null;
+        IXmlNode rightExpr = list.size() >= 2 ? list.get(1) : null;
+        if (writeBinaryExpr(leftExpr, rightExpr, "^=", true) == false) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Decompile "AsgMulExpr" element in XcodeML/C.
+     */
+    @Override
+    public boolean enter(AsgMulExpr visitable) {
+        // DONE: AsgMulExpr
+        List<IXmlNode> list = visitable.getContent();
+        IXmlNode leftExpr = list.size() >= 1 ? list.get(0) : null;
+        IXmlNode rightExpr = list.size() >= 2 ? list.get(1) : null;
+        if (writeBinaryExpr(leftExpr, rightExpr, "*=", true) == false) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Decompile "AsgRshiftExpr" element in XcodeML/C.
+     */
+    @Override
+    public boolean enter(AsgRshiftExpr visitable) {
+        // DONE: AsgRshiftExpr
+        List<IXmlNode> list = visitable.getContent();
+        IXmlNode leftExpr = list.size() >= 1 ? list.get(0) : null;
+        IXmlNode rightExpr = list.size() >= 2 ? list.get(1) : null;
+        if (writeBinaryExpr(leftExpr, rightExpr, ">>=", true) == false) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Decompile "AsgBitAndExpr" element in XcodeML/C.
+     */
+    @Override
+    public boolean enter(AsgBitAndExpr visitable) {
+        // DONE: AsgBitAndExpr
+        List<IXmlNode> list = visitable.getContent();
+        IXmlNode leftExpr = list.size() >= 1 ? list.get(0) : null;
+        IXmlNode rightExpr = list.size() >= 2 ? list.get(1) : null;
+        if (writeBinaryExpr(leftExpr, rightExpr, "&=", true) == false) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Decompile "AsgDivExpr" element in XcodeML/C.
+     */
+    @Override
+    public boolean enter(AsgDivExpr visitable) {
+        // DONE: AsgDivExpr
+        List<IXmlNode> list = visitable.getContent();
+        IXmlNode leftExpr = list.size() >= 1 ? list.get(0) : null;
+        IXmlNode rightExpr = list.size() >= 2 ? list.get(1) : null;
+        if (writeBinaryExpr(leftExpr, rightExpr, "/=", true) == false) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Decompile "AsgMinusExpr" element in XcodeML/C.
+     */
+    @Override
+    public boolean enter(AsgMinusExpr visitable) {
+        // DONE: AsgMinusExpr
+        List<IXmlNode> list = visitable.getContent();
+        IXmlNode leftExpr = list.size() >= 1 ? list.get(0) : null;
+        IXmlNode rightExpr = list.size() >= 2 ? list.get(1) : null;
+        if (writeBinaryExpr(leftExpr, rightExpr, "-=", true) == false) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Decompile "AsgLshiftExpr" element in XcodeML/C.
+     */
+    @Override
+    public boolean enter(AsgLshiftExpr visitable) {
+        // DONE: AsgLshiftExpr
+        List<IXmlNode> list = visitable.getContent();
+        IXmlNode leftExpr = list.size() >= 1 ? list.get(0) : null;
+        IXmlNode rightExpr = list.size() >= 2 ? list.get(1) : null;
+        if (writeBinaryExpr(leftExpr, rightExpr, "<<=", true) == false) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Decompile "unaryMinusExpr" element in XcodeML/C.
+     */
+    @Override
+    public boolean enter(UnaryMinusExpr visitable) {
+        // DONE: UnaryMinusExpr
+        IXmlNode node = XmlNodeUtil.getXmlNodeChoice(visitable);
+        if (writeUnaryExpr(node, "-", false) == false) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Decompile "SizeOfExpr" element in XcodeML/C.
+     */
+    @Override
+    public boolean enter(SizeOfExpr visitable) {
+        // DONE: SizeOfExpr
+        XcodeMLVisitor visiter = _context.getVisitor();
+
+        this.writeToken("sizeof(");
+
+        // sizeof変数
+        IXmlNode node = XmlNodeUtil.getXmlNodeChoice(visitable);
+        if (visiter.invokeEnter(node) == false) {
+            return false;
+        }
+
+        this.writeToken(")");
+
+        return true;
+    }
+
+    /**
+     * Decompile "CommaExpr" element in XcodeML/C.
+     */
+    @Override
+    public boolean enter(CommaExpr visitable) {
+        // DONE: CommaExpr
+        XcodeMLVisitor visiter = _context.getVisitor();
+
+        this.writeToken("(");
+
+        // カンマ区切り式
+        List<IXmlNode> expressions = visitable.getExpressions();
+        if (expressions == null) return true;
+
+        for (int i=0; i<expressions.size(); i++) {
+            if (visiter.invokeEnter(expressions.get(i)) == false) {
+                return false;
+            }
+            if (i<expressions.size()-1) {
+                writeToken(", ");
+            }
+        }
+
+        this.writeToken(")");
+
+        return true;
+    }
+
+    /**
+     * Decompile "CondExpr" element in XcodeML/C.
+     */
+    @Override
+    public boolean enter(CondExpr visitable) {
+        // DONE: CondExpr
+        XcodeMLVisitor visiter = _context.getVisitor();
+
+        // カンマ区切り式
+        List<IXmlNode> content = visitable.getContent();
+        if (content == null) return false;
+        if (content.size() < 3) return false;
+
+        if (visiter.invokeEnter(content.get(0)) == false) {
+            return false;
+        }
+        this.writeToken(" ? ");
+        if (visiter.invokeEnter(content.get(1)) == false) {
+            return false;
+        }
+        this.writeToken(" : ");
+        if (visiter.invokeEnter(content.get(2)) == false) {
+            return false;
+        }
+
+        return true;
+    }
+
+
+    /**
+     * Decompile "ArrayRef" element in XcodeML/C.
+     */
+    @Override
+    public boolean enter(ArrayRef visitable) {
+        // DONE: ArrayRef
+        XcodeMLVisitor visiter = _context.getVisitor();
+
+        ArrayAddr array_addr = visitable.getArrayAddrInArrayRef();
+        List<IXmlNode> expressions = visitable.getExpressions();
+        if (array_addr == null) return false;
+
+        if (visiter.invokeEnter(array_addr) == false) {
+            return false;
+        }
+        for (IXmlNode exp : expressions) {
+            this.writeToken("[");
+            if (visiter.invokeEnter(exp) == false) {
+                return false;
+            }
+            this.writeToken("]");
+        }
+
+        return true;
+    }
+
+
+    /**
+     * Decompile "ArrayAddr" element in XcodeML/C.
+     */
+    @Override
+    public boolean enter(ArrayAddr visitable) {
+        // DONE: ArrayRef
+        // 変数名
+        String value = visitable.getValue();
+        // データ型
+        String type = visitable.getType();
+
+        this.writeToken(value);
+
+        return true;
+    }
+
+    /**
+     * Decompile "pointerRef" element in XcodeML/C.
+     */
+    @Override
+    public boolean enter(PointerRef visitable) {
+        // DONE: pointerRef
+        XcodeMLVisitor visiter = _context.getVisitor();
+
+        // ポインタ変数
+        IXmlNode node = XmlNodeUtil.getXmlNodeChoice(visitable);
+        if (node == null) return false;
+
+        this.writeToken("*");
+        if (visiter.invokeEnter(node) == false) {
+            return false;
+        }
+
+        return true;
+    }
+
+
+    /**
+     * Decompile "value" element in XcodeML/C.
+     */
+    @Override
+    public boolean enter(Value visitable) {
+        // DONE: pointerRef
+        XcodeMLVisitor visiter = _context.getVisitor();
+
+        if (visitable.getExpressionsOrValues() != null) {
+            List<IXmlNode> list = visitable.getExpressionsOrValues();
+
+            if (list.size() > 1) {
+                // {}で囲む
+                writeToken("{");
+            }
+            for (int i=0; i<list.size(); i++) {
+                if (visiter.invokeEnter(list.get(i)) == false) {
+                    return false;
+                }
+                if (i<list.size()-1) {
+                    writeToken(", ");
+                }
+            }
+            if (list.size() > 1) {
+                // {}で囲む
+                writeToken("}");
+            }
+        }
+        else if (visitable.getDesignatedValue() != null) {
+            if (visiter.invokeEnter(visitable.getDesignatedValue()) == false) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Decompile "VarAddr" element in XcodeML/C.
+     */
+    @Override
+    public boolean enter(VarAddr visitable) {
+        // DONE: VarAddr
+        String value = visitable.getValue();
+
+        boolean addr_expr = true;
+        // 1つ上のノードがPointerRefであるか？
+        if (this._context.isInvokeNodeOf(PointerRef.class, 1)) addr_expr = false;
+        if (this._context.isInvokeNodeOf(MemberRef.class, 1)) addr_expr = false;
+        if (this._context.isInvokeNodeOf(MemberAddr.class, 1)) addr_expr = false;
+        if (this._context.isInvokeNodeOf(MemberArrayRef.class, 1)) addr_expr = false;
+        if (this._context.isInvokeNodeOf(MemberArrayAddr.class, 1)) addr_expr = false;
+
+        // アドレス演算子を付ける
+        if (addr_expr) {
+            writeToken("&");
+        }
+
+        writeToken(value);
+        return true;
+    }
+
+    /**
+     * Decompile "MemberRef" element in XcodeML/C.
+     */
+    @Override
+    public boolean enter(MemberRef visitable) {
+        // DONE: MemberRef
+        XcodeMLVisitor visiter = _context.getVisitor();
+
+        // 構造体メンバ
+        String member = visitable.getMember();
+
+        IXmlNode node = XmlNodeUtil.getXmlNodeChoice(visitable);
+        if (visiter.invokeEnter(node) == false) {
+            return false;
+        }
+        // 構造体メンバ参照
+        if (XmlNodeUtil.isPointerStruct(visitable)) {
+            writeToken("->");
+        }
+        else {
+            writeToken(".");
+        }
+        writeToken(member);
+
+        return true;
+    }
+
+    /**
+     * Decompile "MemberAddr" element in XcodeML/C.
+     */
+    @Override
+    public boolean enter(MemberAddr visitable) {
+        // DONE: MemberAddr
+        XcodeMLVisitor visiter = _context.getVisitor();
+
+        // 構造体メンバ
+        String member = visitable.getMember();
+
+        // 1つ上のノードが構造体参照であるか？
+        boolean addr_expr = true;
+        if (this._context.isInvokeNodeOf(PointerRef.class, 1)) addr_expr = false;
+        if (this._context.isInvokeNodeOf(MemberRef.class, 1)) addr_expr = false;
+        if (this._context.isInvokeNodeOf(MemberAddr.class, 1)) addr_expr = false;
+        if (this._context.isInvokeNodeOf(MemberArrayRef.class, 1)) addr_expr = false;
+        if (this._context.isInvokeNodeOf(MemberArrayAddr.class, 1)) addr_expr = false;
+        if (addr_expr) {
+            writeToken("&");
+        }
+        IXmlNode node = XmlNodeUtil.getXmlNodeChoice(visitable);
+        if (visiter.invokeEnter(node) == false) {
+            return false;
+        }
+        // 構造体メンバ参照
+        if (XmlNodeUtil.isPointerStruct(visitable)) {
+            writeToken("->");
+        }
+        else {
+            writeToken(".");
+        }
+        writeToken(member);
+
+        return true;
+    }
+
+    /**
+     * Decompile "MemberArrayRef" element in XcodeML/C.
+     */
+    @Override
+    public boolean enter(MemberArrayRef visitable) {
+        // DONE: MemberArrayRef
+        XcodeMLVisitor visiter = _context.getVisitor();
+
+        // 構造体メンバ
+        String member = visitable.getMember();
+
+        IXmlNode node = XmlNodeUtil.getXmlNodeChoice(visitable);
+        if (visiter.invokeEnter(node) == false) {
+            return false;
+        }
+        // 構造体メンバ参照
+        if (XmlNodeUtil.isPointerStruct(visitable)) {
+            writeToken("->");
+        }
+        else {
+            writeToken(".");
+        }
+
+        writeToken(member);
+
+        return true;
+    }
+
+    /**
+     * Decompile "MemberArrayAddr" element in XcodeML/C.
+     */
+    @Override
+    public boolean enter(MemberArrayAddr visitable) {
+        // DONE: MemberArrayAddr
+        XcodeMLVisitor visiter = _context.getVisitor();
+
+        // 構造体メンバ
+        String member = visitable.getMember();
+
+        // 1つ上のノードが構造体参照であるか？
+        boolean addr_expr = true;
+        if (this._context.isInvokeNodeOf(PointerRef.class, 1)) addr_expr = false;
+        if (this._context.isInvokeNodeOf(MemberRef.class, 1)) addr_expr = false;
+        if (this._context.isInvokeNodeOf(MemberAddr.class, 1)) addr_expr = false;
+        if (this._context.isInvokeNodeOf(MemberArrayRef.class, 1)) addr_expr = false;
+        if (this._context.isInvokeNodeOf(MemberArrayAddr.class, 1)) addr_expr = false;
+        if (addr_expr) {
+            writeToken("&");
+        }
+        IXmlNode node = XmlNodeUtil.getXmlNodeChoice(visitable);
+        if (visiter.invokeEnter(node) == false) {
+            return false;
+        }
+        // 構造体メンバ参照
+        if (XmlNodeUtil.isPointerStruct(visitable)) {
+            writeToken("->");
+        }
+        else {
+            writeToken(".");
+        }
+        writeToken(member);
+
+        return true;
+    }
+
+
+    /**
+     * Decompile "MemberArrayAddr" element in XcodeML/C.
+     */
+    @Override
+    public boolean enter(AddrOfExpr visitable) {
+        // DONE: AddrOfExpr
+        XcodeMLVisitor visiter = _context.getVisitor();
+
+        IXmlNode node = XmlNodeUtil.getXmlNodeChoice(visitable);
+
+        // 1つ上のノードが変数参照であるか？
+        boolean addr_expr = true;
+        if (this._context.isInvokeNodeOf(PointerRef.class, 1)) addr_expr = false;
+        if (this._context.isInvokeNodeOf(MemberRef.class, 1)) addr_expr = false;
+        if (this._context.isInvokeNodeOf(MemberAddr.class, 1)) addr_expr = false;
+        if (this._context.isInvokeNodeOf(MemberArrayRef.class, 1)) addr_expr = false;
+        if (this._context.isInvokeNodeOf(MemberArrayAddr.class, 1)) addr_expr = false;
+        if (addr_expr) {
+            writeToken("&");
+        }
+
+        if (visiter.invokeEnter(node) == false) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Decompile "ReturnStatement" element in XcodeML/C.
+     */
+    @Override
+    public boolean enter(ReturnStatement visitable) {
+        XcodeMLVisitor visiter = _context.getVisitor();
+        // DONE: ReturnStatement
+        writeLineDirective(visitable.getLineno(), visitable.getFile());
+
+        // return文
+        writeToken("return");
+
+        // リターン式
+        IXmlNode node = XmlNodeUtil.getXmlNodeChoice(visitable);
+        if (node != null) {
+            writeToken(" ");
+            if (visiter.invokeEnter(node) == false) {
+                return false;
+            }
+        }
+
+        if (!updateCodeLine(visitable)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Decompile "GotoStatement" element in XcodeML/C.
+     */
+    @Override
+    public boolean enter(GotoStatement visitable) {
+        XcodeMLVisitor visiter = _context.getVisitor();
+        // DONE: GotoStatement
+        writeLineDirective(visitable.getLineno(), visitable.getFile());
+
+        // goto文
+        writeToken("goto ");
+
+        // name
+        IXmlNode node = null;
+        node = visitable.getName();
+        if (node == null) {
+            // goto式
+            node = XmlNodeUtil.getXmlNodeChoice(visitable);
+            if (visiter.invokeEnter(node) == false) {
+                return false;
+            }
+        }
+        else {
+            String label = visitable.getName().getValue();
+            writeToken(label);
+        }
+
+        if (!updateCodeLine(visitable)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Decompile "Pragma" element in XcodeML/C.
+     */
+    @Override
+    public boolean enter(Pragma visitable) {
+        XcodeMLVisitor visiter = _context.getVisitor();
+        // DONE: Pragma
+        writeLineDirective(visitable.getLineno(), visitable.getFile());
+
+        // pragma文
+        writeToken(visitable.getValue());
+
+        if (!updateCodeLine(visitable)) {
+            return false;
+        }
+
+        return true;
+    }
+
+
 
 }

@@ -1,3 +1,19 @@
+/*
+ * K-scope
+ * Copyright 2012-2015 RIKEN, Japan
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package jp.riken.kscope.xcodeml.clang;
 
 import java.util.ArrayList;
@@ -12,6 +28,9 @@ import jp.riken.kscope.data.ErrorInfo;
 import jp.riken.kscope.data.FILE_TYPE;
 import jp.riken.kscope.data.SourceFile;
 import jp.riken.kscope.exception.XcodeMLException;
+import jp.riken.kscope.language.Block;
+import jp.riken.kscope.language.CompoundBlock;
+import jp.riken.kscope.language.Condition;
 import jp.riken.kscope.language.Expression;
 import jp.riken.kscope.language.Fortran;
 import jp.riken.kscope.language.IVariableType;
@@ -28,22 +47,43 @@ import jp.riken.kscope.xcodeml.clang.XcodeMLVisitorImpl;
 import jp.riken.kscope.xcodeml.clang.XcodeMLContext;
 import jp.riken.kscope.xcodeml.clang.xml.IXmlNode;
 import jp.riken.kscope.xcodeml.clang.xml.IXmlTypeTableChoice;
+import jp.riken.kscope.xcodeml.clang.xml.gen.AsgBitAndExpr;
+import jp.riken.kscope.xcodeml.clang.xml.gen.AsgBitOrExpr;
+import jp.riken.kscope.xcodeml.clang.xml.gen.AsgBitXorExpr;
+import jp.riken.kscope.xcodeml.clang.xml.gen.AsgDivExpr;
+import jp.riken.kscope.xcodeml.clang.xml.gen.AsgLshiftExpr;
+import jp.riken.kscope.xcodeml.clang.xml.gen.AsgMinusExpr;
+import jp.riken.kscope.xcodeml.clang.xml.gen.AsgModExpr;
+import jp.riken.kscope.xcodeml.clang.xml.gen.AsgMulExpr;
+import jp.riken.kscope.xcodeml.clang.xml.gen.AsgPlusExpr;
+import jp.riken.kscope.xcodeml.clang.xml.gen.AsgRshiftExpr;
 import jp.riken.kscope.xcodeml.clang.xml.gen.AssignExpr;
+import jp.riken.kscope.xcodeml.clang.xml.gen.BinaryExpression;
+import jp.riken.kscope.xcodeml.clang.xml.gen.BreakStatement;
 import jp.riken.kscope.xcodeml.clang.xml.gen.BuiltinOp;
+import jp.riken.kscope.xcodeml.clang.xml.gen.CaseLabel;
+import jp.riken.kscope.xcodeml.clang.xml.gen.CompoundStatement;
+import jp.riken.kscope.xcodeml.clang.xml.gen.ContinueStatement;
+import jp.riken.kscope.xcodeml.clang.xml.gen.DefaultLabel;
 import jp.riken.kscope.xcodeml.clang.xml.gen.DoStatement;
 import jp.riken.kscope.xcodeml.clang.xml.gen.ForStatement;
 import jp.riken.kscope.xcodeml.clang.xml.gen.Function;
 import jp.riken.kscope.xcodeml.clang.xml.gen.FunctionDefinition;
+import jp.riken.kscope.xcodeml.clang.xml.gen.GotoStatement;
 import jp.riken.kscope.xcodeml.clang.xml.gen.Id;
 import jp.riken.kscope.xcodeml.clang.xml.gen.IfStatement;
 import jp.riken.kscope.xcodeml.clang.xml.gen.Name;
 import jp.riken.kscope.xcodeml.clang.xml.gen.Params;
 import jp.riken.kscope.xcodeml.clang.xml.gen.PostDecrExpr;
 import jp.riken.kscope.xcodeml.clang.xml.gen.PostIncrExpr;
+import jp.riken.kscope.xcodeml.clang.xml.gen.Pragma;
 import jp.riken.kscope.xcodeml.clang.xml.gen.PreDecrExpr;
 import jp.riken.kscope.xcodeml.clang.xml.gen.PreIncrExpr;
+import jp.riken.kscope.xcodeml.clang.xml.gen.ReturnStatement;
 import jp.riken.kscope.xcodeml.clang.xml.gen.StatementLabel;
+import jp.riken.kscope.xcodeml.clang.xml.gen.SwitchStatement;
 import jp.riken.kscope.xcodeml.clang.xml.gen.UnaryExpression;
+import jp.riken.kscope.xcodeml.clang.xml.gen.WhileStatement;
 import jp.riken.kscope.xcodeml.clang.xml.gen.XcodeProgram;
 import jp.riken.kscope.xcodeml.clang.parser.ExpressionParser;
 import jp.riken.kscope.xcodeml.clang.parser.VariableDefinitionParser;
@@ -180,6 +220,20 @@ public class DbUpdater extends XcodeMLVisitorImpl {
     private boolean isCurrentProgramUnit() {
         ProgramUnit unit = m_database.get_current_unit();
         if (unit instanceof ProgramUnit) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Fortranクラスのcurrent_blockがCompoundBlockであるかチェックする。
+     *
+     * @return true=current_blockはCompoundBlockである。
+     */
+    private boolean isCurrentCompoundBlock() {
+        Block block = m_database.getCurrentBlock();
+        if (block instanceof CompoundBlock) {
             return true;
         }
 
@@ -405,24 +459,23 @@ public class DbUpdater extends XcodeMLVisitorImpl {
         // ソースファイル、ソースコード行
         CodeLine lineInfo = m_context.getCodeBuilder().getLastCodeLine();
 
-        /// TODO
-        Variable variable = null;
+        // ExpressionParserモデルパーサ
+        ExpressionParser exprParser = new ExpressionParser(m_context.getTypeManager());
 
-        // ループ式をパースする。
-        // 範囲の下限を取得する
-        Expression lowerExp = null;
-
-        // 範囲の上限を取得する
-        Expression upperExp = null;
-
-        // 範囲のステップを取得する
-        Expression stepExp = null;
+        // ループ条件式をパースする。
+        // ループ条件式を取得する
+        Expression conditionExp = null;
+        if (visitable.getCondition() != null) {
+            exprParser.setParseNode(visitable.getCondition());
+            // 範囲の下限を取得する
+            conditionExp = exprParser.getExpression();
+        }
 
         // DO文のブロック開始
-        m_database.start_loop(lineInfo, Statement.NO_LABEL, variable, lowerExp, upperExp, stepExp);
+        m_database.start_loop(lineInfo, Statement.NO_LABEL, null, null, conditionExp, null);
 
         // 外部手続きの登録
-        // addExternalFunction(exprParser.getExternalFunction());
+        addExternalFunctions(exprParser.getExternalFunction());
 
         return true;
     }
@@ -623,11 +676,6 @@ public class DbUpdater extends XcodeMLVisitorImpl {
 
         String label = Statement.NO_LABEL;
 
-        // 1つ上のノードがExprStatementであるか？
-        if (!m_context.isInvokeNodeOf(ExprStatement.class, 1)) {
-            return true;
-        }
-
         // データベースがfunctionCallを登録可能であるか(現在ブロックがProgramUnitであるか?)
         if (!isCurrentProgramUnit()) {
             return true;
@@ -643,10 +691,24 @@ public class DbUpdater extends XcodeMLVisitorImpl {
         // set_callの引数
         List<Expression> list = null;
         // サブルーチン名、関数名
+        String functionName = null;
         Function function = visitable.getFunction();
-        if (function.getFuncAddr() == null) return false;
-
-        String functionName = function.getFuncAddr().getValue();
+        if (function.getFuncAddr() != null) {
+            functionName = function.getFuncAddr().getValue();
+        }
+        else {
+            IXmlNode node = XmlNodeUtil.getXmlNodeChoice(function);
+            // ExpressionParserモデルパーサ
+            ExpressionParser exprParser = new ExpressionParser(m_context.getTypeManager());
+            // 変数のパース
+            VariableParser varParser = new VariableParser(m_context.getTypeManager());
+            Variable nodeVar = varParser.getVariable(node);
+            // 式パーサー
+            exprParser.setParseNode(node);
+            Expression nodeExpr = exprParser.getExpression();
+            functionName = nodeExpr.getLine();
+        }
+        if (functionName == null) return false;
 
         // 属性
         VariableType funcVarType = null;
@@ -657,7 +719,7 @@ public class DbUpdater extends XcodeMLVisitorImpl {
         boolean is_const = false;
         boolean is_restrict = false;
         boolean is_intrinsic = false;
-        if (function.getFuncAddr().getType() != null) {
+        if (function.getFuncAddr() != null && function.getFuncAddr().getType() != null) {
             String func_type = function.getFuncAddr().getType();
             is_inline = this.m_context.getTypeManager().isInline(func_type);
             is_static = this.m_context.getTypeManager().isStatic(func_type);
@@ -712,11 +774,6 @@ public class DbUpdater extends XcodeMLVisitorImpl {
     public boolean enter(BuiltinOp visitable) {
 
         String label = Statement.NO_LABEL;
-
-        // 1つ上のノードがExprStatementであるか？
-        if (!m_context.isInvokeNodeOf(ExprStatement.class, 1)) {
-            return true;
-        }
 
         // データベースがBuiltinOpを登録可能であるか(現在ブロックがProgramUnitであるか?)
         if (!isCurrentProgramUnit()) {
@@ -794,49 +851,7 @@ public class DbUpdater extends XcodeMLVisitorImpl {
      */
     @Override
     public boolean enter(AssignExpr visitable) {
-        String label = Statement.NO_LABEL;
-
-        // 1つ上のノードがExprStatementであるか？
-        if (!m_context.isInvokeNodeOf(ExprStatement.class, 1)) {
-            return true;
-        }
-
-        // データベースがfunctionCallを登録可能であるか(現在ブロックがProgramUnitであるか?)
-        if (!isCurrentProgramUnit()) {
-            return true;
-        }
-
-        // ソースファイル、ソースコード行
-        CodeLine lineInfo = m_context.getCodeBuilder().getLastCodeLine();
-        int lineno = lineInfo.getStartLine();
-
-        List<IXmlNode> content = visitable.getContent();
-        // 左辺
-        IXmlNode leftExpr = (content != null && content.size() >= 1) ? content
-                .get(0) : null;
-        // 右辺
-        IXmlNode rightExpr = (content != null && content.size() >= 2) ? content
-                .get(1) : null;
-
-        // ExpressionParserモデルパーサ
-        ExpressionParser exprParser = new ExpressionParser(m_context.getTypeManager());
-
-        // 変数のパース
-        VariableParser varParser = new VariableParser(m_context.getTypeManager());
-
-        // 左辺
-        Variable leftVar = varParser.getVariable(leftExpr);
-
-        // 右辺
-        exprParser.setParseNode(rightExpr);
-        Expression rightVar = exprParser.getExpression();
-
-        m_database.setSubstitution(leftVar, rightVar, lineInfo, label);
-
-        // 外部手続きの登録
-        addExternalFunctions(exprParser.getExternalFunction());
-
-        return true;
+        return this.enterBinaryExpression(visitable);
     }
 
     /**
@@ -893,11 +908,6 @@ public class DbUpdater extends XcodeMLVisitorImpl {
     private boolean enterUnaryExpression(UnaryExpression visitable) {
         String label = Statement.NO_LABEL;
 
-        // 1つ上のノードがExprStatementであるか？
-        if (!m_context.isInvokeNodeOf(ExprStatement.class, 1)) {
-            return true;
-        }
-
         // データベースがfunctionCallを登録可能であるか(現在ブロックがProgramUnitであるか?)
         if (!isCurrentProgramUnit()) {
             return true;
@@ -925,4 +935,547 @@ public class DbUpdater extends XcodeMLVisitorImpl {
         return true;
     }
 
+    /**
+     * SwitchStatement(switch文)の開始要素を登録する。
+     *
+     * @param visitable          SwitchStatement(switch文)要素
+     * @return 成否
+     */
+    @Override
+    public boolean enter(SwitchStatement visitable) {
+
+        // ソースファイル、ソースコード行
+        CodeLine lineInfo = m_context.getCodeBuilder().getLastCodeLine();
+
+        // 条件式をパースする。
+        // ExpressionParserモデルパーサ
+        ExpressionParser exprParser = new ExpressionParser(
+                                                m_context.getTypeManager(),
+                                                visitable.getValue());
+
+        // 条件式を取得する
+        Expression condExpr = exprParser.getExpression();
+
+        m_database.startSelection(lineInfo, null,
+                    jp.riken.kscope.language.Selection.SelectionType.SELECT);
+
+        // 条件式
+        m_database.setSelectCaseCondition(condExpr);
+
+        // 外部手続きの登録
+        addExternalFunctions(exprParser.getExternalFunction());
+
+        return true;
+    }
+
+    /**
+     * SwitchStatement(switch文)の終了要素を登録する。
+     *
+     * @param visitable          SwitchStatement(switch文)要素
+     * @return 成否
+     */
+    @Override
+    public void leave(SwitchStatement visitable) {
+
+        // ソースファイル、ソースコード行
+        CodeLine lineInfo = m_context.getCodeBuilder().getLastCodeLine();
+
+        if (m_database.get_current_block() instanceof Condition) {
+            m_database.endCondition(null, Statement.NO_LABEL);
+        }
+
+        // SELECT文のブロック終了
+        m_database.end_selection(lineInfo);
+
+        return;
+    }
+
+    /**
+     * CaseLabel(case文)の開始要素を登録する。
+     *
+     * @param visitable          CaseLabel(case文)要素
+     * @return 成否
+     */
+    @Override
+    public boolean enter(CaseLabel visitable) {
+        // ソースファイル、ソースコード行
+        CodeLine lineInfo = m_context.getCodeBuilder().getLastCodeLine();
+
+        if (m_database.get_current_block() instanceof Condition) {
+            m_database.endCondition(null, Statement.NO_LABEL);
+        }
+
+        // 条件式をパースする。
+        // ExpressionParserモデルパーサ
+        ExpressionParser exprParser = new ExpressionParser(
+                                                m_context.getTypeManager(),
+                                                visitable);
+
+        // 条件式を取得する
+        Expression condExpr = exprParser.getExpression();
+
+        m_database.startCondition(condExpr, lineInfo, Statement.NO_LABEL);
+
+        // 外部手続きの登録
+        addExternalFunctions(exprParser.getExternalFunction());
+
+        return true;
+    }
+
+    /**
+     * DefaultLabel(default文)の開始要素を登録する。
+     *
+     * @param visitable          DefaultLabel(default文)要素
+     * @return 成否
+     */
+    @Override
+    public boolean enter(DefaultLabel visitable) {
+
+        // ソースファイル、ソースコード行
+        CodeLine lineInfo = m_context.getCodeBuilder().getLastCodeLine();
+
+        if (m_database.get_current_block() instanceof Condition) {
+            m_database.endCondition(null, Statement.NO_LABEL);
+        }
+
+        m_database.startCondition(null, lineInfo, Statement.NO_LABEL);
+
+        return true;
+    }
+
+    /**
+     * BreakStatement(break文)の開始要素を登録する。
+     *
+     * @param visitable          BreakStatement(break文)要素
+     * @return 成否
+     */
+    @Override
+    public boolean enter(BreakStatement visitable) {
+
+        String label = Statement.NO_LABEL;
+        // ソースファイル、ソースコード行
+        CodeLine lineInfo = m_context.getCodeBuilder().getLastCodeLine();
+
+        // break文を登録する。
+        m_database.setExit(lineInfo, label);
+
+        return true;
+    }
+
+    /**
+     * ContinueStatement(continue文)の開始要素を登録する。
+     *
+     * @param visitable          ContinueStatement(continue文)要素
+     * @return 成否
+     */
+    @Override
+    public boolean enter(ContinueStatement visitable) {
+        String label = Statement.NO_LABEL;
+        // ソースファイル、ソースコード行
+        CodeLine lineInfo = m_context.getCodeBuilder().getLastCodeLine();
+
+        // continue文を登録する。
+        m_database.setContinue(lineInfo, label);
+
+        return true;
+    }
+
+    /**
+     * WhileStatement(while文)の開始要素を登録する。
+     *
+     * @param visitable          WhileStatement(while文)要素
+     * @return 成否
+     */
+    @Override
+    public boolean enter(WhileStatement visitable) {
+        // ソースファイル、ソースコード行
+        CodeLine lineInfo = m_context.getCodeBuilder().getLastCodeLine();
+
+        // ExpressionParserモデルパーサ
+        ExpressionParser exprParser = new ExpressionParser(m_context.getTypeManager());
+
+        // ループ条件式をパースする。
+        // ループ条件式を取得する
+        Expression conditionExp = null;
+        if (visitable.getCondition() != null) {
+            exprParser.setParseNode(visitable.getCondition());
+            // 範囲の下限を取得する
+            conditionExp = exprParser.getExpression();
+        }
+
+        // DO文のブロック開始
+        m_database.start_loop(lineInfo, Statement.NO_LABEL, null, null, conditionExp, null);
+
+        // 外部手続きの登録
+        addExternalFunctions(exprParser.getExternalFunction());
+
+        return true;
+    }
+
+    /**
+     * WhileStatement(while文)の終了要素を登録する。
+     *
+     * @param visitable          WhileStatement(while文)要素
+     * @return 成否
+     */
+    @Override
+    public void leave(WhileStatement visitable) {
+        // ソースファイル、ソースコード行
+        CodeLine lineInfo = m_context.getCodeBuilder().getLastCodeLine();
+
+        // while文のブロック終了
+        m_database.end_loop(lineInfo);
+    }
+
+    /**
+     * CompoundStatement(複文:空文)の開始要素を登録する。
+     *
+     * @param visitable          CompoundStatement(複文:空文)要素
+     * @return 成否
+     */
+    @Override
+    public boolean enter(CompoundStatement visitable) {
+        // ソースファイル、ソースコード行
+        CodeLine lineInfo = m_context.getCodeBuilder().getLastCodeLine();
+
+        // 1つ上のノードがIBaseStatementであるか？
+        IXmlNode parent_node = m_context.getInvokeNode(1);
+        if (!(parent_node instanceof CompoundStatement)) {
+            if (parent_node instanceof jp.riken.kscope.xcodeml.clang.xml.IBaseStatement) {
+                // 1つ上も文であるので登録の必要はない。
+                return true;
+            }
+        }
+        parent_node = m_context.getInvokeNode(2);
+        if (parent_node instanceof FunctionDefinition) {
+            // 2つ上がFunctionDefinition（関数定義）であるので登録の必要はない
+            return true;
+        }
+        if (parent_node instanceof IfStatement) {
+            // 2つ上がIfStatement（IF文）であるので登録の必要はない
+            return true;
+        }
+
+
+        // 複文のブロック開始
+        m_database.startCompoundBlock(lineInfo);
+
+        return true;
+    }
+
+    /**
+     * CompoundStatement(複文:空文)の終了要素を登録する。
+     *
+     * @param visitable          CompoundStatement(複文:空文)要素
+     * @return 成否
+     */
+    @Override
+    public void leave(CompoundStatement visitable) {
+
+        // データベースのカレントブロックがCompoundBlockであるか
+        if (!this.isCurrentCompoundBlock()) return;
+
+        // ソースファイル、ソースコード行
+        CodeLine lineInfo = m_context.getCodeBuilder().getLastCodeLine();
+
+        // 複文のブロック終了
+        m_database.endCompoundBlock(lineInfo);
+    }
+
+
+    /**
+     * Decompile "exprStatement" element in XcodeML/C.
+     */
+    @Override
+    public boolean enter(ExprStatement visitable) {
+        // DONE: ExprStatement
+        String label = Statement.NO_LABEL;
+
+        // ソースファイル、ソースコード行
+        CodeLine lineInfo = m_context.getCodeBuilder().getLastCodeLine();
+        int lineno = lineInfo.getStartLine();
+
+        // 子ノード選択
+        boolean result = true;
+        if (visitable.getPostDecrExpr() != null) {
+            result = this.enter((PostDecrExpr)visitable.getPostDecrExpr());
+        }
+        else if (visitable.getPostIncrExpr() != null) {
+            result = this.enter((PostIncrExpr)visitable.getPostIncrExpr());
+        }
+        else if (visitable.getPreDecrExpr() != null) {
+            result = this.enter((PreDecrExpr)visitable.getPreDecrExpr());
+        }
+        else if (visitable.getPreIncrExpr() != null) {
+            result = this.enter((PreIncrExpr)visitable.getPreIncrExpr());
+        }
+        else if (visitable.getAssignExpr() != null) {
+            result = this.enter((AssignExpr)visitable.getAssignExpr());
+        }
+        else if (visitable.getFunctionCall() != null) {
+            result = this.enter((FunctionCall)visitable.getFunctionCall());
+        }
+        else if (visitable.getAsgPlusExpr() != null) {
+            result = this.enter((AsgPlusExpr)visitable.getAsgPlusExpr());
+        }
+        else if (visitable.getAsgBitAndExpr() != null) {
+            result = this.enter((AsgBitAndExpr)visitable.getAsgBitAndExpr());
+        }
+        else if (visitable.getAsgBitOrExpr() != null) {
+            result = this.enter((AsgBitOrExpr)visitable.getAsgBitOrExpr());
+        }
+        else if (visitable.getAsgBitXorExpr() != null) {
+            result = this.enter((AsgBitXorExpr)visitable.getAsgBitXorExpr());
+        }
+        else if (visitable.getAsgModExpr() != null) {
+            result = this.enter((AsgModExpr)visitable.getAsgModExpr());
+        }
+        else if (visitable.getAsgMulExpr() != null) {
+            result = this.enter((AsgMulExpr)visitable.getAsgMulExpr());
+        }
+        else if (visitable.getAsgDivExpr() != null) {
+            result = this.enter((AsgDivExpr)visitable.getAsgDivExpr());
+        }
+        else if (visitable.getAsgMinusExpr() != null) {
+            result = this.enter((AsgMinusExpr)visitable.getAsgMinusExpr());
+        }
+        else if (visitable.getAsgRshiftExpr() != null) {
+            result = this.enter((AsgRshiftExpr)visitable.getAsgRshiftExpr());
+        }
+        else if (visitable.getAsgLshiftExpr() != null) {
+            result = this.enter((AsgLshiftExpr)visitable.getAsgLshiftExpr());
+        }
+
+
+        return result;
+    }
+
+    /**
+     * Decompile "AsgPlusExpr" element in XcodeML/C.
+     */
+    @Override
+    public boolean enter(AsgPlusExpr visitable) {
+        // DONE: AsgPlusExpr
+        return this.enterBinaryExpression(visitable);
+    }
+
+    /**
+     * Decompile "AsgModExpr" element in XcodeML/C.
+     */
+    @Override
+    public boolean enter(AsgModExpr visitable) {
+        // DONE: AsgModExpr
+        return this.enterBinaryExpression(visitable);
+    }
+
+    /**
+     * Decompile "AsgBitOrExpr" element in XcodeML/C.
+     */
+    @Override
+    public boolean enter(AsgBitOrExpr visitable) {
+        // DONE: AsgBitOrExpr
+        return this.enterBinaryExpression(visitable);
+    }
+
+    /**
+     * Decompile "AsgBitXorExpr" element in XcodeML/C.
+     */
+    @Override
+    public boolean enter(AsgBitXorExpr visitable) {
+        // DONE: AsgBitXorExpr
+        return this.enterBinaryExpression(visitable);
+    }
+
+    /**
+     * Decompile "AsgMulExpr" element in XcodeML/C.
+     */
+    @Override
+    public boolean enter(AsgMulExpr visitable) {
+        // DONE: AsgMulExpr
+        return this.enterBinaryExpression(visitable);
+    }
+
+    /**
+     * Decompile "AsgRshiftExpr" element in XcodeML/C.
+     */
+    @Override
+    public boolean enter(AsgRshiftExpr visitable) {
+        // DONE: AsgRshiftExpr
+        return this.enterBinaryExpression(visitable);
+    }
+
+    /**
+     * Decompile "AsgBitAndExpr" element in XcodeML/C.
+     */
+    @Override
+    public boolean enter(AsgBitAndExpr visitable) {
+        // DONE: AsgBitAndExpr
+        return this.enterBinaryExpression(visitable);
+    }
+
+    /**
+     * Decompile "AsgDivExpr" element in XcodeML/C.
+     */
+    @Override
+    public boolean enter(AsgDivExpr visitable) {
+        // DONE: AsgDivExpr
+        return this.enterBinaryExpression(visitable);
+    }
+
+    /**
+     * Decompile "AsgMinusExpr" element in XcodeML/C.
+     */
+    @Override
+    public boolean enter(AsgMinusExpr visitable) {
+        // DONE: AsgMinusExpr
+        return this.enterBinaryExpression(visitable);
+    }
+
+    /**
+     * Decompile "AsgLshiftExpr" element in XcodeML/C.
+     */
+    @Override
+    public boolean enter(AsgLshiftExpr visitable) {
+        // DONE: AsgLshiftExpr
+        return this.enterBinaryExpression(visitable);
+    }
+
+
+
+    /**
+     * BinaryExpression要素(２項式文)を登録する。
+     *
+     * @param visitable       BinaryExpression
+     * @return 成否
+     */
+    private boolean enterBinaryExpression(BinaryExpression visitable) {
+        String label = Statement.NO_LABEL;
+
+        // データベースがfunctionCallを登録可能であるか(現在ブロックがProgramUnitであるか?)
+        if (!isCurrentProgramUnit()) {
+            return true;
+        }
+
+        // ソースファイル、ソースコード行
+        CodeLine lineInfo = m_context.getCodeBuilder().getLastCodeLine();
+        int lineno = lineInfo.getStartLine();
+
+        List<IXmlNode> content = visitable.getContent();
+        // 左辺
+        IXmlNode leftExpr = (content != null && content.size() >= 1) ? content
+                .get(0) : null;
+        // 右辺
+        IXmlNode rightExpr = (content != null && content.size() >= 2) ? content
+                .get(1) : null;
+
+        // ExpressionParserモデルパーサ
+        ExpressionParser exprParser = new ExpressionParser(m_context.getTypeManager());
+
+        // 変数のパース
+        VariableParser varParser = new VariableParser(m_context.getTypeManager());
+
+        // 左辺
+        Variable leftVar = varParser.getVariable(leftExpr);
+        exprParser.setParseNode(leftExpr);
+        Expression left = exprParser.getExpression();
+
+        // 右辺
+        exprParser.setParseNode(rightExpr);
+        Expression rightVar = exprParser.getExpression();
+
+        m_database.setSubstitution(leftVar, rightVar, lineInfo, label);
+
+        // 外部手続きの登録
+        addExternalFunctions(exprParser.getExternalFunction());
+
+        return true;
+    }
+
+    /**
+     * Decompile "ReturnStatement" element in XcodeML/C.
+     */
+    @Override
+    public boolean enter(ReturnStatement visitable) {
+        // ソースファイル、ソースコード行
+        CodeLine lineInfo = m_context.getCodeBuilder().getLastCodeLine();
+
+        // ExpressionParserモデルパーサ
+        ExpressionParser exprParser = new ExpressionParser(m_context.getTypeManager());
+
+        // リターン式をパースする。
+        Expression exp = null;
+        // リターン式
+        IXmlNode node = XmlNodeUtil.getXmlNodeChoice(visitable);
+        if (node != null) {
+            exprParser.setParseNode(node);
+            // 範囲の初期値を取得する
+            exp = exprParser.getExpression();
+        }
+
+        // RETURN文
+        String label = Statement.NO_LABEL;
+        m_database.setReturn(lineInfo, exp, label);
+
+        // 外部手続きの登録
+        addExternalFunctions(exprParser.getExternalFunction());
+
+        return true;
+    }
+
+    /**
+     * Decompile "GotoStatement" element in XcodeML/C.
+     */
+    @Override
+    public boolean enter(GotoStatement visitable) {
+        // DONE: GotoStatement
+        // ソースファイル、ソースコード行
+        CodeLine lineInfo = m_context.getCodeBuilder().getLastCodeLine();
+
+        String name = null;
+        if (visitable.getName() == null) {
+            // ExpressionParserモデルパーサ
+            ExpressionParser exprParser = new ExpressionParser(m_context.getTypeManager());
+
+            // goto式をパースする。
+            Expression exp = null;
+            // goto式
+            IXmlNode node = XmlNodeUtil.getXmlNodeChoice(visitable);
+            if (node != null) {
+                exprParser.setParseNode(node);
+                exp = exprParser.getExpression();
+                name = exp.getLine();
+            }
+        }
+        else {
+            name = visitable.getName().getValue();
+        }
+
+        // RETURN文
+        String label = Statement.NO_LABEL;
+        m_database.setGoTo(name, lineInfo, label);
+
+        return true;
+    }
+
+
+    /**
+     * Decompile "Pragma" element in XcodeML/C.
+     */
+    @Override
+    public boolean enter(Pragma visitable) {
+        // DONE: Pragma
+        String label = Statement.NO_LABEL;
+        // ソースファイル、ソースコード行
+        CodeLine lineInfo = m_context.getCodeBuilder().getLastCodeLine();
+
+        // 指示文
+        String value = visitable.getValue();
+
+        // ディレクティブ文を登録する。
+        m_database.setDirective(value, lineInfo, label);
+
+        return true;
+    }
+
 }
+

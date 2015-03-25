@@ -1,6 +1,6 @@
 /*
  * K-scope
- * Copyright 2012-2013 RIKEN, Japan
+ * Copyright 2012-2015 RIKEN, Japan
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -222,17 +222,17 @@ public class VariableDefinitionParser {
         }
 
         // 属性
-        Set<String> listAttr = new LinkedHashSet<String>();
+        List<String> listAttr = new ArrayList<String>();
         if (sclass != null) listAttr.add(sclass);
 
-        boolean is_pointer = false;
-        boolean is_array = false;
         boolean is_const = false;
         boolean is_volatile = false;
         boolean is_restrict = false;
         List<ArrayType> array_types = new ArrayList<ArrayType>();
         if (typeChoices != null) {
             for (IXmlTypeTableChoice type : typeChoices) {
+                boolean is_pointer = false;
+                boolean is_array = false;
                 // ポインタ
                 if (type instanceof PointerType) is_pointer = true;
                 // 配列

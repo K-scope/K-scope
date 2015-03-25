@@ -269,7 +269,7 @@ public class VariableDefinitionParser {
         }
 
         // 属性
-        Set<String> listAttr = new HashSet<String>();
+        List<String> listAttr = new ArrayList<String>();
         // PUBLIC モジュール外で参照可能にします。
         if (XmlNodeUtil.isBoolean(basicType.isIsPublic())) {
             listAttr.add(this.ATTRIBUTE_PUBLIC);
@@ -338,12 +338,12 @@ public class VariableDefinitionParser {
             parserType.setStackType(this.getStackType());
             varType = parserType.parseVarDefStructType(structType);
         }
-        
+
         // 構造体のデータ型を設定する
         varDef.setVariableType(varType);
 
         // 属性
-        Set<String> listAttr = new HashSet<String>();
+        List<String> listAttr = new ArrayList<String>();
         // PUBLIC モジュール外で参照可能にします。
         if (XmlNodeUtil.isBoolean(structType.isIsPublic())) {
             listAttr.add(this.ATTRIBUTE_PUBLIC);
@@ -389,7 +389,7 @@ public class VariableDefinitionParser {
         varDef.setVariableType(varType);
 
         // 属性
-        Set<String> listAttr = new HashSet<String>();
+        List<String> listAttr = new ArrayList<String>();
         // PUBLIC モジュール外で参照可能にします。
         if (XmlNodeUtil.isBoolean(functionType.isIsPublic())) {
             listAttr.add(this.ATTRIBUTE_PUBLIC);
