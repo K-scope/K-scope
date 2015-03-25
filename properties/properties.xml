@@ -1,0 +1,311 @@
+<?xml version="1.0"?>
+<properties project="kscope">
+    <settings>
+        <!--ソースビュープロパティ-->
+        <property bold="false" fontname="Consoras" italic="false" key="font-source" message="" name="property.font-source.name" size="13" type="font"/>
+        <property color="#000000" key="fontcolor-source" message="" name="property.fontcolor-source.name" type="color"/>
+        <property color="#FFFFFF" key="background-source" message="" name="property.background-source.name" type="color"/>
+        <property color="#FFE4E1" key="background-selectedrow" message="" name="property.background-selectedrow.name" type="color"/>
+        <property key="wordwrap" message="property.wordwrap.message" name="property.wordwrap.name" type="integer" value="0"/>
+        <property color="#000000" key="fontcolor-search" message="" name="property.fontcolor-search.name" type="color"/>
+        <property color="#C6C6FF" key="background-search" message="" name="property.background-search.name" type="color"/>
+        <property color="#FFE0E0" key="background-area" message="" name="property.background-area.name" type="color"/>
+        <property color="#E0E0FF" key="background-block" message="" name="property.background-block.name" type="color"/>
+        <property color="#EEEEEE" key="background-linenumber" message="" name="property.background-linenumber.name" type="color" />
+        <property color="#6699FF" key="background-selectnode" message="" name="property.background-selectnode.name" type="color" />
+        <property color="#FFFFDD" key="background-view2" message="" name="property.background-view2.name" type="color" />
+        <property color="#FF0000" key="fontcolor-informationnode" message="" name="property.fontcolor-informationnode.name" type="color" />
+        <property color="#808080" key="fontcolor-brokenlinknode" message="" name="property.fontcolor-brokenlinknode.name" type="color" />
+
+        <!--キーワードプロパティ-->
+        <keyword bold="false" enabled="true" forecolor="#FF0000" italic="false" keyword="[0-9][0-9d.]*" name="property.keyword.numerical.name" regex="true" sensitivecase="false"/>
+        <keyword bold="true" enabled="true" forecolor="#009900" italic="false" keyword="data" name="property.keyword.reserved-word-DATA.name" regex="false" sensitivecase="false"/>
+        <keyword bold="true" enabled="true" forecolor="#009900" italic="false" keyword="use" name="property.keyword.reserved-word-USE.name" regex="false" sensitivecase="false"/>
+        <keyword bold="true" enabled="true" forecolor="#009900" italic="false" keyword="type" name="property.keyword.reserved-word-TYPE.name" regex="false" sensitivecase="false"/>
+        <keyword bold="true" enabled="true" forecolor="#009900" italic="false" keyword="endtype" name="property.keyword.reserved-word-ENDTYPE.name" regex="false" sensitivecase="false"/>
+        <keyword bold="true" enabled="true" forecolor="#009900" italic="false" keyword="end[ ]*type" name="property.keyword.reserved-word-ENDTYPE-withparam.name" regex="true" sensitivecase="false"/>
+        <keyword bold="true" enabled="true" forecolor="#009900" italic="false" keyword="interface" name="property.keyword.reserved-word-INTERFACE.name" regex="false" sensitivecase="false"/>
+        <keyword bold="true" enabled="true" forecolor="#009900" italic="false" keyword="endinterface" name="property.keyword.reserved-word-ENDINTERFACE.name" regex="false" sensitivecase="false"/>
+        <keyword bold="true" enabled="true" forecolor="#009900" italic="false" keyword="end[ ]*interface" name="property.keyword.reserved-word-ENDINTERFACE-withparam.name" regex="true" sensitivecase="false"/>
+        <keyword bold="true" enabled="true" forecolor="#009900" italic="false" keyword="module[ ]* procedure" name="property.keyword.reserved-word-MODULEPROCEDURE.name" regex="true" sensitivecase="false"/>
+        <keyword bold="true" enabled="true" forecolor="#009900" italic="false" keyword="implicit[ ].*$" name="property.keyword.reserved-word-IMPLICIT.name" regex="true" sensitivecase="false"/>
+        <keyword bold="true" enabled="true" forecolor="#009900" italic="false" keyword="parameter" name="property.keyword.reserved-word-PARAMETER.name" regex="false" sensitivecase="false"/>
+        <keyword bold="true" enabled="true" forecolor="#009900" italic="false" keyword="private" name="property.keyword.reserved-word-PRIVATE.name" regex="false" sensitivecase="false"/>
+        <keyword bold="true" enabled="true" forecolor="#009900" italic="false" keyword="public" name="property.keyword.reserved-word-PUBLIC.name" regex="false" sensitivecase="false"/>
+        <keyword bold="true" enabled="true" forecolor="#009900" italic="false" keyword="optional" name="property.keyword.reserved-word-OPTIONAL.name" regex="false" sensitivecase="false"/>
+        <keyword bold="true" enabled="true" forecolor="#009900" italic="false" keyword="pointer" name="property.keyword.reserved-word-POINTER.name" regex="false" sensitivecase="false"/>
+        <keyword bold="true" enabled="true" forecolor="#009900" italic="false" keyword="target" name="property.keyword.reserved-word-TARGET.name" regex="false" sensitivecase="false"/>
+        <keyword bold="true" enabled="true" forecolor="#009900" italic="false" keyword="save" name="property.keyword.reserved-word-SAVE.name" regex="false" sensitivecase="false"/>
+        <keyword bold="true" enabled="true" forecolor="#009900" italic="false" keyword="dimension" name="property.keyword.reserved-word-DIMENSION.name" regex="false" sensitivecase="false"/>
+        <keyword bold="true" enabled="true" forecolor="#009900" italic="false" keyword="external" name="property.keyword.reserved-word-EXTERNAL.name" regex="false" sensitivecase="false"/>
+        <keyword bold="true" enabled="true" forecolor="#009900" italic="false" keyword="common" name="property.keyword.reserved-word-COMMON.name" regex="false" sensitivecase="false"/>
+        <keyword bold="true" enabled="true" forecolor="#009900" italic="false" keyword="integer" name="property.keyword.reserved-word-INTEGER.name" regex="false" sensitivecase="false"/>
+        <keyword bold="true" enabled="true" forecolor="#009900" italic="false" keyword="real" name="property.keyword.reserved-word-REAL.name" regex="false" sensitivecase="false"/>
+        <keyword bold="true" enabled="true" forecolor="#009900" italic="false" keyword="double[ ]*precision" name="property.keyword.reserved-word-DOUBLE.name" regex="true" sensitivecase="false"/>
+        <keyword bold="true" enabled="true" forecolor="#009900" italic="false" keyword="complex" name="property.keyword.reserved-word-COMPLEX.name" regex="true" sensitivecase="false"/>
+        <keyword bold="true" enabled="true" forecolor="#009900" italic="false" keyword="logical" name="property.keyword.reserved-word-LOGICAL.name" regex="true" sensitivecase="false"/>
+        <keyword bold="true" enabled="true" forecolor="#009900" italic="false" keyword="character" name="property.keyword.reserved-word-CHARACTER.name" regex="true" sensitivecase="false"/>
+        <keyword bold="false" enabled="true" forecolor="#BF7608" italic="false" keyword="[&lt;&gt;\+\-\/\=\*]*" name="property.keyword.operator.name" regex="true" sensitivecase="false"/>
+        <keyword bold="true" enabled="true" forecolor="#800000" italic="false" keyword="if" name="property.keyword.reserved-word-IF.name" regex="false" sensitivecase="false"/>
+        <keyword bold="true" enabled="true" forecolor="#800000" italic="false" keyword="do" name="property.keyword.reserved-word-DO.name" regex="false" sensitivecase="false"/>
+        <keyword bold="true" enabled="true" forecolor="#800000" italic="false" keyword="else" name="property.keyword.reserved-word-ELSE.name" regex="false" sensitivecase="false"/>
+        <keyword bold="true" enabled="true" forecolor="#800000" italic="false" keyword="end[ ]*if" name="property.keyword.reserved-word-ENDIF-withparam.name" regex="true" sensitivecase="false"/>
+        <keyword bold="true" enabled="true" forecolor="#800000" italic="false" keyword="end[ ]*do" name="property.keyword.reserved-word-ENDDO-withparam.name" regex="true" sensitivecase="false"/>
+        <keyword bold="true" enabled="true" forecolor="#800000" italic="false" keyword="THEN" name="property.keyword.reserved-word-THEN.name" regex="false" sensitivecase="false"/>
+        <keyword bold="true" enabled="true" forecolor="#800000" italic="false" keyword="endif" name="property.keyword.reserved-word-ENDIF.name" regex="false" sensitivecase="false"/>
+        <keyword bold="true" enabled="true" forecolor="#800000" italic="false" keyword="enddo" name="property.keyword.reserved-word-ENDDO.name" regex="false" sensitivecase="false"/>
+        <keyword bold="true" enabled="true" forecolor="#800000" italic="false" keyword="stop" name="property.keyword.reserved-word-STOP.name" regex="false" sensitivecase="false"/>
+        <keyword bold="true" enabled="true" forecolor="#800000" italic="false" keyword="cycle" name="property.keyword.reserved-word-CYCLE.name" regex="false" sensitivecase="false"/>
+        <keyword bold="true" enabled="true" forecolor="#800000" italic="false" keyword="exit" name="property.keyword.reserved-word-EXIT.name" regex="false" sensitivecase="false"/>
+        <keyword bold="true" enabled="true" forecolor="#800000" italic="false" keyword="select[ ]*case" name="property.keyword.reserved-word-SELECTCASE.name" regex="false" sensitivecase="false"/>
+        <keyword bold="true" enabled="true" forecolor="#800000" italic="false" keyword="case" name="property.keyword.reserved-word-CASE.name" regex="false" sensitivecase="false"/>
+        <keyword bold="true" enabled="true" forecolor="#800000" italic="false" keyword="end[ ]*select" name="property.keyword.reserved-word-ENDSELECT-withparam.name" regex="false" sensitivecase="false"/>
+        <keyword bold="true" enabled="true" forecolor="#800000" italic="false" keyword="endselect" name="property.keyword.reserved-word-ENDSELECT.name" regex="false" sensitivecase="false"/>
+        <keyword bold="true" enabled="true" forecolor="#80CCCC" italic="false" keyword="call" name="property.keyword.reserved-word-CALL.name" regex="false" sensitivecase="false"/>
+        <keyword bold="true" enabled="true" forecolor="#800000" italic="false" keyword="return" name="property.keyword.reserved-word-RETURN.name" regex="false" sensitivecase="false"/>
+        <keyword bold="true" enabled="true" forecolor="#800000" italic="false" keyword="allocate" name="property.keyword.reserved-word-ALLOCATE.name" regex="false" sensitivecase="false"/>
+        <keyword bold="true" enabled="true" forecolor="#800000" italic="false" keyword="deallocate" name="property.keyword.reserved-word-DEALLOCATE.name" regex="false" sensitivecase="false"/>
+        <keyword bold="true" enabled="true" forecolor="#800000" italic="false" keyword="nullify" name="property.keyword.reserved-word-NULLIFY.name" regex="false" sensitivecase="false"/>
+        <keyword bold="true" enabled="true" forecolor="#800000" italic="false" keyword="read" name="property.keyword.reserved-word-READ.name" regex="false" sensitivecase="false"/>
+        <keyword bold="true" enabled="true" forecolor="#800000" italic="false" keyword="write" name="property.keyword.reserved-word-WRITE.name" regex="false" sensitivecase="false"/>
+        <keyword bold="true" enabled="true" forecolor="#800000" italic="false" keyword="print" name="property.keyword.reserved-word-PRINT.name" regex="false" sensitivecase="false"/>
+        <keyword bold="true" enabled="true" forecolor="#800000" italic="false" keyword="contains" name="property.keyword.reserved-word-CONTAINS.name" regex="false" sensitivecase="false"/>
+        <keyword bold="true" enabled="true" forecolor="#800000" italic="false" keyword="program" name="property.keyword.reserved-word-PROGRAM.name" regex="false" sensitivecase="false"/>
+        <keyword bold="true" enabled="true" forecolor="#800000" italic="false" keyword="end[ ]*program" name="property.keyword.reserved-word-ENDPROGRAM.name" regex="true" sensitivecase="false"/>
+        <keyword bold="true" enabled="true" forecolor="#800000" italic="false" keyword="module" name="property.keyword.reserved-word-MODULE.name" regex="false" sensitivecase="false"/>
+        <keyword bold="true" enabled="true" forecolor="#800000" italic="false" keyword="end[ ]*module" name="property.keyword.reserved-word-ENDMODULE.name" regex="true" sensitivecase="false"/>
+        <keyword bold="true" enabled="true" forecolor="#800000" italic="false" keyword="subroutine" name="property.keyword.reserved-word-SUBROUTINE.name" regex="false" sensitivecase="false"/>
+        <keyword bold="true" enabled="true" forecolor="#800000" italic="false" keyword="end[ ]*subroutine" name="property.keyword.reserved-word-ENDSUBROUTINE.name" regex="true" sensitivecase="false"/>
+        <keyword bold="true" enabled="true" forecolor="#800000" italic="false" keyword="function" name="property.keyword.reserved-word-FUNCTION.name" regex="false" sensitivecase="false"/>
+        <keyword bold="true" enabled="true" forecolor="#800000" italic="false" keyword="end[ ]*function" name="property.keyword.reserved-word-ENDFUNCTION.name" regex="true" sensitivecase="false"/>
+        <keyword bold="false" enabled="true" forecolor="#000080" italic="true" keyword="call[ ]+([a-z0-9_-]+)[ \n\(]" name="property.keyword.call-name.name" regex="true" sensitivecase="false"/>
+        <keyword bold="false" enabled="true" forecolor="#000080" italic="true" keyword="program[ ]+([a-z0-9_-]+)[ \n\(]" name="property.keyword.program-name.name" regex="true" sensitivecase="false"/>
+        <keyword bold="false" enabled="true" forecolor="#000080" italic="true" keyword="module[ ]+([a-z0-9_-]+)[ \n\(]" name="property.keyword.module-name.name" regex="true" sensitivecase="false"/>
+        <keyword bold="false" enabled="true" forecolor="#000080" italic="true" keyword="subroutine[ ]+([a-z0-9_-]+)[ \n\(]" name="property.keyword.subroutine-name.name" regex="true" sensitivecase="false"/>
+        <keyword bold="false" enabled="true" forecolor="#000080" italic="true" keyword="function[ ]+([a-z0-9_-]+)[ \n\(]" name="property.keyword.function-name.name" regex="true" sensitivecase="false"/>
+        <keyword bold="false" enabled="true" forecolor="#0033CC" italic="false" keyword="!.*$" name="property.keyword.reserved-word-Comment.name" regex="true" sensitivecase="false"/>
+        <keyword bold="false" enabled="true" forecolor="#FF0000" italic="false" keyword="'.*'" name="property.keyword.quotation.name" regex="true" sensitivecase="false"/>
+        <keyword bold="false" enabled="true" forecolor="#FF0000" italic="false" keyword="&quot;.*&quot;" name="property.keyword.double-quotation.name" regex="true" sensitivecase="false"/>
+
+        <!--外部プログラムプロパティ-->
+        <program exts="false" name="property.program.web-browser.name" pattern="https?:\/\/.+" program="firefox" regex="true" relation="true"/>
+        <program exts="true" name="property.program.pdf-file.name" pattern="pdf" regex="false" relation="true"/>
+        <program exts="true" name="property.program.text-file.name" pattern="log,txt" program="emacs" regex="false" relation="false"/>
+        <program exts="true" name="property.program.excel-file.name" pattern="xls,xlsx" regex="false" relation="true"/>
+        <program exts="true" name="property.program.word-file.name" pattern="doc,docx" regex="false" relation="true"/>
+        <program exts="true" name="property.program.powerpoint-file.name" pattern="ppt,pptx" regex="false" relation="true"/>
+        <program exts="true" name="property.program.image-file.name" pattern="bmp,gif,png,jpg,jpeg" regex="false" relation="true"/>
+        <program exts="true" name="property.program.source-file.name" pattern="f,f90,h90,h,c" regex="false" relation="true"/>
+
+        <!--演算カウントプロパティ-->
+        <!--四則演算-->
+        <operator_flop add="1" div="1" mul="1" sub="1" pow="1"/>
+        <!--組込み関数-->
+        <operation name="mul"                add="0" div="0" mul="0" sub="1"/>
+        <operation name="cshift"             add="0" div="0" mul="0" sub="1"/>
+        <operation name="transfer"           add="0" div="0" mul="0" sub="1"/>
+        <operation name="mod"                add="0" div="0" mul="0" sub="1"/>
+        <operation name="maxexponent"        add="0" div="0" mul="0" sub="1"/>
+        <operation name="cabs"               add="0" div="0" mul="0" sub="1"/>
+        <operation name="ibits"              add="0" div="0" mul="0" sub="1"/>
+        <operation name="cpu_time"           add="0" div="0" mul="0" sub="1"/>
+        <operation name="conjg"              add="0" div="0" mul="0" sub="1"/>
+        <operation name="log"                add="0" div="0" mul="0" sub="1"/>
+        <operation name="system_clock"       add="0" div="0" mul="0" sub="1"/>
+        <operation name="dabs"               add="0" div="0" mul="0" sub="1"/>
+        <operation name="idint"              add="0" div="0" mul="0" sub="1"/>
+        <operation name="max1"               add="0" div="0" mul="0" sub="1"/>
+        <operation name="minval"             add="0" div="0" mul="0" sub="1"/>
+        <operation name="max0"               add="0" div="0" mul="0" sub="1"/>
+        <operation name="iachar"             add="0" div="0" mul="0" sub="1"/>
+        <operation name="selected_real_kind" add="0" div="0" mul="0" sub="1"/>
+        <operation name="ior"                add="0" div="0" mul="0" sub="1"/>
+        <operation name="log10"              add="0" div="0" mul="0" sub="1"/>
+        <operation name="count"              add="0" div="0" mul="0" sub="1"/>
+        <operation name="dcmplx"             add="0" div="0" mul="0" sub="1"/>
+        <operation name="nint"               add="0" div="0" mul="0" sub="1"/>
+        <operation name="btest"              add="0" div="0" mul="0" sub="1"/>
+        <operation name="kind"               add="0" div="0" mul="0" sub="1"/>
+        <operation name="dot_mul"            add="0" div="0" mul="0" sub="1"/>
+        <operation name="date_and_time"      add="0" div="0" mul="0" sub="1"/>
+        <operation name="ibset"              add="0" div="0" mul="0" sub="1"/>
+        <operation name="amin1"              add="0" div="0" mul="0" sub="1"/>
+        <operation name="minloc"             add="0" div="0" mul="0" sub="1"/>
+        <operation name="amin0"              add="0" div="0" mul="0" sub="1"/>
+        <operation name="selected_int_kind"  add="0" div="0" mul="0" sub="1"/>
+        <operation name="present"            add="0" div="0" mul="0" sub="1"/>
+        <operation name="allocated"          add="0" div="0" mul="0" sub="1"/>
+        <operation name="iabs"               add="0" div="0" mul="0" sub="1"/>
+        <operation name="dimag"              add="0" div="0" mul="0" sub="1"/>
+        <operation name="ichar"              add="0" div="0" mul="0" sub="1"/>
+        <operation name="dmax1"              add="0" div="0" mul="0" sub="1"/>
+        <operation name="dmax1"              add="0" div="0" mul="0" sub="1"/>
+        <operation name="lbound"             add="0" div="0" mul="0" sub="1"/>
+        <operation name="alog10"             add="0" div="0" mul="0" sub="1"/>
+        <operation name="int"                add="0" div="0" mul="0" sub="1"/>
+        <operation name="tiny"               add="0" div="0" mul="0" sub="1"/>
+        <operation name="merge"              add="0" div="0" mul="0" sub="1"/>
+        <operation name="cos"                add="0" div="0" mul="0" sub="1"/>
+        <operation name="shape"              add="0" div="0" mul="0" sub="1"/>
+        <operation name="sinh"               add="0" div="0" mul="0" sub="1"/>
+        <operation name="iand"               add="0" div="0" mul="0" sub="1"/>
+        <operation name="sqrt"               add="0" div="0" mul="0" sub="1"/>
+        <operation name="sgnl"               add="0" div="0" mul="0" sub="1"/>
+        <operation name="cexp"               add="0" div="0" mul="0" sub="1"/>
+        <operation name="dfloat"             add="0" div="0" mul="0" sub="1"/>
+        <operation name="csin"               add="0" div="0" mul="0" sub="1"/>
+        <operation name="adjustl"            add="0" div="0" mul="0" sub="1"/>
+        <operation name="spread"             add="0" div="0" mul="0" sub="1"/>
+        <operation name="size"               add="0" div="0" mul="0" sub="1"/>
+        <operation name="dexp"               add="0" div="0" mul="0" sub="1"/>
+        <operation name="dsin"               add="0" div="0" mul="0" sub="1"/>
+        <operation name="ceiling"            add="0" div="0" mul="0" sub="1"/>
+        <operation name="sign"               add="0" div="0" mul="0" sub="1"/>
+        <operation name="min1"               add="0" div="0" mul="0" sub="1"/>
+        <operation name="abs"                add="0" mul="0"/>
+        <operation name="min0"               add="0" div="0" mul="0" sub="1"/>
+        <operation name="dsinh"              add="0" div="0" mul="0" sub="1"/>
+        <operation name="any"                add="0" div="0" mul="0" sub="1"/>
+        <operation name="exponent"           add="0" div="0" mul="0" sub="1"/>
+        <operation name="dble"               add="0" div="0" mul="0" sub="1"/>
+        <operation name="real"               add="0" div="0" mul="0" sub="1"/>
+        <operation name="dsqrt"              add="0" div="0" mul="0" sub="1"/>
+        <operation name="floor"              add="0" div="0" mul="0" sub="1"/>
+        <operation name="epsilon"            add="0" div="0" mul="0" sub="1"/>
+        <operation name="spacing"            add="0" div="0" mul="0" sub="1"/>
+        <operation name="cmplx"              add="0" div="0" mul="0" sub="1"/>
+        <operation name="len_trim"           add="0" div="0" mul="0" sub="1"/>
+        <operation name="bit_size"           add="0" div="0" mul="0" sub="1"/>
+        <operation name="dsign"              add="0" div="0" mul="0" sub="1"/>
+        <operation name="amod"               add="0" div="0" mul="0" sub="1"/>
+        <operation name="atan"               add="0" div="0" mul="0" sub="1"/>
+        <operation name="scan"               add="0" div="0" mul="0" sub="1"/>
+        <operation name="alog"               add="0" div="0" mul="0" sub="1"/>
+        <operation name="dmin1"              add="0" div="0" mul="0" sub="1"/>
+        <operation name="isign"              add="0" div="0" mul="0" sub="1"/>
+        <operation name="len"                add="0" div="0" mul="0" sub="1"/>
+        <operation name="dconjg"             add="0" div="0" mul="0" sub="1"/>
+        <operation name="ubound"             add="0" div="0" mul="0" sub="1"/>
+        <operation name="clog"               add="0" div="0" mul="0" sub="1"/>
+        <operation name="idnint"             add="0" div="0" mul="0" sub="1"/>
+        <operation name="dmod"               add="0" div="0" mul="0" sub="1"/>
+        <operation name="dlog"               add="0" div="0" mul="0" sub="1"/>
+        <operation name="csqrt"              add="0" div="0" mul="0" sub="1"/>
+        <operation name="achar"              add="0" mul="0"/>
+        <operation name="dlog10"             add="0" div="0" mul="0" sub="1"/>
+        <operation name="reshape"            add="0" div="0" mul="0" sub="1"/>
+        <operation name="datan"              add="0" div="0" mul="0" sub="1"/>
+        <operation name="associated"         add="0" div="0" mul="0" sub="1"/>
+        <operation name="aimag"              add="0" div="0" mul="0" sub="1"/>
+        <operation name="exp"                add="0" div="0" mul="0" sub="1"/>
+        <operation name="float"              add="0" div="0" mul="0" sub="1"/>
+        <operation name="sin"                add="0" div="0" mul="0" sub="1"/>
+        <operation name="digits"             add="0" div="0" mul="0" sub="1"/>
+        <operation name="matmul"             add="0" div="0" mul="0" sub="1"/>
+        <operation name="aint"               add="0" div="0" mul="0" sub="1"/>
+        <operation name="ishft"              add="0" div="0" mul="0" sub="1"/>
+        <operation name="amax1"              add="0" div="0" mul="0" sub="1"/>
+        <operation name="amax0"              add="0" div="0" mul="0" sub="1"/>
+        <operation name="huge"               add="0" div="0" mul="0" sub="1"/>
+        <operation name="scale"              add="0" div="0" mul="0" sub="1"/>
+        <operation name="acos"               add="0" div="0" mul="0" sub="1"/>
+        <operation name="sum"                add="0" div="0" mul="0" sub="1"/>
+        <operation name="pow"                add="0" mul="1" />
+        <operation name="trim"               add="0" div="0" mul="0" sub="1"/>
+        <operation name="maxval"             add="0" div="0" mul="0" sub="1"/>
+        <operation name="eoshift"            add="0" div="0" mul="0" sub="1"/>
+        <operation name="dint"               add="0" div="0" mul="0" sub="1"/>
+        <operation name="all"                add="0" div="0" mul="0" sub="1"/>
+        <operation name="ccos"               add="0" div="0" mul="0" sub="1"/>
+        <operation name="ifix"               add="0" div="0" mul="0" sub="1"/>
+        <operation name="verify"             add="0" div="0" mul="0" sub="1"/>
+        <operation name="dcos"               add="0" div="0" mul="0" sub="1"/>
+        <operation name="index"              add="0" div="0" mul="0" sub="1"/>
+        <operation name="min"                add="0" div="0" mul="0" sub="1"/>
+        <operation name="dacos"              add="0" div="0" mul="0" sub="1"/>
+        <operation name="char"               add="0" div="0" mul="0" sub="1" />
+        <operation name="transpose"          add="0" div="0" mul="0" sub="1" />
+
+        <!-- SSHconnectプロパティ -->
+        <sshconnect key="server_address"   value="k.aics.riken.jp" type="system" commandline_option="-h" description="property.sshparameters.server_address" />
+        <sshconnect key="port"             value="22" type="system" commandline_option="-p" description="property.sshparameters.port" />
+        <sshconnect key="user"             value="a01004" type="system" commandline_option="-u" description="property.sshparameters.user"/>
+        <sshconnect key="password"         value="" type="system" commandline_option="-pw" description="property.sshparameters.password"/>
+        <sshconnect key="key"              value="/Users/teraim/.ssh/id_rsa" type="system" commandline_option="-k" description="property.sshparameters.key"/>
+        <sshconnect key="passphrase"       value="" type="system" commandline_option="-ph" description="property.sshparameters.passphrase"/>
+        <sshconnect key="add_path"         value="/opt/aics/omni/bin" type="system" commandline_option="-ap" description="property.sshparameters.add_path"  />
+        <sshconnect key="remote_path"      value="/home/aics-sft/a01004/" type="system" commandline_option="-rp" description="property.sshparameters.remote_path"/>
+        <sshconnect key="build_command"    value="" type="project" commandline_option="-m" description="property.sshparameters.build_command"/>
+        <sshconnect key="local_path"       value="" type="project" commandline_option="-lp" description="property.sshparameters.local_path"/>
+        <sshconnect key="preprocess_files" value="" type="project" commandline_option="-pf" description="property.sshparameters.preprocess_files"/>
+        <sshconnect key="file_filter"      value="*.tar,*.tgz,*.zip,*.txt,*.html,*.xml,*.o,*.mod,*.xmod,.DS*,*.ksx" type="project" commandline_option="-ff" description="property.sshparameters.file_filter"/>
+
+      <!--  プロジェクトプロパティ -->
+        <project key="build-command" name="property.project.build-command.name" value="make" type="file" message="property.project.build-command.message" />
+        <project key="project-title" name="property.project.title.name" value="" type="text" message="property.project.title.message" />
+        <project key="use-sshconnect" name="property.project.is_remote.name" value="true" type="text" message="property.project.local_remote.message" />
+
+        <!-- Project hidden properties -->
+        <project_other key="generate-XML" value="false" />
+        <project_other key="full-project" value="true" />
+
+        <!--  プロファイラプロパティ -->
+        <profiler key='costinfo-maxcount' value='0' />
+        <profiler key='costinfo-barcolor-procedure' color='#FF6666' />
+        <profiler key='costinfo-barcolor-loop' color='#9999FF' />
+        <profiler key='costinfo-barcolor-line' color='#33FF66' />
+        <profiler key='costruler-color-minimum' color='#0000FF' />
+        <profiler key='costruler-color-maximum' color='#FF0000' />
+        <profiler key='eprof-function-start' value='fapp_start' />
+        <profiler key='eprof-function-end' value='fapp_stop' />
+        <profiler key='eprof-statement-start'><![CDATA[! Eprof measurement block : start
+call %FUNCTION("%NAME", %NUMBER, %LEVEL)
+!]]></profiler>
+        <profiler key='eprof-statement-end'><![CDATA[! Eprof measurement block : end
+call %FUNCTION("%NAME", %NUMBER, %LEVEL)
+!]]></profiler>
+
+        <!--  要求Byte/FLOP設定プロパティ -->
+        <required_bf key='theoretical-flop-performance' value='128' />
+        <required_bf key="mem-throughput-calc-mode" value="auto"/>
+        <required_bf key="calc-type" value="byte_flop"/>
+        <required_bf key='memory' name="Memory" background-color='#FFE4E1' mem-throughput-store='46' mem-throughput-nostore='52' coef='0.5' reqbf='true' limits='true' enabled='true' />
+        <required_bf key='l1_cache' name="L1 Cache" background-color='#7FFFD4' mem-throughput-store='512' mem-throughput-nostore='512' coef='0.2' reqbf='true' limits='true'  enabled='true' />
+        <required_bf key='l2_cache' name="L2 Cache" background-color='#ADFF2F' mem-throughput-store='180' mem-throughput-nostore='180' coef='0.3' reqbf='true' limits='true' enabled='true' />
+        <required_bf key='register' name="Register" background-color='#FFFFE0' mem-throughput-store='512' mem-throughput-nostore='512' coef='0.0' reqbf='true' limits='true' enabled='true' />
+        <required_bf key='custom' name="Custom" background-color='#EE82EE' mem-throughput-calc-mode-store='128' mem-throughput-calc-mode-nostore='140' coef='0.0' reqbf='true' limits='true' enabled='true' />
+        <required_bf key="default-size" size-real="4" size-integer="4"/>
+
+  <!-- アプリケーションプロパティ -->
+  <application key="newproject_save" value="false"/>
+  <application key="exportsource_exclude" value="*.xml, *.xmod, *.mod, *.o, *.log, *.bak"/>
+
+    </settings>
+
+     <comment>palallel_tool proparities</comment>
+     <!-- 言語デフォルト拡張子 -->
+     <extension>
+         <fortran_fixed_72></fortran_fixed_72>
+         <fortran_fixed_ext>f</fortran_fixed_ext>
+         <fortran_free>f90,f95,h90</fortran_free>
+         <clang>c,h</clang>
+         <xcodeml>xml</xcodeml>
+     </extension>$
+
+     <!-- 重要コメント -->
+     <fortran>
+         <comment>
+             <valid_comment>!!!</valid_comment>
+             <valid_comment>#if</valid_comment>
+             <valid_comment>#else</valid_comment>
+             <valid_comment>#end</valid_comment>
+           <valid_comment>#include</valid_comment>
+         </comment>
+     </fortran>
+     <clang>
+         <comment>
+             <valid_comment>/**</valid_comment>
+             <valid_comment>///</valid_comment>
+         </comment>
+     </clang>
+</properties>
