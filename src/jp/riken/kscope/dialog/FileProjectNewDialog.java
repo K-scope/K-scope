@@ -330,6 +330,12 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
 
             if (this.rb_properties != null && this.rb_properties.remoteBuild()) {
             	String[] selections = getRemoteSettings(); 
+            	if (selections.length < 1) {
+            		System.out.println("No remote connection settings files found in "+ REMOTE_SETTINGS_DIR);
+            		this.rb_properties.remote_settings_found = false;
+            	} else {
+            		this.rb_properties.remote_settings_found = true;
+            	}
             	settings_list = new JComboBox<String>(selections);
             	manage_settings_files = new JButton(Message.getString("fileprojectnewdialog.kindpanel.button.manage_settings_files"));
                 // Remote build の使用切り替え
@@ -345,7 +351,10 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
                     }
                 };
                 checkUseRemote.setToolTipText(Message.getString("fileprojectnewdialog.kindpanel.checkbox.useServer.tooltip"));
-                checkUseRemote.setEnabled(isFullProject());
+                // setEnabled(false) here has no effect. Button is enabled later.
+                checkUseRemote.setEnabled(false);
+                // if (debug) System.out.println(isFullProject() && this.rb_properties.remote_settings_found);
+                // checkUseRemote.setEnabled(isFullProject() && this.rb_properties.remote_settings_found);
                 checkUseRemote.setSelected(this.pproperties.useServer());
             }
 
@@ -480,7 +489,9 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
      */
 	private List<String> getFiles(File dir, List<String> list, String path_prefix, String[] ignore) throws IOException {
 		File [] flist = dir.listFiles();
-		
+		if (flist == null || flist.length < 1) {
+			return list;
+		}
 		Boolean trunk_extensions = true;  // remove extensions from file names
 		for (File f : flist) {
 			boolean ignore_me = false;

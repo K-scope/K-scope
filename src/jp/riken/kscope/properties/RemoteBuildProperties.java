@@ -72,6 +72,7 @@ public class RemoteBuildProperties extends PropertiesBase {
     public static String PREPROCESS_FILES = "preprocess_files";
 	
 	private boolean remote_build = false; // Can project be built on a remote server or not?
+	public boolean remote_settings_found = false; // True if files with remote settings are found
 	
 	/*
      * Two flags show if we have external programs necessary to build code on remote server
