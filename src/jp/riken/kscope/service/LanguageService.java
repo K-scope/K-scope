@@ -157,7 +157,7 @@ public class LanguageService extends BaseService {
     /** データベースシリアライズストリーム */
     private volatile ObjectInputStream languageStream;
     /** デバッグ判断フラグ */
-    private final boolean _DEBUG = true;
+    private final boolean _DEBUG = false;
 
     /**
      * コンストラクタ.

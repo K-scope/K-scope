@@ -103,6 +103,7 @@ import jp.riken.kscope.xcodeml.clang.xml.gen.Then;
 /**
  * フォートランデータベースにパース結果を格納する
  * @author RIKEN
+ * @version    2015/04/01     エラーメッセージにファイル名追加 : addDuplicateError
  *
  */
 public class DbUpdater extends XcodeMLVisitorImpl {
@@ -171,6 +172,14 @@ public class DbUpdater extends XcodeMLVisitorImpl {
         }
         String dupInfo = getErrorLineInfo(duplicateUnit);
         if (dupInfo == null) return;
+        String filename = null;
+        if (this.m_context.getSourceXmlFile() != null) {
+        	filename = this.m_context.getSourceXmlFile().getPath();
+        }
+        if (filename != null) {
+        	dupInfo += " filename=" + filename;
+        }
+        
         String key = null;
         // dbupdate.error.duplicate.sourcefile=[警告] ソースファイル[%s]が重複しています。override=%s.
         if (duplicateUnit instanceof Module) {

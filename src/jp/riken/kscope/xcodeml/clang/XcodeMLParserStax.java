@@ -62,9 +62,9 @@ import jp.riken.kscope.xcodeml.fortran.xml.gen.Name;
  * XcodeML構文解析クラス
  *
  * XcodeML出力のXMLファイルから一括でバインディングを行い、XcodeProgramクラスを生成する。
- * 生成XcodeProgramクラスから、コード行を作成し、データベースへ登録する。
- *
+ * 生成XcodeProgramクラスから、コード行を作成し、データベースへ登録する。 
  * @author RIKEN
+ * @version    2015/04/01      エラーリスト(java.util.List)の追加バグ修正 : getErrorInfos
  */
 public class XcodeMLParserStax extends XcodeMLParser {
 
@@ -387,7 +387,7 @@ public class XcodeMLParserStax extends XcodeMLParser {
         }
         List<ErrorInfo> list =  new ArrayList<ErrorInfo>();
         if (infos != null) {
-            list = Arrays.asList(infos);
+            list.addAll(Arrays.asList(infos));
         }
         list.add(new ErrorInfo(this.m_xmodContext.getLastErrorMessage()));
 
