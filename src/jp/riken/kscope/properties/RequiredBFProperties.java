@@ -371,7 +371,7 @@ public class RequiredBFProperties  extends PropertiesBase {
 
         // コメントを追加
         {
-            org.w3c.dom.Comment comment = document.createComment(Message.getString("memorybandproperties.document.comment")); //要求Byte/FLOPプロパティ
+            org.w3c.dom.Comment comment = document.createComment(Message.getString("requiredbfproperties.document.comment")); //要求Byte/FLOPプロパティ
             node.appendChild(comment);
         }
 
