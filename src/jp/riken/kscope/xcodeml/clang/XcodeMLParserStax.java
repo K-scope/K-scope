@@ -62,9 +62,10 @@ import jp.riken.kscope.xcodeml.fortran.xml.gen.Name;
  * XcodeML構文解析クラス
  *
  * XcodeML出力のXMLファイルから一括でバインディングを行い、XcodeProgramクラスを生成する。
- * 生成XcodeProgramクラスから、コード行を作成し、データベースへ登録する。 
+ * 生成XcodeProgramクラスから、コード行を作成し、データベースへ登録する。
  * @author RIKEN
  * @version    2015/04/01      エラーリスト(java.util.List)の追加バグ修正 : getErrorInfos
+ * @version    2015/04/09      ソースファイル名を相対パスに変更   :  parseXcodeProgram
  */
 public class XcodeMLParserStax extends XcodeMLParser {
 
@@ -238,6 +239,9 @@ public class XcodeMLParserStax extends XcodeMLParser {
         String time = reader.getAttributeValue(null, "time");
         String compiler_info = reader.getAttributeValue(null, "compiler-info");
         String version = reader.getAttributeValue(null, "version");
+        if (this.languageFile != null) {
+        	source = this.languageFile.getPath();
+        }
 
         XcodeProgram program = new XcodeProgram();
         program.setSource(source);
