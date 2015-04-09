@@ -69,7 +69,7 @@ Tips on usage) "-Duser.language" VM-option is language selector, English(en) and
 ## License
 
  K-scope
- Copyright 2012-2013 RIKEN, Japan
+ Copyright 2012-2015 RIKEN, Japan
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
