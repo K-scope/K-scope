@@ -270,7 +270,10 @@ public class FileProjectNewAction extends ActionBase {
 
             if (this.debug) {            
             	// TODO: check why rb_properties.getRemoteService() is null
-                System.out.println("Calling execMake build_command="+build_command+". Use remote service "+rb_properties.getRemoteService());
+            	if (dialog.remoteBuild())
+            		System.out.println("Calling execMake build_command="+build_command+". Use remote service "+rb_properties.getRemoteService());
+            	else 
+            		System.out.println("Calling execMake build_command="+build_command+".");
             }
 
             /** 新規作成実行 */

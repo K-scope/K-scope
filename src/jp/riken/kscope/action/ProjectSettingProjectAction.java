@@ -51,7 +51,7 @@ public class ProjectSettingProjectAction extends ActionBase {
 		// プロジェクト設定ダイアログを表示する。
         ProjectProperties properties = this.controller.getPropertiesProject();
         RemoteBuildProperties rb_properties = this.controller.getRBproperties();
-		if (!rb_properties.remoteBuild()) {
+		if (!rb_properties.useRemoteBuild()) {
 			ProjectPropertyValue settings_file = properties.getPropertyValue(ProjectProperties.SETTINGS_FILE);
 			settings_file.setType("fixed-text");
 			settings_file.setValue("false");

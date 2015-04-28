@@ -819,7 +819,7 @@ public class AppController implements PropertyChangeListener {
     }
     
     public boolean remoteBuild() {
-    	return this.rb_properties.remoteBuild();
+    	return this.rb_properties.useRemoteBuild();
     }
     
 

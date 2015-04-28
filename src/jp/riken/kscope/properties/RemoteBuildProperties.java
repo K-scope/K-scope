@@ -71,9 +71,9 @@ public class RemoteBuildProperties extends PropertiesBase {
 	public static String FILE_FILTER = "file_filter";
     public static String PREPROCESS_FILES = "preprocess_files";
 	
-	private boolean remote_build = false; // Can project be built on a remote server or not?
+	private boolean remote_build_possible = false; // Can project be built on a remote server or not?
 	public boolean remote_settings_found = false; // True if files with remote settings are found
-	
+	private boolean use_remote_build = false; // True if user checked checkUseRemote button on New Project dialog
 	/*
      * Two flags show if we have external programs necessary to build code on remote server
      * */
@@ -129,7 +129,7 @@ public class RemoteBuildProperties extends PropertiesBase {
         // set Remote Build is possible Flag to TRUE if either SSHconnect or makeRemote for DockerIaaS are present
 		this.haveDockerIaaS = checkDockerIaaS();
 		this.haveSSHconnect = checkSSHconnect();
-		this.remote_build = (this.haveDockerIaaS || this.haveSSHconnect); 
+		this.remote_build_possible = (this.haveDockerIaaS || this.haveSSHconnect); 
     }
     
     /**
@@ -698,8 +698,16 @@ public class RemoteBuildProperties extends PropertiesBase {
     	return this.haveSSHconnect;
     }
     
-    public boolean remoteBuild() {
-    	return this.remote_build;
+    public boolean remoteBuildPossible() {
+    	return this.remote_build_possible && this.remote_settings_found;
+    }
+    
+    public boolean useRemoteBuild() {
+    	return this.remote_build_possible && this.remote_settings_found && this.use_remote_build;
+    }
+    
+    public void setRemoteBuild(boolean useRB) {
+    	this.use_remote_build = useRB;
     }
     
 	@Override

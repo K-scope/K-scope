@@ -341,45 +341,47 @@ public class ProjectMakeService  extends BaseService {
         String build_command = pproperties.getBuildCommand(); 
         if (build_command == null || build_command.length() <= 0) return false;
         String[] exec_commands = null;
-        String RS = RemoteBuildProperties.getRemoteService(rb_properties.getPropertySet(RemoteBuildProperties.SETTINGS_FILE).getValue());
-        System.out.println("Remote service "+ RS);
-        if (useServer(pproperties, rb_properties)) {
-        	if (RS.equalsIgnoreCase("dockeriaas")) {
-	        	// inject remote build command
-	        	String[] diaas_cl = rb_properties.getCommandLineOptions(RS);
-	        	int formal_commands = 1;
-	        	exec_commands = new String [formal_commands + diaas_cl.length];
-	        	exec_commands[0] = "./makeRemote.sh";
-	        	for (int i = 0; i < diaas_cl.length; i++) {
-	        		exec_commands[i + formal_commands] = diaas_cl[i];
+        if (rb_properties.useRemoteBuild()) {
+        	String RS = RemoteBuildProperties.getRemoteService(rb_properties.getPropertySet(RemoteBuildProperties.SETTINGS_FILE).getValue());
+        	System.out.println("Remote service "+ RS);
+	        if (useServer(pproperties, rb_properties)) {
+	        	if (RS.equalsIgnoreCase("dockeriaas")) {
+		        	// inject remote build command
+		        	String[] diaas_cl = rb_properties.getCommandLineOptions(RS);
+		        	int formal_commands = 1;
+		        	exec_commands = new String [formal_commands + diaas_cl.length];
+		        	exec_commands[0] = "./makeRemote.sh";
+		        	for (int i = 0; i < diaas_cl.length; i++) {
+		        		exec_commands[i + formal_commands] = diaas_cl[i];
+		        	}
 	        	}
-        	}
-        	else if (RS.equalsIgnoreCase("sshconnect")) {
-        		// inject remote build command
-	        	String[] sshc_cl = rb_properties.getCommandLineOptions(RS);
-	            int formal_commands = 3;
-	            exec_commands = new String [formal_commands + sshc_cl.length];
-	            exec_commands[0] = "java";
-	            exec_commands[1] = "-jar";
-	            exec_commands[2] = "SSHconnect.jar";	            
-	            for (int i = 0; i < sshc_cl.length; i++) {
-	                exec_commands[i + formal_commands] = sshc_cl[i];
-	            }
-        	}
-        	else {
-        		/*
-        		 * This case should never happen.
-        		 * useServer() and remote_build should only be set to TRUE
-        		 * in case either makeRemote or SSHconnect are present.
-        		 */
-        		Exception ex = new Exception("Incosistent settings:\nProjectProperties.useServer() " + pproperties.useServer()
-        				+ "\nRemoteBuildProperties.remote_build "+rb_properties.remoteBuild()
-        				+ "\nAppController.haveDIAAS() "+ rb_properties.haveDockerIaaS()
-        				+ "\nAppController.haveSSHconnect() "+ rb_properties.haveSSHconnect());
-        		throw ex;
-        	}
-        	// System.out.println("Executing command "+ Arrays.toString(exec_commands));
-        } 
+	        	else if (RS.equalsIgnoreCase("sshconnect")) {
+	        		// inject remote build command
+		        	String[] sshc_cl = rb_properties.getCommandLineOptions(RS);
+		            int formal_commands = 3;
+		            exec_commands = new String [formal_commands + sshc_cl.length];
+		            exec_commands[0] = "java";
+		            exec_commands[1] = "-jar";
+		            exec_commands[2] = "SSHconnect.jar";	            
+		            for (int i = 0; i < sshc_cl.length; i++) {
+		                exec_commands[i + formal_commands] = sshc_cl[i];
+		            }
+	        	}
+	        	else {
+	        		/*
+	        		 * This case should never happen.
+	        		 * useServer() and remote_build should only be set to TRUE
+	        		 * in case either makeRemote or SSHconnect are present.
+	        		 */
+	        		Exception ex = new Exception("Incosistent settings:\nProjectProperties.useServer() " + pproperties.useServer()
+	        				+ "\nRemoteBuildProperties.remote_build "+rb_properties.useRemoteBuild()
+	        				+ "\nAppController.haveDIAAS() "+ rb_properties.haveDockerIaaS()
+	        				+ "\nAppController.haveSSHconnect() "+ rb_properties.haveSSHconnect());
+	        		throw ex;
+	        	}
+	        	// System.out.println("Executing command "+ Arrays.toString(exec_commands));
+	        } 
+        }
         Application.status.setMessageStatus(build_command);
 
         // makeコマンド実行
@@ -412,7 +414,7 @@ public class ProjectMakeService  extends BaseService {
 	 */
 	private boolean useServer(ProjectProperties pproperties, RemoteBuildProperties rb_properties) {
 		if (rb_properties == null || pproperties == null) return false;
-		return rb_properties.remoteBuild() && pproperties.useServer();
+		return rb_properties.useRemoteBuild() && pproperties.useServer();
 	}
 
 	/**
