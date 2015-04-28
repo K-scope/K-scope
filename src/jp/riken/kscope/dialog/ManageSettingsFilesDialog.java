@@ -59,6 +59,9 @@ public class ManageSettingsFilesDialog extends javax.swing.JDialog implements Ac
 	private static final long serialVersionUID = 1L;
 	private static boolean debug = true; 
 	private JButton btnOk;
+	private JButton btnPlus;
+	private JButton btnMinus;
+	private JButton btnCopy;
 	private int result = Constant.CANCEL_DIALOG;
 	private FileProjectNewDialog FPNdialog;
 	private DefaultTableModel modelProperties;
@@ -149,13 +152,38 @@ public class ManageSettingsFilesDialog extends javax.swing.JDialog implements Ac
                     file_list = new JList<String>(FPNdialog.getRemoteSettings());
                     file_list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
                     file_list.setLayoutOrientation(JList.VERTICAL);
-                    file_list.addListSelectionListener(new SharedListSelectionHandler()  {
-                    	
-                    });
+                    file_list.addListSelectionListener(new SharedListSelectionHandler()  {});
                     JScrollPane listScroller = new JScrollPane(file_list);
                     //listScroller.setPreferredSize(new Dimension(200, 100));
                     panelListNorth.add(listScroller,BorderLayout.CENTER);
+                    
+                    // South panel
+                    JPanel panelListSouth = new JPanel();
+                    FlowLayout jPanel2Layout = new FlowLayout();
+                    jPanel2Layout.setHgap(1);
+                    jPanel2Layout.setVgap(3);
+                    panelListSouth.setLayout(jPanel2Layout);
+                    panelListSouth.setPreferredSize(new java.awt.Dimension(0, 35));
+                    panelListSouth.setBorder(BorderFactory.createLineBorder(Color.white));
+                    
+                    // Buttons
+                    Dimension button_dimensions = new Dimension(50,25); 
+                    Dimension button_double_dimensions = new Dimension(100,25); 
+                    btnPlus = new JButton();
+                    btnMinus = new JButton();
+                    btnCopy = new JButton();
+                    btnPlus.setPreferredSize(button_dimensions);
+                    btnMinus.setPreferredSize(button_dimensions);
+                    btnCopy.setPreferredSize(button_double_dimensions);
+                    btnPlus.setText(Message.getString("managesettingsfiles.button.plus"));
+                    btnMinus.setText(Message.getString("managesettingsfiles.button.minus"));
+                    btnCopy.setText(Message.getString("managesettingsfiles.button.copy"));
+                    
+                    panelListSouth.add(btnPlus);
+                    panelListSouth.add(btnMinus);
+                    panelListSouth.add(btnCopy);
                     panelList.add(panelListNorth,BorderLayout.CENTER);
+                    panelList.add(panelListSouth,BorderLayout.SOUTH);
                 }
                 
                 // Right (Settings) panel
