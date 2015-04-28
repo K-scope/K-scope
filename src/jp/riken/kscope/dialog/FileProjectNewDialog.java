@@ -632,7 +632,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
 
         
         // Process files & File filter
-        if (this.rb_properties != null && this.rb_properties.useRemoteBuild()) {
+        if (this.rb_properties != null && this.rb_properties.remoteBuildPossible()) {
         	
     		// Process files & File filter
         
