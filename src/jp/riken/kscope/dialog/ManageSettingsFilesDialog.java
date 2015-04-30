@@ -19,6 +19,7 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -460,7 +461,7 @@ public class ManageSettingsFilesDialog extends javax.swing.JDialog implements Ac
 				JOptionPane.YES_NO_CANCEL_OPTION,
 				JOptionPane.WARNING_MESSAGE, null,	options, options[1]);
 		if (debug) System.out.println(n);  // OK is 0
-		if (n==0) {
+		if (n == JOptionPane.OK_OPTION) {
 			String fname = file_list.getSelectedValue();			
 			String f_path = RemoteBuildProperties.locateRemoteSettingsFile(fname);
 			if (debug) System.out.println("Deleting file "+f_path);
@@ -522,7 +523,16 @@ public class ManageSettingsFilesDialog extends javax.swing.JDialog implements Ac
 	 * @param file_list
 	 */
 	private void copySelectedFile(JList<String> file_list) {
-		String fname = remoteSettingsFileName();
+		String dst_fname = RemoteBuildProperties.locateRemoteSettingsFile(remoteSettingsFileName());
+		String src_fname = RemoteBuildProperties.locateRemoteSettingsFile(file_list.getSelectedValue());
+		if (debug) System.out.println("Copy from to file " + src_fname + " to " + dst_fname);
+		try {
+			Files.copy(new File(src_fname).toPath(), new File(dst_fname).toPath());
+		}
+		catch (Exception e) {
+			System.err.println("Error copyng file from " + src_fname + " to " + dst_fname);
+			e.printStackTrace();
+		}
 	}
 	
 	/***
