@@ -345,7 +345,7 @@ public class ProjectMakeService  extends BaseService {
         	String RS = RemoteBuildProperties.getRemoteService(rb_properties.getPropertySet(RemoteBuildProperties.SETTINGS_FILE).getValue());
         	System.out.println("Remote service "+ RS);
 	        if (useServer(pproperties, rb_properties)) {
-	        	if (RS.equalsIgnoreCase("dockeriaas")) {
+	        	if (RS.equals(RemoteBuildProperties.remote_service_dockeriaas)) {
 		        	// inject remote build command
 		        	String[] diaas_cl = rb_properties.getCommandLineOptions(RS);
 		        	int formal_commands = 1;
@@ -355,7 +355,7 @@ public class ProjectMakeService  extends BaseService {
 		        		exec_commands[i + formal_commands] = diaas_cl[i];
 		        	}
 	        	}
-	        	else if (RS.equalsIgnoreCase("sshconnect")) {
+	        	else if (RS.equals(RemoteBuildProperties.remote_service_sshconnect)) {
 	        		// inject remote build command
 		        	String[] sshc_cl = rb_properties.getCommandLineOptions(RS);
 		            int formal_commands = 3;
@@ -373,7 +373,8 @@ public class ProjectMakeService  extends BaseService {
 	        		 * useServer() and remote_build should only be set to TRUE
 	        		 * in case either makeRemote or SSHconnect are present.
 	        		 */
-	        		Exception ex = new Exception("Incosistent settings:\nProjectProperties.useServer() " + pproperties.useServer()
+	        		Exception ex = new Exception("Unknown remote build service: " + RS
+	        				+ "\nIncosistent settings:\nProjectProperties.useServer() " + pproperties.useServer()
 	        				+ "\nRemoteBuildProperties.remote_build "+rb_properties.useRemoteBuild()
 	        				+ "\nAppController.haveDIAAS() "+ rb_properties.haveDockerIaaS()
 	        				+ "\nAppController.haveSSHconnect() "+ rb_properties.haveSSHconnect());

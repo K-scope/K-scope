@@ -63,9 +63,15 @@ public class RemoteBuildProperties extends PropertiesBase {
 	private static String docker_iaas_file = "makeRemote.sh";
 	private static String sshconnect_file = "SSHconnect.jar";
 	
+	
 	public static String settigns_path_separator="/"; // symbol to use instead of "/" in paths of settings files
 	public static String SETTINGS_FILE = "settings_file";  // remote build settings file in "<service><settigns_path_separator><filename>" format
 	public static String LOCAL_PATH = "local_path";
+	
+	// Remote build service names 
+	// These names are used in directory names for configuration files
+	public static String remote_service_dockeriaas = "dockeriaas";
+	public static String remote_service_sshconnect = "sshconnect";
 	
 	// SSHconnect specific settings
 	public static String FILE_FILTER = "file_filter";
@@ -414,21 +420,13 @@ public class RemoteBuildProperties extends PropertiesBase {
 	 */
 	public static Map<String, String> getSettingsFromFile(String settings_file)
 			throws FileNotFoundException {
-		InputStream input = new FileInputStream(new File(location4file(settings_file)));
+		InputStream input = new FileInputStream(new File(locateRemoteSettingsFile(settings_file)));
 		Yaml yaml = new Yaml();
 		@SuppressWarnings("unchecked")	    				    
 		Map<String, String> map = (Map<String, String>) yaml.load(input);
 		return map;
 	}
 	
-	
-	public static void saveSettingsToFile(Map<String,String> data, String file ) throws IOException {
-		if (debug) System.out.println("Writing to file "+location4file(file));		
-		Yaml yaml = new Yaml();
-		FileWriter writer = new FileWriter(location4file(file));
-		yaml.dump(data, writer);
-	}
-
 	/**
 	 * @return Map with new command option added
 	 * @param command_options list
@@ -498,7 +496,7 @@ public class RemoteBuildProperties extends PropertiesBase {
 	 * @param settings file
 	 * @return remote/<settings file>.yml
 	 */
-	private static String location4file(String str) {
+	public static String locateRemoteSettingsFile(String str) {
 		String filename = "remote/"+str+".yml";
 		//System.out.println("File name is "+ filename);
 		//System.out.println("Looking in " + new File(System.getProperty("user.dir")));

@@ -9,11 +9,21 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
@@ -21,6 +31,7 @@ import java.util.TreeMap;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -28,6 +39,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.JTextField;
 import javax.swing.JViewport;
 import javax.swing.ListSelectionModel;
 import javax.swing.RowFilter;
@@ -47,6 +59,8 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
+
+import org.yaml.snakeyaml.Yaml;
 
 import jp.riken.kscope.Message;
 import jp.riken.kscope.common.Constant;
@@ -70,8 +84,9 @@ public class ManageSettingsFilesDialog extends javax.swing.JDialog implements Ac
 			Message.getString("managesettingsfiles.table.value")			
 	};
 	private String selected_file;
-	TreeMap<String,String> settings;
+	LinkedHashMap<String,String> settings;
 	private JList<String> file_list;
+	private DefaultListModel<String> list_model;
 	private boolean edited = false;  // Values in table has been changed
 	
 	public ManageSettingsFilesDialog(FileProjectNewDialog FPNdialog) {
@@ -149,7 +164,10 @@ public class ManageSettingsFilesDialog extends javax.swing.JDialog implements Ac
                     panelListNorth.setLayout(new BorderLayout());
                     
                     // List of files with settings in "remote" folder
-                    file_list = new JList<String>(FPNdialog.getRemoteSettings());
+                    list_model  = new DefaultListModel();
+                    
+                    refreshListModel();
+                    file_list = new JList<String>(list_model);
                     file_list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
                     file_list.setLayoutOrientation(JList.VERTICAL);
                     file_list.addListSelectionListener(new SharedListSelectionHandler()  {});
@@ -178,7 +196,9 @@ public class ManageSettingsFilesDialog extends javax.swing.JDialog implements Ac
                     btnPlus.setText(Message.getString("managesettingsfiles.button.plus"));
                     btnMinus.setText(Message.getString("managesettingsfiles.button.minus"));
                     btnCopy.setText(Message.getString("managesettingsfiles.button.copy"));
-                    
+                    btnPlus.addActionListener(this);
+                    btnMinus.addActionListener(this);
+                    btnCopy.addActionListener(this);
                     panelListSouth.add(btnPlus);
                     panelListSouth.add(btnMinus);
                     panelListSouth.add(btnCopy);
@@ -301,6 +321,17 @@ public class ManageSettingsFilesDialog extends javax.swing.JDialog implements Ac
             e.printStackTrace();
         }		
 	}
+
+	/**
+	 * (Re)populate list_model with remote settings files names
+	 */
+	private void refreshListModel() {
+		String[] settings_files = FPNdialog.getRemoteSettings();
+		list_model.clear();
+		for (String s : settings_files) {
+			list_model.addElement(s);
+		}
+	}
 	
 	/**
 	 * Get key of parameter number n from TreeMap "settings"
@@ -317,22 +348,34 @@ public class ManageSettingsFilesDialog extends javax.swing.JDialog implements Ac
 	}
 	
 	
-	private TreeMap<String, String> getSettingsFromFile(String filename) throws FileNotFoundException {
+	private LinkedHashMap<String, String> getSettingsFromFile(String filename) throws FileNotFoundException {
 		Map <String,String> settings = RemoteBuildProperties.getSettingsFromFile(filename);
-		TreeMap<String, String> tm_settings = new TreeMap<String,String>(settings);
+		LinkedHashMap<String, String> tm_settings = new LinkedHashMap<String,String>(settings);
 		return tm_settings;
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		if (e.getSource() == this.btnOk) {
+		Object target = e.getSource();
+		if (target == this.btnOk) {
 			if (edited) {
-				saveSettingsToFile(selected_file);
+				saveSettingsToFile(this.settings,selected_file);
 			}
 			this.result = Constant.CLOSE_DIALOG;
              // ダイアログを閉じる。
             dispose();            
         }
+		else if (target == this.btnPlus) {
+			addNewRemoteSettingsFile();
+		}
+		else if (target == this.btnMinus) {
+			deleteSelectedFile(file_list);
+		}
+		else if (target == this.btnCopy) {
+			copySelectedFile(file_list);
+		}
+		if (debug) System.out.println("Refreshing list contents");
+		refreshListModel();
 		if (debug) System.out.println("actionPerformed() of ManageSettingsFilesDialog exited");
 	}	
 	
@@ -345,7 +388,7 @@ public class ManageSettingsFilesDialog extends javax.swing.JDialog implements Ac
 			if (debug) System.out.println("Selected "+file);
 			try {
 				if (edited) {
-					saveSettingsToFile(selected_file);
+					saveMySettingsToFile(selected_file);
 				}
 				edited = false;
 				selected_file = file;
@@ -358,11 +401,21 @@ public class ManageSettingsFilesDialog extends javax.swing.JDialog implements Ac
 		}
 	}
 
+	/***
+	 * Save settings from ManageSettingsFiles class property "settings" 
+	 * to file with given file name.
+	 * @param fname
+	 */
+	public void saveMySettingsToFile(String fname) {
+		saveSettingsToFile(this.settings, fname);
+	}
+	
 	/**
 	 * Save changed values to YAML file
-	 * @param file
+	 * @param settings
+	 * @param fname
 	 */
-	public void saveSettingsToFile(String file) {
+	public void saveSettingsToFile(LinkedHashMap<String,String> settings, String fname) {
 		// Confirmation dialog
 		Object[] options = {Message.getString("dialog.common.button.ok"),
 				Message.getString("dialog.common.button.cancel")};
@@ -371,13 +424,196 @@ public class ManageSettingsFilesDialog extends javax.swing.JDialog implements Ac
 				JOptionPane.YES_NO_CANCEL_OPTION,
 				JOptionPane.QUESTION_MESSAGE, null,	options, options[1]);
 		if (debug) System.out.println(n);  // OK is 0
-		if (n==0) {
-			try {
-				RemoteBuildProperties.saveSettingsToFile(settings, file);
-			} catch (IOException e) {
-				System.err.println("Error writing to file "+file);
-				e.printStackTrace();
-			}
+		if (n == JOptionPane.YES_OPTION) {
+			savingSettings2File(settings, fname);
 		}
 	}
+	
+	/***
+	 * Saving settins to file with name fname
+	 * @param settings
+	 * @param fname
+	 */
+	private void savingSettings2File(LinkedHashMap<String,String> settings, String fname) {
+		try {
+			if (debug) System.out.println("Writing to file "+RemoteBuildProperties.locateRemoteSettingsFile(fname));		
+			Yaml yaml = new Yaml();
+			FileWriter writer = new FileWriter(RemoteBuildProperties.locateRemoteSettingsFile(fname));
+			yaml.dump(settings, writer);
+		} catch (IOException e) {
+			System.err.println("Error writing to file "+fname);
+			e.printStackTrace();
+		}
+	}
+	
+	
+	/***
+	 * Delete files, selected in file_list
+	 * @param file_list
+	 */
+	private void deleteSelectedFile(JList<String> file_list) {
+		// Confirm dialog
+		Object[] options = {Message.getString("dialog.common.button.ok"),
+				Message.getString("dialog.common.button.cancel")};
+		int n = JOptionPane.showOptionDialog(this,Message.getString("managesettingsfiles.deletefile.confirm.text"),
+				Message.getString("managesettingsfiles.deletefile.confirm.title"),
+				JOptionPane.YES_NO_CANCEL_OPTION,
+				JOptionPane.WARNING_MESSAGE, null,	options, options[1]);
+		if (debug) System.out.println(n);  // OK is 0
+		if (n==0) {
+			String fname = file_list.getSelectedValue();			
+			String f_path = RemoteBuildProperties.locateRemoteSettingsFile(fname);
+			if (debug) System.out.println("Deleting file "+f_path);
+			try {
+				File f = new File(f_path);
+				f.delete();
+			} catch (Exception e) {
+				System.err.println("Error deleting file "+f_path);
+				e.printStackTrace();
+			}		
+		}
+	}
+	
+	/***
+	 * Create new remote settings file with empty parameters values
+	 */
+	private void addNewRemoteSettingsFile() {
+		LinkedHashMap <String,String> dockeriaas_settings = new LinkedHashMap<String, String>();
+		LinkedHashMap <String,String> sshconnect_settings = new LinkedHashMap<String, String>();
+		dockeriaas_settings.put("server_address", "");
+		dockeriaas_settings.put("port", "");
+		dockeriaas_settings.put("user", "");						
+		dockeriaas_settings.put("password", "");
+		dockeriaas_settings.put("key", "");
+		dockeriaas_settings.put("passphrase", "");
+		dockeriaas_settings.put("remote_path", "");
+		dockeriaas_settings.put("add_path", "");
+		dockeriaas_settings.put("description", "");
+		
+		sshconnect_settings.put("server_address", "");
+		sshconnect_settings.put("port", "");
+		sshconnect_settings.put("user", "");						
+		sshconnect_settings.put("password", "");
+		sshconnect_settings.put("key", "");
+		sshconnect_settings.put("passphrase", "");
+		sshconnect_settings.put("add_path", "");
+		sshconnect_settings.put("remote_path", "");
+		sshconnect_settings.put("product_pattern", "*.xml");
+		sshconnect_settings.put("description", "");
+		
+		String fname = remoteSettingsFileName();
+		if (debug) System.out.println("fname ............................. " + fname);
+		if (fname.equals(JOptionPane.UNINITIALIZED_VALUE)) {
+			return;
+		}
+		if (fname.indexOf(RemoteBuildProperties.remote_service_dockeriaas) >=0 ) {
+			savingSettings2File(dockeriaas_settings,fname);
+		} 
+		else if (fname.indexOf(RemoteBuildProperties.remote_service_sshconnect) >=0 ) {
+			savingSettings2File(sshconnect_settings,fname);
+		} 
+		else {
+			displayErrorDialog("Cannot get remote build service name from file : " + fname);
+		}
+	}
+	
+	/***
+	 * Copy remote settings from selected file to a new file
+	 * @param file_list
+	 */
+	private void copySelectedFile(JList<String> file_list) {
+		String fname = remoteSettingsFileName();
+	}
+	
+	/***
+	 * Display dialog for setting name for a new remote settings file
+	 * @return
+	 */
+	private String remoteSettingsFileName() {
+		getRemoteSeriveFileNameDialog dialog = new getRemoteSeriveFileNameDialog();
+		String r = dialog.showDialog();		
+		System.out.println("Result "+r);
+		return r;
+	}
+	
+	class getRemoteSeriveFileNameDialog extends javax.swing.JDialog implements PropertyChangeListener {
+		
+		String fname;
+		
+		private JComboBox<String> serviceField;
+		private JTextField textField;
+		private JOptionPane optionPane;
+		
+		public getRemoteSeriveFileNameDialog() {
+			boolean debug = ManageSettingsFilesDialog.debug;
+			serviceField = new JComboBox<String>();
+			String[] remoteService = { RemoteBuildProperties.remote_service_dockeriaas,
+					RemoteBuildProperties.remote_service_sshconnect };			
+			for (String s : remoteService) {
+				serviceField.addItem(s);
+			}
+			textField = new JTextField(15);
+			
+			Object[] GUI_elements = { Message.getString("managesettingsfiles.filename.text"),
+					serviceField, textField  };
+			optionPane = new JOptionPane(GUI_elements, JOptionPane.QUESTION_MESSAGE,
+                    JOptionPane.OK_CANCEL_OPTION, null);
+			
+			//Make this dialog display it
+	        setContentPane(optionPane);	        
+	        optionPane.addPropertyChangeListener(this);
+		}
+		
+		public String showDialog() {
+	        // Center on screen
+	        this.setLocationRelativeTo(null);
+	        this.setModal(true);
+	        this.toFront();
+	        this.pack();
+	        this.setVisible(true);        	        
+	        return optionPane.getValue().toString();
+	    }
+		
+		private String getResult() {
+			String r = (String) serviceField.getSelectedItem();
+			r = r + RemoteBuildProperties.settigns_path_separator;
+			r = r + textField.getText();
+			return r;
+		}
+
+		@Override
+		public void propertyChange(PropertyChangeEvent e) {
+			String prop = e.getPropertyName();
+			if (debug) System.out.println("target prop ....................... "+ prop);
+			if (debug) System.out.println("VALUE_PROPERTY .................... " + JOptionPane.VALUE_PROPERTY);
+			if (debug) System.out.println("INPUT_VALUE_PROPERTY .............. " + JOptionPane.INPUT_VALUE_PROPERTY);
+			if (isVisible() && e.getSource() == optionPane
+					&& (JOptionPane.VALUE_PROPERTY.equals(prop) ||
+				             JOptionPane.INPUT_VALUE_PROPERTY.equals(prop))) {	        		        	
+	        	Object value = optionPane.getValue();
+	        	if (debug) System.out.println("Value ............................. " + value);
+	        	if (value instanceof Integer) {
+	        		if ((Integer)value == JOptionPane.OK_OPTION ) {	        	
+		        		optionPane.setValue(getResult());
+		        		if (debug) System.out.println("new value ......................... " + optionPane.getValue());		        		
+	        		} 
+	        		else if ((Integer)value == JOptionPane.CANCEL_OPTION ) {
+	        			if (debug) System.out.println("Cancelled");
+	        			optionPane.setValue(JOptionPane.UNINITIALIZED_VALUE);	        			
+	        		}
+	        	}
+	        	setVisible(false);
+	        }			
+		}
+	}
+	
+	
+	/***
+	 * Display error message
+	 * @param message - Error message
+	 */
+	private void displayErrorDialog(String message) {
+		JOptionPane.showMessageDialog(this, message, Message.getString("dialog.common.error"), JOptionPane.ERROR_MESSAGE);
+	}
+	
 }
