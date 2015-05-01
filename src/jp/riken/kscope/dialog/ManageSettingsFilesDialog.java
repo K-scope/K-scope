@@ -165,7 +165,7 @@ public class ManageSettingsFilesDialog extends javax.swing.JDialog implements Ac
                     panelListNorth.setLayout(new BorderLayout());
                     
                     // List of files with settings in "remote" folder
-                    list_model  = new DefaultListModel();
+                    list_model  = new DefaultListModel<String>();
                     
                     refreshListModel();
                     file_list = new JList<String>(list_model);

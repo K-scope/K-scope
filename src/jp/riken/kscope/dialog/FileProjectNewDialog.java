@@ -40,9 +40,14 @@ import java.util.List;
 
 
 
+
+
+
+
 //import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.DefaultListModel;
 import javax.swing.Icon;
@@ -139,6 +144,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
     /** Serverを利用する */
     private JCheckBox checkUseRemote;
     private JComboBox<String> settings_list;
+    private DefaultComboBoxModel<String> list_model;
     /** 選択XMLフォルダ・ファイル削除ボタン */
     private JButton manage_settings_files;
         
@@ -179,8 +185,6 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
     /** ビルドコマンドテキストボックス */
     private JTextField txtBuildCommand;
     
-    private AppController controller;
-
     /**
      * コンストラクタ
      * @param owner		親フレーム
@@ -191,7 +195,6 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
         super(owner, modal);
         this.pproperties = pproperties;
         this.rb_properties = rb_properties;
-        this.controller = controller;
         initGUI();
     }
 
@@ -336,7 +339,9 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
             	} else {
             		this.rb_properties.remote_settings_found = true;
             		System.out.println("Have remote connection settings in "+ REMOTE_SETTINGS_DIR);
-	            	settings_list = new JComboBox<String>(selections);
+	            	//settings_list = new JComboBox<String>(selections);
+            		list_model = new DefaultComboBoxModel<String>(selections);
+            		settings_list = new JComboBox<String>(list_model);
 	            	settings_list.setEnabled(false);
 	            	manage_settings_files = new JButton(Message.getString("fileprojectnewdialog.kindpanel.button.manage_settings_files"));
 	            	manage_settings_files.setEnabled(false);
@@ -476,10 +481,18 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
     public String[] getRemoteSettings() {
     	List<String> list = new ArrayList<String>();
     	String[] list_ar = null;
-    	String[] ignore = { "(\\.).*" };
+    	List<String> ignore = new ArrayList<String>(); 
+    	ignore.add("(\\.).*");
+    	if (!rb_properties.haveDockerIaaS()) {
+    		ignore.add(RemoteBuildProperties.remote_service_dockeriaas + "*");
+    	}
+    	if (!rb_properties.haveSSHconnect()) {
+    		ignore.add(RemoteBuildProperties.remote_service_sshconnect + "*");
+    	}
 		File dir = new File(REMOTE_SETTINGS_DIR);
 		try {
-			list = getFiles(dir, list, "", ignore);			
+			String[] s = new String[ignore.size()];
+			list = getFiles(dir, list, "", ignore.toArray(s));			
 			list_ar=new String[list.size()];
 		}
 		catch (IOException e) {
@@ -1731,10 +1744,24 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
         	}
         	this.setModal(false);
         	ManageSettingsFilesDialog manage_files_dialog = new ManageSettingsFilesDialog(this);
-        	manage_files_dialog.showDialog();        	        	
+        	manage_files_dialog.showDialog();   
+        	refreshSettingsList();
         }
         if (debug) System.out.println("actionPerformed() of FileProjectNewDialog exited");
     }
+    
+    /***
+     * Refresh contents of settings_list JComboBox
+     */
+    private void refreshSettingsList() {
+    	if (debug) System.out.println("Refireshin settings_list contents.");
+    	String[] selections = getRemoteSettings();
+    	list_model.removeAllElements();
+    	for (String s : selections) {
+    		list_model.addElement(s);
+    	}
+    }
+    
 
     private void enableButtons() {
         this.btnNext.setEnabled(true);
