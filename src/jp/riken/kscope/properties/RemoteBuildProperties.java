@@ -681,7 +681,6 @@ public class RemoteBuildProperties extends PropertiesBase {
             System.out.println(f.getAbsolutePath());
             return true;
         }
-        System.out.println("Not found "+sshconnect_file);
         return false;
     }
     

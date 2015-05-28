@@ -542,6 +542,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
 	}
 
 	protected boolean remoteBuild(RemoteBuildProperties rb_properties) {
+		if (this.checkUseRemote == null) return false;
 		if (this.checkUseRemote.isSelected()) {
 	        if (rb_properties == null) {
 	            return false;
