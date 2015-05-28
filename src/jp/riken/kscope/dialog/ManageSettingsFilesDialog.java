@@ -61,6 +61,7 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 
+import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.Yaml;
 
 import jp.riken.kscope.Message;
@@ -437,8 +438,11 @@ public class ManageSettingsFilesDialog extends javax.swing.JDialog implements Ac
 	 */
 	private void savingSettings2File(LinkedHashMap<String,String> settings, String fname) {
 		try {
-			if (debug) System.out.println("Writing to file "+RemoteBuildProperties.locateRemoteSettingsFile(fname));		
-			Yaml yaml = new Yaml();
+			if (debug) System.out.println("Writing to file "+RemoteBuildProperties.locateRemoteSettingsFile(fname));
+			DumperOptions options = new DumperOptions();
+			options.setIndent(4);
+			options.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
+			Yaml yaml = new Yaml(options);
 			FileWriter writer = new FileWriter(RemoteBuildProperties.locateRemoteSettingsFile(fname));
 			yaml.dump(settings, writer);
 		} catch (IOException e) {
