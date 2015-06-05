@@ -123,7 +123,7 @@ public class RemoteBuildProperties extends PropertiesBase {
     	options_map_docker.put("build-command", "-m");
     }
     
-    private static Boolean debug=true;
+    private static Boolean debug=(System.getenv("DEBUG")!= null);
     
    	/**
      * コンストラクタ

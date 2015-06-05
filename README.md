@@ -3,7 +3,7 @@
 K-scope is a source code analysis tool with graphical user interface that
 visualizes program structures of Fortran 90 and FORTRAN 77 source code.
 It is suitable for source code reading for engineers who work the performance
-improvement for an applicaiton.
+improvement for an application.
 
 K-scope is developed by RIKEN AICS Software Development Team, and is distributed
 as Open Source Software. The latest version and documents are available in the
@@ -15,9 +15,27 @@ http://www.aics.riken.jp/ungi/soft/kscope/
 First of all, K-scope requires JDK7 or later. Please download from Oracle site.
 http://www.oracle.com/technetwork/java/javase/downloads/index.html
 
-In addition, this tool uses intermediate codes created by front end of
-the Omni XcalableMP compiler. There exists a download site as follow.
+K-scope uses intermediate code created by front end of
+the Omni XcalableMP compiler. The compiler can be downloaded from the following site:
 http://www.hpcs.cs.tsukuba.ac.jp/omni-compiler/xcalablemp/download.html
+
+
+## Remote code building
+
+As an alternative to installing Omni XcalableMP compiler on your computer, you can use
+the compiler installed on a server. Installed compiler can be made available for remote
+use in two different ways:
+
+1. with SSH access without root privileges,
+2. with SSH access with root privileges using Docker IaaS Tools. (github.com/pyotr777/dockerIaaSTools)
+
+#### Difference between 1. and 2. 
+
+For 1. compiler users have to replace absolute paths in their code with a placeholder ```#[remote_path]```.
+For 2. users don't have to replace absolute paths.
+
+For the 1. you need only to run an SSH server.
+For the 2. setup see instructions below.
 
 
 ### K-scope with Docker IaaS Tools and Omni XMP Compiler
@@ -25,7 +43,7 @@ http://www.hpcs.cs.tsukuba.ac.jp/omni-compiler/xcalablemp/download.html
 If you have a computer with Docker installed, you can use Docker IaaS Tools to quickly 
 make a setup for building code inside a Docker container.
 K-scope uses makeRemote.sh to build source code in a Docker container. If makeRemote.sh
-is in the same directory as kcope.jar, additional options are enabled in new 
+is in the same directory as kscope.jar, additional options are enabled in new 
 project wizard.
 
 #### Server-side setup for using K-scope with Docker IaaS Tools (DIT) and Omni XMP Compiler (OmniXMP)
@@ -52,17 +70,17 @@ sudo ./createuser.sh <user name> pyotr777/omnixmp <public key file>
 
 
 Make sure you have makeRemote.sh file in your K-scope directory.
-In new project vizard or in Project > Server settings menu set up:
+In new project wizard or in Project > Server settings menu set up:
 server address, K-scope user name on the server, local path to SSH private key for K-scope
 user. 
 
 
 Demonstration: http://youtu.be/86ybJdnNvUc
 
-Docker IaaS Tools and makeRemote.sh are developed by RIKEN AICS HPC Usability Research Team
-http://github.com/pyotr777/dockerIaaSTools
+*Docker IaaS Tools and makeRemote.sh are developed by RIKEN AICS HPC Usability Research Team
+http://github.com/pyotr777/dockerIaaSTools*
 
-Docker http://docker.com
+*Docker http://docker.com*
 
 
 ## Compile and Run K-scope
@@ -70,9 +88,9 @@ Docker http://docker.com
 This software is written by pure Java to improve the portability.
 We provide two-type packages: jar-executable package and source code package
 in our site. Especially this source cord packages includes all source codes
-necessary for modify and compiling. In that case, we recommend IDE enviroments
+necessary for modify and compiling. In that case, we recommend IDE environments
 such as Eclipse or NetBeans.
-NOTICE) The source codes includes Japanese comments by UTF-8.
+NOTICE) The source codes includes Japanese comments in UTF-8 encoding.
 
 We provide build.xml to compile.
 
@@ -91,7 +109,7 @@ K-scope requires specific folders for properties.
 If the program cannot find that folders, it may terminate abnormally.
 In the normally process, you may obtained start screen.
 
-Tips on usage) "-Duser.language" VM-option is language selecter, English(en) and Japanese(ja).
+Tips on usage) "-Duser.language" VM-option is language selector, English(en) and Japanese(ja).
 
 ## Build jar file
 

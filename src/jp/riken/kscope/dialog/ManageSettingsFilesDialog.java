@@ -73,7 +73,7 @@ import jp.riken.kscope.properties.RemoteBuildProperties;
 public class ManageSettingsFilesDialog extends javax.swing.JDialog implements ActionListener {
 	/** シリアル番号 */
 	private static final long serialVersionUID = 1L;
-	private static boolean debug = true; 
+	private static boolean debug = (System.getenv("DEBUG")!= null); 
 	private JButton btnOk;
 	private JButton btnPlus;
 	private JButton btnMinus;

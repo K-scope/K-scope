@@ -72,7 +72,7 @@ public class ProjectService extends BaseService {
     
     private RemoteBuildProperties rb_properties;
     
-    private Boolean debug = false;
+    private Boolean debug = (System.getenv("DEBUG")!= null);
     /**
      * コンストラクタ
      */

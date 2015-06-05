@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.concurrent.Callable;
 
 import javax.swing.JOptionPane;
+
 import jp.riken.kscope.Application;
 import jp.riken.kscope.Message;
 import jp.riken.kscope.common.ANALYSIS_PANEL;
@@ -65,7 +66,7 @@ public class FileProjectNewAction extends ActionBase {
     /** プロジェクト構築サービス */
     private ProjectService projectService;
 
-    private Boolean debug=true;
+    private Boolean debug=(System.getenv("DEBUG")!= null);
 
     /**
      * コンストラクタ

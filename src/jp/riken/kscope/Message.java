@@ -29,7 +29,7 @@ public class Message {
 	private java.util.ResourceBundle bundle = null;
 	/** Messageクラスインスタンス */
     private static Message instance = new Message();
-    private static boolean debug=false;
+    private static boolean debug=(System.getenv("DEBUG")!= null && System.getenv("DEBUG").equals("high"));
 
     /**
      * コンストラクタ

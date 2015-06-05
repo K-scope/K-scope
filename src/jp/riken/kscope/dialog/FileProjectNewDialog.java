@@ -44,6 +44,7 @@ import java.util.List;
 
 
 
+
 //import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
@@ -94,7 +95,7 @@ import jp.riken.kscope.utils.SwingUtils;
 public class FileProjectNewDialog extends javax.swing.JDialog implements ActionListener {
 
 	private static final long serialVersionUID = 6096475381851486225L;
-	private static boolean debug = true;
+	private static boolean debug = (System.getenv("DEBUG")!= null);
 	private static String REMOTE_SETTINGS_DIR = "remote";
 	
 /** 中間コード・フォルダ・ファイルリスト */
