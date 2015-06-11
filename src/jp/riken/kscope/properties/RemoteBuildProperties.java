@@ -62,7 +62,7 @@ public class RemoteBuildProperties extends PropertiesBase {
 	 */
 	private static String docker_iaas_file = "makeRemote.sh";
 	private static String sshconnect_file = "SSHconnect.jar";
-	
+	public static String REMOTE_SETTINGS_DIR = "remote";
 	
 	public static String settigns_path_separator="/"; // symbol to use instead of "/" in paths of settings files
 	public static String SETTINGS_FILE = "settings_file";  // remote build settings file in "<service><settigns_path_separator><filename>" format
@@ -663,7 +663,7 @@ public class RemoteBuildProperties extends PropertiesBase {
     /**
      * True if we can use makeRemote with Docker IaaS tools for remote code build 
      * */
-    private boolean checkDockerIaaS() {
+    private static boolean checkDockerIaaS() {
         File f = new File(docker_iaas_file);
         if (f.exists()) {
             System.out.println(f.getAbsolutePath());
@@ -675,7 +675,7 @@ public class RemoteBuildProperties extends PropertiesBase {
     /** 
      * True if we can use SSHconnect for remote code build
      */
-    private boolean checkSSHconnect() {
+    private static boolean checkSSHconnect() {
         File f = new File(sshconnect_file);
         if (f.exists()) {
             System.out.println(f.getAbsolutePath());
@@ -720,4 +720,69 @@ public class RemoteBuildProperties extends PropertiesBase {
 		String service = settings_file.substring(0, pos);
 		return service;
 	}
+	
+	
+	public static String[] getRemoteSettings() {
+    	List<String> list = new ArrayList<String>();
+    	String[] list_ar = null;
+    	List<String> ignore = new ArrayList<String>(); 
+    	ignore.add("(\\.).*");
+    	if (!checkDockerIaaS()) {
+    		ignore.add(RemoteBuildProperties.remote_service_dockeriaas + "*");
+    	}
+    	if (!checkSSHconnect()) {
+    		ignore.add(RemoteBuildProperties.remote_service_sshconnect + "*");
+    	}
+		File dir = new File(REMOTE_SETTINGS_DIR);
+		try {
+			String[] s = new String[ignore.size()];
+			list = getFiles(dir, list, "", ignore.toArray(s));			
+			list_ar=new String[list.size()];
+		}
+		catch (IOException e) {
+			System.err.println("Error reading settings files from remote directory");
+			e.printStackTrace();			
+		}
+		return list.toArray(list_ar);
+	}
+	
+	/*
+     * Return list of files in directory with subdirectories.
+     * @dir - starting directory
+     * @list - list of files found before (empty for the first call)
+     * @path_prefix - path from starting directory to current directory
+     * ignore - pattern for ignoring files and directories names
+     */
+	private static List<String> getFiles(File dir, List<String> list, String path_prefix, String[] ignore) throws IOException {
+		File [] flist = dir.listFiles();
+		if (flist == null || flist.length < 1) {
+			return list;
+		}
+		Boolean trunk_extensions = true;  // remove extensions from file names
+		for (File f : flist) {
+			boolean ignore_me = false;
+			for (String p : ignore) {
+				if (f.getName().matches(p)) {
+					ignore_me = true;
+					break;
+				}
+			}
+			if (ignore_me) continue;
+			if (f.isFile()) {
+				String name = f.getName();
+				if (trunk_extensions) {
+					int pos = name.lastIndexOf(".");
+					if (pos > 0) {
+					    name = name.substring(0, pos);
+					}
+				}
+				list.add(path_prefix+name);
+			} 
+			else if (f.isDirectory()) {
+				list = getFiles(f,list,f.getName()+RemoteBuildProperties.settigns_path_separator, ignore);
+			}
+		}
+		return list;		
+	}
+	
 }

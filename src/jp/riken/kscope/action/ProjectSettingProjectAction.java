@@ -53,7 +53,7 @@ public class ProjectSettingProjectAction extends ActionBase {
         RemoteBuildProperties rb_properties = this.controller.getRBproperties();
 		if (!rb_properties.useRemoteBuild()) {
 			ProjectPropertyValue settings_file = properties.getPropertyValue(ProjectProperties.SETTINGS_FILE);
-			settings_file.setType("fixed-text");
+			settings_file.setType("fixed-file");
 			settings_file.setValue("false");
 		}
 		SettingProjectDialog dialog = new SettingProjectDialog(frame, true, properties);

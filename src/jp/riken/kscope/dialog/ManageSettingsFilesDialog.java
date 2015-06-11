@@ -328,7 +328,7 @@ public class ManageSettingsFilesDialog extends javax.swing.JDialog implements Ac
 	 * (Re)populate list_model with remote settings files names
 	 */
 	private void refreshListModel() {
-		String[] settings_files = FPNdialog.getRemoteSettings();
+		String[] settings_files = RemoteBuildProperties.getRemoteSettings();
 		list_model.clear();
 		for (String s : settings_files) {
 			list_model.addElement(s);
@@ -552,6 +552,8 @@ public class ManageSettingsFilesDialog extends javax.swing.JDialog implements Ac
 	
 	class getRemoteSeriveFileNameDialog extends javax.swing.JDialog implements PropertyChangeListener {
 		
+		private static final long serialVersionUID = 1L;
+
 		String fname;
 		
 		private JComboBox<String> serviceField;

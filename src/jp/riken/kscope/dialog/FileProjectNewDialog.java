@@ -95,8 +95,7 @@ import jp.riken.kscope.utils.SwingUtils;
 public class FileProjectNewDialog extends javax.swing.JDialog implements ActionListener {
 
 	private static final long serialVersionUID = 6096475381851486225L;
-	private static boolean debug = (System.getenv("DEBUG")!= null);
-	private static String REMOTE_SETTINGS_DIR = "remote";
+	private static boolean debug = (System.getenv("DEBUG")!= null);	
 	
 /** 中間コード・フォルダ・ファイルリスト */
     private JList<String> listProjectXml;
@@ -333,13 +332,13 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
             panelSelect.setLayout(layoutSelect);
 
             if (this.rb_properties != null ) {
-            	String[] selections = getRemoteSettings(); 
+            	String[] selections = RemoteBuildProperties.getRemoteSettings(); 
             	if (selections.length < 1) {
-            		System.out.println("No remote connection settings files found in "+ REMOTE_SETTINGS_DIR);
+            		System.out.println("No remote connection settings files found in "+ RemoteBuildProperties.REMOTE_SETTINGS_DIR);
             		this.rb_properties.remote_settings_found = false;
             	} else {
             		this.rb_properties.remote_settings_found = true;
-            		System.out.println("Have remote connection settings in "+ REMOTE_SETTINGS_DIR);
+            		System.out.println("Have remote connection settings in "+ RemoteBuildProperties.REMOTE_SETTINGS_DIR);
 	            	//settings_list = new JComboBox<String>(selections);
             		list_model = new DefaultComboBoxModel<String>(selections);
             		settings_list = new JComboBox<String>(list_model);
@@ -479,6 +478,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
         return panelContent;
     }
 
+    /*  Moved to RemoteBuildProperties class as a static method
     public String[] getRemoteSettings() {
     	List<String> list = new ArrayList<String>();
     	String[] list_ar = null;
@@ -501,48 +501,9 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
 			e.printStackTrace();			
 		}
 		return list.toArray(list_ar);
-	}
+	}*/
     
-    /*
-     * Return list of files in directory with subdirectories.
-     * @dir - starting directory
-     * @list - list of files found before (empty for the first call)
-     * @path_prefix - path from starting directory to current directory
-     * ignore - pattern for ignoring files and directories names
-     */
-	private List<String> getFiles(File dir, List<String> list, String path_prefix, String[] ignore) throws IOException {
-		File [] flist = dir.listFiles();
-		if (flist == null || flist.length < 1) {
-			return list;
-		}
-		Boolean trunk_extensions = true;  // remove extensions from file names
-		for (File f : flist) {
-			boolean ignore_me = false;
-			for (String p : ignore) {
-				if (f.getName().matches(p)) {
-					ignore_me = true;
-					break;
-				}
-			}
-			if (ignore_me) continue;
-			if (f.isFile()) {
-				String name = f.getName();
-				if (trunk_extensions) {
-					int pos = name.lastIndexOf(".");
-					if (pos > 0) {
-					    name = name.substring(0, pos);
-					}
-				}
-				list.add(path_prefix+name);
-			} 
-			else if (f.isDirectory()) {
-				list = getFiles(f,list,f.getName()+RemoteBuildProperties.settigns_path_separator, ignore);
-			}
-		}
-		return list;		
-	}
-
-	protected boolean remoteBuild(RemoteBuildProperties rb_properties) {
+    protected boolean remoteBuild(RemoteBuildProperties rb_properties) {
 		if (this.checkUseRemote == null) return false;
 		if (this.checkUseRemote.isSelected()) {
 	        if (rb_properties == null) {
@@ -1757,7 +1718,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
      */
     private void refreshSettingsList() {
     	if (debug) System.out.println("Refireshin settings_list contents.");
-    	String[] selections = getRemoteSettings();
+    	String[] selections = RemoteBuildProperties.getRemoteSettings();
     	list_model.removeAllElements();
     	for (String s : selections) {
     		list_model.addElement(s);

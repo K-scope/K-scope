@@ -91,7 +91,7 @@ public class ResourceUtils {
 	 * @return リソース入力ストリーム
 	 */
 	public static InputStream getPropertiesFile(String name) {
-
+		boolean debug = (System.getenv("DEBUG")!= null);
 		try {
 			java.net.URL url = ResourceUtils.class.getClassLoader()
 					.getResource(name);

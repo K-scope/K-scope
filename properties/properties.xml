@@ -228,9 +228,9 @@
         
         <!--  Project Properties -->
 		<project key="project-title" name="property.project.title.name" value="" type="text" message="property.project.title.message" />
-		<project key="local_path" value="" type="project" description="property.project.local_path"/>
+		<project key="local_path" name="property.project.local_path.name" value="" type="file" message="property.project.local_path"/>
 		<project key="build-command" name="property.project.build-command.name" value="make" type="file" message="property.project.build-command.message" />
-		<project key="settings-file" name="property.remotebuild.settings_file.name" value="" type="text" description="property.remotebuild.settings_file.message" />
+		<project key="settings-file" name="property.remotebuild.settings_file.name" value="" type="fixed-file" message="property.remotebuild.settings_file.message" />
 		<!-- Remote Build Properties -->
         <remotebuild key="settings_file" type="project" commandline_option="-s" description="property.remotebuild.settings_file" />
         <remotebuild key="preprocess_files" value="" type="project" commandline_option="-pf" description="property.remotebuild.preprocess_files"/>		
