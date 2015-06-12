@@ -50,7 +50,7 @@ public class Kscope {
     public static void main(String args[]) {
         // 初期設定
         // MacOSXでのJava実行環境用のシステムプロパティの設定.
-        String version = "1.4.1 docker & sshconnect";        
+        String version = "1.4.2 docker & sshconnect";        
         System.out.println("Kscope v"+version);
         if (System.getenv("DEBUG")!= null) {
         	System.out.println("For debugging use DEBUG env var: \"high\" - many debug info; any other value, but not empy - less debug info.\nDEBUG is set to "+System.getenv("DEBUG"));

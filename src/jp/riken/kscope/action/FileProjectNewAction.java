@@ -155,7 +155,7 @@ public class FileProjectNewAction extends ActionBase {
         // 中間コードの生成を行うか否か
         boolean genCode = dialog.isGenerateIntermediateCode();
         
-        String rs_file = dialog.remoteSettingsFile();
+        String rs_file = dialog.remoteSettingsFile();  // RB settings file from dialog
         // Set Project property
         pproperties.getPropertyValue(ProjectProperties.SETTINGS_FILE).setValue(rs_file);
         
@@ -248,7 +248,8 @@ public class FileProjectNewAction extends ActionBase {
                 
                 if (rs_file != null && rs_file.length()>0) { // Set command line options for remote build command
                 	rb_properties = this.controller.getRBproperties();
-                	rb_properties.setLocalPath(work.getAbsolutePath());                	
+                	rb_properties.setLocalPath(work.getAbsolutePath());
+                	rb_properties.setSettingsFile(rs_file);
                 }
             }
             // 中間コードの生成を行わない

@@ -227,15 +227,12 @@
         <operation name="transpose"          add="0" div="0" mul="0" sub="1" />
         
         <!--  Project Properties -->
-		<project key="project-title" name="property.project.title.name" value="" type="text" message="property.project.title.message" />
-		<project key="local_path" name="property.project.local_path.name" value="" type="file" message="property.project.local_path"/>
-		<project key="build-command" name="property.project.build-command.name" value="make" type="file" message="property.project.build-command.message" />
-		<project key="settings-file" name="property.remotebuild.settings_file.name" value="" type="fixed-file" message="property.remotebuild.settings_file.message" />
-		<!-- Remote Build Properties -->
-        <remotebuild key="settings_file" type="project" commandline_option="-s" description="property.remotebuild.settings_file" />
-        <remotebuild key="preprocess_files" value="" type="project" commandline_option="-pf" description="property.remotebuild.preprocess_files"/>		
-        <remotebuild key="file_filter" type="project" commandline_option="-ff" description="property.remotebuild.file_filter"  value="*.tar,*.tgz,*.zip,*.txt,*.html,*.xml,*.o,*.mod,*.xmod,.DS*,*.ksx"/>
-		<remotebuild key="local_path" type="project" value="" commandline_option="-l" description="property.project.local_path"/>
+		<project key="project_title" name="property.project.title.name" value="" type="text" message="property.project.title.message" />
+		<project key="local_path" commandline_option="-l" name="property.project.local_path.name" value="" type="file" message="property.project.local_path"/>
+		<project key="build_command" name="property.project.build-command.name" value="make" type="file" message="property.project.build-command.message" />
+		<project key="settings_file" commandline_option="-s" name="property.remotebuild.settings_file.name" value="" type="fixed-file" message="property.remotebuild.settings_file.message" />
+		<project key="preprocess_files" commandline_option="-pf" value="" type="text" name="fileprojectnewdialog.basepanel.processfiles.label" message="property.remotebuild.preprocess_files"/>
+		<project key="file_filter" commandline_option="-ff" type="text" name="fileprojectnewdialog.basepanel.filefilter.label" message="property.remotebuild.file_filter" value="*.tar,*.tgz,*.zip,*.txt,*.html,*.xml,*.o,*.mod,*.xmod,.DS*,*.ksx"/>
 			
         <!-- Project hidden properties -->
         <project_other key="generate-XML" value="false" />

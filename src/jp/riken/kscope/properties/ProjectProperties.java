@@ -50,14 +50,14 @@ public class ProjectProperties extends PropertiesBase {
 
     // プロパティキー
     /** プロジェクトタイトルプロパティキー */
-    public static final String PRJ_TITLE = "project-title";
+    public static final String PRJ_TITLE = "project_title";
     /** Build command */
-    public static final String BUILD_COMMAND = "build-command";
+    public static final String BUILD_COMMAND = "build_command";
        
     public static String LOCAL_PATH = "local_path";
 
     /** File with settings for building on server */
-    public static final String SETTINGS_FILE = "settings-file";
+    public static final String SETTINGS_FILE = "settings_file";
     
     //中間コードの生成
     public static final String GENERATE_XML = "generate-XML";

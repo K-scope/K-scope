@@ -360,7 +360,7 @@ public class ProjectService extends BaseService {
 
         // 出力プロジェクトファイル
         File saveFile = new File(saveFolder.getAbsolutePath() + File.separator + KscopeProperties.PROJECT_FILE);
-
+        
         // XML ファイル出力
         writeXmlFile(saveFile, document);
 

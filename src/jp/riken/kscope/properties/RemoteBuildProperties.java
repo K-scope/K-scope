@@ -145,7 +145,7 @@ public class RemoteBuildProperties extends PropertiesBase {
     public void loadProperties() throws Exception {
         is = null;
         // リソースファイルの読込
-        is = ResourceUtils.getPropertiesFile(KscopeProperties.PROPERTIES_FILE);
+        is = ResourceUtils.getPropertiesFile(KscopeProperties.PROPERTIES_FILE); // properties.xml
         loadProperties(is);
     }
 
@@ -174,7 +174,7 @@ public class RemoteBuildProperties extends PropertiesBase {
      */
     public void loadProperties(InputStream stream ) throws Exception {
         // XMLファイルのパース
-        RB_data_list = parseRBProperty(stream, "//remotebuild");
+        RB_data_list = parseRBProperty(stream, "//project");
     }
 
 
@@ -248,8 +248,14 @@ public class RemoteBuildProperties extends PropertiesBase {
                 String key = null;
                 String value = null;
                 String commandline_option = null;
-                String type = null;
                 String description = null;
+                
+                attrnode_value = attrs.getNamedItem("commandline_option");
+                if (attrnode_value == null) continue;
+                
+                if (attrnode_value != null) {
+                    commandline_option = attrnode_value.getNodeValue();                    
+                }
                 
                 // プロパティ名
                 attrnode_key = attrs.getNamedItem("key");
@@ -261,15 +267,7 @@ public class RemoteBuildProperties extends PropertiesBase {
                 if (attrnode_value != null) {
                     value = attrnode_value.getNodeValue();                    
                 }
-                attrnode_value = attrs.getNamedItem("commandline_option");
-                if (attrnode_value != null) {
-                    commandline_option = attrnode_value.getNodeValue();                    
-                }
-                // プロパティType
-                attrnode_type = attrs.getNamedItem("type");
-                if (attrnode_type != null) {
-                    type = attrnode_type.getNodeValue();                    
-                }
+                
                 
                 //Description
                 attrnode_description = attrs.getNamedItem("description");
@@ -278,7 +276,7 @@ public class RemoteBuildProperties extends PropertiesBase {
                 }                
                 
                 if (key != null || value != null) {
-                	rbdata.setProperty(key, value, commandline_option, type, i, description);
+                	rbdata.setProperty(key, value, commandline_option, i, description);
                 }
                 
                 list.add(rbdata);
@@ -326,12 +324,8 @@ public class RemoteBuildProperties extends PropertiesBase {
                 org.w3c.dom.Attr attr = document.createAttribute("value");
                 attr.setNodeValue(rb_data.getValue());
                 elem.setAttributeNode(attr);
-            }            
-            {
-                org.w3c.dom.Attr attr = document.createAttribute("type");
-                attr.setValue(rb_data.getType());
-                elem.setAttributeNode(attr);
-            }
+            } 
+            
             {
                 org.w3c.dom.Attr attr = document.createAttribute("description");
                 attr.setValue(rb_data.getDescription());
@@ -509,7 +503,7 @@ public class RemoteBuildProperties extends PropertiesBase {
 	public void checkData() {
 		System.out.println("RB data: ");
 		for (RemoteBuildData rbdata : this.RB_data_list) {
-			System.out.println(rbdata.getKey()+"="+rbdata.getValue()+", "+rbdata.getDescription() + " " + rbdata.getCommandlineOption()+" " + rbdata.getType());
+			System.out.println(rbdata.getKey()+"="+rbdata.getValue()+", "+rbdata.getDescription() + " " + rbdata.getCommandlineOption());
 		}
 	}
     
