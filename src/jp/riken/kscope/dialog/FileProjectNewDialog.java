@@ -36,15 +36,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-
-
-
-
-
-
-
-
-
 //import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
@@ -80,7 +71,6 @@ import jp.riken.kscope.data.FILE_TYPE;
 import jp.riken.kscope.gui.MainFrame;
 import jp.riken.kscope.properties.KscopeProperties;
 import jp.riken.kscope.properties.ProjectProperties;
-//import jp.riken.kscope.properties.RemoteBuildProperties;
 import jp.riken.kscope.service.AppController;
 import jp.riken.kscope.utils.FileUtils;
 import jp.riken.kscope.utils.ResourceUtils;
@@ -148,8 +138,6 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
     /** 選択XMLフォルダ・ファイル削除ボタン */
     private JButton manage_settings_files;
         
-    /** makefile テキストフィールド*/
-    //private JTextField txtMakefile;
     /** ビルドコマンド 参照ボタン */
     private JButton btnMakeCmd;
     /** XML パネル説明文 */
@@ -355,10 +343,8 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
                     }
                 };            	
                 checkUseRemote.setToolTipText(Message.getString("fileprojectnewdialog.kindpanel.checkbox.useServer.tooltip"));
-                // setEnabled(false) here has no effect. Button is enabled later.
                 checkUseRemote.setEnabled(false);
                 // if (debug) System.out.println(isFullProject() && this.rb_properties.remote_settings_found);
-                // checkUseRemote.setEnabled(isFullProject() && this.rb_properties.remote_settings_found);
                 checkUseRemote.setSelected(this.pproperties.useServer());
         	}
             
@@ -472,31 +458,6 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
 
         return panelContent;
     }
-
-    /*  Moved to RemoteBuildProperties class as a static method
-    public String[] getRemoteSettings() {
-    	List<String> list = new ArrayList<String>();
-    	String[] list_ar = null;
-    	List<String> ignore = new ArrayList<String>(); 
-    	ignore.add("(\\.).*");
-    	if (!rb_properties.haveDockerIaaS()) {
-    		ignore.add(RemoteBuildProperties.remote_service_dockeriaas + "*");
-    	}
-    	if (!rb_properties.haveSSHconnect()) {
-    		ignore.add(RemoteBuildProperties.remote_service_sshconnect + "*");
-    	}
-		File dir = new File(REMOTE_SETTINGS_DIR);
-		try {
-			String[] s = new String[ignore.size()];
-			list = getFiles(dir, list, "", ignore.toArray(s));			
-			list_ar=new String[list.size()];
-		}
-		catch (IOException e) {
-			System.err.println("Error reading settings files from remote directory");
-			e.printStackTrace();			
-		}
-		return list.toArray(list_ar);
-	}*/
     
     protected boolean remoteBuild(ProjectProperties pproperties) {
 		if (this.checkUseRemote == null) return false;

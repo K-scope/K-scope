@@ -129,7 +129,6 @@ public class FileProjectNewAction extends ActionBase {
         //rb_properties = this.controller.getRBproperties();
         
         // プロジェクトの新規作成ダイアログを表示する。
-        //TODO: inside function change reference to RemoteBuildProperties with ProjecProperties
         FileProjectNewDialog dialog = new FileProjectNewDialog(frame, true, pproperties, this.controller); 
         dialog.setLastAccessFolder(currentFolder);
         // 除外パス名を設定する
