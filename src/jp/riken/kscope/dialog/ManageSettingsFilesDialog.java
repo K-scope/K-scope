@@ -79,7 +79,6 @@ public class ManageSettingsFilesDialog extends javax.swing.JDialog implements Ac
 	private JButton btnMinus;
 	private JButton btnCopy;
 	private int result = Constant.CANCEL_DIALOG;
-	private FileProjectNewDialog FPNdialog;
 	private DefaultTableModel modelProperties;
 	private final String[] COLUMN_HEADERS = {
 			Message.getString("managesettingsfiles.table.key"),
@@ -91,8 +90,7 @@ public class ManageSettingsFilesDialog extends javax.swing.JDialog implements Ac
 	private DefaultListModel<String> list_model;
 	private boolean edited = false;  // Values in table has been changed
 	
-	public ManageSettingsFilesDialog(FileProjectNewDialog FPNdialog) {
-		this.FPNdialog = FPNdialog;
+	public ManageSettingsFilesDialog() {
 		initGUI();
 	}
 	

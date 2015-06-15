@@ -80,7 +80,7 @@ import jp.riken.kscope.data.FILE_TYPE;
 import jp.riken.kscope.gui.MainFrame;
 import jp.riken.kscope.properties.KscopeProperties;
 import jp.riken.kscope.properties.ProjectProperties;
-import jp.riken.kscope.properties.RemoteBuildProperties;
+//import jp.riken.kscope.properties.RemoteBuildProperties;
 import jp.riken.kscope.service.AppController;
 import jp.riken.kscope.utils.FileUtils;
 import jp.riken.kscope.utils.ResourceUtils;
@@ -139,7 +139,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
     /** プロジェクトプロパティ*/
     private ProjectProperties pproperties;
     /** Server プロパティ */
-    private RemoteBuildProperties rb_properties;
+    //private RemoteBuildProperties rb_properties;
 
     /** Serverを利用する */
     private JCheckBox checkUseRemote;
@@ -191,10 +191,9 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
      * @param modal		true=モーダルダイアログを表示する
      * @wbp.parser.constructor
      */
-    public FileProjectNewDialog(Frame owner, boolean modal, ProjectProperties pproperties, RemoteBuildProperties rb_properties, AppController controller) {
+    public FileProjectNewDialog(Frame owner, boolean modal, ProjectProperties pproperties, AppController controller) {
         super(owner, modal);
         this.pproperties = pproperties;
-        this.rb_properties = rb_properties;
         initGUI();
     }
 
@@ -331,42 +330,38 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
             layoutSelect.columnWidths = new int[]{32, 32, 64, 128};
             panelSelect.setLayout(layoutSelect);
 
-            if (this.rb_properties != null ) {
-            	String[] selections = RemoteBuildProperties.getRemoteSettings(); 
-            	if (selections.length < 1) {
-            		System.out.println("No remote connection settings files found in "+ RemoteBuildProperties.REMOTE_SETTINGS_DIR);
-            		this.rb_properties.remote_settings_found = false;
-            	} else {
-            		this.rb_properties.remote_settings_found = true;
-            		System.out.println("Have remote connection settings in "+ RemoteBuildProperties.REMOTE_SETTINGS_DIR);
-	            	//settings_list = new JComboBox<String>(selections);
-            		list_model = new DefaultComboBoxModel<String>(selections);
-            		settings_list = new JComboBox<String>(list_model);
-	            	settings_list.setEnabled(false);
-	            	manage_settings_files = new JButton(Message.getString("fileprojectnewdialog.kindpanel.button.manage_settings_files"));
-	            	manage_settings_files.setEnabled(false);
-	                // Remote build の使用切り替え
-	                checkUseRemote = new JCheckBox(Message.getString("fileprojectnewdialog.kindpanel.checkbox.useServer")) {
-						private static final long serialVersionUID = -1195485757658963243L;
-	
-						@Override
-	                    protected void fireStateChanged() {
-	                        if (rb_properties.remoteBuildPossible()) {
-	                            // Enable settings_list and manage_settings_files only if checkUseRemote is selected
-	                        	settings_list.setEnabled(this.isSelected());
-	                        	manage_settings_files.setEnabled(this.isSelected());
-	                        }
-	                    }
-	                };            	
-	                checkUseRemote.setToolTipText(Message.getString("fileprojectnewdialog.kindpanel.checkbox.useServer.tooltip"));
-	                // setEnabled(false) here has no effect. Button is enabled later.
-	                checkUseRemote.setEnabled(false);
-	                // if (debug) System.out.println(isFullProject() && this.rb_properties.remote_settings_found);
-	                // checkUseRemote.setEnabled(isFullProject() && this.rb_properties.remote_settings_found);
-	                checkUseRemote.setSelected(this.pproperties.useServer());
-            	}
-            }
+            String[] selections = ProjectProperties.getRemoteSettings(); 
+        	if (selections.length < 1) {
+        		System.out.println("No remote connection settings files found in "+ ProjectProperties.REMOTE_SETTINGS_DIR);
+        	} else {
+        		System.out.println("Have remote connection settings in "+ ProjectProperties.REMOTE_SETTINGS_DIR);
+            	//settings_list = new JComboBox<String>(selections);
+        		list_model = new DefaultComboBoxModel<String>(selections);
+        		settings_list = new JComboBox<String>(list_model);
+            	settings_list.setEnabled(false);
+            	manage_settings_files = new JButton(Message.getString("fileprojectnewdialog.kindpanel.button.manage_settings_files"));
+            	manage_settings_files.setEnabled(false);
+                // Remote build の使用切り替え
+                checkUseRemote = new JCheckBox(Message.getString("fileprojectnewdialog.kindpanel.checkbox.useServer")) {
+					private static final long serialVersionUID = -1195485757658963243L;
 
+					@Override
+                    protected void fireStateChanged() {
+                        if (pproperties.remoteBuildPossible()) {
+                            // Enable settings_list and manage_settings_files only if checkUseRemote is selected
+                        	settings_list.setEnabled(this.isSelected());
+                        	manage_settings_files.setEnabled(this.isSelected());
+                        }
+                    }
+                };            	
+                checkUseRemote.setToolTipText(Message.getString("fileprojectnewdialog.kindpanel.checkbox.useServer.tooltip"));
+                // setEnabled(false) here has no effect. Button is enabled later.
+                checkUseRemote.setEnabled(false);
+                // if (debug) System.out.println(isFullProject() && this.rb_properties.remote_settings_found);
+                // checkUseRemote.setEnabled(isFullProject() && this.rb_properties.remote_settings_found);
+                checkUseRemote.setSelected(this.pproperties.useServer());
+        	}
+            
             //中間コードの生成は行わないラジオボタン（フルモードI）
             radioNotGenXML = new JRadioButton(Message.getString("fileprojectnewdialog.kindpanel.radiobutton.existxml"));
             radioNotGenXML.setToolTipText(Message.getString("fileprojectnewdialog.kindpanel.radiobutton.existxml.tooltip"));
@@ -383,7 +378,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
                     } else {
                         pproperties.setHiddenPropertyValue(ProjectProperties.GENERATE_XML, "false");
                     }
-                    if (rb_properties.remoteBuildPossible()) {
+                    if (pproperties.remoteBuildPossible()) {
                         checkUseRemote.setEnabled(this.isSelected());
                         if (!this.isSelected()) {
                         	checkUseRemote.setSelected(false);
@@ -431,7 +426,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
                         checkbox_StructureAnalysis.setEnabled(this.isSelected());
                         checkbox_StructureAnalysis.setSelected(this.isSelected());
                     }
-                    if (remoteBuild(rb_properties)) {
+                    if (remoteBuild(pproperties)) {
                         boolean enabled = this.isSelected() && radioGenXML.isSelected() && radioGenXML.isEnabled();
                         checkUseRemote.setEnabled(enabled);
                         settings_list.setEnabled(enabled); 
@@ -460,7 +455,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
             panelSelect.add(radioFullMode, new GridBagConstraints(0, 0, 4, 1, 1.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
             panelSelect.add(radioNotGenXML, new GridBagConstraints(1, 1, 3, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
             panelSelect.add(radioGenXML, new GridBagConstraints(1, 2, 3, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
-            if (this.rb_properties != null && this.rb_properties.remoteBuildPossible()) {
+            if (this.pproperties != null && this.pproperties.remoteBuildPossible()) {
                 panelSelect.add(checkUseRemote, new GridBagConstraints(2, 3, 2, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
                 panelSelect.add(settings_list, new GridBagConstraints(2, 4, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
                 settings_list.addActionListener(this);
@@ -503,19 +498,19 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
 		return list.toArray(list_ar);
 	}*/
     
-    protected boolean remoteBuild(RemoteBuildProperties rb_properties) {
+    protected boolean remoteBuild(ProjectProperties pproperties) {
 		if (this.checkUseRemote == null) return false;
 		if (this.checkUseRemote.isSelected()) {
-	        if (rb_properties == null) {
+	        if (pproperties == null) {
 	            return false;
 	        }
-	        return rb_properties.useRemoteBuild();
+	        return pproperties.useRemoteBuild();
 		}
 		return false;
     }
 
 	public boolean remoteBuild() {
-		return remoteBuild(this.rb_properties);
+		return remoteBuild(this.pproperties);
     }
 	
     /**
@@ -608,7 +603,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
 
         
         // Process files & File filter
-        if (this.rb_properties != null && this.rb_properties.remoteBuildPossible()) {
+        if (this.pproperties != null && this.pproperties.remoteBuildPossible()) {
         	
     		// Process files & File filter
         
@@ -627,11 +622,11 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
  
             JLabel ffl = new JLabel(Message.getString("fileprojectnewdialog.basepanel.filefilter.label"));
             txt_filefilter = new JTextField();
-            String ffilter = this.rb_properties.getPropertySet(RemoteBuildProperties.FILE_FILTER).getValue();
+            String ffilter = this.pproperties.getValueByKey(ProjectProperties.FILE_FILTER);
             txt_filefilter.setText(ffilter);
             JLabel procfl = new JLabel(Message.getString("fileprojectnewdialog.basepanel.processfiles.label"));
             txt_preprocess_files = new JTextField();
-            String proc_files = this.rb_properties.getPropertySet(RemoteBuildProperties.PREPROCESS_FILES).getValue();
+            String proc_files = this.pproperties.getValueByKey(ProjectProperties.PREPROCESS_FILES);
             txt_preprocess_files.setText(proc_files);
             addprerocessfile_button = new JButton(Message.getString("fileprojectnewdialog.basepanel.processfiles.addbutton"));
             addprerocessfile_button.setEnabled(true);
@@ -1193,10 +1188,10 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
             this.btnBack.setEnabled(false);
         } else if (index == 1) { // open BasePanel
             // file_filter and process_files fields on sshc_settings_panel
-            if (this.rb_properties.remoteBuildPossible() && checkUseRemote.isSelected()) {
+            if (this.pproperties.remoteBuildPossible() && checkUseRemote.isSelected()) {
             	
             	String settings_file = (String)this.settings_list.getSelectedItem();
-            	String remote_service = RemoteBuildProperties.getRemoteService(settings_file);
+            	String remote_service = ProjectProperties.getRemoteService(settings_file);
             	// System.out.println("Remote service is "+remote_service);
             	if (remote_service.equalsIgnoreCase("sshconnect")) {
                 	//ProjectSettingDockerAction docker_action = new ProjectSettingDockerAction(this.controller);
@@ -1207,7 +1202,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
                 	sshc_settings_panel.setVisible(false);
                 }
             }
-            else if (this.rb_properties.useRemoteBuild()) {
+            else if (this.pproperties.useRemoteBuild()) {
             	// If remoteBuild returns false, sshc_settings_panel is null
             	sshc_settings_panel.setVisible(false);
             }
@@ -1576,20 +1571,20 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
             }
             if (this.wizardIndex == this.panelWizards.length - 1) {  
             	if (this.checkUseRemote.isSelected()) {
-            		this.rb_properties.setRemoteBuild(true);  // Set use_remote_build property of RemoteBuildProperites class
+            		this.pproperties.setRemoteBuild(true);  // Set use_remote_build property of RemoteBuildProperites class
             	}
-            	if (this.rb_properties.useRemoteBuild()) {
+            	if (this.pproperties.useRemoteBuild()) {
 	            	String settings_file = (String)this.settings_list.getSelectedItem();
-	            	String remote_service = RemoteBuildProperties.getRemoteService(settings_file);
-	            	this.rb_properties.setSettingsFile(settings_file);
+	            	String remote_service = ProjectProperties.getRemoteService(settings_file);
+	            	this.pproperties.setSettingsFile(settings_file);
 	            	System.out.println("Remote service is set to "+remote_service);
 	            	if (remote_service.equalsIgnoreCase("sshconnect")) {
-		            	// Save File filter and Preprocess files fields to RemoteBuildProperties
+		            	// Save File filter and Preprocess files fields to ProjectProperties
 		            	if (this.txt_preprocess_files.getText().length() > 0) {
-		            		rb_properties.setPreprocessFiles(this.txt_preprocess_files.getText());
+		            		pproperties.setPreprocessFiles(this.txt_preprocess_files.getText());
 		            	}
 		            	if (this.txt_filefilter.getText().length() > 0) {
-		            		rb_properties.setFileFilter(this.txt_filefilter.getText());
+		            		pproperties.setFileFilter(this.txt_filefilter.getText());
 		            	}
 	            	}            	
             	}
@@ -1687,26 +1682,26 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
                 }
             }
         }        
-        // Set Remote Build settings file path to RemoteBuildProperties class instance rb_properties
+        // Set Remote Build settings file path to ProjectProperties class instance pproperties
         else if (event.getSource() == this.settings_list) {
-        	rb_properties.setSettingsFile((String)this.settings_list.getSelectedItem());
+        	pproperties.setSettingsFile((String)this.settings_list.getSelectedItem());
         }
         // Set File Filter option to RBProperties
         else if (event.getSource() == this.txt_filefilter) {
-        	rb_properties.setFileFilter(this.txt_filefilter.getText());
+        	pproperties.setFileFilter(this.txt_filefilter.getText());
         }
         // Set Preprocess files option to RBP
         else if (event.getSource() == this.txt_preprocess_files) {
-        	rb_properties.setPreprocessFiles(this.txt_preprocess_files.getText());
+        	pproperties.setPreprocessFiles(this.txt_preprocess_files.getText());
         	System.out.println("Checking RBdata after setting ppfiles to "+ this.txt_preprocess_files.getText());
-        	rb_properties.checkData();
+        	pproperties.checkData();
         }
         else if (event.getSource() == this.manage_settings_files) {
         	if (debug) {
         		System.out.println("Button manage_settings_files pressed");
         	}
         	this.setModal(false);
-        	ManageSettingsFilesDialog manage_files_dialog = new ManageSettingsFilesDialog(this);
+        	ManageSettingsFilesDialog manage_files_dialog = new ManageSettingsFilesDialog();
         	manage_files_dialog.showDialog();   
         	refreshSettingsList();
         }
@@ -1718,7 +1713,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
      */
     private void refreshSettingsList() {
     	if (debug) System.out.println("Refireshin settings_list contents.");
-    	String[] selections = RemoteBuildProperties.getRemoteSettings();
+    	String[] selections = ProjectProperties.getRemoteSettings();
     	list_model.removeAllElements();
     	for (String s : selections) {
     		list_model.addElement(s);
@@ -1728,7 +1723,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
 
     private void enableButtons() {
         this.btnNext.setEnabled(true);
-        if (this.rb_properties != null && this.rb_properties.useRemoteBuild()) {
+        if (this.pproperties != null && this.pproperties.useRemoteBuild()) {
           //this.addprerocessfile_button.setEnabled(true);
         }
     }

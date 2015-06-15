@@ -119,17 +119,18 @@ public class FileProjectNewAction extends ActionBase {
     	}
     	
         final String message = Message.getString("mainmenu.file.newproject"); //プロジェクトの新規作成
-        RemoteBuildProperties rb_properties = null;
+        //RemoteBuildProperties rb_properties = null;
         Application.status.setMessageMain(message);
 
         // 最終アクセスフォルダ
         String currentFolder = this.controller.getLastAccessFolder();
         // Read default value of use_sshconnect
         ProjectProperties pproperties = this.controller.getPropertiesProject();
-        rb_properties = this.controller.getRBproperties();
+        //rb_properties = this.controller.getRBproperties();
         
         // プロジェクトの新規作成ダイアログを表示する。
-        FileProjectNewDialog dialog = new FileProjectNewDialog(frame, true, pproperties,rb_properties, this.controller);
+        //TODO: inside function change reference to RemoteBuildProperties with ProjecProperties
+        FileProjectNewDialog dialog = new FileProjectNewDialog(frame, true, pproperties, this.controller); 
         dialog.setLastAccessFolder(currentFolder);
         // 除外パス名を設定する
         dialog.addExcludeName(KscopeProperties.SETTINGS_FOLDER);
@@ -226,8 +227,7 @@ public class FileProjectNewAction extends ActionBase {
             projectService.setPropertiesSource(this.controller.getPropertiesSource());
             // プロファイラプロパティ設定
             projectService.setPropertiesProfiler(this.controller.getPropertiesProfiler());
-            // プロジェクトプロパティ設定
-            projectService.setPropertiesProject(this.controller.getPropertiesProject());
+            
             // 要求Byte/FLOP設定プロパティ
             projectService.setPropertiesMemory(this.controller.getPropertiesMemory());
             
@@ -236,6 +236,10 @@ public class FileProjectNewAction extends ActionBase {
             // Make関連情報
             File work = null;
 
+            
+            // プロジェクトプロパティ設定
+            // TODO: check if need to move this below if-statement.
+            projectService.setPropertiesProject(this.controller.getPropertiesProject());
             // 中間コードの生成を行う
             if (genCode) {
                 // コンソールを表示
@@ -247,9 +251,10 @@ public class FileProjectNewAction extends ActionBase {
                 this.controller.getPropertiesProject().setBuildCommand(build_command);
                 
                 if (rs_file != null && rs_file.length()>0) { // Set command line options for remote build command
-                	rb_properties = this.controller.getRBproperties();
-                	rb_properties.setLocalPath(work.getAbsolutePath());
-                	rb_properties.setSettingsFile(rs_file);
+                	//rb_properties = this.controller.getRBproperties();
+                	pproperties.setLocalPath(work.getAbsolutePath());
+                	pproperties.setSettingsFile(rs_file);
+                	//pproperties.setRemoteProperties(rb_properties);
                 }
             }
             // 中間コードの生成を行わない
@@ -273,7 +278,7 @@ public class FileProjectNewAction extends ActionBase {
             if (this.debug) {            
             	// TODO: check why rb_properties.getRemoteService() is null
             	if (dialog.remoteBuild())
-            		System.out.println("Calling execMake build_command="+build_command+". Use remote service "+rb_properties.getRemoteService());
+            		System.out.println("Calling execMake build_command="+build_command+". Use remote service "+pproperties.getRemoteService());
             	else 
             		System.out.println("Calling execMake build_command="+build_command+".");
             }

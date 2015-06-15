@@ -18,9 +18,15 @@ package jp.riken.kscope.properties;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -32,12 +38,14 @@ import javax.xml.xpath.XPathFactory;
 import jp.riken.kscope.Message;
 import jp.riken.kscope.data.BasicPropertyList;
 import jp.riken.kscope.data.ProjectPropertyValue;
+import jp.riken.kscope.data.RemoteBuildData;
 import jp.riken.kscope.utils.ResourceUtils;
 import jp.riken.kscope.utils.StringUtils;
 
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.yaml.snakeyaml.Yaml;
 
 /**
  * プロジェクトプロパティ設定クラス
@@ -47,6 +55,7 @@ public class ProjectProperties extends PropertiesBase {
 
     /** シリアル番号 */
     private static final long serialVersionUID = 1L;
+    private static Boolean debug=(System.getenv("DEBUG")!= null);    
 
     // プロパティキー
     /** プロジェクトタイトルプロパティキー */
@@ -71,11 +80,74 @@ public class ProjectProperties extends PropertiesBase {
     private BasicPropertyList listHiddenProperty = null;
 
     /**
+	 * These files are necessary for building source code on remote server
+	 * by the corresponding program.
+	 * If these files are present in the current directory (with kscope.jar), 
+	 * we set flags haveDockerIaaS and haveSSHconnect to TRUE.
+	 */
+	private static String docker_iaas_file = "makeRemote.sh";
+	private static String sshconnect_file = "SSHconnect.jar";
+	public static String REMOTE_SETTINGS_DIR = "remote";
+	
+	public static String settigns_path_separator="/"; // symbol to use instead of "/" in paths of settings files
+	
+	// Remote build service names 
+	// These names are used in directory names for configuration files
+	public static String remote_service_dockeriaas = "dockeriaas";
+	public static String remote_service_sshconnect = "sshconnect";
+	
+	// SSHconnect specific settings
+	public static String FILE_FILTER = "file_filter";
+    public static String PREPROCESS_FILES = "preprocess_files";
+	
+	//private boolean remote_build_possible = false; // Can project be built on a remote server or not?
+	private boolean remote_settings_found = false; // True if files with remote settings are found
+	private boolean use_remote_build = false; // True if user checked checkUseRemote button on New Project dialog
+	/*
+     * Two flags show if we have external programs necessary to build code on remote server
+     * */
+    private boolean haveDockerIaaS = false;
+    private boolean haveSSHconnect = false;
+    
+    private static HashMap<String,String> options_map;
+    static {
+    	options_map = new HashMap<String, String>();
+    	options_map.put("server_address", "-h");
+    	options_map.put("port", "-p");
+    	options_map.put("user", "-u");
+    	options_map.put("password", "-pw");
+    	options_map.put("key", "-k");
+    	options_map.put("passphrase", "-ph");
+    	options_map.put("add_path", "-a");
+    	options_map.put("remote_path", "-rp");
+    	
+    	options_map.put("local_path", "-l");
+    	options_map.put("build-command", "-m");
+    	options_map.put("product_pattern", "-dp");
+    	options_map.put("command_pattern", "-cp");
+    }
+    
+    private static HashMap<String,String> options_map_docker;
+    static {
+    	options_map_docker = new HashMap<String, String>();
+    	options_map_docker.put("server_address", "-h");
+    	options_map_docker.put("user", "-u");
+    	options_map_docker.put("key", "-k");
+    	options_map_docker.put("add_path", "-a");
+    	options_map_docker.put("local_path", "-l");
+    	options_map_docker.put("build-command", "-m");
+    }
+    
+    /**
      * コンストラクタ
      * @throws Exception     プロパティ読込エラー
      */
     public ProjectProperties() throws Exception {
         loadProperties();
+        // set Remote Build is possible Flag to TRUE if either SSHconnect or makeRemote for DockerIaaS are present
+     	this.haveDockerIaaS = checkDockerIaaS();
+     	this.haveSSHconnect = checkSSHconnect();
+     	this.remote_settings_found = (this.haveDockerIaaS || this.haveSSHconnect);
     }
 
     /**
@@ -175,6 +247,7 @@ public class ProjectProperties extends PropertiesBase {
                 String value = "";
                 String name = "";
                 String message = "";
+                String commandline_option = null;
 
                 // タイプ
                 attrnode = attrs.getNamedItem("type");
@@ -207,8 +280,13 @@ public class ProjectProperties extends PropertiesBase {
                 if (attrnode != null) {
                 	message = attrnode.getNodeValue();
                 }
+                
+                attrnode = attrs.getNamedItem("commandline_option");
+                if (attrnode != null) {
+                	commandline_option = attrnode.getNodeValue();
+                }
 
-                list.add(new ProjectPropertyValue(type, key, value, name, message));
+                list.add(new ProjectPropertyValue(key, type, name, value,  message, commandline_option, i));
 
             } catch (Exception ex) {
                 ex.printStackTrace();
@@ -244,6 +322,7 @@ public class ProjectProperties extends PropertiesBase {
         this.listProperty.add(value);
     }
 
+    
     /**
      * プロパティ値を取得する.
      * @param key	キー
@@ -323,15 +402,6 @@ public class ProjectProperties extends PropertiesBase {
         		org.w3c.dom.Attr attr;
         		attr = document.createAttribute("value");
         		String attr_value = value.getValue();
-        		/*if (MAKEFILE_PATH.equalsIgnoreCase(key)) {
-        			if (StringUtils.isNullOrEmpty(attr_value)) {
-        				attr_value = "";
-        			}
-        			else if (FileUtils.isAbsolutePath(attr_value)) {
-        				File f = new File(value.getValue());
-        				attr_value = FileUtils.getRelativePath(f, projectFolder);
-        			}
-        		}*/
         		attr_value = StringUtils.escapeFilePath(attr_value);
     			attr.setNodeValue(attr_value);
         		elem.setAttributeNode(attr);
@@ -341,6 +411,14 @@ public class ProjectProperties extends PropertiesBase {
         	{
         		org.w3c.dom.Attr attr;
         		attr = document.createAttribute("message");
+        		attr.setNodeValue(value.getMessage());
+        		elem.setAttributeNode(attr);
+        	}
+        	
+        	// command line options
+        	{
+        		org.w3c.dom.Attr attr;
+        		attr = document.createAttribute("commandline_option");
         		attr.setNodeValue(value.getMessage());
         		elem.setAttributeNode(attr);
         	}
@@ -375,7 +453,185 @@ public class ProjectProperties extends PropertiesBase {
         	node.appendChild(elem);
         }
     }
+    
+    
+    /**
+     * Format command line options for remote build call
+     * @param Remote build settings file path
+     * @return string with command line options
+     */
+    public String[] getCommandLineOptions(String RS) {
+    	if (debug) {
+    		checkData();
+    	}
+    	String service = getRemoteService();
+    	List<String> command_options = new ArrayList<String>();
+    	String value = getBuildCommand();
+    	try {
+			if (value.length() > 0) {
+				command_options.add("-m");
+				command_options.add("\""+value+"\"");
+			} else {
+				System.err.println("Build command is empty.");
+			}
+		} catch (NullPointerException e) {
+			System.err.println("Build command is null.");
+		} 
+    	for (ProjectPropertyValue pproperty : this.listProperty) {
+    		String commandline_option = pproperty.getCommandlineOption();
+    		if (commandline_option == null) continue;
+    		value = null;
+    		// Get other properties from RemoteBuildProperties
+			value = pproperty.getValue();
+    		try {
+    			if (value.length() > 0) {    				
+    				if (pproperty.getKey().equalsIgnoreCase(ProjectProperties.SETTINGS_FILE)) {
+    					// Add CLI options from file
+    					String settings_file = value;    					
+    					try {	    					
+    						// Add all values from YAML file to command_option 
+	    				    // prefixed with CLI options from options Map
+    						
+    						Map<String, String> map = getSettingsFromFile(settings_file);
+	    				    Iterator<java.util.Map.Entry<String, String>> iterator = map.entrySet().iterator();	    				    
+	    				    while (iterator.hasNext()) {
+	    				    	Map.Entry<String, String> entry = (Map.Entry<String, String>)iterator.next();
+	    				    	command_options = addCLoption(command_options, entry);
+	    				    }
+    					}
+    					catch (FileNotFoundException e) {
+    						System.out.println(settings_file+ " not found");
+    						//return null;
+    					}    					
+    				}    				
+    				else {
+    					if (service.indexOf("docker") >= 0) {
+    						String key = pproperty.getKey(); 
+    						if (key.equalsIgnoreCase(PREPROCESS_FILES) || key.equalsIgnoreCase(FILE_FILTER)) {
+    							System.out.println("Otion "+ key + " is not used in "+ service+ ". Option is ignored.");
+    							continue;
+    						}
+        				}
+    					command_options.add(commandline_option);
+    					command_options.add("\""+value+"\"");
+    				}
+    			} 
+    		} catch (NullPointerException e) {
+    			System.out.println("Remote build option "+pproperty.getKey()+" is null.");
+    		} 
+    	}
+    	String[] result=command_options.toArray(new String[0]);
+    	System.out.println("Command line options: " + Arrays.toString(result));
+    	return result;
+    }
 
+	/**
+	 * Returns parameters as a Map from YAML file
+	 * @param settings_file
+	 * @return Map
+	 * @throws FileNotFoundException
+	 */
+	public static Map<String, String> getSettingsFromFile(String settings_file)
+			throws FileNotFoundException {
+		InputStream input = new FileInputStream(new File(locateRemoteSettingsFile(settings_file)));
+		Yaml yaml = new Yaml();
+		@SuppressWarnings("unchecked")	    				    
+		Map<String, String> map = (Map<String, String>) yaml.load(input);
+		return map;
+	}
+	
+	/**
+	 * @return Map with new command option added
+	 * @param command_options list
+	 * @param new option to be added to map 
+	 * @param new option value
+	 */
+	private List<String> addCLoption(List<String> command_options,	Map.Entry<String, String> entry) {
+		String value = null;
+		Object v = entry.getValue();
+		try {
+			value = (String)v;
+		}
+		catch (ClassCastException e) {
+			try {
+				value = String.valueOf(v);
+			}
+			catch (ClassCastException ex) {
+				System.err.println("Undefined type of parameter value: " + v);
+				ex.printStackTrace();
+				return command_options;
+			}
+		}			
+		if (debug) {
+			System.out.println("entry: " + entry.getKey() + " = "+value);
+		}
+		// Ignore description
+		if (entry.getKey().equalsIgnoreCase("description")) {
+			return command_options;
+		}
+		if (value == null || value.equalsIgnoreCase("null")) {
+			System.out.println("Entry ignored");
+			return command_options;
+		}
+		String option =  getCLIoption(entry.getKey());
+		if (option == null) return command_options;
+		command_options.add(option);
+		command_options.add(value);
+		return command_options;
+	}
+
+	/**
+	 * Get CLI option for given parameter name
+	 * @param key -- parameter name, key for map options_map.
+	 * @return CLI option
+	 */
+	private String getCLIoption(String key) {
+		
+		String option = "";
+		String service = getRemoteService();
+		if (debug) {
+			System.out.println("RS "+ service);
+		}
+		if (service.indexOf("sshconnect") >= 0) {
+			option = options_map.get(key);
+		} 
+		else if (service.indexOf("docker") >= 0) {
+			option = options_map_docker.get(key);
+			if (option == null) {
+				System.err.println("Option " + key+ " not used for Docker IaaS tools. Option is ignored.");
+			}
+		}
+		return option;
+	}
+
+	/**
+	 * Get filename with directory for settings file
+	 * @param settings file
+	 * @return remote/<settings file>.yml
+	 */
+	public static String locateRemoteSettingsFile(String str) {
+		String filename = "remote/"+str+".yml";
+		//System.out.println("File name is "+ filename);
+		//System.out.println("Looking in " + new File(System.getProperty("user.dir")));
+		return filename;
+	}
+
+	/**
+	 * Prints out data in list
+	 */
+	public void checkData() {
+		System.out.println("Project Property data: ");
+		for (ProjectPropertyValue pproperty : this.listProperty) {
+			System.out.println(pproperty.getKey()+"="+pproperty.getValue()+", "+pproperty.getMessage() + " " + pproperty.getCommandlineOption());
+		}
+	}
+    
+    /*  
+	public int count() {
+		if (RB_data_list == null || RB_data_list.size() <= 0) {return 0;}
+        return RB_data_list.size();
+	}
+	*/
 
     /**
      * プロパティ値リストを取得する.
@@ -401,13 +657,7 @@ public class ProjectProperties extends PropertiesBase {
     	setValueByKey(PRJ_TITLE, title);
     }
     
-    /**
-	 * Set local path. Similar to setBuildCommand function.
-	 * @param absolutePath
-	 */
-	public void setLocalPath(String absolutePath) {
-		setValueByKey(LOCAL_PATH, absolutePath);		
-	}
+
 
 	/**
 	 * Set local path. Similar to setBuildCommand function.
@@ -417,6 +667,146 @@ public class ProjectProperties extends PropertiesBase {
 		setValueByKey(SETTINGS_FILE, name);		
 	}
 	
+	/**
+     * 
+     * @return settings file in format <service><settigns_path_separator><filename>
+     */
+    public String getSettingsFile() {
+    	return getValueByKey(RemoteBuildProperties.SETTINGS_FILE);
+    }
+    
+	/**
+	 * Return value from RB_data_list with given key
+	 * @param key
+	 * @return value
+	 */
+	public String getValueByKey(String key) {
+		for (ProjectPropertyValue pp_value : listProperty) {
+			if (pp_value.getKey().equalsIgnoreCase(key)) {
+				return pp_value.getValue();
+			}
+		}
+		return null;
+	}
+    
+    
+    /**
+	 * Set local path. Similar to setBuildCommand function.
+	 * @param absolutePath
+	 */
+	public void setLocalPath(String absolutePath) {
+		setValueByKey(LOCAL_PATH, absolutePath);		
+	}
+
+	/**
+     * Set file filter. Similar to setBuildCommand function.
+     * @param filter
+     */
+    public void setFileFilter(String filter) {
+            setValueByKey(RemoteBuildProperties.FILE_FILTER, filter);
+    }
+
+    /**
+     * Set preprocess files. Similar to setBuildCommand function.
+     * @param files
+     */
+    public void setPreprocessFiles(String files) {
+            setValueByKey(RemoteBuildProperties.PREPROCESS_FILES, files);
+    }
+	
+    /**
+     * Static method for extracting service name from settings file path
+     * @param settings_file
+     * @return
+     */
+    public static String getRemoteService(String settings_file) {    	
+		int pos = settings_file.indexOf(RemoteBuildProperties.settigns_path_separator);
+		String service = settings_file.substring(0, pos);
+		return service;
+	}
+
+    /**
+     * True if we can use makeRemote with Docker IaaS tools for remote code build 
+     * */
+    private static boolean checkDockerIaaS() {
+        File f = new File(docker_iaas_file);
+        if (f.exists()) {
+            System.out.println(f.getAbsolutePath());
+            return true;
+        }
+        return false;
+    }
+
+    /** 
+     * True if we can use SSHconnect for remote code build
+     */
+    private static boolean checkSSHconnect() {
+        File f = new File(sshconnect_file);
+        if (f.exists()) {
+            System.out.println(f.getAbsolutePath());
+            return true;
+        }
+        return false;
+    }
+    
+    /*
+     * Use these functions to check if remote build is possible
+     * */
+    public boolean haveDockerIaaS() {
+        return this.haveDockerIaaS;
+    }
+    
+    public boolean haveSSHconnect() {
+    	return this.haveSSHconnect;
+    }
+    
+    public boolean remoteBuildPossible() {
+    	return this.remote_settings_found;
+    }
+    
+    public boolean useRemoteBuild() {
+    	return this.remote_settings_found && this.use_remote_build;
+    }
+    
+    public void setRemoteBuild(boolean useRB) {
+    	this.use_remote_build = useRB;
+    }
+	
+    public String getRemoteService() {
+		String settings_file = getSettingsFile();
+		if (settings_file == null) {
+			System.err.println("No remote settings file.");
+			return null;
+		}
+		int pos = settings_file.indexOf(RemoteBuildProperties.settigns_path_separator);
+		String service = settings_file.substring(0, pos);
+		return service;
+	}
+	
+	
+	public static String[] getRemoteSettings() {
+    	List<String> list = new ArrayList<String>();
+    	String[] list_ar = null;
+    	List<String> ignore = new ArrayList<String>(); 
+    	ignore.add("(\\.).*");
+    	if (!checkDockerIaaS()) {
+    		ignore.add(RemoteBuildProperties.remote_service_dockeriaas + "*");
+    	}
+    	if (!checkSSHconnect()) {
+    		ignore.add(RemoteBuildProperties.remote_service_sshconnect + "*");
+    	}
+		File dir = new File(REMOTE_SETTINGS_DIR);
+		try {
+			String[] s = new String[ignore.size()];
+			list = getFiles(dir, list, "", ignore.toArray(s));			
+			list_ar=new String[list.size()];
+		}
+		catch (IOException e) {
+			System.err.println("Error reading settings files from remote directory");
+			e.printStackTrace();			
+		}
+		return list.toArray(list_ar);
+	}
 	
     /**
 	 * キーを指定してプロパティを設定
@@ -518,4 +908,44 @@ public class ProjectProperties extends PropertiesBase {
 		String rs_file = getPropertyValue(ProjectProperties.SETTINGS_FILE).getValue();
         return (rs_file != null && rs_file.length() > 0); 
 	}
+	
+	/*
+     * Return list of files in directory with subdirectories.
+     * @dir - starting directory
+     * @list - list of files found before (empty for the first call)
+     * @path_prefix - path from starting directory to current directory
+     * ignore - pattern for ignoring files and directories names
+     */
+	private static List<String> getFiles(File dir, List<String> list, String path_prefix, String[] ignore) throws IOException {
+		File [] flist = dir.listFiles();
+		if (flist == null || flist.length < 1) {
+			return list;
+		}
+		Boolean trunk_extensions = true;  // remove extensions from file names
+		for (File f : flist) {
+			boolean ignore_me = false;
+			for (String p : ignore) {
+				if (f.getName().matches(p)) {
+					ignore_me = true;
+					break;
+				}
+			}
+			if (ignore_me) continue;
+			if (f.isFile()) {
+				String name = f.getName();
+				if (trunk_extensions) {
+					int pos = name.lastIndexOf(".");
+					if (pos > 0) {
+					    name = name.substring(0, pos);
+					}
+				}
+				list.add(path_prefix+name);
+			} 
+			else if (f.isDirectory()) {
+				list = getFiles(f,list,f.getName()+RemoteBuildProperties.settigns_path_separator, ignore);
+			}
+		}
+		return list;		
+	}
+	
 }

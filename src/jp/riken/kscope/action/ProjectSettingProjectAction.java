@@ -25,7 +25,7 @@ import jp.riken.kscope.common.Constant;
 import jp.riken.kscope.data.ProjectPropertyValue;
 import jp.riken.kscope.dialog.SettingProjectDialog;
 import jp.riken.kscope.properties.ProjectProperties;
-import jp.riken.kscope.properties.RemoteBuildProperties;
+//import jp.riken.kscope.properties.RemoteBuildProperties;
 import jp.riken.kscope.service.AppController;
 
 public class ProjectSettingProjectAction extends ActionBase {
@@ -50,8 +50,8 @@ public class ProjectSettingProjectAction extends ActionBase {
 		
 		// プロジェクト設定ダイアログを表示する。
         ProjectProperties properties = this.controller.getPropertiesProject();
-        RemoteBuildProperties rb_properties = this.controller.getRBproperties();
-		if (!rb_properties.useRemoteBuild()) {
+        //RemoteBuildProperties rb_properties = this.controller.getRBproperties();
+		if (!properties.useRemoteBuild()) {
 			ProjectPropertyValue settings_file = properties.getPropertyValue(ProjectProperties.SETTINGS_FILE);
 			settings_file.setType("fixed-file");
 			settings_file.setValue("false");

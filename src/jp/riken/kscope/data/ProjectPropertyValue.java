@@ -22,17 +22,14 @@ package jp.riken.kscope.data;
  * @author RIKEN
  */
 public class ProjectPropertyValue {
-	/** タイプ */
-	String type;
-	/** キー */
-	String key;
-	/** 値 */
-	String value;
-	/** 名前 */
-	String name;
-	/** メッセージ */
-	String message;
-
+	private String type;
+	private String key;
+	private String value;
+	private String name;
+	private String message;
+	private String commandline_option;
+	private int order;
+	
 	/**
 	 * コンストラクタ
 	 * @param type		タイプ
@@ -41,12 +38,21 @@ public class ProjectPropertyValue {
 	 * @param name		名前
 	 * @param message	メッセージ
 	 */
-	public ProjectPropertyValue(String type, String key, String value, String name, String message) {
+	public ProjectPropertyValue(String key, String type,  String name, String value, String message, String CLO, int order) {
 		this.type = type;
 		this.key = key;
 		this.value = value;
 		this.name = name;
 		this.message = message;
+		this.commandline_option = CLO;
+		this.order = order;
+	}
+	
+	public void setProperty(String k,String v, String co, int order) {
+		this.key = k;
+		this.value = v;
+		this.commandline_option = co;
+		this.order = order;
 	}
 
 	/**
@@ -128,4 +134,19 @@ public class ProjectPropertyValue {
 	public void setMessage(String message) {
 		this.message = message;
 	}
+	
+	public String getCommandlineOption() {
+		return this.commandline_option;
+	}
+	
+	
+	public int getOrder() {
+		return this.order;
+	}
+	
+	public String toString() {
+		return this.key + ", " + this.type + ", " + this.name + ", " + this.value + ", " + this.message 
+				+ ", " + this.commandline_option + ", " + this.order;
+	}
+	
 }
