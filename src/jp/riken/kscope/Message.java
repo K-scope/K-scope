@@ -29,7 +29,9 @@ public class Message {
 	private java.util.ResourceBundle bundle = null;
 	/** Messageクラスインスタンス */
     private static Message instance = new Message();
-    private static boolean debug=(System.getenv("DEBUG")!= null && System.getenv("DEBUG").equals("high"));
+    private static boolean debug = (System.getenv("DEBUG")!= null);
+	private static boolean debug_l2 = (System.getenv("DEBUG").equalsIgnoreCase("high"));
+	private static boolean debug_l3 = (System.getenv("DEBUG").equalsIgnoreCase("extreme"));
 
     /**
      * コンストラクタ
@@ -53,7 +55,7 @@ public class Message {
 	private static java.util.ResourceBundle getBundle() {
         try {
     		if (instance == null) instance = new Message();
-    		if (debug) {
+    		if (debug_l3) {
 	    		System.out.println("ResourceBundle: ");
 	    		for (Enumeration<String> e=instance.bundle.getKeys(); e.hasMoreElements();) {
 	    			System.out.println(e.nextElement());
