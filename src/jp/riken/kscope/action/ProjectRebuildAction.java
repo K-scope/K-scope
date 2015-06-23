@@ -44,6 +44,10 @@ import jp.riken.kscope.utils.StringUtils;
  * @author RIKEN
  */
 public class ProjectRebuildAction extends ActionBase {
+	
+	private static boolean debug = (System.getenv("DEBUG")!= null);
+	private static boolean debug_l2 = false;
+	
 	/** makeコマンド実行サービス */
 	private ProjectMakeService serviceMake;
 	/** 構造解析サービス */
@@ -58,6 +62,9 @@ public class ProjectRebuildAction extends ActionBase {
      */
 	public ProjectRebuildAction(AppController controller){
 		super(controller);
+		if (debug) {
+			debug_l2 = (System.getenv("DEBUG").equalsIgnoreCase("high"));
+		}
 	}
 
 	/**
@@ -176,8 +183,13 @@ public class ProjectRebuildAction extends ActionBase {
                     @Override
 					public Integer call() {
                         try {
-                        	console.disable_horizontal_scroll = true; // disable scroll                    		
-                        	boolean result = serviceMake.executeMakeCommand();
+                        	console.disable_horizontal_scroll = true; // disable scroll 
+                        	if (debug) System.out.println("Calling executeCleanCommand method");
+                        	boolean result = serviceMake.executeCleanCommand();
+                        	if (!result) {
+                        		return Constant.CANCEL_RESULT;
+                        	}
+                        	result = serviceMake.executeMakeCommand();
                         	console.disable_horizontal_scroll = false; // enable scroll
                         	if (!result) {
                         		return Constant.CANCEL_RESULT;

@@ -72,7 +72,7 @@ public class SettingProjectDialog extends javax.swing.JDialog implements ActionL
 	private static final long serialVersionUID = 1L;
 	
 	private static boolean debug = (System.getenv("DEBUG")!= null);
-	private static boolean debug_l2 = (System.getenv("DEBUG").equalsIgnoreCase("high"));
+	private static boolean debug_l2 = false;
 
     /** 最終アクセスフォルダ */
     private String lastAccessFolder;
@@ -130,7 +130,8 @@ public class SettingProjectDialog extends javax.swing.JDialog implements ActionL
      * @param modal		true=モーダルダイアログを表示する
      */
 	public SettingProjectDialog(Frame owner, boolean modal) {
-        super(owner, modal);
+		super(owner, modal);
+        initDebug();
         initGUI();
 	}
 
@@ -140,6 +141,7 @@ public class SettingProjectDialog extends javax.swing.JDialog implements ActionL
      */
 	public SettingProjectDialog(Frame frame) {
 		super(frame);
+		initDebug();
 		initGUI();
 	}
 
@@ -152,10 +154,16 @@ public class SettingProjectDialog extends javax.swing.JDialog implements ActionL
      */
     public SettingProjectDialog(Frame frame, boolean modal, ProjectProperties properities) {
         super(frame, modal);
+        initDebug();
         initGUI();
         setProjectProperties(properities);
     }
 
+    private void initDebug() {
+    	if (debug) debug_l2 = (System.getenv("DEBUG").equalsIgnoreCase("high"));
+    }
+    
+    
     /**
      * プロジェクト設定を設定する。
      * @param properties		ソース設定プロパティ
@@ -921,5 +929,13 @@ public class SettingProjectDialog extends javax.swing.JDialog implements ActionL
 
             return this;
         }
+    }
+    
+    /**
+     * プロジェクト設定を取得する
+     * @return	プロジェクト設定
+     */
+    public ProjectProperties getProjectProperties() {
+    	return properties;
     }
 }

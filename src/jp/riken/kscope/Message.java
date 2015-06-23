@@ -30,13 +30,17 @@ public class Message {
 	/** Messageクラスインスタンス */
     private static Message instance = new Message();
     private static boolean debug = (System.getenv("DEBUG")!= null);
-	private static boolean debug_l2 = (System.getenv("DEBUG").equalsIgnoreCase("high"));
-	private static boolean debug_l3 = (System.getenv("DEBUG").equalsIgnoreCase("extreme"));
+	private static boolean debug_l2=false;
+	private static boolean debug_l3=false;
 
     /**
      * コンストラクタ
      */
     private Message() {
+    	if (debug) {
+    		debug_l2 = (System.getenv("DEBUG").equalsIgnoreCase("high"));
+    		debug_l3 = (System.getenv("DEBUG").equalsIgnoreCase("extreme"));
+    	}
     	this.bundle = java.util.ResourceBundle.getBundle(PROPERTIES_FILE);
     }
 

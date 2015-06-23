@@ -30,12 +30,18 @@ import jp.riken.kscope.service.AppController;
 
 public class ProjectSettingProjectAction extends ActionBase {
 
+	private static boolean debug = (System.getenv("DEBUG")!= null);
+	private static boolean debug_l2 = false;
+	
 	/**
 	 * コンストラクタ
      * @param controller	アプリケーションコントローラ
 	 */
 	public ProjectSettingProjectAction(AppController controller) {
 		super(controller);
+		if (debug) {
+			debug_l2 = (System.getenv("DEBUG").equalsIgnoreCase("high"));
+		}
 	}
 	
 	@Override
@@ -59,8 +65,12 @@ public class ProjectSettingProjectAction extends ActionBase {
         			Message.getString("action.common.cancel.status")); //キャンセル
         	return;
         }
-		
-		this.controller.getProjectModel().setProjectTitle(properties.getPropertyValue(ProjectProperties.PRJ_TITLE).getValue());
+		properties = dialog.getProjectProperties();
+		if (debug) {
+			System.out.println("Project Properties has been changed. "+ properties.toString()); 
+		}
+		String title = properties.getPropertyValue(ProjectProperties.PRJ_TITLE).getValue();
+		this.controller.getProjectModel().setProjectTitle(title);
 
         Application.status.setMessageMain(message +
     			Message.getString("action.common.done.status")); //完了

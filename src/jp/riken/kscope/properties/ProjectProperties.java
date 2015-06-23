@@ -55,14 +55,16 @@ public class ProjectProperties extends PropertiesBase {
 
     /** シリアル番号 */
     private static final long serialVersionUID = 1L;
-    private static Boolean debug=(System.getenv("DEBUG")!= null);    
-
+    private static boolean debug=(System.getenv("DEBUG")!= null);
+    private static boolean debug_l2 = false;
+    
     // プロパティキー
     /** プロジェクトタイトルプロパティキー */
     public static final String PRJ_TITLE = "project_title";
     /** Build command */
     public static final String BUILD_COMMAND = "build_command";
-       
+    public static final String CLEAN_COMMAND = "clean_command";
+    
     public static String LOCAL_PATH = "local_path";
 
     /** File with settings for building on server */
@@ -102,7 +104,7 @@ public class ProjectProperties extends PropertiesBase {
 	
 	//private boolean remote_build_possible = false; // Can project be built on a remote server or not?
 	private boolean remote_settings_found = false; // True if files with remote settings are found
-	private boolean use_remote_build = false; // True if user checked checkUseRemote button on New Project dialog
+	
 	/*
      * Two flags show if we have external programs necessary to build code on remote server
      * */
@@ -143,6 +145,7 @@ public class ProjectProperties extends PropertiesBase {
      * @throws Exception     プロパティ読込エラー
      */
     public ProjectProperties() throws Exception {
+    	if (debug) debug_l2 = (System.getenv("DEBUG").equalsIgnoreCase("high"));
         loadProperties();
         // set Remote Build is possible Flag to TRUE if either SSHconnect or makeRemote for DockerIaaS are present
      	this.haveDockerIaaS = checkDockerIaaS();
@@ -483,32 +486,39 @@ public class ProjectProperties extends PropertiesBase {
     		value = null;
     		// Get other properties from RemoteBuildProperties
 			value = pproperty.getValue();
+			if (debug_l2) System.out.println("CL options "+commandline_option + " " + value);
     		try {
     			if (value.length() > 0) {    				
     				if (pproperty.getKey().equalsIgnoreCase(ProjectProperties.SETTINGS_FILE)) {
-    					// Add CLI options from file
-    					String settings_file = value;    					
-    					try {	    					
-    						// Add all values from YAML file to command_option 
-	    				    // prefixed with CLI options from options Map
-    						
-    						Map<String, String> map = getSettingsFromFile(settings_file);
-	    				    Iterator<java.util.Map.Entry<String, String>> iterator = map.entrySet().iterator();	    				    
-	    				    while (iterator.hasNext()) {
-	    				    	Map.Entry<String, String> entry = (Map.Entry<String, String>)iterator.next();
-	    				    	command_options = addCLoption(command_options, entry);
-	    				    }
+    					if (service.indexOf(remote_service_dockeriaas) >= 0) {
+	    					// Add CLI options from file
+	    					String settings_file = value;
+	    					try {	    					
+	    						// Add all values from YAML file to command_option 
+		    				    // prefixed with CLI options from options Map
+	    						
+	    						Map<String, String> map = getSettingsFromFile(settings_file);
+		    				    Iterator<java.util.Map.Entry<String, String>> iterator = map.entrySet().iterator();	    				    
+		    				    while (iterator.hasNext()) {
+		    				    	Map.Entry<String, String> entry = (Map.Entry<String, String>)iterator.next();
+		    				    	command_options = addCLoption(command_options, entry);
+		    				    }
+	    					}
+	    					catch (FileNotFoundException e) {
+	    						System.out.println(settings_file+ " not found");
+	    						//return null;
+	    					}    	
     					}
-    					catch (FileNotFoundException e) {
-    						System.out.println(settings_file+ " not found");
-    						//return null;
-    					}    					
+    					else {  // SSHconnect -- call with settings file as parameter
+    						command_options.add(commandline_option);
+    						command_options.add("\""+value+"\"");
+    					}
     				}    				
     				else {
-    					if (service.indexOf("docker") >= 0) {
+    					if (service.indexOf(remote_service_dockeriaas) >= 0) {
     						String key = pproperty.getKey(); 
     						if (key.equalsIgnoreCase(PREPROCESS_FILES) || key.equalsIgnoreCase(FILE_FILTER)) {
-    							System.out.println("Otion "+ key + " is not used in "+ service+ ". Option is ignored.");
+    							System.out.println("Option "+ key + " is not used in "+ service+ ". Option is ignored.");
     							continue;
     						}
         				}
@@ -589,7 +599,7 @@ public class ProjectProperties extends PropertiesBase {
 		
 		String option = "";
 		String service = getRemoteService();
-		if (debug) {
+		if (debug_l2) {
 			System.out.println("RS "+ service);
 		}
 		if (service.indexOf("sshconnect") >= 0) {
@@ -765,13 +775,9 @@ public class ProjectProperties extends PropertiesBase {
     }
     
     public boolean useRemoteBuild() {
-    	return this.remote_settings_found && this.use_remote_build;
+    	return this.remote_settings_found && this.useServer();
     }
-    
-    public void setRemoteBuild(boolean useRB) {
-    	this.use_remote_build = useRB;
-    }
-	
+  
     public String getRemoteService() {
 		String settings_file = getSettingsFile();
 		if (settings_file == null) {
@@ -946,6 +952,16 @@ public class ProjectProperties extends PropertiesBase {
 			}
 		}
 		return list;		
+	}
+	
+	public String toString() {
+		String s = "";
+		String separator = "";
+		for (ProjectPropertyValue property : this.listProperty) {
+            s += separator + property.getKey() + "=" + property.getValue() ;
+            if (separator == "") separator = ", ";
+		}
+		return s;
 	}
 	
 }

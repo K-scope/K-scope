@@ -44,7 +44,6 @@ import jp.riken.kscope.language.utils.LanguageVisitor;
 import jp.riken.kscope.language.utils.ValidateLanguage;
 import jp.riken.kscope.model.ProjectModel;
 import jp.riken.kscope.properties.ProjectProperties;
-import jp.riken.kscope.properties.RemoteBuildProperties;
 import jp.riken.kscope.utils.Logger;
 import jp.riken.kscope.utils.SwingUtils;
 import jp.riken.kscope.xcodeml.XcodeMLParserStax;
@@ -56,6 +55,10 @@ import jp.riken.kscope.xcodeml.XcodeMLParserStax;
  * @author RIKEN
  */
 public class ProjectMakeService  extends BaseService {
+	
+	private static boolean debug = (System.getenv("DEBUG")!= null);
+	private static boolean debug_l2 = false;
+	
 	/** makeコマンド実行フォルダ */
 	private File workdirectory;
 	/** makeコマンド出力ストリーム */
@@ -78,8 +81,11 @@ public class ProjectMakeService  extends BaseService {
      * @param controller	AddController
      */
     public ProjectMakeService(File work, AppController controller) {
+    	if (debug) {
+    		debug_l2 = (System.getenv("DEBUG").equalsIgnoreCase("high"));
+    	}
     	this.workdirectory = work;
-        this.controller = controller;
+        this.controller = controller;        
     }
 
     /**
@@ -329,6 +335,45 @@ public class ProjectMakeService  extends BaseService {
 	}
 
 	/**
+	 * Execute clean command from ProjectProperties. Default is "make clean". 
+	 * @return		true = 正常終了、又は継続実行
+	 * @throws Exception
+	 */
+	public boolean executeCleanCommand() throws Exception {
+		// ステータスメッセージ
+        Application.status.setProgressStart(true);
+        ProjectProperties pproperties = this.controller.getPropertiesProject();
+        String clean_command = pproperties.getValueByKey(ProjectProperties.CLEAN_COMMAND);
+        if (debug) System.out.println("Executing "+clean_command);
+        if (clean_command == null || clean_command.length() <= 0) return false;
+        String[] exec_commands = null;
+        
+        Application.status.setMessageStatus(clean_command);
+
+        // makeコマンド実行
+    	int result = -1;
+		try {
+			result = SwingUtils.processRun(clean_command.split(" "), this.workdirectory, this.outStream);
+			if (result != 0) { 		// Clean command failed. Ask if we should continue.
+				if (JOptionPane.showConfirmDialog(null,
+						Message.getString("projectmakeservice.executecleancommand.continue.message"),
+						Message.getString("projectmakeservice.executecleancommand.error"),
+						JOptionPane.YES_NO_OPTION) != JOptionPane.YES_OPTION) {
+					// ステータスメッセージ
+			        Application.status.setProgressStart(false);
+					return false;
+				}
+			}
+			Application.status.setProgressStart(false);
+			return true;
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			throw ex;
+		}
+	}
+	
+	
+	/**
 	 * makeコマンドを実行する.
 	 * @return		true = 正常終了、又は継続実行
 	 * @throws Exception
@@ -337,17 +382,17 @@ public class ProjectMakeService  extends BaseService {
 		// ステータスメッセージ
         Application.status.setProgressStart(true);
         ProjectProperties pproperties = this.controller.getPropertiesProject();
-        RemoteBuildProperties rb_properties = this.controller.getRBproperties();
         String build_command = pproperties.getBuildCommand(); 
         if (build_command == null || build_command.length() <= 0) return false;
         String[] exec_commands = null;
-        if (rb_properties.useRemoteBuild()) {
-        	String RS = RemoteBuildProperties.getRemoteService(rb_properties.getPropertySet(RemoteBuildProperties.SETTINGS_FILE).getValue());
+        if (debug) System.out.println("Use remote build is " + pproperties.useRemoteBuild());
+        if (pproperties.useRemoteBuild()) {
+        	String RS = ProjectProperties.getRemoteService(pproperties.getPropertyValue(ProjectProperties.SETTINGS_FILE).getValue());
         	System.out.println("Remote service "+ RS);
-	        if (useServer(pproperties, rb_properties)) {
-	        	if (RS.equals(RemoteBuildProperties.remote_service_dockeriaas)) {
+	        if (useServer(pproperties)) {
+	        	if (RS.equals(ProjectProperties.remote_service_dockeriaas)) {
 		        	// inject remote build command
-		        	String[] diaas_cl = rb_properties.getCommandLineOptions(RS);
+		        	String[] diaas_cl = pproperties.getCommandLineOptions(RS);
 		        	int formal_commands = 1;
 		        	exec_commands = new String [formal_commands + diaas_cl.length];
 		        	exec_commands[0] = "./makeRemote.sh";
@@ -355,9 +400,9 @@ public class ProjectMakeService  extends BaseService {
 		        		exec_commands[i + formal_commands] = diaas_cl[i];
 		        	}
 	        	}
-	        	else if (RS.equals(RemoteBuildProperties.remote_service_sshconnect)) {
+	        	else if (RS.equals(ProjectProperties.remote_service_sshconnect)) {
 	        		// inject remote build command
-		        	String[] sshc_cl = rb_properties.getCommandLineOptions(RS);
+		        	String[] sshc_cl = pproperties.getCommandLineOptions(RS);
 		            int formal_commands = 3;
 		            exec_commands = new String [formal_commands + sshc_cl.length];
 		            exec_commands[0] = "java";
@@ -375,9 +420,9 @@ public class ProjectMakeService  extends BaseService {
 	        		 */
 	        		Exception ex = new Exception("Unknown remote build service: " + RS
 	        				+ "\nIncosistent settings:\nProjectProperties.useServer() " + pproperties.useServer()
-	        				+ "\nRemoteBuildProperties.remote_build "+rb_properties.useRemoteBuild()
-	        				+ "\nAppController.haveDIAAS() "+ rb_properties.haveDockerIaaS()
-	        				+ "\nAppController.haveSSHconnect() "+ rb_properties.haveSSHconnect());
+	        				+ "\nRemoteBuildProperties.remote_build "+pproperties.useRemoteBuild()
+	        				+ "\nAppController.haveDIAAS() "+ pproperties.haveDockerIaaS()
+	        				+ "\nAppController.haveSSHconnect() "+ pproperties.haveSSHconnect());
 	        		throw ex;
 	        	}
 	        	// System.out.println("Executing command "+ Arrays.toString(exec_commands));
@@ -388,8 +433,11 @@ public class ProjectMakeService  extends BaseService {
         // makeコマンド実行
     	int result = -1;
 		try {
-			if (useServer(pproperties, rb_properties)) result = SwingUtils.processRun(exec_commands, new File(System.getProperty("user.dir")), this.outStream);
-			else result = SwingUtils.processRun(build_command.split(" "), this.workdirectory, this.outStream);
+			if (useServer(pproperties)) result = SwingUtils.processRun(exec_commands, new File(System.getProperty("user.dir")), this.outStream);
+			else {
+				if (debug) System.out.println("Running command locally: " + build_command);
+				result = SwingUtils.processRun(build_command.split(" "), this.workdirectory, this.outStream);
+			}
 			if (result != 0) { // 中間コードの生成に失敗した場合は継続するか確認
 				if (JOptionPane.showConfirmDialog(null,
 						Message.getString("projectmakeservice.executemakecommand.continue.message"),
@@ -410,12 +458,11 @@ public class ProjectMakeService  extends BaseService {
 
 	/**
 	 * @param pproperties
-	 * @param rb_properties
 	 * @return
 	 */
-	private boolean useServer(ProjectProperties pproperties, RemoteBuildProperties rb_properties) {
-		if (rb_properties == null || pproperties == null) return false;
-		return rb_properties.useRemoteBuild() && pproperties.useServer();
+	private boolean useServer(ProjectProperties pproperties) {
+		if (pproperties == null) return false;
+		return pproperties.useRemoteBuild() && pproperties.useServer();
 	}
 
 	/**
