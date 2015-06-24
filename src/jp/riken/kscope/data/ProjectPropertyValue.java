@@ -145,8 +145,8 @@ public class ProjectPropertyValue {
 	}
 	
 	public String toString() {
-		return this.key + ", " + this.type + ", " + this.name + ", " + this.value + ", " + this.message 
-				+ ", " + this.commandline_option + ", " + this.order;
+		return "K:"+ this.key + ", T:" + this.type + ", N:" + this.name + ", V:" + this.value 
+				+ ", M:" + this.message	+ ", CL:" + this.commandline_option + ", O:" + this.order;
 	}
 	
 }

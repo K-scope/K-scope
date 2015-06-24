@@ -23,6 +23,7 @@ import java.io.InputStream;
 import java.awt.EventQueue;
 import java.awt.Toolkit;
 
+
 //import java.util.Locale;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
@@ -50,8 +51,8 @@ public class Kscope {
     public static void main(String args[]) {
         // 初期設定
         // MacOSXでのJava実行環境用のシステムプロパティの設定.
-        String version = "1.4.3 docker & sshconnect";        
-        System.out.println("Kscope v"+version);
+        String version = KscopeProperties.APPLICATION_VERSION;        
+        System.out.println(KscopeProperties.APPLICATION_NAME+" v"+version);
         if (System.getenv("DEBUG")!= null) {
         	System.out.println("For debugging use DEBUG env var: "
         			+ "\"high\" - much debug info, "

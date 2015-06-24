@@ -41,6 +41,8 @@ import jp.riken.kscope.service.ProjectService;
  * @author RIKEN
  */
 public class FileProjectSaveAction extends ActionBase {
+	private static boolean debug = (System.getenv("DEBUG")!= null);
+	private static boolean debug_l2 = false;
 
     /** データベースの構築、探索を行うクラス */
     private LanguageService service;
@@ -51,6 +53,7 @@ public class FileProjectSaveAction extends ActionBase {
      */
     public FileProjectSaveAction(AppController controller) {
         super(controller);
+        if (debug) debug_l2 = (System.getenv("DEBUG").equalsIgnoreCase("high"));
     }
 
     /**

@@ -422,7 +422,7 @@ public class ProjectProperties extends PropertiesBase {
         	{
         		org.w3c.dom.Attr attr;
         		attr = document.createAttribute("commandline_option");
-        		attr.setNodeValue(value.getMessage());
+        		attr.setNodeValue(value.getCommandlineOption());
         		elem.setAttributeNode(attr);
         	}
 
@@ -469,7 +469,7 @@ public class ProjectProperties extends PropertiesBase {
     	}
     	String service = getRemoteService();
     	List<String> command_options = new ArrayList<String>();
-    	String value = getBuildCommand();
+    	String value; /* = getBuildCommand();
     	try {
 			if (value.length() > 0) {
 				command_options.add("-m");
@@ -479,41 +479,34 @@ public class ProjectProperties extends PropertiesBase {
 			}
 		} catch (NullPointerException e) {
 			System.err.println("Build command is null.");
-		} 
+		} */
     	for (ProjectPropertyValue pproperty : this.listProperty) {
     		String commandline_option = pproperty.getCommandlineOption();
     		if (commandline_option == null) continue;
-    		value = null;
     		// Get other properties from RemoteBuildProperties
 			value = pproperty.getValue();
 			if (debug_l2) System.out.println("CL options "+commandline_option + " " + value);
     		try {
     			if (value.length() > 0) {    				
     				if (pproperty.getKey().equalsIgnoreCase(ProjectProperties.SETTINGS_FILE)) {
-    					if (service.indexOf(remote_service_dockeriaas) >= 0) {
-	    					// Add CLI options from file
-	    					String settings_file = value;
-	    					try {	    					
-	    						// Add all values from YAML file to command_option 
-		    				    // prefixed with CLI options from options Map
-	    						
-	    						Map<String, String> map = getSettingsFromFile(settings_file);
-		    				    Iterator<java.util.Map.Entry<String, String>> iterator = map.entrySet().iterator();	    				    
-		    				    while (iterator.hasNext()) {
-		    				    	Map.Entry<String, String> entry = (Map.Entry<String, String>)iterator.next();
-		    				    	command_options = addCLoption(command_options, entry);
-		    				    }
-	    					}
-	    					catch (FileNotFoundException e) {
-	    						System.out.println(settings_file+ " not found");
-	    						//return null;
-	    					}    	
+    					// Add CLI options from file
+    					String settings_file = value;
+    					try {	    					
+    						// Add all values from YAML file to command_option 
+	    				    // prefixed with CLI options from options Map
+    						
+    						Map<String, String> map = getSettingsFromFile(settings_file);
+	    				    Iterator<java.util.Map.Entry<String, String>> iterator = map.entrySet().iterator();	    				    
+	    				    while (iterator.hasNext()) {
+	    				    	Map.Entry<String, String> entry = (Map.Entry<String, String>)iterator.next();
+	    				    	command_options = addCLoption(command_options, entry);
+	    				    }
     					}
-    					else {  // SSHconnect -- call with settings file as parameter
-    						command_options.add(commandline_option);
-    						command_options.add("\""+value+"\"");
+    					catch (FileNotFoundException e) {
+    						System.out.println(settings_file+ " not found");
+    						//return null;
     					}
-    				}    				
+    				}
     				else {
     					if (service.indexOf(remote_service_dockeriaas) >= 0) {
     						String key = pproperty.getKey(); 
@@ -632,7 +625,7 @@ public class ProjectProperties extends PropertiesBase {
 	public void checkData() {
 		System.out.println("Project Property data: ");
 		for (ProjectPropertyValue pproperty : this.listProperty) {
-			System.out.println(pproperty.getKey()+"="+pproperty.getValue()+", "+pproperty.getMessage() + " " + pproperty.getCommandlineOption());
+			System.out.println(pproperty.toString());
 		}
 	}
     

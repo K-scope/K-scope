@@ -229,7 +229,7 @@
         <!--  Project Properties -->
 		<project key="project_title" name="property.project.title.name" value="" type="text" message="property.project.title.message" />
 		<project key="local_path" commandline_option="-l" name="property.project.local_path.name" value="" type="file" message="property.project.local_path"/>
-		<project key="build_command" name="property.project.build-command.name" value="make" type="file" message="property.project.build-command.message" />
+		<project key="build_command" commandline_option="-m" name="property.project.build-command.name" value="make" type="file" message="property.project.build-command.message" />
 		<project key="clean_command" name="property.project.clean-command.name" value="make clean" type="text" message="property.project.clean-command.message" />
 		<project key="settings_file" commandline_option="-s" name="property.remotebuild.settings_file.name" value="" type="fixed-file" message="property.remotebuild.settings_file.message" />
 		<project key="preprocess_files" commandline_option="-pf" value="" type="text" name="fileprojectnewdialog.basepanel.processfiles.label" message="property.remotebuild.preprocess_files"/>
