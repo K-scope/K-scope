@@ -24,9 +24,11 @@ import java.awt.EventQueue;
 import java.awt.Toolkit;
 
 
+
 //import java.util.Locale;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.plaf.metal.MetalLookAndFeel;
 
 import jp.riken.kscope.ThemeWindows;
@@ -82,9 +84,33 @@ public class Kscope {
                 ex.printStackTrace();
                 return;
             }
-        }
+        } 
         // Linuxの場合は設定しない。
-
+        else {
+        	try {
+        		String LandF;
+        		// LandF = UIManager.getSystemLookAndFeelClassName();
+        		LandF = "com.sun.java.swing.plaf.gtk.GTKLookAndFeel";
+                UIManager.setLookAndFeel(LandF);
+	        } 
+	        catch (UnsupportedLookAndFeelException ex) {
+	        	ex.printStackTrace();
+                return;
+	        }
+	        catch (ClassNotFoundException ex) {
+	        	ex.printStackTrace();
+                return;
+	        }
+	        catch (InstantiationException ex) {
+	        	ex.printStackTrace();
+                return;
+	        }
+	        catch (IllegalAccessException ex) {
+	        	ex.printStackTrace();
+                return;
+	        }
+        }
+        
         Kscope app = new Kscope();
         app.initApp();
 
