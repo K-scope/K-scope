@@ -73,6 +73,7 @@ public class ProjectService extends BaseService {
     private RemoteBuildProperties rb_properties;
     
     private Boolean debug = (System.getenv("DEBUG")!= null);
+    private Boolean debug_high = (debug != null && (System.getenv("DEBUG").equalsIgnoreCase("high") || System.getenv("DEBUG").equalsIgnoreCase("extreme"))); 
     /**
      * コンストラクタ
      */
@@ -197,7 +198,7 @@ public class ProjectService extends BaseService {
      * @return サブディレクトリのファイルリスト
      */
     private File[] searchFiles(File dir, FILE_TYPE ftype, boolean subDir) {
-    	if (debug) {
+    	if (debug_high) {
     		System.out.println("Search files in "+dir);
     		System.out.println("KscopeProperties.SETTINGS_FOLDER=" +KscopeProperties.SETTINGS_FOLDER);
     	}
@@ -209,12 +210,12 @@ public class ProjectService extends BaseService {
 
         ArrayList<File> sublist = new ArrayList<File>();
         FileFilter filter = ftype.getFileFilter();
-        if (debug) {
+        if (debug_high) {
         	System.out.println("File filter: "+filter.toString());
         }
         // ディレクトリ内のファイル一覧を取得する。
         File[] fileList = dir.listFiles();
-        if (debug) {
+        if (debug_high) {
         	System.out.println("File list:");
         	for (File f : fileList) {
         		System.out.println(f.toString());
@@ -233,7 +234,7 @@ public class ProjectService extends BaseService {
                     sublist.add(fileList[i]);
                 } else if (filter.accept(fileList[i])) {
                     sublist.add(fileList[i]);
-                } else if (debug) {
+                } else if (debug_high) {
                 	System.out.println("\t"+fileList[i].toString()+" filtered");
                 }
             }

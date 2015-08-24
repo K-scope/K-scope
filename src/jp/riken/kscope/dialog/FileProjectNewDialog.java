@@ -1531,7 +1531,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
                 return;
             }
             if (this.wizardIndex == this.panelWizards.length - 1) {  
-            	if (this.checkUseRemote.isSelected()) {            		
+            	if (this.checkUseRemote != null && this.checkUseRemote.isSelected()) {            		
 	            	String settings_file = (String)this.settings_list.getSelectedItem();
 	            	String remote_service = ProjectProperties.getRemoteService(settings_file);
 	            	this.pproperties.setSettingsFile(settings_file);

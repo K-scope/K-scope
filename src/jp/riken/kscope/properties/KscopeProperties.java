@@ -48,7 +48,7 @@ public class KscopeProperties {
      * version : 0.2.5        2013/12/27 release
      * version : 0.2.6        2014/11/10 release
      */
-    public static final String APPLICATION_VERSION = "1.4.4 docker & sshconnect";
+    public static final String APPLICATION_VERSION = "1.4.5 docker sshconnect";
 
     /** データベースファイル */
     public static final String DATABASE_FILE = "db.ksx";
