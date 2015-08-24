@@ -73,7 +73,7 @@ public class ProjectService extends BaseService {
     private RemoteBuildProperties rb_properties;
     
     private Boolean debug = (System.getenv("DEBUG")!= null);
-    private Boolean debug_high = (debug != null && (System.getenv("DEBUG").equalsIgnoreCase("high") || System.getenv("DEBUG").equalsIgnoreCase("extreme"))); 
+    private Boolean debug_high = (debug && (System.getenv("DEBUG").equalsIgnoreCase("high") || System.getenv("DEBUG").equalsIgnoreCase("extreme"))); 
     /**
      * コンストラクタ
      */
