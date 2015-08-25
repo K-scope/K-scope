@@ -12,7 +12,7 @@
 # Created by Bryzgalov Peter
 # Copyright (c) 2015 RIKEN AICS. All rights reserved
 
-version="0.17"
+version="0.18"
 
 usage="Usage:\nmakeRemote.sh -u <username> -h <server address> \
 -l <local directory to mount> -k <path to ssh-key> \
@@ -51,7 +51,7 @@ while getopts "u:h:l:k:m:a:" opt; do
       ;;
     m)
       remote_commands=$(trimQuotes "$OPTARG")
-      echo "command $command"
+      echo "command $remote_commands"
       ;;
     k)
       ssh_key=$(trimQuotes "$OPTARG")
@@ -105,12 +105,17 @@ echo "path=$path"
 
 container_port=$(ssh $remoteuser@$server port 2>/dev/null)
 
-if [ $container_port = "null" ]
+if [ $container_port="null" ]
 then
-  echo "Starting container in daemon mode"
+  echo "Starting container in daemon mode ($keyoption $remoteuser@$server)"
   ssh $keyoption $remoteuser@$server "daemon" 2>/dev/null
   container_started="true"
   container_port=$(ssh $remoteuser@$server port 2>/dev/null)
+  if [ -z $container_port ]
+  then
+    echo "Could not reach container. Check the address, user name, connection, ..."
+    exit 1
+  fi
 fi
 
 
@@ -127,8 +132,8 @@ echo "tunnel PID=$ssh_tunnel"
 # ssh
 if [ -z $remote_commands ]
 then  # No commands -- interactive shell login
-    remote_commands="mkdir -p \"$path\"\nsshfs -p $free_port $local_user@$hostIP:$path $path\ncd \"$path\"\necho \"ver \$version\";pwd;ls -l;export PATH=\$PATH:$add_path;"
-    echo -e $remote_commands
+    remote_commands="mkdir -p \"$path\"\nsshfs -o StrictHostKeyChecking=no,UserKnownHostsFile=/dev/null -p $free_port $local_user@$hostIP:$path $path\ncd \"$path\"\necho \"ver \$version\";pwd;ls -l;export PATH=\$PATH:$add_path;"
+    #echo -e $remote_commands
 
     # Save remote commands to a file. Execute it in container. 
     cmd_file="rcom.sh"
@@ -141,8 +146,10 @@ then  # No commands -- interactive shell login
     echo $cp_command
     $cp_command
     command="ssh -A -o StrictHostKeyChecking=no $remoteuser@$server '/$cmd_file'"
+    echo $command
     $command
-    command="ssh -A -o StrictHostKeyChecking=no $remoteuser@$server"
+    command="ssh -A -Y -o StrictHostKeyChecking=no $remoteuser@$server"
+    #command="ssh -Y -o StrictHostKeyChecking=no $keyoption -p $container_port root@$server"
     $command
 else # Execute remote commands. No interactive shell login.
     # testcommand ="ssh -vv -p $free_port $local_user@$histIP;echo "'$HOST'";exit;\n"
