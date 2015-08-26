@@ -12,7 +12,8 @@
 # Created by Bryzgalov Peter
 # Copyright (c) 2015 RIKEN AICS. All rights reserved
 
-version="0.19"
+version="0.20"
+debug=""
 
 usage="Usage:\nconnect.sh -u <username> -h <server address> \
 -l <local directory to mount> -i <path to ssh-key> \
@@ -28,7 +29,9 @@ remote_commands=""
 add_path="/opt/omnixmp/bin"
 
 echo "$0 ver.$version"
-echo "Called with parameters: $@"
+if [ $debug]; then 
+    echo "Called with parameters: $@"
+fi
 
 # Trim quotes around a string
 trimQuotes() {
@@ -37,7 +40,7 @@ trimQuotes() {
   echo "$val"
 }
 
-while getopts "u:h:l:k:m:a:" opt; do
+while getopts "u:h:l:i:k:m:a:" opt; do
   case $opt in
     u)
       remoteuser=$(trimQuotes "$OPTARG")
@@ -47,11 +50,9 @@ while getopts "u:h:l:k:m:a:" opt; do
       ;;
     l)
       path=$(trimQuotes "$OPTARG")
-      echo "path $path"
       ;;
     m)
       remote_commands=$(trimQuotes "$OPTARG")
-      echo "command $remote_commands"
       ;;
     k)
       ssh_key=$(trimQuotes "$OPTARG")
@@ -77,48 +78,47 @@ done
 # Check that necessary arguments provided
 
 if [ -z "$remoteuser" ]
-then
-  echo "Need user name."
-  echo -e "$usage"
-  exit 1
+    then
+    echo "Need user name."
+    echo -e "$usage"
+    exit 1
 fi
 
 if [ -z "$server" ]
-then
-  echo "Need server address."
-  echo -e "$usage"
-  exit 1
+    then
+    echo "Need server address."
+    echo -e "$usage"
+    exit 1
 fi
 
 if [ -z "$path" ]
-then
-  echo "Need path."
-  echo -e "$usage"
-  exit 1
+    then
+    echo "Need path."
+    echo -e "$usage"
+    exit 1
 fi
 
 if [ -n "$ssh_key" ]
-then
-  ssh-add $ssh_key
-  keyoption="-i $ssh_key"
+    then
+    ssh-add $ssh_key
+    keyoption="-i $ssh_key"
 fi
-
-echo "path=$path"
-
 
 container_port=$(ssh $remoteuser@$server port 2>/dev/null)
 
 if [ $container_port="null" ]
-then
-  echo "Starting container in daemon mode ($keyoption $remoteuser@$server)"
-  ssh $keyoption $remoteuser@$server "daemon" 2>/dev/null
-  container_started="true"
-  container_port=$(ssh $remoteuser@$server port 2>/dev/null)
-  if [ -z $container_port ]
-  then
-    echo "Could not reach container. Check the address, user name, connection, ..."
-    exit 1
-  fi
+    then
+    if [ $debug ]; then
+        echo "Starting container in daemon mode ($keyoption $remoteuser@$server)"
+    fi
+    ssh $keyoption $remoteuser@$server "daemon" 2>/dev/null
+    container_started="true"
+    container_port=$(ssh $remoteuser@$server port 2>/dev/null)
+    if [ -z $container_port ]
+      then
+      echo "Could not reach container. Check the address, user name, connection, ..."
+      exit 1
+    fi
 fi
 
 
@@ -127,33 +127,40 @@ free_port=$(ssh $remoteuser@$server freeport 2>/dev/null)
 echo "SSH server port: $free_port, container port:$container_port"
 
 command="ssh $remoteuser@$server -R $free_port:localhost:22 -N"
-echo $command
-$command &
+if [ $debug ]; then 
+    echo $command
+fi
+$command & 
 ssh_tunnel=$!
 echo "tunnel PID=$ssh_tunnel"
 
 # ssh
 if [ -z $remote_commands ]
 then  # No commands -- interactive shell login
-    remote_commands="mkdir -p \"$path\"\nsshfs -o StrictHostKeyChecking=no,UserKnownHostsFile=/dev/null -p $free_port $local_user@$hostIP:$path $path\ncd \"$path\"\necho \"ver \$version\";pwd;ls -l;export PATH=\$PATH:$add_path;"
+    remote_commands="mkdir -p \"$path\"\nsshfs -o StrictHostKeyChecking=no,UserKnownHostsFile=/dev/null,nonempty -p $free_port $local_user@$hostIP:$path $path\ncd \"$path\"\necho \"ver \$version\";pwd;ls -l;export PATH=\$PATH:$add_path;"
     #echo -e $remote_commands
 
     # Save remote commands to a file. Execute it in container. 
     cmd_file="rcom.sh"
-    echo "#!/bin/bash" > $cmd_file
+    if [ $debug ]; then
+        echo "#!/bin/bash -x" > $cmd_file
+    else 
+        echo "#!/bin/bash" > $cmd_file
+    fi
     echo "version=$version" >> $cmd_file
     echo -e $remote_commands >> $cmd_file
     chmod +x $cmd_file
     # Copy command file into container using container SSH port number as seen from server-side.
     cp_command="scp $keyoption -P $container_port $cmd_file root@$server:/"
-    echo $cp_command
-    $cp_command
+    $cp_command 
     command="ssh -A -o StrictHostKeyChecking=no $remoteuser@$server '/$cmd_file'"    
-    $command
+    $command 2>&1 | grep -i "error"
     #command="ssh -A -Y -o StrictHostKeyChecking=no $remoteuser@$server"
     command="ssh -Y -o StrictHostKeyChecking=no $keyoption -p $container_port root@$server"
-    echo $command
-    $command
+    if [ $debug ]; then
+        echo $command
+    fi
+    $command 
 else # Execute remote commands. No interactive shell login.
     # testcommand ="ssh -vv -p $free_port $local_user@$histIP;echo "'$HOST'";exit;\n"
     setup_commands="mkdir -p \"$path\"\nsshfs -o StrictHostKeyChecking=no -p $free_port $local_user@$hostIP:\"$path\" \"$path\"\ncd \"$path\"\necho \"ver \$version\";pwd;ls -l | wc -l;export PATH=\$PATH:$add_path"
@@ -169,12 +176,13 @@ else # Execute remote commands. No interactive shell login.
     echo -e $setup_commands >> $cmd_file    
     chmod +x $cmd_file
     # Copy command file into container using container SSH port number as seen from server-side.
-    cp_command="scp $keyoption -P $container_port $cmd_file root@$server:/"
-    echo $cp_command
+    cp_command="scp $keyoption -P $container_port $cmd_file root@$server:/"   
     $cp_command
     command="ssh -A -o StrictHostKeyChecking=no $remoteuser@$server '/$cmd_file'"
-    echo $command
-    $command
+    if [ $debug ]; then
+        echo $command
+    fi
+    $command 2>&1 | grep -i "error"
 fi
 
 
