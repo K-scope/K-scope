@@ -395,7 +395,7 @@ public class ProjectMakeService  extends BaseService {
 		        	String[] diaas_cl = pproperties.getCommandLineOptions(RS);
 		        	int formal_commands = 1;
 		        	exec_commands = new String [formal_commands + diaas_cl.length];
-		        	exec_commands[0] = "./makeRemote.sh";
+		        	exec_commands[0] = "./connect.sh";
 		        	for (int i = 0; i < diaas_cl.length; i++) {
 		        		exec_commands[i + formal_commands] = diaas_cl[i];
 		        	}
@@ -416,7 +416,7 @@ public class ProjectMakeService  extends BaseService {
 	        		/*
 	        		 * This case should never happen.
 	        		 * useServer() and remote_build should only be set to TRUE
-	        		 * in case either makeRemote or SSHconnect are present.
+	        		 * in case either connect.sh or SSHconnect are present.
 	        		 */
 	        		Exception ex = new Exception("Unknown remote build service: " + RS
 	        				+ "\nIncosistent settings:\nProjectProperties.useServer() " + pproperties.useServer()

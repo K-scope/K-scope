@@ -14,7 +14,7 @@
 
 version="0.19"
 
-usage="Usage:\nmakeRemote.sh -u <username> -h <server address> \
+usage="Usage:\nconnect.sh -u <username> -h <server address> \
 -l <local directory to mount> -i <path to ssh-key> \
 -a <add to PATH> -m <remote command>"
 

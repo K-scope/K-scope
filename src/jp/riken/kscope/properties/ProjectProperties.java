@@ -87,7 +87,7 @@ public class ProjectProperties extends PropertiesBase {
 	 * If these files are present in the current directory (with kscope.jar), 
 	 * we set flags haveDockerIaaS and haveSSHconnect to TRUE.
 	 */
-	private static String docker_iaas_file = "makeRemote.sh";
+	private static String docker_iaas_file = "connect.sh";
 	private static String sshconnect_file = "SSHconnect.jar";
 	public static String REMOTE_SETTINGS_DIR = "remote";
 	
@@ -147,7 +147,7 @@ public class ProjectProperties extends PropertiesBase {
     public ProjectProperties() throws Exception {
     	if (debug) debug_l2 = (System.getenv("DEBUG").equalsIgnoreCase("high"));
         loadProperties();
-        // set Remote Build is possible Flag to TRUE if either SSHconnect or makeRemote for DockerIaaS are present
+        // set Remote Build is possible Flag to TRUE if either SSHconnect or connect.sh for DockerIaaS are present
      	this.haveDockerIaaS = checkDockerIaaS();
      	this.haveSSHconnect = checkSSHconnect();
      	this.remote_settings_found = (this.haveDockerIaaS || this.haveSSHconnect);
@@ -729,7 +729,7 @@ public class ProjectProperties extends PropertiesBase {
 	}
 
     /**
-     * True if we can use makeRemote with Docker IaaS tools for remote code build 
+     * True if we can use connect.sh with Docker IaaS tools for remote code build 
      * */
     private static boolean checkDockerIaaS() {
         File f = new File(docker_iaas_file);
