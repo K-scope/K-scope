@@ -12,10 +12,10 @@
 # Created by Bryzgalov Peter
 # Copyright (c) 2015 RIKEN AICS. All rights reserved
 
-version="0.18"
+version="0.19"
 
 usage="Usage:\nmakeRemote.sh -u <username> -h <server address> \
--l <local directory to mount> -k <path to ssh-key> \
+-l <local directory to mount> -i <path to ssh-key> \
 -a <add to PATH> -m <remote command>"
 
 remote_port=0
@@ -54,6 +54,9 @@ while getopts "u:h:l:k:m:a:" opt; do
       echo "command $remote_commands"
       ;;
     k)
+      ssh_key=$(trimQuotes "$OPTARG")
+      ;;
+    i)
       ssh_key=$(trimQuotes "$OPTARG")
       ;;
     a)
@@ -145,11 +148,11 @@ then  # No commands -- interactive shell login
     cp_command="scp $keyoption -P $container_port $cmd_file root@$server:/"
     echo $cp_command
     $cp_command
-    command="ssh -A -o StrictHostKeyChecking=no $remoteuser@$server '/$cmd_file'"
-    echo $command
+    command="ssh -A -o StrictHostKeyChecking=no $remoteuser@$server '/$cmd_file'"    
     $command
-    command="ssh -A -Y -o StrictHostKeyChecking=no $remoteuser@$server"
-    #command="ssh -Y -o StrictHostKeyChecking=no $keyoption -p $container_port root@$server"
+    #command="ssh -A -Y -o StrictHostKeyChecking=no $remoteuser@$server"
+    command="ssh -Y -o StrictHostKeyChecking=no $keyoption -p $container_port root@$server"
+    echo $command
     $command
 else # Execute remote commands. No interactive shell login.
     # testcommand ="ssh -vv -p $free_port $local_user@$histIP;echo "'$HOST'";exit;\n"
