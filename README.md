@@ -29,7 +29,7 @@ In addition, K-scope uses intermediate codes (= AST) created by front end of
 the Omni XcalableMP compiler. Please download the compiler suite from
 following URL.
 
-http://www.hpcs.cs.tsukuba.ac.jp/omni-compiler/xcalablemp/download.html
+http://omni-compiler.org/index.html
 
 If you can access a remote server installed with Omni XcalableMP (XMP)
 compiler (For example, front-end of the K computer is suitable environment
