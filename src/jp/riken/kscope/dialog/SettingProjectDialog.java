@@ -320,7 +320,7 @@ public class SettingProjectDialog extends javax.swing.JDialog implements ActionL
                             {
                                 TableColumn col = tblProperties.getColumnModel().getColumn(4);
                                 col.setResizable(true);
-                                col.setMinWidth(160);
+                                col.setMinWidth(165);
                             }
                             // 6列目:メッセージ: 非表示
                             {

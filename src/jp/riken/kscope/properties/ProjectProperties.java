@@ -511,7 +511,7 @@ public class ProjectProperties extends PropertiesBase {
     					if (service.indexOf(remote_service_dockeriaas) >= 0) {
     						String key = pproperty.getKey(); 
     						if (key.equalsIgnoreCase(PREPROCESS_FILES) || key.equalsIgnoreCase(FILE_FILTER)) {
-    							System.out.println("Option "+ key + " is not used in "+ service+ ". Option is ignored.");
+    							System.out.println("Option "+ key + " is not used for "+ service+ ". Option is ignored.");
     							continue;
     						}
         				}
@@ -601,7 +601,7 @@ public class ProjectProperties extends PropertiesBase {
 		else if (service.indexOf("docker") >= 0) {
 			option = options_map_docker.get(key);
 			if (option == null) {
-				System.err.println("Option " + key+ " not used for Docker IaaS tools. Option is ignored.");
+				System.out.println("Option " + key+ " not used for Docker IaaS tools. Option is ignored.");
 			}
 		}
 		return option;

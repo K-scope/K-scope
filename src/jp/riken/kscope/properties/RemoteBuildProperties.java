@@ -389,7 +389,7 @@ public class RemoteBuildProperties extends PropertiesBase {
     					if (service.indexOf("docker") >= 0) {
     						String key = rbdata.getKey(); 
     						if (key.equalsIgnoreCase(PREPROCESS_FILES) || key.equalsIgnoreCase(FILE_FILTER)) {
-    							System.out.println("Otion "+ key + " is not used in "+ service+ ". Option is ignored.");
+    							System.out.println("Otion "+ key + " is not used for "+ service+ ". Option is ignored.");
     							continue;
     						}
         				}
@@ -479,7 +479,7 @@ public class RemoteBuildProperties extends PropertiesBase {
 		else if (service.indexOf("docker") >= 0) {
 			option = options_map_docker.get(key);
 			if (option == null) {
-				System.err.println("Option " + key+ " not used for Docker IaaS tools. Option is ignored.");
+				System.out.println("Option " + key+ " not used for Docker IaaS tools. Option is ignored.");
 			}
 		}
 		return option;
