@@ -1,4 +1,4 @@
-# README
+# About
 
 K-scope is a source code analysis tool with graphical user interface that
 visualizes program structures of Fortran 90 and FORTRAN 77 source code.
@@ -10,9 +10,9 @@ as Open Source Software. The latest version and documents are available in the
 following download site.
 http://www.aics.riken.jp/ungi/soft/kscope/
 
-## Preliminaries
+## Requirements
 
-First of all, K-scope requires JDK7 or later. Please download from Oracle site.
+K-scope requires JDK7 or later. You can download it from Oracle site.
 http://www.oracle.com/technetwork/java/javase/downloads/index.html
 
 K-scope uses intermediate code created by front end of
@@ -20,7 +20,7 @@ the Omni XcalableMP compiler. The compiler can be downloaded from the following 
 http://www.hpcs.cs.tsukuba.ac.jp/omni-compiler/xcalablemp/download.html
 
 
-## Remote code building
+# Remote code building
 
 As an alternative to installing Omni XcalableMP compiler on your computer, you can use
 the compiler installed on a server. Installed compiler can be made available for remote

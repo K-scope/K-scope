@@ -12,7 +12,7 @@
 # Created by Bryzgalov Peter
 # Copyright (c) 2015 RIKEN AICS. All rights reserved
 
-version="0.20"
+version="0.21"
 debug=""
 
 usage="Usage:\nconnect.sh -u <username> -h <server address> \
@@ -93,9 +93,8 @@ fi
 
 if [ -z "$path" ]
     then
-    echo "Need path."
-    echo -e "$usage"
-    exit 1
+    path=$(pwd)
+    echo "Use current folder: $path"
 fi
 
 if [ -n "$ssh_key" ]
