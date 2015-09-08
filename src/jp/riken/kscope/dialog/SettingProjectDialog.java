@@ -102,8 +102,6 @@ public class SettingProjectDialog extends javax.swing.JDialog implements ActionL
     /** プロジェクトプロパティ */
     ProjectProperties properties;
 
-    
-    //TODO: Copy messages to message_ja.properties
     /** 列名 */
     private final String[] COLUMN_HEADER = {
     		"",
@@ -669,7 +667,8 @@ public class SettingProjectDialog extends javax.swing.JDialog implements ActionL
      * @param ppvalue
      */
     private void setFixedFilePanel(ProjectPropertyValue ppvalue) {
-    	if (debug) System.out.println("Value="+ppvalue.getValue());
+    	String remote_service=ProjectProperties.getRemoteService(ppvalue.getValue());
+    	if (debug) System.out.println("SettingProjectDialog/setFiexdFilePanel: Value="+ppvalue.getValue()+" Service="+remote_service);
     	if (!("fixed-file".equalsIgnoreCase(ppvalue.getType()))) return;
     	
         String valueLabel = "";
@@ -703,11 +702,14 @@ public class SettingProjectDialog extends javax.swing.JDialog implements ActionL
             txtValue.setText(filename);
         }*/
         {        	
-        	String[] selections = ProjectProperties.getRemoteSettings(); 
+        	String[] selections = ProjectProperties.getRemoteSettings(remote_service); 
         	if (selections.length < 1) {
         		System.out.println("No remote connection settings files found in "+ ProjectProperties.REMOTE_SETTINGS_DIR);    		
         	} else {    		
-        		System.out.println("Have remote connection settings in "+ ProjectProperties.REMOTE_SETTINGS_DIR);
+        		if (debug) {
+        			System.out.println("Have remote connection settings in "+ ProjectProperties.REMOTE_SETTINGS_DIR);
+        			System.out.println(selections);
+        		}
             	//list_model = new DefaultComboBoxModel<String>(selections);
         		settings_list = new JComboBox<String>(selections);
             	settings_list.setEnabled(true);

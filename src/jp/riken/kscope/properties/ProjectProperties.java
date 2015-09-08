@@ -723,6 +723,10 @@ public class ProjectProperties extends PropertiesBase {
      * @return
      */
     public static String getRemoteService(String settings_file) {    	
+    	if (settings_file == null) {
+    		System.err.println("Call to ProjectProperties/getRemoteService with empty settings file name.");
+    		return null;
+    	}
 		int pos = settings_file.indexOf(RemoteBuildProperties.settigns_path_separator);
 		String service = settings_file.substring(0, pos);
 		return service;
@@ -783,15 +787,34 @@ public class ProjectProperties extends PropertiesBase {
 	}
 	
 	
-	public static String[] getRemoteSettings() {
+	public static String[] getRemoteSettings() {    	
+		return getRemoteSettings(null);
+	}
+	
+	/**
+	 * Return list of settings files for given remote service (sshconnect/dockeriaas)
+	 * @return
+	 */	
+	public static String[] getRemoteSettings(String service) {
+		boolean dockeriaas=false;
+		boolean sshconnect=false;
+		if (service != null) {
+			if (service.equalsIgnoreCase(RemoteBuildProperties.remote_service_dockeriaas)) dockeriaas = true;
+			else if (service.equalsIgnoreCase(RemoteBuildProperties.remote_service_sshconnect)) sshconnect = true;
+		} else {
+			dockeriaas = true;
+			sshconnect = true;
+		}
     	List<String> list = new ArrayList<String>();
     	String[] list_ar = null;
     	List<String> ignore = new ArrayList<String>(); 
     	ignore.add("(\\.).*");
-    	if (!checkDockerIaaS()) {
+    	if (!checkDockerIaaS() || !dockeriaas) {
+    		if (debug) System.out.println("Ignoring dockeriass service files");
     		ignore.add(RemoteBuildProperties.remote_service_dockeriaas + "*");
     	}
-    	if (!checkSSHconnect()) {
+    	if (!checkSSHconnect() || !sshconnect) {
+    		if (debug) System.out.println("Ignoring sshconnect service files");
     		ignore.add(RemoteBuildProperties.remote_service_sshconnect + "*");
     	}
 		File dir = new File(REMOTE_SETTINGS_DIR);
@@ -799,6 +822,11 @@ public class ProjectProperties extends PropertiesBase {
 			String[] s = new String[ignore.size()];
 			list = getFiles(dir, list, "", ignore.toArray(s));			
 			list_ar=new String[list.size()];
+			if (debug) {
+				for (String file : list.toArray(list_ar)) {
+					System.out.println("file="+file+" service="+ProjectProperties.getRemoteService(file));
+				}
+			}
 		}
 		catch (IOException e) {
 			System.err.println("Error reading settings files from remote directory");
