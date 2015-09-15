@@ -340,14 +340,13 @@ public class ProjectMakeService  extends BaseService {
 	 * @throws Exception
 	 */
 	public boolean executeCleanCommand() throws Exception {
-		// ステータスメッセージ
-        Application.status.setProgressStart(true);
-        ProjectProperties pproperties = this.controller.getPropertiesProject();
+		ProjectProperties pproperties = this.controller.getPropertiesProject();
         String clean_command = pproperties.getValueByKey(ProjectProperties.CLEAN_COMMAND);
-        if (debug) System.out.println("Executing "+clean_command);
-        if (clean_command == null || clean_command.length() <= 0) return false;
-        String[] exec_commands = null;
-        
+		if (clean_command == null || clean_command.length() <= 0) return true;
+		// ステータスメッセージ
+        Application.status.setProgressStart(true);        
+        if (debug) System.out.println("Executing "+clean_command);        
+        String[] exec_commands = null;        
         Application.status.setMessageStatus(clean_command);
 
         // makeコマンド実行

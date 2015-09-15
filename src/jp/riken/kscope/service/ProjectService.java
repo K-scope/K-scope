@@ -399,10 +399,10 @@ public class ProjectService extends BaseService {
         // プロファイラプロパティ設定出力
         this.propertiesProfiler.writeProperties(elemSettings);
         // プロジェクトプロパティ設定出力
-        this.propertiesProject.writeProperties(elemSettings, this.projectModel.getProjectFolder());
+        this.propertiesProject.writeProperties(elemSettings);
         // 要求Byte/FLOP設定プロパティ設定出力
         this.propertiesMemory.writeProperties(elemSettings);
-        this.rb_properties.writeProperties(elemSettings);
+        //this.rb_properties.writeProperties(elemSettings);
 
         // settingsフォルダ作成
         File settingsFolder = new File(saveFolder.getAbsoluteFile() + File.separator + KscopeProperties.SETTINGS_FOLDER);

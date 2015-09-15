@@ -363,7 +363,7 @@ public class ProjectProperties extends PropertiesBase {
      * @param node	出力ノード
      * @param projectFolder	プロジェクトフォルダ(=出力フォルダ)
      */
-    public void writeProperties(org.w3c.dom.Element node, File projectFolder) {
+    public void writeProperties(org.w3c.dom.Element node) {
 
         // ドキュメントの取得
         org.w3c.dom.Document document = node.getOwnerDocument();

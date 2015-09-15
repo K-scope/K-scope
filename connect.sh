@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash 
 
 # Mount local folder into container on a server.
 # To be executed on user local computer.
@@ -13,7 +13,7 @@
 # Copyright (c) 2015 RIKEN AICS. All rights reserved
 
 version="0.21"
-debug=""
+debug="1"
 
 usage="Usage:\nconnect.sh -u <username> -h <server address> \
 -l <local directory to mount> -i <path to ssh-key> \
@@ -29,7 +29,7 @@ remote_commands=""
 add_path="/opt/omnixmp/bin"
 
 echo "$0 ver.$version"
-if [ $debug]; then 
+if [ $debug ]; then 
     echo "Called with parameters: $@"
 fi
 
