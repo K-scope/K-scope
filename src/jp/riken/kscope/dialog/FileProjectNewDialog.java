@@ -561,12 +561,12 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
             btnProjectFolder.addActionListener(this);
         }
 
-
-        
         // Process files & File filter
         if (this.pproperties != null && this.pproperties.remoteBuildPossible()) {
         	
-    		// Process files & File filter
+        	
+        	
+        	// Process files & File filter
         
             sshc_settings_panel = new JPanel();
             GridBagLayout sshc_panel_layout = new GridBagLayout();
@@ -598,7 +598,8 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
             sshc_settings_panel.add(procfl, new GridBagConstraints(1, 2, 1, 1, 0.0, 0.0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 7, 0, 7), 0, 0));
             sshc_settings_panel.add(txt_preprocess_files, new GridBagConstraints(2, 2, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
             sshc_settings_panel.add(addprerocessfile_button, new GridBagConstraints(3, 2, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
-            panelContent.add(sshc_settings_panel, new GridBagConstraints(1, 4, 3, 2, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(7, 0, 0, 7), 0, 0));          	 
+            panelContent.add(sshc_settings_panel, new GridBagConstraints(1, 4, 3, 2, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(7, 0, 0, 7), 0, 0));   
+            sshc_settings_panel.setVisible(false);
         }
         return panelContent;
     }
@@ -1153,8 +1154,8 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
             	
             	String settings_file = (String)this.settings_list.getSelectedItem();
             	String remote_service = ProjectProperties.getRemoteService(settings_file);
-            	// System.out.println("Remote service is "+remote_service);
-            	if (remote_service.equalsIgnoreCase("sshconnect")) {
+            	System.out.println("Remote service is "+remote_service);
+            	if (remote_service.equalsIgnoreCase(ProjectProperties.remote_service_sshconnect)) {
                 	//ProjectSettingDockerAction docker_action = new ProjectSettingDockerAction(this.controller);
                     //docker_action.openDialog(this.frame, Message.getString("projectsettingsshconnect.setup.need_parameters"));
                     sshc_settings_panel.setVisible(true);
