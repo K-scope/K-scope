@@ -28,10 +28,13 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.util.Arrays;
+import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -95,6 +98,8 @@ public class SettingProjectDialog extends javax.swing.JDialog implements ActionL
     //private DefaultComboBoxModel<String> list_model;
     private JButton manage_settings_files;
     private JComboBox<String> settings_list;
+    private JCheckBox checkUseRemote;
+    private String remote_service;
 
 	/** ダイアログの戻り値 */
     private int result = Constant.CANCEL_DIALOG;
@@ -169,7 +174,6 @@ public class SettingProjectDialog extends javax.swing.JDialog implements ActionL
     public void setProjectProperties(ProjectProperties properties) {
 
         ProjectPropertyValue[] values = properties.getPropertyValues();
-
         // テーブルに追加する
         for (ProjectPropertyValue value : values) {
             // "PropertyValue", "キー", "タイプ", "名前", "値", "メッセージ"
@@ -192,7 +196,10 @@ public class SettingProjectDialog extends javax.swing.JDialog implements ActionL
             			+ rowData[6]+" : "
             			+ rowData[7]);
             }
-            this.modelProperties.addRow(rowData);
+            if (!rowData[2].toString().equalsIgnoreCase("hidden")) { 
+            	// Project properties with type=="hidden" will not show up and cannot be changed in Project settings dialog
+            	this.modelProperties.addRow(rowData);
+            }
         }
 
         this.properties = properties;
@@ -209,6 +216,7 @@ public class SettingProjectDialog extends javax.swing.JDialog implements ActionL
             thisLayout.setHgap(5);
             thisLayout.setVgap(5);
             getContentPane().setLayout(thisLayout);
+            settings_list = new JComboBox<String>();
 
             // ボタンパネル
             {
@@ -525,7 +533,32 @@ public class SettingProjectDialog extends javax.swing.JDialog implements ActionL
             int col = 4;
             this.modelProperties.setValueAt(selection, selectedrow, col);
         }
+        else if (event.getSource() == this.checkUseRemote)  {
+        	if (!this.checkUseRemote.isSelected()) {
+        		// Set settings_file to null (make project local, i.e. execute make command locally)
+        		//settings_list.setEnabled(false);
+        		deactivateSettingsList();
+        	} else {
+        		settings_list.setEnabled(false);
+        		List<String> selections = Arrays.asList(ProjectProperties.getRemoteSettings(this.remote_service));
+        		String[] str_arr =  new String[selections.size()];
+        		DefaultComboBoxModel<String> list_model = new DefaultComboBoxModel<String>(selections.toArray(str_arr));
+        		settings_list.setModel(list_model);
+        		settings_list.setEnabled(true);
+        	}
+        }
         if (debug_l2) System.out.println("actionPerformed() of SettingsProjectDialog exited");
+	}
+
+	/**
+	 * Make combobox with remote settings file names disabled.
+	 */
+	private void deactivateSettingsList() {
+		String[] str_arr =  { "" };
+		DefaultComboBoxModel<String> empty_list_model = new DefaultComboBoxModel<String>(str_arr);
+		settings_list.setModel(empty_list_model);
+		settings_list.setEnabled(false);		
+		this.modelProperties.setValueAt("", this.ppropertiesTable.getSelectedRow(), 4);  // Update value in table
 	}
 
     /**
@@ -667,7 +700,7 @@ public class SettingProjectDialog extends javax.swing.JDialog implements ActionL
      * @param ppvalue
      */
     private void setFixedFilePanel(ProjectPropertyValue ppvalue) {
-    	String remote_service=ProjectProperties.getRemoteService(ppvalue.getValue());
+    	this.remote_service = ProjectProperties.getRemoteService(ppvalue.getValue());
     	if (debug) System.out.println("SettingProjectDialog/setFiexdFilePanel: Value="+ppvalue.getValue()+" Service="+remote_service);
     	if (!("fixed-file".equalsIgnoreCase(ppvalue.getType()))) return;
     	
@@ -710,27 +743,31 @@ public class SettingProjectDialog extends javax.swing.JDialog implements ActionL
         			System.out.println("Have remote connection settings in "+ ProjectProperties.REMOTE_SETTINGS_DIR);
         			System.out.println(selections);
         		}
-            	//list_model = new DefaultComboBoxModel<String>(selections);
-        		settings_list = new JComboBox<String>(selections);
-            	settings_list.setEnabled(true);
-            	if (debug) {
-            		System.out.println("Check objects comparison in JComboBox");
-            		for (int i=0; i < settings_list.getItemCount(); i++) {
-            			String item = settings_list.getItemAt(i);
-            			if (item.equalsIgnoreCase(filename)) {
-            				System.out.println("Match item "+ i + " value: "+ filename);
-            			}
-            		}
-            	}
-            	settings_list.setSelectedItem(ppvalue.getValue());
+        		if (remote_service != null) {
+	        		DefaultComboBoxModel<String> list_model = new DefaultComboBoxModel<String>(selections);        		
+	        		settings_list.setModel(list_model);
+	            	settings_list.setEnabled(true);
+	            	if (debug) {
+	            		System.out.println("Check objects comparison in JComboBox");
+	            		for (int i=0; i < settings_list.getItemCount(); i++) {
+	            			String item = settings_list.getItemAt(i);
+	            			if (item == null) continue;
+	            			if (item.equalsIgnoreCase(filename)) {
+	            				System.out.println("Match item "+ i + " value: "+ filename);
+	            			}
+	            		}
+	            	}
+	            	settings_list.setSelectedItem(ppvalue.getValue());
+        		} else {
+        			deactivateSettingsList();
+        		}
             	manage_settings_files = new JButton(Message.getString("fileprojectnewdialog.kindpanel.button.manage_settings_files"));
             	manage_settings_files.setEnabled(true);
             	this.panelProperty.add(settings_list, new GridBagConstraints(1, 1, 3, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
             	this.panelProperty.add(manage_settings_files, new GridBagConstraints(1, 2, 3, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
             	settings_list.addActionListener(this);
-            	manage_settings_files.addActionListener(this);
-        	}
-        		
+            	manage_settings_files.addActionListener(this);            	
+        	}        		
         }       
 
         // メッセージ
@@ -739,6 +776,17 @@ public class SettingProjectDialog extends javax.swing.JDialog implements ActionL
             if (lblMassage != null) {
                 this.panelProperty.add(lblMassage, new GridBagConstraints(1, 3, 3, 2, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
             }
+        }
+        
+        // Make project remote / local checkbox
+        {
+        	checkUseRemote = new JCheckBox(Message.getString("fileprojectnewdialog.kindpanel.checkbox.useServer"));
+        	checkUseRemote.addActionListener(this);
+        	checkUseRemote.setToolTipText(Message.getString("fileprojectnewdialog.kindpanel.checkbox.useServer.tooltip"));
+            checkUseRemote.setEnabled(true);
+            // if (debug) System.out.println(isFullProject() && this.rb_properties.remote_settings_found);
+            checkUseRemote.setSelected(filename != null && filename.length() > 0);
+        	this.panelProperty.add(checkUseRemote, new GridBagConstraints(0, 5, 4, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
         }
     }
     

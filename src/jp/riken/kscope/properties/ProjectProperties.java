@@ -723,7 +723,7 @@ public class ProjectProperties extends PropertiesBase {
      * @return
      */
     public static String getRemoteService(String settings_file) {    	
-    	if (settings_file == null) {
+    	if (settings_file == null || settings_file.length() == 0) {
     		System.err.println("Call to ProjectProperties/getRemoteService with empty settings file name.");
     		return null;
     	}
@@ -820,7 +820,7 @@ public class ProjectProperties extends PropertiesBase {
 		File dir = new File(REMOTE_SETTINGS_DIR);
 		try {
 			String[] s = new String[ignore.size()];
-			list = getFiles(dir, list, "", ignore.toArray(s));			
+			list = getFiles(dir, list, "", ignore.toArray(s));
 			list_ar=new String[list.size()];
 			if (debug) {
 				for (String file : list.toArray(list_ar)) {

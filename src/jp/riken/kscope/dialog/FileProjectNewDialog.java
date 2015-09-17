@@ -36,6 +36,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+
 //import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
@@ -86,6 +87,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
 
 	private static final long serialVersionUID = 6096475381851486225L;
 	private static boolean debug = (System.getenv("DEBUG")!= null);	
+	private static boolean debug_l2 = false; 
 	
 /** 中間コード・フォルダ・ファイルリスト */
     private JList<String> listProjectXml;
@@ -181,6 +183,9 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
      */
     public FileProjectNewDialog(Frame owner, boolean modal, ProjectProperties pproperties, AppController controller) {
         super(owner, modal);
+        if (debug) {
+			debug_l2 = (System.getenv("DEBUG").equalsIgnoreCase("high"));
+		}
         this.pproperties = pproperties;
         initGUI();
     }
@@ -1156,9 +1161,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
             	String remote_service = ProjectProperties.getRemoteService(settings_file);
             	System.out.println("Remote service is "+remote_service);
             	if (remote_service.equalsIgnoreCase(ProjectProperties.remote_service_sshconnect)) {
-                	//ProjectSettingDockerAction docker_action = new ProjectSettingDockerAction(this.controller);
-                    //docker_action.openDialog(this.frame, Message.getString("projectsettingsshconnect.setup.need_parameters"));
-                    sshc_settings_panel.setVisible(true);
+                	sshc_settings_panel.setVisible(true);
                 }
                 else {
                 	sshc_settings_panel.setVisible(false);
@@ -1531,13 +1534,15 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
             if (!checkParams(this.wizardIndex)) {
                 return;
             }
+            // Save settings from Dialog to ProjectProperties instance
             if (this.wizardIndex == this.panelWizards.length - 1) {  
+            	this.pproperties.setLocalPath(this.txtProjectFolder.getText());  // Project folder
             	if (this.checkUseRemote != null && this.checkUseRemote.isSelected()) {            		
 	            	String settings_file = (String)this.settings_list.getSelectedItem();
 	            	String remote_service = ProjectProperties.getRemoteService(settings_file);
 	            	this.pproperties.setSettingsFile(settings_file);
 	            	System.out.println("Remote service is set to "+remote_service);
-	            	if (remote_service.equalsIgnoreCase("sshconnect")) {
+	            	if (remote_service.equalsIgnoreCase(ProjectProperties.remote_service_sshconnect)) {
 		            	// Save File filter and Preprocess files fields to ProjectProperties
 		            	if (this.txt_preprocess_files.getText().length() > 0) {
 		            		pproperties.setPreprocessFiles(this.txt_preprocess_files.getText());
@@ -1670,7 +1675,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
         	manage_files_dialog.showDialog();   
         	refreshSettingsList();
         }
-        if (debug) System.out.println("actionPerformed() of FileProjectNewDialog exited");
+        if (debug_l2) System.out.println("actionPerformed() of FileProjectNewDialog exited");
     }
     
     /***
