@@ -86,7 +86,7 @@ public class SettingProjectDialog extends javax.swing.JDialog implements ActionL
     /** 登録ボタン */
     private JButton btnReg;
     /** プロジェクト設定リスト */
-    private JTable tblProperties;
+    private JTable ppropertiesTable;
     /** プロジェクト設定リストデータ */
     private DefaultTableModel modelProperties;
     /** プロジェクト設定パネル */
@@ -278,60 +278,60 @@ public class SettingProjectDialog extends javax.swing.JDialog implements ActionL
                             // ヘッダー列名
                             String[] columns = COLUMN_HEADER;
                             modelProperties.setColumnIdentifiers(columns);
-                            tblProperties = new JTable();
-                            scrollList.setViewportView(tblProperties);
-                            tblProperties.setModel(modelProperties);
-                            tblProperties.setSelectionMode(ListSelectionModel.SINGLE_SELECTION );
-                            tblProperties.getSelectionModel().addListSelectionListener(this);
-                            tblProperties.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
-                            tblProperties.setDefaultRenderer(Object.class, new PropertiesTableRenderer());
-                            tblProperties.setColumnSelectionAllowed(false);
-                            tblProperties.setDefaultEditor(Object.class, null);
+                            ppropertiesTable = new JTable();
+                            scrollList.setViewportView(ppropertiesTable);
+                            ppropertiesTable.setModel(modelProperties);
+                            ppropertiesTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION );
+                            ppropertiesTable.getSelectionModel().addListSelectionListener(this);
+                            ppropertiesTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+                            ppropertiesTable.setDefaultRenderer(Object.class, new PropertiesTableRenderer());
+                            ppropertiesTable.setColumnSelectionAllowed(false);
+                            ppropertiesTable.setDefaultEditor(Object.class, null);
 
                             // 列幅設定
                             // 1列目:PropertyValue:非表示
                             {
-                                TableColumn col = tblProperties.getColumnModel().getColumn(0);
+                                TableColumn col = ppropertiesTable.getColumnModel().getColumn(0);
                                 col.setResizable(false);
                                 col.setMinWidth(0);
                                 col.setMaxWidth(0);
                             }
                             // 2列目:キー:非表示
                             {
-                                TableColumn col = tblProperties.getColumnModel().getColumn(1);
+                                TableColumn col = ppropertiesTable.getColumnModel().getColumn(1);
                                 col.setResizable(false);
                                 col.setMinWidth(0);
                                 col.setMaxWidth(0);
                             }
                             // 3列目:タイプ:非表示
                             {
-                                TableColumn col = tblProperties.getColumnModel().getColumn(2);
+                                TableColumn col = ppropertiesTable.getColumnModel().getColumn(2);
                                 col.setResizable(false);
                                 col.setMinWidth(0);
                                 col.setMaxWidth(0);
                             }
                             // 4列目:名前
                             {
-                                TableColumn col = tblProperties.getColumnModel().getColumn(3);
+                                TableColumn col = ppropertiesTable.getColumnModel().getColumn(3);
                                 col.setResizable(true);
                                 col.setMinWidth(130);
                             }
                             // 5列目:値
                             {
-                                TableColumn col = tblProperties.getColumnModel().getColumn(4);
+                                TableColumn col = ppropertiesTable.getColumnModel().getColumn(4);
                                 col.setResizable(true);
                                 col.setMinWidth(165);
                             }
                             // 6列目:メッセージ: 非表示
                             {
-                                TableColumn col = tblProperties.getColumnModel().getColumn(5);
+                                TableColumn col = ppropertiesTable.getColumnModel().getColumn(5);
                                 col.setResizable(false);
                                 col.setMinWidth(0);
                                 col.setMaxWidth(0);
                             }
                             // 7列目:メッセージ: 非表示
                             {
-                                TableColumn col = tblProperties.getColumnModel().getColumn(6);
+                                TableColumn col = ppropertiesTable.getColumnModel().getColumn(6);
                                 col.setResizable(false);
                                 col.setMinWidth(0);
                                 col.setMaxWidth(0);
@@ -485,11 +485,11 @@ public class SettingProjectDialog extends javax.swing.JDialog implements ActionL
 
             return;
         }
-        // 更新
+        // 更新 / Update
         else if (event.getSource() == this.btnReg ) {
             // 設定値をテーブルに設定する
             // 選択行を取得する。
-            int selectedrow = this.tblProperties.getSelectedRow();
+            int selectedrow = this.ppropertiesTable.getSelectedRow();
             if (selectedrow < 0) return;
             if (selectedvalue == null) return;
 
@@ -519,7 +519,7 @@ public class SettingProjectDialog extends javax.swing.JDialog implements ActionL
         	//if (debug) System.out.println("\tProject settings file set to "+ properties.getSettingsFile());
         	
         	// Update GUI table
-        	int selectedrow = this.tblProperties.getSelectedRow();
+        	int selectedrow = this.ppropertiesTable.getSelectedRow();
             if (selectedrow < 0) return;
             if (selectedvalue == null) return;
             int col = 4;
@@ -848,9 +848,9 @@ public class SettingProjectDialog extends javax.swing.JDialog implements ActionL
 
 	@Override
 	public void valueChanged(ListSelectionEvent event) {
-		if (event.getSource() == this.tblProperties.getSelectionModel()) {
+		if (event.getSource() == this.ppropertiesTable.getSelectionModel()) {
             // 選択行を取得する。
-            int selectedrow = this.tblProperties.getSelectedRow();
+            int selectedrow = this.ppropertiesTable.getSelectedRow();
             if (selectedrow < 0) return;
             if (debug) System.out.println("Selected row "+selectedrow+ " key="+this.modelProperties.getValueAt(selectedrow, 1)+ " type="+this.modelProperties.getValueAt(selectedrow, 2));
             

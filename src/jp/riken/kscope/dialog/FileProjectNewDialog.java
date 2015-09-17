@@ -1601,6 +1601,10 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
         // ラジオボタン　中間コード選択
         else if (event.getSource() == this.radioFullMode) {
             if (this.radioFullMode.isSelected()) {
+            	if (radioGenXML.isSelected()) {
+            	// Enable checkUseRemote
+            		checkUseRemote.setEnabled(true);
+            	}
                 // すでにフォートランが設定されている場合はクリア
                 DefaultListModel<String> model = (DefaultListModel<String>) this.listProjectXml.getModel();
                 if (model.getSize() > 0) {
@@ -1623,6 +1627,8 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
         // ラジオボタン 簡易モード選択
         else if (event.getSource() == this.radioSimpleMode) {
             if (this.radioSimpleMode.isSelected()) {
+            	// Disable checkUseRemote
+            	checkUseRemote.setEnabled(false);
                 // すでに中間コードが設定されている場合はクリア
                 DefaultListModel<String> model = (DefaultListModel<String>) this.listProjectXml.getModel();
                 if (model.getSize() > 0) {
