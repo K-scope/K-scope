@@ -175,6 +175,9 @@ public class RemoteBuildProperties extends PropertiesBase {
     public void loadProperties(InputStream stream ) throws Exception {
         // XMLファイルのパース
         RB_data_list = parseRBProperty(stream, "//project");
+        if (!checkRBdata) {
+        	
+        }
     }
 
 

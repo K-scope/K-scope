@@ -202,7 +202,7 @@ public class FileProjectOpenAction extends ActionBase {
              }
 
         } catch (Exception e) {
-            // e.printStackTrace();
+            if (debug) e.printStackTrace();
             // エラーメッセージ
             JOptionPane.showMessageDialog(frame,
                     Message.getString("fileprojectopenaction.openproject.openerr.dialog.message"), //プロジェクトのオープンエラー

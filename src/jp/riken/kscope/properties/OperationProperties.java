@@ -112,6 +112,11 @@ public class OperationProperties extends PropertiesBase {
 
         // XMLファイルのパース
         List<OperationCount> list = parseOperation(document, "//operation");
+        
+        // For compatibility with older projects
+        if (list == null) {
+        	list = parseOperation(document, "//operand");
+        }
 
         // PropertiesクラスのHashTableに追加する
         // キーは組込み関数名(=name)とする
