@@ -80,16 +80,8 @@ public class RemoteBuildProperties extends PropertiesBase {
 	public static String FILE_FILTER = "file_filter";
     public static String PREPROCESS_FILES = "preprocess_files";
 	
-	private boolean remote_build_possible = false; // Can project be built on a remote server or not?
 	public boolean remote_settings_found = false; // True if files with remote settings are found
-	private boolean use_remote_build = false; // True if user checked checkUseRemote button on New Project dialog
-	/*
-     * Two flags show if we have external programs necessary to build code on remote server
-     * */
-    private boolean haveDockerIaaS = false;
-    private boolean haveSSHconnect = false;
-    
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
 	/** キーワード(ハイライト)設定リスト */
     private List<RemoteBuildData> RB_data_list = new ArrayList<RemoteBuildData>();
@@ -103,10 +95,8 @@ public class RemoteBuildProperties extends PropertiesBase {
     public RemoteBuildProperties() throws Exception {
     	if (debug) debug_l2 = (System.getenv("DEBUG").equalsIgnoreCase("high"));
         loadProperties();   
-        // set Remote Build is possible Flag to TRUE if either SSHconnect or connect.sh for DockerIaaS are present
-		this.haveDockerIaaS = checkDockerIaaS();
-		this.haveSSHconnect = checkSSHconnect();
-		this.remote_build_possible = (this.haveDockerIaaS || this.haveSSHconnect); 
+        checkDockerIaaS();
+		checkSSHconnect(); 
     }
     
     /**
@@ -152,38 +142,12 @@ public class RemoteBuildProperties extends PropertiesBase {
         //}
     }
 
-
-    /**
-     * キーワード(ハイライト)設定リストを取得する。
-     * @return		ハイライト設定リスト
-     */
-    public List<RemoteBuildData> getList() {
-        return RB_data_list;
-    }
-
-    
+   
     /**
      * キーワード(ハイライト)リストをクリアする。
      */
     public void clearList() {
         RB_data_list = new ArrayList<RemoteBuildData>();
-    }
-
-    /**
-     * 検索Keyと一致するRemoteBuildData情報を取得する
-     * @param key	Property key (name)
-     * @return		Property情報
-     */
-    public RemoteBuildData getPropertySet(String key) {
-        if (key == null || key.isEmpty()) return null;
-
-        for (RemoteBuildData rb_property_set : RB_data_list) {
-        	String k = rb_property_set.getKey();
-        	if (k.equalsIgnoreCase(key)) {
-        		return rb_property_set;
-        	}
-        }
-        return null;
     }
 
     /**
@@ -219,7 +183,7 @@ public class RemoteBuildProperties extends PropertiesBase {
                 
                 // 属性の取得
                 NamedNodeMap attrs = node.getAttributes();
-                Node attrnode_key,attrnode_value,attrnode_type,attrnode_description;
+                Node attrnode_key,attrnode_value,attrnode_description;
                 String key = null;
                 String value = null;
                 String commandline_option = null;
@@ -332,7 +296,7 @@ public class RemoteBuildProperties extends PropertiesBase {
 	 * @return remote/<settings file>.yml
 	 */
 	public static String locateRemoteSettingsFile(String str) {
-		String filename = "remote/"+str+".yml";
+		String filename = REMOTE_SETTINGS_DIR+"/"+str+".yml";
 		//System.out.println("File name is "+ filename);
 		//System.out.println("Looking in " + new File(System.getProperty("user.dir")));
 		return filename;

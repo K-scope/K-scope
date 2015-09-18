@@ -148,8 +148,8 @@ public class ProjectProperties extends PropertiesBase {
     	if (debug) debug_l2 = (System.getenv("DEBUG").equalsIgnoreCase("high"));
         loadProperties();
         // set Remote Build is possible Flag to TRUE if either SSHconnect or connect.sh for DockerIaaS are present
-     	//this.haveDockerIaaS = checkDockerIaaS();
-     	//this.haveSSHconnect = checkSSHconnect();
+     	this.haveDockerIaaS = checkDockerIaaS();
+     	this.haveSSHconnect = checkSSHconnect();
      	this.remote_settings_found = (this.haveDockerIaaS || this.haveSSHconnect);
     }
 
@@ -746,7 +746,7 @@ public class ProjectProperties extends PropertiesBase {
     private static boolean checkDockerIaaS() {
         File f = new File(docker_iaas_file);
         if (f.exists()) {
-            System.out.println(f.getAbsolutePath());
+            if (debug_l2) System.out.println("PP.checkDockerIaaS() "+f.getAbsolutePath());
             return true;
         }
         return false;
@@ -758,7 +758,7 @@ public class ProjectProperties extends PropertiesBase {
     private static boolean checkSSHconnect() {
         File f = new File(sshconnect_file);
         if (f.exists()) {
-            System.out.println(f.getAbsolutePath());
+            if (debug_l2) System.out.println("PP.checkSSHconnect() "+f.getAbsolutePath());
             return true;
         }
         return false;
