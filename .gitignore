@@ -16,7 +16,7 @@
 !README.txt
 !/*.md
 !*.sh
-!ks
+!kscope
 !SSHconnect.jar
 
 ## ignore
