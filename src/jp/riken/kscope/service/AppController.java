@@ -150,7 +150,7 @@ public class AppController implements PropertyChangeListener {
      */
     public AppController() throws Exception {
     	if (this.rb_properties == null) {
-    		this.rb_properties = new RemoteBuildProperties(this);        		
+    		this.rb_properties = new RemoteBuildProperties();        		
     	}
     }
 
@@ -798,30 +798,7 @@ public class AppController implements PropertyChangeListener {
         // キーワードを設定する
         this.getMainframe().getPanelSourceView().setSearchWords(words);
     }
-    
-    /**
-     * Set settings file path to RemoteBuildProperties rb_properties
-     * @param path
-     */
-    /*public void setSettingsFile(String path) {
-    	this.rb_properties.setSettingsFile(path);
-    }*/
-    
-    /*
-     * Use these functions to check if remote build is possible
-     * */
-    public boolean haveDockerIaaS() {
-        return this.rb_properties.haveDockerIaaS();
-    }
-    
-    public boolean haveSSHconnect() {
-    	return this.rb_properties.haveSSHconnect();
-    }
-    
-    public boolean remoteBuild() {
-    	return this.rb_properties.useRemoteBuild();
-    }
-    
+   
 
     /**
      * 構造ツリーフィルタリストを取得する

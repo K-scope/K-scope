@@ -60,6 +60,9 @@ public class RemoteBuildProperties extends PropertiesBase {
 	 * If these files are present in the current directory (with kscope.jar), 
 	 * we set flags haveDockerIaaS and haveSSHconnect to TRUE.
 	 */
+	private static Boolean debug=(System.getenv("DEBUG")!= null);
+    private static boolean debug_l2 = false;
+	
 	private static String docker_iaas_file = "connect.sh";
 	private static String sshconnect_file = "SSHconnect.jar";
 	public static String REMOTE_SETTINGS_DIR = "remote";
@@ -92,45 +95,13 @@ public class RemoteBuildProperties extends PropertiesBase {
     private List<RemoteBuildData> RB_data_list = new ArrayList<RemoteBuildData>();
 	
 	private InputStream is=null;
-	private AppController controller; // Used to get other properties (ProjectProperties)
-	
-	private static HashMap<String,String> options_map;
-    static {
-    	options_map = new HashMap<String, String>();
-    	options_map.put("server_address", "-h");
-    	options_map.put("port", "-p");
-    	options_map.put("user", "-u");
-    	options_map.put("password", "-pw");
-    	options_map.put("key", "-k");
-    	options_map.put("passphrase", "-ph");
-    	options_map.put("add_path", "-a");
-    	options_map.put("remote_path", "-rp");
-    	
-    	options_map.put("local_path", "-l");
-    	options_map.put("build-command", "-m");
-    	options_map.put("product_pattern", "-dp");
-    	options_map.put("command_pattern", "-cp");
-    }
-    
-    private static HashMap<String,String> options_map_docker;
-    static {
-    	options_map_docker = new HashMap<String, String>();
-    	options_map_docker.put("server_address", "-h");
-    	options_map_docker.put("user", "-u");
-    	options_map_docker.put("key", "-k");
-    	options_map_docker.put("add_path", "-a");
-    	options_map_docker.put("local_path", "-l");
-    	options_map_docker.put("build-command", "-m");
-    }
-    
-    private static Boolean debug=(System.getenv("DEBUG")!= null);
     
    	/**
      * コンストラクタ
      * @throws Exception     プロパティ読込エラー
      */
-    public RemoteBuildProperties(AppController controller) throws Exception {
-    	this.controller = controller;
+    public RemoteBuildProperties() throws Exception {
+    	if (debug) debug_l2 = (System.getenv("DEBUG").equalsIgnoreCase("high"));
         loadProperties();   
         // set Remote Build is possible Flag to TRUE if either SSHconnect or connect.sh for DockerIaaS are present
 		this.haveDockerIaaS = checkDockerIaaS();
@@ -340,76 +311,6 @@ public class RemoteBuildProperties extends PropertiesBase {
         }
     }
 
-    /**
-     * Format command line options for remote build call
-     * @param Remote build settings file path
-     * @return string with command line options
-     */
-    public String[] getCommandLineOptions(String RS) {
-    	if (debug) {
-    		checkData();
-    	}
-    	String service = getRemoteService();
-    	ProjectProperties pp = this.controller.getPropertiesProject();
-    	List<String> command_options = new ArrayList<String>();
-    	String value = pp.getBuildCommand();
-    	try {
-			if (value.length() > 0) {
-				command_options.add("-m");
-				command_options.add("\""+value+"\"");
-			} else {
-				System.err.println("Build command is empty.");
-			}
-		} catch (NullPointerException e) {
-			System.err.println("Build command is null.");
-		} 
-    	for (RemoteBuildData rbdata : this.RB_data_list) {
-    		String commandline_option = rbdata.getCommandlineOption();
-    		value = null;
-    		// Get other properties from RemoteBuildProperties
-			value = rbdata.getValue();
-    		try {
-    			if (value.length() > 0) {    				
-    				if (rbdata.getKey().equalsIgnoreCase(RemoteBuildProperties.SETTINGS_FILE)) {
-    					// Add CLI options from file
-    					String settings_file = value;    					
-    					try {	    					
-    						// Add all values from YAML file to command_option 
-	    				    // prefixed with CLI options from options Map
-    						
-    						Map<String, String> map = getSettingsFromFile(settings_file);
-	    				    Iterator<java.util.Map.Entry<String, String>> iterator = map.entrySet().iterator();	    				    
-	    				    while (iterator.hasNext()) {
-	    				    	Map.Entry<String, String> entry = (Map.Entry<String, String>)iterator.next();
-	    				    	command_options = addCLoption(command_options, entry);
-	    				    }
-    					}
-    					catch (FileNotFoundException e) {
-    						System.out.println(settings_file+ " not found");
-    						//return null;
-    					}    					
-    				}    				
-    				else {
-    					if (service.indexOf("docker") >= 0) {
-    						String key = rbdata.getKey(); 
-    						if (key.equalsIgnoreCase(PREPROCESS_FILES) || key.equalsIgnoreCase(FILE_FILTER)) {
-    							System.out.println("Otion "+ key + " is not used for "+ service+ ". Option is ignored.");
-    							continue;
-    						}
-        				}
-    					command_options.add(commandline_option);
-    					command_options.add("\""+value+"\"");
-    				}
-    			} 
-    		} catch (NullPointerException e) {
-    			System.out.println("Remote build option "+rbdata.getKey()+" is null.");
-    		} 
-    	}
-    	String[] result=command_options.toArray(new String[0]);
-    	System.out.println("Command line options: " + Arrays.toString(result));
-    	return result;
-    }
-
 	/**
 	 * Returns parameters as a Map from YAML file
 	 * @param settings_file
@@ -423,70 +324,6 @@ public class RemoteBuildProperties extends PropertiesBase {
 		@SuppressWarnings("unchecked")	    				    
 		Map<String, String> map = (Map<String, String>) yaml.load(input);
 		return map;
-	}
-	
-	/**
-	 * @return Map with new command option added
-	 * @param command_options list
-	 * @param new option to be added to map 
-	 * @param new option value
-	 */
-	private List<String> addCLoption(List<String> command_options,	Map.Entry<String, String> entry) {
-		String value = null;
-		Object v = entry.getValue();
-		try {
-			value = (String)v;
-		}
-		catch (ClassCastException e) {
-			try {
-				value = String.valueOf(v);
-			}
-			catch (ClassCastException ex) {
-				System.err.println("Undefined type of parameter value: " + v);
-				ex.printStackTrace();
-				return command_options;
-			}
-		}			
-		if (debug) {
-			System.out.println("entry: " + entry.getKey() + " = "+value);
-		}
-		// Ignore description
-		if (entry.getKey().equalsIgnoreCase("description")) {
-			return command_options;
-		}
-		if (value == null || value.equalsIgnoreCase("null")) {
-			System.out.println("Entry ignored");
-			return command_options;
-		}
-		String option =  getCLIoption(entry.getKey());
-		if (option == null) return command_options;
-		command_options.add(option);
-		command_options.add(value);
-		return command_options;
-	}
-
-	/**
-	 * Get CLI option for given parameter name
-	 * @param key -- parameter name, key for map options_map.
-	 * @return CLI option
-	 */
-	private String getCLIoption(String key) {
-		
-		String option = "";
-		String service = getRemoteService();
-		if (debug) {
-			System.out.println("RS "+ service);
-		}
-		if (service.indexOf("sshconnect") >= 0) {
-			option = options_map.get(key);
-		} 
-		else if (service.indexOf("docker") >= 0) {
-			option = options_map_docker.get(key);
-			if (option == null) {
-				System.out.println("Option " + key+ " not used for Docker IaaS tools. Option is ignored.");
-			}
-		}
-		return option;
 	}
 
 	/**
@@ -664,7 +501,7 @@ public class RemoteBuildProperties extends PropertiesBase {
     private static boolean checkDockerIaaS() {
         File f = new File(docker_iaas_file);
         if (f.exists()) {
-            System.out.println(f.getAbsolutePath());
+            if (debug_l2) System.out.println("checkDockerIaaS() "+f.getAbsolutePath());
             return true;
         }
         return false;
@@ -676,34 +513,12 @@ public class RemoteBuildProperties extends PropertiesBase {
     private static boolean checkSSHconnect() {
         File f = new File(sshconnect_file);
         if (f.exists()) {
-            System.out.println(f.getAbsolutePath());
+        	if (debug_l2) System.out.println("checkSSHconnect() "+f.getAbsolutePath());
             return true;
         }
         return false;
     }
     
-    /*
-     * Use these functions to check if remote build is possible
-     * */
-    public boolean haveDockerIaaS() {
-        return this.haveDockerIaaS;
-    }
-    
-    public boolean haveSSHconnect() {
-    	return this.haveSSHconnect;
-    }
-    
-    public boolean remoteBuildPossible() {
-    	return this.remote_build_possible && this.remote_settings_found;
-    }
-    
-    public boolean useRemoteBuild() {
-    	return this.remote_build_possible && this.remote_settings_found && this.use_remote_build;
-    }
-    
-    public void setRemoteBuild(boolean useRB) {
-    	this.use_remote_build = useRB;
-    }
     
 	@Override
 	public void firePropertyChange() {}

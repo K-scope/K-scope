@@ -148,8 +148,8 @@ public class ProjectProperties extends PropertiesBase {
     	if (debug) debug_l2 = (System.getenv("DEBUG").equalsIgnoreCase("high"));
         loadProperties();
         // set Remote Build is possible Flag to TRUE if either SSHconnect or connect.sh for DockerIaaS are present
-     	this.haveDockerIaaS = checkDockerIaaS();
-     	this.haveSSHconnect = checkSSHconnect();
+     	//this.haveDockerIaaS = checkDockerIaaS();
+     	//this.haveSSHconnect = checkSSHconnect();
      	this.remote_settings_found = (this.haveDockerIaaS || this.haveSSHconnect);
     }
 
