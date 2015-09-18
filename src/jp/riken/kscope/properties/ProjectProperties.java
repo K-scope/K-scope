@@ -651,6 +651,14 @@ public class ProjectProperties extends PropertiesBase {
     public void setBuildCommand(String build_command) {
     	setValueByKey(BUILD_COMMAND, build_command);
 	}
+    
+    /**
+     * Save cleam command to project properties class instance
+     * @param cc - clean command
+     */
+    public void setCleanCommand(String cc) {
+    	setValueByKey(CLEAN_COMMAND, cc);
+    }
 
     /**
      * プロジェクトタイトルの設定

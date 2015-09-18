@@ -170,6 +170,7 @@ public class FileProjectNewAction extends ActionBase {
         	//String makeCom = dialog.getMakeCommand();  // make command as set in New Project dialog. Full path if executable file. 
         	//String makefilePath = dialog.getMakefilePath(); // path to makefile as set in New Project dialog. If set " " (space), makefilePath = " ".
         	String build_command = dialog.getBuildCommand(); // build command as set in text field in New Project dialog.
+        	String clean_command = dialog.getCleanCommand(); // clean command as set in text field in New Project dialog.
         	
             // プロジェクトを閉じる
             FileProjectCloseAction closeAction = new FileProjectCloseAction(this.controller);
@@ -247,7 +248,9 @@ public class FileProjectNewAction extends ActionBase {
                 work = project.getProjectFolder();
                 
                 // プロジェクトプロパティ設定
-                this.controller.getPropertiesProject().setBuildCommand(build_command);
+                ProjectProperties pp = this.controller.getPropertiesProject();
+                pp.setBuildCommand(build_command);
+                pp.setCleanCommand(clean_command);
                 
                 if (rs_file != null && rs_file.length()>0) { // Set command line options for remote build command
                 	//rb_properties = this.controller.getRBproperties();

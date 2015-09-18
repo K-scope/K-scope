@@ -139,8 +139,9 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
     /** 選択XMLフォルダ・ファイル削除ボタン */
     private JButton manage_settings_files;
         
-    /** ビルドコマンド 参照ボタン */
+    /** build command and clean command 参照ボタン */
     private JButton btnMakeCmd;
+    private JButton btnCleanCmd;
     /** XML パネル説明文 */
     private JTextArea txaXMLPanelDesc;
     /** XML パネル　ラベル */
@@ -173,6 +174,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
     private final java.awt.Dimension REFER_BUTTON_SIZE = new java.awt.Dimension(64, 22);
     /** ビルドコマンドテキストボックス */
     private JTextField txtBuildCommand;
+    private JTextField txtCleanCommand;
     
     /**
      * コンストラクタ
@@ -754,49 +756,61 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
         panelContent.setLayout(jPanel2Layout);
         panelContent.setBorder(new EmptyBorder(7, 7, 0, 7));
 
-        // 説明文
+        // 説明文 1
         {
-            JLabel label = new JLabel(Message.getString("fileprojectnewdialog.statuspanel.make_long")); //中間コードのビルド連携の設定
-            panelContent.add(label, new GridBagConstraints(1, 0, 2, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
+        	JLabel label = new JLabel(Message.getString("fileprojectnewdialog.statuspanel.make_long")); //中間コードのビルド連携の設定
+        	panelContent.add(label, new GridBagConstraints(1, 0, 2, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
         }
 
-        //ビルドコマンド
+        // 説明文 2
         {
-            JPanel panelMakeCmd = new JPanel();
-            GridBagLayout layoutMakeCmd = new GridBagLayout();
-            layoutMakeCmd.rowWeights = new double[]{0.1};
-            layoutMakeCmd.rowHeights = new int[]{7};
-            layoutMakeCmd.columnWeights = new double[]{1.0, 0.0};
-            layoutMakeCmd.columnWidths = new int[]{7, 7};
-            panelMakeCmd.setLayout(layoutMakeCmd);
+        	JTextArea text = new JTextArea(Message.getString("fileprojectnewdialog.makefilepanel.desc")); //実行するビルドコマンドを選択してください。
+        	text.setLineWrap(true);
+        	text.setWrapStyleWord(true);
+        	text.setOpaque(false);
+        	text.setEditable(false);
+        	panelContent.add(text, new GridBagConstraints(1, 1, 2, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(7, 0, 10, 0), 0, 0));
+        }
 
+        // Build command
+        {
             panelContent.add(new JLabel(Message.getString("fileprojectnewdialog.makefilepanel.label.makecommand")), //ビルドコマンド
-                    new GridBagConstraints(1, 2, 1, 1, 0.0, 0.0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 7, 0, 7), 0, 0));
+                    new GridBagConstraints(1, 2, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 7, 0, 7), 0, 0));
             txtBuildCommand = new JTextField();
-            panelMakeCmd.add(txtBuildCommand,
-                    new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
             btnMakeCmd = new JButton();
-            panelMakeCmd.add(btnMakeCmd,
-                    new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
             btnMakeCmd.setText(Message.getString("dialog.common.button.refer")); //参照
             btnMakeCmd.setPreferredSize(REFER_BUTTON_SIZE);
             btnMakeCmd.setMinimumSize(REFER_BUTTON_SIZE);
             btnMakeCmd.setMaximumSize(REFER_BUTTON_SIZE);
             btnMakeCmd.setMargin(new Insets(0, 3, 0, 3));
             btnMakeCmd.addActionListener(this);
-            panelContent.add(panelMakeCmd,
-                    new GridBagConstraints(2, 2, 2, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
+            panelContent.add(txtBuildCommand,
+            		new GridBagConstraints(2, 2, 2, 1, 0.0, 0.0, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
+            panelContent.add(btnMakeCmd,
+            		new GridBagConstraints(4, 2, 1, 1, 0.0, 0.0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
+        }
+        
+        // Clean command
+        {
+        	panelContent.add(new JLabel(Message.getString("fileprojectnewdialog.makefilepanel.clean-command.dsc")), // Clean command description
+                    new GridBagConstraints(1, 3, 4, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
+            panelContent.add(new JLabel(Message.getString("fileprojectnewdialog.makefilepanel.clean-command.name")), // Clean command
+                    new GridBagConstraints(1, 4, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 7, 0, 7), 0, 0));
+            txtCleanCommand = new JTextField();
+            btnCleanCmd = new JButton();
+            btnCleanCmd.setText(Message.getString("dialog.common.button.refer")); //参照
+            btnCleanCmd.setPreferredSize(REFER_BUTTON_SIZE);
+            btnCleanCmd.setMinimumSize(REFER_BUTTON_SIZE);
+            btnCleanCmd.setMaximumSize(REFER_BUTTON_SIZE);
+            btnCleanCmd.setMargin(new Insets(0, 3, 0, 3));
+            btnCleanCmd.addActionListener(this);
+            panelContent.add(txtCleanCommand,
+            		new GridBagConstraints(2, 4, 2, 1, 0.0, 0.0, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
+            panelContent.add(btnCleanCmd,
+            		new GridBagConstraints(4, 4, 1, 1, 0.0, 0.0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
         }
 
-        // 説明文
-        {
-            JTextArea text = new JTextArea(Message.getString("fileprojectnewdialog.makefilepanel.desc")); //実行するビルドコマンドを選択してください。
-            text.setLineWrap(true);
-            text.setWrapStyleWord(true);
-            text.setOpaque(false);
-            text.setEditable(false);
-            panelContent.add(text, new GridBagConstraints(1, 1, 2, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(7, 0, 10, 0), 0, 0));
-        }
+        
 
         return panelContent;
     }
@@ -871,19 +885,25 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
                 panelContent.add(new JLabel(Message.getString("fileprojectnewdialog.makefilepanel.label.makecommand")), //Makeコマンド
                         new GridBagConstraints(1, row, 1, 1, 0.0, 0.0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 0, 7), 0, 0));
                 makecmd = this.txtBuildCommand.getText();
-                /*String filename = this.txtMakefile.getText();
-                 if (!filename.isEmpty()) {
-                 File file = new File(filename);
-                 filename = file.getName();
-                 makecmd += " -f " + filename;
-                 }
-                 else {
-                 makecmd = "";
-                 }*/
                 JLabel label = new JLabel(makecmd);
                 panelContent.add(label, new GridBagConstraints(2, row, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
             }
         }
+        
+     // Clean command
+        String cleancmd = null;
+        if (isGenerateIntermediateCode()) {
+            row++;
+            {
+                panelContent.add(new JLabel(Message.getString("fileprojectnewdialog.makefilepanel.clean-command.name")), // Clean command
+                        new GridBagConstraints(1, row, 1, 1, 0.0, 0.0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 0, 7), 0, 0));
+                cleancmd = this.txtCleanCommand.getText();
+                JLabel label = new JLabel(cleancmd);
+                panelContent.add(label, new GridBagConstraints(2, row, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
+            }
+        }
+        
+        
         // 中間コード　or フォートランソース
         row++;
         {
@@ -1362,37 +1382,37 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
             // 中間コードやMakefileが設定されている状態でプロジェクトフォルダが変更された場合は相対パスに注意
             String prjF = this.txtProjectFolder.getText();
             if (!StringUtils.isNullOrEmpty(prjF)) {
-                String prjFNew = selected[0].getAbsolutePath();
-                if (!prjF.equals(prjFNew)) {
-                    DefaultListModel<String> model = (DefaultListModel<String>) this.listProjectXml.getModel();
-                    String mk = null;
-                    if (isGenerateIntermediateCode()) {
-                        mk = this.txtBuildCommand.getText();
-                    }
-                    if (model.size() > 0 || !StringUtils.isNullOrEmpty(mk)) {
-                        String desc = Message.getString("fileprojectnewdialog.confirmdialog.projectfolderchange.xmlclear.message"); //プロジェクトフォルダが変更されました。すでに設定されている中間コードは...
-                        if (isSelectedSimpleMode()) {
-                            desc = Message.getString("fileprojectnewdialog.confirmdialog.projectfolderchange.fortranclear.message"); //プロジェクトフォルダが変更されました。すでに設定されているフォートランファイルは...
-                        } else {
-                            if (!StringUtils.isNullOrEmpty(mk) && model.size() > 0) {
-                                desc = Message.getString("fileprojectnewdialog.confirmdialog.projectfolderchange.makefileandxmlclear.message"); //プロジェクトフォルダが変更されました。すでに設定されているMakefileと中間コードは...
-                            } else if (!StringUtils.isNullOrEmpty(mk)) {
-                                desc = Message.getString("fileprojectnewdialog.confirmdialog.projectfolderchange.makefileclear.message"); //プロジェクトフォルダが変更されました。すでに設定されているMakefileは...
-                            }
-                        }
+            	String prjFNew = selected[0].getAbsolutePath();
+            	if (!prjF.equals(prjFNew)) {
+            		DefaultListModel<String> model = (DefaultListModel<String>) this.listProjectXml.getModel();
+            		String mc = null;
+            		if (isGenerateIntermediateCode()) {
+            			mc = this.txtBuildCommand.getText();
+            		}
+            		if (model.size() > 0 || !StringUtils.isNullOrEmpty(mc)) {
+            			String desc = Message.getString("fileprojectnewdialog.confirmdialog.projectfolderchange.xmlclear.message"); //プロジェクトフォルダが変更されました。すでに設定されている中間コードは...
+            			if (isSelectedSimpleMode()) {
+            				desc = Message.getString("fileprojectnewdialog.confirmdialog.projectfolderchange.fortranclear.message"); //プロジェクトフォルダが変更されました。すでに設定されているフォートランファイルは...
+            			} else {
+            				if (!StringUtils.isNullOrEmpty(mc) && model.size() > 0) {
+            					desc = Message.getString("fileprojectnewdialog.confirmdialog.projectfolderchange.makefileandxmlclear.message"); //プロジェクトフォルダが変更されました。すでに設定されているMakefileと中間コードは...
+            				} else if (!StringUtils.isNullOrEmpty(mc)) {
+            					desc = Message.getString("fileprojectnewdialog.confirmdialog.projectfolderchange.makefileclear.message"); //プロジェクトフォルダが変更されました。すでに設定されているMakefileは...
+            				}
+            			}
 
-                        int ret = JOptionPane.showConfirmDialog(this, desc,
-                                Message.getString("fileprojectnewdialog.confirmdialog.projectfolderchange.title"), //プロジェクトフォルダの変更
-                                JOptionPane.WARNING_MESSAGE, JOptionPane.YES_NO_OPTION);
-                        if (ret == JOptionPane.YES_OPTION) {
-                            if (model.size() > 0) {
-                                model.clear();
-                            }
-                        } else {
-                            return;
-                        }
-                    }
-                }
+            			int ret = JOptionPane.showConfirmDialog(this, desc,
+            					Message.getString("fileprojectnewdialog.confirmdialog.projectfolderchange.title"), //プロジェクトフォルダの変更
+            					JOptionPane.WARNING_MESSAGE, JOptionPane.YES_NO_OPTION);
+            			if (ret == JOptionPane.YES_OPTION) {
+            				if (model.size() > 0) {
+            					model.clear();
+            				}
+            			} else {
+            				return;
+            			}
+            		}
+            	}
             }
 
             // 選択プロジェクトフォルダが既存プロジェクトであるかチェックする。
@@ -1520,7 +1540,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
                 if (path.length() > 0) {
                     String text_make_comm = this.txtBuildCommand.getText();
                     if (!StringUtils.isNullOrEmpty(text_make_comm)) {
-                        text_make_comm = text_make_comm + " " + path;
+                        text_make_comm = text_make_comm + " " + "./'" + path + "'";
                     } else {
                         text_make_comm = "./'" + path + "'";
                     }
@@ -1528,6 +1548,34 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
                 }
             }
         }
+        // Clean command Refer button
+        else if (event.getSource() == this.btnCleanCmd) {
+        	File[] selected = SwingUtils.showOpenFileDialog(this,
+                    Message.getString("fileprojectnewdialog.selectfiledialog.cleancommand.title"), // Dialog title for refer clean command
+                    currentFolder, null, false);
+            if (selected == null || selected.length <= 0 || selected[0] == null) {
+                return;
+            }
+            for (File file : selected) {
+                String path = "";
+                try {
+                    path = file.getCanonicalPath();
+                    path = FileUtils.getRelativePath(this.txtProjectFolder.getText(), path);
+                } catch (IOException e) {
+                    return;
+                }
+                if (path.length() > 0) {
+                    String text_clean_comm = this.txtCleanCommand.getText();
+                    if (!StringUtils.isNullOrEmpty(text_clean_comm)) {
+                    	text_clean_comm = text_clean_comm + " " + "./'" + path + "'";
+                    } else {
+                    	text_clean_comm = "./'" + path + "'";
+                    }
+                    this.txtCleanCommand.setText(text_clean_comm);
+                }
+            }
+        }
+        
         // 次へ
         else if (event.getSource() == this.btnNext) {
             if (!checkParams(this.wizardIndex)) {
@@ -2040,6 +2088,15 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
      */
     public String getBuildCommand() {
         return this.txtBuildCommand.getText();
+    }
+    
+    /**
+     * Return clean command
+     *
+     * @return clean command as a String
+     */
+    public String getCleanCommand() {
+        return this.txtCleanCommand.getText();
     }
     
     /**
