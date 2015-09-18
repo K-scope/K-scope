@@ -69,7 +69,6 @@ import jp.riken.kscope.action.ProjectSettingRequiredBFAction;
 import jp.riken.kscope.action.ProjectSettingOperationAction;
 import jp.riken.kscope.action.ProjectSettingProfilerAction;
 import jp.riken.kscope.action.ProjectSettingProjectAction;
-import jp.riken.kscope.action.ProjectSettingDockerAction;
 import jp.riken.kscope.action.ProjectSettingToolsAction;
 import jp.riken.kscope.action.ProjectSettingViewAction;
 import jp.riken.kscope.action.SearchFindAction;
@@ -395,16 +394,6 @@ public class MainMenu extends JMenuBar implements  MenuListener {
         JMenuItem menuProjectSettingRequiredBF = new JMenuItem(Message.getString("mainmenu.project.config.requiredbf"));//要求Bye/FLOP
         menuProjectSetting.add(menuProjectSettingRequiredBF);
         menuProjectSettingRequiredBF.addActionListener(new ProjectSettingRequiredBFAction(this.controller));
-        /*
-        if (this.controller.haveDockerIaaS() || this.controller.haveSSHconnect()) {
-        	// セパレータ
-        	menuProjectSetting.addSeparator();
-        	// Remote connection
-        	JMenuItem menuProjectSettingSSH = new JMenuItem(Message.getString("mainmenu.project.config.server")); 
-        	menuProjectSetting.add(menuProjectSettingSSH);
-        	// Before remote settings manager is implemented remove action listener for this menu 
-        	menuProjectSettingSSH.addActionListener(new ProjectSettingDockerAction(this.controller));
-        }*/
         
         // 分析
         JMenu menuAnalysis = new JMenu(Message.getString("mainmenu.analysis"));//分析

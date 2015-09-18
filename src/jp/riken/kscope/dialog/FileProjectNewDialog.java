@@ -66,7 +66,6 @@ import javax.swing.border.EtchedBorder;
 import javax.swing.border.LineBorder;
 
 import jp.riken.kscope.Message;
-import jp.riken.kscope.action.ProjectSettingDockerAction;
 import jp.riken.kscope.common.Constant;
 import jp.riken.kscope.data.FILE_TYPE;
 import jp.riken.kscope.gui.MainFrame;
