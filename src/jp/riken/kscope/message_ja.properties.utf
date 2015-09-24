@@ -131,16 +131,16 @@ property.project.clean-command.name=クリーンコマンド
 property.project.clean-command.message=中間コードを削除するためのコマンド
 property.project.title.name=タイトル
 property.project.title.message=
-property.project.is_remote.name=サーバを使用して中間コードを作成
+property.project.is_remote.name=リモートサーバ上で中間コードを作成する
 property.project.is_remote.message=SSH経由でリモートサーバーで中間コードを生成する
 property.project.local_path.name=ローカルパス
 property.project.local_path=ローカルコンピュータ上のプロジェクトへのパス
 
 property.remotebuild.file_filter=中間コード生成に不要なファイルを転送から除外することができます。ファイル名にはワイルドカードが使用できます。（例：*.o, Makefile*）
 property.remotebuild.preprocess_files=サーバの絶対パスに置き換えるべきプレースホルダのあるファイル
-property.remotebuild.settings_file=サーバ設定のYAMLファイルへのパス
-property.remotebuild.settings_file.name=設定ファイル
-property.remotebuild.settings_file.message=サーバへ接続するための設定ファイル
+property.remotebuild.settings_file=リモート設定のYAMLファイルへのパス
+property.remotebuild.settings_file.name=リモート設定ファイル
+property.remotebuild.settings_file.message=リモートサーバへ接続するための設定ファイル
 
 ## Remote build settings dialog
 remotebuildsettingdialog.title = サーバ設定
@@ -598,8 +598,8 @@ fileprojectnewdialog.button.new=新規作成
 fileprojectnewdialog.button.next=次へ >
 
 fileprojectnewdialog.kindpanel.desc="フルモード"の場合、K-scopeの全ての機能を使用可能です。\n"簡易モード"の場合、プロファイラ連携機能のみを使用できます。
-fileprojectnewdialog.kindpanel.checkbox.useServer=中間コードをサーバでビルドする 
-fileprojectnewdialog.kindpanel.checkbox.useServer.tooltip=中間コードをリモートサーバで生成する。SSHconnect.jarまたはconnect.shスクリプトが必要であり、OmniXMPコンパイラがインストールされているサーバにアクセスが必要だ。
+fileprojectnewdialog.kindpanel.checkbox.useServer=中間コードをリモートサーバでビルドする 
+fileprojectnewdialog.kindpanel.checkbox.useServer.tooltip=中間コードをリモートサーバで生成する。SSHconnect.jarまたはconnect.shスクリプトが必要であり、OmniXMPコンパイラがインストールされているサーバにアクセスが必要。
 fileprojectnewdialog.kindpanel.radiobutton.fullmode=フルモード
 fileprojectnewdialog.kindpanel.radiobutton.simplemode=簡易モード
 fileprojectnewdialog.kindpanel.radiobutton.genxml=ビルドコマンドを用いてソースコードから中間コードを生成する
@@ -608,7 +608,7 @@ fileprojectnewdialog.kindpanel.radiobutton.fullmode.tooltip=K-scopeの全機能�
 fileprojectnewdialog.kindpanel.radiobutton.simplemode.tooltip=プロファイラ連携機能のみを利用可能なモード
 fileprojectnewdialog.kindpanel.radiobutton.genxml.tooltip=中間コードを生成するよう記述されたMakefileを指定してプロジェクトを作成します。
 fileprojectnewdialog.kindpanel.radiobutton.existxml.tooltip=既存の中間コードを読み込み、プロジェクトを作成します。
-fileprojectnewdialog.kindpanel.button.manage_settings_files=Manage settings files
+fileprojectnewdialog.kindpanel.button.manage_settings_files=リモート設定ファイル管理
 fileprojectnewdialog.kindpanel.label.fortranonly=中間コードを使用せずにソースコードのみを読み込む
 fileprojectnewdialog.kindpanel.RBsettings=リモートビルド設定
 
