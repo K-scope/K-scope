@@ -939,12 +939,16 @@ public class SettingProjectDialog extends javax.swing.JDialog implements ActionL
      * Refresh contents of settings_list JComboBox
      */
     private void refreshSettingsList() {
-    	if (debug) System.out.println("Refireshin settings_list contents.");
+    	if (debug) System.out.println("Refireshing settings_list contents.");
     	String[] selections = ProjectProperties.getRemoteSettings();
+    	// Save selected item
+    	String selected = (String) this.settings_list.getSelectedItem();
     	this.settings_list.removeAllItems();
     	for (String s : selections) {
     		settings_list.addItem(s);
     	}
+    	// Restore selection in the drop-down list
+    	this.settings_list.setSelectedItem(selected);
     }
 
     /**
