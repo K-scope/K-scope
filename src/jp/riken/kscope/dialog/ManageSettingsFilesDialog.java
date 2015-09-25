@@ -74,6 +74,7 @@ public class ManageSettingsFilesDialog extends javax.swing.JDialog implements Ac
 	/** シリアル番号 */
 	private static final long serialVersionUID = 1L;
 	private static boolean debug = (System.getenv("DEBUG")!= null); 
+	private static boolean debug_l2 = false;
 	private JButton btnOk;
 	private JButton btnPlus;
 	private JButton btnMinus;
@@ -91,6 +92,9 @@ public class ManageSettingsFilesDialog extends javax.swing.JDialog implements Ac
 	private boolean edited = false;  // Values in table has been changed
 	
 	public ManageSettingsFilesDialog() {
+		if (debug) {
+			debug_l2 = (System.getenv("DEBUG").equalsIgnoreCase("high"));
+		}
 		initGUI();
 	}
 	
@@ -374,7 +378,7 @@ public class ManageSettingsFilesDialog extends javax.swing.JDialog implements Ac
 		else if (target == this.btnCopy) {
 			copySelectedFile(file_list);
 		}
-		if (debug) System.out.println("Refreshing list contents");
+		if (debug) System.out.println("Refreshing list contents in Remote Settings Files");
 		refreshListModel();
 		if (debug) System.out.println("actionPerformed() of ManageSettingsFilesDialog exited");
 	}	
@@ -383,8 +387,13 @@ public class ManageSettingsFilesDialog extends javax.swing.JDialog implements Ac
 
 		@Override
 		public void valueChanged(ListSelectionEvent e) {
+			if (debug_l2) {
+				System.out.println("valueChanged() call");
+			}
 			String file = file_list.getSelectedValue();
-			if (file == selected_file) return;			
+			if (file == null) return;
+			if (file == selected_file) return;	
+			
 			if (debug) System.out.println("Selected "+file);
 			try {
 				if (edited) {

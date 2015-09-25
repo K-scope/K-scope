@@ -152,22 +152,22 @@ remotebuildsettingdialog.parameter.description=記述
 remotebuildproperties.document.comment=サーバ設定
 
 ## Manage Remote Settings Files Dialog
-managesettingsfiles.title=Remote Settings Files
-managesettingsfiles.rightpane.title=Settings
-managesettingsfiles.filelist.title=Remote settings files
-managesettingsfiles.table.key=Parameter
-managesettingsfiles.table.value=Value
-managesettingsfiles.confirm=Settings have been changed. Write changes to file?
-managesettingsfiles.confirm.title=Write to file?
+managesettingsfiles.title=リモート設定ファイル
+managesettingsfiles.rightpane.title=設定
+managesettingsfiles.filelist.title=リモート設定ファイル
+managesettingsfiles.table.key=パラメータ
+managesettingsfiles.table.value=値
+managesettingsfiles.confirm=設定が変更されました。保存しますか？
+managesettingsfiles.confirm.title=ファイル書き込み確認
 
 managesettingsfiles.button.plus=+
 managesettingsfiles.button.minus=-
-managesettingsfiles.button.copy=copy
-managesettingsfiles.deletefile.confirm.title=Delete file?
-managesettingsfiles.deletefile.confirm.text=Delete selected file?
+managesettingsfiles.button.copy=コピー
+managesettingsfiles.deletefile.confirm.title=ファイル削除確認
+managesettingsfiles.deletefile.confirm.text=選択されたファイルを削除しますか？
 
-managesettingsfiles.filename.title=Settings file name
-managesettingsfiles.filename.text=Select remote service and enter filename
+managesettingsfiles.filename.title=設定ファイル名
+managesettingsfiles.filename.text=リモートサービスを選択し、ファイル名を記入してください。
 
 #########
 #  GUI  #
@@ -615,7 +615,7 @@ fileprojectnewdialog.kindpanel.RBsettings=リモートビルド設定
 fileprojectnewdialog.makefilepanel.label.makecommand=ビルドコマンド
 fileprojectnewdialog.makefilepanel.desc=実行するビルドコマンドを設定してください。
 fileprojectnewdialog.makefilepanel.clean-command.name=クリーンコマンド
-fileprojectnewdialog.makefilepanel.clean-command.dsc=中間コードを削除するためのコマンドを指定してください。
+fileprojectnewdialog.makefilepanel.clean-command.dsc=必要な場合中間コードを削除するためのコマンドを指定してください。
 fileprojectnewdialog.xmlpanel.button.addfolder=フォルダ追加
 fileprojectnewdialog.xmlpanel.button.addfile=ファイル追加
 fileprojectnewdialog.xmlpanel.checkbox.build=構造解析を行う

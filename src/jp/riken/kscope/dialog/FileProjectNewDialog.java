@@ -37,6 +37,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+
+
 //import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
@@ -329,8 +331,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
         		System.out.println("No remote connection settings files found in "+ ProjectProperties.REMOTE_SETTINGS_DIR);
         	} else {
         		System.out.println("Have remote connection settings in "+ ProjectProperties.REMOTE_SETTINGS_DIR);
-            	//settings_list = new JComboBox<String>(selections);
-        		list_model = new DefaultComboBoxModel<String>(selections);
+            	list_model = new DefaultComboBoxModel<String>(selections);
         		settings_list = new JComboBox<String>(list_model);
             	settings_list.setEnabled(false);
             	manage_settings_files = new JButton(Message.getString("fileprojectnewdialog.kindpanel.button.manage_settings_files"));
@@ -1729,12 +1730,20 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
      * Refresh contents of settings_list JComboBox
      */
     private void refreshSettingsList() {
-    	if (debug) System.out.println("Refireshin settings_list contents.");
+    	if (debug) System.out.println("Refireshing settings_list contents.");
     	String[] selections = ProjectProperties.getRemoteSettings();
-    	list_model.removeAllElements();
-    	for (String s : selections) {
-    		list_model.addElement(s);
+    	if (debug_l2) System.out.println("selections: "+ selections.length);
+    	// Save selected item
+    	String selected = (String) this.settings_list.getSelectedItem();
+    	this.settings_list.removeAllItems();
+    	if (debug_l2) System.out.println("settings_list: removed all items, add following items:");
+    	for (String s : selections) {    		
+    		settings_list.addItem(s);
+    		if (debug_l2) System.out.println(s);
     	}
+    	// Restore selection in the drop-down list
+    	if (selected != null && selected.length() > 1 )  this.settings_list.setSelectedItem(selected);
+    	if (debug_l2) System.out.println("Restore selected item "+selected);
     }
     
 
@@ -1820,41 +1829,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
                 } else if (projectPath.equals(addfile)) {
                     if (!containsInProjectList(model, "./")) {
                         model.addElement("./");
-                    }
-                    // 同一フォルダ指定であるので、子フォルダ、子ファイル(xml)を追加
-                    /*File[] childfiles = projectPath.listFiles();
-                     if (childfiles != null && childfiles.length > 0) {
-                     for (int i=0; i<childfiles.length; i++) {
-                     File childfile = childfiles[i];
-                     // 除外パスに含まれているかチェックする
-                     if (this.containsExcludeName(childfile.getPath())) {
-                     continue;
-                     }
-
-                     if (childfile.isFile()) {
-                     if (this.radioXml.isSelected()) {
-                     if (!FILE_TYPE.isXcodemlFile(childfile)) {
-                     childfile = null;
-                     }
-                     }
-                     else if (this.radioFortran.isSelected()) {
-                     if (!FILE_TYPE.isFortranFile(childfile)) {
-                     childfile = null;
-                     }
-                     }
-                     else {
-                     childfile = null;
-                     }
-                     }
-                     if (childfile != null) {
-                     // 子パスであるので相対パス表示を行う
-                     String relPath = FileUtils.getRelativePath(childfile.getCanonicalPath(), projectPath.getCanonicalPath());
-                     if (!containsInProjectList(model, relPath)) {
-                     model.addElement(relPath);
-                     }
-                     }
-                     }
-                     }*/
+                    }                    
                 } else if (FileUtils.isChildPath(projectPath.getCanonicalPath(), addfile.getCanonicalPath())) {
                     // 子パスであるので相対パス表示を行う
                     String relPath = FileUtils.getSubPath(addfile.getCanonicalPath(), projectPath.getCanonicalPath());
@@ -1866,6 +1841,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
                     model.addElement(addfile.getCanonicalPath());
                 }
             } catch (IOException ex) {
+            	if (debug_l2) System.err.println("Exception in addProjectList");
                 ex.printStackTrace();
             }
         }

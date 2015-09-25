@@ -949,6 +949,7 @@ public class SettingProjectDialog extends javax.swing.JDialog implements ActionL
     	}
     	// Restore selection in the drop-down list
     	this.settings_list.setSelectedItem(selected);
+    	if (debug_l2) System.out.println("Restore selected item "+selected);
     }
 
     /**
