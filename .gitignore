@@ -2,23 +2,36 @@
 /*
 .*
 
+## Do not ignore directories 
+!*/
+## But ignore these directories
+/bin
+
 ## not ignore
-!/src
-!/resources/*
+# Everything in resources
+!/resources
+
+# Only one file in properties
+/properties
 !/properties/properties.xml
+
 !.git
-!/.gitignore
+!.gitignore
 !/build.xml
-!/ChangeLog.txt
-!/license-headers.txt
-!/LICENSE.txt
-!/NOTICE.txt
-!/README.md
-!README.txt
-!/*.md
+!ChangeLog
+!license-headers
+!LICENSE
+!NOTICE
+!/manifest.txt
+!*.md
 !*.sh
-!kscope
-!SSHconnect.jar
+!/kscope
+!/kscope.jar
+!/SSHconnect.jar
+
+# include only these files in remote
+/remote/**/*.yml
+!/remote/**/*sample.yml
 
 ## ignore
 .DS*

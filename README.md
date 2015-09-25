@@ -157,6 +157,10 @@ Run is simple as follows.
 ```bash
 java -jar -Xmx1024m kscope.jar
 ```
+or
+```
+./kscope
+```
 
 K-scope requires specific folders for properties.
 If the program cannot find that folders, it may terminate abnormally.
