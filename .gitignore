@@ -1,21 +1,24 @@
 ## default is ignore for all files
 /*
-/.*
+.*
 
 ## not ignore
 !/src
-!/resources
+!/resources/*
 !/properties/properties.xml
-
-!/.git
+!.git
 !/.gitignore
-
 !/build.xml
 !/ChangeLog.txt
 !/license-headers.txt
 !/LICENSE.txt
 !/NOTICE.txt
 !/README.md
+!README.txt
+!/*.md
+!*.sh
+!kscope
+!SSHconnect.jar
 
 ## ignore
 .DS*

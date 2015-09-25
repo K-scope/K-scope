@@ -111,6 +111,8 @@ import jp.riken.kscope.utils.SwingUtils;
  */
 public class LanguageService extends BaseService {
 
+	private static boolean debug = (System.getenv("DEBUG")!= null);
+	private static boolean debug_l2 = (debug && System.getenv("DEBUG").equalsIgnoreCase("high"));
     /** 読込ソースファイル. */
     private SourceFile[] files = null;
     /** フォートラン構文解析結果格納データベース. */
@@ -1364,8 +1366,17 @@ public class LanguageService extends BaseService {
         	}
             // (2012/5/24) changed by Tomiyama
             languageStream = new ObjectInputStream(new FileInputStream(folder.getPath() + File.separator + KscopeProperties.DATABASE_FILE));
-            this.fortranDb = (Fortran) languageStream.readObject();
-            languageStream.close();
+            if (debug) System.out.println("Reading file "+folder.getPath() + File.separator + KscopeProperties.DATABASE_FILE);
+            try {
+            	this.fortranDb = (Fortran) languageStream.readObject();
+            }
+            catch (java.io.StreamCorruptedException ex) {
+            	System.err.println("Error reading from "+folder.getPath() + File.separator + KscopeProperties.DATABASE_FILE);
+            	ex.printStackTrace();
+            }
+            finally {
+            	languageStream.close();
+            }
             languageStream = null;
 
             this.fortranDb.analyseDB();

@@ -54,6 +54,9 @@ import jp.riken.kscope.xcodeml.XcodeMLParserStax;
  */
 public class FileProjectOpenAction extends ActionBase {
 
+	private static boolean debug = (System.getenv("DEBUG")!= null);
+	private static boolean debug_l2 = false;
+	
     /** データベースの構築、探索を行うクラス */
     private LanguageService serviceLanguage;
     /** 変数アクセス先メモリサービス */
@@ -67,6 +70,7 @@ public class FileProjectOpenAction extends ActionBase {
      */
     public FileProjectOpenAction(AppController controller) {
         super(controller);
+        if (debug) debug_l2 = (System.getenv("DEBUG").equalsIgnoreCase("high"));
     }
 
     /**
@@ -158,7 +162,7 @@ public class FileProjectOpenAction extends ActionBase {
             // 要求Byte/FLOP設定プロパティ
             service.setPropertiesMemory(this.controller.getPropertiesMemory());
             
-            service.setPropertiesSSH(this.controller.getPropertiesSSH());
+            service.setRBproperties(this.controller.getRBproperties());
             // エラーモデル
             service.setErrorInfoModel(this.controller.getErrorInfoModel());
 
@@ -198,7 +202,7 @@ public class FileProjectOpenAction extends ActionBase {
              }
 
         } catch (Exception e) {
-            // e.printStackTrace();
+            if (debug) e.printStackTrace();
             // エラーメッセージ
             JOptionPane.showMessageDialog(frame,
                     Message.getString("fileprojectopenaction.openproject.openerr.dialog.message"), //プロジェクトのオープンエラー

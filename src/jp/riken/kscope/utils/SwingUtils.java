@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  * 
- * Version to work with SSHconnect.
+ * Version for building code on a server.
  */
 
 package jp.riken.kscope.utils;
@@ -438,25 +438,15 @@ public class SwingUtils {
 		}
 		cmdString = cmdString.trim();
 
+		
+		System.out.println(Arrays.toString(commands));
 		try {
-			String[] validcommand = commands.clone();
-			for (int i = 0; i < validcommand.length; i++) {
-				validcommand[i] = StringUtils.trimQuote(validcommand[i]);
-			}
-			ProcessBuilder pb = null;
-			if (commands[0].indexOf("java")==0) { // call SSHconnect
-				pb = new ProcessBuilder(commands);
-			}
-			else {
-				pb = new ProcessBuilder(validcommand);
-			}
+			ProcessBuilder pb = new ProcessBuilder(commands);
 			pb.redirectErrorStream(true);
-			
-			/*System.out.println(System.getProperty("user.dir"));
-			// SET location to look for SSHcommect to the same directory as kscope.jar
-			pb.directory(new File(System.getProperty("user.dir")));*/
-			if (workdirectory != null && commands[0].indexOf("java") != 0) {
+						
+			if (workdirectory != null) {
 				pb.directory(workdirectory);
+				System.out.println("Directory: "+workdirectory);
 			}
 			process = pb.start();
 			if (process == null) {

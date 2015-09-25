@@ -17,6 +17,7 @@
 package jp.riken.kscope.dialog;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -27,9 +28,14 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.util.Arrays;
+import java.util.List;
 
 import javax.swing.BorderFactory;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -56,6 +62,7 @@ import jp.riken.kscope.Message;
 import jp.riken.kscope.common.Constant;
 import jp.riken.kscope.data.ProjectPropertyValue;
 import jp.riken.kscope.properties.ProjectProperties;
+//import jp.riken.kscope.properties.RemoteBuildProperties;
 import jp.riken.kscope.utils.SwingUtils;
 
 /**
@@ -66,6 +73,9 @@ public class SettingProjectDialog extends javax.swing.JDialog implements ActionL
 
     /** シリアル番号 */
 	private static final long serialVersionUID = 1L;
+	
+	private static boolean debug = (System.getenv("DEBUG")!= null);
+	private static boolean debug_l2 = false;
 
     /** 最終アクセスフォルダ */
     private String lastAccessFolder;
@@ -79,11 +89,17 @@ public class SettingProjectDialog extends javax.swing.JDialog implements ActionL
     /** 登録ボタン */
     private JButton btnReg;
     /** プロジェクト設定リスト */
-    private JTable tblProperties;
+    private JTable ppropertiesTable;
     /** プロジェクト設定リストデータ */
     private DefaultTableModel modelProperties;
     /** プロジェクト設定パネル */
     private JPanel panelProperty;
+    
+    //private DefaultComboBoxModel<String> list_model;
+    private JButton manage_settings_files;
+    private JComboBox<String> settings_list;
+    private JCheckBox checkUseRemote;
+    private String remote_service;
 
 	/** ダイアログの戻り値 */
     private int result = Constant.CANCEL_DIALOG;
@@ -93,12 +109,14 @@ public class SettingProjectDialog extends javax.swing.JDialog implements ActionL
 
     /** 列名 */
     private final String[] COLUMN_HEADER = {
-    	Message.getString("settingprojectdialog.column_header.propertyvalue"), //MakePropertyValue
+    		"",
     	Message.getString("settingprojectdialog.column_header.key"), //キー
     	Message.getString("settingprojectdialog.column_header.type"), //タイプ
     	Message.getString("settingprogramdialog.label.name"), //名前
     	Message.getString("settingprojectdialog.column_header.value"), //値
-    	Message.getString("settingprojectdialog.column_header.message")  //メッセージ
+    	Message.getString("settingprojectdialog.column_header.message"),  //メッセージ
+    	Message.getString("settingprojectdialog.column_header.clo"),  //command line option
+    	Message.getString("settingprojectdialog.column_header.order")  //order
     };
 
     /** 選択ボタン */
@@ -115,7 +133,8 @@ public class SettingProjectDialog extends javax.swing.JDialog implements ActionL
      * @param modal		true=モーダルダイアログを表示する
      */
 	public SettingProjectDialog(Frame owner, boolean modal) {
-        super(owner, modal);
+		super(owner, modal);
+        initDebug();
         initGUI();
 	}
 
@@ -125,6 +144,7 @@ public class SettingProjectDialog extends javax.swing.JDialog implements ActionL
      */
 	public SettingProjectDialog(Frame frame) {
 		super(frame);
+		initDebug();
 		initGUI();
 	}
 
@@ -137,10 +157,16 @@ public class SettingProjectDialog extends javax.swing.JDialog implements ActionL
      */
     public SettingProjectDialog(Frame frame, boolean modal, ProjectProperties properities) {
         super(frame, modal);
+        initDebug();
         initGUI();
         setProjectProperties(properities);
     }
 
+    private void initDebug() {
+    	if (debug) debug_l2 = (System.getenv("DEBUG").equalsIgnoreCase("high"));
+    }
+    
+    
     /**
      * プロジェクト設定を設定する。
      * @param properties		ソース設定プロパティ
@@ -148,19 +174,32 @@ public class SettingProjectDialog extends javax.swing.JDialog implements ActionL
     public void setProjectProperties(ProjectProperties properties) {
 
         ProjectPropertyValue[] values = properties.getPropertyValues();
-
         // テーブルに追加する
         for (ProjectPropertyValue value : values) {
             // "PropertyValue", "キー", "タイプ", "名前", "値", "メッセージ"
-            Object[] rowData = new Object[6];
+            Object[] rowData = new Object[8];
             rowData[0] = value;
             rowData[1] = value.getKey();
             rowData[2] = value.getType();
             rowData[3] = Message.getString(value.getName());
             rowData[4] = value.getValue();
             rowData[5] = Message.getString(value.getMessage());
-
-            this.modelProperties.addRow(rowData);
+            rowData[6] = value.getCommandlineOption();
+            rowData[7] = value.getOrder();
+            if (debug) {
+            	System.out.println("Add row: " 
+            			+ rowData[1]+" : "
+            			+ rowData[2]+" : "
+            			+ rowData[3]+" : "
+            			+ rowData[4]+" : "
+            			+ rowData[5]+" : "
+            			+ rowData[6]+" : "
+            			+ rowData[7]);
+            }
+            if (!rowData[2].toString().equalsIgnoreCase("hidden")) { 
+            	// Project properties with type=="hidden" will not show up and cannot be changed in Project settings dialog
+            	this.modelProperties.addRow(rowData);
+            }
         }
 
         this.properties = properties;
@@ -177,6 +216,7 @@ public class SettingProjectDialog extends javax.swing.JDialog implements ActionL
             thisLayout.setHgap(5);
             thisLayout.setVgap(5);
             getContentPane().setLayout(thisLayout);
+            settings_list = new JComboBox<String>();
 
             // ボタンパネル
             {
@@ -233,7 +273,7 @@ public class SettingProjectDialog extends javax.swing.JDialog implements ActionL
                     {
                         JLabel lblList = new JLabel();
                         panelList.add(lblList, BorderLayout.NORTH);
-                        lblList.setText(Message.getString("settingprojectdialog.label.setupprojectlist"));//プロジェクト設定リスト
+                        lblList.setText(Message.getString("settingprojectdialog.label.setupprojectlist"));// Project settings / プロジェクト設定リスト
                     }
                     {
                         JScrollPane scrollList = new JScrollPane();
@@ -246,53 +286,60 @@ public class SettingProjectDialog extends javax.swing.JDialog implements ActionL
                             // ヘッダー列名
                             String[] columns = COLUMN_HEADER;
                             modelProperties.setColumnIdentifiers(columns);
-                            tblProperties = new JTable();
-                            scrollList.setViewportView(tblProperties);
-                            tblProperties.setModel(modelProperties);
-                            tblProperties.setSelectionMode(ListSelectionModel.SINGLE_SELECTION );
-                            tblProperties.getSelectionModel().addListSelectionListener(this);
-                            tblProperties.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-                            tblProperties.setDefaultRenderer(Object.class, new PropertiesTableRenderer());
-                            tblProperties.setColumnSelectionAllowed(false);
-                            tblProperties.setDefaultEditor(Object.class, null);
+                            ppropertiesTable = new JTable();
+                            scrollList.setViewportView(ppropertiesTable);
+                            ppropertiesTable.setModel(modelProperties);
+                            ppropertiesTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION );
+                            ppropertiesTable.getSelectionModel().addListSelectionListener(this);
+                            ppropertiesTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+                            ppropertiesTable.setDefaultRenderer(Object.class, new PropertiesTableRenderer());
+                            ppropertiesTable.setColumnSelectionAllowed(false);
+                            ppropertiesTable.setDefaultEditor(Object.class, null);
 
                             // 列幅設定
                             // 1列目:PropertyValue:非表示
                             {
-                                TableColumn col = tblProperties.getColumnModel().getColumn(0);
+                                TableColumn col = ppropertiesTable.getColumnModel().getColumn(0);
                                 col.setResizable(false);
                                 col.setMinWidth(0);
                                 col.setMaxWidth(0);
                             }
                             // 2列目:キー:非表示
                             {
-                                TableColumn col = tblProperties.getColumnModel().getColumn(1);
+                                TableColumn col = ppropertiesTable.getColumnModel().getColumn(1);
                                 col.setResizable(false);
                                 col.setMinWidth(0);
                                 col.setMaxWidth(0);
                             }
                             // 3列目:タイプ:非表示
                             {
-                                TableColumn col = tblProperties.getColumnModel().getColumn(2);
+                                TableColumn col = ppropertiesTable.getColumnModel().getColumn(2);
                                 col.setResizable(false);
                                 col.setMinWidth(0);
                                 col.setMaxWidth(0);
                             }
                             // 4列目:名前
                             {
-                                TableColumn col = tblProperties.getColumnModel().getColumn(3);
+                                TableColumn col = ppropertiesTable.getColumnModel().getColumn(3);
                                 col.setResizable(true);
-                                col.setMinWidth(160);
+                                col.setMinWidth(130);
                             }
                             // 5列目:値
                             {
-                                TableColumn col = tblProperties.getColumnModel().getColumn(4);
+                                TableColumn col = ppropertiesTable.getColumnModel().getColumn(4);
                                 col.setResizable(true);
-                                col.setMinWidth(120);
+                                col.setMinWidth(165);
                             }
-                            // 6列目:メッセージ:
+                            // 6列目:メッセージ: 非表示
                             {
-                                TableColumn col = tblProperties.getColumnModel().getColumn(5);
+                                TableColumn col = ppropertiesTable.getColumnModel().getColumn(5);
+                                col.setResizable(false);
+                                col.setMinWidth(0);
+                                col.setMaxWidth(0);
+                            }
+                            // 7列目:メッセージ: 非表示
+                            {
+                                TableColumn col = ppropertiesTable.getColumnModel().getColumn(6);
                                 col.setResizable(false);
                                 col.setMinWidth(0);
                                 col.setMaxWidth(0);
@@ -310,7 +357,7 @@ public class SettingProjectDialog extends javax.swing.JDialog implements ActionL
                     panelSettings.setLayout(panelSettingsLayout);
                     {
                         JLabel lblSettings = new JLabel();
-                        lblSettings.setText(Message.getString("mainmenu.project.config")); //設定
+                        lblSettings.setText(Message.getString("mainmenu.project.config")); //設定 / Configuration
                         panelSettings.add(lblSettings, BorderLayout.NORTH);
                     }
                     this.panelProperty = new JPanel();
@@ -373,6 +420,7 @@ public class SettingProjectDialog extends javax.swing.JDialog implements ActionL
      */
 	@Override
 	public void actionPerformed(ActionEvent event) {
+		if (debug_l2) System.out.println("actionPerformed() of FileProjectNewDialog started");
         // 登録
         if (event.getSource() == this.btnOk) {
             this.result = Constant.OK_DIALOG;
@@ -445,11 +493,11 @@ public class SettingProjectDialog extends javax.swing.JDialog implements ActionL
 
             return;
         }
-        // 更新
+        // 更新 / Update
         else if (event.getSource() == this.btnReg ) {
             // 設定値をテーブルに設定する
             // 選択行を取得する。
-            int selectedrow = this.tblProperties.getSelectedRow();
+            int selectedrow = this.ppropertiesTable.getSelectedRow();
             if (selectedrow < 0) return;
             if (selectedvalue == null) return;
 
@@ -458,6 +506,59 @@ public class SettingProjectDialog extends javax.swing.JDialog implements ActionL
             this.modelProperties.setValueAt(txtValue.getText(), selectedrow, col);
 
         }
+        else if (event.getSource() == this.manage_settings_files) {
+        	if (debug) {
+        		System.out.println("Button manage_settings_files pressed");
+        	}
+        	this.setModal(false);
+        	ManageSettingsFilesDialog manage_files_dialog = new ManageSettingsFilesDialog();
+        	manage_files_dialog.showDialog();   
+        	refreshSettingsList();
+        }
+        else if (event.getSource() == this.settings_list) {
+        	if (debug_l2) {
+        		System.out.println("Action on jComboBox settings_list");
+        	}
+        	String selection = settings_list.getItemAt(settings_list.getSelectedIndex());
+        	if (debug_l2) System.out.println("\tSelection="+ selection);
+        	
+        	// Should change ProjectProperties only after "Apply" or "OK" buttons pressed.
+        	//properties.setSettingsFile(selection);
+        	//if (debug) System.out.println("\tProject settings file set to "+ properties.getSettingsFile());
+        	
+        	// Update GUI table
+        	int selectedrow = this.ppropertiesTable.getSelectedRow();
+            if (selectedrow < 0) return;
+            if (selectedvalue == null) return;
+            int col = 4;
+            this.modelProperties.setValueAt(selection, selectedrow, col);
+        }
+        else if (event.getSource() == this.checkUseRemote)  {
+        	if (!this.checkUseRemote.isSelected()) {
+        		// Set settings_file to null (make project local, i.e. execute make command locally)
+        		//settings_list.setEnabled(false);
+        		deactivateSettingsList();
+        	} else {
+        		settings_list.setEnabled(false);
+        		List<String> selections = Arrays.asList(ProjectProperties.getRemoteSettings(this.remote_service));
+        		String[] str_arr =  new String[selections.size()];
+        		DefaultComboBoxModel<String> list_model = new DefaultComboBoxModel<String>(selections.toArray(str_arr));
+        		settings_list.setModel(list_model);
+        		settings_list.setEnabled(true);
+        	}
+        }
+        if (debug_l2) System.out.println("actionPerformed() of SettingsProjectDialog exited");
+	}
+
+	/**
+	 * Make combobox with remote settings file names disabled.
+	 */
+	private void deactivateSettingsList() {
+		String[] str_arr =  { "" };
+		DefaultComboBoxModel<String> empty_list_model = new DefaultComboBoxModel<String>(str_arr);
+		settings_list.setModel(empty_list_model);
+		settings_list.setEnabled(false);		
+		this.modelProperties.setValueAt("", this.ppropertiesTable.getSelectedRow(), 4);  // Update value in table
 	}
 
     /**
@@ -589,10 +690,109 @@ public class SettingProjectDialog extends javax.swing.JDialog implements ActionL
         {
             JComponent lblMassage = createMessageLabel(value.getMessage());
             if (lblMassage != null) {
-                this.panelProperty.add(lblMassage, new GridBagConstraints(1, 3, 2, 3, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
+                this.panelProperty.add(lblMassage, new GridBagConstraints(1, 2, 2, 2, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
             }
         }
     }
+    
+    /**
+     * Drop-down list for selecting remote settings files
+     * @param ppvalue
+     */
+    private void setFixedFilePanel(ProjectPropertyValue ppvalue) {
+    	this.remote_service = ProjectProperties.getRemoteService(ppvalue.getValue());
+    	if (debug) System.out.println("SettingProjectDialog/setFiexdFilePanel: Value="+ppvalue.getValue()+" Service="+remote_service);
+    	if (!("fixed-file".equalsIgnoreCase(ppvalue.getType()))) return;
+    	
+        String valueLabel = "";
+        valueLabel = Message.getString("settingprojectdialog.label.file-colon"); //ファイル
+        
+        // 設定ファイル
+        String filename = ppvalue.getValue();
+        this.panelProperty.removeAll();
+
+        // プロパティ名
+        {
+            JLabel label = new JLabel();
+            this.panelProperty.add(label, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
+            label.setText(Message.getString("settingprogramdialog.label.name"));// Name
+        }
+        {
+            JLabel lblName = new JLabel();
+            this.panelProperty.add(lblName, new GridBagConstraints(1, 0, 2, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
+            lblName.setText(ppvalue.getName());
+        }
+
+        // ファイル／フォルダ
+        {
+            JLabel lblFile = new JLabel();
+            this.panelProperty.add(lblFile, new GridBagConstraints(0, 1, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
+            lblFile.setText(valueLabel);
+        }
+        /*{
+            txtValue = new JTextField();
+            this.panelProperty.add(txtValue, new GridBagConstraints(1, 1, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
+            txtValue.setText(filename);
+        }*/
+        {        	
+        	String[] selections = ProjectProperties.getRemoteSettings(remote_service); 
+        	if (selections.length < 1) {
+        		System.out.println("No remote connection settings files found in "+ ProjectProperties.REMOTE_SETTINGS_DIR);    		
+        	} else {    		
+        		if (debug) {
+        			System.out.println("Have remote connection settings in "+ ProjectProperties.REMOTE_SETTINGS_DIR);
+        			System.out.println(selections);
+        		}
+        		if (remote_service != null) {
+	        		DefaultComboBoxModel<String> list_model = new DefaultComboBoxModel<String>(selections);        		
+	        		settings_list.setModel(list_model);
+	            	settings_list.setEnabled(true);
+	            	if (debug) {
+	            		System.out.println("Check objects comparison in JComboBox");
+	            		for (int i=0; i < settings_list.getItemCount(); i++) {
+	            			String item = settings_list.getItemAt(i);
+	            			if (item == null) continue;
+	            			if (item.equalsIgnoreCase(filename)) {
+	            				System.out.println("Match item "+ i + " value: "+ filename);
+	            			}
+	            		}
+	            	}
+	            	settings_list.setSelectedItem(ppvalue.getValue());
+        		} else {
+        			deactivateSettingsList();
+        		}
+            	manage_settings_files = new JButton(Message.getString("fileprojectnewdialog.kindpanel.button.manage_settings_files"));
+            	manage_settings_files.setEnabled(true);
+            	this.panelProperty.add(settings_list, new GridBagConstraints(1, 1, 3, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
+            	this.panelProperty.add(manage_settings_files, new GridBagConstraints(1, 2, 3, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
+            	settings_list.addActionListener(this);
+            	manage_settings_files.addActionListener(this);            	
+        	}        		
+        }       
+
+        // メッセージ
+        {
+            JComponent lblMassage = createMessageLabel(ppvalue.getMessage());
+            if (lblMassage != null) {
+                this.panelProperty.add(lblMassage, new GridBagConstraints(1, 3, 3, 2, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
+            }
+        }
+        
+        // Make project remote / local checkbox
+        {
+        	checkUseRemote = new JCheckBox(Message.getString("fileprojectnewdialog.kindpanel.checkbox.useServer"));
+        	checkUseRemote.addActionListener(this);
+        	checkUseRemote.setToolTipText(Message.getString("fileprojectnewdialog.kindpanel.checkbox.useServer.tooltip"));
+            checkUseRemote.setEnabled(true);
+            // if (debug) System.out.println(isFullProject() && this.rb_properties.remote_settings_found);
+            checkUseRemote.setSelected(filename != null && filename.length() > 0);
+        	this.panelProperty.add(checkUseRemote, new GridBagConstraints(0, 5, 4, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
+        }
+    }
+    
+    
+    
+    
 
     /**
      * 固定文字列表示パネルを設定する
@@ -650,8 +850,8 @@ public class SettingProjectDialog extends javax.swing.JDialog implements ActionL
 
         JTextPane lblMassage = new JTextPane();
         SimpleAttributeSet attr = new SimpleAttributeSet();
-        StyleConstants.setLineSpacing(attr, -0.2f);
-        lblMassage.setParagraphAttributes(attr, true);
+        //StyleConstants.setLineSpacing(attr, -0.2f);
+        //lblMassage.setParagraphAttributes(attr, true);
         lblMassage.setForeground(UIManager.getColor("Label.foreground"));
         lblMassage.setOpaque(false);
         lblMassage.setEditable(false);
@@ -684,6 +884,11 @@ public class SettingProjectDialog extends javax.swing.JDialog implements ActionL
         	setFixedTextPanel(value);
         	btnReg.setEnabled(false);
         }
+        else if ("fixed-file".equalsIgnoreCase(value.getType())) {
+        	// テキスト表示のみ
+        	setFixedFilePanel(value);
+        	btnReg.setEnabled(false);
+        }
 
         this.panelProperty.revalidate();
         this.panelProperty.repaint();
@@ -691,22 +896,25 @@ public class SettingProjectDialog extends javax.swing.JDialog implements ActionL
 
 	@Override
 	public void valueChanged(ListSelectionEvent event) {
-		if (event.getSource() == this.tblProperties.getSelectionModel()) {
+		if (event.getSource() == this.ppropertiesTable.getSelectionModel()) {
             // 選択行を取得する。
-            int selectedrow = this.tblProperties.getSelectedRow();
+            int selectedrow = this.ppropertiesTable.getSelectedRow();
             if (selectedrow < 0) return;
-
-            // "PropertyValue", "キー", "タイプ", "名前", "値", "メッセージ"
+            if (debug) System.out.println("Selected row "+selectedrow+ " key="+this.modelProperties.getValueAt(selectedrow, 1)+ " type="+this.modelProperties.getValueAt(selectedrow, 2));
+            
+            // "PropertyValue", "キー", "タイプ", "名前", "値", "メッセージ", CLO, order
             ProjectPropertyValue value = new ProjectPropertyValue(
+            			(String)this.modelProperties.getValueAt(selectedrow, 1), //key
                         (String)this.modelProperties.getValueAt(selectedrow, 2), //type
-                        (String)this.modelProperties.getValueAt(selectedrow, 1), //key
-                        (String)this.modelProperties.getValueAt(selectedrow, 4), //value
                         (String)this.modelProperties.getValueAt(selectedrow, 3), //name
-                        (String)this.modelProperties.getValueAt(selectedrow, 5)  //message
+                        (String)this.modelProperties.getValueAt(selectedrow, 4), //value
+                        (String)this.modelProperties.getValueAt(selectedrow, 5),  //message
+                        (String)this.modelProperties.getValueAt(selectedrow, 6),  //command line option
+                        (int)   this.modelProperties.getValueAt(selectedrow, 7)  //order
                     );
             // 選択プロパティ
             this.selectedvalue = value;
-
+            if (debug) System.out.println("Selected value: "+value);
             // 設定パネルに表示する
             this.setPropertyPanel(value);
         }
@@ -725,6 +933,23 @@ public class SettingProjectDialog extends javax.swing.JDialog implements ActionL
             value.setValue((String)this.modelProperties.getValueAt(i, 4));
         }
 
+    }
+    
+    /***
+     * Refresh contents of settings_list JComboBox
+     */
+    private void refreshSettingsList() {
+    	if (debug) System.out.println("Refireshing settings_list contents.");
+    	String[] selections = ProjectProperties.getRemoteSettings();
+    	// Save selected item
+    	String selected = (String) this.settings_list.getSelectedItem();
+    	this.settings_list.removeAllItems();
+    	for (String s : selections) {
+    		settings_list.addItem(s);
+    	}
+    	// Restore selection in the drop-down list
+    	this.settings_list.setSelectedItem(selected);
+    	if (debug_l2) System.out.println("Restore selected item "+selected);
     }
 
     /**
@@ -759,5 +984,13 @@ public class SettingProjectDialog extends javax.swing.JDialog implements ActionL
 
             return this;
         }
+    }
+    
+    /**
+     * プロジェクト設定を取得する
+     * @return	プロジェクト設定
+     */
+    public ProjectProperties getProjectProperties() {
+    	return properties;
     }
 }

@@ -71,7 +71,7 @@ import jp.riken.kscope.properties.OperationProperties;
 import jp.riken.kscope.properties.ProfilerProperties;
 import jp.riken.kscope.properties.ProgramProperties;
 import jp.riken.kscope.properties.ProjectProperties;
-import jp.riken.kscope.properties.SSHconnectProperties;
+import jp.riken.kscope.properties.RemoteBuildProperties;
 import jp.riken.kscope.properties.SourceProperties;
 import jp.riken.kscope.properties.VariableMemoryProperties;
 
@@ -81,7 +81,7 @@ import jp.riken.kscope.properties.VariableMemoryProperties;
  *
  */
 public class AppController implements PropertyChangeListener {
-
+	
     /** メインフレーム */
     private MainFrame mainframe;
 
@@ -109,9 +109,9 @@ public class AppController implements PropertyChangeListener {
     /** 要求Byte/FLOP設定プロパティ */
     private RequiredBFProperties propertiesMemory;
     
-    // SSHconnect
-    private SSHconnectProperties propertiesSSH = null;
-
+    // Remote build properties
+    private RemoteBuildProperties rb_properties = null;
+    
     /** アプリケーションプロパティ */
     private ApplicationProperties propertiesApplication;
 
@@ -142,34 +142,20 @@ public class AppController implements PropertyChangeListener {
     /** 変数特性一覧アクション（更新用） */
     private AnalysisVariableAction actionVariable = null;
 
-    /**/
-    private boolean haveSSHconnect = false;
+    
 
     /**
      * コンストラクタ
+     * @throws Exception 
      */
-    public AppController() {
-        haveSSHconnect = checkSSHconnect();
+    public AppController() throws Exception {
+    	if (this.rb_properties == null) {
+    		this.rb_properties = new RemoteBuildProperties();        		
+    	}
     }
 
-    /** 
-     * SSHconnect.jarが存在するかチェック
-     */
-    private boolean checkSSHconnect() {
-        File f = new File("SSHconnect.jar");
-        if (f.exists()) {
-            System.out.println(f.getAbsolutePath());
-            return true;
-        }
-        return false;
-    }
-
-    /**/
-    public boolean isSSHconnectAvailable() {
-        return this.haveSSHconnect;
-    }
-
-    /**
+    
+     /**
      * 初期化を行う。
      *
      * @throws Exception 初期起動エラー
@@ -273,10 +259,7 @@ public class AppController implements PropertyChangeListener {
         if (this.propertiesApplication == null) {
         	this.propertiesApplication = new ApplicationProperties();
         }
-        if (this.propertiesSSH == null) { //  always true!! --> || this.propertiesSSH.isEmpty()) {
-        		this.propertiesSSH = new SSHconnectProperties(this);
-        		this.propertiesSSH.haveSSHconnect = this.haveSSHconnect; // set Flag if SSHconnect is present
-        }
+        
         // メニュー表示選択をコピーする
         this.mainframe.getMenuMain().clearSelectedMenu();
         if (this.propertiesProfiler == null) {
@@ -382,11 +365,11 @@ public class AppController implements PropertyChangeListener {
     }
     
     /**
-     * Get SSH properties
-     * @return SSH properties
+     * Get RemoteBuildProperties properties
+     * @return RemoteBuildProperties
      */
-    public SSHconnectProperties getPropertiesSSH() {
-    	return propertiesSSH;
+    public RemoteBuildProperties getRBproperties() {
+    	return rb_properties;
     }
     
     /**
@@ -525,6 +508,7 @@ public class AppController implements PropertyChangeListener {
     public void openSourceFile(SourceFile file) throws Exception {
         openSourceFile(new CodeLine(file, file.getPath()));
     }
+    
 
     /**
      * ソースファイルビューにソースファイルを表示する
@@ -770,7 +754,6 @@ public class AppController implements PropertyChangeListener {
     		clear = true;
     	}
     	createProperties(clear);
-
         // 初期化を行う
         initialize();
     }
@@ -792,8 +775,8 @@ public class AppController implements PropertyChangeListener {
         //this.propertiesSSH = null;
     }
 
-    public void setSSHproperties(SSHconnectProperties ssh_properties) {
-    	this.propertiesSSH = ssh_properties;
+    public void setRBproperties(RemoteBuildProperties rb_properties) {
+    	this.rb_properties = rb_properties;
     }
     
     /**
@@ -815,6 +798,7 @@ public class AppController implements PropertyChangeListener {
         // キーワードを設定する
         this.getMainframe().getPanelSourceView().setSearchWords(words);
     }
+   
 
     /**
      * 構造ツリーフィルタリストを取得する

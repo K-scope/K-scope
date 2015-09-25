@@ -25,18 +25,23 @@ import jp.riken.kscope.common.Constant;
 import jp.riken.kscope.data.ProjectPropertyValue;
 import jp.riken.kscope.dialog.SettingProjectDialog;
 import jp.riken.kscope.properties.ProjectProperties;
-import jp.riken.kscope.properties.SSHconnectProperties;
-//import jp.riken.kscope.properties.SourceProperties;
+//import jp.riken.kscope.properties.RemoteBuildProperties;
 import jp.riken.kscope.service.AppController;
 
 public class ProjectSettingProjectAction extends ActionBase {
 
+	private static boolean debug = (System.getenv("DEBUG")!= null);
+	private static boolean debug_l2 = false;
+	
 	/**
 	 * コンストラクタ
      * @param controller	アプリケーションコントローラ
 	 */
 	public ProjectSettingProjectAction(AppController controller) {
 		super(controller);
+		if (debug) {
+			debug_l2 = (System.getenv("DEBUG").equalsIgnoreCase("high"));
+		}
 	}
 	
 	@Override
@@ -51,12 +56,7 @@ public class ProjectSettingProjectAction extends ActionBase {
 		
 		// プロジェクト設定ダイアログを表示する。
         ProjectProperties properties = this.controller.getPropertiesProject();
-		SSHconnectProperties sproperties = this.controller.getPropertiesSSH();
-		if (!sproperties.haveSSHconnect) {
-			ProjectPropertyValue useSSHconnect = properties.getPropertyValue(ProjectProperties.USE_SSHCONNECT);
-			useSSHconnect.setType("fixed-text");
-			useSSHconnect.setValue("false");
-		}
+        
 		SettingProjectDialog dialog = new SettingProjectDialog(frame, true, properties);
 		dialog.setLastAccessFolder(currentFolder);
 		int result = dialog.showDialog();
@@ -65,8 +65,12 @@ public class ProjectSettingProjectAction extends ActionBase {
         			Message.getString("action.common.cancel.status")); //キャンセル
         	return;
         }
-		
-		this.controller.getProjectModel().setProjectTitle(properties.getPropertyValue(ProjectProperties.PRJ_TITLE).getValue());
+		properties = dialog.getProjectProperties();
+		if (debug) {
+			System.out.println("Project Properties has been changed. "+ properties.toString()); 
+		}
+		String title = properties.getPropertyValue(ProjectProperties.PRJ_TITLE).getValue();
+		this.controller.getProjectModel().setProjectTitle(title);
 
         Application.status.setMessageMain(message +
     			Message.getString("action.common.done.status")); //完了

@@ -128,7 +128,7 @@ public class AboutDialog extends javax.swing.JDialog implements ActionListener, 
                 //アプリケーション名＋ヴァージョン
                 JLabel lblAppName = new JLabel();
                 lblAppName.setBounds(18, 110, 300, 15);
-                lblAppName.setText(KscopeProperties.APPLICATION_NAMEJP
+                lblAppName.setText(KscopeProperties.APPLICATION_NAME
                         + "  ("
                         + Message.getString("aboutdialog.version.title") //VERSION :
                         + KscopeProperties.APPLICATION_VERSION

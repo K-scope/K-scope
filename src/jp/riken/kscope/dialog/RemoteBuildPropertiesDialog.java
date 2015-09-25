@@ -51,11 +51,12 @@ import javax.swing.table.TableRowSorter;
 
 import jp.riken.kscope.Message;
 import jp.riken.kscope.common.Constant;
-import jp.riken.kscope.properties.SSHconnectProperties;
+import jp.riken.kscope.properties.ProjectProperties;
+import jp.riken.kscope.properties.RemoteBuildProperties;
 
-public class SSHconnectPropertiesDialog  extends javax.swing.JDialog implements ActionListener  {
+public class RemoteBuildPropertiesDialog  extends javax.swing.JDialog implements ActionListener  {
 
-    private SSHconnectProperties sshproperties;
+    private RemoteBuildProperties rb_properties;
 	
     private static final long serialVersionUID = -8218498915763496914L;
     /** キャンセルボタン */
@@ -70,28 +71,28 @@ public class SSHconnectPropertiesDialog  extends javax.swing.JDialog implements 
     private DefaultTableModel modelProperties;
     /** 列名 */
     private final String[] COLUMN_HEADERS = {
-        Message.getString("sshconnectsettingdialog.parameter.order"),
-        Message.getString("sshconnectsettingdialog.parameter.name"),
-        Message.getString("sshconnectsettingdialog.parameter.value"),
-        Message.getString("sshconnectsettingdialog.parameter.description")
+        Message.getString("remotebuildsettingdialog.parameter.order"),
+        Message.getString("remotebuildsettingdialog.parameter.name"),
+        Message.getString("remotebuildsettingdialog.parameter.value"),
+        Message.getString("remotebuildsettingdialog.parameter.description")
     };
     private String message = null;
 
     /** ダイアログの戻り値 */
     private int result = Constant.CANCEL_DIALOG;
 
-    public SSHconnectPropertiesDialog(Frame frame, SSHconnectProperties settings) {
+    public RemoteBuildPropertiesDialog(Frame frame, RemoteBuildProperties settings) {
         super(frame);
-        this.sshproperties = settings;
+        this.rb_properties = settings;
         initGUI();
     }
 	
     /**
      * @wbp.parser.constructor
      */
-    public SSHconnectPropertiesDialog(Frame frame, SSHconnectProperties settings, String message) {
+    public RemoteBuildPropertiesDialog(Frame frame, RemoteBuildProperties settings, String message) {
         super(frame);
-        this.sshproperties = settings;
+        this.rb_properties = settings;
         this.message = message;
         initGUI();
     }
@@ -171,7 +172,7 @@ public class SSHconnectPropertiesDialog  extends javax.swing.JDialog implements 
                 panelContent.setLayout(panelContentLayout);
 
 
-                // Connection to data in SSHconnectProperties class (instance settings)
+                // Connection to data in RemoteBuildProperties class 
                 modelProperties = new DefaultTableModel() {
                     private static final long serialVersionUID = -6996565435968749645L;
 
@@ -180,7 +181,7 @@ public class SSHconnectPropertiesDialog  extends javax.swing.JDialog implements 
                     }
 
                     public int getRowCount() {
-                        return sshproperties.count();
+                        return rb_properties.count();
                     }
 
                     public Object getValueAt(int row, int column) {
@@ -190,13 +191,13 @@ public class SSHconnectPropertiesDialog  extends javax.swing.JDialog implements 
                         }
 
                         if (column == 0) {
-                            return sshproperties.getOrder(row);
+                            return rb_properties.getOrder(row);
                         } else if (column == 1) {
-                            return sshproperties.getKey(row);
+                            return rb_properties.getKey(row);
                         } else if (column == 2) {
-                            return sshproperties.getValue(row);
+                            return rb_properties.getValue(row);
                         } else if (column == 3) {
-                            return Message.getString(sshproperties.getDescription(row));
+                            return Message.getString(rb_properties.getDescription(row));
                         }
                         return null;
                     }
@@ -214,7 +215,7 @@ public class SSHconnectPropertiesDialog  extends javax.swing.JDialog implements 
                             return;
                         }
                         if (column == 2) {
-                            sshproperties.setValue(row, value.toString());
+                            rb_properties.setValue(row, value.toString());
                         }
                         fireTableCellUpdated(row, column);
                     }
@@ -253,7 +254,7 @@ public class SSHconnectPropertiesDialog  extends javax.swing.JDialog implements 
                 TableRowSorter<TableModel> sorter;
                 sorter = new TableRowSorter<TableModel>(modelProperties);
 
-                String filter_expr = "^((?!" + SSHconnectProperties.BUILD_COMMAND + ").)*$";
+                String filter_expr = "^((?!" + ProjectProperties.BUILD_COMMAND + ").)*$";
                 sorter.setRowFilter(RowFilter.regexFilter(filter_expr, 1));
 
                 sorter.setComparator(0, new Comparator<Integer>() {
@@ -283,7 +284,7 @@ public class SSHconnectPropertiesDialog  extends javax.swing.JDialog implements 
                 });
                 panelContent.add(scrollList, BorderLayout.CENTER);
             }
-            setTitle(Message.getString("sshconnectsettingdialog.title"));
+            setTitle(Message.getString("remotebuildsettingdialog.title"));
             setSize(800, 350);
 
         } catch (Exception e) {
@@ -292,9 +293,9 @@ public class SSHconnectPropertiesDialog  extends javax.swing.JDialog implements 
     }
     
     static class CustomCellRenderer extends DefaultTableCellRenderer {
+
 		private static final long serialVersionUID = -7528172127524209908L;
 		private static final String ASTERISKS = "************************";
-    	
         @Override
         public Component getTableCellRendererComponent(JTable arg0, Object arg1, boolean arg2, boolean arg3, int arg4, int arg5) {
             int length =0;

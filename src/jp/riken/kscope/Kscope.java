@@ -22,9 +22,13 @@ import java.io.InputStream;
 
 import java.awt.EventQueue;
 import java.awt.Toolkit;
+
+
+
 //import java.util.Locale;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.plaf.metal.MetalLookAndFeel;
 
 import jp.riken.kscope.ThemeWindows;
@@ -47,8 +51,17 @@ public class Kscope {
      * @param args 起動引数
      */
     public static void main(String args[]) {
-
-    	if (KscopeProperties.isMac()) {
+        // 初期設定
+        // MacOSXでのJava実行環境用のシステムプロパティの設定.
+        String version = KscopeProperties.APPLICATION_VERSION;        
+        System.out.println(KscopeProperties.APPLICATION_NAME+" v"+version);
+        if (System.getenv("DEBUG")!= null) {
+        	System.out.println("For debugging use DEBUG env var: "
+        			+ "\"high\" - much debug info, "
+        			+ "\"extreme\" - too much debug info,"
+        			+ " any other value, but not empy - less debug info.\nCurrently DEBUG is set to \""+System.getenv("DEBUG")+"\"");
+        }
+        if (KscopeProperties.isMac()) {
         	// JFrameにメニューをつけるのではなく、一般的なOSXアプリ同様に画面上端のスクリーンメニューにする.
         	System.setProperty("apple.laf.useScreenMenuBar", "true");
             System.setProperty("com.apple.macos.smallTabs", "true");           
@@ -71,9 +84,34 @@ public class Kscope {
                 ex.printStackTrace();
                 return;
             }
-        }
+        } 
         // Linuxの場合は設定しない。
-
+        else {
+        	try {
+        		String LandF;
+        		LandF = UIManager.getSystemLookAndFeelClassName();
+        		// Can set GTK Look and Feel, but it is very slow with X11
+        		// LandF = "com.sun.java.swing.plaf.gtk.GTKLookAndFeel";
+                UIManager.setLookAndFeel(LandF);
+	        } 
+	        catch (UnsupportedLookAndFeelException ex) {
+	        	ex.printStackTrace();
+                return;
+	        }
+	        catch (ClassNotFoundException ex) {
+	        	ex.printStackTrace();
+                return;
+	        }
+	        catch (InstantiationException ex) {
+	        	ex.printStackTrace();
+                return;
+	        }
+	        catch (IllegalAccessException ex) {
+	        	ex.printStackTrace();
+                return;
+	        }
+        }
+        
         Kscope app = new Kscope();
         app.initApp();
 

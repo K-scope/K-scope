@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.concurrent.Callable;
 
 import javax.swing.JOptionPane;
+
 import jp.riken.kscope.Application;
 import jp.riken.kscope.Message;
 import jp.riken.kscope.common.ANALYSIS_PANEL;
@@ -43,7 +44,7 @@ import jp.riken.kscope.model.ModuleTreeModel;
 import jp.riken.kscope.model.ProjectModel;
 import jp.riken.kscope.properties.KscopeProperties;
 import jp.riken.kscope.properties.ProjectProperties;
-import jp.riken.kscope.properties.SSHconnectProperties;
+import jp.riken.kscope.properties.RemoteBuildProperties;
 import jp.riken.kscope.service.AppController;
 import jp.riken.kscope.service.FutureService;
 import jp.riken.kscope.service.LanguageService;
@@ -64,6 +65,8 @@ public class FileProjectNewAction extends ActionBase {
     private LanguageService languageService;
     /** プロジェクト構築サービス */
     private ProjectService projectService;
+
+    private Boolean debug=(System.getenv("DEBUG")!= null);
 
     /**
      * コンストラクタ
@@ -116,28 +119,25 @@ public class FileProjectNewAction extends ActionBase {
     	}
     	
         final String message = Message.getString("mainmenu.file.newproject"); //プロジェクトの新規作成
-        SSHconnectProperties sshc_properties = null;
-        
+        //RemoteBuildProperties rb_properties = null;
         Application.status.setMessageMain(message);
-
-       
 
         // 最終アクセスフォルダ
         String currentFolder = this.controller.getLastAccessFolder();
         // Read default value of use_sshconnect
         ProjectProperties pproperties = this.controller.getPropertiesProject();
-        sshc_properties = this.controller.getPropertiesSSH();
+        //rb_properties = this.controller.getRBproperties();
         
         // プロジェクトの新規作成ダイアログを表示する。
-        FileProjectNewDialog dialog = new FileProjectNewDialog(frame, true, pproperties,sshc_properties, this.controller);
+        FileProjectNewDialog dialog = new FileProjectNewDialog(frame, true, pproperties, this.controller); 
         dialog.setLastAccessFolder(currentFolder);
         // 除外パス名を設定する
         dialog.addExcludeName(KscopeProperties.SETTINGS_FOLDER);
         // プロジェクトプロパティにmakeコマンドがある場合はその文字列を表示
-        dialog.setMakeCommand(this.controller.getPropertiesProject().getPropertyValue(ProjectProperties.BUILD_COMMAND).getValue());
+        dialog.setBuildCommand(this.controller.getPropertiesProject().getPropertyValue(ProjectProperties.BUILD_COMMAND).getValue());
         // タイトル, Makefile, 保存フラグの設定削除 at 2013/05/30 by @hira
         // プロジェクトプロパティにタイトル設定がある場合その文字列を表示
-        // dialog.setProjectTitle(this.controller.getPropertiesProject().getPropertyValue(ProjectProperties.PRJ_TITLE).getValue());
+        dialog.setProjectTitle(this.controller.getPropertiesProject().getPropertyValue(ProjectProperties.PRJ_TITLE).getValue());
         // プロジェクトプロパティにMakefileパスがある場合はそのパスを表示
         // dialog.setMakefilePath(this.controller.getPropertiesProject().getPropertyValue(ProjectProperties.MAKEFILE_PATH).getValue());
         // プロジェクト作成直後にプロジェクトを保存するかどうかを設定
@@ -155,9 +155,9 @@ public class FileProjectNewAction extends ActionBase {
         // 中間コードの生成を行うか否か
         boolean genCode = dialog.isGenerateIntermediateCode();
         
-        boolean use_sshconnect = dialog.useSSHconnect();
+        String rs_file = dialog.remoteSettingsFile();  // RB settings file from dialog
         // Set Project property
-        this.controller.getPropertiesProject().getPropertyValue(ProjectProperties.USE_SSHCONNECT).setValue(use_sshconnect ? "true" : "false");
+        pproperties.getPropertyValue(ProjectProperties.SETTINGS_FILE).setValue(rs_file);
         
         // 選択ソース
         boolean selectedXml = dialog.isSelectedXml();
@@ -170,6 +170,7 @@ public class FileProjectNewAction extends ActionBase {
         	//String makeCom = dialog.getMakeCommand();  // make command as set in New Project dialog. Full path if executable file. 
         	//String makefilePath = dialog.getMakefilePath(); // path to makefile as set in New Project dialog. If set " " (space), makefilePath = " ".
         	String build_command = dialog.getBuildCommand(); // build command as set in text field in New Project dialog.
+        	String clean_command = dialog.getCleanCommand(); // clean command as set in text field in New Project dialog.
         	
             // プロジェクトを閉じる
             FileProjectCloseAction closeAction = new FileProjectCloseAction(this.controller);
@@ -226,16 +227,19 @@ public class FileProjectNewAction extends ActionBase {
             projectService.setPropertiesSource(this.controller.getPropertiesSource());
             // プロファイラプロパティ設定
             projectService.setPropertiesProfiler(this.controller.getPropertiesProfiler());
-            // プロジェクトプロパティ設定
-            projectService.setPropertiesProject(this.controller.getPropertiesProject());
+            
             // 要求Byte/FLOP設定プロパティ
             projectService.setPropertiesMemory(this.controller.getPropertiesMemory());
             
-            projectService.setPropertiesSSH(this.controller.getPropertiesSSH());
+            projectService.setRBproperties(this.controller.getRBproperties());
 
             // Make関連情報
             File work = null;
 
+            
+            // プロジェクトプロパティ設定
+            // TODO: check if need to move this below if-statement.
+            projectService.setPropertiesProject(this.controller.getPropertiesProject());
             // 中間コードの生成を行う
             if (genCode) {
                 // コンソールを表示
@@ -244,13 +248,15 @@ public class FileProjectNewAction extends ActionBase {
                 work = project.getProjectFolder();
                 
                 // プロジェクトプロパティ設定
-                this.controller.getPropertiesProject().setBuildCommand(build_command);
+                ProjectProperties pp = this.controller.getPropertiesProject();
+                pp.setBuildCommand(build_command);
+                pp.setCleanCommand(clean_command);
                 
-                if (use_sshconnect) { // Set command line options for SSHconnect call
-                	sshc_properties = this.controller.getPropertiesSSH();
-                	sshc_properties.setLocalPath(work.getAbsolutePath());
-                	sshc_properties.setFileFilter(dialog.getFileFilter());
-                	sshc_properties.setPreprocessFiles(dialog.getPreprocessFiles());
+                if (rs_file != null && rs_file.length()>0) { // Set command line options for remote build command
+                	//rb_properties = this.controller.getRBproperties();
+                	pproperties.setLocalPath(work.getAbsolutePath());
+                	pproperties.setSettingsFile(rs_file);
+                	//pproperties.setRemoteProperties(rb_properties);
                 }
             }
             // 中間コードの生成を行わない
@@ -268,8 +274,16 @@ public class FileProjectNewAction extends ActionBase {
 	            	return;
 	            }
             }
-            // プロジェクトプロパティ設定
+            // Set PRJ_TITLE property of ProjectProperties to value from txtProjectTitle TextField
             this.controller.getPropertiesProject().setProjectTitle(dialog.getPeojectTitle());
+
+            if (this.debug) {            
+            	// TODO: check why rb_properties.getRemoteService() is null
+            	if (dialog.remoteBuild())
+            		System.out.println("Calling execMake build_command="+build_command+". Use remote service "+pproperties.getRemoteService());
+            	else 
+            		System.out.println("Calling execMake build_command="+build_command+".");
+            }
 
             /** 新規作成実行 */
             execMake(build_command, work, dialog.getProjectXmlList(), project, dialog.isBuild(), dialog.isSave(), genCode, (project.getFileType() == FILE_TYPE.XCODEML_XML));
@@ -340,6 +354,7 @@ public class FileProjectNewAction extends ActionBase {
     	final File settingFolder = new File(prjFolder.getAbsoluteFile() + File.separator + KscopeProperties.SETTINGS_FOLDER);
     	final ProjectModel prjModel = model;
     	final List<File> sourceFiles = xmls;
+    	final String build_c = build_command;    	
 
         // スレッドタスクサービスの生成を行う。
         FutureService<Integer> future = new FutureService<Integer>(
@@ -370,8 +385,18 @@ public class FileProjectNewAction extends ActionBase {
                         		filter = FILE_TYPE.FORTRANLANG;
                         		treeModel = controller.getSourceTreeModel();
                         	}
-                        	SourceFile [] srcs = projectService.getSourceFiles(sourceFiles.toArray(new File[0]), filter, true);
-                        	if (srcs.length<1) return Constant.ERROR_RESULT;
+                        	SourceFile [] srcs = projectService.getSourceFiles(sourceFiles.toArray(new File[sourceFiles.size()]), filter, true);
+                        	if (debug != null) {
+                            	System.out.println("Check source files in in kscope/action/FileProjectNewAction.execMake() call :");
+                            	for (File fs : sourceFiles) {
+                            		System.out.println(fs.toString());
+                            	}
+                            }
+                            if (srcs == null) {
+                                System.err.println("No XML files for project in FileProjectNewAction: kscope/action/FileProjectNewAction.execMake call.");
+                                System.err.println("sourceFiles="+sourceFiles+" build_command="+build_c+" filer="+filter);
+                                return Constant.ERROR_RESULT;
+                            } else if (srcs.length < 1) return Constant.ERROR_RESULT;
                         	ArrayList<SourceFile> ls = new ArrayList<SourceFile>(Arrays.asList(srcs));
 
                         	prjModel.setListXmlFile(ls);

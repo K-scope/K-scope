@@ -43,7 +43,7 @@ import jp.riken.kscope.properties.OperationProperties;
 import jp.riken.kscope.properties.ProfilerProperties;
 import jp.riken.kscope.properties.ProgramProperties;
 import jp.riken.kscope.properties.ProjectProperties;
-import jp.riken.kscope.properties.SSHconnectProperties;
+import jp.riken.kscope.properties.RemoteBuildProperties;
 import jp.riken.kscope.properties.SourceProperties;
 
 
@@ -70,8 +70,11 @@ public class ProjectService extends BaseService {
     /** 要求Byte/FLOP設定プロパティ */
     private RequiredBFProperties propertiesMemory;
     
-    private SSHconnectProperties propertiesSSH;
+    private RemoteBuildProperties rb_properties;
     
+    private Boolean debug = (System.getenv("DEBUG")!= null);
+    private Boolean debug_l2 = (debug && (System.getenv("DEBUG").equalsIgnoreCase("high"))); 
+    private Boolean debug_l3 = (debug && (System.getenv("DEBUG").equalsIgnoreCase("high") || System.getenv("DEBUG").equalsIgnoreCase("extreme")));
     /**
      * コンストラクタ
      */
@@ -196,6 +199,10 @@ public class ProjectService extends BaseService {
      * @return サブディレクトリのファイルリスト
      */
     private File[] searchFiles(File dir, FILE_TYPE ftype, boolean subDir) {
+    	if (debug_l2) {
+    		System.out.println("Search files in "+dir);
+    		System.out.println("KscopeProperties.SETTINGS_FOLDER=" +KscopeProperties.SETTINGS_FOLDER);
+    	}
     	if (dir == null) return null;
     	// settings.ppaフォルダは追加しない。
     	if (dir.isDirectory() && KscopeProperties.SETTINGS_FOLDER.equalsIgnoreCase(dir.getName())) {
@@ -204,8 +211,17 @@ public class ProjectService extends BaseService {
 
         ArrayList<File> sublist = new ArrayList<File>();
         FileFilter filter = ftype.getFileFilter();
+        if (debug_l2) {
+        	System.out.println("File filter: "+filter.toString());
+        }
         // ディレクトリ内のファイル一覧を取得する。
         File[] fileList = dir.listFiles();
+        if (debug_l3) {
+        	System.out.println("File list:");
+        	for (File f : fileList) {
+        		System.out.println(f.toString());
+        	}
+        }
         for (int i = 0; i < fileList.length; i++) {
             // サブディレクトリ検索フラグがtrueの場合のみ、サブディレクトリを検索する。
             if (subDir && fileList[i].isDirectory()) {
@@ -218,7 +234,9 @@ public class ProjectService extends BaseService {
                 if (filter == null) {
                     sublist.add(fileList[i]);
                 } else if (filter.accept(fileList[i])) {
-                    sublist.add(fileList[i]);
+                    sublist.add(fileList[i]);                     
+                } else {
+                	if (debug_l2) System.out.println("- "+fileList[i].toString()+"   filtered");
                 }
             }
         }
@@ -237,6 +255,7 @@ public class ProjectService extends BaseService {
     public SourceFile[] getSourceFiles(File files[], FILE_TYPE ftype,
             boolean subDir) {
 
+    	if (debug) System.out.println("Call to ProjectService.getSourceFiles\nfiles ="+files.toString()+" ftype="+ftype+" subdir="+subDir); 
         ArrayList<File> filelist = new ArrayList<File>();
         ArrayList<SourceFile> sourcelist = new ArrayList<SourceFile>();
         for (int i = 0; i < files.length; i++) {
@@ -343,7 +362,7 @@ public class ProjectService extends BaseService {
 
         // 出力プロジェクトファイル
         File saveFile = new File(saveFolder.getAbsolutePath() + File.separator + KscopeProperties.PROJECT_FILE);
-
+        
         // XML ファイル出力
         writeXmlFile(saveFile, document);
 
@@ -381,10 +400,10 @@ public class ProjectService extends BaseService {
         // プロファイラプロパティ設定出力
         this.propertiesProfiler.writeProperties(elemSettings);
         // プロジェクトプロパティ設定出力
-        this.propertiesProject.writeProperties(elemSettings, this.projectModel.getProjectFolder());
+        this.propertiesProject.writeProperties(elemSettings);
         // 要求Byte/FLOP設定プロパティ設定出力
         this.propertiesMemory.writeProperties(elemSettings);
-        this.propertiesSSH.writeProperties(elemSettings);
+        //this.rb_properties.writeProperties(elemSettings);
 
         // settingsフォルダ作成
         File settingsFolder = new File(saveFolder.getAbsoluteFile() + File.separator + KscopeProperties.SETTINGS_FOLDER);
@@ -483,8 +502,8 @@ public class ProjectService extends BaseService {
     	this.propertiesMemory = propertiesMemory;
     }
     
-    public void setPropertiesSSH(SSHconnectProperties propertiesSSH) {
-    	this.propertiesSSH = propertiesSSH;
+    public void setRBproperties(RemoteBuildProperties rb_properties) {
+    	this.rb_properties = rb_properties;
     }
 
     /**
@@ -520,7 +539,7 @@ public class ProjectService extends BaseService {
             this.propertiesProject.loadProperties(settingsXml);
             // 要求Byte/FLOP設定プロパティ
             this.propertiesMemory.loadProperties(settingsXml);
-            this.propertiesSSH.loadProperties(settingsXml);
+            this.rb_properties.loadProperties(settingsXml);
 
         } catch (Exception ex) {
             // エラーメッセージ出力

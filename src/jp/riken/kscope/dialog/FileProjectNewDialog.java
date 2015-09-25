@@ -37,14 +37,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+
+
 //import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.DefaultListModel;
 import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -57,18 +61,18 @@ import javax.swing.JTextField;
 import javax.swing.JToggleButton;
 import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
+import javax.swing.SwingUtilities;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.LineBorder;
 
 import jp.riken.kscope.Message;
-import jp.riken.kscope.action.ProjectSettingSSHAction;
 import jp.riken.kscope.common.Constant;
 import jp.riken.kscope.data.FILE_TYPE;
+import jp.riken.kscope.gui.MainFrame;
 import jp.riken.kscope.properties.KscopeProperties;
 import jp.riken.kscope.properties.ProjectProperties;
-import jp.riken.kscope.properties.SSHconnectProperties;
 import jp.riken.kscope.service.AppController;
 import jp.riken.kscope.utils.FileUtils;
 import jp.riken.kscope.utils.ResourceUtils;
@@ -82,10 +86,11 @@ import jp.riken.kscope.utils.SwingUtils;
  */
 public class FileProjectNewDialog extends javax.swing.JDialog implements ActionListener {
 
-    /** シリアル番号 */
-    private static final long serialVersionUID = 1L;
-
-    /** 中間コード・フォルダ・ファイルリスト */
+	private static final long serialVersionUID = 6096475381851486225L;
+	private static boolean debug = (System.getenv("DEBUG")!= null);	
+	private static boolean debug_l2 = false; 
+	
+/** 中間コード・フォルダ・ファイルリスト */
     private JList<String> listProjectXml;
     /** プロジェクトタイトル */
     private JTextField txtProjectTitle;
@@ -117,31 +122,28 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
     /** シンプルモード */
     private JRadioButton radioSimpleMode;
     
-    /** SSHconnect用のファイル名フィルタ */
-    private JTextField txt_filefilter;
-    /** SSHconnect用の置き換えすべきプレースホルダーのあるファイル群 */
-    private JTextField txt_preprocess_files;
-    /** SSHconnect用の置き換えすべきファイル追加ボタン */
-    private JButton addprerocessfile_button;
     /** Panel holds file_filter and process_files fields */
     private JPanel sshc_settings_panel;
-    /** SSH connectプロパティ */
-    private SSHconnectProperties sproperties;
-
+    private JTextField txt_filefilter;
+    private JTextArea sshc_text;
+    private JTextField txt_preprocess_files;
+    private JButton addprerocessfile_button;
+    
     /** プロジェクトプロパティ*/
     private ProjectProperties pproperties;
-    
-    /** Parent action */
-    private AppController controller;
+    /** Server プロパティ */
+    //private RemoteBuildProperties rb_properties;
+
+    /** Serverを利用する */
+    private JCheckBox checkUseRemote;
+    private JComboBox<String> settings_list;
+    private DefaultComboBoxModel<String> list_model;
+    /** 選択XMLフォルダ・ファイル削除ボタン */
+    private JButton manage_settings_files;
         
-    /** SSHconnectを利用する */
-    private JCheckBox checkUseSSHconnect;
-    private JButton ssh_settings_button;
-        
-    /** makefile テキストフィールド*/
-    //private JTextField txtMakefile;
-    /** ビルドコマンド 参照ボタン */
+    /** build command and clean command 参照ボタン */
     private JButton btnMakeCmd;
+    private JButton btnCleanCmd;
     /** XML パネル説明文 */
     private JTextArea txaXMLPanelDesc;
     /** XML パネル　ラベル */
@@ -173,34 +175,25 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
     /** 参照ボタンサイズ */
     private final java.awt.Dimension REFER_BUTTON_SIZE = new java.awt.Dimension(64, 22);
     /** ビルドコマンドテキストボックス */
-    private JTextField txtMakeCommand;
-    private Frame frame;
-
+    private JTextField txtBuildCommand;
+    private JTextField txtCleanCommand;
+    
     /**
      * コンストラクタ
      * @param owner		親フレーム
      * @param modal		true=モーダルダイアログを表示する
      * @wbp.parser.constructor
      */
-    public FileProjectNewDialog(Frame owner, boolean modal, ProjectProperties pproperties, SSHconnectProperties sproperties, AppController controller) {
+    public FileProjectNewDialog(Frame owner, boolean modal, ProjectProperties pproperties, AppController controller) {
         super(owner, modal);
+        if (debug) {
+			debug_l2 = (System.getenv("DEBUG").equalsIgnoreCase("high"));
+		}
         this.pproperties = pproperties;
-        this.sproperties = sproperties;
-        this.controller = controller;
-        this.frame = owner;
         initGUI();
     }
 
-    /**
-     * コンストラクタ
-     * @param frame		親フレーム
-     */
-    public FileProjectNewDialog(JFrame frame) {
-        super(frame);
-        initGUI();
-    }
-
-    /**
+     /**
      * GUI初期化を行う。
      */
     private void initGUI() {
@@ -296,7 +289,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
     }
 
     /**
-     * プロジェクト種別選択画面を作成する.
+     * New Project Wizard / First screen
      *
      * @return プロジェクト種別選択画面
      */
@@ -333,30 +326,42 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
             layoutSelect.columnWidths = new int[]{32, 32, 64, 128};
             panelSelect.setLayout(layoutSelect);
 
-            if (this.sproperties != null && this.sproperties.haveSSHconnect) {
-                ssh_settings_button = new JButton(Message.getString("fileprojectnewdialog.kindpanel.SSHsettings"));
-                // SSHconnectの使用切り替え
-                checkUseSSHconnect = new JCheckBox(Message.getString("fileprojectnewdialog.kindpanel.checkbox.useSSHconnect")) {
+            String[] selections = ProjectProperties.getRemoteSettings(); 
+        	if (selections.length < 1) {
+        		System.out.println("No remote connection settings files found in "+ ProjectProperties.REMOTE_SETTINGS_DIR);
+        	} else {
+        		System.out.println("Have remote connection settings in "+ ProjectProperties.REMOTE_SETTINGS_DIR);
+            	list_model = new DefaultComboBoxModel<String>(selections);
+        		settings_list = new JComboBox<String>(list_model);
+            	settings_list.setEnabled(false);
+            	manage_settings_files = new JButton(Message.getString("fileprojectnewdialog.kindpanel.button.manage_settings_files"));
+            	manage_settings_files.setEnabled(false);
+                // Remote build の使用切り替え
+                checkUseRemote = new JCheckBox(Message.getString("fileprojectnewdialog.kindpanel.checkbox.useServer")) {
 					private static final long serialVersionUID = -1195485757658963243L;
 
 					@Override
                     protected void fireStateChanged() {
-                        if (haveSSHconnect(sproperties)) {
-                            ssh_settings_button.setEnabled(this.isSelected());
+                        if (pproperties.remoteBuildPossible()) {
+                            // Enable settings_list and manage_settings_files only if checkUseRemote is selected
+                        	settings_list.setEnabled(this.isSelected());
+                        	manage_settings_files.setEnabled(this.isSelected());
                         }
                     }
-                };
-                checkUseSSHconnect.setToolTipText(Message.getString("fileprojectnewdialog.kindpanel.checkbox.useSSHconnect.tooltip"));
-                checkUseSSHconnect.setEnabled(isFullProject());
-                checkUseSSHconnect.setSelected(this.pproperties.useSSHconnect());
-            }
-
+                };            	
+                checkUseRemote.setToolTipText(Message.getString("fileprojectnewdialog.kindpanel.checkbox.useServer.tooltip"));
+                checkUseRemote.setEnabled(false);
+                // if (debug) System.out.println(isFullProject() && this.rb_properties.remote_settings_found);
+                checkUseRemote.setSelected(this.pproperties.useServer());
+        	}
+            
             //中間コードの生成は行わないラジオボタン（フルモードI）
             radioNotGenXML = new JRadioButton(Message.getString("fileprojectnewdialog.kindpanel.radiobutton.existxml"));
             radioNotGenXML.setToolTipText(Message.getString("fileprojectnewdialog.kindpanel.radiobutton.existxml.tooltip"));
 
             //ビルドコマンドを用いて中間コード生成ラジオボタン(フルモードII)
             radioGenXML = new JRadioButton(Message.getString("fileprojectnewdialog.kindpanel.radiobutton.genxml")) {
+
 				private static final long serialVersionUID = 8187608139294097396L;
 
 				@Override
@@ -366,8 +371,13 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
                     } else {
                         pproperties.setHiddenPropertyValue(ProjectProperties.GENERATE_XML, "false");
                     }
-                    if (haveSSHconnect(sproperties)) {
-                        checkUseSSHconnect.setEnabled(this.isSelected());
+                    if (pproperties.remoteBuildPossible()) {
+                        checkUseRemote.setEnabled(this.isSelected());
+                        if (!this.isSelected()) {
+                        	checkUseRemote.setSelected(false);
+                        	settings_list.setEnabled(false);
+                        	manage_settings_files.setEnabled(false);
+                        }
                     }
                     if (labelStatus[2] != null) {
                         labelStatus[2].setVisible(isGenerateIntermediateCode());
@@ -384,6 +394,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
             
             //フルモードのラジオボタン
             radioFullMode = new JRadioButton(Message.getString("fileprojectnewdialog.kindpanel.radiobutton.fullmode"), true) {
+
 				private static final long serialVersionUID = 346406280524706387L;
 
 				@Override
@@ -408,10 +419,10 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
                         checkbox_StructureAnalysis.setEnabled(this.isSelected());
                         checkbox_StructureAnalysis.setSelected(this.isSelected());
                     }
-                    if (haveSSHconnect(sproperties)) {
+                    if (remoteBuild(pproperties)) {
                         boolean enabled = this.isSelected() && radioGenXML.isSelected() && radioGenXML.isEnabled();
-                        checkUseSSHconnect.setEnabled(enabled);
-                        ssh_settings_button.setEnabled(enabled);                                              
+                        checkUseRemote.setEnabled(enabled);
+                        settings_list.setEnabled(enabled); 
                     }
                 }
             };
@@ -434,17 +445,19 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
             ButtonGroup groupGenMake = new ButtonGroup();
             groupGenMake.add(radioGenXML);
             groupGenMake.add(radioNotGenXML);
-            panelSelect.add(radioFullMode, new GridBagConstraints(0, 0, 3, 1, 1.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
-            panelSelect.add(radioNotGenXML, new GridBagConstraints(1, 1, 2, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
+            panelSelect.add(radioFullMode, new GridBagConstraints(0, 0, 4, 1, 1.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
+            panelSelect.add(radioNotGenXML, new GridBagConstraints(1, 1, 3, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
             panelSelect.add(radioGenXML, new GridBagConstraints(1, 2, 3, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
-            if (this.sproperties != null && this.sproperties.haveSSHconnect) {
-                panelSelect.add(checkUseSSHconnect, new GridBagConstraints(2, 3, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
-                panelSelect.add(ssh_settings_button, new GridBagConstraints(3, 3, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
-                ssh_settings_button.addActionListener(this);
+            if (this.pproperties != null && this.pproperties.remoteBuildPossible()) {
+                panelSelect.add(checkUseRemote, new GridBagConstraints(2, 3, 2, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
+                panelSelect.add(settings_list, new GridBagConstraints(2, 4, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
+                settings_list.addActionListener(this);
+                panelSelect.add(manage_settings_files, new GridBagConstraints(3, 4, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
+                manage_settings_files.addActionListener(this);
             }
-            panelSelect.add(radioSimpleMode, new GridBagConstraints(0, 4, 3, 1, 1.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
+            panelSelect.add(radioSimpleMode, new GridBagConstraints(0, 5, 4, 1, 1.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
             panelSelect.add(new JLabel(Message.getString("fileprojectnewdialog.kindpanel.label.fortranonly")),
-                    new GridBagConstraints(1, 5, 2, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
+                    new GridBagConstraints(1, 6, 3, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
 
             panelContent.add(panelSelect, new GridBagConstraints(1, 2, 3, 5, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 7, 0, 0), 0, 0));
 
@@ -452,14 +465,22 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
 
         return panelContent;
     }
-
-    protected boolean haveSSHconnect(SSHconnectProperties sproperties) {
-        if (sproperties == null) {
-            return false;
-        }
-        return sproperties.haveSSHconnect;
+    
+    protected boolean remoteBuild(ProjectProperties pproperties) {
+		if (this.checkUseRemote == null) return false;
+		if (this.checkUseRemote.isSelected()) {
+	        if (pproperties == null) {
+	            return false;
+	        }
+	        return pproperties.useRemoteBuild();
+		}
+		return false;
     }
 
+	public boolean remoteBuild() {
+		return remoteBuild(this.pproperties);
+    }
+	
     /**
      * True if need to build the project (locally or remotely) to generate
      * intermediate code.
@@ -480,7 +501,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
     }
 
     /**
-     * プロジェクト基本情報画面を作成する.
+     * New Project Wizard / Second screen
      *
      * @return プロジェクト基本情報画面
      */
@@ -547,48 +568,50 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
             btnProjectFolder.addActionListener(this);
         }
 
-
-
         // Process files & File filter
-        if (this.sproperties != null && this.sproperties.haveSSHconnect) {
-
+        if (this.pproperties != null && this.pproperties.remoteBuildPossible()) {
+        	
+        	
+        	
+        	// Process files & File filter
+        
             sshc_settings_panel = new JPanel();
             GridBagLayout sshc_panel_layout = new GridBagLayout();
             sshc_panel_layout.columnWidths = new int[]{7, 160, 7, 7};
             sshc_panel_layout.columnWeights = new double[]{0.0, 0.0, 1.0, 0.0};
             sshc_panel_layout.rowHeights = new int[]{16, 16, 16};
             sshc_settings_panel.setLayout(sshc_panel_layout);
-
-            JTextArea sshc_text = new JTextArea(Message.getString("fileprojectnewdialog.basepanel.filefilter.desc"));
+ 
+            sshc_text = new JTextArea(Message.getString("fileprojectnewdialog.basepanel.filefilter.desc"));
             sshc_text.setLineWrap(true);
             sshc_text.setWrapStyleWord(true);
             sshc_text.setOpaque(false);
             sshc_text.setEditable(false);
-
+ 
             JLabel ffl = new JLabel(Message.getString("fileprojectnewdialog.basepanel.filefilter.label"));
             txt_filefilter = new JTextField();
-            String ffilter = this.sproperties.getPropertySet(SSHconnectProperties.FILE_FILTER).getValue();
+            String ffilter = this.pproperties.getValueByKey(ProjectProperties.FILE_FILTER);
             txt_filefilter.setText(ffilter);
             JLabel procfl = new JLabel(Message.getString("fileprojectnewdialog.basepanel.processfiles.label"));
             txt_preprocess_files = new JTextField();
+            String proc_files = this.pproperties.getValueByKey(ProjectProperties.PREPROCESS_FILES);
+            txt_preprocess_files.setText(proc_files);
             addprerocessfile_button = new JButton(Message.getString("fileprojectnewdialog.basepanel.processfiles.addbutton"));
-            addprerocessfile_button.setEnabled(false);
+            addprerocessfile_button.setEnabled(true);
             addprerocessfile_button.addActionListener(this);
-
             sshc_settings_panel.add(sshc_text, new GridBagConstraints(0, 0, 4, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 7, 10, 7), 0, 0));
             sshc_settings_panel.add(ffl, new GridBagConstraints(1, 1, 1, 1, 0.0, 0.0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 7, 0, 7), 0, 0));
             sshc_settings_panel.add(txt_filefilter, new GridBagConstraints(2, 1, 2, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
             sshc_settings_panel.add(procfl, new GridBagConstraints(1, 2, 1, 1, 0.0, 0.0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 7, 0, 7), 0, 0));
             sshc_settings_panel.add(txt_preprocess_files, new GridBagConstraints(2, 2, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
             sshc_settings_panel.add(addprerocessfile_button, new GridBagConstraints(3, 2, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
-
-            panelContent.add(sshc_settings_panel, new GridBagConstraints(1, 4, 3, 2, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(7, 0, 0, 7), 0, 0));
+            panelContent.add(sshc_settings_panel, new GridBagConstraints(1, 4, 3, 2, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(7, 0, 0, 7), 0, 0));   
+            sshc_settings_panel.setVisible(false);
         }
-
         return panelContent;
     }
 
-    /**
+	/**
      * プロジェクトXML追加画面を作成する.
      *
      * @return プロジェクトXML追加画面
@@ -683,6 +706,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
             layout.columnWidths = new int[]{7, 7};
             panelAdvanced.setLayout(layout);
             btnAdvancedXml = new JToggleButton("Advanced >>", false) {
+
 				private static final long serialVersionUID = 8408253832919667943L;
 
 				@Override
@@ -733,49 +757,61 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
         panelContent.setLayout(jPanel2Layout);
         panelContent.setBorder(new EmptyBorder(7, 7, 0, 7));
 
-        // 説明文
+        // 説明文 1
         {
-            JLabel label = new JLabel(Message.getString("fileprojectnewdialog.statuspanel.make_long")); //中間コードのビルド連携の設定
-            panelContent.add(label, new GridBagConstraints(1, 0, 2, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
+        	JLabel label = new JLabel(Message.getString("fileprojectnewdialog.statuspanel.make_long")); //中間コードのビルド連携の設定
+        	panelContent.add(label, new GridBagConstraints(1, 0, 2, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
         }
 
-        //ビルドコマンド
+        // 説明文 2
         {
-            JPanel panelMakeCmd = new JPanel();
-            GridBagLayout layoutMakeCmd = new GridBagLayout();
-            layoutMakeCmd.rowWeights = new double[]{0.1};
-            layoutMakeCmd.rowHeights = new int[]{7};
-            layoutMakeCmd.columnWeights = new double[]{1.0, 0.0};
-            layoutMakeCmd.columnWidths = new int[]{7, 7};
-            panelMakeCmd.setLayout(layoutMakeCmd);
+        	JTextArea text = new JTextArea(Message.getString("fileprojectnewdialog.makefilepanel.desc")); //実行するビルドコマンドを選択してください。
+        	text.setLineWrap(true);
+        	text.setWrapStyleWord(true);
+        	text.setOpaque(false);
+        	text.setEditable(false);
+        	panelContent.add(text, new GridBagConstraints(1, 1, 2, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(7, 0, 10, 0), 0, 0));
+        }
 
+        // Build command
+        {
             panelContent.add(new JLabel(Message.getString("fileprojectnewdialog.makefilepanel.label.makecommand")), //ビルドコマンド
-                    new GridBagConstraints(1, 2, 1, 1, 0.0, 0.0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 7, 0, 7), 0, 0));
-            txtMakeCommand = new JTextField();
-            panelMakeCmd.add(txtMakeCommand,
-                    new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
+                    new GridBagConstraints(1, 2, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 7, 0, 7), 0, 0));
+            txtBuildCommand = new JTextField();
             btnMakeCmd = new JButton();
-            panelMakeCmd.add(btnMakeCmd,
-                    new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
             btnMakeCmd.setText(Message.getString("dialog.common.button.refer")); //参照
             btnMakeCmd.setPreferredSize(REFER_BUTTON_SIZE);
             btnMakeCmd.setMinimumSize(REFER_BUTTON_SIZE);
             btnMakeCmd.setMaximumSize(REFER_BUTTON_SIZE);
             btnMakeCmd.setMargin(new Insets(0, 3, 0, 3));
             btnMakeCmd.addActionListener(this);
-            panelContent.add(panelMakeCmd,
-                    new GridBagConstraints(2, 2, 2, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
+            panelContent.add(txtBuildCommand,
+            		new GridBagConstraints(2, 2, 2, 1, 0.0, 0.0, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
+            panelContent.add(btnMakeCmd,
+            		new GridBagConstraints(4, 2, 1, 1, 0.0, 0.0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
+        }
+        
+        // Clean command
+        {
+        	panelContent.add(new JLabel(Message.getString("fileprojectnewdialog.makefilepanel.clean-command.dsc")), // Clean command description
+                    new GridBagConstraints(1, 3, 4, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
+            panelContent.add(new JLabel(Message.getString("fileprojectnewdialog.makefilepanel.clean-command.name")), // Clean command
+                    new GridBagConstraints(1, 4, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 7, 0, 7), 0, 0));
+            txtCleanCommand = new JTextField();
+            btnCleanCmd = new JButton();
+            btnCleanCmd.setText(Message.getString("dialog.common.button.refer")); //参照
+            btnCleanCmd.setPreferredSize(REFER_BUTTON_SIZE);
+            btnCleanCmd.setMinimumSize(REFER_BUTTON_SIZE);
+            btnCleanCmd.setMaximumSize(REFER_BUTTON_SIZE);
+            btnCleanCmd.setMargin(new Insets(0, 3, 0, 3));
+            btnCleanCmd.addActionListener(this);
+            panelContent.add(txtCleanCommand,
+            		new GridBagConstraints(2, 4, 2, 1, 0.0, 0.0, GridBagConstraints.EAST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
+            panelContent.add(btnCleanCmd,
+            		new GridBagConstraints(4, 4, 1, 1, 0.0, 0.0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
         }
 
-        // 説明文
-        {
-            JTextArea text = new JTextArea(Message.getString("fileprojectnewdialog.makefilepanel.desc")); //実行するビルドコマンドを選択してください。
-            text.setLineWrap(true);
-            text.setWrapStyleWord(true);
-            text.setOpaque(false);
-            text.setEditable(false);
-            panelContent.add(text, new GridBagConstraints(1, 1, 2, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(7, 0, 10, 0), 0, 0));
-        }
+        
 
         return panelContent;
     }
@@ -849,20 +885,26 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
             {
                 panelContent.add(new JLabel(Message.getString("fileprojectnewdialog.makefilepanel.label.makecommand")), //Makeコマンド
                         new GridBagConstraints(1, row, 1, 1, 0.0, 0.0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 0, 7), 0, 0));
-                makecmd = this.txtMakeCommand.getText();
-                /*String filename = this.txtMakefile.getText();
-                 if (!filename.isEmpty()) {
-                 File file = new File(filename);
-                 filename = file.getName();
-                 makecmd += " -f " + filename;
-                 }
-                 else {
-                 makecmd = "";
-                 }*/
+                makecmd = this.txtBuildCommand.getText();
                 JLabel label = new JLabel(makecmd);
                 panelContent.add(label, new GridBagConstraints(2, row, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
             }
         }
+        
+     // Clean command
+        String cleancmd = null;
+        if (isGenerateIntermediateCode()) {
+            row++;
+            {
+                panelContent.add(new JLabel(Message.getString("fileprojectnewdialog.makefilepanel.clean-command.name")), // Clean command
+                        new GridBagConstraints(1, row, 1, 1, 0.0, 0.0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 0, 7), 0, 0));
+                cleancmd = this.txtCleanCommand.getText();
+                JLabel label = new JLabel(cleancmd);
+                panelContent.add(label, new GridBagConstraints(2, row, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
+            }
+        }
+        
+        
         // 中間コード　or フォートランソース
         row++;
         {
@@ -1132,13 +1174,22 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
         if (index == 0) {
             this.btnBack.setEnabled(false);
         } else if (index == 1) { // open BasePanel
-            // hide file_filter and process_files fields
-            if (this.sproperties.haveSSHconnect) {
-                if (useSSHconnect() && !haveAllSettings2connect()) {
-                    ProjectSettingSSHAction psssh_action = new ProjectSettingSSHAction(this.controller);
-                    psssh_action.openDialog(this.frame, Message.getString("projectsettingsshconnect.setup.need_parameters"));
+            // file_filter and process_files fields on sshc_settings_panel
+            if (this.pproperties.remoteBuildPossible() && checkUseRemote.isSelected()) {
+            	
+            	String settings_file = (String)this.settings_list.getSelectedItem();
+            	String remote_service = ProjectProperties.getRemoteService(settings_file);
+            	System.out.println("Remote service is "+remote_service);
+            	if (remote_service.equalsIgnoreCase(ProjectProperties.remote_service_sshconnect)) {
+                	sshc_settings_panel.setVisible(true);
                 }
-                sshc_settings_panel.setVisible(useSSHconnect());
+                else {
+                	sshc_settings_panel.setVisible(false);
+                }
+            }
+            else if (this.pproperties.useRemoteBuild()) {
+            	// If remoteBuild returns false, sshc_settings_panel is null
+            	sshc_settings_panel.setVisible(false);
             }
             if (this.txtProjectFolder.getText().length() < 1) {
                 this.btnNext.setEnabled(false);  // Disable until project folder selected    		
@@ -1180,8 +1231,9 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
             txaXMLPanelDesc.setText(desc);
             
             //(2013/10/16) added by teraim
-            //SSHconnectを使う場合は、既存中間コードの追加をdisableにする。
-            if (useSSHconnect()) {
+            // Remote buildを使う場合は、既存中間コードの追加をdisableにする。
+            String rs_file = remoteSettingsFile();
+            if (rs_file != null && rs_file.length() > 0) {
                 listProjectXml.setEnabled(false);
                 btnXmlFolder.setEnabled(false);
                 btnXmlFile.setEnabled(false);
@@ -1202,26 +1254,6 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
             }
             lblFinalizePanelCode.setText(labelString);
         }
-    }
-
-    //
-    private boolean haveAllSettings2connect() {
-        if (this.sproperties == null) {
-            return false;
-        }
-        try {
-            String host = this.sproperties.getPropertySet(SSHconnectProperties.HOST).getValue();
-            if (host == null || host.length() < 1) {
-                return false;
-            }
-            String user = this.sproperties.getPropertySet(SSHconnectProperties.USER).getValue();
-            if (user == null || user.length() < 1) {
-                return false;
-            }
-        } catch (NullPointerException e) {
-            return false;
-        }
-        return true;
     }
 
     /**
@@ -1253,7 +1285,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
             }
         } else if (index == 2) {
             // makeコマンド
-            String m = getMakeCommand();
+            String m = getBuildCommand();
             if (StringUtils.isNullOrEmpty(m)) {
                 msg = Message.getString("fileprojectnewdialog.errordialog.message.makecommandempty"); //Makeコマンドが設定されていません。
                 ret = false;
@@ -1351,37 +1383,37 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
             // 中間コードやMakefileが設定されている状態でプロジェクトフォルダが変更された場合は相対パスに注意
             String prjF = this.txtProjectFolder.getText();
             if (!StringUtils.isNullOrEmpty(prjF)) {
-                String prjFNew = selected[0].getAbsolutePath();
-                if (!prjF.equals(prjFNew)) {
-                    DefaultListModel<String> model = (DefaultListModel<String>) this.listProjectXml.getModel();
-                    String mk = null;
-                    if (isGenerateIntermediateCode()) {
-                        mk = this.txtMakeCommand.getText();
-                    }
-                    if (model.size() > 0 || !StringUtils.isNullOrEmpty(mk)) {
-                        String desc = Message.getString("fileprojectnewdialog.confirmdialog.projectfolderchange.xmlclear.message"); //プロジェクトフォルダが変更されました。すでに設定されている中間コードは...
-                        if (isSelectedSimpleMode()) {
-                            desc = Message.getString("fileprojectnewdialog.confirmdialog.projectfolderchange.fortranclear.message"); //プロジェクトフォルダが変更されました。すでに設定されているフォートランファイルは...
-                        } else {
-                            if (!StringUtils.isNullOrEmpty(mk) && model.size() > 0) {
-                                desc = Message.getString("fileprojectnewdialog.confirmdialog.projectfolderchange.makefileandxmlclear.message"); //プロジェクトフォルダが変更されました。すでに設定されているMakefileと中間コードは...
-                            } else if (!StringUtils.isNullOrEmpty(mk)) {
-                                desc = Message.getString("fileprojectnewdialog.confirmdialog.projectfolderchange.makefileclear.message"); //プロジェクトフォルダが変更されました。すでに設定されているMakefileは...
-                            }
-                        }
+            	String prjFNew = selected[0].getAbsolutePath();
+            	if (!prjF.equals(prjFNew)) {
+            		DefaultListModel<String> model = (DefaultListModel<String>) this.listProjectXml.getModel();
+            		String mc = null;
+            		if (isGenerateIntermediateCode()) {
+            			mc = this.txtBuildCommand.getText();
+            		}
+            		if (model.size() > 0 || !StringUtils.isNullOrEmpty(mc)) {
+            			String desc = Message.getString("fileprojectnewdialog.confirmdialog.projectfolderchange.xmlclear.message"); //プロジェクトフォルダが変更されました。すでに設定されている中間コードは...
+            			if (isSelectedSimpleMode()) {
+            				desc = Message.getString("fileprojectnewdialog.confirmdialog.projectfolderchange.fortranclear.message"); //プロジェクトフォルダが変更されました。すでに設定されているフォートランファイルは...
+            			} else {
+            				if (!StringUtils.isNullOrEmpty(mc) && model.size() > 0) {
+            					desc = Message.getString("fileprojectnewdialog.confirmdialog.projectfolderchange.makefileandxmlclear.message"); //プロジェクトフォルダが変更されました。すでに設定されているMakefileと中間コードは...
+            				} else if (!StringUtils.isNullOrEmpty(mc)) {
+            					desc = Message.getString("fileprojectnewdialog.confirmdialog.projectfolderchange.makefileclear.message"); //プロジェクトフォルダが変更されました。すでに設定されているMakefileは...
+            				}
+            			}
 
-                        int ret = JOptionPane.showConfirmDialog(this, desc,
-                                Message.getString("fileprojectnewdialog.confirmdialog.projectfolderchange.title"), //プロジェクトフォルダの変更
-                                JOptionPane.WARNING_MESSAGE, JOptionPane.YES_NO_OPTION);
-                        if (ret == JOptionPane.YES_OPTION) {
-                            if (model.size() > 0) {
-                                model.clear();
-                            }
-                        } else {
-                            return;
-                        }
-                    }
-                }
+            			int ret = JOptionPane.showConfirmDialog(this, desc,
+            					Message.getString("fileprojectnewdialog.confirmdialog.projectfolderchange.title"), //プロジェクトフォルダの変更
+            					JOptionPane.WARNING_MESSAGE, JOptionPane.YES_NO_OPTION);
+            			if (ret == JOptionPane.YES_OPTION) {
+            				if (model.size() > 0) {
+            					model.clear();
+            				}
+            			} else {
+            				return;
+            			}
+            		}
+            	}
             }
 
             // 選択プロジェクトフォルダが既存プロジェクトであるかチェックする。
@@ -1403,7 +1435,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
             this.txtProjectFolder.setText(selected[0].getPath());
             enableButtons();
 
-        }
+        }         
         // Add files to be preprocessed プレースホルダの処理対象のファイルを追加
         else if (event.getSource() == this.addprerocessfile_button) {
             // フォルダ選択ダイアログを表示する。
@@ -1507,22 +1539,67 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
                     return;
                 }
                 if (path.length() > 0) {
-                    String text_make_comm = this.txtMakeCommand.getText();
+                    String text_make_comm = this.txtBuildCommand.getText();
                     if (!StringUtils.isNullOrEmpty(text_make_comm)) {
-                        text_make_comm = text_make_comm + " " + path;
+                        text_make_comm = text_make_comm + " " + "./'" + path + "'";
                     } else {
                         text_make_comm = "./'" + path + "'";
                     }
-                    this.txtMakeCommand.setText(text_make_comm);
+                    this.txtBuildCommand.setText(text_make_comm);
                 }
             }
         }
+        // Clean command Refer button
+        else if (event.getSource() == this.btnCleanCmd) {
+        	File[] selected = SwingUtils.showOpenFileDialog(this,
+                    Message.getString("fileprojectnewdialog.selectfiledialog.cleancommand.title"), // Dialog title for refer clean command
+                    currentFolder, null, false);
+            if (selected == null || selected.length <= 0 || selected[0] == null) {
+                return;
+            }
+            for (File file : selected) {
+                String path = "";
+                try {
+                    path = file.getCanonicalPath();
+                    path = FileUtils.getRelativePath(this.txtProjectFolder.getText(), path);
+                } catch (IOException e) {
+                    return;
+                }
+                if (path.length() > 0) {
+                    String text_clean_comm = this.txtCleanCommand.getText();
+                    if (!StringUtils.isNullOrEmpty(text_clean_comm)) {
+                    	text_clean_comm = text_clean_comm + " " + "./'" + path + "'";
+                    } else {
+                    	text_clean_comm = "./'" + path + "'";
+                    }
+                    this.txtCleanCommand.setText(text_clean_comm);
+                }
+            }
+        }
+        
         // 次へ
         else if (event.getSource() == this.btnNext) {
             if (!checkParams(this.wizardIndex)) {
                 return;
             }
-            if (this.wizardIndex == this.panelWizards.length - 1) {
+            // Save settings from Dialog to ProjectProperties instance
+            if (this.wizardIndex == this.panelWizards.length - 1) {  
+            	this.pproperties.setLocalPath(this.txtProjectFolder.getText());  // Project folder
+            	if (this.checkUseRemote != null && this.checkUseRemote.isSelected()) {            		
+	            	String settings_file = (String)this.settings_list.getSelectedItem();
+	            	String remote_service = ProjectProperties.getRemoteService(settings_file);
+	            	this.pproperties.setSettingsFile(settings_file);
+	            	System.out.println("Remote service is set to "+remote_service);
+	            	if (remote_service.equalsIgnoreCase(ProjectProperties.remote_service_sshconnect)) {
+		            	// Save File filter and Preprocess files fields to ProjectProperties
+		            	if (this.txt_preprocess_files.getText().length() > 0) {
+		            		pproperties.setPreprocessFiles(this.txt_preprocess_files.getText());
+		            	}
+		            	if (this.txt_filefilter.getText().length() > 0) {
+		            		pproperties.setFileFilter(this.txt_filefilter.getText());
+		            	}
+	            	}            	
+            	}
                 // 入力チェックを行う
                 if (!validateProject()) {
                     return;
@@ -1578,6 +1655,10 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
         // ラジオボタン　中間コード選択
         else if (event.getSource() == this.radioFullMode) {
             if (this.radioFullMode.isSelected()) {
+            	if (radioGenXML.isSelected()) {
+            	// Enable checkUseRemote
+            		checkUseRemote.setEnabled(true);
+            	}
                 // すでにフォートランが設定されている場合はクリア
                 DefaultListModel<String> model = (DefaultListModel<String>) this.listProjectXml.getModel();
                 if (model.getSize() > 0) {
@@ -1600,6 +1681,8 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
         // ラジオボタン 簡易モード選択
         else if (event.getSource() == this.radioSimpleMode) {
             if (this.radioSimpleMode.isSelected()) {
+            	// Disable checkUseRemote
+            	checkUseRemote.setEnabled(false);
                 // すでに中間コードが設定されている場合はクリア
                 DefaultListModel<String> model = (DefaultListModel<String>) this.listProjectXml.getModel();
                 if (model.getSize() > 0) {
@@ -1616,19 +1699,58 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
                     }
                 }
             }
+        }        
+        // Set Remote Build settings file path to ProjectProperties class instance pproperties
+        else if (event.getSource() == this.settings_list) {
+        	pproperties.setSettingsFile((String)this.settings_list.getSelectedItem());
         }
-        // SSHサーバへの接続パラメタを設定するボタンを選択
-        else if (event.getSource() == this.ssh_settings_button) {
-            ProjectSettingSSHAction psssh_action = new ProjectSettingSSHAction(this.controller);
-            psssh_action.openDialog(this.frame);
+        // Set File Filter option to RBProperties
+        else if (event.getSource() == this.txt_filefilter) {
+        	pproperties.setFileFilter(this.txt_filefilter.getText());
         }
-
+        // Set Preprocess files option to RBP
+        else if (event.getSource() == this.txt_preprocess_files) {
+        	pproperties.setPreprocessFiles(this.txt_preprocess_files.getText());
+        	System.out.println("Checking RBdata after setting ppfiles to "+ this.txt_preprocess_files.getText());
+        	pproperties.checkData();
+        }
+        else if (event.getSource() == this.manage_settings_files) {
+        	if (debug) {
+        		System.out.println("Button manage_settings_files pressed");
+        	}
+        	this.setModal(false);
+        	ManageSettingsFilesDialog manage_files_dialog = new ManageSettingsFilesDialog();
+        	manage_files_dialog.showDialog();   
+        	refreshSettingsList();
+        }
+        if (debug_l2) System.out.println("actionPerformed() of FileProjectNewDialog exited");
     }
+    
+    /***
+     * Refresh contents of settings_list JComboBox
+     */
+    private void refreshSettingsList() {
+    	if (debug) System.out.println("Refireshing settings_list contents.");
+    	String[] selections = ProjectProperties.getRemoteSettings();
+    	if (debug_l2) System.out.println("selections: "+ selections.length);
+    	// Save selected item
+    	String selected = (String) this.settings_list.getSelectedItem();
+    	this.settings_list.removeAllItems();
+    	if (debug_l2) System.out.println("settings_list: removed all items, add following items:");
+    	for (String s : selections) {    		
+    		settings_list.addItem(s);
+    		if (debug_l2) System.out.println(s);
+    	}
+    	// Restore selection in the drop-down list
+    	if (selected != null && selected.length() > 1 )  this.settings_list.setSelectedItem(selected);
+    	if (debug_l2) System.out.println("Restore selected item "+selected);
+    }
+    
 
     private void enableButtons() {
         this.btnNext.setEnabled(true);
-        if (this.sproperties != null && this.sproperties.haveSSHconnect) {
-          this.addprerocessfile_button.setEnabled(true);
+        if (this.pproperties != null && this.pproperties.useRemoteBuild()) {
+          //this.addprerocessfile_button.setEnabled(true);
         }
     }
 
@@ -1707,41 +1829,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
                 } else if (projectPath.equals(addfile)) {
                     if (!containsInProjectList(model, "./")) {
                         model.addElement("./");
-                    }
-                    // 同一フォルダ指定であるので、子フォルダ、子ファイル(xml)を追加
-                    /*File[] childfiles = projectPath.listFiles();
-                     if (childfiles != null && childfiles.length > 0) {
-                     for (int i=0; i<childfiles.length; i++) {
-                     File childfile = childfiles[i];
-                     // 除外パスに含まれているかチェックする
-                     if (this.containsExcludeName(childfile.getPath())) {
-                     continue;
-                     }
-
-                     if (childfile.isFile()) {
-                     if (this.radioXml.isSelected()) {
-                     if (!FILE_TYPE.isXcodemlFile(childfile)) {
-                     childfile = null;
-                     }
-                     }
-                     else if (this.radioFortran.isSelected()) {
-                     if (!FILE_TYPE.isFortranFile(childfile)) {
-                     childfile = null;
-                     }
-                     }
-                     else {
-                     childfile = null;
-                     }
-                     }
-                     if (childfile != null) {
-                     // 子パスであるので相対パス表示を行う
-                     String relPath = FileUtils.getRelativePath(childfile.getCanonicalPath(), projectPath.getCanonicalPath());
-                     if (!containsInProjectList(model, relPath)) {
-                     model.addElement(relPath);
-                     }
-                     }
-                     }
-                     }*/
+                    }                    
                 } else if (FileUtils.isChildPath(projectPath.getCanonicalPath(), addfile.getCanonicalPath())) {
                     // 子パスであるので相対パス表示を行う
                     String relPath = FileUtils.getSubPath(addfile.getCanonicalPath(), projectPath.getCanonicalPath());
@@ -1753,6 +1841,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
                     model.addElement(addfile.getCanonicalPath());
                 }
             } catch (IOException ex) {
+            	if (debug_l2) System.err.println("Exception in addProjectList");
                 ex.printStackTrace();
             }
         }
@@ -1800,10 +1889,12 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
      * @author RIKEN
      *
      */
-    @SuppressWarnings("serial")
+
     private class IconListRenderer extends DefaultListCellRenderer {
 
-        @Override
+		private static final long serialVersionUID = 8908060279825366210L;
+
+		@Override
         public Component getListCellRendererComponent(
                 JList<?> list, Object value,
                 int index, boolean isSelected,
@@ -1949,7 +2040,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
     }
 
     /**
-     * プロジェクトタイトルをセットする
+     * Set Text Field text to project title
      *
      * @param title	プロジェクトタイトル
      */
@@ -1958,21 +2049,12 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
     }
     
     /**
-     * ビルドコマンド取得
-     *
-     * @return ビルドコマンド
-     */
-    public String getMakeCommand() {
-        return this.txtMakeCommand.getText();
-    }
-
-    /**
      * ビルドコマンド設定
      *
      * @param	str	ビルドコマンド
      */
-    public void setMakeCommand(String str) {
-        this.txtMakeCommand.setText(str);
+    public void setBuildCommand(String str) {
+        this.txtBuildCommand.setText(str);
     }
 
     /**
@@ -1981,28 +2063,27 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
      * @return String としてのbuildコマンド
      */
     public String getBuildCommand() {
-        return this.txtMakeCommand.getText();
+        return this.txtBuildCommand.getText();
     }
-
+    
     /**
-     * Return File filter
+     * Return clean command
      *
-     * @return
+     * @return clean command as a String
      */
-    public String getFileFilter() {
-        return this.txt_filefilter.getText();
+    public String getCleanCommand() {
+        return this.txtCleanCommand.getText();
     }
-
+    
     /**
-     * Return list of files for placeholder replacement
-     *
-     * @return
+     * Return value of settings_file ComboBox (Drop-down list) 
      */
-    public String getPreprocessFiles() {
-        return this.txt_preprocess_files.getText();
+    public String getSettingsFile() {
+    	return (String)this.settings_list.getSelectedItem();
+    	//return this.pproperties.getRemoteSettingsFile();
     }
-
-    /**
+    
+     /**
      * 選択ファイルが中間コードファイルであるかチェックする。
      *
      * @return	true=XMLファイル
@@ -2033,18 +2114,24 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
     }
 
     /**
-     * SSHconncet を利用するか否か
+     * Where source code must be built.
      *
-     * @return true = 利用する
+     * @return remote settings file path -- if build on remote server,
+     * null if build locally.
      */
-    public boolean useSSHconnect() {
-        if (this.checkUseSSHconnect == null) {
-            return false;
+    public String remoteSettingsFile() {
+        if (this.checkUseRemote == null) {
+            return null;
         }
-        if (this.checkUseSSHconnect.isEnabled()) {
-            return this.checkUseSSHconnect.isSelected();
+        if (this.checkUseRemote.isEnabled()) {
+            if (this.checkUseRemote.isSelected()) {
+            	String settings_file=(String)this.settings_list.getSelectedItem();
+            	if (settings_file != null && settings_file.length() > 0) {
+            		return settings_file;
+            	}
+            }
         }
-        return false;
+        return null;
     }
 
     /**

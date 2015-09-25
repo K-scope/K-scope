@@ -69,7 +69,6 @@ import jp.riken.kscope.action.ProjectSettingRequiredBFAction;
 import jp.riken.kscope.action.ProjectSettingOperationAction;
 import jp.riken.kscope.action.ProjectSettingProfilerAction;
 import jp.riken.kscope.action.ProjectSettingProjectAction;
-import jp.riken.kscope.action.ProjectSettingSSHAction;
 import jp.riken.kscope.action.ProjectSettingToolsAction;
 import jp.riken.kscope.action.ProjectSettingViewAction;
 import jp.riken.kscope.action.SearchFindAction;
@@ -174,7 +173,6 @@ public class MainMenu extends JMenuBar implements  MenuListener {
      */
     public MainMenu(AppController controller) {
         this.controller = controller;
-
         // メニューの作成を行う。
         initialize();
     }
@@ -396,15 +394,6 @@ public class MainMenu extends JMenuBar implements  MenuListener {
         JMenuItem menuProjectSettingRequiredBF = new JMenuItem(Message.getString("mainmenu.project.config.requiredbf"));//要求Bye/FLOP
         menuProjectSetting.add(menuProjectSettingRequiredBF);
         menuProjectSettingRequiredBF.addActionListener(new ProjectSettingRequiredBFAction(this.controller));
-        
-        if (this.controller.isSSHconnectAvailable()) {
-        	// セパレータ
-        	menuProjectSetting.addSeparator();
-        	// SSHconnect 設定
-        	JMenuItem menuProjectSettingSSH = new JMenuItem(Message.getString("mainmenu.project.config.sshconnect")); // SSHconnect
-        	menuProjectSetting.add(menuProjectSettingSSH);
-        	menuProjectSettingSSH.addActionListener(new ProjectSettingSSHAction(this.controller));
-        }
         
         // 分析
         JMenu menuAnalysis = new JMenu(Message.getString("mainmenu.analysis"));//分析

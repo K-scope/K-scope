@@ -29,11 +29,18 @@ public class Message {
 	private java.util.ResourceBundle bundle = null;
 	/** Messageクラスインスタンス */
     private static Message instance = new Message();
+    private static boolean debug = (System.getenv("DEBUG")!= null);
+	private static boolean debug_l2=false;
+	private static boolean debug_l3=false;
 
     /**
      * コンストラクタ
      */
     private Message() {
+    	if (debug) {
+    		debug_l2 = (System.getenv("DEBUG").equalsIgnoreCase("high"));
+    		debug_l3 = (System.getenv("DEBUG").equalsIgnoreCase("extreme"));
+    	}
     	this.bundle = java.util.ResourceBundle.getBundle(PROPERTIES_FILE);
     }
 
@@ -52,6 +59,12 @@ public class Message {
 	private static java.util.ResourceBundle getBundle() {
         try {
     		if (instance == null) instance = new Message();
+    		if (debug_l3) {
+	    		System.out.println("ResourceBundle: ");
+	    		for (Enumeration<String> e=instance.bundle.getKeys(); e.hasMoreElements();) {
+	    			System.out.println(e.nextElement());
+	    		}
+    		}
             return instance.bundle;
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -71,7 +84,13 @@ public class Message {
 			String msg = getBundle().getString(key);
 			return msg;
 		} catch (Exception ex) {
-            ex.printStackTrace();
+			System.err.println("Error getting message for key "+ key);
+            StackTraceElement[] ste= ex.getStackTrace();
+            int maxelements=10;
+            for (int i=0; i< maxelements; i++) {
+            	System.err.println(ste[i].toString());
+            }
+			//ex.printStackTrace();
 			return key;
 		}
 	}
