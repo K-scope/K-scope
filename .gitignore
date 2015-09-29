@@ -2,21 +2,17 @@
 /*
 .*
 
-## Do not ignore directories 
-!*/
-
-## But ignore these directories
-/bin
-
 ## not ignore
-# Everything in resources
+
 !/resources
 !/lib
 !/utils
 
 # Only one file in properties
-/properties
 !/properties/properties.xml
+
+# include only these files in remote
+!/properties/remote/**/*sample.yml
 
 !.git
 !.gitignore
@@ -25,14 +21,9 @@
 !license-headers
 !LICENSE
 !NOTICE
-!kscope
 !manifest.txt
 !*.md
 !*.sh
-
-# include only these files in remote
-/remote/**/*.yml
-!/remote/**/*sample.yml
 
 ## ignore
 .DS*
