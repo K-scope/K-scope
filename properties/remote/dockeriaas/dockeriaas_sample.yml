@@ -1,0 +1,5 @@
+description: Sample settings for Docker IaaS setup.
+server_address: 
+port: '22'
+user: 
+key: 

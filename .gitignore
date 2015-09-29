@@ -2,11 +2,20 @@
 /*
 .*
 
-## not ignore
+### not ignore
 
-!/resources
-!/lib
-!/utils
+## dirs (Do not ignore directories)
+!*/
+
+## files
+!.gitignore
+!build.xml
+!ChangeLog
+!license-headers
+!LICENSE
+!NOTICE
+!*.md
+!*.sh
 
 # Only one file in properties
 !/properties/properties.xml
@@ -14,16 +23,10 @@
 # include only these files in remote
 !/properties/remote/**/*sample.yml
 
-!.git
-!.gitignore
-!build.xml
-!ChangeLog
-!license-headers
-!LICENSE
-!NOTICE
-!manifest.txt
-!*.md
-!*.sh
+### ignore
 
-## ignore
+## dirs
+/bin
+
+## files
 .DS*
