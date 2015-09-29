@@ -87,12 +87,13 @@ public class Kscope {
         } 
         // Linuxの場合は設定しない。
         else {
+                /*
         	try {
-        		String LandF;
-        		LandF = UIManager.getSystemLookAndFeelClassName();
-        		// Can set GTK Look and Feel, but it is very slow with X11
-        		// LandF = "com.sun.java.swing.plaf.gtk.GTKLookAndFeel";
-                UIManager.setLookAndFeel(LandF);
+                    String LandF;
+                    LandF = UIManager.getSystemLookAndFeelClassName();
+       	            // Can set GTK Look and Feel, but it is very slow with X11
+        	    // LandF = "com.sun.java.swing.plaf.gtk.GTKLookAndFeel";
+                    UIManager.setLookAndFeel(LandF);
 	        } 
 	        catch (UnsupportedLookAndFeelException ex) {
 	        	ex.printStackTrace();
@@ -107,9 +108,9 @@ public class Kscope {
                 return;
 	        }
 	        catch (IllegalAccessException ex) {
-	        	ex.printStackTrace();
+	         	ex.printStackTrace();
                 return;
-	        }
+	        } */
         }
         
         Kscope app = new Kscope();

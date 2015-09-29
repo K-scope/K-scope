@@ -101,10 +101,10 @@ public class SettingProjectDialog extends javax.swing.JDialog implements ActionL
     private JCheckBox checkUseRemote;
     private String remote_service;
 
-	/** ダイアログの戻り値 */
+    	/** ダイアログの戻り値 */
     private int result = Constant.CANCEL_DIALOG;
 
-    /** プロジェクトプロパティ */
+    	/** プロジェクトプロパティ */
     ProjectProperties properties;
 
     /** 列名 */

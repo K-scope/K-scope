@@ -50,8 +50,9 @@ public class KscopeProperties {
      * version : 0.2.4        2013/10/30 release
      * version : 0.2.5        2013/12/27 release
      * version : 0.2.6        2014/11/10 release
+     * version : 0.2.7        2015/XX/XX release
      */
-    public static final String APPLICATION_VERSION = "0.2.6";
+    public static final String APPLICATION_VERSION = "0.2.7";
 
     /** データベースファイル */
     public static final String DATABASE_FILE = "db.ksx";

@@ -8,6 +8,7 @@
 
     <property name="src.dir" value="src"/>
 	<property name="bin.dir" value="bin"/>
+    <property name="lib.dir" value="lib/snakeyaml-1.15.jar"/>
     <property name="resources.dir" value="resources"/>
     <property name="properties.dir" value="properties"/>
     <property name="javadoc.dir" value="docs"/>
@@ -36,7 +37,7 @@
 		
     <target name="build" depends="init">
         <echo message="${ant.project.name}: ${ant.file}"/>
-        <javac debug="true" debuglevel="${debuglevel}" destdir="${bin.dir}" includeantruntime="false" source="${source}" target="${target}" encoding="UTF-8">
+        <javac debug="true" debuglevel="${debuglevel}" destdir="${bin.dir}" includeantruntime="false" source="${source}" target="${target}" classpath="${lib.dir}" encoding="UTF-8">
             <src path="${src.dir}"/>
             <classpath refid="kscope.classpath"/>
         </javac>

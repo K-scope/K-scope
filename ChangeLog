@@ -60,7 +60,6 @@ This release is collaboration version between Yokokawa-lab (Main contributor is 
 - Fixed an implementation for JDK8 instead of JDK7 which is end of support in K-scope.
 - Fixed documentations and removed deprecated codes and properties.
 
-
 (2015/09/25) Version N.N.N is released.
 - Added support for remote build using Docker IaaS tools setup (see README for details).
 - Reorganized remote build related properties. 

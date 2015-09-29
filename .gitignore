@@ -4,12 +4,15 @@
 
 ## Do not ignore directories 
 !*/
+
 ## But ignore these directories
 /bin
 
 ## not ignore
 # Everything in resources
 !/resources
+!/lib
+!/utils
 
 # Only one file in properties
 /properties
@@ -17,17 +20,15 @@
 
 !.git
 !.gitignore
-!/build.xml
+!build.xml
 !ChangeLog
 !license-headers
 !LICENSE
 !NOTICE
-!/manifest.txt
+!kscope
+!manifest.txt
 !*.md
 !*.sh
-!/kscope
-!/kscope.jar
-!/SSHconnect.jar
 
 # include only these files in remote
 /remote/**/*.yml
