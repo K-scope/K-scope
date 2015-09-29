@@ -1,8 +1,0 @@
-description: Sample settings for Omni XMP compiler installed on K front-end.
-server_address: k.aics.riken.jp
-port: 22
-user: 
-key: 
-passphrase: 
-add_path: "/opt/aics/omni/bin"
-remote_path: 

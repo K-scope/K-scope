@@ -88,8 +88,8 @@ public class ProjectProperties extends PropertiesBase {
 	 * we set flags haveDockerIaaS and haveSSHconnect to TRUE.
 	 */
 	private static String docker_iaas_file = "connect.sh";
-	private static String sshconnect_file = "SSHconnect.jar";
-	public static String REMOTE_SETTINGS_DIR = "remote";
+	private static String sshconnect_file = "lib/SSHconnect.jar";
+	public static String REMOTE_SETTINGS_DIR = "properties/remote";
 	
 	public static String settigns_path_separator="/"; // symbol to use instead of "/" in paths of settings files
 	

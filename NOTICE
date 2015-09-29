@@ -15,9 +15,12 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 
-   This product for binary package includes software developed by
-   Peter Bryzgalov, HPC Usability Research Team, AICS, RIKEN
-   under the Apache License 2.0
+   This product includes folowing software developed by Peter Bryzgalov,
+   HPC Usability Research Team, RIKEN AICS under the Apache License 2.0
 
    SSHconnect 1.18 (http://www.aics.riken.jp/ungi/soft/kscope/)
 
+   -----
+   Futhermore, this product includes following software.
+ 
+   SnakeYAML 1.1 (https://bitbucket.org/asomov/snakeyaml/)

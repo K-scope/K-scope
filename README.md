@@ -50,21 +50,29 @@ comments by UTF-8.)
 The source code package includes build.xml to compiler with Apache ant.
 Also compiling is simple and easy.
 
+```
   $ ant
+```
 
 After the compiling, you may obtain jar-executable including classes.
 Run is simple as follow.
 
+```
   $ java -jar kscope.jar
+```
 
 At the time of startup, K-scope requires specific folders for properties.
 If K-scope cannot find those folders, it may terminate abnormally.
 
 Tips on usage) "-Duser.language" VM-option is language selector, English(en) and Japanese(ja).
 
+```
   $ java -jar -Duser.language=en kscope.jar ## for english mode
+```
 
+```
   $ java -jar -Duser.language=ja kscope.jar ## for japanese mode
+```
 
 ## License
 
