@@ -21,6 +21,7 @@ limitations under the License.
    SSHconnect 1.18 (http://www.aics.riken.jp/ungi/soft/kscope/)
 
    -----
-   Futhermore, this product includes following software.
+   Futhermore, this product uses following open-source software
+   placed into the lib directory.
  
    SnakeYAML 1.1 (https://bitbucket.org/asomov/snakeyaml/)
