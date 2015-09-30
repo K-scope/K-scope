@@ -1,6 +1,6 @@
 /*
  * K-scope
- * Copyright 2012-2013 RIKEN, Japan
+ * Copyright 2012-2015 RIKEN, Japan
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -88,7 +88,7 @@ public class ProjectProperties extends PropertiesBase {
 	 * we set flags haveDockerIaaS and haveSSHconnect to TRUE.
 	 */
 	private static String docker_iaas_file = "connect.sh";
-	private static String sshconnect_file = "lib/SSHconnect.jar";
+	private static String sshconnect_file = "SSHconnect.jar";
 	public static String REMOTE_SETTINGS_DIR = "properties/remote";
 	
 	public static String settigns_path_separator="/"; // symbol to use instead of "/" in paths of settings files
@@ -653,7 +653,7 @@ public class ProjectProperties extends PropertiesBase {
 	}
     
     /**
-     * Save cleam command to project properties class instance
+     * Save clean command to project properties class instance
      * @param cc - clean command
      */
     public void setCleanCommand(String cc) {
@@ -668,8 +668,6 @@ public class ProjectProperties extends PropertiesBase {
     	setValueByKey(PRJ_TITLE, title);
     }
     
-
-
 	/**
 	 * Set local path. Similar to setBuildCommand function.
 	 * @param absolutePath

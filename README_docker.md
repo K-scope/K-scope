@@ -1,5 +1,9 @@
 # About K-scope with docker-SSHconnect
 
+If you can access a remote server installed with Omni XcalableMP (XMP) compiler (For example, front-end of the K computer is suitable environment to make intermediate codes with XMP), you can build intermediate codes on the server remotely via SSH connection by SSHconnect.jar. This software is an utility for remote command execution with automatic transfer.
+
+It is developed by RIKEN AICS HPC Usability Team in collaboration to enhance the K-scope's feature, and is bundled with the binary package of K-scope.
+
 # Remote code building
 
 As an alternative to installing Omni XcalableMP compiler on local computer it is possible:
@@ -114,42 +118,3 @@ http://github.com/pyotr777/dockerIaaSTools*
 
 *Docker http://docker.com*
 
-
-# Compile and Run K-scope
-
-This software is written by pure Java to improve the portability.
-We provide two-type packages: jar-executable package and source code package
-in our site. Especially this source cord packages includes all source codes
-necessary for modify and compiling. In that case, we recommend IDE environments
-such as Eclipse or NetBeans.
-NOTICE) The source codes includes Japanese comments in UTF-8 encoding.
-
-We provide build.xml to compile.
-
-```bash
-ant
-```
-
-After the compiling, you may obtain jar-executable or classes.
-Run is simple as follows.
-
-```bash
-java -jar -Xmx1024m kscope.jar
-```
-or
-```
-./kscope
-```
-
-K-scope requires specific folders for properties.
-If the program cannot find that folders, it may terminate abnormally.
-In the normally process, you may obtained start screen.
-
-Tips on usage) "-Duser.language" VM-option is language selector, English(en) and Japanese(ja).
-
-# Build jar file
-
-Run in bin directory:
-```bash
-jar cfe ../kscope.jar jp.riken.kscope.Kscope *
-```

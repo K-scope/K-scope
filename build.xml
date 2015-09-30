@@ -7,8 +7,8 @@
     <property name="source" value="1.8"/>
 
     <property name="src.dir" value="src"/>
-	<property name="bin.dir" value="bin"/>
-    <property name="lib.dir" value="lib/snakeyaml-1.15.jar"/>
+    <property name="bin.dir" value="bin"/>
+    <property name="lib.dir" value="lib"/>
     <property name="resources.dir" value="resources"/>
     <property name="properties.dir" value="properties"/>
     <property name="javadoc.dir" value="docs"/>
@@ -17,14 +17,15 @@
     <path id="kscope.classpath">
         <pathelement location="bin"/>
         <pathelement location="resources"/>
+        <fileset dir="${lib.dir}" includes="*.jar"/>
     </path>
-	
+
     <target name="clean">
         <delete dir="${bin.dir}"/>
     	<delete file="${jar.name}"/>
     </target>
 	
-    <target name="cleanall" depends="clean" />
+    <target name="cleanall" depends="clean"/>
 	
     <target name="init">
         <mkdir dir="${bin.dir}"/>
@@ -34,30 +35,30 @@
             </fileset>
         </copy>
     </target>
-		
-    <target name="build" depends="init">
+
+    <target name="build" depends="clean,init">
         <echo message="${ant.project.name}: ${ant.file}"/>
-        <javac debug="true" debuglevel="${debuglevel}" destdir="${bin.dir}" includeantruntime="false" source="${source}" target="${target}" classpath="${lib.dir}" encoding="UTF-8">
+        <javac debug="true" debuglevel="${debuglevel}" destdir="${bin.dir}" includeantruntime="false" source="${source}" target="${target}" encoding="UTF-8">
             <src path="${src.dir}"/>
             <classpath refid="kscope.classpath"/>
         </javac>
     </target>
 	
     <target name="jar" depends="build">
-    	<!--<jar jarfile="${jar.name}" basedir="."></jar>-->
         <echo message="${ant.project.name}: ${jar.name}"/>
+        <unjar src="${lib.dir}/snakeyaml-1.15.jar" dest="bin"/>
     	<jar destfile="${jar.name}" filesetmanifest="mergewithoutmain">
             <manifest>
                 <attribute name="Main-Class" value="jp.riken.kscope.Kscope"/>
                 <attribute name="Class-Path" value="."/>
             </manifest>
             <fileset dir="${bin.dir}"/>
-            <fileset dir="${resources.dir}"/>    		
+            <fileset dir="${resources.dir}"/>
     	</jar>
     </target>
 
     <target name="run">
-        <java classname="jp.riken.kscope.Kscope" failonerror="true" fork="yes">
+        <java classname="jp.riken.kscope.Kscope" classpathref="${lib.dir}" failonerror="true" fork="yes">
             <jvmarg line="-Duser.language=en"/>
             <classpath refid="kscope.classpath"/>
         </java>

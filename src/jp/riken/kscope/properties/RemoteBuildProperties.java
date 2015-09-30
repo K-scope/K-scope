@@ -65,7 +65,7 @@ public class RemoteBuildProperties extends PropertiesBase {
 	
 	private static String docker_iaas_file = "connect.sh";
 	private static String sshconnect_file = "SSHconnect.jar";
-	public static String REMOTE_SETTINGS_DIR = "remote";
+	public static String REMOTE_SETTINGS_DIR = "properties/remote";
 	
 	public static String settigns_path_separator="/"; // symbol to use instead of "/" in paths of settings files
 	public static String SETTINGS_FILE = "settings_file";  // remote build settings file in "<service><settigns_path_separator><filename>" format
