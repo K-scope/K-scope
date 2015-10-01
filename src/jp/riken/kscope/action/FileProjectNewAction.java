@@ -157,7 +157,7 @@ public class FileProjectNewAction extends ActionBase {
         
         String rs_file = dialog.remoteSettingsFile();  // RB settings file from dialog
         // Set Project property
-        pproperties.getPropertyValue(ProjectProperties.SETTINGS_FILE).setValue(rs_file);
+        pproperties.getPropertyValue(RemoteBuildProperties.SETTINGS_FILE).setValue(rs_file);
         
         // 選択ソース
         boolean selectedXml = dialog.isSelectedXml();

@@ -412,10 +412,10 @@ public class ProjectMakeService  extends BaseService {
 			System.out.println("Use remote build is " + pproperties.useRemoteBuild());
 		if (pproperties.useRemoteBuild()) {
 			String RS = ProjectProperties
-					.getRemoteService(pproperties.getPropertyValue(ProjectProperties.SETTINGS_FILE).getValue());
+					.getRemoteService(pproperties.getPropertyValue(RemoteBuildProperties.SETTINGS_FILE).getValue());
 			System.out.println("Remote service " + RS);
 			if (useServer(pproperties)) {
-				if (RS.equals(ProjectProperties.remote_service_dockeriaas)) {
+				if (RS.equals(RemoteBuildProperties.REMOTE_SERVICE_DOCKERIAAS)) {
 					// inject remote build command
 					String[] diaas_cl = pproperties.getCommandLineOptions(RS);
 					int formal_commands = 1;
@@ -424,7 +424,7 @@ public class ProjectMakeService  extends BaseService {
 					for (int i = 0; i < diaas_cl.length; i++) {
 						exec_commands[i + formal_commands] = diaas_cl[i];
 					}
-				} else if (RS.equals(ProjectProperties.remote_service_sshconnect)) {
+				} else if (RS.equals(RemoteBuildProperties.REMOTE_SERVICE_SSHCONNECT)) {
 					// inject remote build command
 					String[] sshc_cl = pproperties.getCommandLineOptions(RS);
 					int formal_commands = 3;

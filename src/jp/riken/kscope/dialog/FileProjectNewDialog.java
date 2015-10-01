@@ -591,11 +591,11 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
  
             JLabel ffl = new JLabel(Message.getString("fileprojectnewdialog.basepanel.filefilter.label"));
             txt_filefilter = new JTextField();
-            String ffilter = this.pproperties.getValueByKey(ProjectProperties.FILE_FILTER);
+            String ffilter = this.pproperties.getValueByKey(RemoteBuildProperties.FILE_FILTER);
             txt_filefilter.setText(ffilter);
             JLabel procfl = new JLabel(Message.getString("fileprojectnewdialog.basepanel.processfiles.label"));
             txt_preprocess_files = new JTextField();
-            String proc_files = this.pproperties.getValueByKey(ProjectProperties.PREPROCESS_FILES);
+            String proc_files = this.pproperties.getValueByKey(RemoteBuildProperties.PREPROCESS_FILES);
             txt_preprocess_files.setText(proc_files);
             addprerocessfile_button = new JButton(Message.getString("fileprojectnewdialog.basepanel.processfiles.addbutton"));
             addprerocessfile_button.setEnabled(true);
@@ -1181,7 +1181,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
             	String settings_file = (String)this.settings_list.getSelectedItem();
             	String remote_service = ProjectProperties.getRemoteService(settings_file);
             	System.out.println("Remote service is "+remote_service);
-            	if (remote_service.equalsIgnoreCase(ProjectProperties.remote_service_sshconnect)) {
+            	if (remote_service.equalsIgnoreCase(RemoteBuildProperties.REMOTE_SERVICE_SSHCONNECT)) {
                 	sshc_settings_panel.setVisible(true);
                 }
                 else {
@@ -1591,7 +1591,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
 	            	String remote_service = ProjectProperties.getRemoteService(settings_file);
 	            	this.pproperties.setSettingsFile(settings_file);
 	            	System.out.println("Remote service is set to "+remote_service);
-	            	if (remote_service.equalsIgnoreCase(ProjectProperties.remote_service_sshconnect)) {
+	            	if (remote_service.equalsIgnoreCase(RemoteBuildProperties.REMOTE_SERVICE_SSHCONNECT)) {
 		            	// Save File filter and Preprocess files fields to ProjectProperties
 		            	if (this.txt_preprocess_files.getText().length() > 0) {
 		            		pproperties.setPreprocessFiles(this.txt_preprocess_files.getText());
