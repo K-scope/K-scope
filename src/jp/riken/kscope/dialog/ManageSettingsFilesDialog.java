@@ -518,10 +518,10 @@ public class ManageSettingsFilesDialog extends javax.swing.JDialog implements Ac
 		if (fname.equals(JOptionPane.UNINITIALIZED_VALUE)) {
 			return;
 		}
-		if (fname.indexOf(RemoteBuildProperties.remote_service_dockeriaas) >=0 ) {
+		if (fname.indexOf(ProjectProperties.remote_service_dockeriaas) >=0 ) {
 			savingSettings2File(dockeriaas_settings,fname);
 		} 
-		else if (fname.indexOf(RemoteBuildProperties.remote_service_sshconnect) >=0 ) {
+		else if (fname.indexOf(ProjectProperties.remote_service_sshconnect) >=0 ) {
 			savingSettings2File(sshconnect_settings,fname);
 		} 
 		else {
@@ -534,8 +534,8 @@ public class ManageSettingsFilesDialog extends javax.swing.JDialog implements Ac
 	 * @param file_list
 	 */
 	private void copySelectedFile(JList<String> file_list) {
-		String dst_fname = RemoteBuildProperties.locateRemoteSettingsFile(remoteSettingsFileName());
-		String src_fname = RemoteBuildProperties.locateRemoteSettingsFile(file_list.getSelectedValue());
+		String dst_fname = ProjectProperties.locateRemoteSettingsFile(remoteSettingsFileName());
+		String src_fname = ProjectProperties.locateRemoteSettingsFile(file_list.getSelectedValue());
 		if (debug) System.out.println("Copy from to file " + src_fname + " to " + dst_fname);
 		try {
 			Files.copy(new File(src_fname).toPath(), new File(dst_fname).toPath());
@@ -570,8 +570,8 @@ public class ManageSettingsFilesDialog extends javax.swing.JDialog implements Ac
 		public getRemoteSeriveFileNameDialog() {
 			boolean debug = ManageSettingsFilesDialog.debug;
 			serviceField = new JComboBox<String>();
-			String[] remoteService = { RemoteBuildProperties.remote_service_dockeriaas,
-					RemoteBuildProperties.remote_service_sshconnect };			
+			String[] remoteService = { ProjectProperties.remote_service_dockeriaas,
+					ProjectProperties.remote_service_sshconnect };			
 			for (String s : remoteService) {
 				serviceField.addItem(s);
 			}
@@ -599,7 +599,7 @@ public class ManageSettingsFilesDialog extends javax.swing.JDialog implements Ac
 		
 		private String getResult() {
 			String r = (String) serviceField.getSelectedItem();
-			r = r + RemoteBuildProperties.settigns_path_separator;
+			r = r + ProjectProperties.settigns_path_separator;
 			r = r + textField.getText();
 			return r;
 		}

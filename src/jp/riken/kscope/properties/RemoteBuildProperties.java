@@ -63,22 +63,22 @@ public class RemoteBuildProperties extends PropertiesBase {
 	private static Boolean debug=(System.getenv("DEBUG")!= null);
     private static boolean debug_l2 = false;
 	
-	private static String docker_iaas_file = "connect.sh";
-	private static String sshconnect_file = "SSHconnect.jar";
-	public static String REMOTE_SETTINGS_DIR = "properties/remote";
+	//private static String docker_iaas_file = "connect.sh";
+	//private static String sshconnect_file = "SSHconnect.jar";
+	//public static String REMOTE_SETTINGS_DIR = "properties/remote";
 	
-	public static String settigns_path_separator="/"; // symbol to use instead of "/" in paths of settings files
-	public static String SETTINGS_FILE = "settings_file";  // remote build settings file in "<service><settigns_path_separator><filename>" format
-	public static String LOCAL_PATH = "local_path";
+	//public static String settigns_path_separator="/"; // symbol to use instead of "/" in paths of settings files
+	//public static String SETTINGS_FILE = "settings_file";  // remote build settings file in "<service><settigns_path_separator><filename>" format
+	//public static String LOCAL_PATH = "local_path";
 	
 	// Remote build service names 
 	// These names are used in directory names for configuration files
-	public static String remote_service_dockeriaas = "dockeriaas";
-	public static String remote_service_sshconnect = "sshconnect";
+	//public static String remote_service_dockeriaas = "dockeriaas";
+	//public static String remote_service_sshconnect = "sshconnect";
 	
 	// SSHconnect specific settings
-	public static String FILE_FILTER = "file_filter";
-    public static String PREPROCESS_FILES = "preprocess_files";
+	//public static String FILE_FILTER = "file_filter";
+    //public static String PREPROCESS_FILES = "preprocess_files";
 	
 	public boolean remote_settings_found = false; // True if files with remote settings are found
 	private static final long serialVersionUID = 1L;
@@ -296,7 +296,7 @@ public class RemoteBuildProperties extends PropertiesBase {
 	 * @return remote/<settings file>.yml
 	 */
 	public static String locateRemoteSettingsFile(String str) {
-		String filename = REMOTE_SETTINGS_DIR+"/"+str+".yml";
+		String filename = ProjectProperties.REMOTE_SETTINGS_DIR+File.separator+str+".yml";
 		//System.out.println("File name is "+ filename);
 		//System.out.println("Looking in " + new File(System.getProperty("user.dir")));
 		return filename;
@@ -412,7 +412,7 @@ public class RemoteBuildProperties extends PropertiesBase {
      * @param filter
      */
     public void setSettingsFile(String path) {
-    	setValueByKey(RemoteBuildProperties.SETTINGS_FILE, path);
+    	setValueByKey(ProjectProperties.SETTINGS_FILE, path);
     }
 	
     /**
@@ -420,7 +420,7 @@ public class RemoteBuildProperties extends PropertiesBase {
      * @return settings file in format <service><settigns_path_separator><filename>
      */
     public String getSettingsFile() {
-    	return getValueByKey(RemoteBuildProperties.SETTINGS_FILE);
+    	return getValueByKey(ProjectProperties.SETTINGS_FILE);
     }
     
     
@@ -429,7 +429,7 @@ public class RemoteBuildProperties extends PropertiesBase {
 	 * @param absolutePath
 	 */
 	public void setLocalPath(String absolutePath) {
-		setValueByKey(RemoteBuildProperties.LOCAL_PATH, absolutePath);		
+		setValueByKey(ProjectProperties.LOCAL_PATH, absolutePath);		
 	}
 
 	/**
@@ -437,7 +437,7 @@ public class RemoteBuildProperties extends PropertiesBase {
      * @param filter
      */
     public void setFileFilter(String filter) {
-            setValueByKey(RemoteBuildProperties.FILE_FILTER, filter);
+            setValueByKey(ProjectProperties.FILE_FILTER, filter);
     }
 
     /**
@@ -445,7 +445,7 @@ public class RemoteBuildProperties extends PropertiesBase {
      * @param files
      */
     public void setPreprocessFiles(String files) {
-            setValueByKey(RemoteBuildProperties.PREPROCESS_FILES, files);
+            setValueByKey(ProjectProperties.PREPROCESS_FILES, files);
     }
 	
     /**
@@ -454,7 +454,7 @@ public class RemoteBuildProperties extends PropertiesBase {
      * @return
      */
     public static String getRemoteService(String settings_file) {    	
-		int pos = settings_file.indexOf(RemoteBuildProperties.settigns_path_separator);
+		int pos = settings_file.indexOf(ProjectProperties.settigns_path_separator);
 		String service = settings_file.substring(0, pos);
 		return service;
 	}
@@ -463,7 +463,7 @@ public class RemoteBuildProperties extends PropertiesBase {
      * True if we can use connect.sh with Docker IaaS tools for remote code build 
      * */
     private static boolean checkDockerIaaS() {
-        File f = new File(docker_iaas_file);
+        File f = new File(ProjectProperties.docker_iaas_file);
         if (f.exists()) {
             if (debug_l2) System.out.println("checkDockerIaaS() "+f.getAbsolutePath());
             return true;
@@ -475,7 +475,7 @@ public class RemoteBuildProperties extends PropertiesBase {
      * True if we can use SSHconnect for remote code build
      */
     private static boolean checkSSHconnect() {
-        File f = new File(sshconnect_file);
+        File f = new File(ProjectProperties.sshconnect_file);
         if (f.exists()) {
         	if (debug_l2) System.out.println("checkSSHconnect() "+f.getAbsolutePath());
             return true;
@@ -493,7 +493,7 @@ public class RemoteBuildProperties extends PropertiesBase {
 			System.err.println("No remote settings file.");
 			return null;
 		}
-		int pos = settings_file.indexOf(RemoteBuildProperties.settigns_path_separator);
+		int pos = settings_file.indexOf(ProjectProperties.settigns_path_separator);
 		String service = settings_file.substring(0, pos);
 		return service;
 	}
@@ -505,12 +505,12 @@ public class RemoteBuildProperties extends PropertiesBase {
     	List<String> ignore = new ArrayList<String>(); 
     	ignore.add("(\\.).*");
     	if (!checkDockerIaaS()) {
-    		ignore.add(RemoteBuildProperties.remote_service_dockeriaas + "*");
+    		ignore.add(ProjectProperties.remote_service_dockeriaas + "*");
     	}
     	if (!checkSSHconnect()) {
-    		ignore.add(RemoteBuildProperties.remote_service_sshconnect + "*");
+    		ignore.add(ProjectProperties.remote_service_sshconnect + "*");
     	}
-		File dir = new File(REMOTE_SETTINGS_DIR);
+		File dir = new File(ProjectProperties.REMOTE_SETTINGS_DIR);
 		try {
 			String[] s = new String[ignore.size()];
 			list = getFiles(dir, list, "", ignore.toArray(s));			
@@ -556,7 +556,7 @@ public class RemoteBuildProperties extends PropertiesBase {
 				list.add(path_prefix+name);
 			} 
 			else if (f.isDirectory()) {
-				list = getFiles(f,list,f.getName()+RemoteBuildProperties.settigns_path_separator, ignore);
+				list = getFiles(f,list,f.getName()+ProjectProperties.settigns_path_separator, ignore);
 			}
 		}
 		return list;		

@@ -87,9 +87,9 @@ public class ProjectProperties extends PropertiesBase {
 	 * If these files are present in the current directory (with kscope.jar), 
 	 * we set flags haveDockerIaaS and haveSSHconnect to TRUE.
 	 */
-	private static String docker_iaas_file = "connect.sh";
-	private static String sshconnect_file = "SSHconnect.jar";
-	public static String REMOTE_SETTINGS_DIR = "properties/remote";
+	public static String docker_iaas_file = "connect.sh";
+	public static String sshconnect_file = "SSHconnect.jar";
+	public static String REMOTE_SETTINGS_DIR = "properties"+File.separator + "remote";
 	
 	public static String settigns_path_separator="/"; // symbol to use instead of "/" in paths of settings files
 	
@@ -480,15 +480,18 @@ public class ProjectProperties extends PropertiesBase {
 		} catch (NullPointerException e) {
 			System.err.println("Build command is null.");
 		} */
+    	String key;
     	for (ProjectPropertyValue pproperty : this.listProperty) {
     		String commandline_option = pproperty.getCommandlineOption();
     		if (commandline_option == null) continue;
+    		if (commandline_option.length() <= 0) continue;
     		// Get other properties from RemoteBuildProperties
 			value = pproperty.getValue();
-			if (debug_l2) System.out.println("CL options "+commandline_option + " " + value);
+			key = pproperty.getKey(); 
+			if (debug_l2) System.out.println("CL options "+commandline_option + " " + key +":"+ value);
     		try {
     			if (value.length() > 0) {    				
-    				if (pproperty.getKey().equalsIgnoreCase(ProjectProperties.SETTINGS_FILE)) {
+    				if (key.equalsIgnoreCase(ProjectProperties.SETTINGS_FILE)) {
     					// Add CLI options from file
     					String settings_file = value;
     					try {	    					
@@ -500,6 +503,9 @@ public class ProjectProperties extends PropertiesBase {
 	    				    while (iterator.hasNext()) {
 	    				    	Map.Entry<String, String> entry = (Map.Entry<String, String>)iterator.next();
 	    				    	command_options = addCLoption(command_options, entry);
+	    				    	if (debug_l2) {
+	    				    		System.out.println("CL option from file " + entry.getKey() + ":" + String.valueOf(entry.getValue()));
+	    				    	}
 	    				    }
     					}
     					catch (FileNotFoundException e) {
@@ -509,7 +515,6 @@ public class ProjectProperties extends PropertiesBase {
     				}
     				else {
     					if (service.indexOf(remote_service_dockeriaas) >= 0) {
-    						String key = pproperty.getKey(); 
     						if (key.equalsIgnoreCase(PREPROCESS_FILES) || key.equalsIgnoreCase(FILE_FILTER)) {
     							System.out.println("Option "+ key + " is not used for "+ service+ ". Option is ignored.");
     							continue;
@@ -613,9 +618,9 @@ public class ProjectProperties extends PropertiesBase {
 	 * @return remote/<settings file>.yml
 	 */
 	public static String locateRemoteSettingsFile(String str) {
-		String filename = "remote/"+str+".yml";
+		String filename = ProjectProperties.REMOTE_SETTINGS_DIR+ProjectProperties.settigns_path_separator+str+".yml";
 		//System.out.println("File name is "+ filename);
-		//System.out.println("Looking in " + new File(System.getProperty("user.dir")));
+		if (debug_l2) System.out.println("Looking for " + filename+ " in " + new File(System.getProperty("user.dir")));
 		return filename;
 	}
 
@@ -681,7 +686,7 @@ public class ProjectProperties extends PropertiesBase {
      * @return settings file in format <service><settigns_path_separator><filename>
      */
     public String getSettingsFile() {
-    	return getValueByKey(RemoteBuildProperties.SETTINGS_FILE);
+    	return getValueByKey(ProjectProperties.SETTINGS_FILE);
     }
     
 	/**
@@ -712,7 +717,7 @@ public class ProjectProperties extends PropertiesBase {
      * @param filter
      */
     public void setFileFilter(String filter) {
-            setValueByKey(RemoteBuildProperties.FILE_FILTER, filter);
+            setValueByKey(ProjectProperties.FILE_FILTER, filter);
     }
 
     /**
@@ -720,7 +725,7 @@ public class ProjectProperties extends PropertiesBase {
      * @param files
      */
     public void setPreprocessFiles(String files) {
-            setValueByKey(RemoteBuildProperties.PREPROCESS_FILES, files);
+            setValueByKey(ProjectProperties.PREPROCESS_FILES, files);
     }
 	
     /**
@@ -733,7 +738,7 @@ public class ProjectProperties extends PropertiesBase {
     		System.err.println("Call to ProjectProperties/getRemoteService with empty settings file name.");
     		return null;
     	}
-		int pos = settings_file.indexOf(RemoteBuildProperties.settigns_path_separator);
+		int pos = settings_file.indexOf(ProjectProperties.settigns_path_separator);
 		String service = settings_file.substring(0, pos);
 		return service;
 	}
@@ -787,7 +792,7 @@ public class ProjectProperties extends PropertiesBase {
 			System.err.println("No remote settings file.");
 			return null;
 		}
-		int pos = settings_file.indexOf(RemoteBuildProperties.settigns_path_separator);
+		int pos = settings_file.indexOf(ProjectProperties.settigns_path_separator);
 		String service = settings_file.substring(0, pos);
 		return service;
 	}
@@ -805,8 +810,8 @@ public class ProjectProperties extends PropertiesBase {
 		boolean dockeriaas=false;
 		boolean sshconnect=false;
 		if (service != null) {
-			if (service.equalsIgnoreCase(RemoteBuildProperties.remote_service_dockeriaas)) dockeriaas = true;
-			else if (service.equalsIgnoreCase(RemoteBuildProperties.remote_service_sshconnect)) sshconnect = true;
+			if (service.equalsIgnoreCase(ProjectProperties.remote_service_dockeriaas)) dockeriaas = true;
+			else if (service.equalsIgnoreCase(ProjectProperties.remote_service_sshconnect)) sshconnect = true;
 		} else {
 			dockeriaas = true;
 			sshconnect = true;
@@ -817,11 +822,11 @@ public class ProjectProperties extends PropertiesBase {
     	ignore.add("(\\.).*");
     	if (!checkDockerIaaS() || !dockeriaas) {
     		if (debug) System.out.println("Ignoring dockeriass service files");
-    		ignore.add(RemoteBuildProperties.remote_service_dockeriaas + "*");
+    		ignore.add(ProjectProperties.remote_service_dockeriaas + "*");
     	}
     	if (!checkSSHconnect() || !sshconnect) {
     		if (debug) System.out.println("Ignoring sshconnect service files");
-    		ignore.add(RemoteBuildProperties.remote_service_sshconnect + "*");
+    		ignore.add(ProjectProperties.remote_service_sshconnect + "*");
     	}
 		File dir = new File(REMOTE_SETTINGS_DIR);
 		try {
@@ -975,7 +980,7 @@ public class ProjectProperties extends PropertiesBase {
 				list.add(path_prefix+name);
 			} 
 			else if (f.isDirectory()) {
-				list = getFiles(f,list,f.getName()+RemoteBuildProperties.settigns_path_separator, ignore);
+				list = getFiles(f,list,f.getName()+ProjectProperties.settigns_path_separator, ignore);
 			}
 		}
 		return list;		
