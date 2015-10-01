@@ -1,7 +1,20 @@
 /*
- * Copyright (c) 2011 RIKEN, Japan. All right reserved.
- * release date : 2012/03/15
+ * K-scope
+ * Copyright 2012-2015 RIKEN, Japan
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
+
 package jp.riken.kscope.properties;
 
 import java.awt.Color;
@@ -36,13 +49,12 @@ import org.xml.sax.SAXException;
  */
 public class KscopeProperties {
 	public static final String APPLICATION_NAME = Message.getString("application.name"); //K-scope
-    /** アプリケーション英名 */
+    	/** アプリケーション英名 */
     public static final String APPLICATION_NAMEEN = Message.getString("application.name"); //K-scope
-    /** アプリケーション日本語名 */
+   	/** アプリケーション日本語名 */
     public static final String APPLICATION_NAMEJP = Message.getString("application.name"); //K-scope
 
-    /**
-     * アプリケーションバージョン
+    	/*** アプリケーションバージョン
      * version : 0.2.0        2013/03/22 release
      * version : 0.2.1        2013/04/12 release
      * version : 0.2.2        2013/05/01 release
@@ -54,28 +66,28 @@ public class KscopeProperties {
      */
     public static final String APPLICATION_VERSION = "0.2.7";
 
-    /** データベースファイル */
+    	/** データベースファイル */
     public static final String DATABASE_FILE = "db.ksx";
-    /** アプリケーションプロパティファイル*/
+    	/** アプリケーションプロパティファイル*/
     public static final String PROPERTIES_FILE_DEFAULT = "properties.xml";
-    /** アプリケーションプロパティファイル */
+    	/** アプリケーションプロパティファイル */
     public static String PROPERTIES_FILE = null;
 
-    /** アプリケーションプロパティフォルダ：システム初期設定 */
+    	/** アプリケーションプロパティフォルダ：システム初期設定 */
     public static final String PROPERTIES_FOLDER = "properties";
-    /** プロジェクトファイル */
+    	/** プロジェクトファイル */
     public static final String PROJECT_FILE = "kscope_project.ksx";
     /** 設定フォルダ */
     public static final String SETTINGS_FOLDER = "kscope_settings";
 
-    /** アプリケーションプロパティテーブル */
+    	/** アプリケーションプロパティテーブル */
     private static HashMap<String, Object> m_properties = new HashMap<String, Object>();
     /** Fortran重要コメントキー */
     private static final String PROPERTY_FORTRAN_COMMENT = "fortran_valid_comment";
     /** C言語重要コメントキー */
     private static final String PROPERTY_CLANG_COMMENT = "clang_valid_comment";
 
-    /** デフォルト拡張子設定 */
+    	/** デフォルト拡張子設定 */
     /** Fortran:固定形式(72桁) */
     private static final String PROPERTY_EXT_FORTRAN_FIXED_72 = "ext_fortran_fixed_72";
     /** Fortran:固定形式(拡張桁数) */
@@ -88,7 +100,7 @@ public class KscopeProperties {
     private static final String PROPERTY_EXT_XCODEML = "ext_xcodeml";
     /** 最終アクセスフォルダ */
     private static String m_lastAccessFolder = null;
-    /** コンソールキューイング数 */
+           /** コンソールキューイング数 */
     public static int CONSOLE_QUEUESIZE = 200;
     /** 選択背景色 */
     public static Color SELECTION_BACKGROUND = new Color(100, 149, 237);
@@ -106,17 +118,14 @@ public class KscopeProperties {
                                         FILTER_TYPE.SELECTION_SELECT,
                                         FILTER_TYPE.SELECTION_IF};
 
-    /**
-     * コンストラクタ
-     */
     private KscopeProperties() {
     }
 
     /**
-     * アプリケーションプロパティファイルを読み込む. <br/>
-     * アプリケーションプロパティファイルから設定値を取得し、アプリケーションプロパティテーブルに設定する. <br/>
-     * アプリケーションプロパティファイルはクラスディレクトリに置いてあるリソースファイルとする. <br/>
-     */
+    	 * * アプリケーションプロパティファイルを読み込む. <br/>
+     	* アプリケーションプロパティファイルから設定値を取得し、アプリケーションプロパティテーブルに設定する. <br/>
+     	* アプリケーションプロパティファイルはクラスディレクトリに置いてあるリソースファイルとする. <br/>
+   */
     public static void loadXml() {
         try {
             // リソースファイルの読込（ロケールで設定ファイルを切り替える）
@@ -484,7 +493,7 @@ public class KscopeProperties {
 
     /**
      * Javaバージョンが1.8以上であるかチェックする.<br/>
-     * システムプロパティからjava.versionを取得する。
+             * システムプロパティからjava.versionを取得する。
      * @return    true=Javaバージョンが1.7以上である。
      */
     public static boolean isJava18Later() {

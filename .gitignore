@@ -21,6 +21,7 @@
 !/properties/properties.xml
 
 # include only these files in remote
+/properties/remote/**/*.yml
 !/properties/remote/**/*sample.yml
 
 ### ignore

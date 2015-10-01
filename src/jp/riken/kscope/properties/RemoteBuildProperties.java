@@ -55,250 +55,277 @@ import org.yaml.snakeyaml.*;
  */
 public class RemoteBuildProperties extends PropertiesBase {
 	/**
-	 * These files are necessary for building source code on remote server
-	 * by the corresponding program.
-	 * If these files are present in the current directory (with kscope.jar), 
-	 * we set flags haveDockerIaaS and haveSSHconnect to TRUE.
+	 * These files are necessary for building source code on remote server by
+	 * the corresponding program. If these files are present in the current
+	 * directory (with kscope.jar), we set flags haveDockerIaaS and
+	 * haveSSHconnect to TRUE.
 	 */
-	private static Boolean debug=(System.getenv("DEBUG")!= null);
-    private static boolean debug_l2 = false;
-	
-	private static String docker_iaas_file = "connect.sh";
-	private static String sshconnect_file = "SSHconnect.jar";
-	public static String REMOTE_SETTINGS_DIR = "remote";
-	
-	public static String settigns_path_separator="/"; // symbol to use instead of "/" in paths of settings files
-	public static String SETTINGS_FILE = "settings_file";  // remote build settings file in "<service><settigns_path_separator><filename>" format
+	private static Boolean debug = (System.getenv("DEBUG") != null);
+	private static boolean debug_l2 = false;
+
+	public static String REMOTE_UTILS_DIR = "utils";
+	public static String DOCKER_IAAS_FILE = "connect.sh";
+	public static String SSHCONNECT_FILE = "SSHconnect.jar";
+	public static String REMOTE_SETTINGS_DIR = "properties/remote";
+
+	public static String settigns_path_separator = "/"; // symbol to use instead
+														// of "/" in paths of
+														// settings files
+	public static String SETTINGS_FILE = "settings_file"; // remote build
+															// settings file in
+															// "<service><settigns_path_separator><filename>"
+															// format
 	public static String LOCAL_PATH = "local_path";
-	
-	// Remote build service names 
+
+	// Remote build service names
 	// These names are used in directory names for configuration files
 	public static String remote_service_dockeriaas = "dockeriaas";
 	public static String remote_service_sshconnect = "sshconnect";
-	
+
 	// SSHconnect specific settings
 	public static String FILE_FILTER = "file_filter";
-    public static String PREPROCESS_FILES = "preprocess_files";
-	
-	public boolean remote_settings_found = false; // True if files with remote settings are found
+	public static String PREPROCESS_FILES = "preprocess_files";
+
+	public boolean remote_settings_found = false; // True if files with remote
+													// settings are found
 	private static final long serialVersionUID = 1L;
 
 	/** キーワード(ハイライト)設定リスト */
-    private List<RemoteBuildData> RB_data_list = new ArrayList<RemoteBuildData>();
-	
-	private InputStream is=null;
-    
-   	/**
-     * コンストラクタ
-     * @throws Exception     プロパティ読込エラー
-     */
-    public RemoteBuildProperties() throws Exception {
-    	if (debug) debug_l2 = (System.getenv("DEBUG").equalsIgnoreCase("high"));
-        loadProperties();   
-        checkDockerIaaS();
-		checkSSHconnect(); 
-    }
-    
-    /**
-     * ソース設定プロパティをデフォルト設定ファイルから読み込む。
-     * @throws Exception     プロパティ読込エラー
-     */
-    public void loadProperties() throws Exception {
-        is = null;
-        // リソースファイルの読込
-        is = ResourceUtils.getPropertiesFile(KscopeProperties.PROPERTIES_FILE); // properties.xml
-        loadProperties(is);
-    }
+	private List<RemoteBuildData> RB_data_list = new ArrayList<RemoteBuildData>();
 
-    /**
-     * ソース設定プロパティを設定ファイルから読み込む。
-     * @param  propertiesFile 		ソース設定プロパティ設定ファイル
-     * @throws Exception     プロパティ読込エラー
-     */
-    public void loadProperties(File propertiesFile) throws Exception {
+	private InputStream is = null;
 
-        if (!propertiesFile.exists()) {
-            throw(new Exception(Message.getString("propertiesbase.exeption.notexist"))); //ソース設定プロパティファイルが存在しません。
-        }
+	/**
+	 * コンストラクタ
+	 * 
+	 * @throws Exception
+	 *             プロパティ読込エラー
+	 */
+	public RemoteBuildProperties() throws Exception {
+		if (debug) debug_l2 = (System.getenv("DEBUG").equalsIgnoreCase("high"));
+		loadProperties();
+		checkDockerIaaS();
+		checkSSHconnect();
+	}
 
-        // リソースファイルの読込
-        InputStream stream = new FileInputStream(propertiesFile);
+	/**
+	 * ソース設定プロパティをデフォルト設定ファイルから読み込む。
+	 * 
+	 * @throws Exception
+	 *             プロパティ読込エラー
+	 */
+	public void loadProperties() throws Exception {
+		is = null;
+		// リソースファイルの読込
+		is = ResourceUtils.getPropertiesFile(KscopeProperties.PROPERTIES_FILE); // properties.xml
+		loadProperties(is);
+	}
 
-        // XMLファイルのパース
-        loadProperties(stream);
-    }
+	/**
+	 * ソース設定プロパティを設定ファイルから読み込む。
+	 * 
+	 * @param propertiesFile
+	 *            ソース設定プロパティ設定ファイル
+	 * @throws Exception
+	 *             プロパティ読込エラー
+	 */
+	public void loadProperties(File propertiesFile) throws Exception {
 
-    /**
-     * ソース設定プロパティを設定ファイルから読み込む。
-     * @param   stream      設定ファイルストリーム
-     * @throws Exception     プロパティ読込エラー
-     */
-    public void loadProperties(InputStream stream ) throws Exception {
-        // XMLファイルのパース
-        RB_data_list = parseRBProperty(stream, "//project");
-        // TODO: For backward compatibility
-        //if (!checkRBdata) {
-        	
-        //}
-    }
+		if (!propertiesFile.exists()) {
+			throw (new Exception(Message.getString("propertiesbase.exeption.notexist"))); // ソース設定プロパティファイルが存在しません。
+		}
 
-   
-    /**
-     * キーワード(ハイライト)リストをクリアする。
-     */
-    public void clearList() {
-        RB_data_list = new ArrayList<RemoteBuildData>();
-    }
+		// リソースファイルの読込
+		InputStream stream = new FileInputStream(propertiesFile);
 
-    /**
-     * キーワードを取得する
-     * @param stream		XML入力ストリーム
-     * @param path		キーワードXPATH
-     * @return		キーワードリスト
-     * @throws Exception 		キーワードパースエラー
-     */
-    public List<RemoteBuildData> parseRBProperty(InputStream stream, String path) throws Exception {
+		// XMLファイルのパース
+		loadProperties(stream);
+	}
 
-        List<RemoteBuildData> list = new ArrayList<RemoteBuildData>();
+	/**
+	 * ソース設定プロパティを設定ファイルから読み込む。
+	 * 
+	 * @param stream
+	 *            設定ファイルストリーム
+	 * @throws Exception
+	 *             プロパティ読込エラー
+	 */
+	public void loadProperties(InputStream stream) throws Exception {
+		// XMLファイルのパース
+		RB_data_list = parseRBProperty(stream, "//project");
+		// TODO: For backward compatibility
+		// if (!checkRBdata) {
 
-        // XML
-        DocumentBuilderFactory dbfactory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder builder = dbfactory.newDocumentBuilder();
-        org.w3c.dom.Document document = builder.parse(stream);
+		// }
+	}
 
-        XPathFactory factory = XPathFactory.newInstance();
-        XPath xpath = factory.newXPath();
+	/**
+	 * キーワード(ハイライト)リストをクリアする。
+	 */
+	public void clearList() {
+		RB_data_list = new ArrayList<RemoteBuildData>();
+	}
 
-        XPathExpression expr = xpath.compile(path);
+	/**
+	 * キーワードを取得する
+	 * 
+	 * @param stream
+	 *            XML入力ストリーム
+	 * @param path
+	 *            キーワードXPATH
+	 * @return キーワードリスト
+	 * @throws Exception
+	 *             キーワードパースエラー
+	 */
+	public List<RemoteBuildData> parseRBProperty(InputStream stream, String path) throws Exception {
 
-        Object result = expr.evaluate(document, XPathConstants.NODESET);
+		List<RemoteBuildData> list = new ArrayList<RemoteBuildData>();
 
-        NodeList nodelist = (NodeList) result;
-        if (nodelist == null) return null;
+		// XML
+		DocumentBuilderFactory dbfactory = DocumentBuilderFactory.newInstance();
+		DocumentBuilder builder = dbfactory.newDocumentBuilder();
+		org.w3c.dom.Document document = builder.parse(stream);
 
-        for (int i=0; i<nodelist.getLength(); i++) {
-            try {
-                Node node = nodelist.item(i);
-                RemoteBuildData rbdata = new RemoteBuildData();
-                
-                // 属性の取得
-                NamedNodeMap attrs = node.getAttributes();
-                Node attrnode_key,attrnode_value,attrnode_description;
-                String key = null;
-                String value = null;
-                String commandline_option = null;
-                String description = null;
-                
-                attrnode_value = attrs.getNamedItem("commandline_option");
-                if (attrnode_value == null) continue;
-                
-                if (attrnode_value != null) {
-                    commandline_option = attrnode_value.getNodeValue();                    
-                }
-                
-                // プロパティ名
-                attrnode_key = attrs.getNamedItem("key");
-                if (attrnode_key != null) {
-                    key = attrnode_key.getNodeValue();
-                }
-                // プロパティ値
-                attrnode_value = attrs.getNamedItem("value");
-                if (attrnode_value != null) {
-                    value = attrnode_value.getNodeValue();                    
-                }
-                
-                
-                //Description
-                attrnode_description = attrs.getNamedItem("description");
-                if (attrnode_description != null) {
-                    description = attrnode_description.getNodeValue();                    
-                }                
-                
-                if (key != null || value != null) {
-                	rbdata.setProperty(key, value, commandline_option, i, description);
-                }
-                
-                list.add(rbdata);
+		XPathFactory factory = XPathFactory.newInstance();
+		XPath xpath = factory.newXPath();
 
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        }
+		XPathExpression expr = xpath.compile(path);
 
-        if (list.size() <= 0) {
-            list = null;
-        }
+		Object result = expr.evaluate(document, XPathConstants.NODESET);
 
-        return list;
-    }
+		NodeList nodelist = (NodeList) result;
+		if (nodelist == null)
+			return null;
 
+		for (int i = 0; i < nodelist.getLength(); i++) {
+			try {
+				Node node = nodelist.item(i);
+				RemoteBuildData rbdata = new RemoteBuildData();
 
-    /**
-     * プロパティをDOMノードに出力する
-     * @param node		出力ノード
-     */
-    public void writeProperties(org.w3c.dom.Node node) {
+				// 属性の取得
+				NamedNodeMap attrs = node.getAttributes();
+				Node attrnode_key, attrnode_value, attrnode_description;
+				String key = null;
+				String value = null;
+				String commandline_option = null;
+				String description = null;
 
-        // ドキュメントの取得
-        org.w3c.dom.Document document = node.getOwnerDocument();
+				attrnode_value = attrs.getNamedItem("commandline_option");
+				if (attrnode_value == null)
+					continue;
 
-        // コメントを追加
-        {
-            org.w3c.dom.Comment comment = document.createComment(Message.getString("remotebuildproperties.document.comment")); 
-            node.appendChild(comment);
-        }
+				if (attrnode_value != null) {
+					commandline_option = attrnode_value.getNodeValue();
+				}
 
-        if (this.RB_data_list == null || this.RB_data_list.size() <= 0) return;
+				// プロパティ名
+				attrnode_key = attrs.getNamedItem("key");
+				if (attrnode_key != null) {
+					key = attrnode_key.getNodeValue();
+				}
+				// プロパティ値
+				attrnode_value = attrs.getNamedItem("value");
+				if (attrnode_value != null) {
+					value = attrnode_value.getNodeValue();
+				}
 
-        // RB property set
-        for (RemoteBuildData rb_data : this.RB_data_list) {
-            org.w3c.dom.Element elem = document.createElement("server");
+				// Description
+				attrnode_description = attrs.getNamedItem("description");
+				if (attrnode_description != null) {
+					description = attrnode_description.getNodeValue();
+				}
 
-            {
-                org.w3c.dom.Attr attr = document.createAttribute("key");
-                attr.setValue(rb_data.getKey());
-                elem.setAttributeNode(attr);
-            }
-            {
-                org.w3c.dom.Attr attr = document.createAttribute("value");
-                attr.setNodeValue(rb_data.getValue());
-                elem.setAttributeNode(attr);
-            } 
-            
-            {
-                org.w3c.dom.Attr attr = document.createAttribute("description");
-                attr.setValue(rb_data.getDescription());
-                elem.setAttributeNode(attr);
-            }
-            // ノード追加
-            node.appendChild(elem);
-        }
-    }
+				if (key != null || value != null) {
+					rbdata.setProperty(key, value, commandline_option, i, description);
+				}
+
+				list.add(rbdata);
+
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}
+
+		if (list.size() <= 0) {
+			list = null;
+		}
+
+		return list;
+	}
+
+	/**
+	 * プロパティをDOMノードに出力する
+	 * 
+	 * @param node
+	 *            出力ノード
+	 */
+	public void writeProperties(org.w3c.dom.Node node) {
+
+		// ドキュメントの取得
+		org.w3c.dom.Document document = node.getOwnerDocument();
+
+		// コメントを追加
+		{
+			org.w3c.dom.Comment comment = document
+					.createComment(Message.getString("remotebuildproperties.document.comment"));
+			node.appendChild(comment);
+		}
+
+		if (this.RB_data_list == null || this.RB_data_list.size() <= 0)
+			return;
+
+		// RB property set
+		for (RemoteBuildData rb_data : this.RB_data_list) {
+			org.w3c.dom.Element elem = document.createElement("server");
+
+			{
+				org.w3c.dom.Attr attr = document.createAttribute("key");
+				attr.setValue(rb_data.getKey());
+				elem.setAttributeNode(attr);
+			}
+			{
+				org.w3c.dom.Attr attr = document.createAttribute("value");
+				attr.setNodeValue(rb_data.getValue());
+				elem.setAttributeNode(attr);
+			}
+
+			{
+				org.w3c.dom.Attr attr = document.createAttribute("description");
+				attr.setValue(rb_data.getDescription());
+				elem.setAttributeNode(attr);
+			}
+			// ノード追加
+			node.appendChild(elem);
+		}
+	}
 
 	/**
 	 * Returns parameters as a Map from YAML file
+	 * 
 	 * @param settings_file
 	 * @return Map
 	 * @throws FileNotFoundException
 	 */
-	public static Map<String, String> getSettingsFromFile(String settings_file)
-			throws FileNotFoundException {
+	public static Map<String, String> getSettingsFromFile(String settings_file) throws FileNotFoundException {
 		InputStream input = new FileInputStream(new File(locateRemoteSettingsFile(settings_file)));
 		Yaml yaml = new Yaml();
-		@SuppressWarnings("unchecked")	    				    
+		@SuppressWarnings("unchecked")
 		Map<String, String> map = (Map<String, String>) yaml.load(input);
 		return map;
 	}
 
 	/**
 	 * Get filename with directory for settings file
-	 * @param settings file
+	 * 
+	 * @param settings
+	 *            file
 	 * @return remote/<settings file>.yml
 	 */
 	public static String locateRemoteSettingsFile(String str) {
-		String filename = REMOTE_SETTINGS_DIR+"/"+str+".yml";
-		//System.out.println("File name is "+ filename);
-		//System.out.println("Looking in " + new File(System.getProperty("user.dir")));
+		String filename = REMOTE_SETTINGS_DIR + "/" + str + ".yml";
+		// System.out.println("File name is "+ filename);
+		// System.out.println("Looking in " + new
+		// File(System.getProperty("user.dir")));
 		return filename;
 	}
 
@@ -308,66 +335,90 @@ public class RemoteBuildProperties extends PropertiesBase {
 	public void checkData() {
 		System.out.println("RB data: ");
 		for (RemoteBuildData rbdata : this.RB_data_list) {
-			System.out.println(rbdata.getKey()+"="+rbdata.getValue()+", "+rbdata.getDescription() + " " + rbdata.getCommandlineOption());
+			System.out.println(rbdata.getKey() + "=" + rbdata.getValue() + ", " + rbdata.getDescription() + " "
+					+ rbdata.getCommandlineOption());
 		}
 	}
-    
-      
+
 	public int count() {
-		if (RB_data_list == null || RB_data_list.size() <= 0) {return 0;}
-        return RB_data_list.size();
+		if (RB_data_list == null || RB_data_list.size() <= 0) {
+			return 0;
+		}
+		return RB_data_list.size();
 	}
 
 	/**
 	 * Get property key
+	 * 
 	 * @param index
 	 * @return
 	 */
 	public String getKey(int index) {
-		if (RB_data_list == null || RB_data_list.size() <= 0) {return null;}
-        if (RB_data_list.size() <= index) {return null;}
+		if (RB_data_list == null || RB_data_list.size() <= 0) {
+			return null;
+		}
+		if (RB_data_list.size() <= index) {
+			return null;
+		}
 
-        return RB_data_list.get(index).getKey();
+		return RB_data_list.get(index).getKey();
 	}
 
 	/**
 	 * Get property value
+	 * 
 	 * @param index
 	 * @return
 	 */
 	public String getValue(int index) {
-		if (RB_data_list == null || RB_data_list.size() <= 0) {return null;}
-        if (RB_data_list.size() <= index) {return null;}
+		if (RB_data_list == null || RB_data_list.size() <= 0) {
+			return null;
+		}
+		if (RB_data_list.size() <= index) {
+			return null;
+		}
 
-        return RB_data_list.get(index).getValue();
+		return RB_data_list.get(index).getValue();
 	}
-	
+
 	/**
 	 * Get property description
+	 * 
 	 * @param index
 	 * @return
 	 */
 	public String getDescription(int index) {
-		if (RB_data_list == null || RB_data_list.size() <= 0) {return null;}
-        if (RB_data_list.size() <= index) {return null;}
+		if (RB_data_list == null || RB_data_list.size() <= 0) {
+			return null;
+		}
+		if (RB_data_list.size() <= index) {
+			return null;
+		}
 
-        return RB_data_list.get(index).getDescription();
+		return RB_data_list.get(index).getDescription();
 	}
-	
+
 	/**
 	 * Get property order number
+	 * 
 	 * @param index
 	 * @return
 	 */
 	public int getOrder(int index) {
-		if (RB_data_list == null || RB_data_list.size() <= 0) {return -1;}
-        if (RB_data_list.size() <= index) {return -1;}
+		if (RB_data_list == null || RB_data_list.size() <= 0) {
+			return -1;
+		}
+		if (RB_data_list.size() <= index) {
+			return -1;
+		}
 
-        return RB_data_list.get(index).getOrder();
+		return RB_data_list.get(index).getOrder();
 	}
 
 	/**
-	 * Set "value" filed of RemoteBuildData entity from RB_data_list. Entity defined by index.
+	 * Set "value" filed of RemoteBuildData entity from RB_data_list. Entity
+	 * defined by index.
+	 * 
 	 * @param index
 	 * @param value
 	 */
@@ -375,12 +426,12 @@ public class RemoteBuildProperties extends PropertiesBase {
 		RemoteBuildData rb_data = RB_data_list.get(index);
 		rb_data.setValue(value);
 	}
-		
+
 	/**
-	 * Set "value" filed of RemoteBuildData entity from RB_data_list. Entity is defined by the key. 
-	 * Function exits after first assignment.
-	 * Keys are search ignoring character case.
-	 *   
+	 * Set "value" filed of RemoteBuildData entity from RB_data_list. Entity is
+	 * defined by the key. Function exits after first assignment. Keys are
+	 * search ignoring character case.
+	 * 
 	 * @param key
 	 * @param value
 	 */
@@ -395,6 +446,7 @@ public class RemoteBuildProperties extends PropertiesBase {
 
 	/**
 	 * Return value from RB_data_list with given key
+	 * 
 	 * @param key
 	 * @return value
 	 */
@@ -406,86 +458,92 @@ public class RemoteBuildProperties extends PropertiesBase {
 		}
 		return null;
 	}
-	
+
 	/**
-     * Set remote settings file path.
-     * @param filter
-     */
-    public void setSettingsFile(String path) {
-    	setValueByKey(RemoteBuildProperties.SETTINGS_FILE, path);
-    }
-	
-    /**
-     * 
-     * @return settings file in format <service><settigns_path_separator><filename>
-     */
-    public String getSettingsFile() {
-    	return getValueByKey(RemoteBuildProperties.SETTINGS_FILE);
-    }
-    
-    
-	/**
-	 * Set local path. Similar to setBuildCommand function.
-	 * @param absolutePath
+	 * Set remote settings file path.
+	 * 
+	 * @param filter
 	 */
-	public void setLocalPath(String absolutePath) {
-		setValueByKey(RemoteBuildProperties.LOCAL_PATH, absolutePath);		
+	public void setSettingsFile(String path) {
+		setValueByKey(RemoteBuildProperties.SETTINGS_FILE, path);
 	}
 
 	/**
-     * Set file filter. Similar to setBuildCommand function.
-     * @param filter
-     */
-    public void setFileFilter(String filter) {
-            setValueByKey(RemoteBuildProperties.FILE_FILTER, filter);
-    }
+	 * 
+	 * @return settings file in format
+	 *         <service><settigns_path_separator><filename>
+	 */
+	public String getSettingsFile() {
+		return getValueByKey(RemoteBuildProperties.SETTINGS_FILE);
+	}
 
-    /**
-     * Set preprocess files. Similar to setBuildCommand function.
-     * @param files
-     */
-    public void setPreprocessFiles(String files) {
-            setValueByKey(RemoteBuildProperties.PREPROCESS_FILES, files);
-    }
-	
-    /**
-     * Static method for extracting service name from settings file path
-     * @param settings_file
-     * @return
-     */
-    public static String getRemoteService(String settings_file) {    	
+	/**
+	 * Set local path. Similar to setBuildCommand function.
+	 * 
+	 * @param absolutePath
+	 */
+	public void setLocalPath(String absolutePath) {
+		setValueByKey(RemoteBuildProperties.LOCAL_PATH, absolutePath);
+	}
+
+	/**
+	 * Set file filter. Similar to setBuildCommand function.
+	 * 
+	 * @param filter
+	 */
+	public void setFileFilter(String filter) {
+		setValueByKey(RemoteBuildProperties.FILE_FILTER, filter);
+	}
+
+	/**
+	 * Set preprocess files. Similar to setBuildCommand function.
+	 * 
+	 * @param files
+	 */
+	public void setPreprocessFiles(String files) {
+		setValueByKey(RemoteBuildProperties.PREPROCESS_FILES, files);
+	}
+
+	/**
+	 * Static method for extracting service name from settings file path
+	 * 
+	 * @param settings_file
+	 * @return
+	 */
+	public static String getRemoteService(String settings_file) {
 		int pos = settings_file.indexOf(RemoteBuildProperties.settigns_path_separator);
 		String service = settings_file.substring(0, pos);
 		return service;
 	}
 
-    /**
-     * True if we can use connect.sh with Docker IaaS tools for remote code build 
-     * */
-    private static boolean checkDockerIaaS() {
-        File f = new File(docker_iaas_file);
-        if (f.exists()) {
-            if (debug_l2) System.out.println("checkDockerIaaS() "+f.getAbsolutePath());
-            return true;
-        }
-        return false;
-    }
+	/**
+	 * True if we can use connect.sh with Docker IaaS tools for remote code
+	 * build
+	 */
+	private static boolean checkDockerIaaS() {
+		File f = new File(REMOTE_UTILS_DIR + "/" + DOCKER_IAAS_FILE);
+		if (f.exists()) {
+			if (debug_l2) System.out.println("checkDockerIaaS() " + f.getAbsolutePath());
+			return true;
+		}
+		return false;
+	}
 
-    /** 
-     * True if we can use SSHconnect for remote code build
-     */
-    private static boolean checkSSHconnect() {
-        File f = new File(sshconnect_file);
-        if (f.exists()) {
-        	if (debug_l2) System.out.println("checkSSHconnect() "+f.getAbsolutePath());
-            return true;
-        }
-        return false;
-    }
-    
-    
+	/**
+	 * True if we can use SSHconnect for remote code build
+	 */
+	private static boolean checkSSHconnect() {
+		File f = new File(REMOTE_UTILS_DIR + "/" + SSHCONNECT_FILE);
+		if (f.exists()) {
+			if (debug_l2) System.out.println("checkSSHconnect() " + f.getAbsolutePath());
+			return true;
+		}
+		return false;
+	}
+
 	@Override
-	public void firePropertyChange() {}
+	public void firePropertyChange() {
+	}
 
 	public String getRemoteService() {
 		String settings_file = getSettingsFile();
@@ -497,45 +555,47 @@ public class RemoteBuildProperties extends PropertiesBase {
 		String service = settings_file.substring(0, pos);
 		return service;
 	}
-	
-	
+
 	public static String[] getRemoteSettings() {
-    	List<String> list = new ArrayList<String>();
-    	String[] list_ar = null;
-    	List<String> ignore = new ArrayList<String>(); 
-    	ignore.add("(\\.).*");
-    	if (!checkDockerIaaS()) {
-    		ignore.add(RemoteBuildProperties.remote_service_dockeriaas + "*");
-    	}
-    	if (!checkSSHconnect()) {
-    		ignore.add(RemoteBuildProperties.remote_service_sshconnect + "*");
-    	}
+		List<String> list = new ArrayList<String>();
+		String[] list_ar = null;
+		List<String> ignore = new ArrayList<String>();
+		ignore.add("(\\.).*");
+		if (!checkDockerIaaS()) {
+			ignore.add(RemoteBuildProperties.remote_service_dockeriaas + "*");
+		}
+		if (!checkSSHconnect()) {
+			ignore.add(RemoteBuildProperties.remote_service_sshconnect + "*");
+		}
 		File dir = new File(REMOTE_SETTINGS_DIR);
 		try {
 			String[] s = new String[ignore.size()];
-			list = getFiles(dir, list, "", ignore.toArray(s));			
-			list_ar=new String[list.size()];
-		}
-		catch (IOException e) {
+			list = getFiles(dir, list, "", ignore.toArray(s));
+			list_ar = new String[list.size()];
+		} catch (IOException e) {
 			System.err.println("Error reading settings files from remote directory");
-			e.printStackTrace();			
+			e.printStackTrace();
 		}
 		return list.toArray(list_ar);
 	}
-	
+
 	/*
-     * Return list of files in directory with subdirectories.
-     * @dir - starting directory
-     * @list - list of files found before (empty for the first call)
-     * @path_prefix - path from starting directory to current directory
-     * ignore - pattern for ignoring files and directories names
-     */
-	private static List<String> getFiles(File dir, List<String> list, String path_prefix, String[] ignore) throws IOException {
-		File [] flist = dir.listFiles();
+	 * Return list of files in directory with subdirectories.
+	 * 
+	 * @dir - starting directory
+	 * 
+	 * @list - list of files found before (empty for the first call)
+	 * 
+	 * @path_prefix - path from starting directory to current directory ignore -
+	 * pattern for ignoring files and directories names
+	 */
+	private static List<String> getFiles(File dir, List<String> list, String path_prefix, String[] ignore)
+			throws IOException {
+		File[] flist = dir.listFiles();
 		if (flist == null || flist.length < 1) {
 			return list;
 		}
-		Boolean trunk_extensions = true;  // remove extensions from file names
+		Boolean trunk_extensions = true; // remove extensions from file names
 		for (File f : flist) {
 			boolean ignore_me = false;
 			for (String p : ignore) {
@@ -544,22 +604,22 @@ public class RemoteBuildProperties extends PropertiesBase {
 					break;
 				}
 			}
-			if (ignore_me) continue;
+			if (ignore_me)
+				continue;
 			if (f.isFile()) {
 				String name = f.getName();
 				if (trunk_extensions) {
 					int pos = name.lastIndexOf(".");
 					if (pos > 0) {
-					    name = name.substring(0, pos);
+						name = name.substring(0, pos);
 					}
 				}
-				list.add(path_prefix+name);
-			} 
-			else if (f.isDirectory()) {
-				list = getFiles(f,list,f.getName()+RemoteBuildProperties.settigns_path_separator, ignore);
+				list.add(path_prefix + name);
+			} else if (f.isDirectory()) {
+				list = getFiles(f, list, f.getName() + RemoteBuildProperties.settigns_path_separator, ignore);
 			}
 		}
-		return list;		
+		return list;
 	}
-	
+
 }

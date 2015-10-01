@@ -31,14 +31,6 @@ following URL.
 
 http://omni-compiler.org/index.html
 
-If you can access a remote server installed with Omni XcalableMP (XMP)
-compiler (For example, front-end of the K computer is suitable environment
-to make intermediate codes with XMP), you can build intermediate codes
-on the server remotely via SSH connection by SSHconnect.jar. This software
-is an utility for remote command execution with automatic transfer.
-It is developed by RIKEN AICS HPC Usability Team in collaboration to enhance
-the K-scope's feature, and is bundled with the binary package of K-scope.
-
 ## Compile and Run
 
 This software is written by pure Java to improve portability.

@@ -1,6 +1,6 @@
 /*
  * K-scope
- * Copyright 2012-2013 RIKEN, Japan
+ * Copyright 2012-2015 RIKEN, Japan
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,9 +38,9 @@ import javax.xml.xpath.XPathFactory;
 import jp.riken.kscope.Message;
 import jp.riken.kscope.data.BasicPropertyList;
 import jp.riken.kscope.data.ProjectPropertyValue;
-import jp.riken.kscope.data.RemoteBuildData;
 import jp.riken.kscope.utils.ResourceUtils;
 import jp.riken.kscope.utils.StringUtils;
+import jp.riken.kscope.properties.RemoteBuildProperties;
 
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
@@ -87,9 +87,9 @@ public class ProjectProperties extends PropertiesBase {
 	 * If these files are present in the current directory (with kscope.jar), 
 	 * we set flags haveDockerIaaS and haveSSHconnect to TRUE.
 	 */
-	private static String docker_iaas_file = "connect.sh";
-	private static String sshconnect_file = "lib/SSHconnect.jar";
-	public static String REMOTE_SETTINGS_DIR = "properties/remote";
+	//private static String docker_iaas_file = RemoteBuildProperties.DOCKER_IAAS_FILE;
+	//private static String sshconnect_dir = RemoteBuildProperties.SSHCONNECT_FILE;
+	//private static String sshconnect_file = RemoteBuildProperties.SSHCONNECT_FILE;
 	
 	public static String settigns_path_separator="/"; // symbol to use instead of "/" in paths of settings files
 	
@@ -613,7 +613,7 @@ public class ProjectProperties extends PropertiesBase {
 	 * @return remote/<settings file>.yml
 	 */
 	public static String locateRemoteSettingsFile(String str) {
-		String filename = "remote/"+str+".yml";
+		String filename = RemoteBuildProperties.REMOTE_SETTINGS_DIR + "/" + str + ".yml";
 		//System.out.println("File name is "+ filename);
 		//System.out.println("Looking in " + new File(System.getProperty("user.dir")));
 		return filename;
@@ -653,7 +653,7 @@ public class ProjectProperties extends PropertiesBase {
 	}
     
     /**
-     * Save cleam command to project properties class instance
+     * Save clean command to project properties class instance
      * @param cc - clean command
      */
     public void setCleanCommand(String cc) {
@@ -668,8 +668,6 @@ public class ProjectProperties extends PropertiesBase {
     	setValueByKey(PRJ_TITLE, title);
     }
     
-
-
 	/**
 	 * Set local path. Similar to setBuildCommand function.
 	 * @param absolutePath
@@ -744,7 +742,7 @@ public class ProjectProperties extends PropertiesBase {
      * True if we can use connect.sh with Docker IaaS tools for remote code build 
      * */
     private static boolean checkDockerIaaS() {
-        File f = new File(docker_iaas_file);
+        File f = new File(RemoteBuildProperties.REMOTE_UTILS_DIR + "/" + RemoteBuildProperties.DOCKER_IAAS_FILE);
         if (f.exists()) {
             if (debug_l2) System.out.println("PP.checkDockerIaaS() "+f.getAbsolutePath());
             return true;
@@ -756,7 +754,7 @@ public class ProjectProperties extends PropertiesBase {
      * True if we can use SSHconnect for remote code build
      */
     private static boolean checkSSHconnect() {
-        File f = new File(sshconnect_file);
+        File f = new File(RemoteBuildProperties.REMOTE_UTILS_DIR + "/" + RemoteBuildProperties.SSHCONNECT_FILE);
         if (f.exists()) {
             if (debug_l2) System.out.println("PP.checkSSHconnect() "+f.getAbsolutePath());
             return true;
@@ -825,7 +823,7 @@ public class ProjectProperties extends PropertiesBase {
     		if (debug) System.out.println("Ignoring sshconnect service files");
     		ignore.add(RemoteBuildProperties.remote_service_sshconnect + "*");
     	}
-		File dir = new File(REMOTE_SETTINGS_DIR);
+		File dir = new File(RemoteBuildProperties.REMOTE_SETTINGS_DIR);
 		try {
 			String[] s = new String[ignore.size()];
 			list = getFiles(dir, list, "", ignore.toArray(s));

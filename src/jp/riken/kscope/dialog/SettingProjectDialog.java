@@ -62,7 +62,7 @@ import jp.riken.kscope.Message;
 import jp.riken.kscope.common.Constant;
 import jp.riken.kscope.data.ProjectPropertyValue;
 import jp.riken.kscope.properties.ProjectProperties;
-//import jp.riken.kscope.properties.RemoteBuildProperties;
+import jp.riken.kscope.properties.RemoteBuildProperties;
 import jp.riken.kscope.utils.SwingUtils;
 
 /**
@@ -737,10 +737,10 @@ public class SettingProjectDialog extends javax.swing.JDialog implements ActionL
         {        	
         	String[] selections = ProjectProperties.getRemoteSettings(remote_service); 
         	if (selections.length < 1) {
-        		System.out.println("No remote connection settings files found in "+ ProjectProperties.REMOTE_SETTINGS_DIR);    		
+        		System.out.println("No remote connection settings files found in "+ RemoteBuildProperties.REMOTE_SETTINGS_DIR);    		
         	} else {    		
         		if (debug) {
-        			System.out.println("Have remote connection settings in "+ ProjectProperties.REMOTE_SETTINGS_DIR);
+        			System.out.println("Have remote connection settings in "+ RemoteBuildProperties.REMOTE_SETTINGS_DIR);
         			System.out.println(selections);
         		}
         		if (remote_service != null) {
