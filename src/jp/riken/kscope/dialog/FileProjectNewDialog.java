@@ -73,6 +73,7 @@ import jp.riken.kscope.data.FILE_TYPE;
 import jp.riken.kscope.gui.MainFrame;
 import jp.riken.kscope.properties.KscopeProperties;
 import jp.riken.kscope.properties.ProjectProperties;
+import jp.riken.kscope.properties.RemoteBuildProperties;
 import jp.riken.kscope.service.AppController;
 import jp.riken.kscope.utils.FileUtils;
 import jp.riken.kscope.utils.ResourceUtils;
@@ -328,9 +329,9 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
 
             String[] selections = ProjectProperties.getRemoteSettings(); 
         	if (selections.length < 1) {
-        		System.out.println("No remote connection settings files found in "+ ProjectProperties.REMOTE_SETTINGS_DIR);
+        		System.out.println("No remote connection settings files found in "+ RemoteBuildProperties.REMOTE_SETTINGS_DIR);
         	} else {
-        		System.out.println("Have remote connection settings in "+ ProjectProperties.REMOTE_SETTINGS_DIR);
+        		System.out.println("Have remote connection settings in "+ RemoteBuildProperties.REMOTE_SETTINGS_DIR);
             	list_model = new DefaultComboBoxModel<String>(selections);
         		settings_list = new JComboBox<String>(list_model);
             	settings_list.setEnabled(false);
@@ -1656,8 +1657,8 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
         else if (event.getSource() == this.radioFullMode) {
             if (this.radioFullMode.isSelected()) {
             	if (radioGenXML.isSelected()) {
-            	// Enable checkUseRemote
-            		checkUseRemote.setEnabled(true);
+            	    // Enable checkUseRemote
+            		if(this.pproperties.useRemoteBuild()) checkUseRemote.setEnabled(true);
             	}
                 // すでにフォートランが設定されている場合はクリア
                 DefaultListModel<String> model = (DefaultListModel<String>) this.listProjectXml.getModel();
@@ -1682,7 +1683,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
         else if (event.getSource() == this.radioSimpleMode) {
             if (this.radioSimpleMode.isSelected()) {
             	// Disable checkUseRemote
-            	checkUseRemote.setEnabled(false);
+            	if(this.pproperties.useRemoteBuild()) checkUseRemote.setEnabled(false);
                 // すでに中間コードが設定されている場合はクリア
                 DefaultListModel<String> model = (DefaultListModel<String>) this.listProjectXml.getModel();
                 if (model.getSize() > 0) {
