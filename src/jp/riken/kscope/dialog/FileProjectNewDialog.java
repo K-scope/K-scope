@@ -567,6 +567,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
             btnProjectFolder.setPreferredSize(REFER_BUTTON_SIZE);
             btnProjectFolder.setMargin(new Insets(0, 3, 0, 3));
             btnProjectFolder.addActionListener(this);
+            txtProjectFolder.addActionListener(this);
         }
 
         // Process files & File filter
@@ -1379,6 +1380,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
                     Message.getString("dialog.common.selectproject.title"), //プロジェクトフォルダの選択
                     currentFolder, false);
             if (selected == null || selected.length <= 0) {
+            	if (debug) System.out.println("Nothing selected by dialog.");
                 return;
             }
             // 中間コードやMakefileが設定されている状態でプロジェクトフォルダが変更された場合は相対パスに注意
@@ -1437,6 +1439,24 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
             enableButtons();
 
         }         
+        else if (event.getSource() == this.txtProjectFolder) {
+        	String folder = this.txtProjectFolder.getText();
+        	if (debug_l2) System.out.println("Action on txtProjectFolder. Value: " + folder);
+        	if (!StringUtils.isNullOrEmpty(folder)) {
+        		try {
+        			if (debug_l2) System.out.println("Test if " + folder+" is directory: ");
+        			File f = new File(folder);
+        			if (debug_l2) System.out.println(f.isDirectory());
+        			if (f.isDirectory()) {
+        				enableButtons();
+        			} else {
+        				System.out.println(folder + " is not a directory.");
+        			}
+        		} catch (NullPointerException e) {
+        			e.printStackTrace();
+        		}
+        	}
+        }
         // Add files to be preprocessed プレースホルダの処理対象のファイルを追加
         else if (event.getSource() == this.addprerocessfile_button) {
             // フォルダ選択ダイアログを表示する。

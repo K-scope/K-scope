@@ -53,9 +53,13 @@ public class Kscope {
     public static void main(String args[]) {
         // 初期設定
         // MacOSXでのJava実行環境用のシステムプロパティの設定.
+    	boolean debug = (System.getenv("DEBUG")!= null);
         String version = KscopeProperties.APPLICATION_VERSION;        
+        if (debug) {
+        	System.out.println("Java: "+ System.getProperty("java.version"));
+        }
         System.out.println(KscopeProperties.APPLICATION_NAME+" v"+version);
-        if (System.getenv("DEBUG")!= null) {
+        if (debug) {
         	System.out.println("For debugging use DEBUG env var: "
         			+ "\"high\" - much debug info, "
         			+ "\"extreme\" - too much debug info,"

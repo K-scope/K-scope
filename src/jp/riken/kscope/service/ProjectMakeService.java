@@ -420,7 +420,7 @@ public class ProjectMakeService  extends BaseService {
 					String[] diaas_cl = pproperties.getCommandLineOptions(RS);
 					int formal_commands = 1;
 					exec_commands = new String[formal_commands + diaas_cl.length];
-					exec_commands[0] = RemoteBuildProperties.DOCKER_IAAS_FILE;
+					exec_commands[0] =  RemoteBuildProperties.REMOTE_UTILS_DIR + File.separator + RemoteBuildProperties.DOCKER_IAAS_FILE;
 					for (int i = 0; i < diaas_cl.length; i++) {
 						exec_commands[i + formal_commands] = diaas_cl[i];
 					}
@@ -431,7 +431,7 @@ public class ProjectMakeService  extends BaseService {
 					exec_commands = new String[formal_commands + sshc_cl.length];
 					exec_commands[0] = "java";
 					exec_commands[1] = "-jar";
-					exec_commands[2] = RemoteBuildProperties.REMOTE_UTILS_DIR + "/" + RemoteBuildProperties.SSHCONNECT_FILE;
+					exec_commands[2] = RemoteBuildProperties.REMOTE_UTILS_DIR  + File.separator + RemoteBuildProperties.SSHCONNECT_FILE;
 					for (int i = 0; i < sshc_cl.length; i++) {
 						exec_commands[i + formal_commands] = sshc_cl[i];
 					}
