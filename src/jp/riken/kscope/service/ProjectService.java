@@ -255,7 +255,7 @@ public class ProjectService extends BaseService {
     public SourceFile[] getSourceFiles(File files[], FILE_TYPE ftype,
             boolean subDir) {
 
-    	if (debug) System.out.println("Call to ProjectService.getSourceFiles\nfiles ="+files.toString()+" ftype="+ftype+" subdir="+subDir); 
+    	if (debug_l2) System.out.println("Call to ProjectService.getSourceFiles\n ftype="+ftype+" subdir="+subDir); 
         ArrayList<File> filelist = new ArrayList<File>();
         ArrayList<SourceFile> sourcelist = new ArrayList<SourceFile>();
         for (int i = 0; i < files.length; i++) {

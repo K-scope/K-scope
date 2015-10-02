@@ -90,7 +90,7 @@ public class ProjectProperties extends PropertiesBase {
     
     private static HashMap<String,String> options_map;
     static {
-    	options_map = new HashMap<String, String>();
+    	options_map = new HashMap<String, String>(12,1);
     	options_map.put("server_address", "-h");
     	options_map.put("port", "-p");
     	options_map.put("user", "-u");
@@ -98,8 +98,7 @@ public class ProjectProperties extends PropertiesBase {
     	options_map.put("key", "-k");
     	options_map.put("passphrase", "-ph");
     	options_map.put("add_path", "-a");
-    	options_map.put("remote_path", "-rp");
-    	
+    	options_map.put("remote_path", "-rp");    	
     	options_map.put("local_path", "-l");
     	options_map.put("build-command", "-m");
     	options_map.put("product_pattern", "-dp");
@@ -108,11 +107,10 @@ public class ProjectProperties extends PropertiesBase {
     
     private static HashMap<String,String> options_map_docker;
     static {
-    	options_map_docker = new HashMap<String, String>();
+    	options_map_docker = new HashMap<String, String>(8,1);
     	options_map_docker.put("server_address", "-h");
     	options_map_docker.put("port", "-p");
     	options_map_docker.put("user", "-u");
-    	options_map_docker.put("password", "-pw");
     	options_map_docker.put("key", "-k");
     	options_map_docker.put("add_path", "-a");
     	options_map_docker.put("local_path", "-l");

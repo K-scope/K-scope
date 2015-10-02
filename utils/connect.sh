@@ -12,7 +12,7 @@
 # Created by Bryzgalov Peter
 # Copyright (c) 2015 RIKEN AICS. All rights reserved
 
-version="0.27"
+version="0.28"
 debug="1"
 
 usage="Usage:\nconnect.sh -u <username> -h <server address> -p <server port number> \
@@ -100,13 +100,12 @@ if [ -z "$path" ]
 	echo "Use current folder: $path"
 fi
 
-ssh_key_added=0
-
 if [ -n "$ssh_key" ]
 	then
 	key_in_ssh_add=$(ssh-add -l | grep $ssh_key | wc -l)
 	if [ $key_in_ssh_add -le 0 ] 
 		then
+		echo "Add SSH_KEY $ssh_key to agent."
 		ssh-add $ssh_key
 		ssh_key_added=1
 	fi
@@ -179,7 +178,7 @@ then  # No commands -- interactive shell login
 	fi
 	$command 
 else # Execute remote commands. No interactive shell login.
-	# testcommand ="ssh -vv -p $free_port $local_user@$histIP;echo "'$HOST'";exit;\n"
+	# testcommand ="ssh -vv -p $free_port $local_user@$hostIP;echo "'$HOST'";exit;\n"
 	setup_commands="mkdir -p \"$path\"\nsshfs -o StrictHostKeyChecking=no -p $free_port $local_user@$hostIP:\"$path\" \"$path\"\ncd \"$path\"\necho \"ver \$version\";pwd;ls -l | wc -l;export PATH=\$PATH:$add_path"
 	setup_commands="$setup_commands\n$remote_commands"
 	echo -e $setup_commands
@@ -190,6 +189,11 @@ else # Execute remote commands. No interactive shell login.
 	echo "version=$version" >> $cmd_file    
 	echo -e $setup_commands >> $cmd_file    
 	chmod +x $cmd_file
+	if [ $debug ]; then
+		echo "Command file:"
+		cat $cmd_file
+		echo "---"
+	fi
 	# Copy command file into container using container SSH port number as seen from server-side.
 	cp_command="scp $keyoption -P $container_port $cmd_file root@$server:/"   
 	if [ $debug ]; then
@@ -219,3 +223,8 @@ else
 	ssh $SSH_PARAMETERS "umount \"$path\"" 2>/dev/null
 fi
 kill "$ssh_tunnel"
+if [ $ssh_key_added ] 
+	then
+	echo "Remove SSH_KEY $ssh_key from agent."
+	ssh-add -d $ssh_key
+fi
