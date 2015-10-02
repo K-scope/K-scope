@@ -110,11 +110,14 @@ public class ProjectProperties extends PropertiesBase {
     static {
     	options_map_docker = new HashMap<String, String>();
     	options_map_docker.put("server_address", "-h");
+    	options_map_docker.put("port", "-p");
     	options_map_docker.put("user", "-u");
+    	options_map_docker.put("password", "-pw");
     	options_map_docker.put("key", "-k");
     	options_map_docker.put("add_path", "-a");
     	options_map_docker.put("local_path", "-l");
     	options_map_docker.put("build-command", "-m");
+    	
     }
     
     /**
@@ -446,17 +449,7 @@ public class ProjectProperties extends PropertiesBase {
     	}
     	String service = getRemoteService();
     	List<String> command_options = new ArrayList<String>();
-    	String value; /* = getBuildCommand();
-    	try {
-			if (value.length() > 0) {
-				command_options.add("-m");
-				command_options.add("\""+value+"\"");
-			} else {
-				System.err.println("Build command is empty.");
-			}
-		} catch (NullPointerException e) {
-			System.err.println("Build command is null.");
-		} */
+    	String value; 
     	String key;
     	for (ProjectPropertyValue pproperty : this.listProperty) {
     		String commandline_option = pproperty.getCommandlineOption();
@@ -577,10 +570,10 @@ public class ProjectProperties extends PropertiesBase {
 		if (debug_l2) {
 			System.out.println("RS "+ service);
 		}
-		if (service.indexOf("sshconnect") >= 0) {
+		if (service.equalsIgnoreCase(RemoteBuildProperties.REMOTE_SERVICE_SSHCONNECT)) {
 			option = options_map.get(key);
 		} 
-		else if (service.indexOf("docker") >= 0) {
+		else if (service.equalsIgnoreCase(RemoteBuildProperties.REMOTE_SERVICE_DOCKERIAAS)) {
 			option = options_map_docker.get(key);
 			if (option == null) {
 				System.out.println("Option " + key+ " not used for Docker IaaS tools. Option is ignored.");

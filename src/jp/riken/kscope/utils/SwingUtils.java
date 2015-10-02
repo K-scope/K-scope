@@ -94,6 +94,8 @@ import jp.riken.kscope.properties.KscopeProperties;
  * @author RIKEN
  */
 public class SwingUtils {
+	private static Boolean debug = (System.getenv("DEBUG") != null);
+	private static boolean debug_l2 = false;
 	/** タブサイズチェック用文字 */
 	private static final char TAB_CHECK_CHARACTOR = 'o';
 
@@ -106,7 +108,7 @@ public class SwingUtils {
 	 *            タブサイズ
 	 */
 	public static void setTabSize(JTextComponent component, int tabsize) {
-
+		if (debug) debug_l2 = (System.getenv("DEBUG").equalsIgnoreCase("high"));
 		SimpleAttributeSet attrs = new SimpleAttributeSet();
 
 		FontMetrics fm = component.getFontMetrics(component.getFont());
@@ -607,7 +609,11 @@ public class SwingUtils {
 			// java1.7以上はAppleScriptにてフォルダダイアログを表示する
 			// java1.6以下はjava.awt.FileDialogを使用する。
 			//boolean applescript = KscopeProperties.isJava17Later();
-                        boolean applescript = KscopeProperties.isApplescript();
+			boolean applescript = KscopeProperties.isApplescript();
+			if (debug_l2) {
+				if (applescript) System.out.println("Use apple script for file dialog");
+				else System.out.println("Use FileDialog for file dialog");
+			}
 			if (KscopeProperties.isMac() && applescript) {
 				File selected = AppleScriptEngine.showFolderDialog(title, currentDirectoryPath);
 				if (selected == null) {
