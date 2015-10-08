@@ -20,11 +20,11 @@ As an alternative to installing Omni XcalableMP compiler on local computer it is
 either on a remote server or on user local computer. 
 
 
-See below for usage instructions for each alternative. 
+See below for usage instructions for each use case. 
 
 K-scope uses connect.sh script or SSHconnect.jar to build source code on a remote server or in a Docker container. 
-If connect.sh or SSHconnect.jar are found in "utils" subdirectory, additional options are enabled in new 
-project wizard and project settings dialogs.
+If connect.sh or SSHconnect.jar are found in "utils" subdirectory, additional options are enabled in New 
+Project Wizard and Project Settings dialogs.
 
 All settings for accessing Omni XMP compiler on a remote location are stored in Remote settings files. 
 
@@ -121,37 +121,32 @@ necessary to login to the Docker container with SSH.
 If you have a server machine with Docker installed, you can use Docker IaaS Tools to quickly 
 make a setup for building code inside a Docker container.
 
+Make sure you have SSH server running on you local machine also and that you can login to it over network. Local SSH server is used for mounting your source code from local machine into a Docker container running on the server.
 
-### Server-side setup for using K-scope with Docker IaaS Tools (DIT) and Omni XMP Compiler (OmniXMP)
+### Server-side setup
 
-Make new directory on your server machine for DIT, cd into it and clone git repository:
+Install DIT on your server machine following instructions here: https://github.com/pyotr777/dockerIaaSTools#set-up-on-the-server-machine
 
-```
-git clone https://github.com/pyotr777/dockerIaaSTools.git .
-```
-
-Download OmniXMP Docker image:
-
-```
-docker pull pyotr777/omnixmp:0.7.0
-```
-
-Prepare K-scope user public SSH-key, copy it to the directory with DIT 
+Prepare a public SSH key, copy it into the directory with DIT 
 on the server. cd into DIT directory and run:
 ```
-sudo ./createuser.sh <user name> pyotr777/omnixmp <public key file>
+sudo ./createuser.sh <user name> pyotr777/omnixmp:0.7.0 <public key file>
 ```
+
+Use the same user name and SSH key in the settings below.
+
+**Do not use "docker" or "dockertest" for the user name, or any other user or group name existing on your server machine.**
 
 ### K-scope Project setup 
 
-Make sure you have connect.sh file in your K-scope directory.
-In new project wizard or in Project settings > Remote settings file press "Manage remote settings" button,
+Make sure you have connect.sh file in "utils" subdirectory of your K-scope installation.
+In a New Project Wizard or in Project settings > Remote Settings File window press "Manage remote settings" button,
 then press "+" button to create a new remote settings file or select existing settings file and 
-press "copy" button. Select dockeriaas service and setup parameters values as described 
+press "copy" button. Select dockeriaas service from drop-down list and setup parameters values as described 
 below:
 For server_address use you server machine address,
 for port use 22 (or whatever port number is used by sshd on your server machine),
-for key enter path to you public ssh key on your local computer,
+for key enter path to your private ssh key on your local computer,
 for user name use the same name that was used in createuser.sh command on the server machine.
 
 
