@@ -13,24 +13,25 @@ K-scope usability, and is bundled with the binary package of K-scope.
 
 As an alternative to installing Omni XcalableMP compiler on local computer it is possible:
 
-1. to use the compiler installed on a remote server machine,
+1. to use K-scope installed in a Docker container.
+2. to use the compiler installed on a remote server machine,
   1. to use the compiler installed in a Docker container,
-2. to use Docker IaaS tools for easy access to the compiler installed in a Docker container 
+3. to use Docker IaaS tools for easy access to the compiler installed in a Docker container 
 either on a remote server or on user local computer. 
-3. to use K-scope installed in a Docker container.
+
 
 See below for usage instructions for each alternative. 
 
 K-scope uses connect.sh script or SSHconnect.jar to build source code on a remote server or in a Docker container. 
-If connect.sh or SSHconnect.jar are in the same directory as kscope.jar, additional options are enabled in new 
+If connect.sh or SSHconnect.jar are found in "utils" subdirectory, additional options are enabled in new 
 project wizard and project settings dialogs.
 
-All settings for accessing Omni XMP on a remote location are stored in Remote settings files. 
+All settings for accessing Omni XMP compiler on a remote location are stored in Remote settings files. 
 
-Remote settings files for using Omni XMP installed on a remote server machine (1. and 1i. above) 
-work with SSHconnect.jar program and are stored under sshconnect remote service folder. 
-Remote settings files for using Docker IaaS tools for accessing the compiler in a Docker container (2.)
-work with connect.sh script and are stored under dockeriaas remote service folder.   
+Remote settings files for using Omni XMP installed on a remote server machine (2. and 2i. above) 
+work with SSHconnect.jar program and are stored under "sshconnect" remote service folder. 
+Remote settings files for using Docker IaaS tools for accessing the compiler in a Docker container (3.)
+work with connect.sh script and are stored under "dockeriaas" remote service folder.   
 
 Whether intermediate code is built on a remote server or on local computer 
 "Build command" for building intermediate code and "Clean command" for removing
@@ -49,8 +50,43 @@ absolute paths in project files must be taken care of and replaced with a placeh
 When using Docker container with Docker IaaS tools project files are placed in container with the same
 paths as on local computer, so replacing absolute paths is not necessary.
 
+If you have Docker on the same machine with you source code, you can use K-scope installed in 
+a Docker containt (case 1. above). It is the easiest use case in that you don't have to install 
+or configure anything: cd to source code directory and run Docker command. See details below.
 
-## 1. Use Omni XMP compiler on remote server machine
+
+## 1. Use K-scope installed in a Docker container
+
+To simplify installation even more we have created Docker image with installed K-scope along with Omni XMP 
+compiler. Provided you have Docker installed on your machine, you can start using K-scope without need 
+to install anything. 
+
+### Start K-scope in a Docker container
+
+On your machine cd to the directory with your Fortran source code. Start container with:
+
+```
+docker run -d -p 22 -v $(pwd):$(pwd) pyotr777/kscope:0.7.0
+```
+You can copy-paste the above command.
+Make sure container has started and find it's host-side port number with
+```
+docker ps
+```
+
+Login to the container using the host-side SSH port number with
+```
+ssh -Y -p <host-side SSH port number> root@localhost
+```
+
+root password is "docker".
+
+To start K-scope inside container change directory to /kscope and run
+./kscope.sh
+
+Source code will be inside container with the same path as on the host machine.
+
+## 2. Use Omni XMP compiler on remote server machine
 
 Install Omni XcalableMP compiler on remote machine as described here: 
 http://www.hpcs.cs.tsukuba.ac.jp/omni-compiler/doc/Install.html
@@ -58,10 +94,11 @@ To be able to connect to the server machine from local computer sshd must be
 configured and running on the server. Consult sshd manual for your server OS.
 
 Substitute all absolute paths in your project source files with `#[remote_path]`
-and include these files into "Absolute paths in" list. Create a new Remote settings file with
-URL, port number, user name etc. necessary to login into the server with SSH.
+and include these files into "Absolute paths in" list in Project Settings. Create 
+a new Remote settings file with URL, port number, user name etc. 
+necessary to login to the server with SSH.
 
-## 1i. Use Docker container with Omni XMP compiler
+## 2i. Use Docker container with Omni XMP compiler
 
 Start Docker container with command: 
 
@@ -71,15 +108,15 @@ docker run -d -p 22 pyotr777/omnixmp:0.7.0 /usr/sbin/sshd -D
 
 You can login into container with SSH as user "root" with password "docker".
 Compiler front-end is installed inside the container in /opt/omnixmp/bin directory. 
-Make sure to include it into PATH variable or set add_path parameter in 
-K-scope Project settings > Remote settings file.  
+Make sure to set "add_path" parameter in K-scope Project settings > Remote settings file.  
 
 Don't forget to substitute all absolute paths in your project source files with `#[remote_path]`
-and include these files into "Absolute paths in" list. Create a new Remote settings file with
-URL, port number, user name etc. necessary to login into the Docker container with SSH. 
+and include these files into "Absolute paths in" list in Project Settings. Create 
+a new Remote settings file with URL, port number, user name etc. 
+necessary to login to the Docker container with SSH. 
 
 
-## 2. Use K-scope with Docker IaaS Tools
+## 3. Use K-scope with Docker IaaS Tools
 
 If you have a server machine with Docker installed, you can use Docker IaaS Tools to quickly 
 make a setup for building code inside a Docker container.
@@ -120,37 +157,6 @@ for user name use the same name that was used in createuser.sh command on the se
 
 Demonstration: http://youtu.be/86ybJdnNvUc
 
-
-## 3. Use K-scope installed in a Docker container
-
-To simplify installation even more we have created Docker image with installed K-scope along with Omni XMP 
-compiler. Provided you have Docker installed on your machine, you can start using K-scope without need 
-to install anything. 
-
-### Start K-scope in a Docker container
-
-On your machine cd to the directory with your Fortran source code. Start container with:
-
-```
-docker run -d -p 22 -v $(pwd):$(pwd) pyotr777/kscope:0.7.0
-```
-
-Make sure container has started and find it's host-side port number with
-```
-docker ps
-```
-
-Login to the container with
-```
-ssh -Y -p <host-side port 22 number> root@localhost
-```
-
-root password is "docker".
-
-To start K-scope inside container change directory to /kscope and run
-./kscope.sh
-
-Source code will be inside container with the same path as on host machine.
 
 *Docker IaaS Tools and connect.sh are developed by RIKEN AICS HPC Usability Research Team
 http://github.com/pyotr777/dockerIaaSTools*
