@@ -1,19 +1,8 @@
-# About K-scope with Docker-SSHconnect
-
-If you can access a remote server with installed Omni XcalableMP (XMP) compiler 
-(for example, front-end of the K computer is suitable environment to make intermediate 
-code with XMP), you can build intermediate code on the server remotely via SSH connection 
-using SSHconnect.jar. This software is an utility for remote command execution with automatic 
-file transfer.
-
-It is developed in coolaboration with RIKEN AICS HPC Usability Research Team to enhance 
-K-scope usability, and is bundled with the binary package of K-scope.
-
-# Remote code building
+# Using K-scope with Docker and remote server
 
 As an alternative to installing Omni XcalableMP compiler on local computer it is possible:
 
-1. to use K-scope installed in a Docker container.
+1. to use K-scope installed in a Docker container,
 2. to use the compiler installed on a remote server machine,
   1. to use the compiler installed in a Docker container,
 3. to use Docker IaaS tools for easy access to the compiler installed in a Docker container 
@@ -21,6 +10,8 @@ either on a remote server or on user local computer.
 
 
 See below for usage instructions for each use case. 
+
+### About remote code building
 
 K-scope uses connect.sh script or SSHconnect.jar to build source code on a remote server or in a Docker container. 
 If connect.sh or SSHconnect.jar are found in "utils" subdirectory, additional options are enabled in New 
@@ -40,7 +31,7 @@ after a New Project wizard dialog is complete and can be rebuilt later with
 "Project > Rebuild intermediate code" menu.
 
 
-## Why use Docker? 
+### Why use Docker? 
 
 When using Omni XMP installed on a remote server, project files are copied to a temporary location
 with paths different from their paths on local computer. Because of that all 
@@ -88,8 +79,11 @@ Source code will be inside container with the same path as on the host machine.
 
 ## 2. Use Omni XMP compiler on remote server machine
 
-Install Omni XcalableMP compiler on remote machine as described here: 
-http://www.hpcs.cs.tsukuba.ac.jp/omni-compiler/doc/Install.html
+An access to a server machine with Omni XMP compiler installed is required. For example, 
+front-end nodes of the K computer have suitable environment to make intermediate code with XMP.
+
+If you don't have access to such server, you can install Omni XMP compiler (on remote server machine)
+as described here:  http://www.hpcs.cs.tsukuba.ac.jp/omni-compiler/doc/Install.html
 To be able to connect to the server machine from local computer sshd must be 
 configured and running on the server. Consult sshd manual for your server OS.
 
@@ -152,6 +146,7 @@ for user name use the same name that was used in createuser.sh command on the se
 
 Demonstration: http://youtu.be/86ybJdnNvUc
 
+*SSHconnect.jar and connect.sh are utilities for remote command execution with automatic file transfer. They are developed in coolaboration with RIKEN AICS HPC Usability Research Team to enhance K-scope usability, and is bundled with the binary package of K-scope.*
 
 *Docker IaaS Tools and connect.sh are developed by RIKEN AICS HPC Usability Research Team
 http://github.com/pyotr777/dockerIaaSTools*
