@@ -42,7 +42,7 @@ When using Docker container with Docker IaaS tools project files are placed in c
 paths as on local computer, so replacing absolute paths is not necessary.
 
 If you have Docker on the same machine with you source code, you can use K-scope installed in 
-a Docker containt (case 1. above). It is the easiest use case in that you don't have to install 
+a Docker container (case 1. above). It is the easiest use case in that you don't have to install 
 or configure anything: cd to source code directory and run Docker command. See details below.
 
 
@@ -112,14 +112,14 @@ necessary to login to the Docker container with SSH.
 
 ## 3. Use K-scope with Docker IaaS Tools
 
-If you have a server machine with Docker installed, you can use Docker IaaS Tools to quickly 
+If you have a server machine with Docker installed, you can use Docker IaaS Tools (DIT) to easily 
 make a setup for building code inside a Docker container.
 
 Make sure you have SSH server running on you local machine also and that you can login to it over network. Local SSH server is used for mounting your source code from local machine into a Docker container running on the server.
 
 ### Server-side setup
 
-Install DIT on your server machine following instructions here: https://github.com/pyotr777/dockerIaaSTools#set-up-on-the-server-machine
+Install DIT on your server machine following the instructions here: [Server-side setup for DIT](https://github.com/pyotr777/dockerIaaSTools#set-up-on-the-server-machine)
 
 Prepare a public SSH key, copy it into the directory with DIT 
 on the server. cd into DIT directory and run:
@@ -138,19 +138,22 @@ In a New Project Wizard or in Project settings > Remote Settings File window pre
 then press "+" button to create a new remote settings file or select existing settings file and 
 press "copy" button. Select dockeriaas service from drop-down list and setup parameters values as described 
 below:
-For server_address use you server machine address,
-for port use 22 (or whatever port number is used by sshd on your server machine),
-for key enter path to your private ssh key on your local computer,
-for user name use the same name that was used in createuser.sh command on the server machine.
 
+For server_address use you server machine address,   
+for port use 22 (or whatever port number is used by sshd on your server machine),   
+for key enter path to your private ssh key on your local computer (make sure you use the pair key for the public key used in createuser.sh command),   
+for user name use the same name that was used in createuser.sh command on the server machine.
 
 Demonstration: http://youtu.be/86ybJdnNvUc
 
-*SSHconnect.jar and connect.sh are utilities for remote command execution with automatic file transfer. They are developed in coolaboration with RIKEN AICS HPC Usability Research Team to enhance K-scope usability, and is bundled with the binary package of K-scope.*
+***
 
-*Docker IaaS Tools and connect.sh are developed by RIKEN AICS HPC Usability Research Team
+*SSHconnect.jar and connect.sh are utilities for remote command execution with automatic file transfer. They are developed in collaboration with RIKEN AICS HPC Usability Research Team to enhance K-scope usability, and is bundled with the binary package of K-scope.*
+
+*Docker IaaS Tools are developed by RIKEN AICS HPC Usability Research Team
 http://github.com/pyotr777/dockerIaaSTools*
-Docker IaaS Tools require Ubuntu. Their work on other OSs is not guaranteed. 
+
+*Docker IaaS Tools require Ubuntu. Correct work on other OSs is not guaranteed.*
 
 *Docker http://docker.com*
 
