@@ -56,7 +56,7 @@ Run is simple as follow.
 At the time of startup, K-scope requires specific folders for properties.
 If K-scope cannot find those folders, it may terminate abnormally.
 
-Tips on usage) "-Duser.language" VM-option is language selector, English(en) and Japanese(ja).
+Tips on usage. VM-option "-Duser.language" is used for selecting language: "en" for English and "ja" for Japanese.
 
 ```
   $ java -jar -Duser.language=en kscope.jar ## for english mode
@@ -65,6 +65,8 @@ Tips on usage) "-Duser.language" VM-option is language selector, English(en) and
 ```
   $ java -jar -Duser.language=ja kscope.jar ## for japanese mode
 ```
+
+For using K-scope with remote server or Docker see instructions in [README_docker](README_docker.md).
 
 ## License
 
