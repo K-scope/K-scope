@@ -119,7 +119,7 @@ Make sure you have SSH server running on you local machine also and that you can
 
 ### Server-side setup
 
-Install DIT on your server machine following the instructions here: [Server-side setup for DIT](https://github.com/pyotr777/dockerIaaSTools#set-up-on-the-server-machine)
+Install DIT on your server machine following the instructions here: [Server-side setup for DIT](https://github.com/pyotr777/dockerIaaSTools#setup-on-the-server-machine)
 
 Prepare a public SSH key, copy it into the directory with DIT 
 on the server. cd into DIT directory and run:
