@@ -115,7 +115,7 @@ necessary to login to the Docker container with SSH.
 If you have a server machine with Docker installed, you can use Docker IaaS Tools (DIT) to easily 
 make a setup for building code inside a Docker container.
 
-Make sure you have SSH server running on you local machine also and that you can login to it over network. Local SSH server is used for mounting your source code from local machine into a Docker container running on the server.
+Make sure you have SSH server running on your local machine also and that you can login to it over network. Local SSH server is used for mounting your source code from local machine into a Docker container running on the server.
 
 ### Server-side setup
 
@@ -129,7 +129,7 @@ sudo ./createuser.sh <user name> pyotr777/omnixmp:0.7.0 <public key file>
 
 Use the same user name and SSH key in the settings below.
 
-**Do not use "docker" or "dockertest" for the user name, or any other user or group name existing on your server machine.**
+**Do not use "docker" or any existing user name or group name for the user name in createuser command.**
 
 ### K-scope Project setup 
 
