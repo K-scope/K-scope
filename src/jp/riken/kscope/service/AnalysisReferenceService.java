@@ -1,6 +1,6 @@
 /*
  * K-scope
- * Copyright 2012-2013 RIKEN, Japan
+ * Copyright 2012-2015 RIKEN, Japan
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@ package jp.riken.kscope.service;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -29,15 +30,20 @@ import javax.swing.tree.DefaultTreeModel;
 import jp.riken.kscope.Message;
 import jp.riken.kscope.data.CodeLine;
 import jp.riken.kscope.data.SourceFile;
+import jp.riken.kscope.language.BlockType;
 import jp.riken.kscope.language.Common;
 import jp.riken.kscope.language.Fortran;
 import jp.riken.kscope.language.IBlock;
+import jp.riken.kscope.language.IDeclarations;
+import jp.riken.kscope.language.Module;
 import jp.riken.kscope.language.Procedure;
 import jp.riken.kscope.language.ProgramUnit;
 import jp.riken.kscope.language.UseState;
 import jp.riken.kscope.language.Variable;
 import jp.riken.kscope.language.VariableDefinition;
+import jp.riken.kscope.language.utils.LanguageUtils;
 import jp.riken.kscope.model.ReferenceModel;
+import jp.riken.kscope.utils.SwingUtils;
 
 /**
  * 宣言・定義・参照サービスクラス.<br/>
@@ -73,16 +79,32 @@ public class AnalysisReferenceService extends AnalysisBaseService {
     /**
      * 参照一覧を作成する.
      *
-     * @param variable
-     *            参照一覧
+     * @param variable           変数定義
+     * @param  variable_name     変数名
      */
     public void analysisReference(VariableDefinition variable) {
+        this.analysisReference(variable, null);
+    }
+
+    /**
+     * 参照一覧を作成する.
+     *
+     * @param variable           変数定義
+     * @param  variable_name     変数名：構造体メンバの場合は必須
+     */
+    public void analysisReference(VariableDefinition variable, String variable_name) {
         if (variable == null) {
             return;
         }
 
         // 参照一覧モデルに設定する
-        DefaultMutableTreeNode root = new DefaultMutableTreeNode(variable);
+        DefaultMutableTreeNode root = null;
+        if (variable_name != null && !variable_name.isEmpty()) {
+            root = new DefaultMutableTreeNode(variable.toString() + " : " + variable_name);
+        }
+        else {
+            root = new DefaultMutableTreeNode(variable);
+        }
         DefaultMutableTreeNode decNode = new DefaultMutableTreeNode(Message.getString("analysisreferenceservice.reference.declaration")); //宣言
         DefaultMutableTreeNode refNode = new DefaultMutableTreeNode(Message.getString("analysisreferenceservice.reference.reference")); //参照
         DefaultMutableTreeNode defNode = new DefaultMutableTreeNode(Message.getString("analysisreferenceservice.reference.definition")); //定義
@@ -92,64 +114,100 @@ public class AnalysisReferenceService extends AnalysisBaseService {
 
         // 宣言ノードの作成
         DefaultMutableTreeNode dec = new DefaultMutableTreeNode(variable);
-        DefaultMutableTreeNode mother = new DefaultMutableTreeNode(variable.getMother());
+        IBlock dec_proc = variable.getProcedureBlock();
+        if (dec_proc == null) {
+            dec_proc = variable.getMother();
+        }
+        DefaultMutableTreeNode mother = new DefaultMutableTreeNode(dec_proc);
         dec.setAllowsChildren(false);
         mother.add(dec);
         decNode.add(mother);
 
-        Set<ProgramUnit> refdefUnit = new HashSet<ProgramUnit>();// 参照・定義しているプログラム単位のセット
+        Set<IBlock> refdefUnit = new LinkedHashSet<IBlock>();// 参照・定義しているプログラム単位のセット
         // 宣言が属するプログラム単位、および副プログラム単位による参照・定義の一覧を作成する
         refdefUnit.addAll(this.searchChildrenWithScope(variable));
 
         // USE文による参照・定義の一覧を作成する
         refdefUnit.addAll(variable.getReferMember());
 
-        for (ProgramUnit pu : refdefUnit) {
-            String name = variable.get_name();
-            // USE文による名前の変換が無いかチェック
-            List<UseState> uses = pu.getUseList();
-            for (UseState use : uses) {
-                name = use.translation(variable);
-                if (!(name.equalsIgnoreCase(variable.get_name()))) {
-                    break;
+        if (variable_name == null || variable_name.isEmpty()) {
+            variable_name = variable.get_name();
+        }
+
+        ProgramUnit ref_proc = null;
+        ProgramUnit def_proc = null;
+        DefaultMutableTreeNode ref_proc_node = null;
+        DefaultMutableTreeNode def_proc_node = null;
+        for (IBlock pu : refdefUnit) {
+            ProgramUnit proc = pu.getProcedureBlock();
+            if (proc == null) {
+                proc = (ProgramUnit)pu;
+            }
+            if (pu instanceof ProgramUnit) {
+                // USE文による名前の変換が無いかチェック
+                List<UseState> uses = ((ProgramUnit)pu).getUseList();
+                for (UseState use : uses) {
+                    variable_name = use.translation(variable);
+                    if (!(variable_name.equalsIgnoreCase(variable.get_name()))) {
+                        break;
+                    }
                 }
             }
-
             // 参照一覧を作成する
-            Map<String, Set<IBlock>> refs = pu.getRefVariableNames();
-            Set<IBlock> blk = refs.get(name);
-            if (blk != null) {
-                DefaultMutableTreeNode pr = new DefaultMutableTreeNode(pu);
-                for (IBlock bk : blk) {
-                    DefaultMutableTreeNode bl = new DefaultMutableTreeNode(bk);
-                    pr.add(bl);
+            if (pu instanceof IDeclarations) {
+                Set<IBlock> ref_blks = ((IDeclarations)pu).getRefVariableName(variable_name);
+                if (ref_blks != null) {
+                    if (ref_proc != proc) {
+                        ref_proc = proc;
+                        ref_proc_node = new DefaultMutableTreeNode(ref_proc);
+                    }
+                    for (IBlock bk : ref_blks) {
+                        // 変数定義の変数が存在しているかチェックする
+                        Variable found_var = this.getVariable(bk, variable);
+                        if (found_var != null) {
+                            DefaultMutableTreeNode bl = new DefaultMutableTreeNode(bk);
+                            ref_proc_node.add(bl);
+                        }
+                    }
+                    if (ref_proc_node.getChildCount() > 0) {
+                        refNode.add(ref_proc_node);
+                    }
                 }
-                refNode.add(pr);
-            }
 
-            // 定義一覧を作成する
-            Map<String, Set<IBlock>> defs = pu.getDefVariableNames();
-            blk = defs.get(name);
-            if (blk != null) {
-                DefaultMutableTreeNode pr = new DefaultMutableTreeNode(pu);
-                for (IBlock bk : blk) {
-                    DefaultMutableTreeNode bl = new DefaultMutableTreeNode(bk);
-                    pr.add(bl);
+                // 定義一覧を作成する
+                Set<IBlock> def_blks = ((IDeclarations)pu).getDefVariableName(variable_name);
+                if (def_blks != null) {
+                    if (def_proc != proc) {
+                        def_proc = proc;
+                        def_proc_node = new DefaultMutableTreeNode(def_proc);
+                    }
+                    for (IBlock bk : def_blks) {
+                        // 変数定義の変数が存在しているかチェックする
+                        Variable found_var = this.getVariable(bk, variable);
+                        if (found_var != null) {
+                            DefaultMutableTreeNode bl = new DefaultMutableTreeNode(bk);
+                            def_proc_node.add(bl);
+                        }
+                    }
+                    if (def_proc_node.getChildCount() > 0) {
+                        defNode.add(def_proc_node);
+                    }
                 }
-                defNode.add(pr);
             }
         }
 
         // COMMON属性の場合の一覧
-        if (this.fortranDb.getCommonMap() != null) {
-            ProgramUnit motherUnit = variable.getMother();
+        if (this.fortranDb.getCommonMap() != null
+            && variable.getMother() instanceof ProgramUnit) {
+
+            ProgramUnit motherUnit = (ProgramUnit)variable.getMother();
             List<Common> comList = motherUnit.getCommonList();
             List<ProgramUnit> comUnits = new ArrayList<ProgramUnit>();
             String comName = "";
             int varidx = 0;
             searchCom:
                 for (Common com: comList) {
-                	varidx = 0;
+                    varidx = 0;
                     for (Variable var: com.getVariables()) {
                         if (var.getName().equalsIgnoreCase(variable.get_name())) {
                             comName = com.getName();
@@ -164,29 +222,28 @@ public class AnalysisReferenceService extends AnalysisBaseService {
                     List<Common> puComs = pu.getCommonList();
                     String localName = "";
                     for (Common cm: puComs) {
-                    	if (cm.getVariables() == null || cm.getVariables().size() <= 0) continue;
-                    	if (cm.getVariables().size() <= varidx) continue;
+                        if (cm.getVariables() == null || cm.getVariables().size() <= 0) continue;
+                        if (cm.getVariables().size() <= varidx) continue;
                         if (cm.getName().equalsIgnoreCase(comName)) {
                             localName = cm.getVariables().get(varidx).getName();
                             break;
                         }
                     }
-                    VariableDefinition def = pu.getVariableMap(localName);
-                    if (def != null) {
+                    VariableDefinition[] defs = pu.searchVariableDefinitionFromMap(localName);
+                    if (defs != null && defs.length > 0) {
+                        VariableDefinition def = defs[0];
+
                         // 宣言
-                        DefaultMutableTreeNode defCom = new DefaultMutableTreeNode(
-                                def);
-                        DefaultMutableTreeNode motherCom = new DefaultMutableTreeNode(
-                                def.getMother());
+                        DefaultMutableTreeNode defCom = new DefaultMutableTreeNode(def);
+                        DefaultMutableTreeNode motherCom = new DefaultMutableTreeNode(def.getMother());
                         defCom.setAllowsChildren(false);
                         motherCom.add(defCom);
                         decNode.add(motherCom);
                         // 参照一覧を作成する
-                        Map<String, Set<IBlock>> refs = pu.getRefVariableNames();
-                        Set<IBlock> blk = refs.get(localName);
-                        if (blk != null) {
+                        Set<IBlock> ref_blks = pu.getRefVariableName(localName);
+                        if (ref_blks != null) {
                             DefaultMutableTreeNode pr = new DefaultMutableTreeNode(pu);
-                            for (IBlock bk : blk) {
+                            for (IBlock bk : ref_blks) {
                                 DefaultMutableTreeNode bl = new DefaultMutableTreeNode(bk);
                                 pr.add(bl);
                             }
@@ -194,11 +251,10 @@ public class AnalysisReferenceService extends AnalysisBaseService {
                         }
 
                         // 定義一覧を作成する
-                        Map<String, Set<IBlock>> defs = pu.getDefVariableNames();
-                        blk = defs.get(localName);
-                        if (blk != null) {
+                        Set<IBlock> def_blks = pu.getDefVariableName(localName);
+                        if (def_blks != null) {
                             DefaultMutableTreeNode pr = new DefaultMutableTreeNode(pu);
-                            for (IBlock bk : blk) {
+                            for (IBlock bk : def_blks) {
                                 DefaultMutableTreeNode bl = new DefaultMutableTreeNode(bk);
                                 pr.add(bl);
                             }
@@ -208,6 +264,10 @@ public class AnalysisReferenceService extends AnalysisBaseService {
                 }
             }
         }
+
+        // 行番号でソートを行う
+        SwingUtils.sortBlockTreeNode(refNode);
+        SwingUtils.sortBlockTreeNode(defNode);
 
         // ツリーの生成
         DefaultTreeModel tree = new DefaultTreeModel(root);
@@ -219,26 +279,46 @@ public class AnalysisReferenceService extends AnalysisBaseService {
     /**
      * 指定した変数宣言の属するプログラム単位内において、有効域となるプログラム単位のセットを返す。
      *
-     * @param var
-     *            変数宣言
+     * @param var            変数宣言
      * @return プログラム単位のセット。少なくとも宣言が属するモジュールを要素に持つ。
      */
-    private Set<ProgramUnit> searchChildrenWithScope(VariableDefinition var) {
-        Set<ProgramUnit> pus = new HashSet<ProgramUnit>();
-        pus.add(var.getMother());
-        for (Procedure child : var.getMother().getChildren()) {
+    private Set<IBlock> searchChildrenWithScope(VariableDefinition var) {
+        Set<IBlock> blocks = new LinkedHashSet<IBlock>();
+        blocks.add(var.getMother());
+
+        /**** delete by @hira at 2015/10/01
+        List<IBlock> child_blocks = var.getMother().getChildren();
+        for (IBlock child : child_blocks) {
+            if (!(child instanceof IDeclarations)) continue;
+
             // 副プログラムに同一の名前の宣言が無ければ追加
-            if (child.get_variable(var.get_name()) == null) {
-                pus.add(child);
+            if (((IDeclarations)child).get_variable(var.get_name()) == null) {
+                blocks.add(child);
             }
-            for (Procedure grnd : child.getChildren()) {
-                if (grnd.get_variable(var.get_name()) == null) {
-                    pus.add(grnd);
+            for (IBlock grnd : child.getChildren()) {
+                if (!(grnd instanceof IDeclarations)) continue;
+                if (((IDeclarations)grnd).get_variable(var.get_name()) == null) {
+                    blocks.add(grnd);
+                }
+            }
+        }
+        */
+        String var_name = var.get_name();
+        // IDeclarationsブロックを取得する
+        IDeclarations block = var.getScopeDeclarationsBlock();
+        if (block == null) return blocks;
+        Set<IDeclarations> child_blocks = ((IBlock)block).getDeclarationsBlocks();
+        if (child_blocks != null) {
+            for (IDeclarations child : child_blocks) {
+                if (!(child instanceof IBlock)) continue;
+                // 同一の名前の宣言が無ければ追加
+                if (child.get_variable(var_name) == null) {
+                    blocks.add((IBlock)child);
                 }
             }
         }
 
-        return pus;
+        return blocks;
     }
 
     /**
@@ -250,25 +330,79 @@ public class AnalysisReferenceService extends AnalysisBaseService {
     public void analysisReference(CodeLine line) {
         if (line == null) return;
         // 選択変数
-        String varName = line.getStatement().toLowerCase();
+        // 2015/09/01 C言語大文字・小文字区別対応
+        // String varName = line.getStatement().toLowerCase();
+        String varName = line.getStatement();
+        // 変数名を正規化する：struct[n].no -> struct.no
+        varName = LanguageUtils.normalizeVariableName(varName);
 
-        // CodeLineの情報から、対応するプログラム単位を探索する。
-        ProgramUnit currentProc = this.getCurrentProcedure(line);
-
-        if (currentProc == null) {
-            return;
-        }
-
-        // 変数宣言を取得する
         VariableDefinition varDef = null;
-        // TODO モジュールを対象とするか要検討
-        if (currentProc instanceof Procedure) {
-            varDef = ((Procedure) currentProc).getVariableMap(varName);
-        } else {
-            varDef = currentProc.get_variable(varName);
+        IBlock block = this.getCurrentBlock(line);
+        if (block instanceof VariableDefinition
+            && (varName.equals( ((VariableDefinition)block).get_name())) ) {
+            varDef = (VariableDefinition)block;
         }
+        else if (block != null) {
+            Set<Variable> list = block.getAllVariables();
+            if (list == null && block.getMotherBlock() != null) {
+                list = block.getMotherBlock().getAllVariables();
+            }
+            if (list != null) {
+                for (Variable var : list) {
+                    if (var == null) continue;
+                    if (var.getParentStatement() == null) continue;
+                    CodeLine var_line = var.getParentStatement().getStartCodeLine();
+                    if (var_line == null) continue;
+                    if (line.getStartLine() < var_line.getStartLine()) continue;
+                    if (var.getName().equals(varName)) {
+                        varDef = var.getDefinition();
+                    }
+                    else if (block.isFortran()){
+                        if (var.getName().equalsIgnoreCase(varName)) {
+                            varDef = var.getDefinition();
+                        }
+                    }
+                    if (varDef != null) break;
+                }
+            }
+        }
+
+        if (varDef == null) {
+            // CodeLineの情報から、対応するプログラム単位を探索する。
+            IDeclarations current_block = this.getCurrentDeclarations(line);
+
+            if (current_block == null) {
+                // エラーメッセージ:languageservice.procedure.error=[%s]は存在しません。
+                String error_message = Message.getString("kscope.error.notfound.line");
+                this.addErrorInfo(line, error_message);
+                return;
+            }
+
+            // 変数宣言を取得する
+            while (current_block != null) {
+                varDef = current_block.get_variable(varName);
+                if (varDef == null) {
+                    Variable[] vars = current_block.searchVariableFromMap(varName);
+                    if (vars != null) {
+                        for (Variable var : vars) {
+                            if (var == null) continue;
+                            if (var.getParentStatement() == null) continue;
+                            CodeLine var_line = var.getParentStatement().getStartCodeLine();
+                            //if (line.equalsLineno(var_line)) {
+                                varDef = current_block.getVariableMap(var);
+                            //}
+                            if (varDef != null) break;
+                        }
+                    }
+                }
+                if (varDef != null) break;
+                if (((IBlock)current_block).getMotherBlock() == null) break;
+                current_block = ((IBlock)current_block).getMotherBlock().getScopeDeclarationsBlock();
+            }
+        }
+
         // 参照一覧モデルを作成する
-        this.analysisReference(varDef);
+        this.analysisReference(varDef, varName);
         return;
     }
 
@@ -280,6 +414,7 @@ public class AnalysisReferenceService extends AnalysisBaseService {
      * @return プログラム単位。無ければnullを返す。
      */
     private ProgramUnit getCurrentProcedure(CodeLine line) {
+        if (line == null) return null;
         SourceFile file = line.getSourceFile();
         int lineNo = line.getStartLine();
         // System.out.println("lineNo " + lineNo);
@@ -292,18 +427,20 @@ public class AnalysisReferenceService extends AnalysisBaseService {
             int ePos = pu.getEndPos();
             if (sPos <= lineNo && lineNo <= ePos) {
                 punit = pu;
-                Collection<Procedure> children = pu.getChildren();
-                for (Procedure child : children) {
-                    sPos = child.getStartPos();
-                    ePos = child.getEndPos();
+                List<IBlock> childrens = pu.getChildren();
+                for (IBlock child : childrens) {
+                    if (!(child instanceof ProgramUnit)) continue;
+                    sPos = ((ProgramUnit)child).getStartPos();
+                    ePos = ((ProgramUnit)child).getEndPos();
                     if (sPos <= lineNo && lineNo <= ePos) {
-                        punit = child;
-                        Collection<Procedure> children2 = child.getChildren();
-                        for (Procedure child2 : children2) {
-                            sPos = child.getStartPos();
-                            ePos = child.getEndPos();
+                        punit = (ProgramUnit)child;
+                        List<IBlock> children2 = child.getChildren();
+                        for (IBlock child2 : children2) {
+                            if (!(child2 instanceof ProgramUnit)) continue;
+                            sPos = ((ProgramUnit)child2).getStartPos();
+                            ePos = ((ProgramUnit)child2).getEndPos();
                             if (sPos <= lineNo && lineNo <= ePos) {
-                                punit = child2;
+                                punit = (ProgramUnit)child2;
                             }
                         }
                     }
@@ -311,5 +448,177 @@ public class AnalysisReferenceService extends AnalysisBaseService {
             }
         }
         return punit;
+    }
+
+
+    /**
+     * コードラインが属するプログラム単位を返す。
+     *
+     * @param line
+     *            コード行情報
+     * @return プログラム単位。無ければnullを返す。
+     */
+    private IDeclarations getCurrentDeclarations(CodeLine line) {
+        if (line == null) return null;
+
+        // lineNoを含むプログラム単位を習得
+        ProgramUnit punit = this.getCurrentProcedure(line);
+        if (punit == null) {
+            // Moduleから検索する
+            punit = this.getCurrentModule(line);
+        }
+        if (punit == null) {
+            return null;
+        }
+
+        // 変数宣言ブロックを取得する
+        Set<IDeclarations> list = punit.getDeclarationsBlocks();
+        if (list == null) return punit;
+
+        IDeclarations current_dec = null;
+        for (IDeclarations dec : list) {
+            if (!(dec instanceof IBlock)) continue;
+            CodeLine start = ((IBlock)dec).getStartCodeLine();
+            CodeLine end = ((IBlock)dec).getEndCodeLine();
+            if (start == null) continue;
+            if (end == null) end = start;
+            if (line.isOverlap(start, end)) {
+                current_dec = dec;
+            }
+        }
+
+        if (current_dec == null) return punit;
+
+        return current_dec;
+    }
+
+
+    /**
+     * コードラインが属するプログラム単位を返す。
+     *
+     * @param line
+     *            コード行情報
+     * @return プログラム単位。無ければnullを返す。
+     */
+    private IBlock getCurrentBlock(CodeLine line) {
+        if (line == null) return null;
+
+        // lineNoを含むプログラム単位を習得
+        ProgramUnit punit = this.getCurrentProcedure(line);
+        if (punit == null) {
+            // Moduleから検索する
+            punit = this.getCurrentModule(line);
+        }
+        if (punit == null) {
+            return null;
+        }
+
+        IBlock current_block = this.getCurrentBlock(line, punit);
+
+        if (current_block == null) return punit;
+
+        return current_block;
+    }
+
+    /**
+     * コードラインが属するプログラム単位を返す。
+     *
+     * @param line
+     *            コード行情報
+     * @return プログラム単位。無ければnullを返す。
+     */
+    private IBlock getCurrentBlock(CodeLine line, IBlock block) {
+        if (block == null) return null;
+
+        IBlock current_block = null;
+        String line_string = line.getStatement();
+
+        if (block instanceof IDeclarations) {
+            VariableDefinition[] defs = ((IDeclarations)block).get_variables();
+            if (defs != null) {
+                for (VariableDefinition def : defs) {
+                    CodeLine start = def.getStartCodeLine();
+                    CodeLine end = def.getEndCodeLine();
+                    if (start == null) continue;
+                    if (end == null) end = start;
+                    if (line.isOverlap(start, end)) {
+                        current_block = def;
+                    }
+                }
+            }
+        }
+
+        if (block.getBlockType() == BlockType.PROCEDURE) {
+            IBlock body_block = this.getCurrentBlock(line, ((Procedure)block).getBody());
+            if (body_block.getBlockType() == BlockType.BODY) {
+                body_block = null;
+            }
+            if (body_block != null) {
+                current_block = body_block;
+            }
+        }
+
+        List<IBlock> list = block.getChildren();
+        for (IBlock item : list) {
+            String item_line = item.toString();
+            CodeLine start = item.getStartCodeLine();
+            CodeLine end = item.getEndCodeLine();
+            if (start == null) continue;
+            if (end == null) end = start;
+            if (line.getStartLine() == start.getStartLine()) {
+                if (item_line == null || item_line.indexOf(line_string) < 0) {
+                    continue;
+                }
+            }
+            if (line.isOverlap(start, end)) {
+                IBlock child_block = this.getCurrentBlock(line, item);
+                if (child_block != null) {
+                    current_block = child_block;
+                }
+            }
+        }
+
+        if (current_block == null) return block;
+
+        return current_block;
+    }
+
+    /**
+     * コードラインが属するモジュール(ファイル)単位を返す。
+     *
+     * @param line            コード行情報
+     * @return モジュール(ファイル)単位。無ければnullを返す。
+     */
+    private Module getCurrentModule(CodeLine line) {
+        if (line == null) return null;
+        SourceFile file = line.getSourceFile();
+        int lineNo = line.getStartLine();
+
+        // fileにあるプログラム単位のリストを取得
+        Module pus = this.fortranDb.getModule(file);
+
+        return pus;
+    }
+
+    /**
+     * ブロック中の変数から変数定義と一致する変数を取得する
+     * @param block        検索ブロック
+     * @param def        変数定義
+     * @return            変数
+     */
+    private Variable getVariable(IBlock block, VariableDefinition def) {
+        if (block == null) return null;
+        if (def == null) return null;
+        Set<Variable> vars = block.getBlockVariables();
+        if (vars == null) return null;
+        for (Variable var : vars) {
+            if (var == null) continue;
+            if (var.getDefinition() == null) continue;
+            if (var.getDefinition() == def) {
+                return var;
+            }
+        }
+
+        return null;
     }
 }

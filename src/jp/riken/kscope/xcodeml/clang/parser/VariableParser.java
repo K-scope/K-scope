@@ -25,6 +25,7 @@ import jp.riken.kscope.language.Variable;
 import jp.riken.kscope.xcodeml.clang.XcodeMLTypeManager;
 import jp.riken.kscope.xcodeml.clang.utils.XmlNodeUtil;
 import jp.riken.kscope.xcodeml.clang.xml.IXmlNode;
+import jp.riken.kscope.xcodeml.clang.xml.gen.AddrOfExpr;
 import jp.riken.kscope.xcodeml.clang.xml.gen.ArrayAddr;
 import jp.riken.kscope.xcodeml.clang.xml.gen.ArrayRef;
 import jp.riken.kscope.xcodeml.clang.xml.gen.BinaryExpression;
@@ -99,6 +100,9 @@ public class VariableParser {
         }
         else if (node instanceof ArrayAddr) {
             var = getVariable((ArrayAddr)node);
+        }
+        else if (node instanceof AddrOfExpr) {
+            var = getVariable((AddrOfExpr)node);
         }
         else if (node instanceof Var) {
             var = getVariable((Var)node);
@@ -441,8 +445,8 @@ public class VariableParser {
 
     /**
      * 配列添字のリストを取得する
-     * @param index		IndexRange要素
-     * @return			配列添字リスト
+     * @param index        IndexRange要素
+     * @return            配列添字リスト
      */
     private List<Expression> getIndexRangeValues(IndexRange index) {
         if (index == null) return null;
@@ -460,8 +464,8 @@ public class VariableParser {
 
     /**
      * 配列添字のリストを取得する
-     * @param index		IXmlNode要素リスト
-     * @return			配列添字リスト
+     * @param index        IXmlNode要素リスト
+     * @return            配列添字リスト
      */
     private List<Expression> getIndexValues(List<IXmlNode> indexes) {
         if (indexes == null) return null;
@@ -485,4 +489,25 @@ public class VariableParser {
         return list;
     }
 
+    /**
+     * AddrOfExpr要素からDB::Variableクラスをパース、生成する。
+     *
+     * @param node          AddrOfExpr要素
+     * @return DB::Variableクラス
+     */
+    public Variable getVariable(AddrOfExpr node) {
+
+        if (node == null) {
+            return null;
+        }
+
+        // 変数
+        Variable var = null;
+        ArrayRef array_value = node.getArrayRef();
+        if (array_value != null) {
+            var = this.getVariable(array_value);
+        }
+
+        return var;
+    }
 }

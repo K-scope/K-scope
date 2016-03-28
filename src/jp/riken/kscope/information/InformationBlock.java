@@ -18,13 +18,27 @@
 package jp.riken.kscope.information;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 
 import jp.riken.kscope.data.CodeLine;
+import jp.riken.kscope.data.FILE_TYPE;
+import jp.riken.kscope.data.SourceFile;
+import jp.riken.kscope.language.Block;
 import jp.riken.kscope.language.BlockType;
 import jp.riken.kscope.language.IBlock;
+import jp.riken.kscope.language.IDeclarations;
 import jp.riken.kscope.language.IInformation;
+import jp.riken.kscope.language.Module;
+import jp.riken.kscope.language.Procedure;
+import jp.riken.kscope.language.ProgramUnit;
 import jp.riken.kscope.language.Variable;
+import jp.riken.kscope.language.VariableDefinition;
 
 /**
  * 情報ブロッククラス。<br>
@@ -34,9 +48,9 @@ import jp.riken.kscope.language.Variable;
  */
 public class InformationBlock implements IInformation, IBlock, Serializable {
     /** シリアル番号 */
-	private static final long serialVersionUID = -6653837061369941499L;
+    private static final long serialVersionUID = -6653837061369941499L;
 
-	private InformationBase information = null;
+    private InformationBase information = null;
     private IInformation startBlock = null;
     private IInformation endBlock = null;
 
@@ -114,10 +128,10 @@ public class InformationBlock implements IInformation, IBlock, Serializable {
     @Override
     public TextInfo getInformation() {
         // 現状の設計では必ずTextInfo
-    	if (this.information instanceof TextInfo) {
-    		return (TextInfo) this.information;
-    	}
-    	return null;
+        if (this.information instanceof TextInfo) {
+            return (TextInfo) this.information;
+        }
+        return null;
     }
 
     @Override
@@ -153,12 +167,12 @@ public class InformationBlock implements IInformation, IBlock, Serializable {
 
     @Override
     public String toString() {
-    	if (this.startBlock == this.endBlock) {
-    		return this.startBlock.toString();
-    	}
-    	else {
-    		return "[" + this.startBlock.toString() + "]  -  [" + this.endBlock.toString() + "]";
-    	}
+        if (this.startBlock == this.endBlock) {
+            return this.startBlock.toString();
+        }
+        else {
+            return "[" + this.startBlock.toString() + "]  -  [" + this.endBlock.toString() + "]";
+        }
     }
 
     @Override
@@ -215,11 +229,340 @@ public class InformationBlock implements IInformation, IBlock, Serializable {
     }
 
 
- 	/**
- 	 * 変数リストを取得する.
- 	 */
- 	@Override
- 	public Set<Variable> getAllVariables() {
- 		return null;
- 	}
+     /**
+      * 変数リストを取得する.
+      */
+     @Override
+     public Set<Variable> getAllVariables() {
+         return null;
+     }
+
+     /**
+      * 式の変数リストを取得する.
+      * ブロックのみの変数リストを取得する。
+      * @return        式の変数リスト
+      */
+     public Set<Variable> getBlockVariables() {
+         return null;
+     }
+
+
+    /**
+     * ファイルタイプ（C言語、Fortran)を取得する.
+     * @return        ファイルタイプ（C言語、Fortran)
+     */
+    @Override
+    public jp.riken.kscope.data.FILE_TYPE getFileType() {
+        jp.riken.kscope.data.FILE_TYPE type = jp.riken.kscope.data.FILE_TYPE.UNKNOWN;
+        if (this.startBlock instanceof IBlock) {
+            IBlock blk = (IBlock) this.startBlock;
+            return blk.getFileType();
+        }
+        return type;
+    }
+
+    /**
+     * 子要素を返す。
+     *
+     * @return 子要素。無ければ空のリストを返す
+     */
+    @Override
+    public List<IBlock> getChildren() {
+        if (this.startBlock instanceof IBlock) {
+            IBlock blk = (IBlock) this.startBlock;
+            return blk.getChildren();
+        }
+        return null;
+    }
+
+    /**
+     * idにマッチした情報ブロックを検索する。
+     * @param id          ID
+     * @return 見つかった情報ブロック。見つからなかった場合はnullが返ります。
+     */
+    @Override
+    public IInformation findInformationBlockBy(String id) {
+        IInformation info = null;
+
+        if (this.startBlock != null) {
+            info = this.startBlock.findInformationBlockBy(id);
+            if (info != null) {
+                return info;
+            }
+        }
+        if (this.endBlock != null) {
+            info = this.endBlock.findInformationBlockBy(id);
+            if (info != null) {
+                return info;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * 付加情報ブロックコレクションを生成する。
+     *
+     * @return 付加情報ブロックコレクション
+     */
+    @Override
+    public InformationBlocks createInformationBlocks() {
+        InformationBlocks result = new InformationBlocks();
+
+        if (this.information != null) {
+            InformationBlock block = new InformationBlock(this.information, this, this);
+            result.add(block);
+        }
+        if (this.startBlock != null) {
+            result.addAll(this.startBlock.createInformationBlocks());
+        }
+        if (this.endBlock != null) {
+            result.addAll(this.endBlock.createInformationBlocks());
+        }
+
+        return result;
+    }
+
+    /**
+     * 同一付加情報ブロックを検索する
+     * @param block            IInformationブロック
+     * @return        同一ブロック
+     */
+    @Override
+    public IInformation[] searchInformationBlocks(IInformation block) {
+        if (block == null) return null;
+
+        List<IInformation> list = new ArrayList<IInformation>();
+        if (this.startBlock != null) {
+            IInformation[] infos = this.startBlock.searchInformationBlocks(block);
+            if (infos != null) {
+                list.addAll(Arrays.asList(infos));
+            }
+        }
+        if (this.endBlock != null) {
+            IInformation[] infos = this.endBlock.searchInformationBlocks(block);
+            if (infos != null) {
+                list.addAll(Arrays.asList(infos));
+            }
+        }
+
+        if (list.size() <= 0) {
+            return null;
+        }
+        return list.toArray(new IInformation[0]);
+    }
+
+    /**
+     * layoutIDにマッチした構造ブロックを検索する。
+     * @param id    layoutID
+     * @return 見つかった構造ブロック
+     */
+    @Override
+    public IInformation findInformationLayoutID(String id) {
+        if (id == null || id.isEmpty()) return null;
+        IInformation info = null;
+
+        if (this.startBlock != null) {
+            info = this.startBlock.findInformationLayoutID(id);
+        }
+        if (info != null) {
+            return info;
+        }
+
+        if (this.endBlock != null) {
+            info = this.endBlock.findInformationLayoutID(id);
+        }
+
+        return info;
+    }
+
+    /**
+     * 行番号のブロックを検索する
+     * @param line            行番号
+     * @return        行番号のブロック
+     */
+    @Override
+    public IBlock[] searchCodeLine(CodeLine line) {
+
+        List<IBlock> list = new ArrayList<IBlock>();
+        if (this.startBlock != null && this.startBlock instanceof IBlock) {
+            IBlock[] childs = ((IBlock)this.startBlock).searchCodeLine(line);
+            if (childs != null && childs.length > 0) {
+                list.addAll(Arrays.asList(childs));
+            }
+        }
+        if (this.endBlock != null && this.endBlock instanceof IBlock) {
+            IBlock[] childs = ((IBlock)this.endBlock).searchCodeLine(line);
+            if (childs != null && childs.length > 0) {
+                list.addAll(Arrays.asList(childs));
+            }
+        }
+
+        if (list.size() <= 0) return null;
+
+        return list.toArray(new IBlock[0]);
+    }
+
+
+    /**
+     * ファイルタイプがC言語であるかチェックする.
+     * @return         true = C言語
+     */
+    @Override
+    public boolean isClang() {
+        if (this.startBlock != null && this.startBlock instanceof IBlock) {
+            return ((IBlock)this.startBlock).isClang();
+        }
+        if (this.endBlock != null && this.endBlock instanceof IBlock) {
+            return ((IBlock)this.endBlock).isClang();
+        }
+
+        return false;
+    }
+
+    /**
+     * ファイルタイプがFortranであるかチェックする.
+     * @return         true = Fortran
+     */
+    @Override
+    public boolean isFortran() {
+
+        if (this.startBlock != null && this.startBlock instanceof IBlock) {
+            return ((IBlock)this.startBlock).isFortran();
+        }
+        if (this.endBlock != null && this.endBlock instanceof IBlock) {
+            return ((IBlock)this.endBlock).isFortran();
+        }
+
+        return false;
+    }
+
+    /**
+     * 親ブロックからIDeclarationsブロックを取得する.
+     * @return    IDeclarationsブロック
+     */
+    @Override
+    public IDeclarations getScopeDeclarationsBlock() {
+        if (this.startBlock != null && this.startBlock instanceof IBlock) {
+            return ((IBlock)this.startBlock).getScopeDeclarationsBlock();
+        }
+        if (this.endBlock != null && this.endBlock instanceof IBlock) {
+            return ((IBlock)this.endBlock).getScopeDeclarationsBlock();
+        }
+
+        return null;
+    }
+
+    /**
+     * 子ブロックのIDeclarationsブロックを検索する.
+     * @return    IDeclarationsブロックリスト
+     */
+    @Override
+    public Set<IDeclarations> getDeclarationsBlocks() {
+        Set<IDeclarations> list = new LinkedHashSet<IDeclarations>();
+        if (this.startBlock != null && this.startBlock instanceof IBlock) {
+            Set<IDeclarations> children_list = ((IBlock)this.startBlock).getDeclarationsBlocks();
+            if (children_list != null && children_list.size() > 0) {
+                list.addAll(children_list);
+            }
+        }
+        if (this.endBlock != null && this.endBlock instanceof IBlock) {
+            Set<IDeclarations> children_list = ((IBlock)this.endBlock).getDeclarationsBlocks();
+            if (children_list != null && children_list.size() > 0) {
+                list.addAll(children_list);
+            }
+        }
+        if (list.size() <= 0) return null;
+
+        return list;
+    }
+
+    /**
+     * Procedureブロックを習得する。
+     * @return    Procedureブロック
+     */
+    @Override
+    public Procedure getProcedureBlock() {
+        if (this.startBlock != null && this.startBlock instanceof IBlock) {
+            return ((IBlock)this.startBlock).getProcedureBlock();
+        }
+        if (this.endBlock != null && this.endBlock instanceof IBlock) {
+            return ((IBlock)this.endBlock).getProcedureBlock();
+        }
+        return null;
+    }
+
+    /**
+     * Moduleブロックを習得する。
+     * @return    Moduleブロック
+     */
+    @Override
+    public Module getModuleBlock() {
+        if (this.startBlock != null && this.startBlock instanceof IBlock) {
+            return ((IBlock)this.startBlock).getModuleBlock();
+        }
+        if (this.endBlock != null && this.endBlock instanceof IBlock) {
+            return ((IBlock)this.endBlock).getModuleBlock();
+        }
+        return null;
+    }
+
+
+    /**
+     * プロシージャ（関数）からブロックまでの階層文字列表記を取得する
+     * 階層文字列表記 : [main()]-[if (...)]-[if (...)]
+     * CompoundBlock（空文）は省略する.
+     * @return      階層文字列表記
+     */
+    @Override
+    public String toStringProcedureScope() {
+        return this.toStringScope(false);
+    }
+
+    /**
+     * モジュールからブロックまでの階層文字列表記を取得する
+     * 階層文字列表記 : [main()]-[if (...)]-[if (...)]
+     * CompoundBlock（空文）は省略する.
+     * @return      階層文字列表記
+     */
+    @Override
+    public String toStringModuleScope() {
+        return this.toStringScope(true);
+    }
+
+
+    /**
+     * ブロックの階層文字列表記を取得する
+     * 階層文字列表記 : [main()]-[if (...)]-[if (...)]
+     * CompoundBlock（空文）は省略する.
+     * @param   module     true=Moduleまでの階層文字列表記とする
+     * @return      階層文字列表記
+     */
+    @Override
+    public String toStringScope(boolean module) {
+        String statement = this.toString();
+        statement = "[" + statement + "]";
+        if (this.getMotherBlock() != null) {
+            String buf = null;
+            if (module) buf = this.getMotherBlock().toStringModuleScope();
+            else buf = this.getMotherBlock().toStringProcedureScope();
+            if (buf != null && !buf.isEmpty()) {
+                statement = buf + "-" + statement;
+            }
+        }
+        return statement;
+    }
+
+
+    /**
+     * 関数呼出を含む自身の子ブロックのリストを返す。
+     * @return 子ブロックのリスト
+     */
+    public List<IBlock> getBlocks() {
+        if (this.startBlock instanceof IBlock) {
+            IBlock blk = (IBlock) this.startBlock;
+            return blk.getBlocks();
+        }
+        return null;
+    }
 }

@@ -28,6 +28,7 @@ import jp.riken.kscope.language.Fortran;
 import jp.riken.kscope.language.VariableDefinition;
 import jp.riken.kscope.model.ErrorInfoModel;
 import jp.riken.kscope.model.ScopeModel;
+import jp.riken.kscope.properties.ProjectProperties;
 import jp.riken.kscope.service.AnalysisScopeService;
 import jp.riken.kscope.service.AppController;
 
@@ -42,8 +43,8 @@ public class AnalysisScopeAction extends ActionBase {
 
     /**
      * コンストラクタ
-     * @param controller	アプリケーションコントローラ
-     * @param view 			変数有効域変数取得先ビュー
+     * @param controller    アプリケーションコントローラ
+     * @param view             変数有効域変数取得先ビュー
      */
     public AnalysisScopeAction(AppController controller, FRAME_VIEW view) {
         super(controller);
@@ -53,7 +54,7 @@ public class AnalysisScopeAction extends ActionBase {
     /**
      * アクションが実行可能であるかチェックする.<br/>
      * アクションの実行前チェック、メニューのイネーブルの切替を行う。<br/>
-     * @return		true=アクションが実行可能
+     * @return        true=アクションが実行可能
      */
     @Override
     public boolean validateAction() {
@@ -67,7 +68,7 @@ public class AnalysisScopeAction extends ActionBase {
 
     /**
      * アクション発生イベント
-     * @param event		イベント情報
+     * @param event        イベント情報
      */
     @Override
     public void actionPerformed(ActionEvent event) {
@@ -77,7 +78,7 @@ public class AnalysisScopeAction extends ActionBase {
         }
 
         // ステータスメッセージ
-        final String message = Message.getString("mainmenu.analysis.valiablescope"); //変数有効域
+        final String message = Message.getString("mainmenu.analysis.variablescope"); //変数有効域
         Application.status.setMessageMain(message);
 
         // 選択変数
@@ -90,7 +91,7 @@ public class AnalysisScopeAction extends ActionBase {
 
     /**
      * 変数有効域の対象変数を取得する
-     * @return		変数有効域の対象変数
+     * @return        変数有効域の対象変数
      */
     private VariableDefinition getSelectedVariable() {
 
@@ -115,7 +116,7 @@ public class AnalysisScopeAction extends ActionBase {
 
     /**
      * 変数有効域テーブルを作成する
-     * @param variable		変数有効域の対象変数
+     * @param variable        変数有効域の対象変数
      */
     public void analysisScope(VariableDefinition variable) {
         if (variable == null) return;
@@ -126,6 +127,9 @@ public class AnalysisScopeAction extends ActionBase {
         ScopeModel modelScope = this.controller.getScopeModel();
         // エラー情報モデル
         ErrorInfoModel errorModel = this.controller.getErrorInfoModel();
+        // プロジェクトプロパティ
+        ProjectProperties properties = this.controller.getPropertiesProject();
+        boolean scope_reality = properties.isScopeReality();
 
         // 変数有効域クリア
         modelScope.clear();
@@ -134,6 +138,7 @@ public class AnalysisScopeAction extends ActionBase {
         AnalysisScopeService service = new AnalysisScopeService(fortran);
         service.setErrorInfoModel(errorModel);
         service.setModelScope(modelScope);
+        service.setScopeActual(scope_reality);
 
         // 変数有効域を取得する
         service.analysisScope(variable);

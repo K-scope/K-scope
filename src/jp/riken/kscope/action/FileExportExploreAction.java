@@ -149,7 +149,7 @@ public class FileExportExploreAction extends ActionBase {
             ErrorInfoModel errorModel = this.controller.getErrorInfoModel();
 
             // 構造解析サービス
-            LanguageService service = new LanguageService(fortran);
+            LanguageService service = new LanguageService(fortran, false);
             // エラー情報モデルを設定する。
             service.setErrorInfoModel(errorModel);
 

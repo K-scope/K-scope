@@ -18,6 +18,7 @@
 package jp.riken.kscope.language;
 
 
+import jp.riken.kscope.information.InformationBlocks;
 import jp.riken.kscope.information.TextInfo;
 
 /**
@@ -33,7 +34,7 @@ public interface IInformation {
 
     /**
      * 付加情報を取得する.
-     * @return		付加情報
+     * @return        付加情報
      */
     TextInfo getInformation();
 
@@ -88,5 +89,33 @@ public interface IInformation {
      * @return 構造ID
      */
     String getLayoutID();
+
+    /**
+     * idにマッチした情報ブロックを検索する。
+     * @param id          ID
+     * @return 見つかった情報ブロック。見つからなかった場合はnullが返ります。
+     */
+    IInformation findInformationBlockBy(String id);
+
+    /**
+     * 付加情報ブロックコレクションを生成する。
+     *
+     * @return 付加情報ブロックコレクション
+     */
+    InformationBlocks createInformationBlocks();
+
+    /**
+     * 同一付加情報ブロックを検索する
+     * @param block            IInformationブロック
+     * @return        同一ブロック
+     */
+    IInformation[] searchInformationBlocks(IInformation block);
+
+    /**
+     * layoutIDにマッチした構造ブロックを検索する。
+     * @param id    layoutID
+     * @return 見つかった構造ブロック
+     */
+    IInformation findInformationLayoutID(String id);
 
  }

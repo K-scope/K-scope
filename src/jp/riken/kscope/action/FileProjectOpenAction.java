@@ -64,7 +64,7 @@ public class FileProjectOpenAction extends ActionBase {
 
     /**
      * コンストラクタ
-     * @param controller	アプリケーションコントローラ
+     * @param controller    アプリケーションコントローラ
      */
     public FileProjectOpenAction(AppController controller) {
         super(controller);
@@ -73,17 +73,17 @@ public class FileProjectOpenAction extends ActionBase {
     /**
      * アクションが実行可能であるかチェックする.<br/>
      * アクションの実行前チェック、メニューのイネーブルの切替を行う。<br/>
-     * @return		true=アクションが実行可能
+     * @return        true=アクションが実行可能
      */
     @Override
-	public boolean validateAction() {
+    public boolean validateAction() {
         // スレッドタスクの実行状態をチェックする
         return this.controller.isThreadTaskDone();
-	}
+    }
 
     /**
      * アクション発生イベント
-     * @param event		イベント情報
+     * @param event        イベント情報
      */
     @Override
     public void actionPerformed(ActionEvent event) {
@@ -101,27 +101,27 @@ public class FileProjectOpenAction extends ActionBase {
 
         // プロジェクトフォルダ選択ダイアログを表示する。
         File selected = SwingUtils.showOpenProjectDialog(
-    			frame,
-    			Message.getString("dialog.common.selectproject.title"), //プロジェクトフォルダの選択
-    			currentFolder);
+                frame,
+                Message.getString("dialog.common.selectproject.title"), //プロジェクトフォルダの選択
+                currentFolder);
         if (selected == null) {
-        		Application.status.setMessageMain(message + Message.getString("action.common.cancel.status")); //:キャンセル
-        		return;
+                Application.status.setMessageMain(message + Message.getString("action.common.cancel.status")); //:キャンセル
+                return;
         }
         // プロジェクト設定ファイルであるか
-        File projectFolder = null;		// プロジェクトフォルダ
-        File projectFile = null;		// プロジェクト設定ファイル
+        File projectFolder = null;        // プロジェクトフォルダ
+        File projectFile = null;        // プロジェクト設定ファイル
         if (selected.isFile() && KscopeProperties.PROJECT_FILE.equalsIgnoreCase(selected.getName())) {
-        	projectFolder = selected.getParentFile();
-        	projectFile = selected;
-        	// 最終アクセスフォルダ
-        	this.controller.setLastAccessFolder(projectFolder);
+            projectFolder = selected.getParentFile();
+            projectFile = selected;
+            // 最終アクセスフォルダ
+            this.controller.setLastAccessFolder(projectFolder);
         }
         else {
-        	projectFolder = selected;
-        	projectFile = new File(selected.getAbsolutePath() + File.separator + KscopeProperties.PROJECT_FILE);
-        	// 最終アクセスフォルダ
-        	this.controller.setLastAccessFolder(projectFolder.getParentFile());
+            projectFolder = selected;
+            projectFile = new File(selected.getAbsolutePath() + File.separator + KscopeProperties.PROJECT_FILE);
+            // 最終アクセスフォルダ
+            this.controller.setLastAccessFolder(projectFolder.getParentFile());
         }
 
         // プロジェクトフォルダのチェック
@@ -158,7 +158,7 @@ public class FileProjectOpenAction extends ActionBase {
             service.setPropertiesProject(this.controller.getPropertiesProject());
             // 要求Byte/FLOP設定プロパティ
             service.setPropertiesMemory(this.controller.getPropertiesMemory());
-            
+
             service.setPropertiesSSH(this.controller.getPropertiesSSH());
             // エラーモデル
             service.setErrorInfoModel(this.controller.getErrorInfoModel());
@@ -194,8 +194,8 @@ public class FileProjectOpenAction extends ActionBase {
             File settingsFolder = new File(projectFolder.getAbsoluteFile() + File.separator + KscopeProperties.SETTINGS_FOLDER);
             readLanguage(settingsFolder, xmlfiles.toArray(new SourceFile[0]), srcfiles.toArray(new SourceFile[0]));
             if(xmlfiles.size() <= 0)  {
-            	this.controller.getMainframe().getPanelExplorerView().setSelectedPanel(EXPLORE_PANEL.SOURCE);
-            	this.controller.getErrorInfoModel().addErrorInfo(Message.getString("fileprojectopenaction.build.noxmlerr.errinfo")); //XMLファイルが存在しませんので、新たに構造解析実行はできません。
+                this.controller.getMainframe().getPanelExplorerView().setSelectedPanel(EXPLORE_PANEL.SOURCE);
+                this.controller.getErrorInfoModel().addErrorInfo(Message.getString("fileprojectopenaction.build.noxmlerr.errinfo")); //XMLファイルが存在しませんので、新たに構造解析実行はできません。
              }
 
         } catch (Exception e) {
@@ -213,8 +213,8 @@ public class FileProjectOpenAction extends ActionBase {
 
     /**
      * Languageクラスのデシリアライズを行う
-     * @param folder		Languageクラスのシリアライズフォルダ
-     * @param xmlfiles		XMLファイルリスト
+     * @param folder        Languageクラスのシリアライズフォルダ
+     * @param xmlfiles        XMLファイルリスト
      * @param  srcfiles     ソースファイルリスト
      */
     public void readLanguage(final File folder, final SourceFile[] xmlfiles, final SourceFile[] srcfiles) {
@@ -253,6 +253,8 @@ public class FileProjectOpenAction extends ActionBase {
         serviceLanguage.setLanguageTreeModel(languageModel);
         // モジュールツリーモデルを設定する
         serviceLanguage.setModuleTreeModel(moduleModel);
+        // プロジェクトの中間コード選択フォルダ・ファイルリスト
+        serviceLanguage.setListSearchPath(model.getListSearchPath());
 
         // 変数アクセス先メモリサービス
         serviceMemory = new AnalysisMemoryService();
@@ -269,21 +271,21 @@ public class FileProjectOpenAction extends ActionBase {
                      * スレッド実行を行う
                      */
                     @Override
-					public Integer call() {
+                    public Integer call() {
                         try {
-                        	// ツリー更新
-                        	Application.status.setMessageStatus("Set files...");
-                        	xmlModel.setProjectFolder(prjFolder);
-                        	xmlModel.setSourceFile(xmlfiles);
-                        	fileModel.setProjectFolder(prjFolder);
-                        	fileModel.setSourceFile(srcfiles);
+                            // ツリー更新
+                            Application.status.setMessageStatus("Set files...");
+                            xmlModel.setProjectFolder(prjFolder);
+                            xmlModel.setSourceFile(xmlfiles);
+                            fileModel.setProjectFolder(prjFolder);
+                            fileModel.setSourceFile(srcfiles);
 
                             // デシリアライズ実行
-                        	serviceLanguage.readLanguage(folder);
-                        	controller.setFortranLanguage(serviceLanguage.getFortranLanguage());
+                            serviceLanguage.readLanguage(folder);
+                            controller.setFortranLanguage(serviceLanguage.getFortranLanguage());
 
-                        	// アクセス先メモリの設定している変数の取得
-                        	serviceMemory.createVariableMemoryProperties(serviceLanguage.getFortranLanguage());
+                            // アクセス先メモリの設定している変数の取得
+                            serviceMemory.createVariableMemoryProperties(serviceLanguage.getFortranLanguage());
 
                             return Constant.SUCCESS_RESULT;
 
@@ -321,7 +323,7 @@ public class FileProjectOpenAction extends ActionBase {
 
                         // サービス実行の停止
                         if (serviceLanguage != null) {
-                        	serviceLanguage.cancelRunning();
+                            serviceLanguage.cancelRunning();
                         }
 
                         super.done();

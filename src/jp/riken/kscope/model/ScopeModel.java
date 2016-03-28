@@ -26,9 +26,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
 
+import javax.swing.table.DefaultTableColumnModel;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumn;
 
 import jp.riken.kscope.Message;
+import jp.riken.kscope.language.IBlock;
 import jp.riken.kscope.utils.SwingUtils;
 
 /**
@@ -39,7 +42,13 @@ import jp.riken.kscope.utils.SwingUtils;
 public class ScopeModel extends Observable {
 
     /** テーブルヘッダーリスト */
-    private String[] HEADER_COLUMNS = {Message.getString("mainmenu.analysis.valiablescope")}; //変数有効域
+    private String[] HEADER_COLUMNS = {"", Message.getString("mainmenu.analysis.variablescope")}; //変数有効域
+
+    /**
+     * ブロック演算カウントテーブル列サイズ
+     * -1=非表示とする
+     */
+    private int[] HEADER_COLUMNS_PREFERREDWIDTH = {-1, 640};
 
     /** タイトル */
     private String title;
@@ -47,7 +56,7 @@ public class ScopeModel extends Observable {
     /**
      * 変数有効域情報
      */
-    private List<String> listScope;
+    private List<IBlock> listScope;
 
     /**
      * コンストラクタ
@@ -68,10 +77,9 @@ public class ScopeModel extends Observable {
 
     /**
      * 変数有効域デフォルトテーブルモデルを取得する
-     * @return		変数有効域デフォルトテーブルモデル
+     * @return        変数有効域デフォルトテーブルモデル
      */
     public DefaultTableModel getScopeDefaultTableModel() {
-        // テーブルモデルの作成
         // テーブルモデルの作成
         DefaultTableModel tableModel = new DefaultTableModel();
         tableModel.setColumnIdentifiers(HEADER_COLUMNS);
@@ -81,11 +89,11 @@ public class ScopeModel extends Observable {
 
     /**
      * 変数有効域データを設定する
-     * @param list		変数有効域データ
+     * @param list        変数有効域データ
      */
-    public void setScope(String[] list) {
+    public void setScope(IBlock[] list) {
         // テーブルモデルのクリア
-        this.listScope = new ArrayList<String>();
+        this.listScope = new ArrayList<IBlock>();
 
         if (list != null) {
             this.listScope.addAll(java.util.Arrays.asList(list));
@@ -101,16 +109,16 @@ public class ScopeModel extends Observable {
      */
     public void clear() {
         // テーブルモデルのクリア
-        this.listScope = new ArrayList<String>();
+        this.listScope = new ArrayList<IBlock>();
         this.title = null;
-        
+
         // モデルの変更を通知
         notifyModel();
     }
 
     /**
      * タイトルを取得する
-     * @return	タイトル
+     * @return    タイトル
      */
     public String getTitle() {
         return title;
@@ -118,7 +126,7 @@ public class ScopeModel extends Observable {
 
     /**
      * タイトルを設定する
-     * @param title		タイトル
+     * @param title        タイトル
      */
     public void setTitle(String title) {
         this.title = title;
@@ -127,7 +135,7 @@ public class ScopeModel extends Observable {
 
     /**
      * テーブル情報をファイル出力する。
-     * @param file		出力ファイル
+     * @param file        出力ファイル
      */
     public void writeFile(File file) {
 
@@ -152,7 +160,7 @@ public class ScopeModel extends Observable {
 
     /**
      * テーブルモデルを取得する
-     * @return		テーブルモデル
+     * @return        テーブルモデル
      */
     public DefaultTableModel getTableModel() {
         return createTableModel();
@@ -167,10 +175,14 @@ public class ScopeModel extends Observable {
         DefaultTableModel tableModel = getScopeDefaultTableModel();
         if (this.listScope == null) return tableModel;
 
-        for (String area : this.listScope) {
+        for (IBlock area : this.listScope) {
             // テーブル行配列の作成
             Object[] row = new Object[HEADER_COLUMNS.length];
+
+            // 演算カウントブロック
+            int col = 0;
             row[0] = area;
+            row[1] = area.toStringModuleScope();
             // テーブル行追加
             tableModel.addRow(row);
         }
@@ -180,11 +192,34 @@ public class ScopeModel extends Observable {
 
     /**
      * モデルが空か否か
-     * @return	空か否か（true: 空，false: データあり）
+     * @return    空か否か（true: 空，false: データあり）
      */
     public boolean isEmpty() {
-    	if (this.listScope == null) return true;
-    	return (this.listScope.size() < 1);
+        if (this.listScope == null) return true;
+        return (this.listScope.size() < 1);
+    }
+
+    /**
+     * 変数有効域テーブル列幅を設定する.
+     * @param columnModel        テーブル列モデル
+     */
+    public void setTableColumnWidth(DefaultTableColumnModel columnModel) {
+        for (int i=0; i<columnModel.getColumnCount(); i++) {
+            // 列取得
+            TableColumn column = columnModel.getColumn(i);
+            if (HEADER_COLUMNS_PREFERREDWIDTH.length >= i) {
+                if (HEADER_COLUMNS_PREFERREDWIDTH[i] >= 0) {
+                    column.setPreferredWidth(HEADER_COLUMNS_PREFERREDWIDTH[i]);
+                    column.setResizable(true);
+                }
+                else {
+                    column.setMinWidth(0);
+                    column.setMaxWidth(0);
+                    column.setPreferredWidth(0);
+                    column.setResizable(false);
+                }
+            }
+        }
     }
 }
 

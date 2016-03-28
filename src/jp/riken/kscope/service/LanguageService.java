@@ -70,6 +70,7 @@ import jp.riken.kscope.language.Expression;
 import jp.riken.kscope.language.Fortran;
 import jp.riken.kscope.language.GoTo;
 import jp.riken.kscope.language.IBlock;
+import jp.riken.kscope.language.IDeclarations;
 import jp.riken.kscope.language.IVariableType;
 import jp.riken.kscope.language.Module;
 import jp.riken.kscope.language.Pause;
@@ -103,6 +104,7 @@ import jp.riken.kscope.model.ModuleTreeModel;
 import jp.riken.kscope.model.PropertiesTableModel;
 import jp.riken.kscope.parser.IAnalyseParser;
 import jp.riken.kscope.properties.KscopeProperties;
+import jp.riken.kscope.utils.FileUtils;
 import jp.riken.kscope.utils.Logger;
 import jp.riken.kscope.utils.StringUtils;
 import jp.riken.kscope.utils.SwingUtils;
@@ -158,6 +160,8 @@ public class LanguageService extends BaseService {
     private volatile ObjectInputStream languageStream;
     /** デバッグ判断フラグ */
     private final boolean _DEBUG = false;
+    /** プロジェクト:中間コード選択フォルダ、ファイルリスト : add by @hira at 2015/10/01 */
+    private List<File> listSearchPath = null;
 
     /**
      * コンストラクタ.
@@ -165,8 +169,9 @@ public class LanguageService extends BaseService {
     public LanguageService() {
         this.files = null;
         this.fortranDb = null;
+        // delete by @hira at 2015/11/01
         // XcodeMLパーサーを作成する.
-        this.initializeXcodemlPerser();
+        // this.initializeXcodemlPerser();
     }
 
     /**
@@ -178,6 +183,20 @@ public class LanguageService extends BaseService {
         this.fortranDb = fortran;
         // XcodeMLパーサーを作成する.
         this.initializeXcodemlPerser();
+    }
+
+    /**
+     * コンストラクタ.
+     * @param fortran            フォートラン構文解析結果格納データベース
+     * @param initialize            XcodeMLパーサーの生成可否
+     */
+    public LanguageService(Fortran fortran, boolean initialize) {
+        this.files = null;
+        this.fortranDb = fortran;
+        if (initialize) {
+            // XcodeMLパーサーを作成する.
+            this.initializeXcodemlPerser();
+        }
     }
 
     /**
@@ -197,7 +216,7 @@ public class LanguageService extends BaseService {
 
     /**
      * 構造ツリーモデルを設定する.
-     * @param model		構造ツリーモデル
+     * @param model        構造ツリーモデル
      */
     public void setLanguageTreeModel(LanguageTreeModel model) {
         this.modelLanguage = model;
@@ -205,7 +224,7 @@ public class LanguageService extends BaseService {
 
     /**
      * モジュールツリーモデルを設定する.
-     * @param model		モジュールツリーモデル
+     * @param model        モジュールツリーモデル
      */
     public void setModuleTreeModel(ModuleTreeModel model) {
         this.modelModule = model;
@@ -213,7 +232,7 @@ public class LanguageService extends BaseService {
 
     /**
      * ソースファイルツリーモデルを設定する.
-     * @param model		ソースファイルツリーモデル
+     * @param model        ソースファイルツリーモデル
      */
     public void setSourceTreeModel(FileTreeModel model) {
         this.modelFile = model;
@@ -221,7 +240,7 @@ public class LanguageService extends BaseService {
 
     /**
      * XMLファイルツリーモデルを設定する.
-     * @param model		XMLファイルツリーモデル
+     * @param model        XMLファイルツリーモデル
      */
     public void setXmlTreeModel(FileTreeModel model) {
         this.modelXml = model;
@@ -471,7 +490,7 @@ public class LanguageService extends BaseService {
     /**
      * 構造ツリーを作成する
      * @param   block      ルートブロック
-     * @return		true=成功
+     * @return        true=成功
      */
     public boolean writeTree(IBlock block) {
         if (!(block instanceof Procedure)) {
@@ -536,13 +555,15 @@ public class LanguageService extends BaseService {
      * @param flag 手続き呼び出しの宣言を展開するフラグ。展開する場合はtrue
      * @param depth  子孫ノード数
      */
-    public void writeBlocks(Block block, FilterTreeNode parent, boolean flag, int depth) {
+    public void writeBlocks(IBlock block, FilterTreeNode parent, boolean flag, int depth) {
         FilterTreeNode child;
         // 展開階層は2とする. 展開階層が0以下の場合はすべて子孫ノードを読み込む
         if (this.treeDepth > 0 && depth > this.treeDepth) return;
 
-        List<Block> blocks = block.getBlocks();
-        for (Block blk: blocks) {
+        List<IBlock> blocks = block.getBlocks();
+        if (blocks == null) return;
+
+        for (IBlock blk: blocks) {
             // 対象が手続き呼び出しの場合
             if (blk instanceof ProcedureUsage) {
                 ProcedureUsage call = (ProcedureUsage) blk;
@@ -610,7 +631,7 @@ public class LanguageService extends BaseService {
                 int childdepth = depth+1;
                 // 代入文の関数呼び出しが存在する場合は、必ず挿入する様にする.
                 if (childdepth > this.treeDepth) {
-                    List<Block> childblocks = block.getBlocks();
+                    List<IBlock> childblocks = block.getBlocks();
                     if (childblocks != null && childblocks.size() > 0) {
                         childdepth = this.treeDepth;
                     }
@@ -763,87 +784,125 @@ public class LanguageService extends BaseService {
             }
         });
         Module currentModule = this.fortranDb.module("NO_MODULE");
-        DefaultMutableTreeNode child = new DefaultMutableTreeNode(currentModule);
-        root.add(child);
-        Procedure[] subs = currentModule.get_procedures();
-        // mainを最初にノードにaddする。
-        List<Procedure> subsList = new ArrayList<Procedure>(Arrays.asList(subs));
-        for (Procedure proc: subsList) {
-            if (proc.isProgram()) {    // program文であるか
-                subsList.remove(proc);
-                subsList.add(0, proc);
-                break;
+        if (!currentModule.isEmpty()) {
+            DefaultMutableTreeNode child = new DefaultMutableTreeNode(currentModule);
+            root.add(child);
+            Procedure[] subs = currentModule.get_procedures();
+            // mainを最初にノードにaddする。
+            List<Procedure> subsList = new ArrayList<Procedure>(Arrays.asList(subs));
+            for (Procedure proc: subsList) {
+                if (proc.isProgram()) {    // program文であるか
+                    subsList.remove(proc);
+                    subsList.add(0, proc);
+                    break;
+                }
             }
+            subs = subsList.toArray(new Procedure[0]);
+
+            setSubroutines(child, subs);
         }
-        subs = subsList.toArray(new Procedure[0]);
 
-        setSubroutines(child, subs);
-
+        boolean is_clang = false;
+        boolean is_fortran = false;
         for (int i = 0; i < moduleName.length; i++) {
-            if (!(moduleName[i].equalsIgnoreCase("NO_MODULE"))) {
-                currentModule = this.fortranDb.module(moduleName[i]);
-                child = new DefaultMutableTreeNode(currentModule);
-                root.add(child);
-                // use文の表示
-                List<UseState> uses = currentModule.getUseList();
-                DefaultMutableTreeNode usesNode = new DefaultMutableTreeNode("use");
-                if (uses.size() > 0) {
-                    child.add(usesNode);
-                    for (UseState use: uses) {
-                        DefaultMutableTreeNode useNode = new DefaultMutableTreeNode(use);
-                        usesNode.add(useNode);
+            if (moduleName[i].equalsIgnoreCase("NO_MODULE")) continue;
+            currentModule = this.fortranDb.module(moduleName[i]);
+            if (currentModule == null) continue;
+            if (currentModule.isEmpty()) continue;
+
+            // モジュールノード
+            DefaultMutableTreeNode child = new DefaultMutableTreeNode(currentModule);
+            root.add(child);
+
+            // use文
+            List<UseState> uses = null;
+            String node_name = "use";
+            if (currentModule.isClang()) {
+                node_name = "include";
+                is_clang = true;
+
+                // XMLに対応したファイル = ソースファイルのみincludeを付加する
+                if (currentModule.get_start() != null
+                    && currentModule.get_start().get_sourcefile() != null) {
+                    // モジュールファイル
+                    SourceFile mod_file = currentModule.get_start().get_sourcefile();
+                    // XMLファイルチェック
+                    if (this.hasXmlRelationFile(mod_file)) {
+                        // use文の表示
+                        uses = currentModule.getUseList();
                     }
                 }
-                // interface文の表示
-                List<Procedures> interfaces = currentModule.getInterfaceList();
-                for (Procedures in: interfaces) {
-                    DefaultMutableTreeNode varChild = new DefaultMutableTreeNode(in);
-                    child.add(varChild);
-                    for (IProcedureItem item: in.getProcedures()) {
-                        DefaultMutableTreeNode itemNode = new DefaultMutableTreeNode(item);
-                        varChild.add(itemNode);
-                    }
-                }
-                // type文の表示
-                List<Type> types = currentModule.getTypeList();
-                for (Type tp : types) {
-                    DefaultMutableTreeNode varChild = new DefaultMutableTreeNode(
-                            tp);
-                    child.add(varChild);
-                    for (VariableDefinition item : tp.getDefinitions()) {
-                        DefaultMutableTreeNode itemNode = new DefaultMutableTreeNode(
-                                item);
-                        varChild.add(itemNode);
-                    }
-                }
-                // common文の表示
-                DefaultMutableTreeNode comRoot = new DefaultMutableTreeNode("common");
-                List<Common> comList = currentModule.getCommonList();
-                if (comList.size() > 0) {
-                    child.add(comRoot);
-                for (Common cm: comList) {
-                    DefaultMutableTreeNode comNode = new DefaultMutableTreeNode(cm);
-                    comRoot.add(comNode);
-                }
-                }
-                //TODO equivalence文の表示
-                //TODO data文の表示
-                VariableDefinition[] vars = currentModule.get_variables();
-                for (int j = 0; j < vars.length; j++) {
-                    DefaultMutableTreeNode varChild = new DefaultMutableTreeNode(
-                            vars[j]);
-                    child.add(varChild);
-                }
-                subs = currentModule.get_procedures();
-                setSubroutines(child, subs);
             }
+            else if (currentModule.isFortran()) {
+                is_fortran = true;
+                // use文の表示
+                uses = currentModule.getUseList();
+            }
+
+            // use,includeノードの追加
+            if (uses != null && uses.size() > 0) {
+                DefaultMutableTreeNode usesNode = new DefaultMutableTreeNode(node_name);
+                child.add(usesNode);
+                for (UseState use: uses) {
+                    DefaultMutableTreeNode useNode = new DefaultMutableTreeNode(use);
+                    usesNode.add(useNode);
+                }
+            }
+            // interface文の表示
+            List<Procedures> interfaces = currentModule.getInterfaceList();
+            for (Procedures in: interfaces) {
+                DefaultMutableTreeNode varChild = new DefaultMutableTreeNode(in);
+                child.add(varChild);
+                for (IProcedureItem item: in.getProcedures()) {
+                    DefaultMutableTreeNode itemNode = new DefaultMutableTreeNode(item);
+                    varChild.add(itemNode);
+                }
+            }
+            // type文の表示
+            List<Type> types = currentModule.getTypeList();
+            for (Type tp : types) {
+                DefaultMutableTreeNode varChild = new DefaultMutableTreeNode(
+                        tp);
+                child.add(varChild);
+                for (VariableDefinition item : tp.getDefinitions()) {
+                    DefaultMutableTreeNode itemNode = new DefaultMutableTreeNode(
+                            item);
+                    varChild.add(itemNode);
+                }
+            }
+            // common文の表示
+            DefaultMutableTreeNode comRoot = new DefaultMutableTreeNode("common");
+            List<Common> comList = currentModule.getCommonList();
+            if (comList.size() > 0) {
+                child.add(comRoot);
+            for (Common cm: comList) {
+                DefaultMutableTreeNode comNode = new DefaultMutableTreeNode(cm);
+                comRoot.add(comNode);
+            }
+            }
+            //TODO equivalence文の表示
+            //TODO data文の表示
+            VariableDefinition[] vars = currentModule.get_variables();
+            for (int j = 0; j < vars.length; j++) {
+                DefaultMutableTreeNode varChild = new DefaultMutableTreeNode(
+                        vars[j]);
+                child.add(varChild);
+            }
+            Procedure[] subs = currentModule.get_procedures();
+            setSubroutines(child, subs);
+        }
+
+        // モジュールツリーのルート名
+        if (is_clang && !is_fortran) {
+            // C言語のみ
+            root.setUserObject(ModuleTreeModel.CLANG_ROOTNAME);
         }
     }
 
     /**
      * プロシージャノードを追加する
-     * @param child			追加ノード
-     * @param subs			プロシージャ要素
+     * @param child            追加ノード
+     * @param subs            プロシージャ要素
      */
     private void setSubroutines(DefaultMutableTreeNode child, Procedure[] subs) {
         if (subs == null) {
@@ -890,6 +949,40 @@ public class LanguageService extends BaseService {
             }
             Procedure[] subChildren = subs[i].get_children();
             setSubroutines(child2, subChildren);
+
+            // 子ブロックの変数宣言文を登録する
+            if (subs[i].getBody() != null) {
+                List<IBlock> child_block = subs[i].getBody().getChildren();
+                if (child_block != null && child_block.size() > 0) {
+                    setVariableDefinition(child2, child_block.toArray(new IBlock[0]));
+                }
+            }
+        }
+
+    }
+
+    /**
+     * ブロックの変数宣言文を追加する
+     * @param child            追加ノード
+     * @param subs            ブロック要素
+     */
+    private void setVariableDefinition(DefaultMutableTreeNode child, IBlock[] blocks) {
+        if (blocks == null) {
+            return;
+        }
+        for (int i = 0; i < blocks.length; i++) {
+            if (blocks[i] instanceof IDeclarations) {
+                IDeclarations dec_block = (IDeclarations)blocks[i];
+                VariableDefinition[] vars = dec_block.get_variables();
+                for (int j = 0; j < vars.length; j++) {
+                    DefaultMutableTreeNode varChild = new DefaultMutableTreeNode(vars[j]);
+                    child.add(varChild);
+                }
+            }
+            List<IBlock> child_block = blocks[i].getChildren();
+            if (child_block != null && child_block.size() > 0) {
+                setVariableDefinition(child, child_block.toArray(new IBlock[0]));
+            }
         }
 
     }
@@ -897,8 +990,8 @@ public class LanguageService extends BaseService {
 
     /**
      * フォートランデータベースから指定プロシージャをテキスト出力する。
-     * @param file			出力ファイル
-     * @param blocks		出力プロシージャリスト
+     * @param file            出力ファイル
+     * @param blocks        出力プロシージャリスト
      */
     public void exportLanguage(File file, IBlock[] blocks) {
         // 出力プロシージャチェック
@@ -998,7 +1091,7 @@ public class LanguageService extends BaseService {
      * @param out
      *            出力String
      */
-    private void writeTexts(Block parent, int depth, boolean flag, StringBuilder out) {
+    private void writeTexts(IBlock parent, int depth, boolean flag, StringBuilder out) {
         final String STATEMENT_LEFT = " {\n";
         final String STATEMENT_RIGHT = "}\n";
         String end_left = "\n";
@@ -1010,7 +1103,10 @@ public class LanguageService extends BaseService {
             indent.append("|  ");
         }
         String indentString = indent.toString();
-        for (Block block : parent.getBlocks()) {
+
+        List<IBlock> blocks = parent.getBlocks();
+        if (blocks == null) return;
+        for (IBlock block : blocks) {
             // 関数呼び出しに対する処理
             if (block instanceof ProcedureUsage) {
                 ProcedureUsage call = (ProcedureUsage) block;
@@ -1111,8 +1207,8 @@ public class LanguageService extends BaseService {
 
     /**
      * ノードオブジェクトのプロパティを設定する
-     * @param node			ノードオブジェクト
-     * @param model			プロパティモデル
+     * @param node            ノードオブジェクト
+     * @param model            プロパティモデル
      */
     public void setProperties(Object node, PropertiesTableModel model) {
 
@@ -1379,8 +1475,8 @@ public class LanguageService extends BaseService {
 
     /**
      * ブロックのソースファイルパスを取得する
-     * @param node		ブロック
-     * @return		ソースファイルパス
+     * @param node        ブロック
+     * @return        ソースファイルパス
      */
     private String getSourceFilePath(IBlock node) {
 
@@ -1411,8 +1507,8 @@ public class LanguageService extends BaseService {
 
     /**
      * ブロックの行番号を取得する
-     * @param node		ブロック
-     * @return		行番号
+     * @param node        ブロック
+     * @return        行番号
      */
     private String getCodeLine(IBlock node) {
 
@@ -1437,7 +1533,7 @@ public class LanguageService extends BaseService {
 
     /**
      * Languageクラスのデシリアライズを行う
-     * @param folder		Languageクラスのシリアライズフォルダ
+     * @param folder        Languageクラスのシリアライズフォルダ
      */
     public void readLanguage(File folder) {
         // languageservice.deserialize.start.status=Languageデシリアライズ:開始
@@ -1461,14 +1557,9 @@ public class LanguageService extends BaseService {
             this.fortranDb.analyseDB();
 
             // ソースファイルリストの設定を行う
-            List<SourceFile> listSrc = this.fortranDb.getProcedureFileList();
-            SourceFile[] sourceFiles = null;
-            if (listSrc != null) {
-                sourceFiles = listSrc.toArray(new SourceFile[0]);
-            }
-
-            if (sourceFiles != null && sourceFiles.length > 0) {
-                this.modelFile.setSourceFile(sourceFiles);
+            List<SourceFile> src_list = this.fortranDb.getProcedureFileList();
+            if (src_list != null && src_list.size() > 0) {
+                this.modelFile.setSourceFile(src_list.toArray(new SourceFile[0]));
             }
 
             /*
@@ -1519,7 +1610,7 @@ public class LanguageService extends BaseService {
 
     /**
      * Languageクラスのシリアライズを行う
-     * @param folder		Languageクラスのシリアライズフォルダ
+     * @param folder        Languageクラスのシリアライズフォルダ
      */
     public void writeLanguage(File folder) {
         // languageservice.serialize.start.status=Languageシリアライズ:開始
@@ -1549,7 +1640,7 @@ public class LanguageService extends BaseService {
 
     /**
      * フォートラン構文解析結果格納データベースを取得する
-     * @return		フォートラン構文解析結果格納データベース
+     * @return        フォートラン構文解析結果格納データベース
      */
     public Fortran getFortranLanguage() {
         return fortranDb;
@@ -1557,7 +1648,7 @@ public class LanguageService extends BaseService {
 
     /**
      * フォートラン構文解析結果格納データベースを設定する
-     * @param fDb		フォートラン構文解析結果格納データベース
+     * @param fDb        フォートラン構文解析結果格納データベース
      */
     public void setFortranLanguage(Fortran fDb) {
         this.fortranDb = fDb;
@@ -1565,7 +1656,7 @@ public class LanguageService extends BaseService {
 
     /**
      * プロジェクトフォルダを取得する
-     * @return		プロジェクトフォルダ
+     * @return        プロジェクトフォルダ
      */
     public File getProjectFolder() {
         return projectFolder;
@@ -1573,7 +1664,7 @@ public class LanguageService extends BaseService {
 
     /**
      * プロジェクトフォルダを設定する
-     * @param folder		プロジェクトフォルダ
+     * @param folder        プロジェクトフォルダ
      */
     public void setProjectFolder(File folder) {
         this.projectFolder = folder;
@@ -1639,22 +1730,19 @@ public class LanguageService extends BaseService {
         if (this.isCancel()) return;
 
         // ソースファイルリスト
-        List<SourceFile> listSrc = this.fortranDb.getProcedureFileList();
-        SourceFile[] srcs = null;
-        if (listSrc != null) {
-            srcs = listSrc.toArray(new SourceFile[0]);
-        }
+        // List<SourceFile> src_list = this.getProjectFileList();
+        List<SourceFile> src_list = this.fortranDb.getProcedureFileList();
 
         Application.status.setMessageStatus("creating XML List...");
         // XMLファイルリスト
         SourceFile[] xmls = null;
-        if (srcs != null && srcs.length > 0) {
+        if (src_list != null && src_list.size() > 0) {
             List<SourceFile> listXml = new ArrayList<SourceFile>();
-            xmls = new SourceFile[srcs.length];
-            for (int i=0; i<srcs.length; i++) {
-                if (srcs[i] != null && srcs[i].getRelationFile() != null
-                    && !listXml.contains(srcs[i].getRelationFile())) {
-                    listXml.add(srcs[i].getRelationFile());
+            for (SourceFile src : src_list) {
+                if (src == null) continue;
+                if (src.getRelationFile() == null) continue;
+                if (!listXml.contains(src.getRelationFile())) {
+                    listXml.add(src.getRelationFile());
                 }
             }
             if (listXml.size() > 0) {
@@ -1668,7 +1756,9 @@ public class LanguageService extends BaseService {
         // ソースファイルツリーの作成
         if (this.modelFile != null) {
             this.modelFile.clearTreeModel();
-            this.modelFile.setSourceFile(srcs);
+            if (src_list != null && src_list.size() > 0) {
+                this.modelFile.setSourceFile(src_list.toArray(new SourceFile[0]));
+            }
         }
 
         // キャンセルチェック
@@ -1705,7 +1795,7 @@ public class LanguageService extends BaseService {
 
     /**
      * ファイルリストから重複ファイルを削除する.
-     * @param list		ファイルリスト
+     * @param list        ファイルリスト
      * @return          重複削除ファイルリスト
      */
     private List<SourceFile> validFileList(SourceFile[] list) {
@@ -1727,6 +1817,89 @@ public class LanguageService extends BaseService {
         this.treeDepth = 0;
     }
 
+    /**
+     * プロジェクトの中間コード選択フォルダ・ファイルリストを取得する.
+     * プロジェクト新規作成の中間コード選択時のフォルダ・ファイルを保持する.
+     * add by @hira at 2015/10/01
+     * @return        中間コード選択フォルダ・ファイルリスト
+     */
+    public void setListSearchPath(List<File> list) {
+        this.listSearchPath = new ArrayList<File>();
+        if (list == null || list.size() <= 0) return;
+        this.listSearchPath.addAll(list);
+    }
+
+    /**
+     * プロジェクトの中間コード選択フォルダ・ファイルリストに検索ファイルが含まれているかチェックする.
+     * @param child_file        検索ファイル
+     * @return            true=プロジェクトの子ファイル
+     */
+    private boolean containsSearchPath(SourceFile child_file) {
+        if (child_file == null) return false;
+        if (child_file.getFile() == null) return false;
+        // 相対パスの場合は、プロジェクトフォルダからの相対パス
+        if (!child_file.getFile().isAbsolute()) return true;
+
+        if (this.listSearchPath == null) return false;
+        for (File src : this.listSearchPath) {
+            if (src == null) continue;
+            if (src.isFile() && child_file.getFile().isFile()) {
+                if (FileUtils.isEqualsFile(src, child_file.getFile())) {
+                    return true;
+                }
+            }
+            else {
+                if (FileUtils.isChildsFile(child_file.getFile(), src)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * プロジェクトフォルダ配下のファイルを取得する
+     * @return            プロジェクトファイル
+     */
+    public List<SourceFile> getProjectFileList() {
+        // ソースファイルリスト
+        List<SourceFile> listSrc = this.fortranDb.getProcedureFileList();
+        if (listSrc != null) {
+            // ソースファイルがプロジェクトフォルダ、検索フォルダ配下のファイルであるかチェックする。 add by @hira at 2015/10/01
+            List<SourceFile> list = new ArrayList<SourceFile>();
+            for (SourceFile src : listSrc) {
+                if (this.containsSearchPath(src)) {
+                    list.add(src);
+                }
+            }
+            return list;
+        }
+
+        return null;
+    }
+
+    /**
+     * XMLファイルと関連付けられたファイルであるかチェックする
+     * @param src        チェックソースファイル
+     * @return            true = XMLファイルと関連付けられたファイル
+     */
+    private boolean hasXmlRelationFile(SourceFile src) {
+        if (src == null) return false;
+        if (src.getRelationFile() != null) {
+            return true;
+        }
+
+        // ソースファイルリスト
+        List<SourceFile> src_list = this.fortranDb.getProcedureFileList();
+        if (src_list == null) return false;
+        for (SourceFile item : src_list) {
+            if (item == null) continue;
+            if (item.equals(src)) {
+                return (item.getRelationFile() != null);
+            }
+        }
+        return false;
+    }
 }
 
 

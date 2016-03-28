@@ -36,8 +36,8 @@ import jp.riken.kscope.language.fortran.VariableType.PrimitiveDataType;
  * 手続きを表現するクラス。
  * Fortranにおけるsubroutine,function,entryに対応する。
  * @author RIKEN
- * @version    2015/03/01   	関数表記(toString)をC言語とFortranにて振分
- *                              	仮引数の変数検索をC言語にて大文字・小文字を区別する様に変更(getNumOfDummyArgument)
+ * @version    2015/03/01       関数表記(toString)をC言語とFortranにて振分
+ *                                  仮引数の変数検索をC言語にて大文字・小文字を区別する様に変更(getNumOfDummyArgument)
  */
 public class Procedure extends ProgramUnit {
     /** シリアル番号 */
@@ -62,10 +62,14 @@ public class Procedure extends ProgramUnit {
     private String result;
     /**
      * 手続きの実行文を表現するメンバー変数。
+     * 2015/09/01 : bodyを初期値nullとする。生成はstartBodyにて行う。
      */
-    private ExecutableBody body = new ExecutableBody(this);
-    /** 属性:scope属性,sclass属性. */
-    private IVariableAttribute attribute;
+    private ExecutableBody body = null;
+
+    /**
+     * 属性:scope属性,sclass属性.
+     */
+    private IVariableAttribute attribute = new VariableAttribute();
 
     /**
      * @return returnValueType
@@ -238,20 +242,29 @@ public class Procedure extends ProgramUnit {
      * コンストラクタ。
      *
      * @param type_name      手続の種類
-     * @param sub_name		手続の名前
-     * @param args			仮引数の配列
+     * @param sub_name        手続の名前
+     * @param args            仮引数の配列
      */
     public Procedure(String type_name, String sub_name, Variable[] args) {
         super(type_name, sub_name);
-        arguments = new Variable[args.length];
-        arguments = args;
+        if (args != null) {
+            this.arguments = args;
+
+            for (Variable var : args) {
+                VariableDefinition def = var.getDefinition();
+                if (def != null) {
+                    this.put_variable(def);
+                }
+            }
+        }
+
     }
 
     // ++++++++++++++++++++++++++++++++++++++++++++
 
     /**
      * 本手続きを呼び出しているプログラム単位のリスト
-     * @param parent		本手続きを呼び出しているプログラム
+     * @param parent        本手続きを呼び出しているプログラム
      * @deprecated    未使用
      */
     @Deprecated
@@ -292,7 +305,7 @@ public class Procedure extends ProgramUnit {
 
     /**
      * 本手続きを呼び出しているプログラム単位のリストを取得する.
-     * @return		本手続きを呼び出しているプログラム単位のリスト
+     * @return        本手続きを呼び出しているプログラム単位のリスト
      * @deprecated    未使用
      */
     @Deprecated
@@ -554,15 +567,14 @@ public class Procedure extends ProgramUnit {
 
         for (int i = 0; i < this.arguments.length; i++) {
             if (i < actualArguments.size()) {
-                VariableDefinition def = this.getVariableMap(this.arguments[i]
-                        .getName());
+                VariableDefinition def = this.getVariableMap(this.arguments[i]);
                 if (def != null) {
                     if (!def.matches(actualArguments.get(i))) {
                         return false;
                     }
                 }
             } else {
-                if (!this.getVariableMap(this.arguments[i].getName()).getAttribute()
+                if (!this.getVariableMap(this.arguments[i]).getAttribute()
                         .contains("optional")) {
                     return false;
                 }
@@ -608,68 +620,8 @@ public class Procedure extends ProgramUnit {
     }
 
     /**
-     * プログラム単位内で、ある変数が参照・定義されているブロックのセットを返す。
-     *
-     * @param name
-     *            変数名
-     *
-     * @return ブロックのセット。無ければ空のセットを返す。
-     */
-    public Set<IBlock> getRefDefBlocks(String name) {
-        String nm = name.toLowerCase();
-        Set<IBlock> blocks = new LinkedHashSet<IBlock>();
-        Set<IBlock> refblocks = this.getRefVariableNames().get(nm);
-        Set<IBlock> defblocks = this.getDefVariableNames().get(nm);
-        if (refblocks == null) {
-            if (defblocks == null) {
-                return new LinkedHashSet<IBlock>();
-            }
-            return defblocks;
-        } else {
-            if (defblocks == null) {
-                return refblocks;
-            }
-            // ref,defともに要素がある場合
-            IBlock[] refArray = refblocks.toArray(new IBlock[0]);
-            IBlock[] defArray = defblocks.toArray(new IBlock[0]);
-            boolean refFlag = true;
-            boolean defFlag = true;
-            int refIndex = 0;
-            int defIndex = 0;
-            IBlock currentRef = refArray[0];
-            IBlock currentDef = defArray[0];
-            int refLine = currentRef.getStartCodeLine().getStartLine();
-            int defLine = currentDef.getStartCodeLine().getStartLine();
-            while (refFlag || defFlag) {
-                if (refLine < defLine) {
-                    blocks.add(currentRef);
-                    if (refIndex == refArray.length - 1) {
-                        refFlag = false;
-                        refLine = defArray[defArray.length - 1].getStartCodeLine().getStartLine();
-                    } else {
-                        refIndex++;
-                        currentRef = refArray[refIndex];
-                        refLine = currentRef.getStartCodeLine().getStartLine();
-                    }
-                } else {
-                    blocks.add(currentDef);
-                    if (defIndex == defArray.length - 1) {
-                        defFlag = false;
-                        defLine = 1 + refArray[refArray.length - 1].getStartCodeLine().getStartLine();
-                    } else {
-                        defIndex++;
-                        currentDef = defArray[defIndex];
-                        defLine = currentDef.getStartCodeLine().getStartLine();
-                    }
-                }
-            }
-        }
-        return blocks;
-    }
-
-    /**
      * scope属性を取得する。
-     * @return		scope属性
+     * @return        scope属性
      */
     public ScopeAttribute getScope() {
         if (this.attribute == null) return null;
@@ -749,8 +701,8 @@ public class Procedure extends ProgramUnit {
     /**
      * 同一Procedureであるかチェックする.
      * 引数についてはチェックしない。
-     * @param proc		subroutine, function
-     * @return		true=一致
+     * @param proc        subroutine, function
+     * @return        true=一致
      */
     public boolean equalsBlocks(Procedure proc) {
         if (proc == null) return false;
@@ -775,8 +727,8 @@ public class Procedure extends ProgramUnit {
 
     /**
      * 同一ブロックを検索する
-     * @param block			IInformationブロック
-     * @return		同一ブロック
+     * @param block            IInformationブロック
+     * @return        同一ブロック
      */
     @Override
     public IInformation[] searchInformationBlocks(IInformation block) {
@@ -805,7 +757,7 @@ public class Procedure extends ProgramUnit {
 
     /**
      * 同一ブロック階層であるかチェックする.
-     * @param proc		チェック対象Procedure
+     * @param proc        チェック対象Procedure
      * @return   true=一致
      */
     @Override
@@ -849,8 +801,8 @@ public class Procedure extends ProgramUnit {
 
     /**
      * 行番号のブロックを検索する
-     * @param line			行番号
-     * @return		行番号のブロック
+     * @param line            行番号
+     * @return        行番号のブロック
      */
     @Override
     public IBlock[] searchCodeLine(CodeLine line) {
@@ -891,9 +843,16 @@ public class Procedure extends ProgramUnit {
      /**
       * 変数リストを取得する.
       */
-     @Override
-     public Set<Variable> getAllVariables() {
-         Set<Variable> list = new HashSet<Variable>();
+    @Override
+    public Set<Variable> getAllVariables() {
+        Set<Variable> list = new HashSet<Variable>();
+        // 引数
+        {
+            Set<Variable> vars = this.getBlockVariables();
+            if (vars != null) {
+                list.addAll(vars);
+            }
+        }
         // 変数宣言文、副プログラム
         {
             Set<Variable> vars = super.getAllVariables();
@@ -902,14 +861,14 @@ public class Procedure extends ProgramUnit {
             }
         }
         if (this.body != null) {
-            Set<Variable> vars = body.getAllVariables();
+            Set<Variable> vars = this.body.getAllVariables();
             if (vars != null) {
                 list.addAll(vars);
             }
         }
         if (list.size() <= 0) return null;
         return list;
-     }
+    }
 
      /**
       * program文であるかチェックする.
@@ -943,7 +902,7 @@ public class Procedure extends ProgramUnit {
 
      /**
       * 記憶クラスを設定する.
-      * @param sclass		記憶クラス
+      * @param sclass        記憶クラス
       */
      public void setSclass(String sclass) {
          VariableAttribute attr = (VariableAttribute) this.attribute;
@@ -965,7 +924,7 @@ public class Procedure extends ProgramUnit {
       * @param lineInfo    コード行情報
       */
      protected void startCompoundBlock(CodeLine lineInfo) {
-         body.startCompoundBlock(lineInfo);
+         this.body.startCompoundBlock(lineInfo);
      }
 
 
@@ -974,6 +933,96 @@ public class Procedure extends ProgramUnit {
       * @param lineInfo    コード行情報
       */
      protected void endCompoundBlock(CodeLine lineInfo) {
-         body.endCompoundBlock(lineInfo);
+         this.body.endCompoundBlock(lineInfo);
      }
+
+     /**
+      * bodyブロックを開始する。
+      * ExecutableBodyの生成を行う
+      */
+     protected void startBody() {
+         if (this.body == null) {
+             this.body = new ExecutableBody(this);
+         }
+     }
+
+     /**
+      * 子ブロックのIDeclarationsブロックを検索する.
+      * @return    IDeclarationsブロックリスト
+      */
+     @Override
+     public Set<IDeclarations> getDeclarationsBlocks() {
+         Set<IDeclarations> list = new LinkedHashSet<IDeclarations>();
+         list.addAll(super.getDeclarationsBlocks());
+
+         if (this.body != null) {
+             Set<IDeclarations> children_list = this.body.getDeclarationsBlocks();
+             if (children_list != null && children_list.size() > 0) {
+                 list.addAll(children_list);
+             }
+         }
+         if (list.size() <= 0) return null;
+
+         return list;
+     }
+
+     /**
+      * Procedureブロックを習得する。
+      * @return    Procedureブロック
+      */
+     @Override
+     public Procedure getProcedureBlock() {
+         return this;
+     }
+
+     /**
+      * Moduleブロックを習得する。
+      * @return    Moduleブロック
+      */
+     @Override
+     public Module getModuleBlock() {
+         if (this.getMotherBlock() == null) return null;
+         return this.getMotherBlock().getModuleBlock();
+     }
+
+     /**
+      * 変数定義は仮引数の定義であるかチェックする.
+      * @param def    変数定義
+      * @return            true=仮引数の変数定義
+      */
+     public boolean isArgumentVariableDefinition(VariableDefinition def) {
+         if (def == null) return false;
+         if (this.arguments == null) return false;
+         for (Variable arg : this.arguments) {
+             VariableDefinition arg_def = arg.getDefinition();
+             if (arg_def == null) continue;
+             if (arg_def == def) return true;
+         }
+         return false;
+     }
+
+
+     /**
+      * 式の変数リストを取得する.
+      * ブロックのみの変数リストを取得する。
+      * @return        式の変数リスト
+      */
+     @Override
+     public Set<Variable> getBlockVariables() {
+
+         Set<Variable> list = new HashSet<Variable>();
+         if (this.arguments != null) {
+             for (Variable var : this.arguments) {
+                 list.add(var);
+                 Set<Variable> vars = var.getAllVariables();
+                 if (vars != null && vars.size() > 0) {
+                     list.addAll(vars);
+                 }
+             }
+         }
+
+         if (list.size() <= 0) return null;
+         return list;
+     }
+
 }

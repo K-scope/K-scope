@@ -96,6 +96,7 @@ import jp.riken.kscope.common.FILTER_TYPE;
 import jp.riken.kscope.common.FRAME_VIEW;
 import jp.riken.kscope.common.TRACE_DIR;
 import jp.riken.kscope.data.SourceFile;
+import jp.riken.kscope.gui.ExploreView;
 import jp.riken.kscope.language.IBlock;
 import jp.riken.kscope.language.Procedure;
 import jp.riken.kscope.model.LanguageTreeModel;
@@ -130,6 +131,8 @@ public class MainMenu extends JMenuBar implements  MenuListener {
     private AppController controller;
     /** ウィンドウ:エクスプローラビュー:構造 */
     private JMenuItem menuWindowExploreLanguage;
+    /** ウィンドウ:エクスプローラビュー:モジュール add by @hira at 2015/10/15 */
+    private JMenuItem menuWindowExploreModule;
     /** ウィンドウ:分析ビュー:トレース */
     private JMenuItem menuWindowAnalysisTrace;
     /** ウィンドウ:分析ビュー */
@@ -170,7 +173,7 @@ public class MainMenu extends JMenuBar implements  MenuListener {
 
     /**
      * コンストラクタ
-     * @param controller		アプリケーションコントローラ
+     * @param controller        アプリケーションコントローラ
      */
     public MainMenu(AppController controller) {
         this.controller = controller;
@@ -188,7 +191,7 @@ public class MainMenu extends JMenuBar implements  MenuListener {
         JMenu menuFile = new JMenu(Message.getString("mainmenu.file")); //ファイル
         this.add(menuFile);
         menuFile.addMenuListener(this);
-        
+
         // ファイル:プロジェクトの新規作成
         JMenuItem menuFileProjectNew = new JMenuItem(Message.getString("mainmenu.file.newproject")); //プロジェクトの新規作成
         menuFileProjectNew.addActionListener(new FileProjectNewAction(this.controller));
@@ -215,18 +218,18 @@ public class MainMenu extends JMenuBar implements  MenuListener {
         // ファイル:エクスポート
         JMenu menuFileExport = new JMenu(Message.getString("mainmenu.file.export")); //エクスポート
         menuFile.add(menuFileExport);
-        
+
         // ファイル:エクスポート:構造情報(TEXT)
         JMenuItem menuFileExportLanguage = new JMenuItem(Message.getString("mainmenu.file.export.structure")); //構造情報(TEXT)
         menuFileExport.add(menuFileExportLanguage);
         menuFileExportLanguage.addActionListener(new FileExportExploreAction(this.controller));
-        
+
         // ファイル:エクスポート:分析情報
         JMenuItem menuFileExportAnalysis = new JMenuItem(Message.getString("mainmenu.file.export.analysis")); //分析情報
         menuFileExport.add(menuFileExportAnalysis);
         actionExportAnalysis = new FileExportAnalysisAction(this.controller);
         menuFileExportAnalysis.addActionListener(actionExportAnalysis);
-        
+
         // ファイル：エクスポート：ソースファイル
         JMenuItem menuFileExportSourceFile = new JMenuItem(Message.getString("mainmenu.file.export.source")); //ソースファイル
         menuFileExport.add(menuFileExportSourceFile);
@@ -241,7 +244,7 @@ public class MainMenu extends JMenuBar implements  MenuListener {
 
         // セパレータ
         menuFile.addSeparator();
-        
+
         // ファイル:終了
         JMenuItem menuFileExit = new JMenuItem(Message.getString("mainmenu.file.close")); //終了
         menuFile.add(menuFileExit);
@@ -320,7 +323,7 @@ public class MainMenu extends JMenuBar implements  MenuListener {
         JMenuItem menuProjectBuild = new JMenuItem(Message.getString("mainmenu.project.startanalysis"));//構造解析実行
         menuProject.add(menuProjectBuild);
         menuProjectBuild.addActionListener(new ProjectBuildAction((this.controller)));
-        
+
         // プロジェクト:構造解析キャンセル
         menuProjectCancel = new JMenuItem(Message.getString("mainmenu.project.endanalysis"));//構造解析キャンセル
         menuProject.add(menuProjectCancel);
@@ -396,23 +399,23 @@ public class MainMenu extends JMenuBar implements  MenuListener {
         JMenuItem menuProjectSettingRequiredBF = new JMenuItem(Message.getString("mainmenu.project.config.requiredbf"));//要求Bye/FLOP
         menuProjectSetting.add(menuProjectSettingRequiredBF);
         menuProjectSettingRequiredBF.addActionListener(new ProjectSettingRequiredBFAction(this.controller));
-        
+
         if (this.controller.isSSHconnectAvailable()) {
-        	// セパレータ
-        	menuProjectSetting.addSeparator();
-        	// SSHconnect 設定
-        	JMenuItem menuProjectSettingSSH = new JMenuItem(Message.getString("mainmenu.project.config.sshconnect")); // SSHconnect
-        	menuProjectSetting.add(menuProjectSettingSSH);
-        	menuProjectSettingSSH.addActionListener(new ProjectSettingSSHAction(this.controller));
+            // セパレータ
+            menuProjectSetting.addSeparator();
+            // SSHconnect 設定
+            JMenuItem menuProjectSettingSSH = new JMenuItem(Message.getString("mainmenu.project.config.sshconnect")); // SSHconnect
+            menuProjectSetting.add(menuProjectSettingSSH);
+            menuProjectSettingSSH.addActionListener(new ProjectSettingSSHAction(this.controller));
         }
-        
+
         // 分析
         JMenu menuAnalysis = new JMenu(Message.getString("mainmenu.analysis"));//分析
         this.add(menuAnalysis);
         menuAnalysis.addMenuListener(this);
 
         // 分析:変数特性一覧
-        JMenuItem menuAnalysisVariable = new JMenuItem(Message.getString("mainmenu.analysis.valiableproperty"));//変数特性一覧
+        JMenuItem menuAnalysisVariable = new JMenuItem(Message.getString("mainmenu.analysis.variableproperty"));//変数特性一覧
         menuAnalysis.add(menuAnalysisVariable);
         actionAnalysisVariable = new AnalysisVariableAction(this.controller);
         menuAnalysisVariable.addActionListener(actionAnalysisVariable);
@@ -425,7 +428,7 @@ public class MainMenu extends JMenuBar implements  MenuListener {
         menuAnalysisCount.addActionListener(actionAnalysisOperand);
 
         // 分析:変数有効域
-        JMenuItem menuAnalysisValid = new JMenuItem(Message.getString("mainmenu.analysis.valiablescope"));//変数有効域
+        JMenuItem menuAnalysisValid = new JMenuItem(Message.getString("mainmenu.analysis.variablescope"));//変数有効域
         menuAnalysis.add(menuAnalysisValid);
         menuAnalysisValid.addActionListener(new AnalysisScopeAction(this.controller, FRAME_VIEW.EXPLORE_VIEW));
 
@@ -489,25 +492,25 @@ public class MainMenu extends JMenuBar implements  MenuListener {
         JMenuItem menuAnalysisMemoryAccess = new JMenuItem(Message.getString("mainmenu.analysis.access"));  // 変数アクセス先設定
         menuAnalysis.add(menuAnalysisMemoryAccess);
         menuAnalysisMemoryAccess.addActionListener(
-        				new AnalysisMemoryAction(
-        							this.controller,
-        							AnalysisMemoryAction.ACTION_MODE.ACCESS_SETTING,
-        							FRAME_VIEW.EXPLORE_VIEW));
+                        new AnalysisMemoryAction(
+                                    this.controller,
+                                    AnalysisMemoryAction.ACTION_MODE.ACCESS_SETTING,
+                                    FRAME_VIEW.EXPLORE_VIEW));
 
         // 分析:要求Byte/FLOP算出
         JMenuItem menuAnalysisMemoryCalculate = new JMenuItem(Message.getString("mainmenu.analysis.calculate"));  // 要求Byte/FLOP算出
         menuAnalysis.add(menuAnalysisMemoryCalculate);
         menuAnalysisMemoryCalculate.addActionListener(
-						new AnalysisMemoryAction(
-									this.controller,
-									AnalysisMemoryAction.ACTION_MODE.MEMORY_CALCULATE,
-									FRAME_VIEW.EXPLORE_VIEW));
+                        new AnalysisMemoryAction(
+                                    this.controller,
+                                    AnalysisMemoryAction.ACTION_MODE.MEMORY_CALCULATE,
+                                    FRAME_VIEW.EXPLORE_VIEW));
 
         //分析:要求Byte/FLOP算出  (2014/4/8追加 ohichi)
         JMenuItem menuAllAMC = new JMenuItem(Message.getString("mainmenu.analysis.allcalculate"));
         menuAnalysis.add(menuAllAMC);
         menuAllAMC.addActionListener(new AllAnalysisMemoryAction((this.controller)));
-     
+
 
         // プロファイラ
         JMenu menuProfiler = new JMenu(Message.getString("mainmenu.project.profiler"));
@@ -661,9 +664,9 @@ public class MainMenu extends JMenuBar implements  MenuListener {
         menuWindowExploreLanguage.addActionListener(new WindowViewAction(this.controller, EXPLORE_PANEL.LANGUAGE));
 
         // ウィンドウ:エクスプローラビュー:モジュール
-        JMenuItem menuWindowExploreModule = new JMenuItem(Message.getString("mainmenu.window.explore.module"));//モジュール
-        menuWindowExplore.add(menuWindowExploreModule);
-        menuWindowExploreModule.addActionListener(new WindowViewAction(this.controller, EXPLORE_PANEL.MODULE));
+        this.menuWindowExploreModule = new JMenuItem(Message.getString("mainmenu.window.explore.module"));//モジュール
+        menuWindowExplore.add(this.menuWindowExploreModule);
+        this.menuWindowExploreModule.addActionListener(new WindowViewAction(this.controller, EXPLORE_PANEL.MODULE));
 
         // ウィンドウ:エクスプローラビュー:ソース
         JMenuItem menuWindowExploreSource = new JMenuItem(Message.getString("mainmenu.window.explore.source"));//ソース
@@ -696,9 +699,9 @@ public class MainMenu extends JMenuBar implements  MenuListener {
         menuWindowAnalysisSearch.addActionListener(new WindowViewAction(this.controller, ANALYSIS_PANEL.SEARCHRESULT));
 
         // ウィンドウ:分析ビュー:変数特性一覧
-        JMenuItem menuWindowAnalysisVariable = new JMenuItem(Message.getString("mainmenu.analysis.valiableproperty"));//変数特性一覧
+        JMenuItem menuWindowAnalysisVariable = new JMenuItem(Message.getString("mainmenu.analysis.variableproperty"));//変数特性一覧
         menuWindowAnalysis.add(menuWindowAnalysisVariable);
-        menuWindowAnalysisVariable.addActionListener(new WindowViewAction(this.controller, ANALYSIS_PANEL.VALIABLE));
+        menuWindowAnalysisVariable.addActionListener(new WindowViewAction(this.controller, ANALYSIS_PANEL.VARIABLE));
 
         // ウィンドウ:分析ビュー:演算カウント
         JMenuItem menuWindowAnalysisCount = new JMenuItem(Message.getString("mainmenu.analysis.operation"));//演算カウント
@@ -721,7 +724,7 @@ public class MainMenu extends JMenuBar implements  MenuListener {
         menuWindowAnalysisTrace.addActionListener(new WindowViewAction(this.controller, ANALYSIS_PANEL.TRACE));
 
         // ウィンドウ:分析ビュー:変数有効域
-        JMenuItem menuWindowAnalysisScope = new JMenuItem(Message.getString("mainmenu.analysis.valiablescope"));//変数有効域
+        JMenuItem menuWindowAnalysisScope = new JMenuItem(Message.getString("mainmenu.analysis.variablescope"));//変数有効域
         menuWindowAnalysis.add(menuWindowAnalysisScope);
         menuWindowAnalysisScope.addActionListener(new WindowViewAction(this.controller, ANALYSIS_PANEL.SCOPE));
 
@@ -821,7 +824,7 @@ public class MainMenu extends JMenuBar implements  MenuListener {
 
     /**
      * 分析情報エクスポートアクション
-     * @return		分析情報エクスポートアクション
+     * @return        分析情報エクスポートアクション
      */
     public FileExportAnalysisAction getActionExportAnalysis() {
         return actionExportAnalysis;
@@ -831,7 +834,7 @@ public class MainMenu extends JMenuBar implements  MenuListener {
     /**
      * メニュー選択アクション<br/>
      * メニュー表示、イネーブルの切替を行う。
-     * @param event		イベント情報
+     * @param event        イベント情報
      */
     @Override
     public void menuSelected(MenuEvent event) {
@@ -894,6 +897,15 @@ public class MainMenu extends JMenuBar implements  MenuListener {
                         menuWindowExploreLanguage.addActionListener(new WindowViewAction(this.controller, EXPLORE_PANEL.LANGUAGE));
                     }
                 }
+            }
+
+            // モジュールメニュー
+            {
+                // モジュールタブを取得する
+                ExploreView view = this.controller.getMainframe().getPanelExplorerView();
+                // モジュールタブ名を取得する
+                String tab_name = view.getModuleTabname();
+                this.menuWindowExploreModule.setText(tab_name);
             }
             // トレースメニュー
             {
@@ -964,7 +976,7 @@ public class MainMenu extends JMenuBar implements  MenuListener {
 
     /**
      * アクションが実行可能かチェックする
-     * @param menu		チェックメニュー
+     * @param menu        チェックメニュー
      */
     private void validateAction(JMenu menu) {
 
@@ -998,9 +1010,9 @@ public class MainMenu extends JMenuBar implements  MenuListener {
     /**
      * メニュー項目の位置を取得する.<br/>
      * メニュー項目が存在しない場合は、-1を返す.
-     * @param menu		親メニュー
-     * @param item		メニュー項目
-     * @return			メニュー項目位置
+     * @param menu        親メニュー
+     * @param item        メニュー項目
+     * @return            メニュー項目位置
      */
     private int getMenuItemPos(JMenu menu, JMenuItem item) {
         int count = menu.getMenuComponentCount();
@@ -1016,7 +1028,7 @@ public class MainMenu extends JMenuBar implements  MenuListener {
 
     /**
      * メニュー選択解除アクション
-     * @param event		イベント情報
+     * @param event        イベント情報
      */
     @Override
     public void menuDeselected(MenuEvent event) { }
@@ -1024,7 +1036,7 @@ public class MainMenu extends JMenuBar implements  MenuListener {
 
     /**
      * メニューキャンセルアクション
-     * @param event		イベント情報
+     * @param event        イベント情報
      */
     @Override
     public void menuCanceled(MenuEvent event) { }
@@ -1032,7 +1044,7 @@ public class MainMenu extends JMenuBar implements  MenuListener {
 
     /**
      * エラー箇所を開くアクションを取得する
-     * @return		エラー箇所を開くアクション
+     * @return        エラー箇所を開くアクション
      */
     public EventListener getActionErrorOpenFile() {
         return this.actionErrorOpenFile;
@@ -1041,7 +1053,7 @@ public class MainMenu extends JMenuBar implements  MenuListener {
 
     /**
      * 分析結果該当個所を開くアクションを取得する
-     * @return		分析結果該当個所を開くアクション
+     * @return        分析結果該当個所を開くアクション
      */
     public EventListener getActionOpenAnalysisLine() {
         return this.actionOpenAnalysisLine;
@@ -1049,7 +1061,7 @@ public class MainMenu extends JMenuBar implements  MenuListener {
 
     /**
      * 付加情報編集アクションを取得する
-     * @return		付加情報編集アクション
+     * @return        付加情報編集アクション
      */
     public EditInformationEditAction getActionEditInformation() {
         return actionEditInformation;
@@ -1057,7 +1069,7 @@ public class MainMenu extends JMenuBar implements  MenuListener {
 
     /**
      * 演算カウントアクションを取得する
-     * @return		演算カウントアクション
+     * @return        演算カウントアクション
      */
     public AnalysisOperandAction getActionAnalysisOperand() {
         return this.actionAnalysisOperand;
@@ -1065,8 +1077,8 @@ public class MainMenu extends JMenuBar implements  MenuListener {
 
     /**
      * トレースアクションを取得する
-     * @param dir		トレース方向
-     * @return			トレースアクション
+     * @param dir        トレース方向
+     * @return            トレースアクション
      */
     public AnalysisTraceAction getActionAnalysisTrace(TRACE_DIR dir) {
         return new AnalysisTraceAction(this.controller, dir);
@@ -1074,7 +1086,7 @@ public class MainMenu extends JMenuBar implements  MenuListener {
 
     /**
      * 新規構造ツリーアクションを取得する
-     * @return		新規構造ツリーアクション
+     * @return        新規構造ツリーアクション
      */
     public ViewOpenLanguageTreeAction getActionOpenLanguageTree() {
         return actionOpenLanguageTree;
@@ -1082,8 +1094,8 @@ public class MainMenu extends JMenuBar implements  MenuListener {
 
     /**
      * 検索結果アクションを取得する
-     * @param dir		検索結果方向
-     * @return			検索結果アクション
+     * @param dir        検索結果方向
+     * @return            検索結果アクション
      */
     public SearchResultAction getActionSearchResult(TRACE_DIR dir) {
         return new SearchResultAction(this.controller, dir);
@@ -1094,15 +1106,15 @@ public class MainMenu extends JMenuBar implements  MenuListener {
      */
     public void clearSelectedMenu() {
         // プロファイラ：コスト表示
-    	if (menuProfilerBarVisibled != null) {
-	        boolean visibleBar = ProfilerProperties.INITIALIZE_VISIBLE_BARGRAPH;
-	        menuProfilerBarVisibled.setSelected(visibleBar);
-    	}
+        if (menuProfilerBarVisibled != null) {
+            boolean visibleBar = ProfilerProperties.INITIALIZE_VISIBLE_BARGRAPH;
+            menuProfilerBarVisibled.setSelected(visibleBar);
+        }
         // プロファイラ：コストルーラ表示
-    	if (menuProfilerRulerVisibled != null) {
-	        boolean visibleRuler = ProfilerProperties.INITIALIZE_VISIBLE_RULER;
-	        menuProfilerRulerVisibled.setSelected(visibleRuler);
-    	}
+        if (menuProfilerRulerVisibled != null) {
+            boolean visibleRuler = ProfilerProperties.INITIALIZE_VISIBLE_RULER;
+            menuProfilerRulerVisibled.setSelected(visibleRuler);
+        }
     }
 }
 

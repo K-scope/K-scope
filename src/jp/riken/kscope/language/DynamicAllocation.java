@@ -1,6 +1,6 @@
 /*
  * K-scope
- * Copyright 2012-2013 RIKEN, Japan
+ * Copyright 2012-2015 RIKEN, Japan
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@ package jp.riken.kscope.language;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -154,75 +155,135 @@ public class DynamicAllocation extends jp.riken.kscope.language.Block {
 
      /**
       * 同一ブロックであるかチェックする.
-      * @param block		ブロック
- 	 * @return		true=一致
+      * @param block        ブロック
+      * @return        true=一致
       */
      @Override
- 	public boolean equalsBlocks(Block block) {
- 		if (block == null) return false;
- 		if (!(block instanceof DynamicAllocation)) return false;
- 		if (!super.equalsBlocks(block)) return false;
+     public boolean equalsBlocks(Block block) {
+         if (block == null) return false;
+         if (!(block instanceof DynamicAllocation)) return false;
+         if (!super.equalsBlocks(block)) return false;
 
-		if (this.targets != null && ((DynamicAllocation)block).targets != null) {
-			if (this.targets.size() == ((DynamicAllocation)block).targets.size()) {
-				Set<Variable> setKeys = this.targets.keySet();
-				Iterator<Variable> destIter = ((DynamicAllocation)block).targets.keySet().iterator();
-				for (Iterator<Variable> thisIter = setKeys.iterator(); thisIter.hasNext(); ) {
-					Variable thisVar = thisIter.next();
-					Variable destVar = destIter.next();
-					if (!thisVar.equalsVariable(destVar)) {
-						return false;
-					}
-				}
-			}
-		}
-		else if (this.targets != null || ((DynamicAllocation)block).targets != null) {
-			return false;
-		}
+        if (this.targets != null && ((DynamicAllocation)block).targets != null) {
+            if (this.targets.size() == ((DynamicAllocation)block).targets.size()) {
+                Set<Variable> setKeys = this.targets.keySet();
+                Iterator<Variable> destIter = ((DynamicAllocation)block).targets.keySet().iterator();
+                for (Iterator<Variable> thisIter = setKeys.iterator(); thisIter.hasNext(); ) {
+                    Variable thisVar = thisIter.next();
+                    Variable destVar = destIter.next();
+                    if (!thisVar.equalsVariable(destVar)) {
+                        return false;
+                    }
+                }
+            }
+        }
+        else if (this.targets != null || ((DynamicAllocation)block).targets != null) {
+            return false;
+        }
 
-		if (error != null && ((DynamicAllocation)block).error != null) {
-			if (!error.equalsVariable(((DynamicAllocation)block).error )) {
-				return false;
-			}
-		}
-		else if (error != null || ((DynamicAllocation)block).error != null) {
-			return false;
-		}
-		return true;
+        if (error != null && ((DynamicAllocation)block).error != null) {
+            if (!error.equalsVariable(((DynamicAllocation)block).error )) {
+                return false;
+            }
+        }
+        else if (error != null || ((DynamicAllocation)block).error != null) {
+            return false;
+        }
+        return true;
      }
 
      /**
       * 同一ブロックを検索する
-      * @param block			IInformationブロック
-      * @return		同一ブロック
+      * @param block            IInformationブロック
+      * @return        同一ブロック
       */
      @Override
      public IInformation[] searchInformationBlocks(IInformation block) {
-    	 List<IInformation> list = new ArrayList<IInformation>();
-    	 {
-    		 IInformation[] infos = super.searchInformationBlocks(block);
-    		 if (infos != null) {
-    			 list.addAll(Arrays.asList(infos));
-    		 }
-    	 }
+         List<IInformation> list = new ArrayList<IInformation>();
+         {
+             IInformation[] infos = super.searchInformationBlocks(block);
+             if (infos != null) {
+                 list.addAll(Arrays.asList(infos));
+             }
+         }
 
-    	 if (this.targets != null) {
-    		 for (Variable variable : this.targets.keySet()) {
-    			 IInformation[] infos = variable.searchInformationBlocks(block);
-    			 if (infos != null) {
-    				 list.addAll(Arrays.asList(infos));
-    			 }
-    		 }
-    	 }
-    	 if (this.error != null) {
-    		 IInformation[] infos = this.error.searchInformationBlocks(block);
-    		 if (infos != null) {
-    			 list.addAll(Arrays.asList(infos));
-    		 }
-    	 }
-    	 if (list.size() <= 0) {
-    		 return null;
-    	 }
-    	 return list.toArray(new IInformation[0]);
+         if (this.targets != null) {
+             for (Variable variable : this.targets.keySet()) {
+                 IInformation[] infos = variable.searchInformationBlocks(block);
+                 if (infos != null) {
+                     list.addAll(Arrays.asList(infos));
+                 }
+             }
+         }
+         if (this.error != null) {
+             IInformation[] infos = this.error.searchInformationBlocks(block);
+             if (infos != null) {
+                 list.addAll(Arrays.asList(infos));
+             }
+         }
+         if (list.size() <= 0) {
+             return null;
+         }
+         return list.toArray(new IInformation[0]);
      }
+
+
+     /**
+      * 式の変数リストを取得する.
+      * 子ブロックの変数リストも取得する。
+      * @return        式の変数リスト
+      */
+     @Override
+     public Set<Variable> getAllVariables() {
+         Set<Variable> list = new HashSet<Variable>();
+         Set<Variable> vars = super.getAllVariables();
+         if (vars != null && vars.size() > 0) {
+             list.addAll(vars);
+         }
+         vars = this.getBlockVariables();
+         if (vars != null && vars.size() > 0) {
+             list.addAll(vars);
+         }
+
+         if (list.size() <= 0) return null;
+         return list;
+     }
+
+    /**
+     * 式の変数リストを取得する.
+     * ブロックのみの変数リストを取得する。
+     * @return        式の変数リスト
+     */
+     @Override
+    public Set<Variable> getBlockVariables() {
+
+        Set<Variable> list = new HashSet<Variable>();
+        if (this.targets != null) {
+            for (Variable target_var : this.targets.keySet()) {
+                if (target_var == null) continue;
+                list.add(target_var);
+                VariableDimension dim = this.targets.get(target_var);
+                Set<Variable> vars = target_var.getAllVariables();
+                if (vars != null && vars.size() > 0) {
+                    list.addAll(vars);
+                }
+                if (dim == null) continue;
+                vars = dim.getAllVariables();
+                if (vars != null && vars.size() > 0) {
+                    list.addAll(vars);
+                }
+            }
+        }
+
+        if (this.error != null) {
+            list.add(this.error);
+            Set<Variable> vars = this.error.getAllVariables();
+            if (vars != null && vars.size() > 0) {
+                list.addAll(vars);
+            }
+        }
+        if (list.size() <= 0) return null;
+        return list;
+    }
+
 }

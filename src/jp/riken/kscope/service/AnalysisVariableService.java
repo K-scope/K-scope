@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Set;
 
 import jp.riken.kscope.language.Block;
+import jp.riken.kscope.language.CompoundBlock;
 import jp.riken.kscope.language.ExecutableBody;
 import jp.riken.kscope.language.Fortran;
 import jp.riken.kscope.language.IBlock;
@@ -100,8 +101,7 @@ public class AnalysisVariableService extends AnalysisBaseService {
             }
             this.modelVariable.setTitle(block.toString());
             if (block instanceof ProgramUnit) {
-                VariableDefinition[] list = ((ProgramUnit) block)
-                        .get_variables();
+                VariableDefinition[] list = ((ProgramUnit) block).get_variables();
                 for (VariableDefinition vardef : list) {
                     String[] infos = makeVariableDefinitionInfo(vardef);
                     this.modelVariable.addVariableInfo(block, vardef, infos);
@@ -116,24 +116,33 @@ public class AnalysisVariableService extends AnalysisBaseService {
                     }
                 }
                 // 内部副プログラムのセット
-                Collection<Procedure> children = ((ProgramUnit) block)
-                        .getChildren();
-                for (Procedure child : children) {
-                    VariableDefinition[] varlist = child.get_variables();
-                    for (VariableDefinition vardef : varlist) {
-                        String[] infos = makeVariableDefinitionInfo(vardef);
-                        this.modelVariable
-                                .addVariableInfo(child, vardef, infos);
+                List<IBlock> children = ((ProgramUnit) block).getChildren();
+                for (IBlock child : children) {
+                    VariableDefinition[] varlist = null;
+                    if (child instanceof ProgramUnit) {
+                        varlist = ((ProgramUnit)child).get_variables();
                     }
+                    else if (child instanceof CompoundBlock) {
+                        varlist = ((CompoundBlock)child).get_variables();
+                    }
+                    if (varlist != null) {
+	                    for (VariableDefinition vardef : varlist) {
+   	                     String[] infos = makeVariableDefinitionInfo(vardef);
+   	                     this.modelVariable
+   	                             .addVariableInfo(child, vardef, infos);
+    	                }
+					}
                     // 構造体のセット
                     Set<Type> tps = this.getTypeList(varlist);
-                    for (Type tp : tps) {
-                        List<VariableDefinition> defs = tp.getDefinitions();
-                        for (VariableDefinition def : defs) {
-                            String[] infos = makeVariableDefinitionInfo(def);
-                            this.modelVariable.addVariableInfo(tp, def, infos);
-                        }
-                    }
+						if (tps != null) {
+		                for (Type tp : tps) {
+		                    List<VariableDefinition> defs = tp.getDefinitions();
+		                    for (VariableDefinition def : defs) {
+		                        String[] infos = makeVariableDefinitionInfo(def);
+		                        this.modelVariable.addVariableInfo(tp, def, infos);
+		                    }
+		                }
+					}
                 }
             }
         }
@@ -252,7 +261,7 @@ public class AnalysisVariableService extends AnalysisBaseService {
         if (var.getInitValue() == null) {
             infos.add("no value");
         } else {
-            infos.add(var.getInitValue());
+            infos.add(var.getInitValue().getLine());
         }
 
         if (var.isScalar()) {
@@ -268,15 +277,17 @@ public class AnalysisVariableService extends AnalysisBaseService {
             infos.add("no pointer");
             infos.add("no save");
             // common属性
-            ProgramUnit pu = var.getMother();
-            String common = null;
-            if (pu != null) {
-                common = pu.getCommonName(var.get_name());
-            }
-            if (common == null) {
-                infos.add("no common");
-            } else {
-                infos.add("com : " + common);
+            if (var.getMother() != null) {
+                IBlock pu = var.getMother();
+                String common = null;
+                if (pu != null && pu instanceof ProgramUnit) {
+                    common = ((ProgramUnit) pu).getCommonName(var.get_name());
+                }
+                if (common == null) {
+                    infos.add("no common");
+                } else {
+                    infos.add("com : " + common);
+                }
             }
             infos.add("no alloc");
         } else {
@@ -317,17 +328,18 @@ public class AnalysisVariableService extends AnalysisBaseService {
             }
 
             // common属性
-            ProgramUnit pu = var.getMother();
-            String common = null;
-            if (pu != null) {
-                common = pu.getCommonName(var.get_name());
+            if (var.getMother() != null) {
+                IBlock pu = var.getMother();
+                String common = null;
+                if (pu != null && pu instanceof ProgramUnit) {
+                    common = ((ProgramUnit)pu).getCommonName(var.get_name());
+                }
+                if (common == null) {
+                    infos.add("no common");
+                } else {
+                    infos.add("com : " + common);
+                }
             }
-            if (common == null) {
-                infos.add("no common");
-            } else {
-                infos.add("com : " + common);
-            }
-
             // allocatable属性
             if (att.hasAllocatable()) {
                 infos.add("allocatable");

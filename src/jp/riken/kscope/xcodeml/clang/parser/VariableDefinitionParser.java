@@ -53,22 +53,6 @@ import jp.riken.kscope.xcodeml.clang.xml.gen.VarDecl;
  */
 public class VariableDefinitionParser {
 
-    /** PUBLIC属性 */
-    private final String ATTRIBUTE_PUBLIC = "public";
-    /** PRIVATE属性 */
-    private final String ATTRIBUTE_PRIVATE = "private";
-    /** EXTERNAL属性 */
-    private final String ATTRIBUTE_EXTERNAL = "external";
-    /** POINTER属性 */
-    private final String ATTRIBUTE_POINTER = "pointer";
-    /** ARRAY属性 */
-    private final String ATTRIBUTE_ARRAY = "ARRAY";
-    /** CONST属性 */
-    private final String ATTRIBUTE_CONST = "const";
-    /** VOLATILE属性 */
-    private final String ATTRIBUTE_VOLATILE = "volatile";
-    /** RESTRICT属性 */
-    private final String ATTRIBUTE_RESTRICT = "restrict";
 
     /** typeTable */
     private XcodeMLTypeManager typeManager;
@@ -185,7 +169,7 @@ public class VariableDefinitionParser {
      * 配列要素からDB::VariableDefinitionクラスをパース、生成する。
      *
      * @param var_name          変数名
-     * @param arrayType			配列要素
+     * @param arrayType            配列要素
      * @return DB::VariableDefinitionクラス
      */
     public VariableDefinition parseVariableDefinition(String var_name, ArrayType arrayType) {
@@ -225,7 +209,6 @@ public class VariableDefinitionParser {
         List<String> listAttr = new ArrayList<String>();
         if (sclass != null) listAttr.add(sclass);
 
-        boolean is_const = false;
         boolean is_volatile = false;
         boolean is_restrict = false;
         List<ArrayType> array_types = new ArrayList<ArrayType>();
@@ -233,6 +216,7 @@ public class VariableDefinitionParser {
             for (IXmlTypeTableChoice type : typeChoices) {
                 boolean is_pointer = false;
                 boolean is_array = false;
+                boolean is_const = false;
                 // ポインタ
                 if (type instanceof PointerType) is_pointer = true;
                 // 配列
@@ -245,11 +229,16 @@ public class VariableDefinitionParser {
                 if (StringUtils.toBoolean(base_type.getIsVolatile()))  is_volatile = true;
                 if (StringUtils.toBoolean(base_type.getIsRestrict()))  is_restrict = true;
 
-                if (is_pointer)  listAttr.add(this.ATTRIBUTE_POINTER);
-                if (is_array)    listAttr.add(this.ATTRIBUTE_ARRAY);
-                if (is_const)    listAttr.add(this.ATTRIBUTE_CONST);
-                if (is_volatile) listAttr.add(this.ATTRIBUTE_VOLATILE);
-                if (is_restrict) listAttr.add(this.ATTRIBUTE_RESTRICT);
+                if (is_pointer && is_const) {
+                    listAttr.add(VariableAttribute.ATTRIBUTE_CONST_POINTER);
+                }
+                else {
+                    if (is_pointer)  listAttr.add(VariableAttribute.ATTRIBUTE_POINTER);
+                    if (is_const)    listAttr.add(VariableAttribute.ATTRIBUTE_CONST);
+                }
+                if (is_array)    listAttr.add(VariableAttribute.ATTRIBUTE_ARRAY);
+                if (is_volatile) listAttr.add(VariableAttribute.ATTRIBUTE_VOLATILE);
+                if (is_restrict) listAttr.add(VariableAttribute.ATTRIBUTE_RESTRICT);
             }
         }
 
@@ -275,7 +264,7 @@ public class VariableDefinitionParser {
      * 基本データ型要素からDB::VariableDefinitionクラスをパース、生成する。
      *
      * @param var_name          変数名
-     * @param basicType			基本データ型
+     * @param basicType            基本データ型
      * @return DB::VariableDefinitionクラス
      */
     public VariableDefinition parseVariableDefinition(String var_name, BasicType basicType) {
@@ -410,15 +399,15 @@ public class VariableDefinitionParser {
 
     /**
      * 構造体の入れ子リストを取得する
-     * @return		構造体の入れ子リスト
+     * @return        構造体の入れ子リスト
      */
     public List<jp.riken.kscope.language.fortran.Structure> getStackType() {
-        return stackType;
+        return this.stackType;
     }
 
     /**
      * 構造体の入れ子リストを設定する
-     * @param stackType		構造体の入れ子リスト
+     * @param stackType        構造体の入れ子リスト
      */
     public void setStackType(List<jp.riken.kscope.language.fortran.Structure> stackType) {
         this.stackType = stackType;
@@ -426,7 +415,7 @@ public class VariableDefinitionParser {
 
     /**
      * 構造体の入れ子リストに追加する
-     * @param type		追加構造体
+     * @param type        追加構造体
      */
     @SuppressWarnings("unused")
     private void addStackType(jp.riken.kscope.language.fortran.Structure type) {
@@ -439,7 +428,7 @@ public class VariableDefinitionParser {
 
     /**
      * 構造体の入れ子リストに構造体が追加済みであるかチェックする。
-     * @param type		構造体名
+     * @param type        構造体名
      * @return    true=追加済み
      */
     private boolean containsStackType(String typeName) {
@@ -453,15 +442,15 @@ public class VariableDefinitionParser {
 
     /**
      * 構造体の入れ子リストから構造体名の構造体を取得する。
-     * @param typeName		構造体名
-     * @return    		構造体
+     * @param typeName        構造体名
+     * @return            構造体
      */
     private jp.riken.kscope.language.fortran.Structure getStackType(String typeName) {
         if (StringUtils.isNullOrEmpty(typeName)) return null;
         if (this.stackType == null) return null;
 
         for (jp.riken.kscope.language.fortran.Structure men : this.stackType) {
-            if (typeName.equalsIgnoreCase(men.getName())) {
+            if (typeName.equals(men.getName())) {
                 return men;
             }
         }

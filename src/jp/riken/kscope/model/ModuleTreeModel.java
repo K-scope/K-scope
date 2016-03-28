@@ -45,6 +45,10 @@ public class ModuleTreeModel extends Observable {
     private DefaultTreeModel treeModel;
     /** データベース */
     private Program languageDb;
+    /** Fortranモジュールツリールート名 */
+    public static String FORTRAN_ROOTNAME = "Module tree";
+    /** C言語モジュールツリールート名 */
+    public static String CLANG_ROOTNAME = "Function tree";
 
     /**
      * コンストラクタ
@@ -72,14 +76,14 @@ public class ModuleTreeModel extends Observable {
      * モジュールツリーをクリアする。
      */
     public void clearTreeModel() {
-        rootNode = new DefaultMutableTreeNode("Module tree");
+        rootNode = new DefaultMutableTreeNode(FORTRAN_ROOTNAME);
         treeModel = new DefaultTreeModel(rootNode);
         notifyModel();
     }
 
     /**
      * ツリールートノードを取得する
-     * @return		ツリールートノード
+     * @return        ツリールートノード
      */
     public DefaultMutableTreeNode getRootNode() {
         return rootNode;
@@ -87,7 +91,7 @@ public class ModuleTreeModel extends Observable {
 
     /**
      * ツリーモデルを取得する
-     * @return		ツリーモデル
+     * @return        ツリーモデル
      */
     public DefaultTreeModel getTreeModel() {
         return treeModel;
@@ -119,21 +123,21 @@ public class ModuleTreeModel extends Observable {
         }
     }
 
-	/**
-	 * データベースを取得する
-	 * @return データベース
-	 */
-	public Program getLanguageDb() {
-		return this.languageDb;
-	}
+    /**
+     * データベースを取得する
+     * @return データベース
+     */
+    public Program getLanguageDb() {
+        return this.languageDb;
+    }
 
-	/**
-	 * データベースを設定する.
-	 * @param languageDb データベース
-	 */
-	public void setLanguageDb(Program language) {
-		this.languageDb = language;
-	}
+    /**
+     * データベースを設定する.
+     * @param languageDb データベース
+     */
+    public void setLanguageDb(Program language) {
+        this.languageDb = language;
+    }
 }
 
 

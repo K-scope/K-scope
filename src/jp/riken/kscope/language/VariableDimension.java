@@ -18,6 +18,9 @@
 package jp.riken.kscope.language;
 
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * 変数宣言の配列添え字を表現するクラス。
@@ -29,6 +32,8 @@ public class VariableDimension implements Serializable {
     /** シリアル番号 */
     private static final long serialVersionUID = 1309109368271186155L;
     private DimensionIndex[] indices = null;
+    /** 変数の親ブロック */
+    private IBlock parentStatement;
 
     /**
      * コンストラクタ。
@@ -98,4 +103,39 @@ public class VariableDimension implements Serializable {
         , ")");
         return st.toString();
     }
+
+
+    /**
+     * 変数リストを取得する.
+     */
+    public Set<Variable> getAllVariables() {
+        Set<Variable> vars = new HashSet<Variable>();
+        if (this.indices == null) return null;
+        for (DimensionIndex idx : this.indices) {
+            Set<Variable> idx_vars = idx.getAllVariables();
+            if (idx_vars != null && idx_vars.size() > 0) {
+                vars.addAll(idx_vars);
+            }
+        }
+
+        if (vars.size() <= 0) return null;
+
+        return vars;
+    }
+
+    /**
+     * 親ブロックを設定する.
+     * @param parent 親ブロック
+     */
+    public void setParentStatement(IBlock parent) {
+        this.parentStatement = parent;
+        // 子変数に対して設定する
+        if (this.indices != null && indices.length > 0) {
+            for (DimensionIndex idx : this.indices) {
+                if (idx == null) continue;
+                idx.setParentStatement(parent);
+            }
+        }
+    }
+
 }

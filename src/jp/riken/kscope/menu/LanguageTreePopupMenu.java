@@ -95,7 +95,7 @@ public class LanguageTreePopupMenu extends JPopupMenu implements PopupMenuListen
 
     /**
      * コンストラクタ
-     * @param controller		アプリケーションコントローラ
+     * @param controller        アプリケーションコントローラ
      */
     public LanguageTreePopupMenu(AppController controller) {
         this.controller = controller;
@@ -151,7 +151,7 @@ public class LanguageTreePopupMenu extends JPopupMenu implements PopupMenuListen
         menuSearchTree.addActionListener(new SearchTreeAction(this.controller));
 
         // 解析:変数特性一覧
-        JMenuItem menuAnalysisVariable = new JMenuItem(Message.getString("mainmenu.analysis.valiableproperty")); //変数特性一覧
+        JMenuItem menuAnalysisVariable = new JMenuItem(Message.getString("mainmenu.analysis.variableproperty")); //変数特性一覧
         this.add(menuAnalysisVariable);
         actionAnalysisVariable = new AnalysisVariableAction(this.controller);
         menuAnalysisVariable.addActionListener(actionAnalysisVariable);
@@ -174,19 +174,19 @@ public class LanguageTreePopupMenu extends JPopupMenu implements PopupMenuListen
         JMenuItem menuAnalysisMemoryAccess = new JMenuItem(Message.getString("mainmenu.analysis.access"));  // 変数アクセス先設定
         this.add(menuAnalysisMemoryAccess);
         menuAnalysisMemoryAccess.addActionListener(
-        				new AnalysisMemoryAction(
-        							this.controller,
-        							AnalysisMemoryAction.ACTION_MODE.ACCESS_SETTING,
-        							FRAME_VIEW.EXPLORE_VIEW));
+                        new AnalysisMemoryAction(
+                                    this.controller,
+                                    AnalysisMemoryAction.ACTION_MODE.ACCESS_SETTING,
+                                    FRAME_VIEW.EXPLORE_VIEW));
 
         // 分析:要求Byte/FLOP算出
         JMenuItem menuAnalysisMemoryCalculate = new JMenuItem(Message.getString("mainmenu.analysis.calculate"));  // 要求Byte/FLOP算出
         this.add(menuAnalysisMemoryCalculate);
         menuAnalysisMemoryCalculate.addActionListener(
-						new AnalysisMemoryAction(
-									this.controller,
-									AnalysisMemoryAction.ACTION_MODE.MEMORY_CALCULATE,
-									FRAME_VIEW.EXPLORE_VIEW));
+                        new AnalysisMemoryAction(
+                                    this.controller,
+                                    AnalysisMemoryAction.ACTION_MODE.MEMORY_CALCULATE,
+                                    FRAME_VIEW.EXPLORE_VIEW));
 
         // スペーサー
         this.add(new JSeparator());
@@ -219,9 +219,9 @@ public class LanguageTreePopupMenu extends JPopupMenu implements PopupMenuListen
 
     /**
      * ポップアップメニューをJTreeのノード上でのみ表示する。
-     * @param invoker		コンポーネント
-     * @param x				座標X
-     * @param y				座標Y
+     * @param invoker        コンポーネント
+     * @param x                座標X
+     * @param y                座標Y
      */
     @Override
     public void show(Component invoker, int x, int y) {
@@ -237,7 +237,7 @@ public class LanguageTreePopupMenu extends JPopupMenu implements PopupMenuListen
 
     /**
      * すべて収納アクションリスナを取得する
-     * @return		すべて収納アクションリスナ
+     * @return        すべて収納アクションリスナ
      */
     @Override
     public ActionListener getActionTreeCollapseAll() {
@@ -246,7 +246,7 @@ public class LanguageTreePopupMenu extends JPopupMenu implements PopupMenuListen
 
     /**
      * すべて展開アクションリスナを取得する
-     * @return		すべて展開アクションリスナ
+     * @return        すべて展開アクションリスナ
      */
     @Override
     public ActionListener getActionTreeExpandAll() {
@@ -255,7 +255,7 @@ public class LanguageTreePopupMenu extends JPopupMenu implements PopupMenuListen
 
     /**
      * 選択展開アクションリスナを取得する
-     * @return		選択展開アクションリスナ
+     * @return        選択展開アクションリスナ
      */
     @Override
     public ActionListener getActionTreeExpandSelect() {
@@ -264,7 +264,7 @@ public class LanguageTreePopupMenu extends JPopupMenu implements PopupMenuListen
 
     /**
      * ファイルを開くリスナを取得する。
-     * @return		ファイルを開くリスナ
+     * @return        ファイルを開くリスナ
      */
     @Override
     public EventListener getActionOpenFile() {
@@ -273,7 +273,7 @@ public class LanguageTreePopupMenu extends JPopupMenu implements PopupMenuListen
 
     /**
      * エクスプローラエクスポートアクションを取得する
-     * @return		エクスプローラエクスポートアクション
+     * @return        エクスプローラエクスポートアクション
      */
     @Override
     public ActionListener getActionExportExplore() {
@@ -284,7 +284,7 @@ public class LanguageTreePopupMenu extends JPopupMenu implements PopupMenuListen
     /**
      * ポップアップメニュー可視イベント.<br/>
      * アクションが実行可能かチェックする
-     * @param event		イベント情報
+     * @param event        イベント情報
      */
     @Override
     public void popupMenuWillBecomeVisible(PopupMenuEvent event) {
@@ -309,7 +309,7 @@ public class LanguageTreePopupMenu extends JPopupMenu implements PopupMenuListen
 
     /**
      * ポップアップメニューが取り消されたイベント
-     * @param event		イベント情報
+     * @param event        イベント情報
      */
     @Override
     public void popupMenuWillBecomeInvisible(PopupMenuEvent event) { }
@@ -317,7 +317,7 @@ public class LanguageTreePopupMenu extends JPopupMenu implements PopupMenuListen
 
     /**
      * ポップアップメニューが取り消されたイベント
-     * @param event		イベント情報
+     * @param event        イベント情報
      */
     @Override
     public void popupMenuCanceled(PopupMenuEvent event) { }

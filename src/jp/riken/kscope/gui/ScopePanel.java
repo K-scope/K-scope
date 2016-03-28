@@ -18,8 +18,11 @@ package jp.riken.kscope.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Container;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.File;
 import java.util.Observable;
 import java.util.Observer;
@@ -33,9 +36,11 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
+import javax.swing.SwingUtilities;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.table.DefaultTableColumnModel;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 
 import jp.riken.kscope.Message;
@@ -44,6 +49,7 @@ import jp.riken.kscope.component.JStripeTable;
 import jp.riken.kscope.data.CodeLine;
 import jp.riken.kscope.language.IBlock;
 import jp.riken.kscope.language.IInformation;
+import jp.riken.kscope.language.VariableDefinition;
 import jp.riken.kscope.menu.MainMenu;
 import jp.riken.kscope.model.ScopeModel;
 import jp.riken.kscope.properties.SourceProperties;
@@ -55,13 +61,16 @@ import jp.riken.kscope.utils.SwingUtils;
  * @author RIKEN
  *
  */
-public class ScopePanel extends AnalisysPanelBase implements Observer, IAnalisysComponent {
+public class ScopePanel extends AnalisysPanelBase
+        implements Observer, IAnalisysComponent, MouseListener {
 
     /** シリアル番号 */
     private static final long serialVersionUID = 1L;
 
     /** クリアボタン */
     private JButton btnClear;
+    /** ファイルを開くボタン add by @hira at 2015/10/01 */
+    private JButton btnOpenFile;
     /** エクスポートボタン */
     private JButton btnExport;
     /** 変数有効域ラベル */
@@ -93,7 +102,7 @@ public class ScopePanel extends AnalisysPanelBase implements Observer, IAnalisys
 
     /**
      * コンストラクタ
-     * @param proparties		分析情報パネル識別子
+     * @param proparties        分析情報パネル識別子
      */
     public ScopePanel(ANALYSIS_PANEL proparties) {
         super(proparties);
@@ -150,6 +159,16 @@ public class ScopePanel extends AnalisysPanelBase implements Observer, IAnalisys
                         });
                     }
                     {
+                        Icon icon = ResourceUtils.getIcon("openfile.gif");
+                        btnOpenFile = new JButton(icon);
+                        btnOpenFile.setContentAreaFilled(false);
+                        btnOpenFile.setBorderPainted(false);
+                        btnOpenFile.setPreferredSize(buttonSize);
+                        btnOpenFile.setMinimumSize(buttonSize);
+                        btnOpenFile.setMaximumSize(buttonSize);
+                        panelButtons.add(btnOpenFile);
+                    }
+                    {
                         Icon icon = ResourceUtils.getIcon("save.gif");
                         btnExport = new JButton(icon);
                         btnExport.setContentAreaFilled(false);
@@ -176,14 +195,11 @@ public class ScopePanel extends AnalisysPanelBase implements Observer, IAnalisys
                     tableScope.setAutoCreateColumnsFromModel(false);
                     tableScope.setSelectionMode(ListSelectionModel.SINGLE_SELECTION );
                     tableScope.setColumnSelectionAllowed(false);
-
+                    tableScope.setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
                     // テーブル列モデル
                     DefaultTableColumnModel columnModel = (DefaultTableColumnModel)tableScope.getColumnModel();
-                    TableColumn column = null;
                     // テーブル幅
-                    column = columnModel.getColumn(0);
-                    column.setPreferredWidth(TABLE_COLUMN_WIDTH);
-                    column.setMinWidth(100);
+                    model.setTableColumnWidth(columnModel);
 
                     // スクロールパイン
                     scrollPane = new JScrollPane();
@@ -193,12 +209,16 @@ public class ScopePanel extends AnalisysPanelBase implements Observer, IAnalisys
                     scrollPane.getViewport().setBackground(Color.WHITE);
 
                     add(scrollPane);
+
+                    tableScope.addMouseListener(this);
+
                 }
 
             }
 
             // ツールチップ設定
             btnClear.setToolTipText(Message.getString("informationdialog.button.clear.tooltip")); //クリア
+            btnOpenFile.setToolTipText(Message.getString("informationpanel.tooltip.openblock")); //選択箇所を開く
             btnExport.setToolTipText(Message.getString("mainmenu.file.export")); //エクスポート
 
         } catch (Exception e) {
@@ -208,8 +228,8 @@ public class ScopePanel extends AnalisysPanelBase implements Observer, IAnalisys
 
     /**
      * 変数有効域モデルの変更通知イベント
-     * @param o			通知元
-     * @param arg		通知項目
+     * @param o            通知元
+     * @param arg        通知項目
      */
     @Override
     public void update(Observable o, Object arg) {
@@ -227,7 +247,7 @@ public class ScopePanel extends AnalisysPanelBase implements Observer, IAnalisys
 
     /**
      * 変数有効域モデルを取得する
-     * @return		変数特性一覧テーブルモデル
+     * @return        変数特性一覧テーブルモデル
      */
     public ScopeModel getModel() {
         return model;
@@ -236,7 +256,7 @@ public class ScopePanel extends AnalisysPanelBase implements Observer, IAnalisys
 
     /**
      * フォーカスリスナを設定する
-     * @param listener		フォーカスリスナ
+     * @param listener        フォーカスリスナ
      */
     @Override
     public void addTabFocusListener(TabFocusListener listener) {
@@ -259,10 +279,13 @@ public class ScopePanel extends AnalisysPanelBase implements Observer, IAnalisys
     /**
      * パネルにアクションリスナを設定する.<br/>
      * メニューバーに作成済みのアクションリスナをパネルボタンに割り当てる。
-     * @param menu		メニューバー
+     * @param menu        メニューバー
      */
     @Override
     public void setActionListener(MainMenu menu) {
+        // 該当箇所を開く
+        this.btnOpenFile.addActionListener((ActionListener) menu.getActionOpenAnalysisLine());
+
         // 分析情報エクスポートアクション
         this.btnExport.addActionListener(menu.getActionExportAnalysis());
     }
@@ -284,7 +307,7 @@ public class ScopePanel extends AnalisysPanelBase implements Observer, IAnalisys
 
     /**
      * 選択ソースコード行情報を取得する
-     * @return		選択ソースコード行情報
+     * @return        選択ソースコード行情報
      */
     @Override
     public CodeLine getSelectedCodeLine() {
@@ -293,16 +316,27 @@ public class ScopePanel extends AnalisysPanelBase implements Observer, IAnalisys
 
     /**
      * 選択ブロックを取得する
-     * @return		選択ブロック
+     * @return        選択ブロック
      */
     @Override
     public IBlock getSelectedBlock() {
+        //  選択行
+        int row = this.tableScope.getSelectedRow();
+        if (row < 0) return null;
+
+        // 1列目がブロック情報
+        DefaultTableModel tableModel = (DefaultTableModel) this.tableScope.getModel();
+        Object obj = tableModel.getValueAt(row, 0);
+        if (obj == null) return null;
+        if (obj instanceof IBlock) {
+            return (IBlock)obj;
+        }
         return null;
     }
 
     /**
      * 選択付加情報を取得する
-     * @return		選択付加情報
+     * @return        選択付加情報
      */
     @Override
     public IInformation getSelectedInformation() {
@@ -311,11 +345,11 @@ public class ScopePanel extends AnalisysPanelBase implements Observer, IAnalisys
 
     /**
      * ソースビュープロパティを設定する
-     * @param properties		ソースビュープロパティ
+     * @param properties        ソースビュープロパティ
      */
     @Override
     public void setSourceProperties(SourceProperties properties) {}
-    
+
     /**
      * 選択項目をクリップボードにコピーする.
      */
@@ -332,11 +366,57 @@ public class ScopePanel extends AnalisysPanelBase implements Observer, IAnalisys
     /**
      * エキスポートする情報があるか否か
      */
-	@Override
-	public boolean isExportable() {
-		if (this.model == null) return false;
-		return (!this.model.isEmpty());
-	}
+    @Override
+    public boolean isExportable() {
+        if (this.model == null) return false;
+        return (!this.model.isEmpty());
+    }
+
+
+    /**
+     * マウスクリックイベント
+     * @param event        マウスイベント情報
+     */
+    @Override
+    public void mouseClicked(MouseEvent event) {
+        // クリックチェック
+        if (SwingUtilities.isLeftMouseButton(event)) {
+            // ダブルクリック
+            if (event.getClickCount() == 2) {
+                // 該当個所を開く
+                this.btnOpenFile.doClick();
+            }
+        }
+    }
+
+    /**
+     * マウスボタンダウンイベント
+     * @param e        マウスイベント情報
+     */
+    @Override
+    public void mousePressed(MouseEvent e) { }
+
+    /**
+     * マウスボタンアップイベント
+     * @param e        マウスイベント情報
+     */
+    @Override
+    public void mouseReleased(MouseEvent e) {}
+
+    /**
+     * マウスオーバーイベント
+     * @param e        マウスイベント情報
+     */
+    @Override
+    public void mouseEntered(MouseEvent e) {}
+
+    /**
+     * マウスアウトイベント
+     * @param e        マウスイベント情報
+     */
+    @Override
+    public void mouseExited(MouseEvent e) {}
+
 }
 
 

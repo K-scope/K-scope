@@ -20,6 +20,7 @@ package jp.riken.kscope.language;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -29,7 +30,11 @@ import jp.riken.kscope.data.CodeLine;
 import jp.riken.kscope.information.InformationBlock;
 import jp.riken.kscope.information.InformationBlocks;
 import jp.riken.kscope.information.TextInfo;
+import jp.riken.kscope.language.fortran.Structure;
 import jp.riken.kscope.language.fortran.VariableAttribute;
+import jp.riken.kscope.language.fortran.VariableType;
+import jp.riken.kscope.language.utils.LanguageUtils;
+import jp.riken.kscope.parser.LineSpliter;
 import jp.riken.kscope.utils.StringUtils;
 /**
  * 変数・構造体の宣言を表現するクラス。
@@ -47,7 +52,7 @@ public class VariableDefinition implements Serializable, IInformation, IBlock {
     /** 配列要素. */
     private VariableDimension dimension;
     /** 初期値. */
-    private String initValue;
+    private Expression initValue;
     /** 型宣言の開始位置情報. */
     private Statement start;
     /** 型宣言の終了位置情報. */
@@ -56,8 +61,13 @@ public class VariableDefinition implements Serializable, IInformation, IBlock {
     private TextInfo information = null;
     /** USE文によって自身を参照・定義しているプログラム単位の集合. */
     private transient Set<ProgramUnit> referMembers = new HashSet<ProgramUnit>();
-    /** 本宣言を保持しているプログラム単位. */
-    private ProgramUnit mother;
+    /**
+     * 本宣言を保持しているプログラム単位.
+     * @version    2015/09/01     親プログラム(ProgramUnit)からブロック(IBlock)に変更する
+     *                            ProgramUnit又はCompoundBlock
+     *             2015/10/01     構造体メンバの場合、親構造体宣言を設定する
+     */
+    private IBlock mother;
 
     /**
      * コンストラクタ。
@@ -84,7 +94,7 @@ public class VariableDefinition implements Serializable, IInformation, IBlock {
      *            変数名
      */
     public VariableDefinition(String varnm) {
-        name = varnm;
+        this.name = varnm;
     }
 
     /**
@@ -100,7 +110,7 @@ public class VariableDefinition implements Serializable, IInformation, IBlock {
     public VariableDefinition(String nm, IVariableType typ,
             IVariableAttribute attrbts) {
         this.name = nm;
-        this.type = typ;
+        this.setVariableType(typ);
         this.attribute = attrbts;
     }
 
@@ -119,8 +129,33 @@ public class VariableDefinition implements Serializable, IInformation, IBlock {
     public VariableDefinition(String nm, IVariableType typ,
             IVariableAttribute attrbts, VariableDimension dmnsn) {
         this(nm, typ, attrbts);
-        this.dimension = dmnsn;
+        this.setDimension(dmnsn);
     }
+
+
+    /**
+     * コピーコンストラクタ.
+     * @param  var_def          コピー元変数宣言
+     */
+    public VariableDefinition(VariableDefinition var_def) {
+        this.name = var_def.name;
+        this.attribute = var_def.attribute;
+        this.setDimension(var_def.dimension);
+        this.setInitValue(var_def.initValue);
+        this.type = var_def.type;
+        if (var_def.start != null) {
+            this.start = new Statement(var_def.start);
+        }
+        if (var_def.end != null) {
+            this.end = new Statement(var_def.end);
+        }
+        this.mother = var_def.mother;
+
+        // 付加情報はコピーしない
+        // 参照・定義リストはコピーしない
+
+    }
+
     /**
      * ブロックタイプの取得。
      *
@@ -138,7 +173,13 @@ public class VariableDefinition implements Serializable, IInformation, IBlock {
      *            データ型
      */
     public void setVariableType(IVariableType tp) {
-        type = tp;
+        this.type = tp;
+
+        if (this.type != null) {
+            this.type.setParentStatement(this);
+            // 親ブロックに参照変数を設定する
+            this.putRefVariable();
+        }
     }
 
     /**
@@ -283,16 +324,25 @@ public class VariableDefinition implements Serializable, IInformation, IBlock {
      */
     public void setDimension(VariableDimension dimension) {
         this.dimension = dimension;
+        if (this.dimension != null) {
+            this.dimension.setParentStatement(this);
+            // 親ブロックに参照変数を設定する
+            this.putRefVariable();
+        }
     }
 
     /**
      * 初期値を設定する。
      *
-     * @param value
-     *            初期値
+     * @param value            初期値
      */
-    public void setInitValue(String value) {
+    public void setInitValue(Expression value) {
         this.initValue = value;
+        if (this.initValue != null) {
+            this.initValue.setParentStatement(this);
+            // 親ブロックに参照変数を設定する
+            this.putRefVariable();
+        }
     }
 
     /**
@@ -300,7 +350,7 @@ public class VariableDefinition implements Serializable, IInformation, IBlock {
      *
      * @return 初期値
      */
-    public String getInitValue() {
+    public Expression getInitValue() {
         return this.initValue;
     }
 
@@ -339,16 +389,29 @@ public class VariableDefinition implements Serializable, IInformation, IBlock {
     public String toStringClang() {
         StringBuilder var = new StringBuilder();
 
+        if (this.mother != null && this.mother instanceof Structure) {
+            Structure struct = (Structure)this.mother;
+            if (struct.getMotherBlock() != null) {
+                var.append(struct.getMotherBlock().toString());
+            }
+            else {
+                var.append(struct.toString());
+            }
+            var.append("::");
+        }
+
         // 属性
         boolean is_pointer = false;
+        boolean is_const_pointer = false;
         boolean is_prioritypointer = false;
         String var_attr = "";
         if (this.attribute != null) {
-            is_pointer = this.attribute.contains("pointer");
+            is_pointer = this.attribute.contains(VariableAttribute.ATTRIBUTE_POINTER);
+            is_const_pointer = this.attribute.contains(VariableAttribute.ATTRIBUTE_CONST_POINTER);
             var_attr = this.attribute.toStringClang();
             // ポインタと配列との優先
-
             is_prioritypointer = ((VariableAttribute)this.attribute).isPointerArrayPriority();
+
         }
         if (!StringUtils.isNullOrEmpty(var_attr)) {
             var.append(var_attr);
@@ -357,7 +420,11 @@ public class VariableDefinition implements Serializable, IInformation, IBlock {
 
         if (this.type != null) {
             // データ型
-            var.append(this.type.getName());
+            String type_name = this.type.getName();
+            if (this.type.isStruct()) {
+                type_name = "struct " + type_name;
+            }
+            var.append(type_name);
         }
 
         var.append(" ");
@@ -371,6 +438,9 @@ public class VariableDefinition implements Serializable, IInformation, IBlock {
             for (int i=0; i<pointer_count; i++) {
                 var.append("*");
             }
+        }
+        if (is_const_pointer) {
+            var.append("*const ");
         }
 
         // 変数名
@@ -399,8 +469,9 @@ public class VariableDefinition implements Serializable, IInformation, IBlock {
             var.append(" ");
             var.append("=");
             var.append(" ");
-            var.append(this.initValue);
+            var.append(this.initValue.getLine());
         }
+
         return var.toString();
     }
 
@@ -414,6 +485,17 @@ public class VariableDefinition implements Serializable, IInformation, IBlock {
 
         StringBuilder var = new StringBuilder();
 
+        if (this.mother != null && this.mother instanceof Structure) {
+            Structure struct = (Structure)this.mother;
+            if (struct.getMotherBlock() != null) {
+                var.append(struct.getMotherBlock().toString());
+            }
+            else {
+                var.append(struct.toString());
+            }
+            var.append("::");
+        }
+
         if (type != null) {
             // データ型
             var.append(type.toString());
@@ -422,16 +504,32 @@ public class VariableDefinition implements Serializable, IInformation, IBlock {
         if (dimension != null) {
             var.append(",dimension(");
             String dims = "";
+            boolean explicitly = false;
             for (int i = 0; i < dimension.get_index_size(); i++) {
                 String start = dimension.get_index_start(i).toString();
                 String end = dimension.get_index_end(i).toString();
+                if (start != null && start.trim().isEmpty()) start = null;
+                if (end != null && end.trim().isEmpty()) end = null;
+
+                String dim = "";
                 if (start != null) {
-                    dims += start;
+                    dim += start;
                 }
-                dims += ":";
+                dim += ":";
                 if (end != null) {
-                    dims += end;
+                    dim += end;
+                    explicitly = true;
                 }
+                if (start == null && end != null && end.equals("*")) {
+                    dim = "*";
+                }
+                else if (explicitly && start == null && end == null) {
+                    dim = "*";
+                }
+                else if (explicitly && end == null) {
+                    dim += "*";
+                }
+                dims += dim;
                 if (i + 1 < dimension.get_index_size()) {
                     dims += ",";
                 }
@@ -458,7 +556,7 @@ public class VariableDefinition implements Serializable, IInformation, IBlock {
         // 初期値
         if (initValue != null) {
             var.append("=");
-            var.append(initValue);
+            var.append(initValue.getLine());
         }
         return var.toString();
     }
@@ -516,7 +614,10 @@ public class VariableDefinition implements Serializable, IInformation, IBlock {
      */
     @Override
     public CodeLine getStartCodeLine() {
-        if (start == null) return null;
+        if (start == null) {
+            if (this.mother == null) return null;
+            return this.mother.getStartCodeLine();
+        }
         return start.lineInfo;
     }
     /**
@@ -525,7 +626,10 @@ public class VariableDefinition implements Serializable, IInformation, IBlock {
      */
     @Override
     public CodeLine getEndCodeLine() {
-        if (end == null) return null;
+        if (end == null) {
+            if (this.mother == null) return null;
+            return this.mother.getStartCodeLine();
+        }
         return end.lineInfo;
     }
 
@@ -574,18 +678,25 @@ public class VariableDefinition implements Serializable, IInformation, IBlock {
 
     /**
      * 親プログラムをセットする。
+     *
      * @param mother 親プログラム
+     * @version    2015/09/01     親プログラムからブロックに変更する
+     *                            ProgramUnit又はCompoundBlock
      */
-    public void setMother(ProgramUnit mother) {
+    public void setMother(IBlock mother) {
         this.mother = mother;
+        // 親ブロックに参照変数を設定する
+        this.putRefVariable();
     }
 
     /**
      * 親プログラム単位を習得する。
      *
      * @return 親プログラム単位
+     * @version    2015/09/01     親プログラムからブロックに変更する
+     *                            ProgramUnit又はCompoundBlock
      */
-    public ProgramUnit getMother() {
+    public IBlock getMother() {
         return this.mother;
     }
     /**
@@ -597,7 +708,9 @@ public class VariableDefinition implements Serializable, IInformation, IBlock {
     public String getNamespace() {
         String result = "";
         if (this.mother != null) {
-            result = mother.getNamespace();
+            if (this.mother instanceof IInformation) {
+                result = ((IInformation)mother).getNamespace();
+            }
         }
         return result;
     }
@@ -638,6 +751,7 @@ public class VariableDefinition implements Serializable, IInformation, IBlock {
     public int getEndPos() {
         return this.getStartCodeLine().getEndLine();
     }
+
     /**
      * 終了位置を設定する。
      *
@@ -698,9 +812,11 @@ public class VariableDefinition implements Serializable, IInformation, IBlock {
     public String getID() {
         String result = "";
         if (this.mother != null) {
-            int offset = this.getStartPos() - this.mother.getStartPos();
-            result
-              = this.mother.getID() + "$" + offset + ":" + this.toStringBase();
+            if (this.mother instanceof IInformation) {
+                IInformation info = (IInformation)this.mother;
+                int offset = this.getStartPos() - info.getStartPos();
+                result = info.getID() + "$" + offset + ":" + this.toStringBase();
+            }
         } else {
             result = this.toStringBase();
         }
@@ -718,8 +834,8 @@ public class VariableDefinition implements Serializable, IInformation, IBlock {
     /**
      * 同一VariableDefinitionであるかチェックする.
      * 変数宣言の文字列表現にて同一かチェックする.
-     * @param definition		変数・構造体の宣言
-     * @return		true=一致
+     * @param definition        変数・構造体の宣言
+     * @return        true=一致
      */
     public boolean equalsBlocks(VariableDefinition definition) {
          // 変数宣言の文字列表現にて同一かチェックする.
@@ -731,7 +847,12 @@ public class VariableDefinition implements Serializable, IInformation, IBlock {
         else if (thisVar == null) {
             return false;
         }
-        return thisVar.equalsIgnoreCase(destVar);
+        if (this.isFortran()) {
+            return thisVar.equalsIgnoreCase(destVar);
+        }
+        else {
+            return thisVar.equals(destVar);
+        }
     }
 
 
@@ -767,8 +888,8 @@ public class VariableDefinition implements Serializable, IInformation, IBlock {
 
     /**
      * 行番号のブロックを検索する
-     * @param line			行番号
-     * @return		行番号のブロック
+     * @param line            行番号
+     * @return        行番号のブロック
      */
     public IBlock[] searchCodeLine(CodeLine line) {
         if (line == null) return null;
@@ -790,60 +911,340 @@ public class VariableDefinition implements Serializable, IInformation, IBlock {
         return list.toArray(new IBlock[0]);
     }
 
-     /**
-      * 変数リストを取得する.
-      */
-     @Override
-     public Set<Variable> getAllVariables() {
-         return null;
-     }
+    /**
+     * 変数リストを取得する.
+     */
+    @Override
+    public Set<Variable> getAllVariables() {
+        Set<Variable> vars = new HashSet<Variable>();
+        if (this.dimension != null) {
+            Set<Variable> list = this.dimension.getAllVariables();
+            if (list != null && list.size() > 0) {
+                vars.addAll(list);
+            }
+        }
+
+        if (this.initValue != null) {
+            Set<Variable> list = this.initValue.getAllVariables();
+            if (list != null && list.size() > 0) {
+                vars.addAll(list);
+            }
+        }
+
+        if (this.type != null) {
+            Set<Variable> list = this.type.getAllVariables();
+            if (list != null && list.size() > 0) {
+                vars.addAll(list);
+            }
+        }
+        if (vars.size() <= 0) return null;
+
+        return vars;
+    }
+
+    /**
+     * VariableDefinitionの親モジュールを取得する
+     * @param definition        VariableDefinition
+     * @return        モジュール
+     */
+    public ProgramUnit getParentProgram() {
+        IBlock block = this.getMother();
+        if (block == null) return null;
+        while (true) {
+            if (block.getMotherBlock() == null) {
+                break;
+            }
+            block = block.getMotherBlock();
+        }
+
+        if (block instanceof ExecutableBody) {
+            block = ((ExecutableBody)block).getParent();
+        }
+
+        if (!(block instanceof ProgramUnit)) {
+            return null;
+        }
+
+        return (ProgramUnit)block;
+    }
+
+    /**
+     * 子要素を返す。
+     * @return 子要素。無ければ空のリストを返す
+     */
+    public List<IBlock> getChildren() {
+        return new ArrayList<IBlock>();
+    }
+
+    /**
+     * ファイルタイプ（C言語、Fortran)を取得する.
+     * @return        ファイルタイプ（C言語、Fortran)
+     */
+    public jp.riken.kscope.data.FILE_TYPE getFileType() {
+        jp.riken.kscope.data.FILE_TYPE type = jp.riken.kscope.data.FILE_TYPE.UNKNOWN;
+        if (this.mother != null) {
+            type = this.mother.getFileType();
+        }
+        if (type != jp.riken.kscope.data.FILE_TYPE.UNKNOWN) {
+            return type;
+        }
+
+        if (start == null) return type;
+        if (start.lineInfo == null) return type;
+        if (start.lineInfo.getSourceFile() == null) return type;
+
+        return this.start.lineInfo.getSourceFile().getFileType();
+    }
 
 
-     /**
-      * ファイルタイプ（C言語、Fortran)を取得する.
-      * @return		ファイルタイプ（C言語、Fortran)
-      */
-     public jp.riken.kscope.data.FILE_TYPE getFileType() {
-         jp.riken.kscope.data.FILE_TYPE type = jp.riken.kscope.data.FILE_TYPE.UNKNOWN;
-         if (this.mother != null) {
-             type = this.mother.getFileType();
-         }
-         if (type != jp.riken.kscope.data.FILE_TYPE.UNKNOWN) {
-             return type;
-         }
+    /**
+     * ファイルタイプがC言語であるかチェックする.
+     * @return         true = C言語
+     */
+    public boolean isClang() {
+        if (this.mother == null) return false;
+        return this.mother.isClang();
+    }
 
-         if (start == null) return type;
-         if (start.lineInfo == null) return type;
-         if (start.lineInfo.getSourceFile() == null) return type;
+    /**
+     * ファイルタイプがFortranであるかチェックする.
+     * @return         true = Fortran
+     */
+    public boolean isFortran() {
+        if (this.mother == null) return false;
+        return this.mother.isFortran();
+    }
 
-         return this.start.lineInfo.getSourceFile().getFileType();
-     }
+    /**
+     * layoutIDにマッチした構造ブロックを検索する。
+     * @param id    layoutID
+     * @return 見つかった構造ブロック
+     */
+    @Override
+    public IInformation findInformationLayoutID(String id) {
+        if (id == null || id.isEmpty()) return null;
+        IInformation result = null;
+        String layoutId = this.getLayoutID();
+        if (layoutId == null) return null;
+
+        if (this.isFortran()) {
+            if (layoutId.equalsIgnoreCase(id)) {
+                result = this;
+            }
+        }
+        else {
+            if (layoutId.equals(id)) {
+                result = this;
+            }
+        }
+        return result;
+    }
+
+    /**
+     * 親ブロックからIDeclarationsブロックを取得する.
+     * @return    IDeclarationsブロック
+     */
+    @Override
+    public IDeclarations getScopeDeclarationsBlock() {
+        if (this.mother == null) return null;
+        return this.mother.getScopeDeclarationsBlock();
+    }
+
+    /**
+     * 子ブロックのIDeclarationsブロックを検索する.
+     * @return    IDeclarationsブロックリスト
+     */
+    @Override
+    public Set<IDeclarations> getDeclarationsBlocks() {
+        return null;
+    }
+
+    /**
+     * Procedureブロックを習得する。
+     * @return    Procedureブロック
+     */
+    @Override
+    public Procedure getProcedureBlock() {
+        if (this.mother == null) return null;
+        return this.mother.getProcedureBlock();
+    }
+
+    /**
+     * Moduleブロックを習得する。
+     * @return    Moduleブロック
+     */
+    @Override
+    public Module getModuleBlock() {
+        if (this.mother == null) return null;
+        return this.mother.getModuleBlock();
+    }
+
+    /**
+     * プロシージャ（関数）からブロックまでの階層文字列表記を取得する
+     * 階層文字列表記 : [main()]-[if (...)]-[if (...)]
+     * CompoundBlock（空文）は省略する.
+     * @return      階層文字列表記
+     */
+    @Override
+    public String toStringProcedureScope() {
+        return this.toStringScope(false);
+    }
+
+    /**
+     * モジュールからブロックまでの階層文字列表記を取得する
+     * 階層文字列表記 : [main()]-[if (...)]-[if (...)]
+     * CompoundBlock（空文）は省略する.
+     * @return      階層文字列表記
+     */
+    @Override
+    public String toStringModuleScope() {
+        return this.toStringScope(true);
+    }
+
+    /**
+     * ブロックの階層文字列表記を取得する
+     * 階層文字列表記 : [main()]-[if (...)]-[if (...)]
+     * CompoundBlock（空文）は省略する.
+     * @param   module     true=Moduleまでの階層文字列表記とする
+     * @return      階層文字列表記
+     */
+    @Override
+    public String toStringScope(boolean module) {
+        String statement = this.toString();
+        statement = "[" + statement + "]";
+        if (this.getMotherBlock() != null) {
+            String buf = null;
+            if (module) buf = this.getMotherBlock().toStringModuleScope();
+            else buf = this.getMotherBlock().toStringProcedureScope();
+            if (buf != null && !buf.isEmpty()) {
+                statement = buf + "-" + statement;
+            }
+        }
+        return statement;
+    }
 
 
-     /**
-      * ファイルタイプがC言語であるかチェックする.
-      * @return		 true = C言語
-      */
-     public boolean isClang() {
-         jp.riken.kscope.data.FILE_TYPE type = this.getFileType();
-         if (type == jp.riken.kscope.data.FILE_TYPE.UNKNOWN) return false;
-         if (type == jp.riken.kscope.data.FILE_TYPE.XCODEML_XML) return false;
-         if (type == jp.riken.kscope.data.FILE_TYPE.CLANG) return true;
+    /**
+     * 変数・関数の宣言名に変換する.
+     * Fortranの場合は、小文字に変換する.
+     * C言語の場合は、大文字・小文字を区別する
+     * @param name        変数・関数名
+     * @return            変換変数・関数名
+     */
+    public String transferDeclarationName(String name) {
+        if (name == null || name.isEmpty()) return null;
+        // Fortranの場合は、小文字に変換する.
+        if (this.isFortran()) return name.toLowerCase();
+        return name;
+    }
 
-         return false;
-     }
+    /**
+     * 変数定義の変数であるかチェックする。
+     * @param var        変数
+     * @return            変数定義の変数
+     */
+    public boolean validateVariable(Variable var) {
+        if (var == null) return false;
+        if (var.getParentStatement() == null) return false;
 
-     /**
-      * ファイルタイプがFortranであるかチェックする.
-      * @return		 true = Fortran
-      */
-     public boolean isFortran() {
-         jp.riken.kscope.data.FILE_TYPE type = this.getFileType();
-         if (type == jp.riken.kscope.data.FILE_TYPE.UNKNOWN) return false;
-         if (type == jp.riken.kscope.data.FILE_TYPE.XCODEML_XML) return false;
-         if (type == jp.riken.kscope.data.FILE_TYPE.CLANG) return false;
+        return false;
+    }
 
 
-         return true;
-     }
+    /**
+     * 式の変数リストを取得する.
+     * ブロックのみの変数リストを取得する。
+     * @return        式の変数リスト
+     */
+    @Override
+    public Set<Variable> getBlockVariables() {
+        return this.getAllVariables();
+    }
+
+    /**
+     * 関数呼出を含む自身の子ブロックのリストを返す。
+     * @return 子ブロックのリスト
+     */
+    public List<IBlock> getBlocks() {
+        List<IBlock> blk = new ArrayList<IBlock>();
+        if (this.initValue == null) return null;
+        if (this.initValue.getFuncCalls() == null) return null;
+        for (ProcedureUsage pu : this.initValue.getFuncCalls()) {
+            blk.add(pu);
+        }
+        return blk;
+    }
+
+    /**
+     * 親ブロックに参照変数を設定する
+     */
+    private void putRefVariable() {
+        if (this.mother == null) return;
+        IDeclarations dec = this.getScopeDeclarationsBlock();
+        if (dec == null) return;
+
+        if (this.initValue != null) {
+            dec.addExpressionToRef(this, this.initValue);
+        }
+
+        if (this.dimension != null) {
+            Set<Variable> var_list = this.dimension.getAllVariables();
+            if (var_list != null) {
+                for (Variable var : var_list) {
+                    dec.putRefVariableName(var.getName(), this);
+                }
+            }
+        }
+        if (this.type != null) {
+            Set<Variable> var_list = this.type.getAllVariables();
+            if (var_list != null) {
+                for (Variable var : var_list) {
+                    dec.putRefVariableName(var.getName(), this);
+                }
+            }
+        }
+    }
+
+    /**
+     * 構造体メンバの変数定義を取得する
+     * @param mem_names        構造体変数メンバ文字列
+     * @return        構造体メンバの変数定義
+     */
+    public VariableDefinition getStructMember(String mem_name) {
+        String[] mem_names = LanguageUtils.splitVariableNames(mem_name);
+        return this.getStructMember(mem_names);
+    }
+
+    /**
+     * 構造体メンバの変数定義を取得する
+     * @param mem_names        構造体変数メンバ文字列
+     * @return        構造体メンバの変数定義
+     */
+    public VariableDefinition getStructMember(String[] mem_names) {
+        if (mem_names == null || mem_names.length <= 0) return null;
+
+        String name = this.transferDeclarationName(mem_names[0]);
+        if (name == null) return null;
+        if (!name.equals(this.name)) return null;
+        if (mem_names.length == 1) return this;
+
+        // 先頭変数名を削除
+        List<String> mem_list = new ArrayList<String>();
+        mem_list.addAll(Arrays.asList(mem_names));
+        mem_list.remove(0);
+
+        if (this.type == null || !this.type.isStruct()) return null;
+        VariableType type = (VariableType)this.type;
+        if (type.getStructure() != null) {
+            Structure struct = type.getStructure();
+            VariableDefinition mem_def = struct.getStructMember(mem_list.toArray(new String[0]));
+            return mem_def;
+        }
+        else if (type.getType() != null) {
+            jp.riken.kscope.language.fortran.Type struct = type.getType();
+            VariableDefinition mem_def = struct.getStructMember(mem_list.toArray(new String[0]));
+            return mem_def;
+        }
+        return null;
+    }
 }

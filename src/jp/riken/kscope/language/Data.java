@@ -19,6 +19,7 @@ package jp.riken.kscope.language;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -156,102 +157,147 @@ public class Data extends jp.riken.kscope.language.Block {
 
      /**
       * 同一ブロックであるかチェックする.
-      * @param block		ブロック
- 	 * @return		true=一致
+      * @param block        ブロック
+      * @return        true=一致
       */
      @Override
- 	public boolean equalsBlocks(Block block) {
- 		if (block == null) return false;
- 		if (!(block instanceof Data)) return false;
- 		if (!super.equalsBlocks(block)) return false;
+     public boolean equalsBlocks(Block block) {
+         if (block == null) return false;
+         if (!(block instanceof Data)) return false;
+         if (!super.equalsBlocks(block)) return false;
 
-		if (this.variables != null && ((Data)block).variables != null) {
-			if (this.variables.size() == ((Data)block).variables.size()) {
-	            for (int i=0; i<this.variables.size(); i++) {
-	            	Variable thisVar = this.variables.get(i);
-	            	Variable destVar = ((Data)block).variables.get(i);
-	            	if (thisVar == destVar) {
-	            		continue;
-	            	}
-	            	else if (thisVar == null) {
-	            		return false;
-	            	}
-	            	else if (!thisVar.equalsVariable(destVar)) {
-	            		return false;
-	            	}
-	            }
-			}
-		}
-		else if (this.variables != null || ((Data)block).variables != null) {
-			return false;
-		}
+        if (this.variables != null && ((Data)block).variables != null) {
+            if (this.variables.size() == ((Data)block).variables.size()) {
+                for (int i=0; i<this.variables.size(); i++) {
+                    Variable thisVar = this.variables.get(i);
+                    Variable destVar = ((Data)block).variables.get(i);
+                    if (thisVar == destVar) {
+                        continue;
+                    }
+                    else if (thisVar == null) {
+                        return false;
+                    }
+                    else if (!thisVar.equalsVariable(destVar)) {
+                        return false;
+                    }
+                }
+            }
+        }
+        else if (this.variables != null || ((Data)block).variables != null) {
+            return false;
+        }
 
-		if (this.values != null && ((Data)block).values != null) {
-			if (this.values.size() == ((Data)block).values.size()) {
-	            for (int i=0; i<this.values.size(); i++) {
-	            	Expression thisExp = this.values.get(i);
-	            	Expression destExp = ((Data)block).values.get(i);
-	            	if (thisExp == destExp) {
-	            		continue;
-	            	}
-	            	else if (thisExp == null) {
-	            		return false;
-	            	}
-	            	else if (!thisExp.equalsExpression(destExp)) {
-	            		return false;
-	            	}
-	            }
-			}
-		}
-		else if (this.values != null || ((Data)block).values != null) {
-			return false;
-		}
+        if (this.values != null && ((Data)block).values != null) {
+            if (this.values.size() == ((Data)block).values.size()) {
+                for (int i=0; i<this.values.size(); i++) {
+                    Expression thisExp = this.values.get(i);
+                    Expression destExp = ((Data)block).values.get(i);
+                    if (thisExp == destExp) {
+                        continue;
+                    }
+                    else if (thisExp == null) {
+                        return false;
+                    }
+                    else if (!thisExp.equalsExpression(destExp)) {
+                        return false;
+                    }
+                }
+            }
+        }
+        else if (this.values != null || ((Data)block).values != null) {
+            return false;
+        }
 
-		return true;
+        return true;
      }
 
- 	/**
- 	 * 同一ブロックを検索する
- 	 * @param block			IInformationブロック
- 	 * @return		同一ブロック
- 	 */
+     /**
+      * 同一ブロックを検索する
+      * @param block            IInformationブロック
+      * @return        同一ブロック
+      */
      @Override
- 	public IInformation[] searchInformationBlocks(IInformation block) {
- 		List<IInformation> list = new ArrayList<IInformation>();
- 		{
- 	    	IInformation[] infos = super.searchInformationBlocks(block);
- 	    	if (infos != null) {
- 	        	list.addAll(Arrays.asList(infos));
- 	        }
- 		}
+     public IInformation[] searchInformationBlocks(IInformation block) {
+         List<IInformation> list = new ArrayList<IInformation>();
+         {
+             IInformation[] infos = super.searchInformationBlocks(block);
+             if (infos != null) {
+                 list.addAll(Arrays.asList(infos));
+             }
+         }
 
         if (this.variables != null) {
             for (Variable variable : this.variables) {
-            	IInformation[] infos = variable.searchInformationBlocks(block);
-     	    	if (infos != null) {
-     	        	list.addAll(Arrays.asList(infos));
-     	        }
+                IInformation[] infos = variable.searchInformationBlocks(block);
+                 if (infos != null) {
+                     list.addAll(Arrays.asList(infos));
+                 }
             }
         }
         if (this.values != null) {
             for (Expression value : this.values) {
-            	IInformation[] infos = value.searchInformationBlocks(block);
-     	    	if (infos != null) {
-     	        	list.addAll(Arrays.asList(infos));
-     	        }
+                IInformation[] infos = value.searchInformationBlocks(block);
+                 if (infos != null) {
+                     list.addAll(Arrays.asList(infos));
+                 }
             }
         }
         if (list.size() <= 0) {
-        	return null;
+            return null;
         }
- 		return list.toArray(new IInformation[0]);
- 	}
+         return list.toArray(new IInformation[0]);
+     }
 
- 	/**
- 	 * 変数リストを取得する.
- 	 */
- 	@Override
- 	public Set<Variable> getAllVariables() {
- 		return null;
- 	}
+
+     /**
+      * 式の変数リストを取得する.
+      * 子ブロックの変数リストも取得する。
+      * @return        式の変数リスト
+      */
+     @Override
+     public Set<Variable> getAllVariables() {
+         Set<Variable> list = new HashSet<Variable>();
+         Set<Variable> vars = super.getAllVariables();
+         if (vars != null && vars.size() > 0) {
+             list.addAll(vars);
+         }
+         vars = this.getBlockVariables();
+         if (vars != null && vars.size() > 0) {
+             list.addAll(vars);
+         }
+
+         if (list.size() <= 0) return null;
+         return list;
+     }
+
+    /**
+     * 式の変数リストを取得する.
+     * ブロックのみの変数リストを取得する。
+     * @return        式の変数リスト
+     */
+    public Set<Variable> getBlockVariables() {
+
+        Set<Variable> list = new HashSet<Variable>();
+        if (this.variables != null && this.variables.size() > 0) {
+            list.addAll(this.variables);
+            for (Variable var: this.variables) {
+                Set<Variable> vars = var.getAllVariables();
+                if (vars != null && vars.size() > 0) {
+                    list.addAll(vars);
+                }
+            }
+        }
+        if (this.values != null) {
+            for (Expression exp : this.values) {
+                Set<Variable> vars = exp.getAllVariables();
+                if (vars != null && vars.size() > 0) {
+                    list.addAll(vars);
+                }
+            }
+        }
+
+        if (list.size() <= 0) return null;
+        return list;
+    }
+
 }

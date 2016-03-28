@@ -29,7 +29,7 @@ public enum ANALYSIS_PANEL {
     /**  検索結果パネル   */
     SEARCHRESULT(Message.getString("mainmenu.window.analysis.search"), "search.csv"), //検索結果
     /** 変数特性一覧パネル */
-    VALIABLE(Message.getString("mainmenu.analysis.valiableproperty"), "variable.csv"), //変数特性一覧
+    VARIABLE(Message.getString("mainmenu.analysis.variableproperty"), "variable.csv"), //変数特性一覧
     /** 宣言・定義・参照パネル */
     REFERENCE(Message.getString("mainmenu.analysis.dec-def-ref"), "reference.csv"), //宣言・定義・参照
     /** トレースパネル */
@@ -45,7 +45,7 @@ public enum ANALYSIS_PANEL {
     /** コンソールパネル */
     CONSOLE(Message.getString("mainmenu.window.analysis.console"), "console.txt"), //コンソール
     /** 変数有効域パネル */
-    SCOPE(Message.getString("mainmenu.analysis.valiablescope"), "scope.csv"), //変数有効域
+    SCOPE(Message.getString("mainmenu.analysis.variablescope"), "scope.csv"), //変数有効域
     /** 差替結果パネル */
     REPLACE(Message.getString("mainmenu.window.analysis.structureinfo"), "replaceResult.csv"), //構造情報差替結果
     /** プロファイラ:コスト情報:手続パネル */
@@ -76,8 +76,8 @@ public enum ANALYSIS_PANEL {
 
     /**
      * コンストラクタ
-     * @param tabname		タブ名
-     * @param filename		エクスポートデフォルトファイル名
+     * @param tabname        タブ名
+     * @param filename        エクスポートデフォルトファイル名
      */
     private ANALYSIS_PANEL(String tabname, String filename) {
         this.tabname = tabname;
@@ -86,7 +86,7 @@ public enum ANALYSIS_PANEL {
 
     /**
      * タブ名を取得する
-     * @return		タブ名
+     * @return        タブ名
      */
     public String getTabName() {
         return this.tabname;
@@ -94,7 +94,7 @@ public enum ANALYSIS_PANEL {
 
     /**
      * エクスポートデフォルトファイル名を取得する
-     * @return		エクスポートデフォルトファイル名
+     * @return        エクスポートデフォルトファイル名
      */
     public String getFilename() {
         return this.filename;

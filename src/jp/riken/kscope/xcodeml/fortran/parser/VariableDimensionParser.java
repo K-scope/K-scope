@@ -71,6 +71,8 @@ public class VariableDimensionParser {
                     dim_list.add(idx);
                 }
             } else if (elem instanceof IndexRange) {
+                boolean is_assumed_shape = jp.riken.kscope.xcodeml.fortran.utils.XmlNodeUtil.isBoolean(((IndexRange) elem).isIsAssumedShape());
+                boolean is_assumed_size = jp.riken.kscope.xcodeml.fortran.utils.XmlNodeUtil.isBoolean(((IndexRange) elem).isIsAssumedSize());
                 // 配列下限
                 exprParser.setParseNode(((IndexRange) elem).getLowerBound());
                 Expression exprLower = exprParser.getExpression();
@@ -82,8 +84,13 @@ public class VariableDimensionParser {
                 exprParser.setParseNode(((IndexRange) elem).getUpperBound());
                 Expression exprUpper = exprParser.getExpression();
                 if (exprUpper == null) {
-                    // 配列サイズなし
-                    exprUpper = new Expression("");
+                    if (is_assumed_size) {
+                        exprUpper = new Expression("*");
+                    }
+                    else {
+                        // 配列サイズなし
+                        exprUpper = new Expression("");
+                    }
                 }
                 DimensionIndex idx = new DimensionIndex(exprLower, exprUpper);
                 dim_list.add(idx);

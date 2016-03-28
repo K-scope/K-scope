@@ -19,6 +19,7 @@ package jp.riken.kscope.language;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -107,9 +108,18 @@ public class Common extends jp.riken.kscope.language.Block {
      * @return 含まれていれば真
      */
     public boolean contains(String nm) {
+        if (nm == null) return false;
         for (Variable var:this.variables) {
-            if (var.getName().equalsIgnoreCase(nm)) {
-                return true;
+            if (var.getName() == null) continue;
+            if (this.isFortran()) {
+                if (var.getName().equalsIgnoreCase(nm)) {
+                    return true;
+                }
+            }
+            else {
+                if (var.getName().equals(nm)) {
+                    return true;
+                }
             }
         }
         return false;
@@ -158,33 +168,33 @@ public class Common extends jp.riken.kscope.language.Block {
 
     /**
      * 同一ブロックであるかチェックする.
-     * @param block		ブロック
-	 * @return		true=一致
+     * @param block        ブロック
+     * @return        true=一致
      */
     @Override
-	public boolean equalsBlocks(Block block) {
-		if (block == null) return false;
-		if (!(block instanceof Common)) return false;
-		if (!super.equalsBlocks(block)) return false;
+    public boolean equalsBlocks(Block block) {
+        if (block == null) return false;
+        if (!(block instanceof Common)) return false;
+        if (!super.equalsBlocks(block)) return false;
 
         if (this.variables == ((Common)block).getVariables()) {
-        	return true;
+            return true;
         }
         else if (this.variables == null) {
-        	return false;
+            return false;
         }
         else if (this.variables.size() == ((Common)block).getVariables().size()) {
             for (int i=0; i<this.variables.size(); i++) {
-            	Variable thisVar = this.variables.get(i);
-            	Variable destVar = ((Common)block).getVariables().get(i);
-            	if (thisVar == destVar) {
-            		continue;
-            	}
-            	else if (thisVar == null) {
-            		return false;
-            	}
-            	else if (!thisVar.equalsVariable(destVar)) {
-                	return false;
+                Variable thisVar = this.variables.get(i);
+                Variable destVar = ((Common)block).getVariables().get(i);
+                if (thisVar == destVar) {
+                    continue;
+                }
+                else if (thisVar == null) {
+                    return false;
+                }
+                else if (!thisVar.equalsVariable(destVar)) {
+                    return false;
                 }
             }
             return true;
@@ -192,42 +202,73 @@ public class Common extends jp.riken.kscope.language.Block {
 
         return false;
 
-	}
+    }
 
-	/**
-	 * 同一ブロックを検索する
-	 * @param block			IInformationブロック
-	 * @return		同一ブロック
-	 */
+    /**
+     * 同一ブロックを検索する
+     * @param block            IInformationブロック
+     * @return        同一ブロック
+     */
     @Override
-	public IInformation[] searchInformationBlocks(IInformation block) {
-		List<IInformation> list = new ArrayList<IInformation>();
-		{
-	    	IInformation[] infos = super.searchInformationBlocks(block);
-	    	if (infos != null) {
-	        	list.addAll(Arrays.asList(infos));
-	        }
-		}
+    public IInformation[] searchInformationBlocks(IInformation block) {
+        List<IInformation> list = new ArrayList<IInformation>();
+        {
+            IInformation[] infos = super.searchInformationBlocks(block);
+            if (infos != null) {
+                list.addAll(Arrays.asList(infos));
+            }
+        }
         if (this.variables != null) {
             for (Variable variable : this.variables) {
-            	IInformation[] infos = variable.searchInformationBlocks(block);
-            	if (infos != null) {
-    	        	list.addAll(Arrays.asList(infos));
-    	        }
+                IInformation[] infos = variable.searchInformationBlocks(block);
+                if (infos != null) {
+                    list.addAll(Arrays.asList(infos));
+                }
             }
         }
         if (list.size() <= 0) {
-        	return null;
+            return null;
         }
 
-		return list.toArray(new IInformation[0]);
-	}
+        return list.toArray(new IInformation[0]);
+    }
 
-	/**
-	 * 変数リストを取得する.
-	 */
-	@Override
-	public Set<Variable> getAllVariables() {
-		return null;
-	}
+
+    /**
+     * 式の変数リストを取得する.
+     * 子ブロックの変数リストも取得する。
+     * @return        式の変数リスト
+     */
+    @Override
+    public Set<Variable> getAllVariables() {
+        Set<Variable> list = new HashSet<Variable>();
+        Set<Variable> vars = super.getAllVariables();
+        if (vars != null && vars.size() > 0) {
+            list.addAll(vars);
+        }
+        vars = this.getBlockVariables();
+        if (vars != null && vars.size() > 0) {
+            list.addAll(vars);
+        }
+
+        if (list.size() <= 0) return null;
+        return list;
+    }
+
+    /**
+     * 式の変数リストを取得する.
+     * ブロックのみの変数リストを取得する。
+     * @return        式の変数リスト
+     */
+    public Set<Variable> getBlockVariables() {
+
+        Set<Variable> list = new HashSet<Variable>();
+        if (this.variables != null && this.variables.size() > 0) {
+            list.addAll(this.variables);
+        }
+
+        if (list.size() <= 0) return null;
+        return list;
+    }
+
 }

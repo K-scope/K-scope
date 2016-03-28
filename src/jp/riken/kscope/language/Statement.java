@@ -28,8 +28,8 @@ import jp.riken.kscope.data.SourceFile;
  *
  */
 public class Statement implements Serializable {
-	/** シリアル番号 */
-	private static final long serialVersionUID = 6565980998601169008L;
+    /** シリアル番号 */
+    private static final long serialVersionUID = 6565980998601169008L;
     /** コード行ラベルデフォルト値 */
     public final static String NO_LABEL = "no_label";
     /** コード行ラベル */
@@ -50,6 +50,19 @@ public class Statement implements Serializable {
         this.lineInfo = lineInfo;
         label = NO_LABEL;
     }
+
+    /**
+     * コピーコンストラクタ
+     *
+     * @param  statement       コピー元行情報
+     */
+    public Statement(Statement statement) {
+        if (statement == null) return;
+        if (statement.lineInfo == null) return;
+        this.lineInfo = new CodeLine(statement.lineInfo);
+        this.label = statement.label;
+    }
+
 
     protected void set_label(String str) {
         label = str;
@@ -121,12 +134,12 @@ public class Statement implements Serializable {
         return (!label.equals(NO_LABEL));
     }
 
-	/**
-	 * コード行情報を取得する.
-	 * @return lineInfo		コード行情報
-	 */
-	public CodeLine getLineInfo() {
-		return this.lineInfo;
-	}
+    /**
+     * コード行情報を取得する.
+     * @return lineInfo        コード行情報
+     */
+    public CodeLine getLineInfo() {
+        return this.lineInfo;
+    }
 
 }

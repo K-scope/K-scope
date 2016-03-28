@@ -71,10 +71,10 @@ public class TreeChooserDialog extends javax.swing.JDialog implements ActionList
 
     /**
      * コンストラクタ
-     * @param owner		親フレーム
-     * @param modal		true=モーダルダイアログを表示する
-     * @param type		ツリータイプ
-     * @param model		ツリーモデル
+     * @param owner        親フレーム
+     * @param modal        true=モーダルダイアログを表示する
+     * @param type        ツリータイプ
+     * @param model        ツリーモデル
      */
     public TreeChooserDialog(Frame owner, boolean modal, EXPLORE_PANEL type, TreeModel model) {
         super(owner, modal);
@@ -83,10 +83,10 @@ public class TreeChooserDialog extends javax.swing.JDialog implements ActionList
 
     /**
      * コンストラクタ
-     * @param owner		親ダイアログ
-     * @param modal		true=モーダルダイアログを表示する
-     * @param type		ツリータイプ
-     * @param model		ツリーモデル
+     * @param owner        親ダイアログ
+     * @param modal        true=モーダルダイアログを表示する
+     * @param type        ツリータイプ
+     * @param model        ツリーモデル
      */
     public TreeChooserDialog(JDialog owner, boolean modal, EXPLORE_PANEL type, TreeModel model) {
         super(owner, modal);
@@ -96,8 +96,8 @@ public class TreeChooserDialog extends javax.swing.JDialog implements ActionList
 
     /**
      * GUI初期化を行う。
-     * @param type		ツリータイプ
-     * @param model		ツリーモデル
+     * @param type        ツリータイプ
+     * @param model        ツリーモデル
      */
     private void initGUI(EXPLORE_PANEL type, TreeModel model) {
         try {
@@ -230,7 +230,7 @@ public class TreeChooserDialog extends javax.swing.JDialog implements ActionList
 
     /**
      * ボタンクリックイベント
-     * @param event		イベント情報
+     * @param event        イベント情報
      */
     @Override
     public void actionPerformed(ActionEvent event) {
@@ -270,7 +270,7 @@ public class TreeChooserDialog extends javax.swing.JDialog implements ActionList
             row--;
         }
         // ルートノードのみ展開
-        this.treeSelect.expandRow(0);
+        //this.treeSelect.expandRow(0);
     }
 
     /**
@@ -285,7 +285,7 @@ public class TreeChooserDialog extends javax.swing.JDialog implements ActionList
     }
     /**
      * 選択ノードを取得する
-     * @return 		選択ノード
+     * @return         選択ノード
      */
     public TreeNode[] getSelectedTreeNodes() {
         TreePath[] paths = this.treeSelect.getSelectionPaths();
@@ -300,7 +300,7 @@ public class TreeChooserDialog extends javax.swing.JDialog implements ActionList
 
     /**
      * 選択ノードを設定する。
-     * @param nodes 	選択ノード
+     * @param nodes     選択ノード
      */
     public void setSelectedTreeNodes(TreeNode[] nodes) {
         if (nodes == null) return;

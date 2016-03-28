@@ -17,6 +17,7 @@
 
 package jp.riken.kscope.language;
 
+import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -30,11 +31,13 @@ import java.util.Map;
 import java.util.Set;
 
 import jp.riken.kscope.data.CodeLine;
+import jp.riken.kscope.data.SourceFile;
 import jp.riken.kscope.information.InformationBlock;
 import jp.riken.kscope.information.InformationBlocks;
 import jp.riken.kscope.information.TextInfo;
 import jp.riken.kscope.language.fortran.Type;
 import jp.riken.kscope.language.generic.Procedures;
+import jp.riken.kscope.language.utils.LanguageUtils;
 
 /**
  * プログラム単位を表現するクラス。
@@ -42,7 +45,7 @@ import jp.riken.kscope.language.generic.Procedures;
  * @author RIKEN
  *
  */
-public abstract class ProgramUnit implements Serializable, IInformation, IBlock {
+public abstract class ProgramUnit implements Serializable, IInformation, IBlock, IDeclarations {
     /** シリアル番号 */
     private static final long serialVersionUID = -4778301667477615867L;
     /** プログラム名、モジュール名、サブルーチン名、関数名 */
@@ -102,7 +105,7 @@ public abstract class ProgramUnit implements Serializable, IInformation, IBlock 
     /**
      * 本プログラム単位内で使用されている変数の名前と宣言(他のプログラム単位含む)のマップ。 分析機能のためのメンバー変数。
      */
-    private transient HashMap<String, VariableDefinition> variableMap = new HashMap<String, VariableDefinition>();
+    private transient HashMap<Variable, VariableDefinition> variableMap = new HashMap<Variable, VariableDefinition>();
 
     /**
      * コンストラクタ。
@@ -125,8 +128,8 @@ public abstract class ProgramUnit implements Serializable, IInformation, IBlock 
 
     /**
      * 構造体定義を取得する
-     * @param name		構造体名
-     * @return		構造体定義
+     * @param name        構造体名
+     * @return        構造体定義
      */
     public Type getType(String name) {
         if (this.typeDefinitions == null) return null;
@@ -134,7 +137,7 @@ public abstract class ProgramUnit implements Serializable, IInformation, IBlock 
 
         for (Type type : this.typeDefinitions) {
             String typename = type.getName();
-            if (name.equalsIgnoreCase(typename)) {
+            if (this.equalsDeclarationName(name,typename)) {
                 return type;
             }
         }
@@ -229,10 +232,10 @@ public abstract class ProgramUnit implements Serializable, IInformation, IBlock 
 
     /**
      * プログラム名、モジュール名、サブルーチン名、関数名を取得する.
-     * @return		プログラム名、モジュール名、サブルーチン名、関数名
+     * @return        プログラム名、モジュール名、サブルーチン名、関数名
      */
     protected String toStringBase() {
-        return name;
+        return this.name;
     }
 
     /**
@@ -252,7 +255,7 @@ public abstract class ProgramUnit implements Serializable, IInformation, IBlock 
 
     /**
      * 親プログラムを設定する.
-     * @param mam		親プログラム
+     * @param mam        親プログラム
      */
     protected void set_mother(ProgramUnit mam) {
         mother = mam;
@@ -260,7 +263,7 @@ public abstract class ProgramUnit implements Serializable, IInformation, IBlock 
 
     /**
      * プログラムの属性を追加する.
-     * @param attribute_name		属性名
+     * @param attribute_name        属性名
      */
     protected void put_attribute(String attribute_name) {
         attributes.put(attribute_name, "");
@@ -268,8 +271,8 @@ public abstract class ProgramUnit implements Serializable, IInformation, IBlock 
 
     /**
      * プログラムの属性を追加する.
-     * @param attribute_name		属性名
-     * @param attribute_value		属性値
+     * @param attribute_name        属性名
+     * @param attribute_value        属性値
      */
     protected void put_attribute(String attribute_name, Object attribute_value) {
         attributes.put(attribute_name, attribute_value);
@@ -281,15 +284,15 @@ public abstract class ProgramUnit implements Serializable, IInformation, IBlock 
      */
     protected void put_child(Procedure child) {
         if (this.children == null) {
-            this.children = new HashMap<String, Procedure>();
+            this.children = new LinkedHashMap<String, Procedure>();
         }
         children.put(child.get_name(), child);
     }
 
     /**
      * 副プログラムを追加する.
-     * @param type_name		プログラム単位の種類
-     * @param proc_name		プログラム名
+     * @param type_name        プログラム単位の種類
+     * @param proc_name        プログラム名
      */
     protected void set_child(String type_name, String proc_name) {
         Procedure proc = new Procedure(type_name, proc_name);
@@ -298,7 +301,7 @@ public abstract class ProgramUnit implements Serializable, IInformation, IBlock 
 
     /**
      * 変数宣言文を追加する.
-     * @param vr		変数宣言文
+     * @param vr        変数宣言文
      */
     protected void put_variable(VariableDefinition vr) {
         vr.setMother(this);
@@ -307,7 +310,7 @@ public abstract class ProgramUnit implements Serializable, IInformation, IBlock 
 
     /**
      * 変数宣言文を追加する.
-     * @param varName		変数名
+     * @param varName        変数名
      */
     protected void new_variable_def(String varName) {
         VariableDefinition varDef = new VariableDefinition(varName);
@@ -325,8 +328,8 @@ public abstract class ProgramUnit implements Serializable, IInformation, IBlock 
 
     /**
      * 副プログラム名が存在するかチェックする.
-     * @param name		副プログラム名
-     * @return		true=副プログラムに存在する.
+     * @param name        副プログラム名
+     * @return        true=副プログラムに存在する.
      */
     protected boolean is_my_procedure(String name) {
         if (this.children != null) {
@@ -389,20 +392,21 @@ public abstract class ProgramUnit implements Serializable, IInformation, IBlock 
      * 副プログラム単位を取得する。
      * @return 副プログラム単位のリスト。無ければ空のリストを返す。
      */
-    public Collection<Procedure> getChildren() {
+    public List<IBlock> getChildren() {
+        List<IBlock> list = new ArrayList<IBlock>();
         if (this.children == null) {
-            return new ArrayList<Procedure>();
+            return list;
         }
         if (this.children.values().size() > 0) {
-            return this.children.values();
+            list.addAll(this.children.values());
         }
-        return new ArrayList<Procedure>();
+        return list;
     }
 
     /**
      * 副プログラムを取得する.
-     * @param name		副プログラム名
-     * @return			副プログラム
+     * @param name        副プログラム名
+     * @return            副プログラム
      */
     protected ProgramUnit get_child(String name) {
         if (this.children == null) {
@@ -413,7 +417,7 @@ public abstract class ProgramUnit implements Serializable, IInformation, IBlock 
 
     /**
      * 副プログラム数を取得する.
-     * @return		副プログラム数
+     * @return        副プログラム数
      */
     protected int get_num_of_child() {
         if (this.children == null) {
@@ -424,7 +428,7 @@ public abstract class ProgramUnit implements Serializable, IInformation, IBlock 
 
     /**
      * 副プログラム名のリストを取得する.
-     * @return		副プログラム名のリスト
+     * @return        副プログラム名のリスト
      */
     protected String[] get_child_name() {
         if (this.children == null) {
@@ -435,8 +439,8 @@ public abstract class ProgramUnit implements Serializable, IInformation, IBlock 
 
     /**
      * プログラム属性値を取得する.
-     * @param attribute_name		属性名
-     * @return			属性値
+     * @param attribute_name        属性名
+     * @return            属性値
      */
     protected Object get_attribute(String attribute_name) {
         return attributes.get(attribute_name);
@@ -447,15 +451,18 @@ public abstract class ProgramUnit implements Serializable, IInformation, IBlock 
      * @param var_name 変数名
      * @return 変数宣言。無ければnullを返す。
      */
+    @Override
     public VariableDefinition get_variable(String var_name) {
-        return variables.get(var_name);
+        String name = this.transferDeclarationName(var_name);
+        return variables.get(name);
     }
 
     /**
      * 自身に係わる変数宣言のマップを返す。
      * @return 変数宣言のマップ。
      */
-    public Map<String,VariableDefinition> getVariables() {
+    @Override
+    public Map<String,VariableDefinition> getVariableDefinitionMap() {
         return this.variables;
     }
 
@@ -485,7 +492,7 @@ public abstract class ProgramUnit implements Serializable, IInformation, IBlock 
      * @param varDef
      *            変数宣言文
      */
-    protected void set_variable_def(VariableDefinition varDef) {
+    public void set_variable_def(VariableDefinition varDef) {
         this.put_variable(varDef);
     }
 
@@ -494,6 +501,7 @@ public abstract class ProgramUnit implements Serializable, IInformation, IBlock 
      *
      * @return 変数宣言文リスト
      */
+    @Override
     public VariableDefinition[] get_variables() {
         if (variables == null)
             return null;
@@ -512,7 +520,7 @@ public abstract class ProgramUnit implements Serializable, IInformation, IBlock 
 
     /**
      * 付加情報を取得する
-     * @return		付加情報
+     * @return        付加情報
      */
     @Override
     public TextInfo getInformation() {
@@ -521,7 +529,7 @@ public abstract class ProgramUnit implements Serializable, IInformation, IBlock 
 
     /**
      * 開始行番号情報を取得する
-     * @return		開始行番号情報
+     * @return        開始行番号情報
      */
     @Override
     public CodeLine getStartCodeLine() {
@@ -531,7 +539,7 @@ public abstract class ProgramUnit implements Serializable, IInformation, IBlock 
 
     /**
      * 終了行番号情報を取得する
-     * @return		終了行番号情報
+     * @return        終了行番号情報
      */
     @Override
     public CodeLine getEndCodeLine() {
@@ -554,15 +562,25 @@ public abstract class ProgramUnit implements Serializable, IInformation, IBlock 
      * @return USE文のリスト。無ければ空のリストを返す。
      */
     public List<UseState> getUseList() {
-        if (useList == null) {
+        if (this.useList == null) {
             return new ArrayList<UseState>();
         }
-        return useList;
+        return this.useList;
+    }
+
+    /**
+     * USE文のリストが存在しているかチェックする。
+     * @return   true = USE文のリストを持つ。
+     */
+    public boolean hasUseList() {
+        if (this.useList == null) return false;
+        if (this.useList.size() <= 0) return false;
+        return true;
     }
 
     /**
      * DATA文リストを返す。
-     * @return		DATA文リスト
+     * @return        DATA文リスト
      */
     public List<Data> getDataList() {
         return dataList;
@@ -579,7 +597,7 @@ public abstract class ProgramUnit implements Serializable, IInformation, IBlock 
 
     /**
      * EQUIVALENCE文リストを返す。
-     * @return		EQUIVALENCE文リスト
+     * @return        EQUIVALENCE文リスト
      */
     public List<Equivalence> getEquivalenceList() {
         return equivalenceList;
@@ -587,7 +605,7 @@ public abstract class ProgramUnit implements Serializable, IInformation, IBlock 
 
     /**
      * COMMON文リストを返す。
-     * @return		COMMON文リスト.無ければ空のリストを返す。
+     * @return        COMMON文リスト.無ければ空のリストを返す。
      */
     public List<Common> getCommonList() {
         if (this.commonList == null) {
@@ -622,7 +640,7 @@ public abstract class ProgramUnit implements Serializable, IInformation, IBlock 
         if (this.useList == null) {
             this.useList = new ArrayList<UseState>();
         }
-        useList.add(useline);
+        this.useList.add(useline);
     }
 
     /**
@@ -696,6 +714,7 @@ public abstract class ProgramUnit implements Serializable, IInformation, IBlock 
      *          ID
      * @return 見つかった情報ブロック。見つからなかった場合はnullが返ります。
      */
+    @Override
     public IInformation findInformationBlockBy(String id) {
         IInformation result = null;
 
@@ -712,9 +731,10 @@ public abstract class ProgramUnit implements Serializable, IInformation, IBlock 
         }
 
         if (result == null && this.getChildren() != null) {
-            Collection<Procedure> procedures = this.getChildren();
-            for (Procedure procedure : procedures) {
-                result = procedure.findInformationBlockBy(id);
+            List<IBlock> procedures = this.getChildren();
+            for (IBlock block : procedures) {
+                if (!(block instanceof IInformation)) continue;
+                result = ((IInformation)block).findInformationBlockBy(id);
                 if (result != null) { break; }
             }
         }
@@ -728,8 +748,9 @@ public abstract class ProgramUnit implements Serializable, IInformation, IBlock 
     @Override
     public void clearInformation() {
         this.setInformation(null);
-        for (Procedure child : this.getChildren()) {
-            child.clearInformation();
+        for (IBlock child : this.getChildren()) {
+            if (!(child instanceof IInformation)) continue;
+            ((IInformation)child).clearInformation();
         }
         for (VariableDefinition variable : this.variables.values()) {
             variable.clearInformation();
@@ -751,8 +772,9 @@ public abstract class ProgramUnit implements Serializable, IInformation, IBlock 
             result.add(block);
         }
         // 自身が持つ副プログラム単位の付加情報を追加する
-        for (Procedure procedure : this.getChildren()) {
-            result.addAll(procedure.createInformationBlocks());
+        for (IBlock procedure : this.getChildren()) {
+            if (!(procedure instanceof IInformation)) continue;
+            result.addAll(((IInformation)procedure).createInformationBlocks());
         }
         // 自身が持つ変数宣言の付加情報を追加する
         if (this.variables != null) {
@@ -766,18 +788,19 @@ public abstract class ProgramUnit implements Serializable, IInformation, IBlock 
     /**
      * 名前空間（モジュール名＋ルーチン名）より、ProgramUnitを検索する。
      *
-     * @param namespace
-     *          検索対象名前空間
+     * @param namespace          検索対象名前空間
      * @return 最初に見つかったProgramUnitオブジェクト
      */
     public ProgramUnit findProgramUnitBy(String namespace) {
         ProgramUnit result = null;
-        if (this.getNamespace().equalsIgnoreCase(namespace)) {
+        if (this.equalsDeclarationName(this.getNamespace(), namespace)) {
             result = this;
         }
         if (result == null) {
-            for (Procedure proc : this.getChildren()) {
-                result = proc.findProgramUnitBy(namespace);
+            List<IBlock> blocks = this.getChildren();
+            for (IBlock proc : blocks) {
+                if (!(proc instanceof ProgramUnit)) continue;
+                result = ((ProgramUnit)proc).findProgramUnitBy(namespace);
                 if (result != null) { break; }
             }
         }
@@ -826,8 +849,20 @@ public abstract class ProgramUnit implements Serializable, IInformation, IBlock 
      *
      * @return 変数名とブロックリストのマップ
      */
-    public Map<String, Set<IBlock>> getRefVariableNames() {
-        return refVariableNames;
+    private Map<String, Set<IBlock>> getRefVariableNames() {
+        return this.refVariableNames;
+    }
+
+    /**
+     * プログラム単位内で参照されている変数のブロックリストを返す。
+     * @param   var_name    変数名
+     * @return 変数参照ブロックリスト
+     */
+    public Set<IBlock> getRefVariableName(String var_name) {
+        if (var_name == null) return null;
+        if (this.refVariableNames == null) return null;
+        String name = this.transferDeclarationName(var_name);
+        return this.refVariableNames.get(name);
     }
 
     /**
@@ -838,15 +873,24 @@ public abstract class ProgramUnit implements Serializable, IInformation, IBlock 
      * @param blk
      *            ブロック
      */
+    @Override
     public void putRefVariableName(String refVarName, IBlock blk) {
-        String nm = refVarName.toLowerCase();
-        if (this.refVariableNames.containsKey(nm)) {
-            Set<IBlock> block = this.refVariableNames.get(nm);
-            block.add(blk);
-        } else {
-            Set<IBlock> block = new LinkedHashSet<IBlock>();
-            block.add(blk);
-            this.refVariableNames.put(nm, block);
+        // 2015/09/01 C言語大文字・小文字区別対応
+        String name = this.transferDeclarationName(refVarName);
+
+        // 構造体の変数分割を行う  (e.g.) student.no  = {student, student.no}
+        String[] var_names = LanguageUtils.splitVariableMembers(name);
+        if (var_names == null || var_names.length <= 0) return;
+
+        for (String nm : var_names) {
+            if (this.refVariableNames.containsKey(nm)) {
+                Set<IBlock> block = this.refVariableNames.get(nm);
+                block.add(blk);
+            } else {
+                Set<IBlock> block = new LinkedHashSet<IBlock>();
+                block.add(blk);
+                this.refVariableNames.put(nm, block);
+            }
         }
     }
 
@@ -855,8 +899,21 @@ public abstract class ProgramUnit implements Serializable, IInformation, IBlock 
      *
      * @return 変数名の集合
      */
-    public Map<String, Set<IBlock>> getDefVariableNames() {
+    private Map<String, Set<IBlock>> getDefVariableNames() {
         return defVariableNames;
+    }
+
+    /**
+     * プログラム単位内で定義されている変数のブロックリストを取得する。
+     * @param   var_name    変数名
+     * @return 変数定義ブロックリスト
+     */
+    @Override
+    public Set<IBlock> getDefVariableName(String var_name) {
+        if (var_name == null) return null;
+        if (this.defVariableNames == null) return null;
+        String name = this.transferDeclarationName(var_name);
+        return this.defVariableNames.get(name);
     }
 
     /**
@@ -867,15 +924,24 @@ public abstract class ProgramUnit implements Serializable, IInformation, IBlock 
      * @param blk
      *            ブロック
      */
+    @Override
     public void putDefVariableName(String defVarName, IBlock blk) {
-        String nm = defVarName.toLowerCase();
-        if (this.defVariableNames.containsKey(nm)) {
-            Set<IBlock> block = this.defVariableNames.get(nm);
-            block.add(blk);
-        } else {
-            Set<IBlock> block = new LinkedHashSet<IBlock>();
-            block.add(blk);
-            this.defVariableNames.put(nm, block);
+        // 2015/09/01 C言語大文字・小文字区別対応
+        String name = this.transferDeclarationName(defVarName);
+
+        // 構造体の変数分割を行う  (e.g.) student.no  = {student, student.no}
+        String[] var_names = LanguageUtils.splitVariableMembers(name);
+        if (var_names == null || var_names.length <= 0) return;
+
+        for (String nm : var_names) {
+            if (this.defVariableNames.containsKey(nm)) {
+                Set<IBlock> block = this.defVariableNames.get(nm);
+                block.add(blk);
+            } else {
+                Set<IBlock> block = new LinkedHashSet<IBlock>();
+                block.add(blk);
+                this.defVariableNames.put(nm, block);
+            }
         }
     }
     /**
@@ -883,7 +949,8 @@ public abstract class ProgramUnit implements Serializable, IInformation, IBlock 
      *
      * @return 変数のマップ
      */
-    public HashMap<String, VariableDefinition> getVariableMap() {
+    @Override
+    public HashMap<Variable, VariableDefinition> getVariableMap() {
         if (this.variableMap == null) {
             this.createVariableMap();
         }
@@ -893,70 +960,179 @@ public abstract class ProgramUnit implements Serializable, IInformation, IBlock 
     /**
      * プログラム単位において指定された名前で使用される変数が存在すればその宣言を返す。
      *
-     * @param nm
-     *            変数名
+     * @param var           変数
      * @return 変数宣言。無ければnullを返す。
      */
-    public VariableDefinition getVariableMap(String nm) {
+    @Override
+    public VariableDefinition getVariableMap(Variable var) {
+        if (var == null) return null;
+        if (this.variableMap == null) {
+            this.createVariableMap();
+        }
+
+        // 変数宣言を検索する
+        VariableDefinition def = this.variableMap.get(var);
+        return def;
+    }
+
+    /**
+     * プログラム単位において指定された名前で使用される変数が存在すればその宣言を返す。
+     *
+     * @param var           変数
+     * @return 変数宣言。無ければnullを返す。
+     */
+    @Override
+    public Variable[] searchVariableFromMap(String nm) {
         if (nm == null || nm.isEmpty()) return null;
         if (this.variableMap == null) {
             this.createVariableMap();
         }
-        VariableDefinition def = null;
-        if (this.variableMap.get(nm) == null) {
-            return def;
+
+        // 2015/09/01 C言語大文字・小文字区別対応
+        nm = this.transferDeclarationName(nm);
+
+        // 変数宣言を検索する
+        Variable[] vars = LanguageUtils.searchVariableFromMap(nm, this.variableMap);
+
+        return vars;
+    }
+
+
+    /**
+     * プログラム単位において指定された名前で使用される変数が存在すればその宣言を返す。
+     *
+     * @param var           変数
+     * @return 変数宣言。無ければnullを返す。
+     */
+    @Override
+    public VariableDefinition[] searchVariableDefinitionFromMap(String nm) {
+        if (nm == null || nm.isEmpty()) return null;
+        if (this.variableMap == null) {
+            this.createVariableMap();
         }
-        return this.variableMap.get(nm);
+
+        // 2015/09/01 C言語大文字・小文字区別対応
+        nm = this.transferDeclarationName(nm);
+
+        // 変数宣言を検索する
+        VariableDefinition[] defs = LanguageUtils.searchVariableDefinitionFromMap(nm, this.variableMap);
+
+        return defs;
     }
 
     /**
      * 変数宣言リストを作成する.
      */
-    private void createVariableMap() {
-        this.variableMap = new HashMap<String, VariableDefinition>();
+    @Override
+    public void createVariableMap() {
+        this.variableMap = new HashMap<Variable, VariableDefinition>();
     }
 
     /**
-     * プログラム単位で使用される変数名を追加する。
+     * プログラム単位で使用される変数を追加する。
      *
-     * @param nm
-     *            変数名
+     * @param var           変数
      */
-    public void putVariableMap(String nm) {
-        if (this.variableMap == null) {
-            this.createVariableMap();
-        }
-        if (!(this.variableMap.containsKey(nm))) {
-            VariableDefinition vardef = null;
-            this.variableMap.put(nm, vardef);
-        }
+    @Override
+    public void putVariableMap(Variable var) {
+        this.putVariableMap(var, null);
     }
 
     /**
      * プログラム単位で使用される変数名と宣言のマップを追加する。
      *
-     * @param varName
-     *            変数名
-     * @param varDef
-     *            変数宣言
+     * @param var           変数
+     * @param varDef            変数宣言
      */
-    public void putVariableMap(String varName, VariableDefinition varDef) {
+    @Override
+    public void putVariableMap(Variable var, VariableDefinition varDef) {
+        if (var == null) return;
         if (this.variableMap == null) {
             this.createVariableMap();
         }
-        this.variableMap.put(varName, varDef);
+
+        this.variableMap.put(var, varDef);
+        if (varDef != null) {
+            var.setDefinition(varDef);
+        }
     }
+
+    /**
+     * プログラム単位内で、ある変数が参照・定義されているブロックのセットを返す。
+     *
+     * @param name
+     *            変数名
+     *
+     * @return ブロックのセット。無ければ空のセットを返す。
+     */
+    @Override
+    public Set<IBlock> getRefDefBlocks(String name) {
+        // 2015/09/01 C言語大文字・小文字区別対応
+        String nm = this.transferDeclarationName(name);
+
+        Set<IBlock> blocks = new LinkedHashSet<IBlock>();
+        Set<IBlock> refblocks = this.getRefVariableNames().get(nm);
+        Set<IBlock> defblocks = this.getDefVariableNames().get(nm);
+        if (refblocks == null) {
+            if (defblocks == null) {
+                return new LinkedHashSet<IBlock>();
+            }
+            return defblocks;
+        } else {
+            if (defblocks == null) {
+                return refblocks;
+            }
+            // ref,defともに要素がある場合
+            IBlock[] refArray = refblocks.toArray(new IBlock[0]);
+            IBlock[] defArray = defblocks.toArray(new IBlock[0]);
+            boolean refFlag = true;
+            boolean defFlag = true;
+            int refIndex = 0;
+            int defIndex = 0;
+            IBlock currentRef = refArray[0];
+            IBlock currentDef = defArray[0];
+            int refLine = currentRef.getStartCodeLine().getStartLine();
+            int defLine = currentDef.getStartCodeLine().getStartLine();
+            while (refFlag || defFlag) {
+                if (refLine < defLine) {
+                    blocks.add(currentRef);
+                    if (refIndex == refArray.length - 1) {
+                        refFlag = false;
+                        refLine = defArray[defArray.length - 1].getStartCodeLine().getStartLine();
+                    } else {
+                        refIndex++;
+                        currentRef = refArray[refIndex];
+                        refLine = currentRef.getStartCodeLine().getStartLine();
+                    }
+                } else {
+                    blocks.add(currentDef);
+                    if (defIndex == defArray.length - 1) {
+                        defFlag = false;
+                        defLine = 1 + refArray[refArray.length - 1].getStartCodeLine().getStartLine();
+                    } else {
+                        defIndex++;
+                        currentDef = defArray[defIndex];
+                        defLine = currentDef.getStartCodeLine().getStartLine();
+                    }
+                }
+            }
+        }
+        return blocks;
+    }
+
     /**
      * 指定された式に含まれる全ての変数名と、指定されたブロックを参照としてセットする。
      * 指定された式に含まれる全ての変数名と、式に含まれる手続呼出を参照としてセットする。
      * @param blk ブロック
      * @param exp 式
      */
+    @Override
     public void addExpressionToRef(IBlock blk, Expression exp) {
+
         Set<Variable> vars = exp.getAllVariables();
         for (Variable var:vars) {
             this.putRefVariableName(var.getName(), blk);
-            this.putVariableMap(var.getName());
+            this.putVariableMap(var);
         }
         Set<ProcedureUsage> rightFunc = exp.getAllFunctions();
         for (ProcedureUsage pu: rightFunc) {
@@ -977,6 +1153,47 @@ public abstract class ProgramUnit implements Serializable, IInformation, IBlock 
 
 
     /**
+     * 指定された変数名と、指定されたブロックを参照としてセットする。
+     * @param blk ブロック
+     * @param var    変数
+     */
+    @Override
+    public void addVariableToRef(IBlock blk, Variable var) {
+        if (blk == null) return;
+        if (var == null) return;
+
+        Expression exp = new Expression();
+        exp.addVariable(var);
+        addExpressionToRef(blk, exp);
+
+        return;
+    }
+
+    /**
+     * 手続呼出を参照としてセットする。
+     * @param blk ブロック
+     * @param func    手続呼出
+     */
+    @Override
+    public void addFunctionToRef(IBlock blk, ProcedureUsage func) {
+        if (blk == null) return;
+        if (func == null) return;
+        if (blk instanceof Block) {
+            func.set_mother((Block) blk);
+        }
+        func.set_block_start(blk.getStartCodeLine());
+        func.set_block_end(blk.getEndCodeLine());
+        List<Expression> args = func.getArguments();
+        for (Expression arg: args) {
+            Set<Variable> funcVars = arg.getAllVariables();
+            for (Variable var:funcVars) {
+                this.putRefVariableName(var.getName(), func);
+            }
+        }
+        return;
+    }
+
+    /**
      * 親ブロックを取得する
      * @return        親ブロック
      */
@@ -988,14 +1205,14 @@ public abstract class ProgramUnit implements Serializable, IInformation, IBlock 
 
     /**
      * 子ブロックに同一ProgramUnitが存在するかチェックする
-     * @param unit		検索ProgramUnit
-     * @return			true=同一ProgramUnitが存在する
+     * @param unit        検索ProgramUnit
+     * @return            true=同一ProgramUnitが存在する
      */
     public boolean containsChildren(ProgramUnit unit) {
         if (this == unit) return true;
         String thisID = this.getID();
         String unitID = unit.getID();
-        if (thisID.equalsIgnoreCase(unitID)) {
+        if (this.equalsDeclarationName(thisID, unitID)) {
             return true;
         }
         if (this.children == null) return false;
@@ -1015,21 +1232,21 @@ public abstract class ProgramUnit implements Serializable, IInformation, IBlock 
      * 同一ProgramUnitであるかチェックする.
      * 副プログラム単位(children)と変数宣言(variables)のみチェックする.
      * 付加情報の差替用であるので、createInformationBlocksにて取得ブロックのみチェックする.
-     * @param unit		モジュール、サブルーチン
-     * @return		true=一致
+     * @param unit        モジュール、サブルーチン
+     * @return        true=一致
      */
     public boolean equalsBlocks(ProgramUnit unit) {
         if (unit == null) return false;
 
         // モジュール、サブルーチン名
         if (this.name != null) {
-            if (!this.name.equalsIgnoreCase(unit.name)) {
+            if (!this.equalsDeclarationName(this.name, unit.name)) {
                 return false;
             }
         }
         // タイプ
         if (this.type != null) {
-            if (!this.type.equalsIgnoreCase(unit.type)) {
+            if (!this.equalsDeclarationName(this.type, unit.type)) {
                 return false;
             }
         }
@@ -1083,8 +1300,8 @@ public abstract class ProgramUnit implements Serializable, IInformation, IBlock 
 
     /**
      * 同一ブロックを取得する
-     * @param block			IInformationブロック
-     * @return		同一ブロック
+     * @param block            IInformationブロック
+     * @return        同一ブロック
      */
     public IInformation findBlock(IInformation block) {
         if (block == null) return null;
@@ -1094,7 +1311,7 @@ public abstract class ProgramUnit implements Serializable, IInformation, IBlock 
 
     /**
      * 子ブロック、変数宣言が存在するかチェックする.
-     * @return		true=空モジュール、サブルーチン
+     * @return        true=空モジュール、サブルーチン
      */
     public boolean isEmpty() {
         if (this.children != null && this.children.size() > 0) {
@@ -1108,9 +1325,9 @@ public abstract class ProgramUnit implements Serializable, IInformation, IBlock 
 
 
     /**
-     * 同一ブロックを検索する
-     * @param block			IInformationブロック
-     * @return		同一ブロック
+     * 同一付加情報ブロックを検索する
+     * @param block            IInformationブロック
+     * @return        同一ブロック
      */
     public IInformation[] searchInformationBlocks(IInformation block) {
         if (block == null) return null;
@@ -1135,9 +1352,10 @@ public abstract class ProgramUnit implements Serializable, IInformation, IBlock 
 
         // サブルーチン
         if (this.getChildren() != null) {
-            Collection<Procedure> procedures = this.getChildren();
-            for (Procedure procedure : procedures) {
-                IInformation[] infos = procedure.searchInformationBlocks(block);
+            List<IBlock> child_blocks = this.getChildren();
+            for (IBlock child_block : child_blocks) {
+                if (!(child_block instanceof IInformation)) continue;
+                IInformation[] infos = ((IInformation)child_block).searchInformationBlocks(block);
                 if (infos != null) {
                     list.addAll(Arrays.asList(infos));
                 }
@@ -1152,19 +1370,19 @@ public abstract class ProgramUnit implements Serializable, IInformation, IBlock 
 
     /**
      * 同一ブロック階層であるかチェックする.
-     * @param unit		チェック対象programUnit
+     * @param unit        チェック対象programUnit
      * @return   true=一致
      */
     public boolean equalsLayout(ProgramUnit unit) {
         // モジュール、サブルーチン名
         if (this.name != null) {
-            if (!this.name.equalsIgnoreCase(unit.name)) {
+            if (!this.equalsDeclarationName(this.name, unit.name)) {
                 return false;
             }
         }
         // タイプ
         if (this.type != null) {
-            if (!this.type.equalsIgnoreCase(unit.type)) {
+            if (!this.equalsDeclarationName(this.type, unit.type)) {
                 return false;
             }
         }
@@ -1214,14 +1432,15 @@ public abstract class ProgramUnit implements Serializable, IInformation, IBlock 
     public IInformation findInformationLayoutID(String id) {
         if (id == null || id.isEmpty()) return null;
         IInformation result = null;
-        if (this.getLayoutID().equalsIgnoreCase(id)) {
+        if (this.equalsDeclarationName(this.getLayoutID(), id)) {
             result = this;
         }
 
         if (result == null && this.getChildren() != null) {
-            Collection<Procedure> procedures = this.getChildren();
-            for (Procedure procedure : procedures) {
-                result = procedure.findInformationLayoutID(id);
+            List<IBlock> blocks = this.getChildren();
+            for (IBlock block : blocks) {
+                if (!(block instanceof IInformation)) continue;
+                result = ((IInformation)blocks).findInformationLayoutID(id);
                 if (result != null) { break; }
             }
         }
@@ -1231,8 +1450,8 @@ public abstract class ProgramUnit implements Serializable, IInformation, IBlock 
 
     /**
      * 行番号のブロックを検索する
-     * @param line			行番号
-     * @return		行番号のブロック
+     * @param line            行番号
+     * @return        行番号のブロック
      */
     public IBlock[] searchCodeLine(CodeLine line) {
         if (line == null) return null;
@@ -1261,8 +1480,8 @@ public abstract class ProgramUnit implements Serializable, IInformation, IBlock 
 
         // サブルーチン
         if (this.getChildren() != null) {
-            Collection<Procedure> procedures = this.getChildren();
-            for (Procedure procedure : procedures) {
+            List<IBlock> child_blocks = this.getChildren();
+            for (IBlock procedure : child_blocks) {
                 IBlock[] blocks = procedure.searchCodeLine(line);
                 if (blocks != null) {
                     list.addAll(Arrays.asList(blocks));
@@ -1284,15 +1503,16 @@ public abstract class ProgramUnit implements Serializable, IInformation, IBlock 
         // サブルーチン
          Set<Variable> list = new HashSet<Variable>();
         if (this.getChildren() != null) {
-            Collection<Procedure> procedures = this.getChildren();
-            for (Procedure procedure : procedures) {
-                Set<Variable> vars = procedure.getAllVariables();
+            List<IBlock> blocks = this.getChildren();
+            for (IBlock block : blocks) {
+                Set<Variable> vars = block.getAllVariables();
                 if (vars != null) {
                     list.addAll(vars);
                 }
             }
         }
         if (list.size() <= 0) return null;
+
         return list;
      }
 
@@ -1300,12 +1520,13 @@ public abstract class ProgramUnit implements Serializable, IInformation, IBlock 
      /**
       * 変数に変数定義をセットする
       */
+    @Override
     public void setVariableDefinitions() {
         Set<Variable> vars = getAllVariables();
         if (vars == null || vars.size() <= 0) return;
         for (Variable var : vars) {
             String name = var.getName();
-            VariableDefinition def = getVariableMap(name);
+            VariableDefinition def = this.getVariableMap(var);
             if (def != null) {
                 var.setDefinition(def);
             }
@@ -1314,8 +1535,9 @@ public abstract class ProgramUnit implements Serializable, IInformation, IBlock 
 
     /**
      * ファイルタイプ（C言語、Fortran)を取得する.
-     * @return		ファイルタイプ（C言語、Fortran)
+     * @return        ファイルタイプ（C言語、Fortran)
      */
+    @Override
     public jp.riken.kscope.data.FILE_TYPE getFileType() {
         jp.riken.kscope.data.FILE_TYPE type = jp.riken.kscope.data.FILE_TYPE.UNKNOWN;
         if (this.mother != null) {
@@ -1335,38 +1557,87 @@ public abstract class ProgramUnit implements Serializable, IInformation, IBlock 
 
     /**
      * ファイルタイプがC言語であるかチェックする.
-     * @return		 true = C言語
+     * @return         true = C言語
      */
     public boolean isClang() {
         jp.riken.kscope.data.FILE_TYPE type = this.getFileType();
         if (type == jp.riken.kscope.data.FILE_TYPE.UNKNOWN) return false;
         if (type == jp.riken.kscope.data.FILE_TYPE.XCODEML_XML) return false;
         if (type == jp.riken.kscope.data.FILE_TYPE.CLANG) return true;
+        if (type == jp.riken.kscope.data.FILE_TYPE.FILE_AUTO) {
+            if (this.getStartCodeLine() == null) return false;
+            if (this.getStartCodeLine().getSourceFile() == null) return false;
+            if (this.getStartCodeLine().getSourceFile().getFile() == null) return false;
+            File file = this.getStartCodeLine().getSourceFile().getFile();
+            return jp.riken.kscope.data.FILE_TYPE.isClangFile(file);
+        }
 
         return false;
     }
 
     /**
      * ファイルタイプがFortranであるかチェックする.
-     * @return		 true = Fortran
+     * @return         true = Fortran
      */
     public boolean isFortran() {
+        if (this.isClang()) {
+            return false;
+        }
         jp.riken.kscope.data.FILE_TYPE type = this.getFileType();
         if (type == jp.riken.kscope.data.FILE_TYPE.UNKNOWN) return false;
         if (type == jp.riken.kscope.data.FILE_TYPE.XCODEML_XML) return false;
-        if (type == jp.riken.kscope.data.FILE_TYPE.CLANG) return false;
-
+        if (type == jp.riken.kscope.data.FILE_TYPE.FORTRANLANG) return true;
+        if (type == jp.riken.kscope.data.FILE_TYPE.FILE_AUTO) {
+            if (this.getStartCodeLine() == null) return false;
+            if (this.getStartCodeLine().getSourceFile() == null) return false;
+            if (this.getStartCodeLine().getSourceFile().getFile() == null) return false;
+            File file = this.getStartCodeLine().getSourceFile().getFile();
+            return jp.riken.kscope.data.FILE_TYPE.isFortranFile(file);
+        }
 
         return true;
     }
+
+    /**
+     * 変数・関数の宣言名に変換する.
+     * Fortranの場合は、小文字に変換する.
+     * C言語の場合は、大文字・小文字を区別する
+     * @param name        変数・関数名
+     * @return            変換変数・関数名
+     */
+    protected String transferDeclarationName(String name) {
+        if (name == null || name.isEmpty()) return null;
+        // Fortranの場合は、小文字に変換する.
+        if (this.isFortran()) return name.toLowerCase();
+        return name;
+    }
+
+    /**
+     * 変数・関数の宣言名が一致するか比較する.
+     * Fortranの場合は、小文字・大文字関係なく比較する.
+     * C言語の場合は、大文字・小文字を区別する
+     * @param src         変数・関数名1
+     * @param dest        変数・関数名2
+     * @return            true=変数・関数名が一致
+     */
+    protected boolean equalsDeclarationName(String src, String dest) {
+        if (src == null) return false;
+        if (dest == null) return false;
+        // Fortranの場合は、小文字・大文字関係なく比較する
+        if (this.isFortran()) {
+            return src.equalsIgnoreCase(dest);
+        }
+        return src.equals(dest);
+    }
+
 
     /**
      * プログラム名、モジュール名、サブルーチン名、関数名が同一であるかチェックする.
      * ファイルタイプから文字列に一致条件を変更する.
      *     C言語  : 大文字・小文字を区別する.
      *     Fortran : 大文字・小文字を区別しない.
-     * @param value		チェックプログラム名、モジュール名、サブルーチン名、関数名
-     * @return		true = 一致
+     * @param value        チェックプログラム名、モジュール名、サブルーチン名、関数名
+     * @return        true = 一致
      */
     public boolean equalsName(String value) {
         if (value == null) return false;
@@ -1377,6 +1648,225 @@ public abstract class ProgramUnit implements Serializable, IInformation, IBlock 
         else {
             return (value.equalsIgnoreCase(this.name));
         }
+    }
+
+
+    /**
+     * 親ブロックからIDeclarationsブロックを取得する.
+     * @return    IDeclarationsブロック
+     */
+    @Override
+    public IDeclarations getScopeDeclarationsBlock() {
+        return this;
+    }
+
+    /**
+     * 子ブロックのIDeclarationsブロックを検索する.
+     * @return    IDeclarationsブロックリスト
+     */
+    @Override
+    public Set<IDeclarations> getDeclarationsBlocks() {
+        Set<IDeclarations> list = new LinkedHashSet<IDeclarations>();
+        list.add(this);
+        if (this.children != null) {
+            for (String key : this.children.keySet()) {
+                ProgramUnit childrenUnit = this.children.get(key);
+                if (childrenUnit == null) continue;
+                Set<IDeclarations> children_list = childrenUnit.getDeclarationsBlocks();
+                if (children_list != null && children_list.size() > 0) {
+                    list.addAll(children_list);
+                }
+            }
+        }
+        if (list.size() <= 0) return null;
+        return list;
+    }
+
+    /**
+     * コード行情報を設定する。
+     * 開始・修了行情報の行番号を比較して開始・修了行情報を設定する.
+     * @param lineInfo           コード行情報
+     */
+    public void setCodeLine(CodeLine lineInfo) {
+        if (this.start == null || this.start.getLineInfo() == null) {
+            this.start = new Statement(lineInfo);
+        }
+        else if (this.start.getLineInfo().compareTo(lineInfo) > 0) {
+            this.start = new Statement(lineInfo);
+        }
+        if (this.end == null || this.end.getLineInfo() == null) {
+            this.end = new Statement(lineInfo);
+        }
+        else if (this.end.getLineInfo().compareTo(lineInfo) < 0) {
+            this.end = new Statement(lineInfo);
+        }
+
+        return;
+    }
+
+
+    /**
+     * C言語include文を追加する。
+     * ソースファイル(.c)中に出現する他のファイル（ヘッダーファイル）を登録する.
+     * 追加済みinclude文は重複追加しない。
+     * @param file_name    ファイル名
+     * @param lineInfo       行情報
+     */
+    public void addIncludeFile(String file_name) {
+        CodeLine lineInfo = new CodeLine(new SourceFile(file_name), file_name);
+        UseState include = new UseState(file_name);
+        include.set_block_start(lineInfo);
+        this.addInclude(include);
+    }
+
+    /**
+     * C言語include文を追加する。
+     * ソースファイル(.c)中に出現する他のファイル（ヘッダーファイル）を登録する.
+     * 追加済みinclude文は重複追加しない。
+     * @param file_name    ファイル名
+     * @param lineInfo       行情報
+     */
+    public void addIncludeFiles(List<UseState> use_list) {
+        if (use_list == null) return;
+        if (use_list.size() <= 0) return;
+        for (UseState include : use_list) {
+            this.addInclude(include);
+        }
+    }
+
+    /**
+     * C言語include文を追加する。
+     * ソースファイル(.c)中に出現する他のファイル（ヘッダーファイル）を登録する.
+     * 追加済みinclude文は重複追加しない。
+     * @param include    include文
+     */
+    public void addInclude(UseState include) {
+        if (include == null) return;
+        if (this.useList == null) {
+            this.useList = new ArrayList<UseState>();
+        }
+        String include_name = include.getModuleName();
+        if (include_name == null || include_name.isEmpty()) return;
+
+        // 自身のモジュールと同じであるかチェックする.
+        Module mod = this.getModuleBlock();
+        if (mod.equalsName(include_name)) {
+            return;
+        }
+
+        // 追加済みであるかチェックする.
+        UseState exists = this.getInclude(include_name);
+        if (exists != null) return;
+
+        // USE文リストに追加する
+        this.useList.add(include);
+
+        return;
+    }
+
+
+    /**
+     * C言語include文を取得する。
+     * @param    include_name     includeヘッダーファイル
+     * @return    UseState
+     */
+    protected UseState getInclude(String include_name) {
+        if (this.useList == null) return null;
+        if (include_name == null) return null;
+
+        for (UseState use : this.useList) {
+            String module_name = use.getModuleName();
+            if (include_name.equals(module_name)) {
+                return use;
+            }
+        }
+        return null;
+    }
+
+
+    /**
+     * プロシージャ（関数）からブロックまでの階層文字列表記を取得する
+     * 階層文字列表記 : [main()]-[if (...)]-[if (...)]
+     * CompoundBlock（空文）は省略する.
+     * @return      階層文字列表記
+     */
+    @Override
+    public String toStringProcedureScope() {
+        return this.toStringScope(false);
+    }
+
+
+    /**
+     * モジュールからブロックまでの階層文字列表記を取得する
+     * 階層文字列表記 : [main()]-[if (...)]-[if (...)]
+     * CompoundBlock（空文）は省略する.
+     * @return      階層文字列表記
+     */
+    @Override
+    public String toStringModuleScope() {
+        return this.toStringScope(true);
+    }
+
+    /**
+     * ブロックの階層文字列表記を取得する
+     * 階層文字列表記 : [main()]-[if (...)]-[if (...)]
+     * CompoundBlock（空文）は省略する.
+     * @param   module     true=Moduleまでの階層文字列表記とする
+     * @return      階層文字列表記
+     */
+    @Override
+    public String toStringScope(boolean module) {
+        String statement = this.toString();
+        statement = "[" + statement + "]";
+        if (this.getMotherBlock() != null) {
+            String buf = null;
+            if (module) buf = this.getMotherBlock().toStringModuleScope();
+            else buf = this.getMotherBlock().toStringProcedureScope();
+            if (buf != null && !buf.isEmpty()) {
+                statement = buf + "-" + statement;
+            }
+        }
+        return statement;
+    }
+
+    /**
+     * 式の変数リストを取得する.
+     * ブロックのみの変数リストを取得する。
+     * @return        式の変数リスト
+     */
+    @Override
+    public Set<Variable> getBlockVariables() {
+        return null;
+    }
+
+    /**
+     * 関数呼出を含む自身の子ブロックのリストを返す。
+     * @return 子ブロックのリスト
+     */
+    public List<IBlock> getBlocks() {
+        return this.getChildren();
+    }
+
+    /**
+     * プログラム単位において指定された名前で使用される変数が存在すればその宣言を返す。
+     *
+     * @param nm
+     *            変数名
+     * @return 変数宣言。無ければnullを返す。
+     */
+    @Override
+    public VariableDefinition[] searchVariablesDefinition(String nm) {
+        if (nm == null || nm.isEmpty()) return null;
+        if (this.variables == null) {
+            this.createVariableMap();
+        }
+
+        // 2015/09/01 C言語大文字・小文字区別対応
+        nm = this.transferDeclarationName(nm);
+
+        // 変数宣言を検索する
+        VariableDefinition[] defs = LanguageUtils.searchVariablesDefinition(nm, this.variables);
+        return defs;
     }
 }
 

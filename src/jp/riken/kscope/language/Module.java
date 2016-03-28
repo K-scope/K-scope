@@ -24,8 +24,8 @@ package jp.riken.kscope.language;
  *
  */
 public class Module extends ProgramUnit {
-	/** シリアル番号 */
-	private static final long serialVersionUID = -9149612813518825146L;
+    /** シリアル番号 */
+    private static final long serialVersionUID = -9149612813518825146L;
 
     /**
      * コンストラクタ。
@@ -49,7 +49,12 @@ public class Module extends ProgramUnit {
 
     @Override
     protected String toStringBase() {
-        return ("Module " + this.get_name());
+        if (this.isClang()) {
+            return (this.get_name());
+        }
+        else {
+            return ("Module " + this.get_name());
+        }
     }
 
     /**
@@ -77,5 +82,50 @@ public class Module extends ProgramUnit {
     @Override
     public String getID() {
         return this.toStringBase();
+    }
+
+
+    /**
+     * Procedureブロックを習得する。
+     * @return    Procedureブロック
+     */
+    @Override
+    public Procedure getProcedureBlock() {
+        return null;
+    }
+
+    /**
+     * Moduleブロックを習得する。
+     * @return    Moduleブロック
+     */
+    @Override
+    public Module getModuleBlock() {
+        return this;
+    }
+
+    /**
+     * プロシージャ（関数）からブロックまでの階層文字列表記を取得する
+     * 階層文字列表記 : [main()]-[if (...)]-[if (...)]
+     * CompoundBlock（空文）は省略する.
+     * @return      階層文字列表記
+     */
+    @Override
+    public String toStringProcedureScope() {
+        // モジュールは表示しない
+        return null;
+    }
+
+    /**
+     * モジュールからブロックまでの階層文字列表記を取得する
+     * 階層文字列表記 : [main()]-[if (...)]-[if (...)]
+     * CompoundBlock（空文）は省略する.
+     * @return      階層文字列表記
+     */
+    @Override
+    public String toStringModuleScope() {
+        // モジュール表記を返す
+        String statement = this.toString();
+        statement = "[" + statement + "]";
+        return statement;
     }
 }

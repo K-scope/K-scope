@@ -17,6 +17,8 @@
 
 package jp.riken.kscope.language;
 
+import java.util.Set;
+
 /**
 *
 * データ型を示すインターフェース.<br>
@@ -65,26 +67,46 @@ public interface IVariableType {
 
     /**
      * 実数変数であるかチェックする.
-     * @return		true=実数
+     * @return        true=実数
      */
     boolean isRealType();
 
     /**
      * 整数変数であるかチェックする.
-     * @return		true=整数
+     * @return        true=整数
      */
     boolean isIntegerType();
 
 
     /**
      * C言語データ型文字列表現を取得する
-     * @return		C言語データ型文字列表現
+     * @return        C言語データ型文字列表現
      */
     String toStringClang();
 
     /**
      * void型であるかチェックする
-     * @return		true=void
+     * @return        true=void
      */
     boolean isVoid();
+
+    /**
+     * structure型であるかチェックする
+     * @return        true=structure
+     */
+    boolean isStruct();
+
+
+    /**
+     * 変数リストを取得する.
+     */
+    Set<Variable> getAllVariables();
+
+
+    /**
+     * 親ブロックを設定する.
+     * @param parent 親ブロック
+     */
+    void setParentStatement(IBlock parent);
+
 }

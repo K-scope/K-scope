@@ -220,44 +220,43 @@ public class VariableTypeParser {
         jp.riken.kscope.language.fortran.Structure typeDef = new jp.riken.kscope.language.fortran.Structure(tag_name);
         this.addStackType(typeDef);
 
-        // 構造体のデータ型を設定する
-        VariableType varType = new VariableType(typeDef);
-
         // 変数宣言パーサ
         VariableDefinitionParser defParser = new VariableDefinitionParser(this.typeManager, this.getStackType());
 
         // 構造体メンバ
         Symbols symbols = structType.getSymbols();
-        if (symbols == null)
-            return varType;
+        if (symbols != null) {
+            List<IXmlNode> ids = symbols.getIdOrPragmaOrText();
+            for (IXmlNode id_elem : ids) {
+                if (!(id_elem instanceof Id)) continue;
+                if ( ((Id)id_elem).getName() == null) continue;
 
-        List<IXmlNode> ids = symbols.getIdOrPragmaOrText();
-        for (IXmlNode id_elem : ids) {
-            if (!(id_elem instanceof Id)) continue;
-            if ( ((Id)id_elem).getName() == null) continue;
+                String id_type = ((Id)id_elem).getType();
+                String id_name = ((Id)id_elem).getName().getValue();
 
-            String id_type = ((Id)id_elem).getType();
-            String id_name = ((Id)id_elem).getName().getValue();
+                // データ型
+                VariableDefinition varMem = null;
+                if (StringUtils.isNullOrEmpty(id_type)) {
+                    // 列挙体の場合は、typeはない。
+                    varMem = defParser.parseVariableDefinition((Id)id_elem);
+                }
+                else if (EnumPrimitiveType.isPrimitiveType(id_type)) {
+                    varMem = defParser.parseVariableDefinition(id_name, EnumPrimitiveType.getClangDataType(id_type));
+                }
+                else {
+                    IXmlTypeTableChoice[] typeidChoices = this.typeManager.findTypes(id_type);
+                    varMem = defParser.parseVariableDefinition(id_name, typeidChoices);
+                }
 
-            // データ型
-            VariableDefinition varMem = null;
-            if (StringUtils.isNullOrEmpty(id_type)) {
-                // 列挙体の場合は、typeはない。
-                varMem = defParser.parseVariableDefinition((Id)id_elem);
-            }
-            else if (EnumPrimitiveType.isPrimitiveType(id_type)) {
-                varMem = defParser.parseVariableDefinition(id_name, EnumPrimitiveType.getClangDataType(id_type));
-            }
-            else {
-                IXmlTypeTableChoice[] typeidChoices = this.typeManager.findTypes(id_type);
-                varMem = defParser.parseVariableDefinition(id_name, typeidChoices);
-            }
-
-            if (varMem != null) {
-                // 構造体メンバ追加
-                typeDef.add(varMem);
+                if (varMem != null) {
+                    // 構造体メンバ追加
+                    typeDef.add(varMem);
+                }
             }
         }
+
+        // 構造体のデータ型を設定する
+        VariableType varType = new VariableType(typeDef);
 
         return varType;
     }
@@ -278,7 +277,7 @@ public class VariableTypeParser {
 
     /**
      * シンボル:Id要素からDB::VariableTypeクラスをパース、生成する。
-     * @param var_id		シンボル:Id要素
+     * @param var_id        シンボル:Id要素
      * @return DB::VariableTypeクラス
      */
     public VariableType parseVariableType(Id var_id) {
@@ -400,7 +399,7 @@ public class VariableTypeParser {
 
     /**
      * 構造体の入れ子リストを取得する
-     * @return		構造体の入れ子リスト
+     * @return        構造体の入れ子リスト
      */
     public List<jp.riken.kscope.language.fortran.Structure> getStackType() {
         return stackType;
@@ -408,7 +407,7 @@ public class VariableTypeParser {
 
     /**
      * 構造体の入れ子リストを設定する
-     * @param stackType		構造体の入れ子リスト
+     * @param stackType        構造体の入れ子リスト
      */
     public void setStackType(List<jp.riken.kscope.language.fortran.Structure> stackType) {
         this.stackType = stackType;
@@ -416,7 +415,7 @@ public class VariableTypeParser {
 
     /**
      * 構造体の入れ子リストに追加する
-     * @param type		追加構造体
+     * @param type        追加構造体
      */
     private void addStackType(jp.riken.kscope.language.fortran.Structure type) {
         if (type == null) return;
@@ -428,7 +427,7 @@ public class VariableTypeParser {
 
     /**
      * 構造体の入れ子リストに構造体が追加済みであるかチェックする。
-     * @param type		構造体名
+     * @param type        構造体名
      * @return    true=追加済み
      */
     private boolean containsStackType(String typeName) {
@@ -442,8 +441,8 @@ public class VariableTypeParser {
 
     /**
      * 構造体の入れ子リストから構造体名の構造体を取得する。
-     * @param typeName		構造体名
-     * @return    		構造体
+     * @param typeName        構造体名
+     * @return            構造体
      */
     private jp.riken.kscope.language.fortran.Structure getStackType(String typeName) {
         if (StringUtils.isNullOrEmpty(typeName)) return null;

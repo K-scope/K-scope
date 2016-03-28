@@ -33,8 +33,27 @@ import java.util.Set;
  */
 public class VariableAttribute implements Serializable,
         jp.riken.kscope.language.IVariableAttribute {
+
     /** シリアル番号 */
     private static final long serialVersionUID = 3279154150773399072L;
+    /** PUBLIC属性 */
+    public static final String ATTRIBUTE_PUBLIC = "public";
+    /** PRIVATE属性 */
+    public static final String ATTRIBUTE_PRIVATE = "private";
+    /** EXTERNAL属性 */
+    public static final String ATTRIBUTE_EXTERNAL = "external";
+    /** POINTER属性 */
+    public static final String ATTRIBUTE_POINTER = "pointer";
+    /** ARRAY属性 */
+    public static final String ATTRIBUTE_ARRAY = "ARRAY";
+    /** CONST属性 */
+    public static final String ATTRIBUTE_CONST = "const";
+    /** VOLATILE属性 */
+    public static final String ATTRIBUTE_VOLATILE = "volatile";
+    /** RESTRICT属性 */
+    public static final String ATTRIBUTE_RESTRICT = "restrict";
+    /** CONST+POINTER属性 char* const*/
+    public static final String ATTRIBUTE_CONST_POINTER = "const_pointer";
 
     /**
      * 変数のスコープ属性(public/private/[未指定]).
@@ -62,6 +81,8 @@ public class VariableAttribute implements Serializable,
         TARGET,
         /** array : C言語のみ:表示出力は行わない. */
         ARRAY,
+        /** const+pointer. */
+        CONST_POINTER,
     }
 
     /**
@@ -384,6 +405,7 @@ public class VariableAttribute implements Serializable,
             if (attr == null) continue;
             if (PointerAttribute.POINTER.toString().equalsIgnoreCase(attr)) continue;
             if (PointerAttribute.ARRAY.toString().equalsIgnoreCase(attr)) continue;
+            if (PointerAttribute.CONST_POINTER.toString().equalsIgnoreCase(attr)) continue;
             if (attr.equalsIgnoreCase(sclass_value.toString())) continue;
             buf.append(attr);
             buf.append(" ");
@@ -499,7 +521,7 @@ public class VariableAttribute implements Serializable,
      * ポインタと配列との優先順位をチェックする.
      * true : ポインタ優先  =  (*plist)[10]
      * false : 配列優先  =  *parray[10]
-     * @return		true : ポインタ優先
+     * @return        true : ポインタ優先
      */
     public boolean  isPointerArrayPriority() {
         int pointer = -1;

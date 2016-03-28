@@ -23,7 +23,7 @@ import java.util.Set;
 
 /**
  * Fortran:union型クラス。
- * C言語:unionでは使用しない.
+ * @deprecated 未使用
  * @author RIKEN
  *
  */
@@ -31,6 +31,22 @@ public class Union implements Serializable {
     /** シリアル番号 */
     private static final long serialVersionUID = -3660335230300380344L;
     private Set<jp.riken.kscope.language.fortran.Map> maps = new HashSet<jp.riken.kscope.language.fortran.Map>();
+
+    /**
+     * コンストラクタ
+     */
+    public Union() {
+
+    }
+
+    /**
+     * コピーコンストラクタ
+     */
+    public Union(Union union) {
+        if (union == null) return;
+        union.maps = union.maps;
+    }
+
 
     /**
      * map文の追加。

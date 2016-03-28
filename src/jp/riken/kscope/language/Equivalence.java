@@ -1,6 +1,6 @@
 /*
  * K-scope
- * Copyright 2012-2013 RIKEN, Japan
+ * Copyright 2012-2015 RIKEN, Japan
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@ package jp.riken.kscope.language;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -114,8 +115,8 @@ public class Equivalence extends jp.riken.kscope.language.Block {
 
      /**
       * 同一ブロックであるかチェックする.
-      * @param block		ブロック
-      * @return		true=一致
+      * @param block        ブロック
+      * @return        true=一致
       */
      @Override
     public boolean equalsBlocks(Block block) {
@@ -178,11 +179,48 @@ public class Equivalence extends jp.riken.kscope.language.Block {
         return list.toArray(new IInformation[0]);
     }
 
- 	/**
- 	 * 変数リストを取得する.
- 	 */
- 	@Override
- 	public Set<Variable> getAllVariables() {
- 		return null;
- 	}
+
+    /**
+     * 式の変数リストを取得する.
+     * 子ブロックの変数リストも取得する。
+     * @return        式の変数リスト
+     */
+    @Override
+    public Set<Variable> getAllVariables() {
+        Set<Variable> list = new HashSet<Variable>();
+        Set<Variable> vars = super.getAllVariables();
+        if (vars != null && vars.size() > 0) {
+            list.addAll(vars);
+        }
+        vars = this.getBlockVariables();
+        if (vars != null && vars.size() > 0) {
+            list.addAll(vars);
+        }
+
+        if (list.size() <= 0) return null;
+        return list;
+    }
+
+   /**
+    * 式の変数リストを取得する.
+    * ブロックのみの変数リストを取得する。
+    * @return        式の変数リスト
+    */
+   public Set<Variable> getBlockVariables() {
+
+       Set<Variable> list = new HashSet<Variable>();
+       if (this.variables != null) {
+           list.addAll(this.variables);
+           for (Variable var : this.variables) {
+               Set<Variable> vars = var.getAllVariables();
+               if (vars != null && vars.size() > 0) {
+                   list.addAll(vars);
+               }
+           }
+       }
+
+       if (list.size() <= 0) return null;
+       return list;
+   }
+
 }

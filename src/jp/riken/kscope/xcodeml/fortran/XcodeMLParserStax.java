@@ -133,7 +133,7 @@ public class XcodeMLParserStax extends XcodeMLParserCls {
      *
      * @param ft
      *            解析結果格納フォートランデータベース
-     * @throws InterruptedException			割り込みエラー
+     * @throws InterruptedException            割り込みエラー
      */
     @Override
     public void parseFile(Fortran ft) throws InterruptedException {
@@ -332,8 +332,6 @@ public class XcodeMLParserStax extends XcodeMLParserCls {
         // 無視する要素
         if ("globalDeclarations".equals(elem_name))
             return true;
-        if ("body".equals(elem_name))
-            return true;
 
         // 属性
         String filename = reader.getAttributeValue(null, "file");
@@ -380,9 +378,9 @@ public class XcodeMLParserStax extends XcodeMLParserCls {
      *
      * Visitorのleaveメソッドを呼出し、DBへブロックの終了を登録する。
      *
-     * @param reader		XMLスキーマリーダー
-     * @return				成否
-     * @throws XcodeMLException		パースエラー
+     * @param reader        XMLスキーマリーダー
+     * @return                成否
+     * @throws XcodeMLException        パースエラー
      */
     private boolean endElement(XMLStreamReader reader) throws XcodeMLException {
 
@@ -438,9 +436,9 @@ public class XcodeMLParserStax extends XcodeMLParserCls {
      *
      * XcodeProgramに記述のソースファイルが存在するかチェックする。 ソースファイルが存在しない場合はXcodeMLExceptionとする。
      *
-     * @param reader		XMLスキーマリーダー
-     * @return				成否
-     * @throws XcodeMLException		パースエラー
+     * @param reader        XMLスキーマリーダー
+     * @return                成否
+     * @throws XcodeMLException        パースエラー
      */
     private boolean parseXcodeProgram(XMLStreamReader reader) throws XcodeMLException {
 
@@ -510,7 +508,7 @@ public class XcodeMLParserStax extends XcodeMLParserCls {
 
     /**
      * 元ソースファイル(Fortranソースファイル)を取得する
-     * @return		元ソースファイル(Fortranソースファイル)
+     * @return        元ソースファイル(Fortranソースファイル)
      */
     @Override
     public SourceFile getLanguageFile() {
@@ -597,7 +595,7 @@ public class XcodeMLParserStax extends XcodeMLParserCls {
 
     /**
      * ソースファイルの基準フォルダを設定する
-     * @param	folder	ソースファイルの基準フォルダ
+     * @param    folder    ソースファイルの基準フォルダ
      */
     @Override
     public void setBaseFolder(File folder) {
@@ -606,7 +604,7 @@ public class XcodeMLParserStax extends XcodeMLParserCls {
 
     /**
      * エラー情報を取得する.
-     * @return		エラー情報リスト
+     * @return        エラー情報リスト
      */
     @Override
     public ErrorInfo[] getErrorInfos() {

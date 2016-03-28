@@ -120,7 +120,7 @@ public class XcodeMLParserStax extends XcodeMLParser {
      *
      * @param ft
      *            解析結果格納プログラムデータベース
-     * @throws InterruptedException			割り込みエラー
+     * @throws InterruptedException            割り込みエラー
      */
     @Override
     public void parseFile(Fortran ft) throws InterruptedException {
@@ -223,9 +223,9 @@ public class XcodeMLParserStax extends XcodeMLParser {
      *
      * XcodeProgramに記述のソースファイルが存在するかチェックする。 ソースファイルが存在しない場合はXcodeMLExceptionとする。
      *
-     * @param reader		XMLスキーマリーダー
-     * @return				成否
-     * @throws XcodeMLException		パースエラー
+     * @param reader        XMLスキーマリーダー
+     * @return                成否
+     * @throws XcodeMLException        パースエラー
      */
     protected boolean parseXcodeProgram(XMLStreamReader reader) throws XcodeMLException {
 
@@ -240,7 +240,7 @@ public class XcodeMLParserStax extends XcodeMLParser {
         String compiler_info = reader.getAttributeValue(null, "compiler-info");
         String version = reader.getAttributeValue(null, "version");
         if (this.languageFile != null) {
-        	source = this.languageFile.getPath();
+            source = this.languageFile.getPath();
         }
 
         XcodeProgram program = new XcodeProgram();
@@ -315,7 +315,6 @@ public class XcodeMLParserStax extends XcodeMLParser {
 
         // 無視する要素
         if ("globalDeclarations".equals(elem_name)) return true;
-        if ("body".equals(elem_name)) return true;
 
         // functionDefinition要素以外は対象外
         if (!"functionDefinition".equals(elem_name)) return false;
@@ -370,7 +369,7 @@ public class XcodeMLParserStax extends XcodeMLParser {
 
     /**
      * ソースファイルの基準フォルダを設定する
-     * @param	folder	ソースファイルの基準フォルダ
+     * @param    folder    ソースファイルの基準フォルダ
      */
     @Override
     public void setBaseFolder(File folder) {
@@ -379,7 +378,7 @@ public class XcodeMLParserStax extends XcodeMLParser {
 
     /**
      * エラー情報を取得する.
-     * @return		エラー情報リスト
+     * @return        エラー情報リスト
      */
     @Override
     public ErrorInfo[] getErrorInfos() {

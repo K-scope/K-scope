@@ -94,7 +94,7 @@ public class ModuleTreePanel extends javax.swing.JPanel implements ITabComponent
 
     /**
      * コンストラクタ
-     * @param panel		エクスプローラパネル識別子
+     * @param panel        エクスプローラパネル識別子
      */
     public ModuleTreePanel(EXPLORE_PANEL panel) {
         this.enumPanel = panel;
@@ -213,8 +213,8 @@ public class ModuleTreePanel extends javax.swing.JPanel implements ITabComponent
 
     /**
      * ツリーモデルの変更通知イベント
-     * @param o			通知元
-     * @param arg		通知項目
+     * @param o            通知元
+     * @param arg        通知項目
      */
     @Override
     public void update(Observable o, Object arg) {
@@ -227,11 +227,16 @@ public class ModuleTreePanel extends javax.swing.JPanel implements ITabComponent
         this.treeExplore.setModel(observer.getTreeModel());
         this.treeExplore.updateUI();
 
+        // モジュールタブ名を変更する
+        if (this.parentCompornent != null) {
+            ExploreView tabs = (ExploreView)this.parentCompornent;
+            tabs.setModuleTabname(this, observer);
+        }
     }
 
     /**
      * ツリーモデルを取得する
-     * @return		ツリーモデル
+     * @return        ツリーモデル
      */
     public ModuleTreeModel getModel() {
         return this.model;
@@ -282,8 +287,8 @@ public class ModuleTreePanel extends javax.swing.JPanel implements ITabComponent
     /**
      * ツリーパス配下を展開、折り畳み表示を行う。
      *
-     * @param parent		ツリーパス
-     * @param expand		展開(true)/折り畳み(false)
+     * @param parent        ツリーパス
+     * @param expand        展開(true)/折り畳み(false)
      */
     public void visitAll(TreePath parent, boolean expand) {
         TreeNode node = (TreeNode)parent.getLastPathComponent();
@@ -324,7 +329,7 @@ public class ModuleTreePanel extends javax.swing.JPanel implements ITabComponent
 
     /**
      * 選択ファイルを取得する
-     * @return		選択ファイル
+     * @return        選択ファイル
      */
     @Override
     public File[] getSelectedNodeFiles() {
@@ -340,7 +345,7 @@ public class ModuleTreePanel extends javax.swing.JPanel implements ITabComponent
 
     /**
      * 親コンポーネントを取得する.
-     * @return		親コンポーネント
+     * @return        親コンポーネント
      */
     @Override
     public ITabComponent getParentComponent() {
@@ -349,7 +354,7 @@ public class ModuleTreePanel extends javax.swing.JPanel implements ITabComponent
 
     /**
      * 親コンポーネントを設定する.
-     * @param component		親コンポーネント
+     * @param component        親コンポーネント
      */
     @Override
     public void setParentComponent(ITabComponent component) {
@@ -358,7 +363,7 @@ public class ModuleTreePanel extends javax.swing.JPanel implements ITabComponent
 
     /**
      * タブフォーカスリスナを設定する
-     * @param listener		フォーカスリスナ
+     * @param listener        フォーカスリスナ
      */
     @Override
     public void addTabFocusListener(TabFocusListener listener) {
@@ -380,7 +385,7 @@ public class ModuleTreePanel extends javax.swing.JPanel implements ITabComponent
 
     /**
      * 選択ソースコード行情報を取得する
-     * @return		選択ソースコード行情報
+     * @return        選択ソースコード行情報
      */
     @Override
     public CodeLine[] getSelectedCodeLines() {
@@ -395,11 +400,12 @@ public class ModuleTreePanel extends javax.swing.JPanel implements ITabComponent
             CodeLine end = blocks[i].getEndCodeLine();
             if (start == null) continue;
 
+            CodeLine sel_line = new CodeLine(start);
             // 開始行番号 + 終了行番号で１つのCodeLineの作成
             if (end != null && start.getEndLine() < end.getEndLine()) {
-                start.setEndLine(end.getEndLine());
+                sel_line.setEndLine(end.getEndLine());
             }
-            list.add(start);
+            list.add(sel_line);
         }
         if (list.size() <= 0) return null;
 
@@ -408,7 +414,7 @@ public class ModuleTreePanel extends javax.swing.JPanel implements ITabComponent
 
     /**
      * 選択ブロックを取得する
-     * @return		選択ブロック
+     * @return        選択ブロック
      */
     @Override
     public IBlock[] getSelectedBlocks() {
@@ -438,7 +444,7 @@ public class ModuleTreePanel extends javax.swing.JPanel implements ITabComponent
 
     /**
      * エクスプローラツリーをエクスポートする
-     * @param file		出力ファイル
+     * @param file        出力ファイル
      */
     @Override
     public void export(File file) {
@@ -450,7 +456,7 @@ public class ModuleTreePanel extends javax.swing.JPanel implements ITabComponent
 
     /**
      * エクスプローラパネル識別子を取得する
-     * @return		エクスプローラパネル識別子
+     * @return        エクスプローラパネル識別子
      */
     @Override
     public EXPLORE_PANEL getEnumPanel() {
@@ -460,7 +466,7 @@ public class ModuleTreePanel extends javax.swing.JPanel implements ITabComponent
 
     /**
      * モジュールツリーのポップアップメニューを設定する
-     * @param menuPopup		モジュールツリーポップアップメニュー
+     * @param menuPopup        モジュールツリーポップアップメニュー
      */
     public void setPopupMenu(ModuleTreePopupMenu menuPopup) {
 
@@ -481,7 +487,7 @@ public class ModuleTreePanel extends javax.swing.JPanel implements ITabComponent
 
     /**
      * 現在選択されているノードを取得する。
-     * @return		選択ノード
+     * @return        選択ノード
      */
     @Override
     public DefaultMutableTreeNode getSelectedNode() {
@@ -497,7 +503,7 @@ public class ModuleTreePanel extends javax.swing.JPanel implements ITabComponent
 
     /**
      * 現在選択されているノードリストを取得する。
-     * @return		選択ノードリスト
+     * @return        選択ノードリスト
      */
     @Override
     public DefaultMutableTreeNode[] getSelectedNodes() {
@@ -519,7 +525,7 @@ public class ModuleTreePanel extends javax.swing.JPanel implements ITabComponent
 
     /**
      * ツリーの変更リスナの登録を行う。
-     * @param action		ツリーの変更リスナ
+     * @param action        ツリーの変更リスナ
      */
     @Override
     public void addTreeSelectionListener(ExploreTreeChangeAction action) {
@@ -528,26 +534,26 @@ public class ModuleTreePanel extends javax.swing.JPanel implements ITabComponent
 
     /**
      * 選択ノードを設定する
-     * @param selectnode		選択ノード
+     * @param selectnode        選択ノード
      */
     @Override
     public void setSelectedNode(Object selectnode) {
         if (selectnode == null) return;
          // 引数がノードの場合はそのままノードパスを設定するように変更(2014/4/8 ohichi)
         if(selectnode instanceof  DefaultMutableTreeNode){
-        	TreePath path = new TreePath(((DefaultMutableTreeNode)selectnode).getPath());
-        	this.treeExplore.setSelectionPath(path);
-        	this.treeExplore.scrollPathToVisibleForVertical(path);
+            TreePath path = new TreePath(((DefaultMutableTreeNode)selectnode).getPath());
+            this.treeExplore.setSelectionPath(path);
+            this.treeExplore.scrollPathToVisibleForVertical(path);
         }else{
         // 選択ノードを設定する
-        	this.treeExplore.setSelectedNode(selectnode);
+            this.treeExplore.setSelectedNode(selectnode);
         }
         return;
     }
 
     /**
      * 複数選択ノードを設定する
-     * @param selectnodes		選択ノードリスト
+     * @param selectnodes        選択ノードリスト
      */
     @Override
     public void setSelectedNodes(Object[] selectnodes) {
@@ -561,8 +567,8 @@ public class ModuleTreePanel extends javax.swing.JPanel implements ITabComponent
 
     /**
      * ノード範囲を選択する
-     * @param startnode		選択開始ノード
-     * @param endnode		選択終了ノード
+     * @param startnode        選択開始ノード
+     * @param endnode        選択終了ノード
      */
     @Override
     public void setSelectedNodeArea(Object startnode, Object endnode) {
@@ -574,8 +580,8 @@ public class ModuleTreePanel extends javax.swing.JPanel implements ITabComponent
 
     /**
      * ノード選択範囲を追加する
-     * @param startnode		選択開始ノード
-     * @param endnode		選択終了ノード
+     * @param startnode        選択開始ノード
+     * @param endnode        選択終了ノード
      */
     @Override
     public void addSelectedNodeArea(Object startnode, Object endnode) {
@@ -587,7 +593,7 @@ public class ModuleTreePanel extends javax.swing.JPanel implements ITabComponent
 
     /**
      * ツリーモデルを取得する
-     * @return		ツリーモデル
+     * @return        ツリーモデル
      */
     @Override
     public TreeModel getTreeModel() {
@@ -596,7 +602,7 @@ public class ModuleTreePanel extends javax.swing.JPanel implements ITabComponent
 
     /**
      * ツリーノード選択を行う.
-     * @param path		選択ツリーパス
+     * @param path        選択ツリーパス
      */
     @Override
     public void setSelectionPath(TreePath path) {
@@ -628,7 +634,7 @@ public class ModuleTreePanel extends javax.swing.JPanel implements ITabComponent
 
     /**
      * 複数選択ノードを追加する
-     * @param selectnodes		選択ノードリスト
+     * @param selectnodes        選択ノードリスト
      */
     @Override
     public void addSelectedNodes(Object[] selectnodes) {
@@ -642,7 +648,7 @@ public class ModuleTreePanel extends javax.swing.JPanel implements ITabComponent
 
     /**
      * ソースビュープロパティを設定する
-     * @param properties		ソースビュープロパティ
+     * @param properties        ソースビュープロパティ
      */
     public void setSourceProperties(SourceProperties properties) {
         this.treeExplore.setSourceProperties(properties);
@@ -651,9 +657,9 @@ public class ModuleTreePanel extends javax.swing.JPanel implements ITabComponent
     /**
      * 選択ノードの変更イベントを発生させる
      */
-	@Override
-	public void fireSelectNodeChanged() {
-		this.treeExplore.fireSelectNodeChanged();
-	}
+    @Override
+    public void fireSelectNodeChanged() {
+        this.treeExplore.fireSelectNodeChanged();
+    }
 }
 

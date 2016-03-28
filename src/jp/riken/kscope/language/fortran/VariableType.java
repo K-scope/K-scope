@@ -18,10 +18,15 @@
 package jp.riken.kscope.language.fortran;
 
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 
 import jp.riken.kscope.language.BlockType;
+import jp.riken.kscope.language.DimensionIndex;
 import jp.riken.kscope.language.Expression;
+import jp.riken.kscope.language.IBlock;
 import jp.riken.kscope.language.IVariableAttribute;
+import jp.riken.kscope.language.Variable;
 import jp.riken.kscope.utils.StringUtils;
 
 /**
@@ -37,6 +42,9 @@ public class VariableType implements Serializable,
 
     /** シリアル番号 */
     private static final long serialVersionUID = -7257691935972191261L;
+
+    /** 変数の親ブロック */
+    private IBlock parentStatement;
 
     /**
      * 基本データ型を示すenum。
@@ -191,7 +199,10 @@ public class VariableType implements Serializable,
     private Type type = null;
     /** STRUCTURE文:C言語構造体,共同体 */
     private Structure structure = null;
-    /** UNION文:Fortranのみ （C言語では未使用） */
+    /**
+     * UNION文
+     * @deprecated 未使用
+     */
     private Union union = null;
     /** 属性. */
     private IVariableAttribute attribute;
@@ -214,7 +225,7 @@ public class VariableType implements Serializable,
      */
     public VariableType(Type value) {
         this.primitiveDataType = PrimitiveDataType.TYPE;
-        type = value;
+        this.type = new Type(value);
     }
 
     /**
@@ -225,7 +236,7 @@ public class VariableType implements Serializable,
      */
     public VariableType(Structure value) {
         this.primitiveDataType = PrimitiveDataType.STRUCTURE;
-        structure = value;
+        this.structure = value;
     }
 
     /**
@@ -236,7 +247,24 @@ public class VariableType implements Serializable,
      */
     public VariableType(Union value) {
         this.primitiveDataType = PrimitiveDataType.UNION;
-        union = value;
+        this.union = value;
+    }
+
+    /**
+     * コピーコンストラクタ。
+     *
+     * @param value        データ型
+     */
+    public VariableType(VariableType value) {
+        if (value == null) return;
+        this.primitiveDataType = value.primitiveDataType;
+        this.kind = value.kind;
+        this.len = value.len;
+        this.attribute = value.attribute;
+        this.structure = value.structure;
+        this.type = value.type;
+        this.union = value.union;
+
     }
 
     /**
@@ -509,7 +537,7 @@ public class VariableType implements Serializable,
 
     /**
      * 実数変数であるかチェックする.
-     * @return		true=実数
+     * @return        true=実数
      */
     @Override
     public boolean isRealType() {
@@ -532,7 +560,7 @@ public class VariableType implements Serializable,
 
     /**
      * 整数変数であるかチェックする.
-     * @return		true=整数
+     * @return        true=整数
      */
     @Override
     public boolean isIntegerType() {
@@ -564,7 +592,7 @@ public class VariableType implements Serializable,
 
     /**
      * ポインタであるかチェックする
-     * @return		true=pointer
+     * @return        true=pointer
      */
     public boolean isPointer() {
         if (this.attribute == null) return false;
@@ -573,7 +601,7 @@ public class VariableType implements Serializable,
 
     /**
      * voidデータ型であるかチェックする
-     * @return		true=pointer
+     * @return        true=pointer
      */
     @Override
     public boolean isVoid() {
@@ -585,10 +613,76 @@ public class VariableType implements Serializable,
 
     /**
      * Functionデータ型であるかチェックする
-     * @return		true=function
+     * @return        true=function
      */
     public boolean isFunction() {
         if (this.attribute == null) return false;
         return this.attribute.contains("function");
+    }
+
+    /**
+     * structure型であるかチェックする
+     * @return        true=structure
+     */
+    @Override
+    public boolean isStruct() {
+        if (this.primitiveDataType == PrimitiveDataType.STRUCTURE) return true;
+        if (this.primitiveDataType == PrimitiveDataType.TYPE) return true;
+        return false;
+    }
+
+
+    /**
+     * 変数リストを取得する.
+     */
+    @Override
+    public Set<Variable> getAllVariables() {
+        Set<Variable> vars = new HashSet<Variable>();
+        if (this.kind != null) {
+            Set<Variable> list = this.kind.getAllVariables();
+            if (list != null && list.size() > 0) {
+                vars.addAll(list);
+            }
+        }
+
+        if (this.len != null) {
+            Set<Variable> list = this.len.getAllVariables();
+            if (list != null && list.size() > 0) {
+                vars.addAll(list);
+            }
+        }
+        if (this.structure != null) {
+            Set<Variable> list = this.structure.getAllVariables();
+            if (list != null && list.size() > 0) {
+                vars.addAll(list);
+            }
+        }
+
+        if (vars.size() <= 0) return null;
+
+        return vars;
+    }
+
+    /**
+     * 親ブロックを設定する.
+     * @param parent 親ブロック
+     */
+    public void setParentStatement(IBlock parent) {
+        this.parentStatement = parent;
+        // 子変数に対して設定する
+
+        if (this.kind != null) {
+            this.kind.setParentStatement(parent);
+        }
+
+        if (this.len != null) {
+            this.len.setParentStatement(parent);
+        }
+        if (this.structure != null) {
+            this.structure.setMotherBlock(parent);
+        }
+        if (this.type != null) {
+            this.type.setMotherBlock(parent);
+        }
     }
 }

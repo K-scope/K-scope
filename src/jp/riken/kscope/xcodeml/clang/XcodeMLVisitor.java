@@ -128,7 +128,6 @@ import jp.riken.kscope.xcodeml.clang.xml.gen.Condition;
 import jp.riken.kscope.xcodeml.clang.xml.gen.Else;
 import jp.riken.kscope.xcodeml.clang.xml.gen.Then;
 
-
 /**
  * XMLノード探索クラス
  * @author RIKEN
@@ -144,7 +143,7 @@ public class XcodeMLVisitor extends XcodeMLVisitorImpl {
 
     /**
      * コンストラクタ
-     * @param context		XcodeMLパーサコンテキストクラス
+     * @param context        XcodeMLパーサコンテキストクラス
      */
     public XcodeMLVisitor(XcodeMLContext context) {
         _context = context;
@@ -604,6 +603,13 @@ public class XcodeMLVisitor extends XcodeMLVisitorImpl {
     @Override
     public boolean enter(Body visitable) {
         // DONE: Body
+
+        boolean result = true;
+        DbUpdater updater = _context.getDbUpdater();
+        result = updater.enter(visitable);
+        if (!result)
+            return result;
+
         List<IXmlNode> statements = visitable.getStatements();
         if (!_invokeEnters((IXmlNode[])statements.toArray(new IXmlNode[0]))) {
             return false;
@@ -630,6 +636,12 @@ public class XcodeMLVisitor extends XcodeMLVisitorImpl {
         if (!result)
             return result;
 
+        // ========
+        // Epilogue
+        // ========
+        XcodeMLTypeManager typeManager = _context.getTypeManager();
+        typeManager.enterScope();
+
         Symbols symbols = visitable.getSymbols();
         Declarations declarations = visitable.getDeclarations();
         Body body = visitable.getBody();
@@ -651,6 +663,16 @@ public class XcodeMLVisitor extends XcodeMLVisitorImpl {
 
         return true;
     }
+
+    @Override
+    public void leave(ContinueStatement visitable) {
+
+        XcodeMLTypeManager typeManager = _context.getTypeManager();
+        typeManager.leaveScope();
+
+        return;
+    }
+
 
     /**
      * Decompile "exprStatement" element in XcodeML/C.
@@ -2088,7 +2110,6 @@ public class XcodeMLVisitor extends XcodeMLVisitorImpl {
 
         return true;
     }
-
 
 
 }

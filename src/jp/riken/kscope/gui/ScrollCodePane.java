@@ -51,7 +51,6 @@ import jp.riken.kscope.data.VariableMemory;
 import jp.riken.kscope.menu.SourcePanelPopupMenu;
 import jp.riken.kscope.model.SourceCodeModel;
 import jp.riken.kscope.properties.KeywordProperties;
-//import jp.riken.kscope.properties.SSHconnectProperties;
 import jp.riken.kscope.properties.SourceProperties;
 import jp.riken.kscope.properties.VariableMemoryProperties;
 import jp.riken.kscope.utils.SwingUtils;

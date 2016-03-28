@@ -53,7 +53,8 @@ public final class Fortran extends Program {
     private transient Map<String, ProcedureUsage> unknownProcedureUsage = new HashMap<String, ProcedureUsage>();
     /** キャンセルフラグ */
     private transient boolean cancel = false;
-
+    /** 検索済みDeclaration */
+    private transient Set<IDeclarations> searched_decralations;
 
     /**
      *
@@ -94,13 +95,22 @@ public final class Fortran extends Program {
         list.addAll(moduleFileList);
         Collection<Module> mods = this.getModules().values();
         for (Module mod : mods) {
-            Collection<Procedure> procs = mod.getChildren();
-            for (Procedure proc : procs) {
-                SourceFile procFile = proc.getStartCodeLine().getSourceFile();
-                if (procFile != null && !list.contains(procFile)) {
-                    list.add(procFile);
+            // C言語の場合、モジュールファイル（ヘッダーファイル）を追加する。 add by @hira at 2015/11/01
+            if (mod.isClang()) {
+                SourceFile modFile = mod.getStartCodeLine().getSourceFile();
+                if (modFile != null && !list.contains(modFile)) {
+                    list.add(modFile);
                 }
             }
+            List<IBlock> procs = mod.getChildren();
+              if (procs != null) {
+                for (IBlock proc : procs) {
+                    SourceFile procFile = proc.getStartCodeLine().getSourceFile();
+                    if (procFile != null && !list.contains(procFile)) {
+                        list.add(procFile);
+                    }
+                }
+           }
         }
         if (list.size() <= 0) return null;
         return list;
@@ -203,7 +213,7 @@ public final class Fortran extends Program {
                 this.analyseDBInUnitForClang(current_module);
             }
             else {
-                Collection<Procedure> subs = current_module.getChildren();
+                List<IBlock> subs = current_module.getChildren();
                 this.analyseDBInUnitForFortran(subs);
             }
             parser.firePropertyChange("prograss_string", null,
@@ -229,7 +239,9 @@ public final class Fortran extends Program {
                 this.analyseDBInUnitForClang(current_module);
             }
             else {
-                Collection<Procedure> subs = current_module.getChildren();
+                // List<IBlock> subs = current_module.getChildren();
+                List<IBlock> subs = new ArrayList<IBlock>();
+                subs.add(current_module);
                 this.analyseDBInUnitForFortran(subs);
             }
         }
@@ -244,45 +256,51 @@ public final class Fortran extends Program {
     /**
      * 渡された手続きについて、宣言と呼び出しを対応付ける。 : Fortran用
      *
-     * @param subs
-     *            手続きの配列
+     * @param subs            手続きの配列
      */
-    private void analyseDBInUnitForFortran(Collection<Procedure> subs) {
+    private void analyseDBInUnitForFortran(List<IBlock> subs) {
         if (this.knownProcedure == null) {
             this.knownProcedure = new HashMap<String, Procedure>();
         }
-        for (Procedure sub : subs) {
+        for (IBlock block : subs) {
             // キャンセルチェック
             if (isCancel()) break;
-            List<ProcedureUsage> calls = sub.getCalls();
-            this.knownProcedure.clear();
-            for (ProcedureUsage call:calls) {
-                if (call.isIntrinsic()) {
-                    // TODO INTRINSIC関数に対する処理。現状では不要だが何らかの扱いも可能だと思われる
-                } else {
-                    this.searchCallDeclarationForFortran(sub, call);
+            if (!(block instanceof ProgramUnit)) continue;
+            if (block instanceof Procedure) {
+                Procedure sub = (Procedure)block;
+                List<ProcedureUsage> calls = sub.getCalls();
+                this.knownProcedure.clear();
+                if (calls != null) {
+                    for (ProcedureUsage call:calls) {
+                        if (call.isIntrinsic()) {
+                            // TODO INTRINSIC関数に対する処理。現状では不要だが何らかの扱いも可能だと思われる
+                        } else {
+                            this.searchCallDeclarationForFortran(sub, call);
+                        }
+                    }
                 }
             }
-            Set<String> defSet = sub.getVariables().keySet();
-            Set<String> newSet = new HashSet<String>(sub.getVariableMap().keySet());
-            newSet.addAll(defSet);
-            for (String varName : newSet) {
-                searchVariableDefinition(sub, varName);
+            ProgramUnit prog = (ProgramUnit)block;
+            Set<String> defSet = prog.getVariableDefinitionMap().keySet();
+            Set<Variable> newSet = new HashSet<Variable>(prog.getVariableMap().keySet());
+            // newSet.addAll(defSet);
+            for (Variable var : newSet) {
+                searchVariableDefinition(prog, var);
             }
-            if (sub.getChildren().size() > 0) {
-                analyseDBInUnitForFortran(sub.getChildren());
+            if (prog.getChildren().size() > 0) {
+                analyseDBInUnitForFortran(prog.getChildren());
             }
 
             // add at 2013/03/01 by @hira
             // 変数に変数定義をセットする
-            Set<Variable> vars = sub.getAllVariables();
+            Set<Variable> vars = prog.getAllVariables();
             if (vars != null) {
                 for (Variable var : vars) {
                     String varname = var.getName();
-                    searchVariableDefinition(sub, varname);
+                    searchVariableDefinition(prog, var);
                 }
             }
-             sub.setVariableDefinitions();
+            prog.setVariableDefinitions();
 
         }
     }
@@ -297,59 +315,72 @@ public final class Fortran extends Program {
             this.knownProcedure = new HashMap<String, Procedure>();
         }
 
-        Collection<Procedure> current_subs = current_module.getChildren();
-
-        for (Procedure current_sub : current_subs) {
+        Set<IDeclarations> current_subs = current_module.getDeclarationsBlocks();
+        for (IDeclarations block : current_subs) {
             // キャンセルチェック
             if (isCancel()) break;
 
-            // FunctionCall
-            List<ProcedureUsage> calls = current_sub.getCalls();
-            for (ProcedureUsage call:calls) {
-                Procedure proc = this.searchCallDeclarationForClang(current_module, call);
+            if (block instanceof Procedure) {
+                Procedure current_sub = (Procedure)block;
+                // FunctionCall
+                List<ProcedureUsage> calls = current_sub.getCalls();
+                if (calls != null) {
+                    for (ProcedureUsage call:calls) {
+                        Procedure proc = this.searchCallDeclarationForClang(current_module, call);
 
-                // 他のmoduleから検索する
-                if (proc == null) {
-                    Map<String, Module> module_list = this.getModules();
-                    Set<String> mod_keys = module_list.keySet();
-                    for(String key : mod_keys){
-                        // キャンセルチェック
-                        if (isCancel()) break;
-                        Application.status.setMessageStatus("analysys database..." + key);
-                        Module other_module = module_list.get(key);
-                        if (current_module == other_module) continue;
+                        // 他のmoduleから検索する
+                        if (proc == null) {
+                            Map<String, Module> module_list = this.getModules();
+                            Set<String> mod_keys = module_list.keySet();
+                            for(String key : mod_keys){
+                                // キャンセルチェック
+                                if (isCancel()) break;
+                                Application.status.setMessageStatus("analysys database..." + key);
+                                Module other_module = module_list.get(key);
+                                if (current_module == other_module) continue;
 
-                           proc = this.searchCallDeclarationForClang(other_module, call);
-                           if (proc != null) {
-                               break;
-                           }
+                                   proc = this.searchCallDeclarationForClang(other_module, call);
+                                   if (proc != null) {
+                                       break;
+                                   }
+                            }
+                        }
+
+                        if (proc == null) {
+                            // 未定義
+                            this.putUnknownProcedureUsage(call.getCallName(), call);
+                        }
                     }
-                }
-
-                if (proc == null) {
-                    // 未定義
-                    this.putUnknownProcedureUsage(call.getCallName(), call);
                 }
             }
 
-            Set<String> defSet = current_sub.getVariables().keySet();
-            Set<String> newSet = new HashSet<String>(current_sub.getVariableMap().keySet());
-            newSet.addAll(defSet);
-            for (String varName : newSet) {
-                searchVariableDefinition(current_sub, varName);
+            Set<Variable> newSet = new HashSet<Variable>();
+            Collection<VariableDefinition> defSet = block.getVariableDefinitionMap().values();
+            if (defSet != null) {
+                for (VariableDefinition def : defSet) {
+                    if (def == null) continue;
+                    Set<Variable> list = def.getAllVariables();
+                    if (list != null && list.size() > 0) {
+                        newSet.addAll(list);
+                    }
+                }
+            }
+            newSet.addAll(block.getVariableMap().keySet());
+            // newSet.addAll(defSet);
+            for (Variable var : newSet) {
+                searchVariableDefinition(block, var);
             }
 
             // add at 2013/03/01 by @hira
             // 変数に変数定義をセットする
-            Set<Variable> vars = current_sub.getAllVariables();
+            Set<Variable> vars = ((IBlock)block).getAllVariables();
             if (vars != null) {
                 for (Variable var : vars) {
                     String varname = var.getName();
-                    searchVariableDefinition(current_sub, varname);
+                    searchVariableDefinition(block, var);
                 }
             }
-            current_sub.setVariableDefinitions();
-
+            block.setVariableDefinitions();
         }
     }
 
@@ -390,8 +421,10 @@ public final class Fortran extends Program {
             }
             // currentの内部副プログラムを探す
             if (current.getChildren().size() > 0) {
-                Collection<Procedure> children = current.getChildren();
-                for (Procedure child: children) {
+                List<IBlock> children = current.getChildren();
+                for (IBlock block: children) {
+                    if (!(block instanceof Procedure)) continue;
+                    Procedure child = (Procedure)block;
                     if (child.get_name().equalsIgnoreCase(callName)) {
                         knownProcedure.put(callName, child);
                         call.setCallDefinition(child);
@@ -456,8 +489,10 @@ public final class Fortran extends Program {
         while (current != null) {
             // currentの内部関数を探す
             if (current.getChildren().size() > 0) {
-                Collection<Procedure> children = current.getChildren();
-                for (Procedure child: children) {
+                List<IBlock> children = current.getChildren();
+                for (IBlock block: children) {
+                    if (!(block instanceof Procedure)) continue;
+                    Procedure child = (Procedure)block;
                     if (child.equalsName(callName)) {
                         this.putKnownProcedure(callName, child);
                         call.setCallDefinition(child);
@@ -510,7 +545,7 @@ public final class Fortran extends Program {
                                 // 対応した手続の仮引数だけ宣言を探索する
                                 Variable[] args = modProc.getDeclaration().get_args();
                                 for (int i = 0; i < args.length; i++) {
-                                    this.searchVariableDefinition(modProc.getDeclaration(), args[i].getName());
+                                    this.searchVariableDefinition(modProc.getDeclaration(), args[i]);
                                 }
                             }
                             // add at 2013/02/01 by @hira
@@ -625,30 +660,55 @@ public final class Fortran extends Program {
      *
      * @param proc
      *            変数が属するプログラム単位
-     * @param varName
-     *            変数名
+     * @param var            変数
      */
-    private void searchVariableDefinition(Procedure proc, String varName) {
-        ProgramUnit current = proc;
-        if (varName == null) {
-            return;
-        }
+    private void searchVariableDefinition(IDeclarations dec_block, Variable var) {
+        if (dec_block == null) return;
+        if (var == null) return;
+        if (var.getParentStatement() == null) return;
+        if (var.getParentStatement().getStartCodeLine() == null) return;
 
+        String var_name = var.getName();
+        IBlock var_parent = var.getParentStatement();
+        CodeLine var_lineinfo = var_parent.getStartCodeLine();
+        IBlock current = (IBlock)dec_block;
         while (current != null) {
-            // currentの宣言文を探す
-            VariableDefinition varDef = current.get_variable(varName);
-            if (varDef != null) {
-                proc.putVariableMap(varName, varDef);
-                return;
+            if (current instanceof IDeclarations) {
+                // currentの宣言文を探す
+                VariableDefinition varDef = ((IDeclarations)current).get_variable(var_name);
+                if (varDef == null) {
+                    // 構造体として検索する
+                    VariableDefinition[] varDefs = ((IDeclarations)current).searchVariablesDefinition(var_name);
+                    if (varDefs != null && varDefs.length > 0) {
+                        varDef = varDefs[0];
+                    }
+                }
+                if (varDef != null && varDef.getStartCodeLine() != null) {
+                    CodeLine def_lineinfo = varDef.getStartCodeLine();
+                    // 宣言文が行番号が大きいことはない
+                    if (def_lineinfo.compareTo(var_lineinfo) < 0) {
+                        dec_block.putVariableMap(var, varDef);
+                        return;
+                    }
+                }
             }
 
             // currentのuse先を探索
-            if (current.getUseList() != null) {
-                if (searchVariableDefinitionForUse(current, varName, proc)) {
-                    return;
+            if (current instanceof ProgramUnit
+                && dec_block instanceof ProgramUnit) {
+                if (((ProgramUnit)current).hasUseList()) {
+                    boolean found = searchVariableDefinitionForUse((ProgramUnit)current, var, (ProgramUnit)dec_block);
+
+                    // 検索済みDeclarationをクリアする。
+                    this.clearSearchedDeclarations();
+
+                    if (found) {
+                        return;
+                    }
                 }
             }
-            current = current.get_mother();
+
+            current = current.getMotherBlock();
         }
         return;
     }
@@ -658,39 +718,47 @@ public final class Fortran extends Program {
      *
      * @param pu
      *            プログラム単位
-     * @param varName
-     *            変数名
-     * @param me
-     *            変数が属する手続き
+     * @param var     変数
+     * @param me      変数が属する手続き
      * @return 真偽値。宣言が見つかれば真を返す。
      */
-    private boolean searchVariableDefinitionForUse(ProgramUnit pu,
-            String varName, Procedure me) {
+    private boolean searchVariableDefinitionForUse(
+                            ProgramUnit pu,
+                            Variable var,
+                            ProgramUnit me) {
+        if (var == null) return false;
+        String var_name = var.getName();
         for (UseState useEle : pu.getUseList()) {
             Module useModule = module(useEle.getModuleName());
             if (useModule != null) {
+                // 検索済みであるかチェックする
+                if (this.isSearchedDeclarations(useModule)) {
+                    continue;
+                }
+                // 検索済みDecralationに追加する
+                this.addSearchedDeclarations(useModule);
+
                 if (useEle.hasOnlyMember()) {
-                    String transName = useEle.translationReverse(varName);
+                    String transName = useEle.translationReverse(var_name);
                     VariableDefinition vd = useModule.get_variable(transName);
                     if (vd != null) {
-                        me.putVariableMap(varName, vd);
+                        me.putVariableMap(var, vd);
                         vd.addReferMember(me);
                         return true;
                     }
                 } else {
-                    String nm = useEle.getTranslationName(varName);
+                    String nm = useEle.getTranslationName(var_name);
                     if (nm != null) {
-                        varName = nm;
+                        var_name = nm;
                     }
-                    VariableDefinition vd = useModule.get_variable(varName);
+                    VariableDefinition vd = useModule.get_variable(var_name);
                     if (vd != null) {
-                        me.putVariableMap(varName, vd);
+                        me.putVariableMap(var, vd);
                         vd.addReferMember(me);
                         return true;
                     }
-                    if (useModule.getUseList() != null) {
-                        if (searchVariableDefinitionForUse(useModule, varName,
-                                me)) {
+                    if (useModule.hasUseList()) {
+                        if (searchVariableDefinitionForUse(useModule, var, me)) {
                             return true;
                         }
                     }
@@ -726,9 +794,9 @@ public final class Fortran extends Program {
 
     /**
      * プログラム、モジュールから副プログラムを取得する.
-     * @param proc		モジュール
-     * @param name		副プログラム名
-     * @return			副プログラム
+     * @param proc        モジュール
+     * @param name        副プログラム名
+     * @return            副プログラム
      */
     private Procedure search_sub_rec(ProgramUnit proc, String name) {
         if (proc.is_my_procedure(name)) {
@@ -839,7 +907,7 @@ public final class Fortran extends Program {
 
     /**
      * シャローコピーを行う.
-     * @param fortran		コピー元データベース
+     * @param fortran        コピー元データベース
      */
     public void copyShallow(Fortran fortran) {
         this.moduleName = fortran.moduleName;
@@ -865,8 +933,8 @@ public final class Fortran extends Program {
 
     /**
      * 宣言探索のための作業用変数 : 探索済みの宣言文に関数名が存在するかチェックする.
-     * @param call_name		検索関数名
-     * @return			true = 存在する.
+     * @param call_name        検索関数名
+     * @return            true = 存在する.
      */
     private boolean containsKnownProcedure(String call_name) {
         Procedure proc = this.getKnownProcedure(call_name);
@@ -875,8 +943,8 @@ public final class Fortran extends Program {
 
     /**
      * 宣言探索のための作業用変数 : 探索済みの宣言文から関数名と同じ関数宣言文を取得する.
-     * @param call_name		検索関数名
-     * @return			探索済み:関数宣言文
+     * @param call_name        検索関数名
+     * @return            探索済み:関数宣言文
      */
     private Procedure getKnownProcedure(String call_name) {
         if (call_name == null) return null;
@@ -921,8 +989,8 @@ public final class Fortran extends Program {
 
     /**
      * 宣言探索のための作業用変数 : 探索失敗の関数に関数名が存在するかチェックする.
-     * @param call_name		検索関数名
-     * @return			true = 存在する.
+     * @param call_name        検索関数名
+     * @return            true = 存在する.
      */
     private boolean containsUnknownProcedureUsage(String call_name) {
         ProcedureUsage proc = this.getUnknownProcedureUsage(call_name);
@@ -931,8 +999,8 @@ public final class Fortran extends Program {
 
     /**
      * 宣言探索のための作業用変数 : 探索失敗の関数から関数名と同じ関数を取得する.
-     * @param call_name		検索関数名
-     * @return			探索失敗:関数文
+     * @param call_name        検索関数名
+     * @return            探索失敗:関数文
      */
     private ProcedureUsage getUnknownProcedureUsage(String call_name) {
         if (call_name == null) return null;
@@ -975,5 +1043,41 @@ public final class Fortran extends Program {
         this.unknownProcedureUsage.put(func_name, proc);
         return;
     }
+
+    /**
+     * 検索済みIDeclarationsをクリアする
+     */
+    private void clearSearchedDeclarations() {
+        this.searched_decralations = new HashSet<IDeclarations>();
+        return;
+    }
+
+    /**
+     * 検索済みIDeclarationsであるかチェックする。
+     * @param block        チェックIDeclarations
+     * @return        true = 検索済みIDeclarations
+     */
+    private boolean isSearchedDeclarations(IDeclarations block) {
+        if (this.searched_decralations == null) return false;
+        if (this.searched_decralations.size() <= 0) return false;
+
+        if (this.searched_decralations.contains(block)) return true;
+        return false;
+    }
+
+
+    /**
+     * 検索済みIDeclarationsを追加する。
+     * @param block        追加IDeclarations
+     */
+    private void addSearchedDeclarations(IDeclarations block) {
+        if (this.searched_decralations == null) {
+            this.clearSearchedDeclarations();
+        }
+
+        this.searched_decralations.add(block);
+        return;
+    }
+
 
 }

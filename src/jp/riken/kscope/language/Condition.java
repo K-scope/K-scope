@@ -17,6 +17,8 @@
 
 package jp.riken.kscope.language;
 
+import java.util.HashSet;
+import java.util.Set;
 
 /**
 * IF･･･THEN･･･ELSE文など複数の条件式で構成される. <br/>
@@ -46,7 +48,7 @@ public class Condition extends Block {
         this.expression = exprssn;
         // 親IF文を設定する
         if (this.expression != null) {
-        	this.expression.setParentStatement(this);
+            this.expression.setParentStatement(this);
         }
     }
 
@@ -78,24 +80,110 @@ public class Condition extends Block {
 
     /**
      * 同一ブロックであるかチェックする.
-     * @param block		ブロック
-	 * @return		true=一致
+     * @param block        ブロック
+     * @return        true=一致
      */
     @Override
-	public boolean equalsBlocks(Block block) {
-		if (block == null) return false;
-		if (!(block instanceof Condition)) return false;
-		if (!super.equalsBlocks(block)) return false;
+    public boolean equalsBlocks(Block block) {
+        if (block == null) return false;
+        if (!(block instanceof Condition)) return false;
+        if (!super.equalsBlocks(block)) return false;
 
-		if (this.expression != null && ((Condition)block).expression != null) {
-			if (!this.expression.equalsExpression(((Condition)block).expression)) {
-				return false;
-			}
-		}
-		else if (this.expression != null || ((Condition)block).expression != null) {
-			return false;
-		}
+        if (this.expression != null && ((Condition)block).expression != null) {
+            if (!this.expression.equalsExpression(((Condition)block).expression)) {
+                return false;
+            }
+        }
+        else if (this.expression != null || ((Condition)block).expression != null) {
+            return false;
+        }
 
-		return true;
+        return true;
     }
+
+
+    /**
+     * プロシージャ（関数）からブロックまでの階層文字列表記を取得する
+     * 階層文字列表記 : [main()]-[if (...)]-[if (...)]
+     * CompoundBlock（空文）は省略する.
+     * @return      階層文字列表記
+     */
+    @Override
+    public String toStringProcedureScope() {
+        return this.toStringScope(false);
+    }
+
+    /**
+     * モジュールからブロックまでの階層文字列表記を取得する
+     * 階層文字列表記 : [main()]-[if (...)]-[if (...)]
+     * CompoundBlock（空文）は省略する.
+     * @return      階層文字列表記
+     */
+    @Override
+    public String toStringModuleScope() {
+        return this.toStringScope(true);
+    }
+
+    /**
+     * ブロックの階層文字列表記を取得する
+     * 階層文字列表記 : [main()]-[if (...)]-[if (...)]
+     * CompoundBlock（空文）は省略する.
+     * @param   module     true=Moduleまでの階層文字列表記とする
+     * @return      階層文字列表記
+     */
+    @Override
+    public String toStringScope(boolean module) {
+        String statement = "";
+        if (this.getMotherBlock() != null) {
+            String buf = null;
+            if (module) buf = this.getMotherBlock().toStringModuleScope();
+            else buf = this.getMotherBlock().toStringProcedureScope();
+            if (buf != null && !buf.isEmpty()) {
+                statement = buf;
+            }
+        }
+        return statement;
+    }
+
+
+    /**
+     * 式の変数リストを取得する.
+     * 子ブロックの変数リストも取得する。
+     * @return        式の変数リスト
+     */
+    @Override
+    public Set<Variable> getAllVariables() {
+        Set<Variable> list = new HashSet<Variable>();
+        Set<Variable> vars = super.getAllVariables();
+        if (vars != null && vars.size() > 0) {
+            list.addAll(vars);
+        }
+        vars = this.getBlockVariables();
+        if (vars != null && vars.size() > 0) {
+            list.addAll(vars);
+        }
+
+        if (list.size() <= 0) return null;
+        return list;
+    }
+
+    /**
+     * 式の変数リストを取得する.
+     * ブロックのみの変数リストを取得する。
+     * @return        式の変数リスト
+     */
+    public Set<Variable> getBlockVariables() {
+
+        Set<Variable> list = new HashSet<Variable>();
+        if (this.expression != null) {
+            Set<Variable> vars = this.expression.getAllVariables();
+            if (vars != null && vars.size() > 0) {
+                list.addAll(vars);
+            }
+        }
+
+        if (list.size() <= 0) return null;
+        return list;
+    }
+
 }

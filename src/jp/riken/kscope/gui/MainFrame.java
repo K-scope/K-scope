@@ -39,11 +39,10 @@ import jp.riken.kscope.dialog.ProgressDialog;
 import jp.riken.kscope.dialog.SearchFindDialog;
 import jp.riken.kscope.dialog.SearchGrepDialog;
 import jp.riken.kscope.dialog.SearchTreeDialog;
-import jp.riken.kscope.menu.ProfilerPopupMenu;
 import jp.riken.kscope.menu.LanguageTreePopupMenu;
 import jp.riken.kscope.menu.MainMenu;
 import jp.riken.kscope.menu.ModuleTreePopupMenu;
-import jp.riken.kscope.menu.ReplacePopupMenu;
+import jp.riken.kscope.menu.ProfilerPopupMenu;
 import jp.riken.kscope.menu.SourcePanelPopupMenu;
 import jp.riken.kscope.menu.SourceTreePopupMenu;
 import jp.riken.kscope.menu.VariablePopupMenu;
@@ -90,7 +89,7 @@ public class MainFrame extends javax.swing.JFrame implements ITabComponent {
     /** メインメニュー */
     private MainMenu menuMain;
 
-	/**
+    /**
      * コンストラクタ
      */
     public MainFrame() {
@@ -99,7 +98,7 @@ public class MainFrame extends javax.swing.JFrame implements ITabComponent {
 
     /**
      * 初期化を行う
-     * @param   controller 			アプリケーションコントローラ
+     * @param   controller             アプリケーションコントローラ
      */
     public void initialize(AppController controller) {
         this.controller = controller;
@@ -240,7 +239,7 @@ public class MainFrame extends javax.swing.JFrame implements ITabComponent {
 
     /**
      * ソースビューを取得する
-     * @return		ソースビュー
+     * @return        ソースビュー
      */
     public SourceView getPanelSourceView() {
         return panelSourceView;
@@ -248,7 +247,7 @@ public class MainFrame extends javax.swing.JFrame implements ITabComponent {
 
     /**
      * 分析情報ビューを取得する。
-     * @return		分析情報ビュー
+     * @return        分析情報ビュー
      */
     public AnalysisView getPanelAnalysisView() {
         return panelAnalysisView;
@@ -256,7 +255,7 @@ public class MainFrame extends javax.swing.JFrame implements ITabComponent {
 
     /**
      * エクスプローラビューを取得する
-     * @return		エクスプローラビュー
+     * @return        エクスプローラビュー
      */
     public ExploreView getPanelExplorerView() {
         return panelExplorerView;
@@ -264,21 +263,21 @@ public class MainFrame extends javax.swing.JFrame implements ITabComponent {
 
     /**
      * 親コンポーネントを取得する.
-     * @return		親コンポーネント
+     * @return        親コンポーネント
      */
     @Override
     public ITabComponent getParentComponent() { return null; }
 
     /**
      * 親コンポーネントを設定する.
-     * @param component		親コンポーネント
+     * @param component        親コンポーネント
      */
     @Override
     public void setParentComponent(ITabComponent component) { }
 
     /**
      * フォーカスリスナを設定する
-     * @param listener		フォーカスリスナ
+     * @param listener        フォーカスリスナ
      */
     @Override
     public void addTabFocusListener(TabFocusListener listener) {}
@@ -297,7 +296,7 @@ public class MainFrame extends javax.swing.JFrame implements ITabComponent {
 
     /**
      * アクティブなビュー識別子を取得する
-     * @return		アクティブなビュー識別子
+     * @return        アクティブなビュー識別子
      */
     public FRAME_VIEW getEnumView() {
         ITabComponent forcus = this.focusListener.getLastTabComponent();
@@ -319,7 +318,7 @@ public class MainFrame extends javax.swing.JFrame implements ITabComponent {
 
     /**
      * コントローラを取得する。
-     * @return		アプリケーションコントローラ
+     * @return        アプリケーションコントローラ
      */
     public AppController getController() {
         return this.controller;
@@ -327,7 +326,7 @@ public class MainFrame extends javax.swing.JFrame implements ITabComponent {
 
     /**
      * プログレスバーダイアログを取得する
-     * @return		プログレスバーダイアログ
+     * @return        プログレスバーダイアログ
      */
     public ProgressDialog getDialogProgress() {
         return dialogProgress;
@@ -351,7 +350,7 @@ public class MainFrame extends javax.swing.JFrame implements ITabComponent {
 
     /**
      * ソース検索ダイアログを取得する
-     * @return		ソース検索ダイアログ
+     * @return        ソース検索ダイアログ
      */
     public SearchFindDialog getDialogSearchFind() {
         return this.dialogSearchFind;
@@ -359,7 +358,7 @@ public class MainFrame extends javax.swing.JFrame implements ITabComponent {
 
     /**
      * ファイル検索ダイアログを取得する
-     * @return		ファイル検索ダイアログ
+     * @return        ファイル検索ダイアログ
      */
     public SearchGrepDialog getDialogSearchGrep() {
         return this.dialogSearchGrep;
@@ -367,7 +366,7 @@ public class MainFrame extends javax.swing.JFrame implements ITabComponent {
 
     /**
      * ツリー検索ダイアログを取得する
-     * @return		ツリー検索ダイアログ
+     * @return        ツリー検索ダイアログ
      */
     public SearchTreeDialog getDialogSearchTree() {
         return this.dialogSearchTree;
@@ -377,25 +376,25 @@ public class MainFrame extends javax.swing.JFrame implements ITabComponent {
      * プロファイラプレビューダイアログを取得する
      * @return     プロファイラプレビューダイアログ
      */
-	public ProfilerLegendDialog getDialogProfilerLegend() {
-		return dialogProfilerLegend;
-	}
+    public ProfilerLegendDialog getDialogProfilerLegend() {
+        return dialogProfilerLegend;
+    }
 
     /**
      * プロファイラプレビューダイアログを設定する
      * @param   dialog     プロファイラプレビューダイアログ
      */
-	public void setDialogProfilerLegend(ProfilerLegendDialog dialog) {
-		this.dialogProfilerLegend = dialog;
-	}
+    public void setDialogProfilerLegend(ProfilerLegendDialog dialog) {
+        this.dialogProfilerLegend = dialog;
+    }
 
-	/**
-	 * メインメニューの取得を行う.
-	 * @return		メインメニュー
-	 */
+    /**
+     * メインメニューの取得を行う.
+     * @return        メインメニュー
+     */
     public MainMenu getMenuMain() {
-		return menuMain;
-	}
+        return menuMain;
+    }
 
 }
 

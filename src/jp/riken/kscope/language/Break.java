@@ -17,6 +17,9 @@
 
 package jp.riken.kscope.language;
 
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * 繰り返し処理を抜ける制御文に対応したクラス。
  *
@@ -50,6 +53,14 @@ public class Break extends jp.riken.kscope.language.Block {
      */
     public Break(Block parent, String lbl) {
         super(parent);
+        label = lbl;
+    }
+
+    /**
+     * コンストラクタ。
+     * @param lbl      ラベル
+     */
+    public Break(String lbl) {
         label = lbl;
     }
 

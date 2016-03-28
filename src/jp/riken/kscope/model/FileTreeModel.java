@@ -65,8 +65,8 @@ public class FileTreeModel extends Observable {
         java.util.Arrays.sort(sourceFiles,
                 new java.util.Comparator<SourceFile>() {
                     public int compare(SourceFile o1, SourceFile o2) {
-                    	if (o1 == null) return -1;
-                    	if (o2 == null) return 1;
+                        if (o1 == null) return -1;
+                        if (o2 == null) return 1;
                         SourceFile src1 = (SourceFile) o1;
                         SourceFile src2 = (SourceFile) o2;
                         return src1.getPath().compareTo(src2.getPath());
@@ -82,7 +82,7 @@ public class FileTreeModel extends Observable {
             for (int i = 0; i < sourceFiles.length; i++) {
                 File srcFile = null;
                 if (sourceFiles[i] == null || sourceFiles[i].getFile() == null) {
-                	continue;
+                    continue;
                 }
                 if (sourceFiles[i].getFile().isAbsolute()) {
                     srcFile = sourceFiles[i].getFile();
@@ -118,6 +118,9 @@ public class FileTreeModel extends Observable {
         // ツリーノードを作成する
         createNodes(root, topFile, sourceFiles);
 
+        // フォルダ表示を結合する
+        root = SwingUtils.combineFileTreeNode(root);
+
         // ファイルツリーをソートする
         root = SwingUtils.sortTreeNode(root);
 
@@ -130,8 +133,8 @@ public class FileTreeModel extends Observable {
 
     /**
      * ツリーノードを作成する
-     * @param tree			追加親ノード
-     * @param folder			追加フォルダ要素
+     * @param tree            追加親ノード
+     * @param folder            追加フォルダ要素
      * @param sourceFiles          ソースファイルリスト
      */
     private void createNodes(DefaultMutableTreeNode tree, File folder, SourceFile[] sourceFiles) {
@@ -144,7 +147,7 @@ public class FileTreeModel extends Observable {
         for(int i=0; i<sourceFiles.length; i++) {
             File srcFile = null;
             if (sourceFiles[i] == null || sourceFiles[i].getFile() == null) {
-            	continue;
+                continue;
             }
             if (sourceFiles[i].getFile().isAbsolute()) {
                 srcFile = sourceFiles[i].getFile();
@@ -153,68 +156,68 @@ public class FileTreeModel extends Observable {
                 srcFile = new File(projectFolder.getAbsolutePath() + File.separator + sourceFiles[i].getFile().getPath());
             }
             try {
-				if (folder.getCanonicalFile().equals(srcFile.getParentFile().getCanonicalFile())) {
-				    DefaultMutableTreeNode subtree = new DefaultMutableTreeNode(new SourceFile(srcFile));
-				    if (!containsChildNode(tree, subtree)) {
-				    	tree.add(subtree);
-				    }
-				}
-			} catch (IOException ex) {
-				ex.printStackTrace();
-			}
+                if (folder.getCanonicalFile().equals(srcFile.getParentFile().getCanonicalFile())) {
+                    DefaultMutableTreeNode subtree = new DefaultMutableTreeNode(new SourceFile(srcFile));
+                    if (!containsChildNode(tree, subtree)) {
+                        tree.add(subtree);
+                    }
+                }
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
         }
 
         File[] files = folder.listFiles();
         if (files == null)   return;
         for(int i=0; i<files.length; i++) {
             try {
-	        	if (files[i] == null) continue;
-	        	if (files[i].isFile()) continue;
-	        	if (FileUtils.isSymbolicLink(files[i])) continue;
-	        	boolean ischild = false;
-	            for(SourceFile srcFile : sourceFiles) {
-	                if (srcFile == null || srcFile.getFile() == null) {
-	                	continue;
-	                }
-	                File file = null;
-	                if (srcFile.getFile().isAbsolute()) {
-	                	file = srcFile.getFile();
-	                }
-	                else {
-	                	file = new File(projectFolder.getAbsolutePath() + File.separator + srcFile.getFile().getPath());
-	                }
-		        	if (!FileUtils.isChildsFile(file, files[i])) continue;
-		        	ischild = true;
-	            }
-	            if (!ischild) {
-	            	continue;
-	            }
-	            DefaultMutableTreeNode subtree = new DefaultMutableTreeNode(files[i]);
-	            if (!containsChildNode(tree, subtree)) {
-	                createNodes(subtree, files[i], sourceFiles);
-	                if (subtree.getChildCount() > 0) {
-	                	tree.add(subtree);
-	                }
-	            }
-			} catch (IOException ex) {
-				ex.printStackTrace();
-			}
+                if (files[i] == null) continue;
+                if (files[i].isFile()) continue;
+                if (FileUtils.isSymbolicLink(files[i])) continue;
+                boolean ischild = false;
+                for(SourceFile srcFile : sourceFiles) {
+                    if (srcFile == null || srcFile.getFile() == null) {
+                        continue;
+                    }
+                    File file = null;
+                    if (srcFile.getFile().isAbsolute()) {
+                        file = srcFile.getFile();
+                    }
+                    else {
+                        file = new File(projectFolder.getAbsolutePath() + File.separator + srcFile.getFile().getPath());
+                    }
+                    if (!FileUtils.isChildsFile(file, files[i])) continue;
+                    ischild = true;
+                }
+                if (!ischild) {
+                    continue;
+                }
+                DefaultMutableTreeNode subtree = new DefaultMutableTreeNode(files[i]);
+                if (!containsChildNode(tree, subtree)) {
+                    createNodes(subtree, files[i], sourceFiles);
+                    if (subtree.getChildCount() > 0) {
+                        tree.add(subtree);
+                    }
+                }
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
         }
     }
 
     /**
      * ソースファイルの親パスであるかチェックする.<br/>
      * 同じファイルである場合は、trueを返す
-     * @param parent			親ファイル
-     * @param sourceFiles		ソースファイルリスト
-     * @return		true=親パス
+     * @param parent            親ファイル
+     * @param sourceFiles        ソースファイルリスト
+     * @return        true=親パス
      */
     @SuppressWarnings("unused")
     private boolean isParentPath(File parent, SourceFile[] sourceFiles) {
         for (int i = 0; i < sourceFiles.length; i++) {
             File srcFile = null;
             if (sourceFiles[i] == null || sourceFiles[i].getFile() == null) {
-            	continue;
+                continue;
             }
             if (sourceFiles[i].getFile().isAbsolute()) {
                 srcFile = sourceFiles[i].getFile();
@@ -307,7 +310,7 @@ public class FileTreeModel extends Observable {
 
     /**
      * 選択されているソースファイルを削除する。
-     * @param    paths			削除ツリーパス
+     * @param    paths            削除ツリーパス
      */
     public void deleteSelectedFiles(TreePath[] paths) {
 
@@ -338,7 +341,7 @@ public class FileTreeModel extends Observable {
 
     /**
      * ファイルツリーモデルを取得する
-     * @return treeModel		ファイルツリーモデル
+     * @return treeModel        ファイルツリーモデル
      */
     public DefaultTreeModel getTreeModel() {
         if (this.treeModel == null) {
@@ -350,7 +353,7 @@ public class FileTreeModel extends Observable {
 
     /**
      * ファイルツリーモデルを設定する
-     * @param treeModel 	ファイルツリーモデル
+     * @param treeModel     ファイルツリーモデル
      */
     public void setTreeModel(DefaultTreeModel treeModel) {
         this.treeModel = treeModel;
@@ -358,7 +361,7 @@ public class FileTreeModel extends Observable {
 
     /**
      * プロジェクトフォルダを設定する
-     * @param folder		プロジェクトフォルダ
+     * @param folder        プロジェクトフォルダ
      */
     public void setProjectFolder(File folder) {
         this.projectFolder = folder;
@@ -386,7 +389,7 @@ public class FileTreeModel extends Observable {
 
     /**
      * 初期ツリータイトルを取得する
-     * @return initTreeTitle		初期ツリータイトル
+     * @return initTreeTitle        初期ツリータイトル
      */
     public String getInitTreeTitle() {
         return initTreeTitle;
@@ -394,7 +397,7 @@ public class FileTreeModel extends Observable {
 
     /**
      * 初期ツリータイトルを設定する
-     * @param initTreeTitle 	初期ツリータイトル
+     * @param initTreeTitle     初期ツリータイトル
      */
     public void setInitTreeTitle(String initTreeTitle) {
         this.initTreeTitle = initTreeTitle;
@@ -429,10 +432,10 @@ public class FileTreeModel extends Observable {
     /**
      * ソースのルートを取得<br>
      * ツリーのルートではなく、ソースファイルが全て包含されるフォルダのこと
-     * @return 	root
+     * @return     root
      */
     public String getRootFolder() {
-    	if (this.treeModel == null) return "";
+        if (this.treeModel == null) return "";
         DefaultMutableTreeNode root = (DefaultMutableTreeNode) this.treeModel.getRoot();
         if (root == null) return "";
         // rootから階層を降りていき、初めての分岐の直前か、分岐が無ければ終端の親フォルダ
@@ -440,56 +443,56 @@ public class FileTreeModel extends Observable {
     }
 
     private String scanSourceRoot(DefaultMutableTreeNode node) {
-    	if (node == null) return "";
-    	if (node.getChildCount() > 1) return node.toString();
-    	DefaultMutableTreeNode child = (DefaultMutableTreeNode)node.getChildAt(0);
-    	if (child.isLeaf()) return node.toString();
-    	return scanSourceRoot((DefaultMutableTreeNode)node.getChildAt(0));
+        if (node == null) return "";
+        if (node.getChildCount() > 1) return node.toString();
+        DefaultMutableTreeNode child = (DefaultMutableTreeNode)node.getChildAt(0);
+        if (child.isLeaf()) return node.toString();
+        return scanSourceRoot((DefaultMutableTreeNode)node.getChildAt(0));
     }
 
     /**
      * 子ノードに同一ノードが存在するかチェックする.
-     * @param parent		親ノード
-     * @param child			子ノード
-     * @return				true=同一ノードが存在する.
+     * @param parent        親ノード
+     * @param child            子ノード
+     * @return                true=同一ノードが存在する.
      */
     private boolean containsChildNode(DefaultMutableTreeNode parent, DefaultMutableTreeNode child) {
-    	if (parent == null) return false;
-    	if (child == null) return false;
-    	if (parent.getChildCount() <= 0) return false;
-    	Object childObj = child.getUserObject();
-    	if (childObj == null) return false;
+        if (parent == null) return false;
+        if (child == null) return false;
+        if (parent.getChildCount() <= 0) return false;
+        Object childObj = child.getUserObject();
+        if (childObj == null) return false;
 
-    	int count = parent.getChildCount();
-    	if (childObj instanceof SourceFile) {
-	    	SourceFile childFile = (SourceFile)childObj;
-	    	for (int i=0; i<count; i++) {
-	    		Object obj = ((DefaultMutableTreeNode)(parent.getChildAt(i))).getUserObject();
-	    		SourceFile file = null;
-	    		if (obj != null && obj instanceof SourceFile) {
-	    			file = (SourceFile)obj;
-	    		}
-	    		if (childFile.equals(file)) {
-	    			return true;
-	    		}
-	    	}
-	    	return false;
-    	}
-    	else if (childObj instanceof File) {
-	    	File childFile = (File)childObj;
-	    	for (int i=0; i<count; i++) {
-	    		Object obj = ((DefaultMutableTreeNode)(parent.getChildAt(i))).getUserObject();
-	    		File file = null;
-	    		if (obj != null && obj instanceof File) {
-	    			file = (File)obj;
-	    		}
-	    		if (childFile.equals(file)) {
-	    			return true;
-	    		}
-	    	}
-	    	return false;
-    	}
-    	return false;
+        int count = parent.getChildCount();
+        if (childObj instanceof SourceFile) {
+            SourceFile childFile = (SourceFile)childObj;
+            for (int i=0; i<count; i++) {
+                Object obj = ((DefaultMutableTreeNode)(parent.getChildAt(i))).getUserObject();
+                SourceFile file = null;
+                if (obj != null && obj instanceof SourceFile) {
+                    file = (SourceFile)obj;
+                }
+                if (childFile.equals(file)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+        else if (childObj instanceof File) {
+            File childFile = (File)childObj;
+            for (int i=0; i<count; i++) {
+                Object obj = ((DefaultMutableTreeNode)(parent.getChildAt(i))).getUserObject();
+                File file = null;
+                if (obj != null && obj instanceof File) {
+                    file = (File)obj;
+                }
+                if (childFile.equals(file)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+        return false;
     }
 
 

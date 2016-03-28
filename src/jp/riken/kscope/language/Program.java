@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -37,10 +38,11 @@ import jp.riken.kscope.information.InformationBlocks;
 import jp.riken.kscope.information.TextInfo;
 import jp.riken.kscope.language.fortran.Type;
 import jp.riken.kscope.language.generic.Procedures;
+import jp.riken.kscope.utils.FileUtils;
 
 /**
  * プログラムを表現する抽象クラス
- * @version    2015/03/01   	複文ブロックの登録インターフェイス追加
+ * @version    2015/03/01       複文ブロックの登録インターフェイス追加
  */
 public abstract class Program implements Serializable {
     /** シリアル番号 */
@@ -59,6 +61,9 @@ public abstract class Program implements Serializable {
     private InformationBlocks informationBlocks = new InformationBlocks();
     /** データベース挿入カレントプロシージャ */
     private transient ProgramUnit currentUnit;
+
+    /** ソースファイルの基準フォルダ */
+    private File baseFoleder;
 
     /**
      * コンストラクタ。
@@ -113,11 +118,12 @@ public abstract class Program implements Serializable {
     /**
      * モジュールブロックを開始する。
      * @param module_name モジュール名
+     * @return    生成モジュール
      */
-    public void init_module(String module_name) {
-        Module module = new Module(module_name);
-        modules.put(module_name, module);
+    public Module init_module(String module_name) {
+        Module module = this.createModule(module_name, null);
         currentUnit = module;
+        return module;
     }
 
     /**
@@ -133,7 +139,7 @@ public abstract class Program implements Serializable {
      * @return モジュールクラス
      */
     public Module module(String module_name) {
-        return modules.get(module_name);
+        return this.getModule(module_name);
     }
 
     /**
@@ -146,8 +152,8 @@ public abstract class Program implements Serializable {
 
     /**
      * プロシージャブロックを開始する。
-     * @param type_name		プロシージャ種別
-     * @param sub_name		プロシージャ名
+     * @param type_name        プロシージャ種別
+     * @param sub_name        プロシージャ名
      */
     protected void init_procedure(String type_name, String sub_name) {
         Procedure sub = new Procedure(type_name, sub_name);
@@ -159,9 +165,9 @@ public abstract class Program implements Serializable {
 
     /**
      * プロシージャブロックを開始する。
-     * @param type_name		プロシージャ種別
-     * @param sub_name		プロシージャ名
-     * @param args			プロシージャ仮引数
+     * @param type_name        プロシージャ種別
+     * @param sub_name        プロシージャ名
+     * @param args            プロシージャ仮引数
      */
     protected void init_procedure(String type_name, String sub_name, String[] args) {
         Procedure sub = new Procedure(type_name, sub_name, args);
@@ -173,9 +179,9 @@ public abstract class Program implements Serializable {
 
     /**
      * プロシージャブロックを開始する。
-     * @param type_name		プロシージャ種別
-     * @param sub_name		プロシージャ名
-     * @param args			プロシージャ仮引数
+     * @param type_name        プロシージャ種別
+     * @param sub_name        プロシージャ名
+     * @param args            プロシージャ仮引数
      */
     protected void init_procedure(String type_name, String sub_name, Variable[] args) {
         Procedure sub = new Procedure(type_name, sub_name, args);
@@ -207,6 +213,7 @@ public abstract class Program implements Serializable {
     public void setUse(UseState useline) {
         currentUnit.addUse(useline);
     }
+
     /**
      * USE文を追加する。
      * @param useline USE文
@@ -246,13 +253,15 @@ public abstract class Program implements Serializable {
         if (label == null) { label = Statement.NO_LABEL; }
         ((Procedure) currentUnit).start_condition(cond, lineInfo, label);
         Block blk = this.getCurrentBlock();
+
+        IDeclarations dec_block = blk.getScopeDeclarationsBlock();    // 変数の定義ブロックの検索
         if (cond != null) {
             if (blk.get_mother() instanceof Selection) {
                 Selection selec = (Selection) blk.get_mother();
                 if (selec.getConditions().size() == 1) {
-                    this.currentUnit.addExpressionToRef(selec, cond);
+                    dec_block.addExpressionToRef(selec, cond);
                 } else {
-                    this.currentUnit.addExpressionToRef(blk, cond);
+                    dec_block.addExpressionToRef(blk, cond);
                 }
             }
         }
@@ -278,9 +287,12 @@ public abstract class Program implements Serializable {
         if (blk != null) {
             if (blk instanceof Selection) {
                 Selection sel = (Selection) blk;
+                IDeclarations dec_block = blk.getScopeDeclarationsBlock();    // 変数の定義ブロックの検索
                 if (sel.isSelect()) {
                     sel.setCaseCondition(exp);
-                    this.currentUnit.addExpressionToRef(sel, exp);
+                    if (dec_block != null) {
+                        dec_block.addExpressionToRef(sel, exp);
+                    }
                 }
             }
         }
@@ -310,7 +322,7 @@ public abstract class Program implements Serializable {
 
     /**
      * ユーザー定義処理ブロックを開始する.
-     * @param lineInfo		コード行情報
+     * @param lineInfo        コード行情報
      */
     protected void start_user_defined(CodeLine lineInfo) {
         ((Procedure) currentUnit).start_user_defined(lineInfo);
@@ -318,8 +330,8 @@ public abstract class Program implements Serializable {
 
     /**
      * ユーザー定義処理ブロックを開始する.
-     * @param lineInfo		コード行情報
-     * @param label			コードラベル
+     * @param lineInfo        コード行情報
+     * @param label            コードラベル
      */
     protected void start_user_defined(CodeLine lineInfo, String label) {
         ((Procedure) currentUnit).start_user_defined(lineInfo, label);
@@ -327,7 +339,7 @@ public abstract class Program implements Serializable {
 
     /**
      * ユーザー定義処理ブロックを終了する.
-     * @param lineInfo		コード行情報
+     * @param lineInfo        コード行情報
      */
     protected void end_user_defined(CodeLine lineInfo) {
         ((Procedure) currentUnit).end_user_defined(lineInfo);
@@ -335,8 +347,8 @@ public abstract class Program implements Serializable {
 
     /**
      * ユーザー定義処理ブロックを終了する.
-     * @param lineInfo		コード行情報
-     * @param label			コードラベル
+     * @param lineInfo        コード行情報
+     * @param label            コードラベル
      */
     protected void end_user_defined(CodeLine lineInfo, String label) {
         ((Procedure) currentUnit).end_user_defined(lineInfo, label);
@@ -367,15 +379,15 @@ public abstract class Program implements Serializable {
         this.end_procedure_usage(lineInfo, label);
 
         // 分析機能のために参照をセット
-        if (arguments != null) {
-        for (Expression arg: arguments) {
-            Set<Variable> vars = arg.getAllVariables();
-            for (Variable var: vars) {
-                ((Procedure) this.currentUnit).putRefVariableName(var.getName(), block);
-                    ((Procedure) this.currentUnit)
-                            .putVariableMap(var.getName());
+        IDeclarations dec_block = block.getScopeDeclarationsBlock();    // 変数の定義ブロックの検索
+        if (arguments != null && dec_block != null) {
+            for (Expression arg: arguments) {
+                Set<Variable> vars = arg.getAllVariables();
+                for (Variable var: vars) {
+                    dec_block.putRefVariableName(var.getName(), block);
+                    dec_block.putVariableMap(var);
+                }
             }
-        }
         }
     }
 
@@ -444,24 +456,24 @@ public abstract class Program implements Serializable {
         Procedure aCurrentUnit = (Procedure) this.currentUnit;
 
         aCurrentUnit.start_repetition(lineInfo, label);
-        Repetition aCurrentBlock = (Repetition) aCurrentUnit.getBody()
-                .getCurrentBlock();
+        Repetition aCurrentBlock = (Repetition) aCurrentUnit.getBody().getCurrentBlock();
         aCurrentBlock.setProperty(iterator, initIterator, endCondition, step);
 
+        IDeclarations dec_block = aCurrentBlock.getScopeDeclarationsBlock();    // 変数の定義ブロックの検索
         // 分析機能のために参照をセット
         if (iterator != null) {
-            aCurrentUnit.putVariableMap(iterator.getName());
-            aCurrentUnit.putDefVariableName(iterator.getName(), aCurrentBlock);
+            dec_block.putVariableMap(iterator);
+            dec_block.putDefVariableName(iterator.getName(), aCurrentBlock);
         }
 
         if (initIterator != null) {
-            aCurrentUnit.addExpressionToRef(aCurrentBlock, initIterator);
+            dec_block.addExpressionToRef(aCurrentBlock, initIterator);
         }
         if (endCondition != null) {
-            aCurrentUnit.addExpressionToRef(aCurrentBlock, endCondition);
+            dec_block.addExpressionToRef(aCurrentBlock, endCondition);
         }
         if (step != null) {
-            aCurrentUnit.addExpressionToRef(aCurrentBlock, step);
+            dec_block.addExpressionToRef(aCurrentBlock, step);
         }
     }
 
@@ -506,7 +518,22 @@ public abstract class Program implements Serializable {
      *            変数宣言文
      */
     public void set_variable_def(VariableDefinition var_def) {
-        currentUnit.set_variable_def(var_def);
+        Block block = this.get_current_block();
+        IDeclarations dec_block = this.currentUnit;
+        if (block instanceof IDeclarations) {
+            dec_block = (IDeclarations)block;
+        }
+        // 変数宣言文の配列サイズ等の変数を登録する at 2015/11/01 by @hira
+        if (dec_block != null) {
+            dec_block.set_variable_def(var_def);
+            Set<Variable> var_list = var_def.getAllVariables();
+            if (var_list != null) {
+                for (Variable var: var_list) {
+                    dec_block.putRefVariableName(var.getName(), var_def);
+                    dec_block.putVariableMap(var);
+                }
+            }
+        }
     }
 
     /**
@@ -538,6 +565,15 @@ public abstract class Program implements Serializable {
     }
 
     /**
+     * データベースに現在格納しているProgramUnitを設定する。
+     *
+     * @param    module   現在ProgramUnit
+     */
+    public void set_current_unit(ProgramUnit unit) {
+        this.currentUnit = unit;
+    }
+
+    /**
      * カレントユニットのカレントブロックを取得する。
      *
      * @return カレントブロック.カレントユニットがサブルーチンではない場合はnullを返す.
@@ -564,7 +600,7 @@ public abstract class Program implements Serializable {
      * @param label
      *            ラベル。ない場合はStatement.NO_LABELをセットする。
      */
-    public void setSubstitution(Variable left, Expression right,
+    public void setSubstitution(Expression left, Expression right,
             CodeLine lineInfo, String label) {
 
         // for debug
@@ -579,18 +615,50 @@ public abstract class Program implements Serializable {
         if (left.isArrayExpression() || right.isArrayExpression()) {
             blk = new ArrayExpression(block);
         }
-        blk.setLeft(left);
         blk.set_block_start(lineInfo);
         blk.get_start().set_label(label);
         blk.set_block_end(lineInfo);
         blk.get_end().set_label(label);
+        blk.setLeft(left);
         blk.setRight(right);
         block.add_child(blk);
 
         // 分析機能のために参照をセット
-        ((Procedure) this.currentUnit).putDefVariableName(left.getName(), blk);
-        ((Procedure) this.currentUnit).putVariableMap(left.getName());
-        this.currentUnit.addExpressionToRef(blk, right);
+        // 左辺
+        List<Variable> leftVars = left.getVariables();
+        Variable leftVar = null;
+        IDeclarations dec_block = blk.getScopeDeclarationsBlock();    // 変数の定義ブロックの検索
+        if (leftVars != null && leftVars.size() > 0) {
+            // 先頭変数を定義変数とする
+            leftVar = leftVars.get(0);
+            if (leftVar != null) {
+                if (dec_block != null) {
+                    dec_block.putDefVariableName(leftVar.getName(), blk);
+                    dec_block.putVariableMap(leftVar);
+                }
+            }
+        }
+        // 2番目以降を参照変数とする
+        Set<Variable> leftRefVars = left.getAllVariables();
+        for (Variable var: leftRefVars) {
+            if (var != null && var != leftVar) {
+                if (dec_block != null) {
+                    dec_block.addVariableToRef(blk, var);
+                }
+            }
+        }
+
+        Set<ProcedureUsage> leftFuncs = left.getAllFunctions();
+        for (ProcedureUsage pu: leftFuncs) {
+            if (dec_block != null) {
+                dec_block.addFunctionToRef(blk, pu);
+            }
+        }
+
+        // 右辺
+        if (dec_block != null) {
+            dec_block.addExpressionToRef(blk, right);
+        }
     }
 
     /**
@@ -621,7 +689,7 @@ public abstract class Program implements Serializable {
      *            ラベル。ない場合はStatement.NO_LABELをセットする。
      */
     public void setExit(CodeLine lineInfo, String label) {
-        Break blk = new Break();
+        Break blk = new Break(label);
         setBlockToCurrent(blk, lineInfo, label);
     }
 
@@ -659,7 +727,7 @@ public abstract class Program implements Serializable {
      *            ラベル。ない場合はStatement.NO_LABELをセットする。
      */
     public void setCycle(CodeLine lineInfo, String label) {
-        Continue blk = new Continue();
+        Continue blk = new Continue(label);
         setBlockToCurrent(blk, lineInfo, label);
     }
 
@@ -689,7 +757,7 @@ public abstract class Program implements Serializable {
      *            ラベル。ない場合はStatement.NO_LABELをセットする。
      */
     public void setContinue(CodeLine lineInfo, String label) {
-        DoNothing blk = new DoNothing();
+        DoNothing blk = new DoNothing(label);
         setBlockToCurrent(blk, lineInfo, label);
     }
 
@@ -1044,11 +1112,12 @@ public abstract class Program implements Serializable {
 
         Collection<Module> mods = this.modules.values();
         for (Module mod : mods) {
-            Collection<Procedure> procs = mod.getChildren();
-            for (Procedure proc : procs) {
+            List<IBlock> procs = mod.getChildren();
+            for (IBlock proc : procs) {
+                if (!(proc instanceof ProgramUnit)) continue;
                 SourceFile procFile = proc.getStartCodeLine().getSourceFile();
                 if (file.equals(procFile)) {
-                    units.add(proc);
+                    units.add((ProgramUnit)proc);
                 }
             }
         }
@@ -1099,11 +1168,11 @@ public abstract class Program implements Serializable {
 
     /**
      * モジュールを追加する
-     * @param pu		モジュール
+     * @param pu        モジュール
      */
     public void addModule(ProgramUnit pu) {
         if (pu instanceof Module) {
-            this.modules.put(pu.get_name(), (Module) pu);
+            this.createModule(pu.get_name(), (Module) pu);
         }
     }
 
@@ -1129,7 +1198,7 @@ public abstract class Program implements Serializable {
 
     /**
      * シャローコピーを行う.
-     * @param program		コピー元データベース
+     * @param program        コピー元データベース
      */
     public void copyShallow(Program program) {
         this.mainName = program.mainName;
@@ -1138,17 +1207,10 @@ public abstract class Program implements Serializable {
         this.informationBlocks = program.informationBlocks;
     }
 
-    /**
-     * データベースの現在格納中のProgramUnitを取得する.
-     * @return		現在格納中のProgramUnit
-     */
-    public ProgramUnit getCurrentUnit() {
-        return this.currentUnit;
-    }
 
     /**
      * メインプログラムを取得する.
-     * @return		メインプログラム
+     * @return        メインプログラム
      */
     public Procedure getMainProgram() {
         return getProcedureByName(NO_MODULE, this.mainName);
@@ -1157,8 +1219,8 @@ public abstract class Program implements Serializable {
     /**
      * プロシージャを取得する.<br/>
      * モジュールは、NO_MODULEから検索する.
-     * @param procudurename		プロシージャ名
-     * @return		プロシージャ
+     * @param procudurename        プロシージャ名
+     * @return        プロシージャ
      */
     public Procedure getProcedure(String procudurename) {
         return getProcedureByName(null, procudurename);
@@ -1167,9 +1229,9 @@ public abstract class Program implements Serializable {
     /**
      * プロシージャを取得する.<br/>
      * モジュール名がnullの場合は、NO_MODULEから検索する.
-     * @param modulename		モジュール名
-     * @param procudurename		プロシージャ名
-     * @return		プロシージャ
+     * @param modulename        モジュール名
+     * @param procudurename        プロシージャ名
+     * @return        プロシージャ
      */
     public Procedure getProcedureByName(String modulename, String procudurename) {
         if (procudurename == null) return null;
@@ -1191,9 +1253,9 @@ public abstract class Program implements Serializable {
     /**
      * プロシージャを取得する.<br/>
      * 親モジュールがnullの場合は、NO_MODULEから検索する.
-     * @param parent			親モジュール
-     * @param procudurename		プロシージャ名
-     * @return		プロシージャ
+     * @param parent            親モジュール
+     * @param procudurename        プロシージャ名
+     * @return        プロシージャ
      */
     public Procedure getProcedure(ProgramUnit parent, String procudurename) {
         ProgramUnit parentUnit = parent;
@@ -1224,4 +1286,124 @@ public abstract class Program implements Serializable {
         ((Procedure) currentUnit).endCompoundBlock(lineInfo);
     }
 
+
+    /**
+     * bodyブロックを開始する。
+     */
+    public void startBody() {
+        ((Procedure) currentUnit).startBody();
+    }
+
+    /**
+     * 指定したファイルのModule(ファイル)を返す。
+     *
+     * @param file            ファイル
+     * @return    検索結果Module(ファイル)
+     */
+    public Module getModule(SourceFile file) {
+        if (file == null) return null;
+        if (this.modules == null) return null;
+
+        Collection<Module> mods = this.modules.values();
+        for (Module mod : mods) {
+            if (mod == null) continue;
+            if (mod.getStartCodeLine() == null) continue;
+            SourceFile modFile = mod.getStartCodeLine().getSourceFile();
+            if (file.equals(modFile)) {
+                return mod;
+            }
+        }
+        return null;
+    }
+
+
+    /**
+     * モジュールブロックを追加する。
+     * 既存モジュールの場合は追加しない。
+     * @param module_name モジュール名
+     * @return    追加、既存モジュール
+     */
+    public Module setIncludeModule(String module_name) {
+        if (module_name == null || module_name.isEmpty()) {
+            return null;
+        }
+        Module module = this.module(module_name);
+        if (module == null) {
+            // モジュールを作成して追加する
+            module = this.createModule(module_name, null);
+        }
+
+        this.currentUnit = module;
+
+        return module;
+    }
+
+    /**
+     * C言語include文を追加する。
+     * ソースファイル(.c)中に出現する他のファイル（ヘッダーファイル）を登録する
+     * @param include    include文
+     */
+    public void setInclude(UseState include) {
+        this.currentUnit.addInclude(include);
+    }
+
+    /**
+     * ソースファイルの基準フォルダ
+     * @return baseFoleder
+     */
+    public File getBaseFoleder() {
+        return this.baseFoleder;
+    }
+
+    /**
+     * ソースファイルの基準フォルダ
+     * @param baseFoleder ソースファイルの基準フォルダ
+     */
+    public void setBaseFoleder(File baseFoleder) {
+        this.baseFoleder = baseFoleder;
+    }
+
+    /**
+     * モジュールを追加する。
+     * ソースファイルの基準フォルダからの相対パスのファイル名をキーとする。
+     * @param module_name        モジュール名
+     * @param module            追加モジュール
+     * @return             追加モジュール
+     */
+    private Module createModule(String module_name, Module module) {
+
+        String key_module = module_name;
+        if (module == null) {
+            if (this.baseFoleder != null) {
+                key_module = FileUtils.normalizeName(module_name, this.baseFoleder.getPath());
+            }
+            if (key_module == null || key_module.isEmpty()) return null;
+            module = new Module(key_module);
+        }
+        else {
+            key_module = module.get_name();
+        }
+
+        // モジュール追加
+        this.modules.put(key_module, module);
+
+        return module;
+    }
+
+
+    /**
+     * モジュールを取得する。
+     * ソースファイルの基準フォルダからの相対パスのファイル名をキーとする。
+     * @param module_name        モジュール名
+     *
+     */
+    private Module getModule(String module_name) {
+        String key_module = module_name;
+        if (this.baseFoleder != null) {
+            key_module = FileUtils.normalizeName(module_name, this.baseFoleder.getPath());
+        }
+        if (key_module == null || key_module.isEmpty()) return null;
+
+        return this.modules.get(key_module);
+    }
 }

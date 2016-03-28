@@ -31,6 +31,7 @@ import jp.riken.kscope.language.ExecutableBody;
 import jp.riken.kscope.language.Expression;
 import jp.riken.kscope.language.Fortran;
 import jp.riken.kscope.language.IBlock;
+import jp.riken.kscope.language.IDeclarations;
 import jp.riken.kscope.language.Procedure;
 import jp.riken.kscope.language.ProcedureUsage;
 import jp.riken.kscope.language.ProgramUnit;
@@ -64,7 +65,7 @@ public class AnalysisOperandService extends AnalysisBaseService {
 
     /**
      * 演算カウントテーブルモデルを設定する
-     * @param modelOperand		演算カウントテーブルモデル
+     * @param modelOperand        演算カウントテーブルモデル
      */
     public void setModelOperand(OperandTableModel modelOperand) {
         this.modelOperand = modelOperand;
@@ -72,7 +73,7 @@ public class AnalysisOperandService extends AnalysisBaseService {
 
     /**
      * 組込み関数演算カウントプロパティを取得する
-     * @param propertiesOperand		組込み関数演算カウントプロパティ
+     * @param propertiesOperand        組込み関数演算カウントプロパティ
      */
     public void setPropertiesOperand(OperationProperties propertiesOperand) {
         this.propertiesOperand = propertiesOperand;
@@ -119,7 +120,7 @@ public class AnalysisOperandService extends AnalysisBaseService {
             }
             loopName.append(bkTypeString);
             if (block.getStartCodeLine() != null) {
-            	loopName.append(" " + block.getStartCodeLine().getStartLine());
+                loopName.append(" " + block.getStartCodeLine().getStartLine());
             }
             if (block instanceof Block) {
                 String label = ((Block) block).get_start().get_label();
@@ -150,14 +151,13 @@ public class AnalysisOperandService extends AnalysisBaseService {
      * @param varDef 変数宣言
      * @return 制御ブロックのセット。無ければ空のリストを返す。
      */
-    private Collection<IBlock> getBlocks(VariableDefinition varDef) {
+    private Set<IBlock> getBlocks(VariableDefinition varDef) {
         Set<IBlock> set = new LinkedHashSet<IBlock>();
         String varName = varDef.get_name();
-        ProgramUnit pu = varDef.getMother();
-        if (!(pu instanceof Procedure)) {
+        IDeclarations proc = varDef.getScopeDeclarationsBlock();
+        if (proc == null) {
             return set;
         }
-        Procedure proc = (Procedure) pu;
         Set<IBlock> blks = proc.getRefDefBlocks(varName);
         for (IBlock block: blks) {
             if (block instanceof Substitution) {
@@ -170,24 +170,29 @@ public class AnalysisOperandService extends AnalysisBaseService {
                 }
             }
         }
-        // 内部副プログラムに対する処理
-        Collection<Procedure> pus = proc.getChildren();
-        for (Procedure pr: pus) {
-            if (!(pr.getVariables().containsKey(varName))) {
-                blks = pr.getRefDefBlocks(varName);
-                for (IBlock block: blks) {
-                    if (block instanceof Substitution) {
-                        Substitution sub = (Substitution) block;
-                        if (!(sub.get_mother() instanceof ExecutableBody)) {
-                            set.add(sub.get_mother());
-                        } else {
-                            //TODO 他のどのブロックにも属さない代入文は個別にセットする。プログラムによっては非常に多くなる恐れがある。
-                            set.add(sub);
+
+        if (proc instanceof IBlock) {
+            // 内部副プログラムに対する処理
+            List<IBlock> pus = ((IBlock)proc).getChildren();
+            for (IBlock pr: pus) {
+                if (!(pr instanceof IDeclarations)) continue;
+                if (!(((IDeclarations)pr ).getVariableDefinitionMap().containsKey(varName))) {
+                    blks = ((IDeclarations)pr ).getRefDefBlocks(varName);
+                    for (IBlock block: blks) {
+                        if (block instanceof Substitution) {
+                            Substitution sub = (Substitution) block;
+                            if (!(sub.get_mother() instanceof ExecutableBody)) {
+                                set.add(sub.get_mother());
+                            } else {
+                                //TODO 他のどのブロックにも属さない代入文は個別にセットする。プログラムによっては非常に多くなる恐れがある。
+                                set.add(sub);
+                            }
                         }
                     }
                 }
             }
         }
+
         return set;
     }
 
@@ -208,22 +213,28 @@ public class AnalysisOperandService extends AnalysisBaseService {
      * ブロックの子要素に対して演算数をカウントする。
      * @param block ブロック
      * @param result カウント結果
+     * @version         2015/09/01   by @hira
+     *                  leftVarのデータ型をSetに変更、leftfuncの追加
      */
     private void countChildren(IBlock block, CountResult result) {
         int[] count = result.getCount();
-        List<String> leftVar = result.getLeftVar();
+        Set<String> leftVar = result.getLeftVar();
+        List<String> leftfunc = result.getLeftFunc();
         Set<String> rightVar = result.getRightVar();
-        List<String> rightfunc = result.getFunc();
+        List<String> rightfunc = result.getRightFunc();
 
         if (block instanceof Substitution) {
-
-            //(2012/5/9) modified by teraim, tomiyama
-            //leftVar.add(((Substitution) block).getLeftValue().getVariableString());
-            //
-            // 左辺の結果を追加する前にgetDimensionIndexValue()が存在するかどうかを判定し、
-            // 存在した場合には配列であるとみなして結果に追加する
-            if (((Substitution)block).getLeftValue().getDimensionIndexValue() != null) {
-                leftVar.add(((Substitution) block).getLeftValue().getVariableString());
+            Expression left = ((Substitution) block).getLeftValue();
+            List<Variable> leftVariables = left.getVariables();
+            for (Variable vr : leftVariables) {
+                //配列ならばロードに数える
+                if (vr.getDimensionIndexValue() != null) {
+                    leftVar.add(vr.getVariableString());
+                }
+            }
+            List<ProcedureUsage> leftFuncCalls = left.getFuncCalls();
+            for (ProcedureUsage pu : leftFuncCalls) {
+                leftfunc.add(pu.getCallName());
             }
 
             Expression right = ((Substitution) block).getRightValue();
@@ -243,17 +254,23 @@ public class AnalysisOperandService extends AnalysisBaseService {
             count[2] += right.getPowCount();
             result.setCount(count);
 
-        } else if (block instanceof Block) {
-            List<Block> children = ((Block) block).getChildren();
-            for (Block bk : children) {
+        } else {
+            List<IBlock> children = block.getChildren();
+            for (IBlock bk : children) {
                 this.countChildren(bk, result);
             }
         }
     }
 
+    /**
+     * 演算カウント、参照変数リストの探索結果クラス
+     * @version         2015/09/01   by @hira
+     *                  leftVarのデータ型をSetに変更、leftfuncの追加
+     */
     private class CountResult {
-        private int[] count = new int[3];// add,mul,pow
-        private List<String> leftVar = new ArrayList<String>();
+        private int[] count = new int[3];// [0]=add+sub,[1]=mul+div,[2]=pow
+        private Set<String> leftVar = new HashSet<String>();
+        private List<String> leftfunc = new ArrayList<String>();
         private Set<String> rightVar = new HashSet<String>();
         private List<String> rightfunc = new ArrayList<String>();
 
@@ -265,7 +282,11 @@ public class AnalysisOperandService extends AnalysisBaseService {
             return count;
         }
 
-        private List<String> getFunc() {
+        private List<String> getLeftFunc() {
+            return leftfunc;
+        }
+
+        private List<String> getRightFunc() {
             return rightfunc;
         }
 
@@ -273,7 +294,7 @@ public class AnalysisOperandService extends AnalysisBaseService {
             return rightVar;
         }
 
-        private List<String> getLeftVar() {
+        private Set<String> getLeftVar() {
             return leftVar;
         }
     }

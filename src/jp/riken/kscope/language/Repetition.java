@@ -1,6 +1,6 @@
 /*
  * K-scope
- * Copyright 2012-2013 RIKEN, Japan
+ * Copyright 2012-2015 RIKEN, Japan
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,9 @@
 
 package jp.riken.kscope.language;
 
+import java.util.HashSet;
+import java.util.Set;
+
 /**
 *
 * 繰り返し処理を表現したクラス.<br>
@@ -26,9 +29,9 @@ package jp.riken.kscope.language;
 *
 */
 public class Repetition extends Block {
-	/** シリアル番号 */
-	private static final long serialVersionUID = -2221953302518033528L;
-	/** DO文:index変数 */
+    /** シリアル番号 */
+    private static final long serialVersionUID = -2221953302518033528L;
+    /** DO文:index変数 */
     private Variable iterator;
     /** DO文:初期値 */
     private Expression initIterator;
@@ -40,9 +43,9 @@ public class Repetition extends Block {
     /**
      * コンストラクタ.
      */
-	Repetition() {
+    Repetition() {
         super();
-	}
+    }
 
     /**
      * コンストラクタ.
@@ -50,9 +53,9 @@ public class Repetition extends Block {
      * @param mama 親ブロック
      */
 
-	Repetition(Block mama) {
+    Repetition(Block mama) {
         super(mama);
-	}
+    }
 
     /**
      * コンストラクタ.
@@ -70,7 +73,7 @@ public class Repetition extends Block {
         this.initIterator = initItrtr;
         this.endCondition = endCndtn;
         this.step = stp;
-	}
+    }
     /**
      * ブロックタイプの取得。
      *
@@ -95,7 +98,7 @@ public class Repetition extends Block {
      */
     public Variable getIterator() {
         return iterator;
-	}
+    }
 
     /**
      * 始値の設定.
@@ -112,7 +115,7 @@ public class Repetition extends Block {
      */
     public Expression getInitIterator() {
         return initIterator;
-	}
+    }
 
     /**
      * 終値の設定.
@@ -129,7 +132,7 @@ public class Repetition extends Block {
      */
     public Expression getEndCondition() {
         return endCondition;
-	}
+    }
 
     /**
      * 刻み幅の設定.
@@ -146,7 +149,7 @@ public class Repetition extends Block {
      */
     public Expression getStep() {
         return step;
-	}
+    }
 
     /**
      * メンバー変数の設定.
@@ -166,19 +169,80 @@ public class Repetition extends Block {
         iterator = itrtr;
         initIterator = initItrtr;
         endCondition = endCndtn;
-		step = stp;
-		// 親DO文をセットする
-		if (iterator != null) {
-			iterator.setParentStatement(this);
-		}
-		if (initIterator != null) {
-			initIterator.setParentStatement(this);
-		}
-		if (endCondition != null) {
-			endCondition.setParentStatement(this);
-		}
-		if (step != null) {
-			step.setParentStatement(this);
-		}
-	}
+        step = stp;
+        // 親DO文をセットする
+        if (iterator != null) {
+            iterator.setParentStatement(this);
+        }
+        if (initIterator != null) {
+            initIterator.setParentStatement(this);
+        }
+        if (endCondition != null) {
+            endCondition.setParentStatement(this);
+        }
+        if (step != null) {
+            step.setParentStatement(this);
+        }
+    }
+
+    /**
+     * 式の変数リストを取得する.
+     * 子ブロックの変数リストも取得する。
+     * @return        式の変数リスト
+     */
+    @Override
+    public Set<Variable> getAllVariables() {
+        Set<Variable> list = new HashSet<Variable>();
+        Set<Variable> vars = super.getAllVariables();
+        if (vars != null && vars.size() > 0) {
+            list.addAll(vars);
+        }
+        vars = this.getBlockVariables();
+        if (vars != null && vars.size() > 0) {
+            list.addAll(vars);
+        }
+
+        if (list.size() <= 0) return null;
+        return list;
+    }
+
+    /**
+     * 式の変数リストを取得する.
+     * ブロックのみの変数リストを取得する。
+     * @return        式の変数リスト
+     */
+    @Override
+    public Set<Variable> getBlockVariables() {
+
+        Set<Variable> list = new HashSet<Variable>();
+
+        if (this.iterator != null) {
+            list.add(this.iterator);
+            Set<Variable> vars = this.iterator.getAllVariables();
+            if (vars != null && vars.size() > 0) {
+                list.addAll(vars);
+            }
+        }
+        if (this.initIterator != null) {
+            Set<Variable> vars = this.initIterator.getAllVariables();
+            if (vars != null && vars.size() > 0) {
+                list.addAll(vars);
+            }
+        }
+        if (this.endCondition != null) {
+            Set<Variable> vars = this.endCondition.getAllVariables();
+            if (vars != null && vars.size() > 0) {
+                list.addAll(vars);
+            }
+        }
+        if (this.step != null) {
+            Set<Variable> vars = this.step.getAllVariables();
+            if (vars != null && vars.size() > 0) {
+                list.addAll(vars);
+            }
+        }
+
+        if (list.size() <= 0) return null;
+        return list;
+    }
 }

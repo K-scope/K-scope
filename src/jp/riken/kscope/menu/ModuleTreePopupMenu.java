@@ -93,7 +93,7 @@ public class ModuleTreePopupMenu extends JPopupMenu implements PopupMenuListener
 
     /**
      * コンストラクタ
-     * @param controller		アプリケーションコントローラ
+     * @param controller        アプリケーションコントローラ
      */
     public ModuleTreePopupMenu(AppController controller) {
         this.controller = controller;
@@ -135,7 +135,7 @@ public class ModuleTreePopupMenu extends JPopupMenu implements PopupMenuListener
         menuSearchTree.addActionListener(new SearchTreeAction(this.controller));
 
         // 解析:変数特性一覧
-        JMenuItem menuAnalysisVariable = new JMenuItem(Message.getString("mainmenu.analysis.valiableproperty")); //変数特性一覧
+        JMenuItem menuAnalysisVariable = new JMenuItem(Message.getString("mainmenu.analysis.variableproperty")); //変数特性一覧
         this.add(menuAnalysisVariable);
         actionAnalysisVariable = new AnalysisVariableAction(this.controller);
         menuAnalysisVariable.addActionListener(actionAnalysisVariable);
@@ -158,7 +158,7 @@ public class ModuleTreePopupMenu extends JPopupMenu implements PopupMenuListener
         menuAnalysisReference.addActionListener(new AnalysisReferenceAction(this.controller, FRAME_VIEW.EXPLORE_VIEW));
 
         // 分析:変数有効域
-        JMenuItem menuAnalysisValid = new JMenuItem(Message.getString("mainmenu.analysis.valiablescope")); //変数有効域
+        JMenuItem menuAnalysisValid = new JMenuItem(Message.getString("mainmenu.analysis.variablescope")); //変数有効域
         this.add(menuAnalysisValid);
         menuAnalysisValid.addActionListener(new AnalysisScopeAction(this.controller, FRAME_VIEW.EXPLORE_VIEW));
 
@@ -194,9 +194,9 @@ public class ModuleTreePopupMenu extends JPopupMenu implements PopupMenuListener
 
     /**
      * ポップアップメニューをJTreeのノード上でのみ表示する。
-     * @param invoker		コンポーネント
-     * @param x				座標X
-     * @param y				座標Y
+     * @param invoker        コンポーネント
+     * @param x                座標X
+     * @param y                座標Y
      */
     @Override
     public void show(Component invoker, int x, int y) {
@@ -212,7 +212,7 @@ public class ModuleTreePopupMenu extends JPopupMenu implements PopupMenuListener
 
     /**
      * すべて収納アクションリスナを取得する
-     * @return		すべて収納アクションリスナ
+     * @return        すべて収納アクションリスナ
      */
     @Override
     public ActionListener getActionTreeCollapseAll() {
@@ -221,7 +221,7 @@ public class ModuleTreePopupMenu extends JPopupMenu implements PopupMenuListener
 
     /**
      * すべて展開アクションリスナを取得する
-     * @return		すべて展開アクションリスナ
+     * @return        すべて展開アクションリスナ
      */
     @Override
     public ActionListener getActionTreeExpandAll() {
@@ -230,7 +230,7 @@ public class ModuleTreePopupMenu extends JPopupMenu implements PopupMenuListener
 
     /**
      * 選択展開アクションリスナを取得する
-     * @return		選択展開アクションリスナ
+     * @return        選択展開アクションリスナ
      */
     @Override
     public ActionListener getActionTreeExpandSelect() {
@@ -239,7 +239,7 @@ public class ModuleTreePopupMenu extends JPopupMenu implements PopupMenuListener
 
     /**
      * ファイルを開くリスナを取得する。
-     * @return			ファイルを開くリスナ
+     * @return            ファイルを開くリスナ
      */
     @Override
     public EventListener getActionOpenFile() {
@@ -248,7 +248,7 @@ public class ModuleTreePopupMenu extends JPopupMenu implements PopupMenuListener
 
     /**
      * エクスプローラエクスポートアクションを取得する
-     * @return		エクスプローラエクスポートアクション
+     * @return        エクスプローラエクスポートアクション
      */
     @Override
     public ActionListener getActionExportExplore() {
@@ -258,7 +258,7 @@ public class ModuleTreePopupMenu extends JPopupMenu implements PopupMenuListener
 
     /**
      * ポップアップメニュー可視イベント
-     * @param event		イベント情報
+     * @param event        イベント情報
      */
     @Override
     public void popupMenuWillBecomeVisible(PopupMenuEvent event) {
@@ -284,7 +284,7 @@ public class ModuleTreePopupMenu extends JPopupMenu implements PopupMenuListener
 
     /**
      * ポップアップメニューが取り消されたイベント
-     * @param event		イベント情報
+     * @param event        イベント情報
      */
     @Override
     public void popupMenuWillBecomeInvisible(PopupMenuEvent event) { }
@@ -292,7 +292,7 @@ public class ModuleTreePopupMenu extends JPopupMenu implements PopupMenuListener
 
     /**
      * ポップアップメニューが取り消されたイベント
-     * @param event		イベント情報
+     * @param event        イベント情報
      */
     @Override
     public void popupMenuCanceled(PopupMenuEvent event) { }

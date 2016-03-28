@@ -34,7 +34,7 @@ public class LanguagePropertiesAction extends ActionBase {
 
     /**
      * コンストラクタ
-     * @param controller	アプリケーションコントローラ
+     * @param controller    アプリケーションコントローラ
      */
     public LanguagePropertiesAction(AppController controller) {
         super(controller);
@@ -42,7 +42,7 @@ public class LanguagePropertiesAction extends ActionBase {
 
     /**
      * アクション発生イベント
-     * @param event		イベント情報
+     * @param event        イベント情報
      */
     @Override
     public void actionPerformed(ActionEvent event) {
@@ -70,7 +70,7 @@ public class LanguagePropertiesAction extends ActionBase {
         Fortran fortran = this.controller.getFortranLanguage();
 
         // ノードのプロパティの取得を行う
-        LanguageService service = new LanguageService(fortran);
+        LanguageService service = new LanguageService(fortran, false);
         service.setErrorInfoModel(this.controller.getErrorInfoModel());
         service.setProperties(node.getUserObject(), model);
 

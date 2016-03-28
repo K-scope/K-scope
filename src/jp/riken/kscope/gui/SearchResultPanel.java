@@ -1,6 +1,6 @@
 /*
  * K-scope
- * Copyright 2012-2013 RIKEN, Japan
+ * Copyright 2012-2015 RIKEN, Japan
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -116,7 +116,7 @@ public class SearchResultPanel extends AnalisysPanelBase implements Observer, IA
 
     /**
      * コンストラクタ
-     * @param panel		分析情報パネル識別子
+     * @param panel        分析情報パネル識別子
      */
     public SearchResultPanel(ANALYSIS_PANEL panel) {
         super(panel);
@@ -319,8 +319,8 @@ public class SearchResultPanel extends AnalisysPanelBase implements Observer, IA
 
     /**
      * 検索結果モデルの変更通知イベント
-     * @param o			通知元
-     * @param arg		通知項目
+     * @param o            通知元
+     * @param arg        通知項目
      */
     @Override
     public void update(Observable o, Object arg) {
@@ -339,35 +339,13 @@ public class SearchResultPanel extends AnalisysPanelBase implements Observer, IA
         this.label.setText(this.model.getTitle());
 
         // 新規構造ツリーボタンのイネーブル切替
-        boolean enabled = false;
-        DefaultMutableTreeNode root = this.model.getRootNode();
-        if (root != null && root.getChildCount() > 0) {
-            // 最初の子ノードはProcedureであること。
-            DefaultMutableTreeNode child = (DefaultMutableTreeNode) root.getChildAt(0);
-            if (child != null
-                && child.getUserObject() != null
-                && child.getUserObject() instanceof Procedure) {
-                enabled = true;
-            }
-        }
-        Icon icon = null;
-        if (enabled) {
-            // イネーブル用ボタンアイコン
-            icon = ResourceUtils.getIcon("new_tree.gif");
-        }
-        else {
-            // ディスイネーブル用ボタンアイコン
-            icon = ResourceUtils.getIcon("new_tree_gray.gif");
-        }
-        this.btnNewTree.setIcon(icon);
-        this.btnNewTree.setEnabled(enabled);
-
+        this.setNewTreeButton();
     }
 
 
     /**
      * 検索結果モデルを取得する
-     * @return		検索結果モデル
+     * @return        検索結果モデル
      */
     public SearchResultModel getModel() {
         return model;
@@ -376,7 +354,7 @@ public class SearchResultPanel extends AnalisysPanelBase implements Observer, IA
 
     /**
      * フォーカスリスナを設定する
-     * @param listener		フォーカスリスナ
+     * @param listener        フォーカスリスナ
      */
     @Override
     public void addTabFocusListener(TabFocusListener listener) {
@@ -399,7 +377,7 @@ public class SearchResultPanel extends AnalisysPanelBase implements Observer, IA
     /**
      * パネルにアクションリスナを設定する.<br/>
      * メニューバーに作成済みのアクションリスナをパネルボタンに割り当てる。
-     * @param menu		メニューバー
+     * @param menu        メニューバー
      */
     @Override
     public void setActionListener(MainMenu menu) {
@@ -419,10 +397,10 @@ public class SearchResultPanel extends AnalisysPanelBase implements Observer, IA
     /**
      * 選択行のコード情報を取得する.<br/>
      * テーブルモデルの1列目にはコード情報オブジェクトが設定されている。
-     * @return		コード情報
+     * @return        コード情報
      */
     @Override
-	public CodeLine getSelectedCodeLine() {
+    public CodeLine getSelectedCodeLine() {
 
         // 選択されたファイルのソースファイルオブジェクトを取得する。
         DefaultMutableTreeNode node = (DefaultMutableTreeNode) this.treeSearch.getLastSelectedPathComponent();
@@ -458,7 +436,7 @@ public class SearchResultPanel extends AnalisysPanelBase implements Observer, IA
 
     /**
      * ボタンのクリックイベント
-     * @param event		イベント情報
+     * @param event        イベント情報
      */
     @Override
     public void actionPerformed(ActionEvent event) {
@@ -609,7 +587,7 @@ public class SearchResultPanel extends AnalisysPanelBase implements Observer, IA
 
     /**
      * 選択ブロックを取得する
-     * @return		選択ブロック
+     * @return        選択ブロック
      */
     @Override
     public IBlock getSelectedBlock() {
@@ -629,7 +607,7 @@ public class SearchResultPanel extends AnalisysPanelBase implements Observer, IA
 
     /**
      * 選択付加情報を取得する
-     * @return		選択付加情報
+     * @return        選択付加情報
      */
     @Override
     public IInformation getSelectedInformation() {
@@ -649,7 +627,7 @@ public class SearchResultPanel extends AnalisysPanelBase implements Observer, IA
 
     /**
      * ソースビュープロパティを設定する
-     * @param properties		ソースビュープロパティ
+     * @param properties        ソースビュープロパティ
      */
     @Override
     public void setSourceProperties(SourceProperties properties) {
@@ -696,7 +674,7 @@ public class SearchResultPanel extends AnalisysPanelBase implements Observer, IA
 
     /**
      * マウスクリックイベント
-     * @param event			マウスイベント情報
+     * @param event            マウスイベント情報
      */
     @Override
     public void mouseClicked(MouseEvent event) {
@@ -705,39 +683,42 @@ public class SearchResultPanel extends AnalisysPanelBase implements Observer, IA
             // 該当個所を開く
             this.btnOpenFile.doClick();
         }
+
+        // 新規構造ツリーボタンのイネーブル切替
+        this.setNewTreeButton();
     }
 
     /**
      * マウスボタンダウンイベント
-     * @param e		マウスイベント情報
+     * @param e        マウスイベント情報
      */
     @Override
     public void mousePressed(MouseEvent e) { }
 
     /**
      * マウスボタンアップイベント
-     * @param e		マウスイベント情報
+     * @param e        マウスイベント情報
      */
     @Override
     public void mouseReleased(MouseEvent e) {}
 
     /**
      * マウスオーバーイベント
-     * @param e		マウスイベント情報
+     * @param e        マウスイベント情報
      */
     @Override
     public void mouseEntered(MouseEvent e) {}
 
     /**
      * マウスアウトイベント
-     * @param e		マウスイベント情報
+     * @param e        マウスイベント情報
      */
     @Override
     public void mouseExited(MouseEvent e) {}
 
     /**
      * 検索結果のキーワードリストを取得する
-     * @return		検索キーワードリスト
+     * @return        検索キーワードリスト
      */
     public Keyword[] getSearchKeywords() {
 
@@ -798,11 +779,37 @@ public class SearchResultPanel extends AnalisysPanelBase implements Observer, IA
     /**
      * エキスポートする情報があるか否か
      */
-	@Override
-	public boolean isExportable() {
-		if (this.model == null) return false;
-		return (!this.model.isEmpty());
-	}
+    @Override
+    public boolean isExportable() {
+        if (this.model == null) return false;
+        return (!this.model.isEmpty());
+    }
+
+    /**
+     * 新規構造ツリーボタンのイネーブル切り替えを行う。
+     */
+    private void setNewTreeButton() {
+
+        // 新規構造ツリーボタンのイネーブル切替
+        boolean enabled = false;
+        IBlock selected_block = this.getSelectedBlock();
+        if (selected_block != null) {
+            if (selected_block instanceof Procedure) {
+                enabled = true;
+            }
+        }
+        Icon icon = null;
+        if (enabled) {
+            // イネーブル用ボタンアイコン
+            icon = ResourceUtils.getIcon("new_tree.gif");
+        }
+        else {
+            // ディスイネーブル用ボタンアイコン
+            icon = ResourceUtils.getIcon("new_tree_gray.gif");
+        }
+        this.btnNewTree.setIcon(icon);
+        this.btnNewTree.setEnabled(enabled);
+    }
 }
 
 

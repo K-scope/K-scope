@@ -66,7 +66,7 @@ public class CodeBuilder extends XcodeMLVisitorImpl {
 
     /**
      * コンストラクタ
-     * @param context		XcodeMLパーサ実行状況クラス
+     * @param context        XcodeMLパーサ実行状況クラス
      */
     public CodeBuilder(XcodeMLContext context) {
         _context = context;
@@ -91,8 +91,8 @@ public class CodeBuilder extends XcodeMLVisitorImpl {
     /**
      * 文字配列のバイト数を取得する.
      *
-     * @param array			文字配列
-     * @return			バイト数
+     * @param array            文字配列
+     * @return            バイト数
      */
     private static int _getColumnCount(char[] array) {
         int columnCount = 0;
@@ -104,8 +104,8 @@ public class CodeBuilder extends XcodeMLVisitorImpl {
 
     /**
      * 文字列のバイト数を取得する
-     * @param s		文字列
-     * @return		バイト数
+     * @param s        文字列
+     * @return        バイト数
      */
     @SuppressWarnings("unused")
     private static int _getColumnCount(String s) {
@@ -199,10 +199,10 @@ public class CodeBuilder extends XcodeMLVisitorImpl {
             return "";
         }
         if (this.lowercase) {
-        	return text.toLowerCase();
+            return text.toLowerCase();
         }
         else {
-        	return text.toUpperCase();
+            return text.toUpperCase();
         }
     }
 
@@ -241,7 +241,7 @@ public class CodeBuilder extends XcodeMLVisitorImpl {
 
     /**
      * 文字リストを出力する.
-     * @param chArray		文字リスト
+     * @param chArray        文字リスト
      */
     private void _writeCharacterArray(char[] chArray) {
         if (m_dummyBuf != null) {
@@ -289,7 +289,7 @@ public class CodeBuilder extends XcodeMLVisitorImpl {
 
     /**
      * 最終コード行を取得する。
-     * @return		最終コード行
+     * @return        最終コード行
      */
     public CodeLine getLastCodeLine() {
         if (m_sourceList.size() == 0)
@@ -300,11 +300,11 @@ public class CodeBuilder extends XcodeMLVisitorImpl {
     /**
      * コード行クラスを生成する。
      *
-     * @param filename			ソースファイル名
-     * @param startlineno		開始行番号
-     * @param endlineno			終了行番号
-     * @param statement			コードステートメント
-     * @return			生成コード行クラス
+     * @param filename            ソースファイル名
+     * @param startlineno        開始行番号
+     * @param endlineno            終了行番号
+     * @param statement            コードステートメント
+     * @return            生成コード行クラス
      */
     private CodeLine createCodeLine(String filename, String startlineno,
             String endlineno, String statement) {
@@ -323,19 +323,30 @@ public class CodeBuilder extends XcodeMLVisitorImpl {
         }
 
         // ソースファイル、ソースコード行
-        File srcFile = FileUtils.joinFilePath(_context.getSourceXmlFile()
-                .getFile().getParentFile(), filename);
+        // modify by @hira at 2016/01/28
+        File srcFile = null;
+        if (filename != null && !filename.isEmpty()) {
+            if (new File(filename).exists()) {
+                srcFile = new File(filename);
+            }
+            else {
+                srcFile = FileUtils.joinFilePath(_context.getBaseFolder(), filename);
+                if (srcFile == null || !srcFile.exists()) {
+                    srcFile = FileUtils.joinFilePath(_context.getSourceXmlFile().getFile().getParentFile(), filename);
+                }
+            }
+        }
         SourceFile codeFile = null;
         if (srcFile != null) {
-        	if (_context.getBaseFolder() != null) {
-        		String path = FileUtils.getRelativePath(srcFile, _context.getBaseFolder());
-        		if (path != null) {
-        			codeFile = new SourceFile(path);
-        		}
-        	}
-        	else {
-        		codeFile = new SourceFile(srcFile);
-        	}
+            if (_context.getBaseFolder() != null) {
+                String path = FileUtils.getRelativePath(srcFile, _context.getBaseFolder());
+                if (path != null) {
+                    codeFile = new SourceFile(path);
+                }
+            }
+            else {
+                codeFile = new SourceFile(srcFile);
+            }
         }
 
         CodeLine lineInfo = new CodeLine(codeFile, statement, start_no, end_no, filename);
@@ -346,7 +357,7 @@ public class CodeBuilder extends XcodeMLVisitorImpl {
     /**
      * コード行クラスを生成する。
      *
-     * @param node			XMLノード
+     * @param node            XMLノード
      * @return コード行クラス
      */
     public CodeLine createCodeLine(IXmlNode node) {
@@ -366,8 +377,8 @@ public class CodeBuilder extends XcodeMLVisitorImpl {
     /**
      * コード行クラスを生成する。
      *
-     * @param node		XMLノード
-     * @param line		コード行文字列
+     * @param node        XMLノード
+     * @param line        コード行文字列
      * @return コード行クラス
      */
     public CodeLine createCodeLine(IXmlNode node, String line) {
@@ -409,8 +420,8 @@ public class CodeBuilder extends XcodeMLVisitorImpl {
 
     /**
      * データ型を取得する
-     * @param type		型名
-     * @return			データ型
+     * @param type        型名
+     * @return            データ型
      */
     private XcodeMLTypeManager.TypeList getTypeList(String type) {
         XcodeMLTypeManager typeManager = _context.getTypeManager();
@@ -547,8 +558,8 @@ public class CodeBuilder extends XcodeMLVisitorImpl {
     /**
      * Write kind and length in character declaration.
      *
-     * @param kind			データ種別
-     * @param lenElem		データ長
+     * @param kind            データ種別
+     * @param lenElem        データ長
      * @return   成否
      */
     public boolean writeTypeParam(Kind kind, Len lenElem) {
@@ -584,8 +595,8 @@ public class CodeBuilder extends XcodeMLVisitorImpl {
     /**
      * Write index ranges of array.
      *
-     * @param indexRangeArray		インデックス範囲
-     * @return true/false			成否
+     * @param indexRangeArray        インデックス範囲
+     * @return true/false            成否
      * @example <div class="Example"> INTEGER value<span class="Strong">(10,
      *          1:20)</span> </div>
      */
@@ -627,7 +638,7 @@ public class CodeBuilder extends XcodeMLVisitorImpl {
     /**
      * Write coindex ranges of array.
      *
-     * @param indexRangeArray		インデックス範囲
+     * @param indexRangeArray        インデックス範囲
      * @return true/false
      * @example <div class="Example"> INTEGER value<span class="Strong">[10,
      *          1:*]</span> </div>
@@ -670,8 +681,8 @@ public class CodeBuilder extends XcodeMLVisitorImpl {
 
     /**
      * データ定義属性を出力する
-     * @param top		ルートデータ定義テーブル
-     * @param low		データ定義
+     * @param top        ルートデータ定義テーブル
+     * @param low        データ定義
      */
     private void _writeDeclAttr(IXmlTypeTableChoice top, IXmlTypeTableChoice low) {
         if ((top instanceof FbasicType) && (low instanceof FbasicType)) {
@@ -690,7 +701,7 @@ public class CodeBuilder extends XcodeMLVisitorImpl {
 
     /**
      * データ定義属性を出力する
-     * @param basicTypeArray		データ定義
+     * @param basicTypeArray        データ定義
      */
     private void _writeBasicTypeAttr(FbasicType... basicTypeArray) {
         if (basicTypeArray == null) {
@@ -779,10 +790,10 @@ public class CodeBuilder extends XcodeMLVisitorImpl {
 
     /**
      * 関数データ型を出力する
-     * @param symbol		XmlSymbol
-     * @param funcType		FfunctionType
-     * @param visitable		要素
-     * @return		成否
+     * @param symbol        XmlSymbol
+     * @param funcType        FfunctionType
+     * @param visitable        要素
+     * @return        成否
      */
     public boolean writeFunctionSymbol(XmlSymbol symbol,
             FfunctionType funcType, IXmlNode visitable) {
@@ -907,9 +918,9 @@ public class CodeBuilder extends XcodeMLVisitorImpl {
 
     /**
      * 基本データ型を出力する
-     * @param basicTypeElem		基本データ型要素
-     * @param typeList			typeTable
-     * @return			成否
+     * @param basicTypeElem        基本データ型要素
+     * @param typeList            typeTable
+     * @return            成否
      */
     public boolean writeBasicType(FbasicType basicTypeElem,
             XcodeMLTypeManager.TypeList typeList) {
@@ -1198,7 +1209,7 @@ public class CodeBuilder extends XcodeMLVisitorImpl {
      *
      */
     @Override
-	public boolean enter(Arguments visitable) {
+    public boolean enter(Arguments visitable) {
         // DONE: Arguments
         List<IXmlNode> list = visitable
                 .getFintConstantOrFrealConstantOrFcomplexConstant();
@@ -1215,7 +1226,7 @@ public class CodeBuilder extends XcodeMLVisitorImpl {
      *
      */
     @Override
-	public boolean enter(DefModelArraySubscriptSequence visitable) {
+    public boolean enter(DefModelArraySubscriptSequence visitable) {
         // DONE: DefModelArraySubscriptSequence
         IXmlNode[] arraySubscriptChoice = visitable.getIndexRangeOrArrayIndex();
         if (arraySubscriptChoice != null) {
@@ -1232,7 +1243,7 @@ public class CodeBuilder extends XcodeMLVisitorImpl {
      *
      */
     @Override
-	public boolean enter(CoShape visitable) {
+    public boolean enter(CoShape visitable) {
         // DONE: CoShape
         List<IndexRange> list = visitable.getIndexRange();
         IndexRange[] indexRange = (IndexRange[]) list
@@ -1264,7 +1275,7 @@ public class CodeBuilder extends XcodeMLVisitorImpl {
      * </div></code>
      */
     @Override
-	public boolean enter(FassignStatement visitable) {
+    public boolean enter(FassignStatement visitable) {
         // DONE: FassignStatement
         writeLineDirective(visitable.getLineno(), visitable.getFile());
 
@@ -1305,7 +1316,7 @@ public class CodeBuilder extends XcodeMLVisitorImpl {
      * </div></code>
      */
     @Override
-	public boolean enter(Condition visitable) {
+    public boolean enter(Condition visitable) {
         XcodeMLVisitor visiter = _context.getVisitor();
         // DONE: Condition
 
@@ -1335,7 +1346,7 @@ public class CodeBuilder extends XcodeMLVisitorImpl {
      * </div></code>
      */
     @Override
-	public boolean enter(ContinueStatement visitable) {
+    public boolean enter(ContinueStatement visitable) {
         // DONE: ContinueStatement
         writeLineDirective(visitable.getLineno(), visitable.getFile());
 
@@ -1358,7 +1369,7 @@ public class CodeBuilder extends XcodeMLVisitorImpl {
      * </div></code>
      */
     @Override
-	public boolean enter(DivExpr visitable) {
+    public boolean enter(DivExpr visitable) {
         // DONE: DivExpr
         List<IXmlNode> list = visitable.getContent();
         if (list == null || list.size() < 2)
@@ -1392,7 +1403,7 @@ public class CodeBuilder extends XcodeMLVisitorImpl {
      * </div></code>
      */
     @Override
-	public boolean enter(ExprStatement visitable) {
+    public boolean enter(ExprStatement visitable) {
         XcodeMLVisitor visiter = _context.getVisitor();
         // DONE: ExprStatement
         writeLineDirective(visitable.getLineno(), visitable.getFile());
@@ -1418,7 +1429,7 @@ public class CodeBuilder extends XcodeMLVisitorImpl {
      * </div></code>
      */
     @Override
-	public boolean enter(ExternDecl visitable) {
+    public boolean enter(ExternDecl visitable) {
         // DONE: ExternDecl
         writeLineDirective(visitable.getLineno(), visitable.getFile());
 
@@ -1445,7 +1456,7 @@ public class CodeBuilder extends XcodeMLVisitorImpl {
      * </div></code>
      */
     @Override
-	public boolean enter(FallocateStatement visitable) {
+    public boolean enter(FallocateStatement visitable) {
         //XcodeMLVisitor visiter = _context.getVisitor();
         // DONE: FallocateStatement
         writeLineDirective(visitable.getLineno(), visitable.getFile());
@@ -1481,7 +1492,7 @@ public class CodeBuilder extends XcodeMLVisitorImpl {
      * </div></code>
      */
     @Override
-	public boolean enter(FarrayConstructor visitable) {
+    public boolean enter(FarrayConstructor visitable) {
         // DONE: FarrayConstructor
         writeToken("(/ ");
 
@@ -1505,7 +1516,7 @@ public class CodeBuilder extends XcodeMLVisitorImpl {
      * </div></code>
      */
     @Override
-	public boolean enter(FarrayRef visitable) {
+    public boolean enter(FarrayRef visitable) {
         XcodeMLVisitor visiter = _context.getVisitor();
         // DONE: FarrayRef
         if (visiter.invokeEnter(visitable.getVarRef()) == false) {
@@ -1535,7 +1546,7 @@ public class CodeBuilder extends XcodeMLVisitorImpl {
      * </div></code>
      */
     @Override
-	public boolean enter(FcoArrayRef visitable) {
+    public boolean enter(FcoArrayRef visitable) {
         XcodeMLVisitor visiter = _context.getVisitor();
         // DONE: FcoArrayRef
         if (visiter.invokeEnter(visitable.getVarRef()) == false) {
@@ -1565,7 +1576,7 @@ public class CodeBuilder extends XcodeMLVisitorImpl {
      * </div></code>
      */
     @Override
-	public boolean enter(FbackspaceStatement visitable) {
+    public boolean enter(FbackspaceStatement visitable) {
         XcodeMLVisitor visiter = _context.getVisitor();
         // DONE: FbackspaceStatement
         writeLineDirective(visitable.getLineno(), visitable.getFile());
@@ -1573,7 +1584,7 @@ public class CodeBuilder extends XcodeMLVisitorImpl {
         writeToken(toCaseSensitive("BACKSPACE "));
 
         List<NamedValue> list = visitable.getNamedValue();
-        if (list != null) {        	
+        if (list != null) {
             IXmlNode[] array = list.toArray(new IXmlNode[0]);
             if (_invokeEnterAndWriteDelim(array, ", ") == false) {
                 return false;
@@ -1614,7 +1625,7 @@ public class CodeBuilder extends XcodeMLVisitorImpl {
      * </div></code>
      */
     @Override
-	public boolean enter(FcaseLabel visitable) {
+    public boolean enter(FcaseLabel visitable) {
         // DONE: FcaseLabel
         writeLineDirective(visitable.getLineno(), visitable.getFile());
 
@@ -1657,7 +1668,7 @@ public class CodeBuilder extends XcodeMLVisitorImpl {
      *
      */
     @Override
-	public boolean enter(FcharacterConstant visitable) {
+    public boolean enter(FcharacterConstant visitable) {
         // DONE: FcharacterConstant
         String kind = visitable.getKind();
         if (StringUtils.isNullOrEmpty(kind) == false) {
@@ -1677,7 +1688,7 @@ public class CodeBuilder extends XcodeMLVisitorImpl {
      * </div></code>
      */
     @Override
-	public boolean enter(FcharacterRef visitable) {
+    public boolean enter(FcharacterRef visitable) {
         XcodeMLVisitor visiter = _context.getVisitor();
         // DONE: FcharacterRef
         if (visiter.invokeEnter(visitable.getVarRef()) == false) {
@@ -1713,13 +1724,13 @@ public class CodeBuilder extends XcodeMLVisitorImpl {
         writeToken(toCaseSensitive("CLOSE "));
 
         List<NamedValue> list = visitable.getNamedValue();
-        if (list != null) {        	
+        if (list != null) {
             IXmlNode[] array = list.toArray(new IXmlNode[0]);
             if (_invokeEnterAndWriteDelim(array, ", ") == false) {
                 return false;
             }
         }
-        
+
         if (!updateCodeLine(visitable)) {
             return false;
         }
@@ -2222,7 +2233,7 @@ public class CodeBuilder extends XcodeMLVisitorImpl {
         writeToken(toCaseSensitive("ENDFILE "));
 
         List<NamedValue> list = visitable.getNamedValue();
-        if (list != null) {        	
+        if (list != null) {
             IXmlNode[] array = list.toArray(new IXmlNode[0]);
             if (_invokeEnterAndWriteDelim(array, ", ") == false) {
                 return false;
@@ -2822,7 +2833,7 @@ public class CodeBuilder extends XcodeMLVisitorImpl {
         writeToken(toCaseSensitive("INQUIRE "));
 
         List<NamedValue> list = visitable.getNamedValue();
-        if (list != null) {        	
+        if (list != null) {
             IXmlNode[] array = list.toArray(new IXmlNode[0]);
             if (_invokeEnterAndWriteDelim(array, ", ") == false) {
                 return false;
@@ -3197,7 +3208,7 @@ public class CodeBuilder extends XcodeMLVisitorImpl {
         writeToken(toCaseSensitive("OPEN "));
 
         List<NamedValue> list = visitable.getNamedValue();
-        if (list != null) {        	
+        if (list != null) {
             IXmlNode[] array = list.toArray(new IXmlNode[0]);
             if (_invokeEnterAndWriteDelim(array, ", ") == false) {
                 return false;
@@ -3268,7 +3279,8 @@ public class CodeBuilder extends XcodeMLVisitorImpl {
         List<IXmlNode> list = visitable.getContent();
         IXmlNode leftExpr = list.get(0) != null ? list.get(0) : null;
         IXmlNode rightExpr = list.get(1) != null ? list.get(1) : null;
-        if (writeBinaryExpr(leftExpr, rightExpr, "**", true) == false) {
+        // 優先順位１の為括弧不要 : ata 2015/11/01 by @hira
+        if (writeBinaryExpr(leftExpr, rightExpr, "**", false) == false) {
             return false;
         }
 
@@ -3365,7 +3377,7 @@ public class CodeBuilder extends XcodeMLVisitorImpl {
         writeToken(toCaseSensitive("READ "));
 
         List<NamedValue> list = visitable.getNamedValue();
-        if (list != null) {        	
+        if (list != null) {
             IXmlNode[] array = list.toArray(new IXmlNode[0]);
             if (_invokeEnterAndWriteDelim(array, ", ") == false) {
                 return false;
@@ -3458,7 +3470,7 @@ public class CodeBuilder extends XcodeMLVisitorImpl {
         writeToken(toCaseSensitive("REWIND "));
 
         List<NamedValue> list = visitable.getNamedValue();
-        if (list != null) {        	
+        if (list != null) {
             IXmlNode[] array = list.toArray(new IXmlNode[0]);
             if (_invokeEnterAndWriteDelim(array, ", ") == false) {
                 return false;
@@ -3684,8 +3696,8 @@ public class CodeBuilder extends XcodeMLVisitorImpl {
     /**
      * Decompile "FstructDecl" element in XcodeML/F.
      *
-     * @param visitable		FstructDecl
-     * @return			true=success
+     * @param visitable        FstructDecl
+     * @return            true=success
      */
     public boolean enterStructTypeElem(FstructDecl visitable) {
         Name nameElem = visitable.getName();
@@ -3990,7 +4002,7 @@ public class CodeBuilder extends XcodeMLVisitorImpl {
         writeToken(toCaseSensitive("WRITE "));
 
         List<NamedValue> list = visitable.getNamedValue();
-        if (list != null) {        	
+        if (list != null) {
             IXmlNode[] array = list.toArray(new IXmlNode[0]);
             if (_invokeEnterAndWriteDelim(array, ", ") == false) {
                 return false;
@@ -4613,9 +4625,9 @@ public class CodeBuilder extends XcodeMLVisitorImpl {
     /**
      * Decompile "statementLabel" element in XcodeML/F.
      *
-     * @param visitable 		StatementLabel
-     * @param nextNode 			IXmlNode
-     * @return 		true=success
+     * @param visitable         StatementLabel
+     * @param nextNode             IXmlNode
+     * @return         true=success
      *
      * @example <code><div class="Example">
      * GOTO 1000
@@ -5066,8 +5078,8 @@ public class CodeBuilder extends XcodeMLVisitorImpl {
 
     /**
      * 引数リストを文字列で取得する.
-     * @param args		引数要素
-     * @return			引数リスト
+     * @param args        引数要素
+     * @return            引数リスト
      */
     public String[] getArgumentList(Arguments args) {
         List<IXmlNode> list = args
@@ -5103,8 +5115,8 @@ public class CodeBuilder extends XcodeMLVisitorImpl {
 
     /**
      * コードを組み立てる
-     * @param node		要素
-     * @return			コード文字列
+     * @param node        要素
+     * @return            コード文字列
      */
     public String getCodeString(IXmlNode node) {
         XcodeMLVisitor visiter = _context.getVisitor();
@@ -5125,7 +5137,7 @@ public class CodeBuilder extends XcodeMLVisitorImpl {
 
     /**
      * ソースコード行を取得する
-     * @return		コード行リスト
+     * @return        コード行リスト
      */
     public CodeLine[] getCodeLineList() {
         if (m_sourceList == null || m_sourceList.size() <= 0)

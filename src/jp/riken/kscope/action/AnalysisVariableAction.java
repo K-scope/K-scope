@@ -41,7 +41,7 @@ public class AnalysisVariableAction extends ActionBase {
 
     /**
      * コンストラクタ
-     * @param controller	アプリケーションコントローラ
+     * @param controller    アプリケーションコントローラ
      */
     public AnalysisVariableAction(AppController controller) {
         super(controller);
@@ -50,7 +50,7 @@ public class AnalysisVariableAction extends ActionBase {
     /**
      * アクションが実行可能であるかチェックする.<br/>
      * アクションの実行前チェック、メニューのイネーブルの切替を行う。<br/>
-     * @return		true=アクションが実行可能
+     * @return        true=アクションが実行可能
      */
     @Override
     public boolean validateAction() {
@@ -72,7 +72,7 @@ public class AnalysisVariableAction extends ActionBase {
 
     /**
      * アクション発生イベント
-     * @param event		イベント情報
+     * @param event        イベント情報
      */
     @Override
     public void actionPerformed(ActionEvent event) {
@@ -81,7 +81,7 @@ public class AnalysisVariableAction extends ActionBase {
         if (!validateAction()) return;
 
         // ステータスメッセージ
-        final String message = Message.getString("mainmenu.analysis.valiableproperty"); //変数特性一覧
+        final String message = Message.getString("mainmenu.analysis.variableproperty"); //変数特性一覧
         Application.status.setMessageMain(message);
 
         // ブロックリストと変数宣言リストを作成する
@@ -92,17 +92,17 @@ public class AnalysisVariableAction extends ActionBase {
         // フォートランデータベース
         Fortran fortran = this.controller.getFortranLanguage();
         // 変数特性情報一覧モデルを取得する
-        VariableTableModel modelValiable = this.controller.getVariableTableModel();
+        VariableTableModel modelVariable = this.controller.getVariableTableModel();
         // エラー情報モデル
         ErrorInfoModel errorModel = this.controller.getErrorInfoModel();
 
         // 変数特性情報一覧クリア
-        modelValiable.clearVariable();
+        modelVariable.clearVariable();
 
         // 分析サービス
         AnalysisVariableService service = new AnalysisVariableService(fortran);
         service.setErrorInfoModel(errorModel);
-        service.setModelVariable(modelValiable);
+        service.setModelVariable(modelVariable);
 
         // 変数特性情報一覧を取得する
         // ブロックが選択を優先とする。
@@ -116,7 +116,7 @@ public class AnalysisVariableAction extends ActionBase {
         }
 
         // 変数特性情報一覧タブをアクティブにする
-        this.controller.setSelectedAnalysisPanel(ANALYSIS_PANEL.VALIABLE);
+        this.controller.setSelectedAnalysisPanel(ANALYSIS_PANEL.VARIABLE);
 
     }
 
@@ -127,32 +127,32 @@ public class AnalysisVariableAction extends ActionBase {
         // フォートランデータベース
         Fortran fortran = this.controller.getFortranLanguage();
         // 変数特性情報一覧モデルを取得する
-        VariableTableModel modelValiable = this.controller.getVariableTableModel();
+        VariableTableModel modelVariable = this.controller.getVariableTableModel();
         // エラー情報モデル
         ErrorInfoModel errorModel = this.controller.getErrorInfoModel();
 
         // 変数特性情報一覧クリア
-        modelValiable.clearVariable();
+        modelVariable.clearVariable();
 
         // 分析サービス
         AnalysisVariableService service = new AnalysisVariableService(fortran);
         service.setErrorInfoModel(errorModel);
-        service.setModelVariable(modelValiable);
+        service.setModelVariable(modelVariable);
 
         // 現在表示中のデータセットを取得する
         List<IBlock> lastBlocks = this.controller.getLastVariableBlocks();
         List<VariableDefinition> lastVars = this.controller.getLastVariableVars();
-    	if (lastBlocks != null && lastBlocks.size() > 0) {
-    		service.analysisVariable(lastBlocks.toArray(new IBlock[0]));
-    	}
-    	else if (lastVars != null && lastVars.size() > 0) {
-    		service.analysisVariable(lastVars.toArray(new VariableDefinition[0]));
-    	}
+        if (lastBlocks != null && lastBlocks.size() > 0) {
+            service.analysisVariable(lastBlocks.toArray(new IBlock[0]));
+        }
+        else if (lastVars != null && lastVars.size() > 0) {
+            service.analysisVariable(lastVars.toArray(new VariableDefinition[0]));
+        }
     }
 
     /**
      * 選択ブロックを取得する
-     * @return		選択ブロック
+     * @return        選択ブロック
      */
     private List<IBlock> getSelectedBlocks() {
 
@@ -178,7 +178,7 @@ public class AnalysisVariableAction extends ActionBase {
 
     /**
      * 選択変数宣言文を取得する
-     * @return		選択変数宣言文
+     * @return        選択変数宣言文
      */
     private List<VariableDefinition> getSelectedVariableDefinitions() {
 

@@ -18,12 +18,17 @@
 package jp.riken.kscope.language.fortran;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
 import jp.riken.kscope.data.CodeLine;
+import jp.riken.kscope.data.SourceFile;
 import jp.riken.kscope.language.BlockType;
 import jp.riken.kscope.language.IBlock;
+import jp.riken.kscope.language.IDeclarations;
+import jp.riken.kscope.language.Module;
+import jp.riken.kscope.language.Procedure;
 import jp.riken.kscope.language.Variable;
 import jp.riken.kscope.language.VariableDefinition;
 
@@ -45,7 +50,7 @@ public class Type implements IBlock, Serializable {
      * コンストラクタ。
      */
     public Type() {
-        core = new Structure();
+        this.core = new Structure();
     }
 
     /**
@@ -55,13 +60,24 @@ public class Type implements IBlock, Serializable {
      *         構造体の名前
      */
     public Type(String nm) {
-        core = new Structure(nm);
+        this.core = new Structure(nm);
+    }
+
+    /**
+     * コピーコンストラクタ。
+     *
+     * @param   type
+     */
+    public Type(Type type) {
+        if (type == null) return;
+        this.core = type.core;
     }
 
     @Override
     public String toString() {
-        return "type " + this.getName();
+        return "type (" + this.getName() + ")";
     }
+
     /**
      * 変数定義文の追加。
      *
@@ -69,7 +85,7 @@ public class Type implements IBlock, Serializable {
      *          変数定義文
      */
     public void add(VariableDefinition definition) {
-        core.add(definition);
+        this.core.add(definition);
     }
 
     /**
@@ -81,7 +97,7 @@ public class Type implements IBlock, Serializable {
      *          変数名
      */
     public void add(VariableType typ, String nm) {
-        core.add(typ, nm);
+        this.core.add(typ, nm);
     }
 
     /**
@@ -93,7 +109,7 @@ public class Type implements IBlock, Serializable {
      *          変数名
      */
     public void add(Type type, String variableName) {
-        core.add(type, variableName);
+        this.core.add(type, variableName);
     }
 
     /**
@@ -105,7 +121,7 @@ public class Type implements IBlock, Serializable {
      *          変数名
      */
     public void add(Structure structure, String variableName) {
-        core.add(structure, variableName);
+        this.core.add(structure, variableName);
     }
 
     /**
@@ -115,7 +131,7 @@ public class Type implements IBlock, Serializable {
      *          共用体
      */
     public void add(Union union) {
-        core.add(union);
+        this.core.add(union);
     }
 
     /**
@@ -124,7 +140,7 @@ public class Type implements IBlock, Serializable {
      * @return 構造体の名前
      */
     public String getName() {
-        return core.getName();
+        return this.core.getName();
     }
 
     /**
@@ -133,7 +149,7 @@ public class Type implements IBlock, Serializable {
      * @return 変数定義文リスト.無ければnullを返す。
      */
     public List<VariableDefinition> getDefinitions() {
-        return core.getDefinitions();
+        return this.core.getDefinitions();
     }
 
     /**
@@ -141,7 +157,7 @@ public class Type implements IBlock, Serializable {
      * @param 変数定義文リスト
      */
     public void setDefinitions(List<VariableDefinition> list) {
-    	core.setDefinitions(list);
+        this.core.setDefinitions(list);
     }
 
     /**
@@ -181,7 +197,7 @@ public class Type implements IBlock, Serializable {
 
     /**
      * 開始コード行情報を設定する。
-     * @param line	開始コード行情報を設定する。
+     * @param line    開始コード行情報を設定する。
      */
     public void setStartCodeLine(CodeLine line) {
         if (this.core == null) return;
@@ -190,7 +206,7 @@ public class Type implements IBlock, Serializable {
 
     /**
      * 終了コード行情報を設定する。
-     * @param line	終了コード行情報を設定する。
+     * @param line    終了コード行情報を設定する。
      */
     public void setEndCodeLine(CodeLine line) {
         if (this.core == null) return;
@@ -209,17 +225,181 @@ public class Type implements IBlock, Serializable {
 
     /**
      * 親ブロックを設定する.
-     * @param block		親ブロック
+     * @param block        親ブロック
      */
     public void setMotherBlock(IBlock block) {
         this.core.setMotherBlock(block);
     }
 
- 	/**
- 	 * 変数リストを取得する.
- 	 */
- 	@Override
- 	public Set<Variable> getAllVariables() {
- 		return null;
- 	}
+     /**
+      * 変数リストを取得する.
+      */
+     @Override
+     public Set<Variable> getAllVariables() {
+         return this.core.getAllVariables();
+     }
+
+    /**
+     * ファイルタイプ（C言語、Fortran)を取得する.
+     * @return        ファイルタイプ（C言語、Fortran)
+     */
+    @Override
+    public jp.riken.kscope.data.FILE_TYPE getFileType() {
+        return core.getFileType();
+    }
+
+    /**
+     * 子要素を返す。
+     * @return 子要素。無ければ空のリストを返す
+     */
+    @Override
+    public List<IBlock> getChildren() {
+        return this.core.getChildren();
+    }
+
+    /**
+     * 行番号のブロックを検索する
+     * @param line            行番号
+     * @return        行番号のブロック
+     */
+    @Override
+    public IBlock[] searchCodeLine(CodeLine line) {
+        return this.core.searchCodeLine(line);
+    }
+
+
+
+    /**
+     * ファイルタイプがC言語であるかチェックする.
+     * @return         true = C言語
+     */
+    @Override
+    public boolean isClang() {
+        return this.core.isClang();
+    }
+
+    /**
+     * ファイルタイプがFortranであるかチェックする.
+     * @return         true = Fortran
+     */
+    @Override
+    public boolean isFortran() {
+        return this.core.isFortran();
+    }
+
+    /**
+     * 親ブロックからIDeclarationsブロックを取得する.
+     * @return    IDeclarationsブロック
+     */
+    @Override
+    public IDeclarations getScopeDeclarationsBlock() {
+        if (this.core == null) return null;
+        return this.core.getScopeDeclarationsBlock();
+    }
+
+    /**
+     * 子ブロックのIDeclarationsブロックを検索する.
+     * @return    IDeclarationsブロックリスト
+     */
+    @Override
+    public Set<IDeclarations> getDeclarationsBlocks() {
+        if (this.core == null) return null;
+        return this.core.getDeclarationsBlocks();
+    }
+
+    /**
+     * Procedureブロックを習得する。
+     * @return    Procedureブロック
+     */
+    @Override
+    public Procedure getProcedureBlock() {
+        if (this.core == null) return null;
+        return this.core.getProcedureBlock();
+    }
+
+    /**
+     * Moduleブロックを習得する。
+     * @return    Moduleブロック
+     */
+    @Override
+    public Module getModuleBlock() {
+        if (this.core == null) return null;
+        return this.core.getModuleBlock();
+    }
+
+
+    /**
+     * プロシージャ（関数）からブロックまでの階層文字列表記を取得する
+     * 階層文字列表記 : [main()]-[if (...)]-[if (...)]
+     * CompoundBlock（空文）は省略する.
+     * @return      階層文字列表記
+     */
+    @Override
+    public String toStringProcedureScope() {
+        if (this.core == null) return null;
+        return this.core.toStringProcedureScope();
+    }
+
+
+    /**
+     * モジュールからブロックまでの階層文字列表記を取得する
+     * 階層文字列表記 : [main()]-[if (...)]-[if (...)]
+     * CompoundBlock（空文）は省略する.
+     * @return      階層文字列表記
+     */
+    @Override
+    public String toStringModuleScope() {
+        if (this.core == null) return null;
+        return this.core.toStringModuleScope();
+    }
+
+    /**
+     * ブロックの階層文字列表記を取得する
+     * 階層文字列表記 : [main()]-[if (...)]-[if (...)]
+     * CompoundBlock（空文）は省略する.
+     * @param   module     true=Moduleまでの階層文字列表記とする
+     * @return      階層文字列表記
+     */
+    @Override
+    public String toStringScope(boolean module) {
+        if (this.core == null) return null;
+        return this.core.toStringScope(module);
+    }
+
+
+    /**
+     * 式の変数リストを取得する.
+     * ブロックのみの変数リストを取得する。
+     * @return        式の変数リスト
+     */
+    @Override
+    public Set<Variable> getBlockVariables() {
+        return this.core.getBlockVariables();
+    }
+
+    /**
+     * 関数呼出を含む自身の子ブロックのリストを返す。
+     * @return 子ブロックのリスト
+     */
+    public List<IBlock> getBlocks() {
+        return this.core.getBlocks();
+    }
+
+    /**
+     * 構造体メンバの変数定義を取得する
+     * @param mem_names        構造体変数メンバ文字列
+     * @return        構造体メンバの変数定義
+     */
+    public VariableDefinition getStructMember(String mem_name) {
+        return this.core.getStructMember(mem_name);
+    }
+
+    /**
+     * 構造体メンバの変数定義を取得する
+     * @param mem_names        構造体変数メンバ文字列
+     * @return        構造体メンバの変数定義
+     */
+    public VariableDefinition getStructMember(String[] mem_names) {
+        return this.core.getStructMember(mem_names);
+    }
 }

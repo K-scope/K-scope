@@ -25,17 +25,31 @@ import java.util.Set;
 
 /**
  * モジュールへの参照を表現するクラス。 FortranにおけるUSE文に対応。
- *
+ * C言語におけるinclude文に対応させる      at 2015/09/01 by @hira
  * @author RIKEN
  *
  */
 public class UseState extends Block {
-	/** シリアル番号 */
-	private static final long serialVersionUID = 4969852934134083633L;
+    /** シリアル番号 */
+    private static final long serialVersionUID = 4969852934134083633L;
     private String moduleName;
     private Set<String> onlyMember;
     private Map<String, String> translationName;
     private Map<String, String> translationNameReverse;
+
+    /**
+     * コンストラクタ
+     */
+    public UseState() {
+    }
+
+    /**
+     * コンストラクタ
+     * @param module_name            モジュール名
+     */
+    public UseState(String module_name) {
+        this.moduleName = module_name;
+    }
 
     @Override
     public String toString() {
@@ -177,7 +191,10 @@ public class UseState extends Block {
      * @return 変数名。ルールが無ければ変換前の変数名を返す。
      */
     public String translation(VariableDefinition var) {
-        if (var.getMother().get_name().equalsIgnoreCase(this.getModuleName())) {
+        ProgramUnit prog = var.getParentProgram();
+        if (prog == null) return var.get_name();
+
+        if (prog.get_name().equalsIgnoreCase(this.getModuleName())) {
             if (this.translationNameReverse != null) {
                 String nm = this.translationNameReverse.get(var.get_name());
                 if (nm != null) {
@@ -211,6 +228,48 @@ public class UseState extends Block {
      */
     public BlockType getBlockType() {
         return BlockType.USE;
+    }
+
+    /**
+     * モジュール名が等しいかチェックする.
+     * @param mod_name        チェック対象モジュール名
+     * @return        true=モジュール名が等しい
+     */
+    public boolean equalsModuleName(String mod_name) {
+        if (mod_name == null) return false;
+        if (this.moduleName == null) return false;
+        if (this.isClang()) {
+            // C言語
+            return this.moduleName.equals(mod_name);
+        }
+        else {
+            // Fortran
+            return this.moduleName.equalsIgnoreCase(mod_name);
+        }
+    }
+
+    /**
+     * USE文メンバ変数に対象変数名が存在するかチェックする.
+     * @param var_name        検索対象変数名
+     * @return        true=メンバに存在する
+     */
+    public boolean containsMember(String var_name) {
+
+        Set<String> om = this.getOnlyMember();
+        for (String oName : om) {
+            if (this.isClang()) {
+                if (oName.equals(var_name)) {
+                    return true;
+                }
+            }
+            else {
+                if (oName.equalsIgnoreCase(var_name)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 }
 

@@ -19,7 +19,10 @@ package jp.riken.kscope.language;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import jp.riken.kscope.information.InformationBlocks;
 
@@ -28,8 +31,8 @@ import jp.riken.kscope.information.InformationBlocks;
  * @author RIKEN
  */
 public class Selection extends Block {
-	/** シリアル番号 */
-	private static final long serialVersionUID = -2834175766015959116L;
+    /** シリアル番号 */
+    private static final long serialVersionUID = -2834175766015959116L;
     /** 条件式と実行文からなるブロックのリスト。 */
     private List<Condition> conditions = new ArrayList<Condition>();
     /** 分岐の種類を表現する。 */
@@ -45,12 +48,12 @@ public class Selection extends Block {
      *
      */
     public enum SelectionType {
-    	/** select文. */
-    	SELECT,
-    	/** if文. */
-    	IF,
-    	/** where文. */
-    	WHERE
+        /** select文. */
+        SELECT,
+        /** if文. */
+        IF,
+        /** where文. */
+        WHERE
     }
 
     /**
@@ -98,7 +101,7 @@ public class Selection extends Block {
 
     /**
      * 条件式リストを取得する。
-     * @return		条件式リスト
+     * @return        条件式リスト
      */
     protected List<Condition> get_conditions() {
         return (conditions);
@@ -107,7 +110,7 @@ public class Selection extends Block {
     /**
      * 条件式を取得する。
      * @param i    条件式インデックス
-     * @return		条件式
+     * @return        条件式
      */
     protected Condition getCondition(int i) {
         return conditions.get(i);
@@ -183,7 +186,7 @@ public class Selection extends Block {
         this.caseCondition = caseCond;
         // 親IF,SELECT文を設定する
         if (this.caseCondition != null) {
-        	this.caseCondition.setParentStatement(this);
+            this.caseCondition.setParentStatement(this);
         }
     }
     /**
@@ -238,8 +241,8 @@ public class Selection extends Block {
      * @return Conditionのリスト。無ければからのリストを返す。
      */
     @Override
-    public ArrayList<Block> getChildren() {
-        ArrayList<Block> children = new ArrayList<Block>();
+    public ArrayList<IBlock> getChildren() {
+        ArrayList<IBlock> children = new ArrayList<IBlock>();
         children.addAll(this.conditions);
         return children;
     }
@@ -247,49 +250,49 @@ public class Selection extends Block {
 
     /**
      * 同一ブロックであるかチェックする.
-     * @param block		ブロック
-	 * @return		true=一致
+     * @param block        ブロック
+     * @return        true=一致
      */
     @Override
-	public boolean equalsBlocks(Block block) {
-		if (block == null) return false;
-		if (!(block instanceof Selection)) return false;
-		if (!super.equalsBlocks(block)) return false;
+    public boolean equalsBlocks(Block block) {
+        if (block == null) return false;
+        if (!(block instanceof Selection)) return false;
+        if (!super.equalsBlocks(block)) return false;
 
-		if (this.type != ((Selection)block).type) {
-			return false;
-		}
-		if (this.conditions != null && ((Selection)block).conditions != null) {
-			if (this.conditions.size() == ((Selection)block).conditions.size()) {
-				for (int i=0; i<this.conditions.size(); i++) {
-					Condition thisCond = this.conditions.get(i);
-					Condition destCond = ((Selection)block).conditions.get(i);
-					if (thisCond == destCond) {
-						continue;
-					}
-					else if (thisCond == null) {
-						return false;
-					}
-					else if (!thisCond.equalsBlocks(destCond)) {
-						return false;
-					}
-				}
-			}
-		}
-		else if (this.conditions != null || ((Selection)block).conditions != null) {
-			return false;
-		}
+        if (this.type != ((Selection)block).type) {
+            return false;
+        }
+        if (this.conditions != null && ((Selection)block).conditions != null) {
+            if (this.conditions.size() == ((Selection)block).conditions.size()) {
+                for (int i=0; i<this.conditions.size(); i++) {
+                    Condition thisCond = this.conditions.get(i);
+                    Condition destCond = ((Selection)block).conditions.get(i);
+                    if (thisCond == destCond) {
+                        continue;
+                    }
+                    else if (thisCond == null) {
+                        return false;
+                    }
+                    else if (!thisCond.equalsBlocks(destCond)) {
+                        return false;
+                    }
+                }
+            }
+        }
+        else if (this.conditions != null || ((Selection)block).conditions != null) {
+            return false;
+        }
 
-		if (this.caseCondition != null && ((Selection)block).caseCondition != null) {
-			if (!this.caseCondition.equalsExpression(((Selection)block).caseCondition)) {
-				return false;
-			}
-		}
-		else if (this.caseCondition != null || ((Selection)block).caseCondition != null) {
-			return false;
-		}
+        if (this.caseCondition != null && ((Selection)block).caseCondition != null) {
+            if (!this.caseCondition.equalsExpression(((Selection)block).caseCondition)) {
+                return false;
+            }
+        }
+        else if (this.caseCondition != null || ((Selection)block).caseCondition != null) {
+            return false;
+        }
 
-		return true;
+        return true;
     }
 
     /**
@@ -321,68 +324,148 @@ public class Selection extends Block {
     }
 
 
-	/**
-	 * 同一ブロック階層であるかチェックする.
-	 * @param block		チェック対象Block
-	 * @return   true=一致
-	 */
-	public boolean equalsLayout(Block block) {
-		if (block == null) return false;
-		if (!(block instanceof Selection)) return false;
-		if (!super.equalsLayout(block)) return false;
+    /**
+     * 同一ブロック階層であるかチェックする.
+     * @param block        チェック対象Block
+     * @return   true=一致
+     */
+    public boolean equalsLayout(Block block) {
+        if (block == null) return false;
+        if (!(block instanceof Selection)) return false;
+        if (!super.equalsLayout(block)) return false;
 
-		if (this.type != ((Selection)block).type) {
-			return false;
-		}
-		if (this.conditions != null && ((Selection)block).conditions != null) {
-			if (this.conditions.size() == ((Selection)block).conditions.size()) {
-				for (int i=0; i<this.conditions.size(); i++) {
-					Condition thisCond = this.conditions.get(i);
-					Condition destCond = ((Selection)block).conditions.get(i);
-					if (thisCond == destCond) {
-						continue;
-					}
-					else if (thisCond == null) {
-						return false;
-					}
-					else if (!thisCond.equalsLayout(destCond)) {
-						return false;
-					}
-				}
-			}
-		}
-		else if (this.conditions != null || ((Selection)block).conditions != null) {
-			return false;
-		}
+        if (this.type != ((Selection)block).type) {
+            return false;
+        }
+        if (this.conditions != null && ((Selection)block).conditions != null) {
+            if (this.conditions.size() == ((Selection)block).conditions.size()) {
+                for (int i=0; i<this.conditions.size(); i++) {
+                    Condition thisCond = this.conditions.get(i);
+                    Condition destCond = ((Selection)block).conditions.get(i);
+                    if (thisCond == destCond) {
+                        continue;
+                    }
+                    else if (thisCond == null) {
+                        return false;
+                    }
+                    else if (!thisCond.equalsLayout(destCond)) {
+                        return false;
+                    }
+                }
+            }
+        }
+        else if (this.conditions != null || ((Selection)block).conditions != null) {
+            return false;
+        }
 
-		return true;
+        return true;
     }
 
     /**
      * 子ブロックのインデックスを返す.
      * 存在しない場合は、-1を返す。
-     * @param block		ブロック
-	 * @return			インデックス
+     * @param block        ブロック
+     * @return            インデックス
      */
     @Override
     protected int indexOfChildren(Block block) {
-    	if (block instanceof Condition) {
-    		return this.conditions.indexOf(block);
-    	}
-    	else {
-    		return super.indexOfChildren(block);
-    	}
-	}
+        if (block instanceof Condition) {
+            return this.conditions.indexOf(block);
+        }
+        else {
+            return super.indexOfChildren(block);
+        }
+    }
 
     /**
      * 子ブロックのインデックスを返す.
      * DO, SELECT, IF文の出現回数とする
      * 存在しない場合は、-1を返す。
-     * @param block		ブロック
-	 * @return			インデックス
+     * @param block        ブロック
+     * @return            インデックス
      */
     @Override
     protected int indexOfLayout(Block block) {
-    	return indexOfChildren(block);
-	}
+        return indexOfChildren(block);
+    }
+
+    /**
+     * 子ブロックのIDeclarationsブロックを検索する.
+     * @return    IDeclarationsブロックリスト
+     */
+    @Override
+    public Set<IDeclarations> getDeclarationsBlocks() {
+        Set<IDeclarations> list = new LinkedHashSet<IDeclarations>();
+        {
+            Set<IDeclarations> children_list = super.getDeclarationsBlocks();
+            if (children_list != null && children_list.size() > 0) {
+                list.addAll(children_list);
+            }
+        }
+        if (this.conditions != null) {
+            for (IBlock block : this.conditions) {
+                if (block.getBlockType() == BlockType.COMPOUND) {
+                    list.add((IDeclarations)block);
+                }
+                Set<IDeclarations> children_list = block.getDeclarationsBlocks();
+                if (children_list != null && children_list.size() > 0) {
+                    list.addAll(children_list);
+                }
+            }
+        }
+        if (list.size() <= 0) return null;
+
+        return list;
+    }
+
+
+    /**
+     * 式の変数リストを取得する.
+     * 子ブロックの変数リストも取得する。
+     * @return        式の変数リスト
+     */
+    @Override
+    public Set<Variable> getAllVariables() {
+        Set<Variable> list = new HashSet<Variable>();
+        Set<Variable> vars = super.getAllVariables();
+        if (vars != null && vars.size() > 0) {
+            list.addAll(vars);
+        }
+        vars = this.getBlockVariables();
+        if (vars != null && vars.size() > 0) {
+            list.addAll(vars);
+        }
+
+        if (list.size() <= 0) return null;
+        return list;
+    }
+
+
+    /**
+     * 式の変数リストを取得する.
+     * ブロックのみの変数リストを取得する。
+     * @return        式の変数リスト
+     */
+    public Set<Variable> getBlockVariables() {
+
+        Set<Variable> list = new HashSet<Variable>();
+        if (this.conditions != null) {
+            for (Condition item : this.conditions) {
+                Set<Variable> vars = item.getBlockVariables();
+                if (vars != null && vars.size() > 0) {
+                    list.addAll(vars);
+                }
+            }
+        }
+        if (this.caseCondition != null) {
+            Set<Variable> vars = this.caseCondition.getBlockVariables();
+            if (vars != null && vars.size() > 0) {
+                list.addAll(vars);
+            }
+        }
+
+        if (list.size() <= 0) return null;
+        return list;
+    }
+
 }

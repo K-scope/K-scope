@@ -100,7 +100,7 @@ public class CodeLine implements Comparable<CodeLine>, Serializable {
      * @param statement           コード行
      * @param line            ファイル行番号
      * @param type            コードタイプ
-     * @param strSourceFile		ソースファイル（存在しなくてもＸＭＬ情報から格納）
+     * @param strSourceFile        ソースファイル（存在しなくてもＸＭＬ情報から格納）
      */
     public CodeLine(SourceFile sourceFile, String statement, int line, CODE_TYPE type, String strSourceFile) {
         this(sourceFile, statement, line, strSourceFile);
@@ -136,7 +136,7 @@ public class CodeLine implements Comparable<CodeLine>, Serializable {
      * @param sourceFile        ソースファイル
      * @param startline         ファイル行番号（開始）
      * @param endline           ファイル行番号（終了）
-     * @param strSourceFile		ソースファイル（存在しなくてもＸＭＬ情報から格納）
+     * @param strSourceFile        ソースファイル（存在しなくてもＸＭＬ情報から格納）
      */
     public CodeLine(SourceFile sourceFile, int startline, int endline, String strSourceFile) {
         m_sourceFile = sourceFile;
@@ -151,7 +151,7 @@ public class CodeLine implements Comparable<CodeLine>, Serializable {
      * コンストラクタ
      *
      * @param sourceFile        ソースファイル
-     * @param strSourceFile		ソースファイル（存在しなくてもＸＭＬ情報から格納）
+     * @param strSourceFile        ソースファイル（存在しなくてもＸＭＬ情報から格納）
      */
     public CodeLine(SourceFile sourceFile, String strSourceFile) {
         m_sourceFile = sourceFile;
@@ -168,7 +168,10 @@ public class CodeLine implements Comparable<CodeLine>, Serializable {
      * @param code        ソースコード
      */
     public CodeLine(CodeLine code) {
-        m_sourceFile = new SourceFile(code.m_sourceFile);
+        if (code == null) return;
+        if (code.m_sourceFile != null) {
+            m_sourceFile = new SourceFile(code.m_sourceFile);
+        }
         m_statement = code.m_statement;
         m_startline = code.m_startline;
         m_endline = code.m_endline;
@@ -314,14 +317,23 @@ public class CodeLine implements Comparable<CodeLine>, Serializable {
     }
 
     /**
-     * コード行をソートする。 ファイル開始行順にソートする。 同一行にコメントとコードが存在している場合は、コードを優先する。
+     * コード行を比較する。
+     * ファイル開始行順にソートする。 同一行にコメントとコードが存在している場合は、コードを優先する。
      *
      * @param code
      *            コードオブジェクト
-     * @return -1:行が小さい/0:行が同じ/1:行が大きい
+     * @return -1:this行が小さい/0:thisとcodeの行が同じ/1:this行が大きい
      */
     @Override
     public int compareTo(CodeLine code) {
+
+        if (this.getSourceFile() != null && code.getSourceFile() != null) {
+            int file_comp = this.getSourceFile().getPath().compareTo(code.getSourceFile().getPath());
+            if (file_comp != 0) {
+                return file_comp;
+            }
+        }
+
         if (this.m_startline < code.m_startline) {
             return -1;
         } else if (this.m_startline > code.m_startline) {
@@ -450,8 +462,8 @@ public class CodeLine implements Comparable<CodeLine>, Serializable {
 
     /**
      * 同じコード行であるかチェックする
-     * @param code		チェック対象コード行
-     * @return			true=一致
+     * @param code        チェック対象コード行
+     * @return            true=一致
      */
     @Override
     public boolean equals(Object code) {
@@ -477,8 +489,30 @@ public class CodeLine implements Comparable<CodeLine>, Serializable {
     }
 
     /**
+     * 同じコード行番号であるかチェックする
+     * @param code        チェック対象コード行
+     * @return            true=一致
+     */
+    public boolean equalsLineno(Object code) {
+        if (!(code instanceof CodeLine)) return false;
+        if (this.m_sourceFile != null) {
+            if (!this.m_sourceFile.equals(((CodeLine)code).m_sourceFile)) {
+                return false;
+            }
+        }
+        if (this.m_startline != ((CodeLine)code).m_startline) {
+            return false;
+        }
+        if (this.m_endline != ((CodeLine)code).m_endline) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
      * ソースファイル名を取得する
-     * @return			ソースファイル名（存在しないファイルでも設定があればかえす）
+     * @return            ソースファイル名（存在しないファイルでも設定があればかえす）
      */
     public String getStrSourceFile() {
         if (m_statement != null) {
@@ -495,7 +529,7 @@ public class CodeLine implements Comparable<CodeLine>, Serializable {
 
     /**
      * ソースファイル名を設定する
-     * @param			ソースファイル名（ヘッダーなどの存在しないファイルでも設定があれば設定する）
+     * @param            ソースファイル名（ヘッダーなどの存在しないファイルでも設定があれば設定する）
      */
     public void setStrSourceFile(String strSourceFile) {
         m_strSourceFile = strSourceFile;
@@ -511,9 +545,9 @@ public class CodeLine implements Comparable<CodeLine>, Serializable {
 
     /**
      * 開始、終了行が重なりあうかチェックする.
-     * @param start		開始行
-     * @param end		終了行
-     * @return			true=重なりあう
+     * @param start        開始行
+     * @param end        終了行
+     * @return            true=重なりあう
      */
     public boolean isOverlap(CodeLine start, CodeLine end) {
         if (this.getSourceFile() == null) return false;

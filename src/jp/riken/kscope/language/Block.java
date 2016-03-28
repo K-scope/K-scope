@@ -17,10 +17,12 @@
 
 package jp.riken.kscope.language;
 
+import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -48,7 +50,7 @@ public abstract class Block implements Serializable, IInformation, IBlock {
     private Statement end;
     /** 子ブロック */
     // TODO childrenを常にnewするのはやめるべきか要検討
-    private ArrayList<Block> children = new ArrayList<Block>();
+    private ArrayList<IBlock> children = new ArrayList<IBlock>();
     /** 付加情報 */
     // TODO 常にnullで初期化するのはやめるべきか要検討
     private TextInfo information = null;
@@ -117,7 +119,7 @@ public abstract class Block implements Serializable, IInformation, IBlock {
 
     /**
      * 親ブロックを設定する。
-     * @param mama		親ブロック
+     * @param mama        親ブロック
      */
     protected void set_mother(Block mama) {
         mother = mama;
@@ -185,8 +187,8 @@ public abstract class Block implements Serializable, IInformation, IBlock {
 
     // ++++++++++++++++++++++++++++++++++++++++++++
 
-    protected Block get_child(int i) {
-        return children.get(i);
+    protected IBlock get_child(int i) {
+        return this.children.get(i);
     }
 
     // ++++++++++++++++++++++++++++++++++++++++++++
@@ -195,42 +197,50 @@ public abstract class Block implements Serializable, IInformation, IBlock {
      *
      * @return 子要素。無ければ空のリストを返す
      */
-    public ArrayList<Block> getChildren() {
-        return children;
+    @Override
+    public List<IBlock> getChildren() {
+        return this.children;
     }
 
-    protected void getCalls(List<ProcedureUsage> calls) {
+    protected List<ProcedureUsage> getCalls() {
+        List<ProcedureUsage> list = new ArrayList<ProcedureUsage>();
         for (int i = 0; i < get_num_of_child(); i++) {
-            Block child = this.get_child(i);
+            IBlock child = this.get_child(i);
             if (child instanceof ProcedureUsage) {
-                calls.add((ProcedureUsage) child);
+                list.add((ProcedureUsage) child);
             } else if (child instanceof Selection) {
-                for (int j = 0; j < ((Selection) (child))
-                        .getNumOfConditions(); j++) {
+                for (int j = 0; j < ((Selection) (child)).getNumOfConditions(); j++) {
                     Block child_block = ((((Selection) child)
-                            .getConditions()
-                            .get(j)));
-                    child_block.getCalls(calls);
+                                                .getConditions()
+                                                .get(j)));
+                    List<ProcedureUsage> calls = child_block.getCalls();
+                    if (calls == null || calls.size() <= 0) continue;
+                    list.addAll(calls);
                 }
 
             } else if (child instanceof Substitution){
                 List<ProcedureUsage> funcCalls = ((Substitution)child).getRightValue().getFuncCalls();
                 for (ProcedureUsage call:funcCalls) {
-                    calls.add(call);
+                    list.add(call);
                 }
-            } else {
-                child.getCalls(calls);
+            } else if (child instanceof Block){
+                List<ProcedureUsage> calls = ((Block)child).getCalls();
+                if (calls != null && calls.size() > 0) {
+                    list.addAll(calls);
+                }
             }
         }
+        if (list.size() <= 0) return null;
+        return list;
     }
     // ++++++++++++++++++++++++++++++++++++++++++++
     protected void get_blocks(List<Block> blocks) {
         for (int i = 0; i < get_num_of_child(); i++) {
-            Block child = get_child(i);
+            IBlock child = get_child(i);
             if (child instanceof ProcedureUsage) {
-                blocks.add(child);
-            } else {
-                blocks.add(child);
+                blocks.add((ProcedureUsage)child);
+            } else if (child instanceof Block) {
+                blocks.add((Block)child);
             }
         }
     }
@@ -244,7 +254,7 @@ public abstract class Block implements Serializable, IInformation, IBlock {
 
     /**
      * 付加情報を取得する
-     * @return		付加情報
+     * @return        付加情報
      */
     @Override
     public TextInfo getInformation() {
@@ -254,7 +264,7 @@ public abstract class Block implements Serializable, IInformation, IBlock {
     /**
      * 開始行番号情報を取得する
      *
-     * @return		開始行番号情報
+     * @return        開始行番号情報
      */
     @Override
     public CodeLine getStartCodeLine() {
@@ -266,7 +276,7 @@ public abstract class Block implements Serializable, IInformation, IBlock {
     /**
      * 終了行番号情報を取得する
      *
-     * @return		終了行番号情報
+     * @return        終了行番号情報
      */
     @Override
     public CodeLine getEndCodeLine() {
@@ -341,16 +351,17 @@ public abstract class Block implements Serializable, IInformation, IBlock {
      * @param id    ID
      * @return 見つかった情報ブロック。見つからなかった場合はnullが返ります。
      */
+    @Override
     public IInformation findInformationBlockBy(String id) {
         IInformation result = null;
 
         if (this.getID().equals(id)) {
             result = this;
         } else {
-            ArrayList<Block> blocks = this.getChildren();
-            for (Block block : blocks) {
-                result = block.findInformationBlockBy(id);
-                if (result != null) { break; }
+            List<IBlock> blocks = this.getChildren();
+            for (IBlock block : blocks) {
+                 result = ((Block)block).findInformationBlockBy(id);
+                 if (result != null) { break; }
             }
         }
 
@@ -363,8 +374,8 @@ public abstract class Block implements Serializable, IInformation, IBlock {
     @Override
     public void clearInformation() {
         this.setInformation(null);
-        for (Block child : this.children) {
-            child.clearInformation();
+        for (IBlock child : this.children) {
+            ((Block)child).clearInformation();
         }
     }
 
@@ -373,17 +384,17 @@ public abstract class Block implements Serializable, IInformation, IBlock {
      *
      * @return 付加情報ブロックコレクション
      */
+    @Override
     public InformationBlocks createInformationBlocks() {
         InformationBlocks result = new InformationBlocks();
 
         if (this.information != null) {
-            InformationBlock block
-              = new InformationBlock(this.information, this, this);
+            InformationBlock block = new InformationBlock(this.information, this, this);
             result.add(block);
         }
         if (this.children != null) {
-            for (Block block : this.children) {
-                result.addAll(block.createInformationBlocks());
+            for (IBlock block : this.children) {
+                result.addAll(((Block)block).createInformationBlocks());
             }
         }
         return result;
@@ -393,7 +404,8 @@ public abstract class Block implements Serializable, IInformation, IBlock {
      * 自身の子ブロックのリストを返す。
      * @return 子ブロックのリスト。無ければ空のリストを返す。
      */
-    public List<Block> getBlocks() {
+    @Override
+    public List<IBlock> getBlocks() {
         return this.children;
     }
 
@@ -428,8 +440,8 @@ public abstract class Block implements Serializable, IInformation, IBlock {
     /**
      * 同一ブロックであるかチェックする.
      * childrenが同じサイズ、同じ文字列であること.
-     * @param block		ブロック
-     * @return		true=一致
+     * @param block        ブロック
+     * @return        true=一致
      */
     public boolean equalsBlocks(Block block) {
         if (block == null) return false;
@@ -450,8 +462,8 @@ public abstract class Block implements Serializable, IInformation, IBlock {
 
         int count = this.children.size();
         for (int i=0; i<count; i++) {
-            Block thisChildren = this.children.get(i);
-            Block destChildren = block.get_child(i);
+            Block thisChildren = (Block)this.children.get(i);
+            Block destChildren = (Block)block.get_child(i);
             if (thisChildren == destChildren) continue;
             else if (thisChildren == null) {
                 return false;
@@ -466,8 +478,8 @@ public abstract class Block implements Serializable, IInformation, IBlock {
     /**
      * 子ブロックのインデックスを返す.
      * 存在しない場合は、-1を返す。
-     * @param block		ブロック
-     * @return			インデックス
+     * @param block        ブロック
+     * @return            インデックス
      */
     protected int indexOfChildren(Block block) {
         return this.children.indexOf(block);
@@ -476,8 +488,8 @@ public abstract class Block implements Serializable, IInformation, IBlock {
 
     /**
      * 同一ブロックを検索する
-     * @param block			IInformationブロック
-     * @return		同一ブロック
+     * @param block            IInformationブロック
+     * @return        同一ブロック
      */
     public IInformation[] searchInformationBlocks(IInformation block) {
         if (!(block instanceof Block)) {
@@ -488,9 +500,9 @@ public abstract class Block implements Serializable, IInformation, IBlock {
             list.add(this);
         }
 
-        ArrayList<Block> blocks = this.getChildren();
-        for (Block blockChildren : blocks) {
-            IInformation[] infos = blockChildren.searchInformationBlocks(block);
+        List<IBlock> blocks = this.getChildren();
+        for (IBlock blockChildren : blocks) {
+            IInformation[] infos = ((Block)blockChildren).searchInformationBlocks(block);
             if (infos != null) {
                 list.addAll(Arrays.asList(infos));
             }
@@ -504,7 +516,7 @@ public abstract class Block implements Serializable, IInformation, IBlock {
 
     /**
      * 同一ブロック階層であるかチェックする.
-     * @param block		チェック対象Block
+     * @param block        チェック対象Block
      * @return   true=一致
      */
     public boolean equalsLayout(Block block) {
@@ -537,10 +549,10 @@ public abstract class Block implements Serializable, IInformation, IBlock {
             thisChildren = null;
             blockChildren = null;
             if (idThis < countThis) {
-                thisChildren = this.children.get(idThis);
+                thisChildren = (Block)this.children.get(idThis);
             }
             if (idBlock < countBlock) {
-                blockChildren = block.children.get(idBlock);
+                blockChildren = (Block)block.children.get(idBlock);
             }
 
             if (thisChildren != null) {
@@ -629,12 +641,12 @@ public abstract class Block implements Serializable, IInformation, IBlock {
      * 子ブロックのインデックスを返す.
      * DO, SELECT, IF文の出現回数とする
      * 存在しない場合は、-1を返す。
-     * @param block		ブロック
-     * @return			インデックス
+     * @param block        ブロック
+     * @return            インデックス
      */
     protected int indexOfLayout(Block block) {
         int index = -1;
-        for (Block child : this.children) {
+        for (IBlock child : this.children) {
             BlockType type = child.getBlockType();
             if (type == BlockType.REPETITION) {
                 index++;
@@ -662,9 +674,9 @@ public abstract class Block implements Serializable, IInformation, IBlock {
         if (layoutId.equalsIgnoreCase(id)) {
             result = this;
         } else {
-            ArrayList<Block> blocks = this.getChildren();
-            for (Block block : blocks) {
-                result = block.findInformationLayoutID(id);
+            List<IBlock> blocks = this.getChildren();
+            for (IBlock block : blocks) {
+                result = ((Block)block).findInformationLayoutID(id);
                 if (result != null) { break; }
             }
         }
@@ -675,8 +687,8 @@ public abstract class Block implements Serializable, IInformation, IBlock {
 
     /**
      * 行番号のブロックを検索する
-     * @param line			行番号
-     * @return		行番号のブロック
+     * @param line            行番号
+     * @return        行番号のブロック
      */
     public IBlock[] searchCodeLine(CodeLine line) {
         if (line == null) return null;
@@ -688,15 +700,15 @@ public abstract class Block implements Serializable, IInformation, IBlock {
             addblock = this;
         }
         List<IBlock> list = new ArrayList<IBlock>();
-        ArrayList<Block> blocks = this.getChildren();
+        List<IBlock> blocks = this.getChildren();
         if (blocks == null || blocks.size() <= 0) {
             if (addblock != null) {
                 list.add(addblock);
             }
         }
         else {
-            for (Block blockChildren : blocks) {
-                IBlock[] childlist = blockChildren.searchCodeLine(line);
+            for (IBlock blockChildren : blocks) {
+                IBlock[] childlist = ((Block)blockChildren).searchCodeLine(line);
                 if (childlist != null) {
                     list.addAll(Arrays.asList(childlist));
                 }
@@ -721,8 +733,8 @@ public abstract class Block implements Serializable, IInformation, IBlock {
     @Override
     public Set<Variable> getAllVariables() {
         Set<Variable> list = new HashSet<Variable>();
-        ArrayList<Block> blocks = this.getChildren();
-        for (Block block : blocks) {
+        List<IBlock> blocks = this.getChildren();
+        for (IBlock block : blocks) {
             Set<Variable> vars = block.getAllVariables();
             if (vars != null) {
                 list.addAll(vars);
@@ -735,7 +747,7 @@ public abstract class Block implements Serializable, IInformation, IBlock {
 
     /**
      * ファイルタイプ（C言語、Fortran)を取得する.
-     * @return		ファイルタイプ（C言語、Fortran)
+     * @return        ファイルタイプ（C言語、Fortran)
      */
     public jp.riken.kscope.data.FILE_TYPE getFileType() {
         jp.riken.kscope.data.FILE_TYPE type = jp.riken.kscope.data.FILE_TYPE.UNKNOWN;
@@ -756,29 +768,170 @@ public abstract class Block implements Serializable, IInformation, IBlock {
 
     /**
      * ファイルタイプがC言語であるかチェックする.
-     * @return		 true = C言語
+     * @return         true = C言語
      */
     public boolean isClang() {
         jp.riken.kscope.data.FILE_TYPE type = this.getFileType();
         if (type == jp.riken.kscope.data.FILE_TYPE.UNKNOWN) return false;
         if (type == jp.riken.kscope.data.FILE_TYPE.XCODEML_XML) return false;
         if (type == jp.riken.kscope.data.FILE_TYPE.CLANG) return true;
+        if (type == jp.riken.kscope.data.FILE_TYPE.FILE_AUTO) {
+            if (this.getStartCodeLine() == null) return false;
+            if (this.getStartCodeLine().getSourceFile() == null) return false;
+            if (this.getStartCodeLine().getSourceFile().getFile() == null) return false;
+            File file = this.getStartCodeLine().getSourceFile().getFile();
+            return jp.riken.kscope.data.FILE_TYPE.isClangFile(file);
+        }
 
         return false;
     }
 
     /**
      * ファイルタイプがFortranであるかチェックする.
-     * @return		 true = Fortran
+     * @return         true = Fortran
      */
     public boolean isFortran() {
+        if (this.isClang()) {
+            return false;
+        }
         jp.riken.kscope.data.FILE_TYPE type = this.getFileType();
         if (type == jp.riken.kscope.data.FILE_TYPE.UNKNOWN) return false;
         if (type == jp.riken.kscope.data.FILE_TYPE.XCODEML_XML) return false;
-        if (type == jp.riken.kscope.data.FILE_TYPE.CLANG) return false;
-
+        if (type == jp.riken.kscope.data.FILE_TYPE.FORTRANLANG) return true;
+        if (type == jp.riken.kscope.data.FILE_TYPE.FILE_AUTO) {
+            if (this.getStartCodeLine() == null) return false;
+            if (this.getStartCodeLine().getSourceFile() == null) return false;
+            if (this.getStartCodeLine().getSourceFile().getFile() == null) return false;
+            File file = this.getStartCodeLine().getSourceFile().getFile();
+            return jp.riken.kscope.data.FILE_TYPE.isFortranFile(file);
+        }
 
         return true;
     }
 
+    /**
+     * 親ブロックからIDeclarationsブロックを取得する.
+     * @return    IDeclarationsブロック
+     */
+    @Override
+    public IDeclarations getScopeDeclarationsBlock() {
+        if (this.mother == null) return null;
+        return this.mother.getScopeDeclarationsBlock();
+    }
+
+
+    /**
+     * 子ブロックのIDeclarationsブロックを検索する.
+     * @return    IDeclarationsブロックリスト
+     */
+    @Override
+    public Set<IDeclarations> getDeclarationsBlocks() {
+        Set<IDeclarations> list = new LinkedHashSet<IDeclarations>();
+        if (this.children != null) {
+            for (IBlock block : this.children) {
+                if (block.getBlockType() == BlockType.COMPOUND) {
+                    list.add((IDeclarations)block);
+                }
+                Set<IDeclarations> children_list = block.getDeclarationsBlocks();
+                if (children_list != null && children_list.size() > 0) {
+                    list.addAll(children_list);
+                }
+            }
+        }
+        if (list.size() <= 0) return null;
+
+        return list;
+    }
+
+    /**
+     * 変数・関数の宣言名に変換する.
+     * Fortranの場合は、小文字に変換する.
+     * C言語の場合は、大文字・小文字を区別する
+     * @param name        変数・関数名
+     * @return            変換変数・関数名
+     */
+    protected String transferDeclarationName(String name) {
+        if (name == null || name.isEmpty()) return null;
+        // Fortranの場合は、小文字に変換する.
+        if (this.isFortran()) return name.toLowerCase();
+        return name;
+    }
+
+
+    /**
+     * Procedureブロックを習得する。
+     * @return    Procedureブロック
+     */
+    @Override
+    public Procedure getProcedureBlock() {
+        if (this.mother == null) return null;
+        return this.mother.getProcedureBlock();
+    }
+
+    /**
+     * Moduleブロックを習得する。
+     * @return    Moduleブロック
+     */
+    @Override
+    public Module getModuleBlock() {
+        Procedure proc = this.getProcedureBlock();
+        if (proc == null) return null;
+        return proc.getModuleBlock();
+    }
+
+
+    /**
+     * プロシージャ（関数）からブロックまでの階層文字列表記を取得する
+     * 階層文字列表記 : [main()]-[if (...)]-[if (...)]
+     * CompoundBlock（空文）は省略する.
+     * @return      階層文字列表記
+     */
+    @Override
+    public String toStringProcedureScope() {
+        return this.toStringScope(false);
+    }
+
+    /**
+     * モジュールからブロックまでの階層文字列表記を取得する
+     * 階層文字列表記 : [main()]-[if (...)]-[if (...)]
+     * CompoundBlock（空文）は省略する.
+     * @return      階層文字列表記
+     */
+    @Override
+    public String toStringModuleScope() {
+        return this.toStringScope(true);
+    }
+
+    /**
+     * ブロックの階層文字列表記を取得する
+     * 階層文字列表記 : [main()]-[if (...)]-[if (...)]
+     * CompoundBlock（空文）は省略する.
+     * @param   module     true=Moduleまでの階層文字列表記とする
+     * @return      階層文字列表記
+     */
+    @Override
+    public String toStringScope(boolean module) {
+        String statement = this.toString();
+        statement = "[" + statement + "]";
+        if (this.getMotherBlock() != null) {
+            String buf = null;
+            if (module) buf = this.getMotherBlock().toStringModuleScope();
+            else buf = this.getMotherBlock().toStringProcedureScope();
+            if (buf != null && !buf.isEmpty()) {
+                statement = buf + "-" + statement;
+            }
+        }
+        return statement;
+    }
+
+
+    /**
+     * 式の変数リストを取得する.
+     * ブロックのみの変数リストを取得する。
+     * @return        式の変数リスト
+     */
+    @Override
+    public Set<Variable> getBlockVariables() {
+        return null;
+    }
 }

@@ -69,15 +69,7 @@ public class ExecutableBody extends Block {
     public BlockType getBlockType() {
         return BlockType.BODY;
     }
-    // ++++++++++++++++++++++++++++++++++++++++++++
 
-    protected List<ProcedureUsage> getCalls() {
-        List<ProcedureUsage> calls = new ArrayList<ProcedureUsage>();
-        this.getCalls(calls);
-        return calls;
-    }
-
-    // ++++++++++++++++++++++++++++++++++++++++++++
 
     protected Block[] get_blocks() {
         ArrayList<Block> blocks = new ArrayList<Block>();
@@ -496,7 +488,7 @@ public class ExecutableBody extends Block {
 
     /**
      * ファイルタイプ（C言語、Fortran)を取得する.
-     * @return		ファイルタイプ（C言語、Fortran)
+     * @return        ファイルタイプ（C言語、Fortran)
      */
     public jp.riken.kscope.data.FILE_TYPE getFileType() {
         jp.riken.kscope.data.FILE_TYPE type = jp.riken.kscope.data.FILE_TYPE.UNKNOWN;
@@ -513,28 +505,20 @@ public class ExecutableBody extends Block {
 
     /**
      * ファイルタイプがC言語であるかチェックする.
-     * @return		 true = C言語
+     * @return         true = C言語
      */
     public boolean isClang() {
-        jp.riken.kscope.data.FILE_TYPE type = this.getFileType();
-        if (type == jp.riken.kscope.data.FILE_TYPE.UNKNOWN) return false;
-        if (type == jp.riken.kscope.data.FILE_TYPE.XCODEML_XML) return false;
-        if (type == jp.riken.kscope.data.FILE_TYPE.CLANG) return true;
-
-        return false;
+        if (this.parent == null) return false;
+        return this.parent.isClang();
     }
 
     /**
      * ファイルタイプがFortranであるかチェックする.
-     * @return		 true = Fortran
+     * @return         true = Fortran
      */
     public boolean isFortran() {
-        jp.riken.kscope.data.FILE_TYPE type = this.getFileType();
-        if (type == jp.riken.kscope.data.FILE_TYPE.UNKNOWN) return false;
-        if (type == jp.riken.kscope.data.FILE_TYPE.XCODEML_XML) return false;
-        if (type == jp.riken.kscope.data.FILE_TYPE.CLANG) return false;
-
-        return true;
+        if (this.parent == null) return false;
+        return this.parent.isFortran();
     }
 
 
@@ -557,4 +541,68 @@ public class ExecutableBody extends Block {
         end_block(lineInfo);
     }
 
+    /**
+     * 親ブロックからIDeclarationsブロックを取得する.
+     * @return    IDeclarationsブロック
+     */
+    @Override
+    public IDeclarations getScopeDeclarationsBlock() {
+        return this.parent;
+    }
+
+    /**
+     * Procedureブロックを習得する。
+     * @return    Procedureブロック
+     */
+    @Override
+    public Procedure getProcedureBlock() {
+        if (this.parent == null) return null;
+        return this.parent;
+    }
+
+
+    /**
+     * プロシージャ（関数）からブロックまでの階層文字列表記を取得する
+     * 階層文字列表記 : [main()]-[if (...)]-[if (...)]
+     * CompoundBlock（空文）は省略する.
+     * @return      階層文字列表記
+     */
+    @Override
+    public String toStringProcedureScope() {
+        return this.toStringScope(false);
+    }
+
+
+    /**
+     * モジュールからブロックまでの階層文字列表記を取得する
+     * 階層文字列表記 : [main()]-[if (...)]-[if (...)]
+     * CompoundBlock（空文）は省略する.
+     * @return      階層文字列表記
+     */
+    @Override
+    public String toStringModuleScope() {
+        return this.toStringScope(true);
+    }
+
+
+    /**
+     * ブロックの階層文字列表記を取得する
+     * 階層文字列表記 : [main()]-[if (...)]-[if (...)]
+     * CompoundBlock（空文）は省略する.
+     * @param   module     true=Moduleまでの階層文字列表記とする
+     * @return      階層文字列表記
+     */
+    @Override
+    public String toStringScope(boolean module) {
+        String statement = "";
+        if (this.parent != null) {
+            String buf = null;
+            if (module) buf = this.parent.toStringModuleScope();
+            else buf = this.parent.toStringProcedureScope();
+            if (buf != null && !buf.isEmpty()) {
+                statement = buf;
+            }
+        }
+        return statement;
+    }
 }

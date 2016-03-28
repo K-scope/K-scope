@@ -244,6 +244,7 @@
         <project key="build-command" name="property.project.build-command.name" value="make" type="file" message="property.project.build-command.message" />
         <project key="project-title" name="property.project.title.name" value="" type="text" message="property.project.title.message" />
         <project key="use-sshconnect" name="property.project.is_remote.name" value="true" type="text" message="property.project.local_remote.message" />
+        <project key="scope-reality" name="property.project.scope-reality.name" value="false" type="boolean" message="property.project.scope-reality.message" />
 
         <!-- Project hidden properties -->
         <project_other key="generate-XML" value="false" />

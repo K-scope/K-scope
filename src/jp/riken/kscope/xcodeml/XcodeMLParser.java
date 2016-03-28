@@ -114,7 +114,7 @@ public abstract class XcodeMLParser implements IAnalyseParser {
 
     /**
      * 元ソースファイル(Fortranソースファイル)を取得する
-     * @return		元ソースファイル(Fortranソースファイル)
+     * @return        元ソースファイル(Fortranソースファイル)
      */
     @Override
     public SourceFile getLanguageFile() {
@@ -265,9 +265,9 @@ public abstract class XcodeMLParser implements IAnalyseParser {
      *
      * XcodeProgramに記述のソースファイルが存在するかチェックする。 ソースファイルが存在しない場合はXcodeMLExceptionとする。
      *
-     * @param reader		XMLスキーマリーダー
-     * @return				成否
-     * @throws XcodeMLException		パースエラー
+     * @param reader        XMLスキーマリーダー
+     * @return                成否
+     * @throws XcodeMLException        パースエラー
      */
     protected boolean parseXcodeProgram(XMLStreamReader reader) throws XcodeMLException {
 
@@ -287,14 +287,29 @@ public abstract class XcodeMLParser implements IAnalyseParser {
             throw new XcodeMLException(Message.getString("xcodemlparserstax.error.sourcefile")); //ソースファイルが設定されていません。
         }
 
+        // modify by @hira at 2016/01/28
+        File srcPath = null;
         if (new File(source).isAbsolute()) {
             // 元ソースファイルを設定する
             this.languageFile = new SourceFile(source);
+            srcPath = new File(source);
         }
-        else {
+        if (this.languageFile == null || this.languageFile.getFile() == null
+            || !this.languageFile.getFile().exists()) {
+            if (this.getBaseFolder() != null) {
+                // 元ソースファイルパスの取得を行う
+                srcPath = new File(this.getBaseFolder()  + File.separator + source);
+                this.languageFile = new SourceFile(srcPath);
+            }
+            else {
+                this.languageFile = new SourceFile(srcPath);
+            }
+        }
+        if (this.languageFile == null || this.languageFile.getFile() == null
+            || !this.languageFile.getFile().exists()) {
             // 元ソースファイルパスの取得を行う
             File path = m_sourceFile.getFile().getParentFile();
-            File srcPath = new File(path.getAbsoluteFile() + File.separator + source);
+            srcPath = new File(path.getAbsoluteFile() + File.separator + source);
 
             if (this.getBaseFolder() != null) {
                 // 基準パスからの相対パスを取得する
@@ -309,10 +324,11 @@ public abstract class XcodeMLParser implements IAnalyseParser {
             else {
                 this.languageFile = new SourceFile(srcPath);
             }
+        }
+        if (srcPath != null && srcPath.exists()) {
             // 相対パス設定であるかもしれないので、更新日付を絶対パスから設定する。
             this.languageFile.setModifyDate(srcPath);
         }
-
 
 //        // 元ソースファイルの存在チェック
 //        if (!this.languageFile.exists()) {

@@ -38,6 +38,7 @@ import jp.riken.kscope.language.Module;
 import jp.riken.kscope.language.Procedure;
 import jp.riken.kscope.language.ProgramUnit;
 import jp.riken.kscope.language.Statement;
+import jp.riken.kscope.language.UseState;
 import jp.riken.kscope.language.Variable;
 import jp.riken.kscope.language.VariableDefinition;
 import jp.riken.kscope.language.fortran.VariableType;
@@ -59,6 +60,7 @@ import jp.riken.kscope.xcodeml.clang.xml.gen.AsgPlusExpr;
 import jp.riken.kscope.xcodeml.clang.xml.gen.AsgRshiftExpr;
 import jp.riken.kscope.xcodeml.clang.xml.gen.AssignExpr;
 import jp.riken.kscope.xcodeml.clang.xml.gen.BinaryExpression;
+import jp.riken.kscope.xcodeml.clang.xml.gen.Body;
 import jp.riken.kscope.xcodeml.clang.xml.gen.BreakStatement;
 import jp.riken.kscope.xcodeml.clang.xml.gen.BuiltinOp;
 import jp.riken.kscope.xcodeml.clang.xml.gen.CaseLabel;
@@ -97,6 +99,7 @@ import jp.riken.kscope.xcodeml.clang.utils.XmlNodeUtil;
 import jp.riken.kscope.xcodeml.clang.xml.gen.Arguments;
 import jp.riken.kscope.xcodeml.clang.xml.gen.ExprStatement;
 import jp.riken.kscope.xcodeml.clang.xml.gen.FunctionType;
+import jp.riken.kscope.xcodeml.clang.xml.gen.GlobalDeclarations;
 import jp.riken.kscope.xcodeml.clang.xml.gen.FunctionCall;
 import jp.riken.kscope.xcodeml.clang.xml.gen.Then;
 
@@ -117,6 +120,8 @@ public class DbUpdater extends XcodeMLVisitorImpl {
     private StatementLabel prevLabel = null;
     /** エラー情報リスト */
     private List<ErrorInfo> listErrorInfo;
+    /** ルートモジュール:XcodeProgram(プログラムルート)要素生成モジュール */
+    private Module rootModule;
 
     /**
      * コンストラクタ
@@ -127,9 +132,13 @@ public class DbUpdater extends XcodeMLVisitorImpl {
      *            XcodeMLパーサ実行状況クラス
      */
     public DbUpdater(Fortran db, XcodeMLContext context) {
-        m_database = db;
-        m_context = context;
+        this.m_database = db;
+        this.m_context = context;
         this.listErrorInfo = new ArrayList<ErrorInfo>();
+        this.rootModule = null;
+        if (db != null && context != null && context.getBaseFolder() != null) {
+            this.m_database.setBaseFoleder(this.m_context.getBaseFolder());
+        }
     }
 
     /**
@@ -145,8 +154,8 @@ public class DbUpdater extends XcodeMLVisitorImpl {
 
     /**
      * エラー情報を登録する.
-     * @param line		コード行情報
-     * @param message	エラーメッセージ
+     * @param line        コード行情報
+     * @param message    エラーメッセージ
      */
     private void addErrorInfo(CodeLine line, String message) {
         if (this.listErrorInfo == null) {
@@ -157,9 +166,9 @@ public class DbUpdater extends XcodeMLVisitorImpl {
 
     /**
      * プロシージャの重複エラーメッセージを取得する.
-     * @param overridename		重複プロシージャ名
-     * @param lineInfo		エラーコード情報
-     * @param duplicateUnit		重複ブロック
+     * @param overridename        重複プロシージャ名
+     * @param lineInfo        エラーコード情報
+     * @param duplicateUnit        重複ブロック
      */
     private void addDuplicateError(String overridename, CodeLine lineInfo, ProgramUnit duplicateUnit) {
         if (overridename == null) return;
@@ -174,12 +183,12 @@ public class DbUpdater extends XcodeMLVisitorImpl {
         if (dupInfo == null) return;
         String filename = null;
         if (this.m_context.getSourceXmlFile() != null) {
-        	filename = this.m_context.getSourceXmlFile().getPath();
+            filename = this.m_context.getSourceXmlFile().getPath();
         }
         if (filename != null) {
-        	dupInfo += " filename=" + filename;
+            dupInfo += " filename=" + filename;
         }
-        
+
         String key = null;
         // dbupdate.error.duplicate.sourcefile=[警告] ソースファイル[%s]が重複しています。override=%s.
         if (duplicateUnit instanceof Module) {
@@ -196,8 +205,8 @@ public class DbUpdater extends XcodeMLVisitorImpl {
 
     /**
      * コード行情報のエラー表示文字列を作成する.
-     * @param block		エラーブロック
-     * @return			エラー表示文字列
+     * @param block        エラーブロック
+     * @return            エラー表示文字列
      */
     private String getErrorLineInfo(ProgramUnit block) {
         if (block == null) return null;
@@ -277,12 +286,17 @@ public class DbUpdater extends XcodeMLVisitorImpl {
         // 既存のモジュールが存在するかチェックする.
         Module module = m_database.module(source_file);
         if (module != null && module.get_start() != null && module.get_start().getLineInfo() != null) {
-            addDuplicateError(source_file, lineInfo, module);
+            // delete by @hira at 20160307
+            // addDuplicateError(source_file, lineInfo, module);
+            m_database.set_current_unit(module);
         }
-
-        // ソースファイル名をモジュール名として登録する
-        m_database.init_module(source_file);
+        else {
+            // ソースファイル名をモジュール名として登録する
+            module = m_database.init_module(source_file);
+        }
         m_database.get_current_unit().set_start(lineInfo);
+        // ルートモジュールを設定する
+        this.rootModule = module;
 
         return true;
     }
@@ -311,6 +325,12 @@ public class DbUpdater extends XcodeMLVisitorImpl {
         // ソースコード行を設定する
         varDef.setCodeLine(lineInfo);
 
+        // Include文としてモジュールを登録する
+        this.setIncludeModule(lineInfo);
+
+        // 変数宣言文を登録する。
+        m_database.set_variable_def(varDef);
+
         // 初期値をパースする。
         if (visitable.getValue() != null) {
             // ExpressionParserモデルパーサ
@@ -319,14 +339,11 @@ public class DbUpdater extends XcodeMLVisitorImpl {
                                                     visitable.getValue());
             Expression init_value = exprParser.getExpression();
             if (init_value != null) {
-                varDef.setInitValue(init_value.getLine()); // 初期値
+                varDef.setInitValue(init_value); // 初期値
             }
             // 外部手続きの登録
             addExternalFunctions(exprParser.getExternalFunction());
         }
-
-        // 変数宣言文を登録する。
-        m_database.set_variable_def(varDef);
 
         return true;
     }
@@ -334,7 +351,7 @@ public class DbUpdater extends XcodeMLVisitorImpl {
 
     /**
      * 外部手続きリストに追加する
-     * @param list		外部手続きリスト
+     * @param list        外部手続きリスト
      */
     private void addExternalFunctions(Map<String, IVariableType> list) {
         if (list == null || list.size() <= 0) return;
@@ -350,8 +367,8 @@ public class DbUpdater extends XcodeMLVisitorImpl {
 
     /**
      * 外部手続きリストに追加する
-     * @param funcName		外部手続き関数名
-     * @param varType		外部手続き関数データ型
+     * @param funcName        外部手続き関数名
+     * @param varType        外部手続き関数データ型
      */
     private void addExternalFunction(String funcName, IVariableType varType) {
         if (funcName == null ) return;
@@ -395,21 +412,33 @@ public class DbUpdater extends XcodeMLVisitorImpl {
         if (params != null) {
             for (Name nameElem : params.getName()) {
                 String name = nameElem.getValue();
+                if (name == null || name.isEmpty()) continue;
                 String type = nameElem.getType();
 
                 VariableDefinition varDef = varParser.parseVariableDefinition(nameElem);
+                if (varDef == null) continue;
                 Variable var = new Variable(name);
                 var.setDefinition(varDef);
+                varDef.setCodeLine(lineInfo);
                 args.add(var);
             }
         }
 
+        // Include文としてモジュールを登録する
+        this.setIncludeModule(lineInfo);
+
         // データベース登録
         // main, 関数
         // 既存の関数が存在するかチェックする.
-        Procedure errorProc = m_database.getProcedure(m_database.getCurrentUnit(), func_name);
-        if (errorProc != null) {
-            addDuplicateError(func_name, lineInfo, errorProc);
+        Procedure errorProc = m_database.getProcedure(m_database.get_current_unit(), func_name);
+        if (errorProc != null
+            && errorProc.getChildren() != null
+            && errorProc.getChildren().size() > 0) {
+            if (!lineInfo.equalsLineno(errorProc.getStartCodeLine())) {
+                addDuplicateError(func_name, lineInfo, errorProc);
+            }
+            // 定義済み
+            return true;
         }
         // FUNCTION
         if (args.size() <= 0) {
@@ -810,7 +839,7 @@ public class DbUpdater extends XcodeMLVisitorImpl {
         boolean is_volatile = false;
         boolean is_const = false;
         boolean is_restrict = false;
-        boolean is_intrinsic = true;		// 組込関数であるのでtrueとする.
+        boolean is_intrinsic = true;        // 組込関数であるのでtrueとする.
         if (func_type != null) {
             is_inline = this.m_context.getTypeManager().isInline(func_type);
             is_static = this.m_context.getTypeManager().isStatic(func_type);
@@ -939,7 +968,7 @@ public class DbUpdater extends XcodeMLVisitorImpl {
         exprParser.setParseNode(node);
         Expression nodeExpr = exprParser.getExpression();
 
-        m_database.setSubstitution(nodeVar, nodeExpr, lineInfo, label);
+        m_database.setSubstitution(nodeExpr, nodeExpr, lineInfo, label);
 
         return true;
     }
@@ -1160,11 +1189,10 @@ public class DbUpdater extends XcodeMLVisitorImpl {
             // 2つ上がFunctionDefinition（関数定義）であるので登録の必要はない
             return true;
         }
-        if (parent_node instanceof IfStatement) {
-            // 2つ上がIfStatement（IF文）であるので登録の必要はない
-            return true;
-        }
-
+//        if (parent_node instanceof IfStatement) {
+//            // 2つ上がIfStatement（IF文）であるので登録の必要はない
+//            return true;
+//        }
 
         // 複文のブロック開始
         m_database.startCompoundBlock(lineInfo);
@@ -1386,13 +1414,13 @@ public class DbUpdater extends XcodeMLVisitorImpl {
         // 左辺
         Variable leftVar = varParser.getVariable(leftExpr);
         exprParser.setParseNode(leftExpr);
-        Expression left = exprParser.getExpression();
+        Expression leftExp = exprParser.getExpression();
 
         // 右辺
         exprParser.setParseNode(rightExpr);
         Expression rightVar = exprParser.getExpression();
 
-        m_database.setSubstitution(leftVar, rightVar, lineInfo, label);
+        m_database.setSubstitution(leftExp, rightVar, lineInfo, label);
 
         // 外部手続きの登録
         addExternalFunctions(exprParser.getExternalFunction());
@@ -1486,5 +1514,69 @@ public class DbUpdater extends XcodeMLVisitorImpl {
         return true;
     }
 
+
+    /**
+     * body要素の開始要素を登録する。
+     * @param visitable         Body要素
+     * @return 成否
+     */
+    @Override
+    public boolean enter(Body visitable) {
+        // body開始
+        m_database.startBody();
+        return true;
+    }
+
+    /**
+     * Includeモジュールを設定する
+     * @param lineInfo            行情報
+     */
+    private void setIncludeModule(CodeLine lineInfo) {
+        if (lineInfo == null) return;
+        String module_name = lineInfo.getStrSourceFile();
+        module_name = this.m_context.normalizeName(module_name);
+        if (module_name == null) return;
+        if (this.rootModule == null) return;
+
+        // 1つ上のノードがGlobalDeclarationsであるか？
+        IXmlNode parent_node = this.m_context.getInvokeNode(1);
+        if (parent_node == null
+            || parent_node instanceof jp.riken.kscope.xcodeml.clang.xml.gen.GlobalDeclarations) {
+            Module include_module = null;
+            if (module_name != null && !module_name.isEmpty()) {
+                // Include文としてモジュールを登録する
+                include_module = this.m_database.setIncludeModule(module_name);
+                if (include_module != null) {
+                    CodeLine mod_line = new CodeLine(lineInfo);
+                    mod_line.setLine(0);
+                    include_module.setCodeLine(mod_line);
+                    // ルートモジュールのincludeとして登録する
+                    if (!this.rootModule.equalsName(module_name)) {
+                        this.rootModule.addIncludeFile(module_name);
+
+                        /*** delete by @hira at 20160307*/
+                        // ルートモジュールのincludeモジュールにincludeを登録する
+                        List<UseState> use_list = this.rootModule.getUseList();
+                        if (use_list != null && use_list.size() > 0) {
+                            List<UseState> list = new ArrayList<UseState>();
+                            for (UseState use : use_list) {
+                                if (use == null) continue;
+                                Module use_mod = this.m_database.module(use.getModuleName());
+                                if (use_mod == null) continue;
+                                use_mod.addIncludeFiles(list);
+                                list.add(use);
+                            }
+                        }
+                        /***/
+                    }
+                }
+            }
+            if (include_module == null) {
+                this.m_database.set_current_unit(this.rootModule);
+            }
+        }
+
+        return;
+    }
 }
 

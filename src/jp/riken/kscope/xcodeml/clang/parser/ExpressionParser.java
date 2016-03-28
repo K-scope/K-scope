@@ -256,7 +256,7 @@ public class ExpressionParser {
 
     /**
      * パースIXmlNode要素を取得する
-     * @return		パースIXmlNode要素
+     * @return        パースIXmlNode要素
      */
     public IXmlNode getParseNode() {
         return parseNode;
@@ -264,7 +264,7 @@ public class ExpressionParser {
 
     /**
      * パースIXmlNode要素を設定する
-     * @param parseNode		パースIXmlNode要素
+     * @param parseNode        パースIXmlNode要素
      */
     public void setParseNode(IXmlNode parseNode) {
         this.parseNode = parseNode;
@@ -272,7 +272,7 @@ public class ExpressionParser {
 
     /**
      * typeTableを取得する
-     * @return		typeTable
+     * @return        typeTable
      */
     public XcodeMLTypeManager getTypeManager() {
         return typeManager;
@@ -280,7 +280,7 @@ public class ExpressionParser {
 
     /**
      * typeTableを設定する
-     * @param typeManager		typeTable
+     * @param typeManager        typeTable
      */
     public void setTypeManager(XcodeMLTypeManager typeManager) {
         this.typeManager = typeManager;
@@ -598,7 +598,7 @@ public class ExpressionParser {
      * ref属性:構造体参照、member属性は演算式には関係ないのでパースしない。
      * 配列式のみから式クラスを作成する.
      *
-     * @param node			組込関数の引数:構造体・共用体のメンバ要素
+     * @param node            組込関数の引数:構造体・共用体のメンバ要素
      * @return 式クラス
      * @throws XcodeMLException  パースエラー
      */
@@ -1085,9 +1085,14 @@ public class ExpressionParser {
      * @throws XcodeMLException  パースエラー
      */
     private Expression getExpression(MemberRef node) throws XcodeMLException {
+        if (node == null) return null;
+
+        // 変数のパース
+        VariableParser varParser = new VariableParser(this.typeManager);
 
         // 構造体
         IXmlNode structure_node = XmlNodeUtil.getXmlNodeChoice(node);
+        Variable structure_var = varParser.getVariable(structure_node);
         Expression structure_expr = getExpression(structure_node);
 
         // 構造体メンバ
@@ -1101,7 +1106,6 @@ public class ExpressionParser {
         structure_expr.setVariableType(varType);
 
         // 変数のパース
-        VariableParser varParser = new VariableParser(this.typeManager);
         Variable var = varParser.getVariable(node);
 
         // 式バッファ
@@ -1112,6 +1116,7 @@ public class ExpressionParser {
 
         // 構造体参照の設定
         if (var != null) {
+            structure_expr.removeVariable(structure_var);    // 構造体を削除する
             structure_expr.addVariable(var);
         }
 
@@ -1129,9 +1134,14 @@ public class ExpressionParser {
      * @throws XcodeMLException  パースエラー
      */
     private Expression getExpression(MemberArrayAddr node) throws XcodeMLException {
+        if (node == null) return null;
+
+        // 変数のパース
+        VariableParser varParser = new VariableParser(this.typeManager);
 
         // 構造体
         IXmlNode structure_node = XmlNodeUtil.getXmlNodeChoice(node);
+        Variable structure_var = varParser.getVariable(structure_node);
         Expression structure_expr = getExpression(structure_node);
 
         // 構造体メンバ
@@ -1145,7 +1155,6 @@ public class ExpressionParser {
         structure_expr.setVariableType(varType);
 
         // 変数のパース
-        VariableParser varParser = new VariableParser(this.typeManager);
         Variable var = varParser.getVariable(node);
 
         // 式バッファ
@@ -1156,6 +1165,7 @@ public class ExpressionParser {
 
         // 構造体参照の設定
         if (var != null) {
+            structure_expr.removeVariable(structure_var);    // 構造体を削除する
             structure_expr.addVariable(var);
         }
 
@@ -1174,9 +1184,14 @@ public class ExpressionParser {
      * @throws XcodeMLException  パースエラー
      */
     private Expression getExpression(MemberArrayRef node) throws XcodeMLException {
+        if (node == null) return null;
+
+        // 変数のパース
+        VariableParser varParser = new VariableParser(this.typeManager);
 
         // 構造体
         IXmlNode structure_node = XmlNodeUtil.getXmlNodeChoice(node);
+        Variable structure_var = varParser.getVariable(structure_node);
         Expression structure_expr = getExpression(structure_node);
 
         // 構造体メンバ
@@ -1190,7 +1205,6 @@ public class ExpressionParser {
         structure_expr.setVariableType(varType);
 
         // 変数のパース
-        VariableParser varParser = new VariableParser(this.typeManager);
         Variable var = varParser.getVariable(node);
 
         // 式バッファ
@@ -1201,6 +1215,7 @@ public class ExpressionParser {
 
         // 構造体参照の設定
         if (var != null) {
+            structure_expr.removeVariable(structure_var);    // 構造体を削除する
             structure_expr.addVariable(var);
         }
 
@@ -1421,49 +1436,12 @@ public class ExpressionParser {
     private Expression getExpression(ArrayRef node) throws XcodeMLException {
         if (node == null) return null;
 
-        // 式バッファ
-        StringBuffer buf = new StringBuffer();
+        // 構造体メンバのパース
+        VariableParser varParser = new VariableParser(this.typeManager);
+        Variable var = varParser.getVariable(node);
 
-        // 変数名
-        ArrayAddr array_var = node.getArrayAddrInArrayRef();
-        Expression var_expr = this.getExpression(array_var);
-
-        // 配列式
-        List<IXmlNode> array_dims = node.getExpressions();
-        Expression[] array_expr = this.getExpressions(array_dims);
-
-        // 変数データ型のパース
-        if (var_expr.getType() == null) {
-            String type = node.getType();
-            VariableType varType = getVariableType(type);
-            if (varType != null) {
-                var_expr.setVariableType(varType);
-            }
-        }
-
-        // バッファ追加:変数名
-        buf.append(array_var.getValue());
-
-        if (array_expr != null) {
-            for (Expression expr : array_expr) {
-                // バッファ追加:左括弧
-                buf.append(EXPR_ARRAYLEFT); // 左括弧 [
-                // バッファ追加:配列
-                buf.append(expr.getLine());
-                // バッファ追加:右括弧
-                buf.append(EXPR_ARRAYRIGHT);    // 右括弧 ]
-            }
-        }
-        // ArrayRef:式文字列
-        var_expr.setLine(buf.toString());
-
-        // Expressionクラス生成
-        if (array_expr != null) {
-            for (Expression expr : array_expr) {
-                List<Variable> vars = expr.getVariables();
-                var_expr.addVariables(vars);
-            }
-        }
+        Expression var_expr = new Expression(var.toString());
+        var_expr.addVariable(var);
 
         return var_expr;
     }
@@ -1488,6 +1466,10 @@ public class ExpressionParser {
         Expression expr = new Expression(name);
         expr.setVariableType(varType);
 
+        // 変数
+        Variable var = new Variable(name);
+        expr.addVariable(var);
+
         return expr;
     }
 
@@ -1501,8 +1483,12 @@ public class ExpressionParser {
     private Expression getExpression(MemberAddr node) throws XcodeMLException {
         if (node == null) return null;
 
+        // 構造体メンバのパース
+        VariableParser varParser = new VariableParser(this.typeManager);
+
         // 構造体
         IXmlNode structure_node = XmlNodeUtil.getXmlNodeChoice(node);
+        Variable structure_var = varParser.getVariable(structure_node);
         Expression structure_expr = getExpression(structure_node);
 
         // 構造体メンバ
@@ -1513,7 +1499,6 @@ public class ExpressionParser {
         VariableType varType = getVariableType(type);
 
         // 構造体メンバのパース
-        VariableParser varParser = new VariableParser(this.typeManager);
         Variable var = varParser.getVariable(node);
 
         // 式バッファ
@@ -1524,6 +1509,7 @@ public class ExpressionParser {
 
         // 構造体参照の設定
         if (var != null) {
+            structure_expr.removeVariable(structure_var);    // 構造体を削除する
             structure_expr.addVariable(var);
         }
 
@@ -1859,8 +1845,18 @@ public class ExpressionParser {
 
         Expression expr = new Expression(name);
 
-        // Expressionクラス生成
+        // 変数のパース
+        VariableParser varParser = new VariableParser(this.typeManager);
+        Variable var = varParser.getVariable(node);
+
+        // 変数の追加
+        if (var != null) {
+            expr.addVariable(var);
+        }
         expr.setVariableType(varType);
+
+        // Var:式文字列
+        expr.setLine(var.getName());
 
         return expr;
     }
@@ -2078,8 +2074,8 @@ public class ExpressionParser {
 
     /**
      * Expressionの集計を行う
-     * @param exprs		Expressionリスト
-     * @return				合計Expression
+     * @param exprs        Expressionリスト
+     * @return                合計Expression
      */
     private Expression mergeExpression(Expression[] exprs) {
         if (exprs == null) return null;
@@ -2122,8 +2118,8 @@ public class ExpressionParser {
 
     /**
      *  変数データ型を取得する
-     * @param typename		データタイプ名
-     * @return			変数データ型
+     * @param typename        データタイプ名
+     * @return            変数データ型
      */
     private VariableType getVariableType(String typename) {
         if (typename == null || typename.isEmpty()) return null;
@@ -2137,8 +2133,8 @@ public class ExpressionParser {
 
     /**
      *  シンボル参照名:refからデータ型を取得する
-     * @param ref		シンボル参照名
-     * @return			データ型
+     * @param ref        シンボル参照名
+     * @return            データ型
      */
     private VariableType getVariableRef(String ref) {
         if (ref == null || ref.isEmpty()) return null;
@@ -2156,7 +2152,7 @@ public class ExpressionParser {
 
     /**
      * 演算子を取得する
-     * @param node		XMLノード
+     * @param node        XMLノード
      * @return   演算子文字列
      */
     private String getOperation(IXmlNode node) {
@@ -2317,8 +2313,8 @@ public class ExpressionParser {
 
     /**
      * 外部手続きリストに追加する
-     * @param funcName		外部手続き名
-     * @param varType		データ型
+     * @param funcName        外部手続き名
+     * @param varType        データ型
      */
     private void addExternalFunction(String funcName, IVariableType varType) {
         if (this.externalFunctionList == null) {
@@ -2333,7 +2329,7 @@ public class ExpressionParser {
 
     /**
      * 外部手続きリストを取得する
-     * @return		外部手続きリスト
+     * @return        外部手続きリスト
      */
     public Map<String, IVariableType> getExternalFunction() {
         return this.externalFunctionList;

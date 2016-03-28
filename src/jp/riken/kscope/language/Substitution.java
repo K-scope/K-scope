@@ -1,6 +1,6 @@
 /*
  * K-scope
- * Copyright 2012-2013 RIKEN, Japan
+ * Copyright 2012-2015 RIKEN, Japan
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,10 +34,10 @@ import jp.riken.kscope.information.InformationBlocks;
  */
 
 public class Substitution extends Block {
-	/** シリアル番号 */
-	private static final long serialVersionUID = 6743876701008619698L;
-	/** 左辺式 */
-    private Variable leftVar;
+    /** シリアル番号 */
+    private static final long serialVersionUID = 6743876701008619698L;
+    /** 左辺式 */
+    private Expression leftVar;
     /** 右辺式 */
     private Expression rightVar;
 
@@ -72,7 +72,38 @@ public class Substitution extends Block {
      * @param ex 右辺の変数
      */
     public void setRight(Expression ex) {
-        rightVar = ex;
+        this.rightVar = ex;
+
+        // 手続呼出（関数呼出）文の親情報、行情報を設定する
+        setProcedureUsages(ex);
+
+        // 親代入文を設定する.
+        if (this.rightVar != null) {
+            this.rightVar.setParentStatement(this);
+        }
+    }
+    /**
+     * 左辺をセットする。
+     * @param ex 左辺の変数
+     */
+    public void setLeft(Expression ex) {
+        this.leftVar = ex;
+
+        // 手続呼出（関数呼出）文の親情報、行情報を設定する
+        setProcedureUsages(ex);
+
+        // 親代入文を設定する.
+        if (this.leftVar != null) {
+            this.leftVar.setParentStatement(this);
+        }
+    }
+
+    /**
+     * 手続呼出（関数呼出）文の親情報、行情報を設定する
+     * @param ex        式クラス
+     */
+    private void setProcedureUsages(Expression ex) {
+
         //TODO 本来はパース時点でセット出来れば無駄な処理をせずに済むので要検討
         CodeLine lineInfo = this.getStartCodeLine();
         String label = this.get_start().get_label();
@@ -85,40 +116,32 @@ public class Substitution extends Block {
             pu.get_start().set_label(label);
             pu.get_end().set_label(label);
         }
-        // 親代入文を設定する.
-        if (rightVar != null) {
-        	rightVar.setParentStatement(this);
-        }
     }
-    /**
-     * 左辺をセットする。
-     * @param var 左辺の変数
-     */
-    public void setLeft(Variable var) {
-        leftVar = var;
-        // 親代入文を設定する.
-        if (leftVar != null) {
-        	leftVar.setParentStatement(this);
-        }
-    }
+
+
     /**
      * 右辺を取得する。
      * @return 右辺の変数
      */
     public Expression getRightValue() {
-        return rightVar;
+        return this.rightVar;
     }
     /**
      * 左辺を取得する。
      * @return 左辺の変数
      */
-    public Variable getLeftValue() {
-        return leftVar;
+    public Expression getLeftValue() {
+        return this.leftVar;
     }
 
+    /**
+     * 関数呼出を含むすべての子ブロックを取得する
+     */
     @Override
-    public List<Block> getBlocks() {
-        List<Block> blk = new ArrayList<Block>();
+    public List<IBlock> getBlocks() {
+        List<IBlock> blk = new ArrayList<IBlock>();
+        List<IBlock> list = super.getBlocks();
+        if (list != null) blk.addAll(list);
         for (ProcedureUsage pu : this.rightVar.getFuncCalls()) {
             blk.add(pu);
         }
@@ -172,49 +195,49 @@ public class Substitution extends Block {
      * @return 手続呼出のセット。
      */
     public Set<ProcedureUsage> getAllFunctions() {
-    	Set<ProcedureUsage> leftCalls = this.leftVar.getAllFunctions();
-    	Set<ProcedureUsage> rightCalls = this.rightVar.getAllFunctions();
+        Set<ProcedureUsage> leftCalls = this.leftVar.getAllFunctions();
+        Set<ProcedureUsage> rightCalls = this.rightVar.getAllFunctions();
         Set<ProcedureUsage> calls = new HashSet<ProcedureUsage>();
-    	if (leftCalls != null && leftCalls.size() > 0) {
-    		calls.addAll(leftCalls);
-    	}
-    	if (rightCalls != null && rightCalls.size() > 0) {
-    		calls.addAll(rightCalls);
-    	}
-    	if (calls.size() <= 0) return null;
-    	return calls;
+        if (leftCalls != null && leftCalls.size() > 0) {
+            calls.addAll(leftCalls);
+        }
+        if (rightCalls != null && rightCalls.size() > 0) {
+            calls.addAll(rightCalls);
+        }
+        if (calls.size() <= 0) return null;
+        return calls;
     }
 
 
     /**
      * 同一ブロックであるかチェックする.
-     * @param block		ブロック
-	 * @return		true=一致
+     * @param block        ブロック
+     * @return        true=一致
      */
     @Override
-	public boolean equalsBlocks(Block block) {
-		if (block == null) return false;
-		if (!(block instanceof Substitution)) return false;
-		if (!super.equalsBlocks(block)) return false;
+    public boolean equalsBlocks(Block block) {
+        if (block == null) return false;
+        if (!(block instanceof Substitution)) return false;
+        if (!super.equalsBlocks(block)) return false;
 
-		if (this.leftVar != null && ((Substitution)block).leftVar != null) {
-			if (!this.leftVar.equalsVariable(((Substitution)block).leftVar)) {
-				return false;
-			}
-		}
-		else if (this.leftVar != null || ((Substitution)block).leftVar != null) {
-			return false;
-		}
+        if (this.leftVar != null && ((Substitution)block).leftVar != null) {
+            if (!this.leftVar.equalsExpression(((Substitution)block).leftVar)) {
+                return false;
+            }
+        }
+        else if (this.leftVar != null || ((Substitution)block).leftVar != null) {
+            return false;
+        }
 
-		if (this.rightVar != null && ((Substitution)block).rightVar != null) {
-			if (!this.rightVar.equalsExpression(((Substitution)block).rightVar)) {
-				return false;
-			}
-		}
-		else if (this.rightVar != null || ((Substitution)block).rightVar != null) {
-			return false;
-		}
-		return true;
+        if (this.rightVar != null && ((Substitution)block).rightVar != null) {
+            if (!this.rightVar.equalsExpression(((Substitution)block).rightVar)) {
+                return false;
+            }
+        }
+        else if (this.rightVar != null || ((Substitution)block).rightVar != null) {
+            return false;
+        }
+        return true;
     }
 
 
@@ -251,29 +274,45 @@ public class Substitution extends Block {
         return list.toArray(new IInformation[0]);
     }
 
-	/**
-	 * 変数リストを取得する.
-	 */
-	@Override
+    /**
+     * 変数リストを取得する.
+     */
+    @Override
     public Set<Variable> getAllVariables() {
-		Set<Variable> list = new HashSet<Variable>();
-		if (this.leftVar != null) {
-			list.add(this.leftVar);
-			Set<Variable> vars = this.leftVar.getAllVariables();
-			if (vars != null) {
-	        	list.addAll(vars);
-			}
+        Set<Variable> list = new HashSet<Variable>();
+        Set<Variable> vars = super.getAllVariables();
+        if (vars != null && vars.size() > 0) {
+            list.addAll(vars);
         }
-		if (this.rightVar != null) {
-			Set<Variable> vars = this.rightVar.getAllVariables();
-			if (vars != null) {
-	        	list.addAll(vars);
-			}
-		}
-        if (list.size() <= 0) {
-        	return null;
+        vars = this.getBlockVariables();
+        if (vars != null && vars.size() > 0) {
+            list.addAll(vars);
         }
         if (list.size() <= 0) return null;
-		return list;
-	}
+        return list;
+    }
+
+
+    /**
+     * 式の変数リストを取得する.
+     * ブロックのみの変数リストを取得する。
+     * @return        式の変数リスト
+     */
+    public Set<Variable> getBlockVariables() {
+        Set<Variable> list = new HashSet<Variable>();
+        if (this.leftVar != null) {
+            Set<Variable> vars = this.leftVar.getAllVariables();
+            if (vars != null) {
+                list.addAll(vars);
+            }
+        }
+        if (this.rightVar != null) {
+            Set<Variable> vars = this.rightVar.getAllVariables();
+            if (vars != null) {
+                list.addAll(vars);
+            }
+        }
+        if (list.size() <= 0) return null;
+        return list;
+    }
 }

@@ -19,16 +19,26 @@ package jp.riken.kscope.language.fortran;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import jp.riken.kscope.data.CodeLine;
+import jp.riken.kscope.data.FILE_TYPE;
+import jp.riken.kscope.data.SourceFile;
+import jp.riken.kscope.language.Block;
 import jp.riken.kscope.language.BlockType;
 //import jp.riken.kscope.language.Block;
 import jp.riken.kscope.language.IBlock;
+import jp.riken.kscope.language.IDeclarations;
+import jp.riken.kscope.language.Module;
+import jp.riken.kscope.language.Procedure;
+import jp.riken.kscope.language.ProcedureUsage;
 import jp.riken.kscope.language.Statement;
 import jp.riken.kscope.language.Variable;
 import jp.riken.kscope.language.VariableDefinition;
+import jp.riken.kscope.language.utils.LanguageUtils;
 
 /**
  * structure型クラス.
@@ -68,6 +78,24 @@ public class Structure implements IBlock, Serializable {
     }
 
     /**
+     * コンストラクタ
+     * @param value        コピー元Structure
+     */
+    public Structure(Structure value) {
+        if (value == null) return;
+        this.name = value.name;
+        if (value.start != null) {
+            this.start = new Statement(value.start);
+        }
+        if (value.end != null) {
+            this.end = new Statement(value.end);
+        }
+        this.mother = value.mother;
+        this.block_type = value.block_type;
+        this.definitions = value.definitions;
+    }
+
+    /**
      * 変数定義文の追加。
      *
      * @param definition
@@ -75,7 +103,10 @@ public class Structure implements IBlock, Serializable {
      */
     public void add(VariableDefinition definition) {
         if (definition != null) {
-            definitions.add(definition);
+            // 構造体メンバに親構造体を設定する
+            definition.setMother(this);
+            // 構造体メンバ追加
+            this.definitions.add(definition);
         }
    }
 
@@ -90,7 +121,8 @@ public class Structure implements IBlock, Serializable {
     public void add(VariableType typ, String nm) {
         if (typ != null && nm != null) {
             VariableDefinition definition = new VariableDefinition(nm, typ, new VariableAttribute());
-            definitions.add(definition);
+            // 構造体メンバ追加
+            this.add(definition);
         }
     }
 
@@ -241,21 +273,25 @@ public class Structure implements IBlock, Serializable {
 
     @Override
     public CodeLine getStartCodeLine() {
-        if (this.getStartStatement() == null)
-            return null;
+        if (this.getStartStatement() == null) {
+            if (this.mother == null) return null;
+            return this.mother.getStartCodeLine();
+        }
         return this.getStartStatement().getLineInfo();
     }
 
     @Override
     public CodeLine getEndCodeLine() {
-        if (this.getEndStatement() == null)
-            return null;
+        if (this.getEndStatement() == null) {
+            if (this.mother == null) return null;
+            return this.mother.getEndCodeLine();
+        }
         return this.getEndStatement().getLineInfo();
     }
 
     /**
      * 開始コード行情報を設定する。
-     * @param line	開始コード行情報を設定する。
+     * @param line    開始コード行情報を設定する。
      */
     public void setStartCodeLine(CodeLine line) {
         this.setStartStatement(line);
@@ -263,7 +299,7 @@ public class Structure implements IBlock, Serializable {
 
     /**
      * 終了コード行情報を設定する。
-     * @param line	終了コード行情報を設定する。
+     * @param line    終了コード行情報を設定する。
      */
     public void setEndCodeLine(CodeLine line) {
         this.setEndStatement(line);
@@ -287,11 +323,341 @@ public class Structure implements IBlock, Serializable {
     }
 
 
-     /**
-      * 変数リストを取得する.
-      */
-     @Override
-     public Set<Variable> getAllVariables() {
-         return null;
-     }
+    /**
+     * 変数リストを取得する.
+     */
+    @Override
+    public Set<Variable> getAllVariables() {
+        Set<Variable> list = new HashSet<Variable>();
+        if (this.definitions != null) {
+            for (VariableDefinition def : this.definitions) {
+                VariableType type = (VariableType)def.getType();
+                if (type != null && type.getStructure() != null) {
+                    Structure structure = type.getStructure();
+                    if (this == structure) continue;
+                    if (structure.isRecursiveStruct(this)) continue;
+                }
+                Set<Variable> vars = def.getAllVariables();
+                if (vars != null && vars.size() <= 0) {
+                    list.addAll(vars);
+                }
+            }
+        }
+
+        if (list.size() <= 0) return null;
+        return list;
+    }
+
+    /**
+     * ファイルタイプ（C言語、Fortran)を取得する.
+     * @return        ファイルタイプ（C言語、Fortran)
+     */
+    @Override
+    public jp.riken.kscope.data.FILE_TYPE getFileType() {
+        jp.riken.kscope.data.FILE_TYPE type = jp.riken.kscope.data.FILE_TYPE.UNKNOWN;
+        if (this.mother != null) {
+            type = this.mother.getFileType();
+        }
+        if (type != jp.riken.kscope.data.FILE_TYPE.UNKNOWN) {
+            return type;
+        }
+
+        if (this.start != null) {
+            SourceFile file = start.get_sourcefile();
+            type = file.getFileType();
+        }
+        return type;
+    }
+
+    /**
+     * 子要素を返す。
+     * @return 子要素。無ければ空のリストを返す
+     */
+    @Override
+    public List<IBlock> getChildren() {
+        List<IBlock> list = new ArrayList<IBlock>();
+        if (this.definitions == null) return list;
+        for (VariableDefinition var : this.definitions) {
+            list.add(var);
+        }
+
+        return list;
+    }
+
+    /**
+     * 行番号のブロックを検索する
+     * @param line            行番号
+     * @return        行番号のブロック
+     */
+    @Override
+    public IBlock[] searchCodeLine(CodeLine line) {
+        if (line == null) return null;
+
+        CodeLine thisstart = this.getStartCodeLine();
+        CodeLine thisend = this.getEndCodeLine();
+        if ( line.isOverlap(thisstart, thisend) ) {
+            IBlock[] blocks = {this};
+            return blocks;
+        }
+
+        return null;
+    }
+
+    /**
+     * ファイルタイプがC言語であるかチェックする.
+     * @return         true = C言語
+     */
+    @Override
+    public boolean isClang() {
+        if (this.mother == null) return false;
+        return this.mother.isClang();
+    }
+
+    /**
+     * ファイルタイプがFortranであるかチェックする.
+     * @return         true = Fortran
+     */
+    @Override
+    public boolean isFortran() {
+        if (this.mother == null) return false;
+        return this.mother.isFortran();
+    }
+
+
+    /**
+     * 親ブロックからIDeclarationsブロックを取得する.
+     * @return    IDeclarationsブロック
+     */
+    @Override
+    public IDeclarations getScopeDeclarationsBlock() {
+        if (this.mother == null) return null;
+        if (this.isRecursiveStruct(this)) return null;
+        return this.mother.getScopeDeclarationsBlock();
+    }
+
+    /**
+     * 子ブロックのIDeclarationsブロックを検索する.
+     * @return    IDeclarationsブロックリスト
+     */
+    @Override
+    public Set<IDeclarations> getDeclarationsBlocks() {
+        return null;
+    }
+
+    /**
+     * Procedureブロックを習得する。
+     * @return    Procedureブロック
+     */
+    @Override
+    public Procedure getProcedureBlock() {
+        if (this.mother == null) return null;
+        if (this.isRecursiveStruct(this)) return null;
+        return this.mother.getProcedureBlock();
+    }
+
+    /**
+     * Moduleブロックを習得する。
+     * @return    Moduleブロック
+     */
+    @Override
+    public Module getModuleBlock() {
+        if (this.mother == null) return null;
+        if (this.isRecursiveStruct(this)) return null;
+        return this.mother.getModuleBlock();
+    }
+
+
+    /**
+     * プロシージャ（関数）からブロックまでの階層文字列表記を取得する
+     * 階層文字列表記 : [main()]-[if (...)]-[if (...)]
+     * CompoundBlock（空文）は省略する.
+     * @return      階層文字列表記
+     */
+    @Override
+    public String toStringProcedureScope() {
+        return this.toStringScope(false);
+    }
+
+    /**
+     * モジュールからブロックまでの階層文字列表記を取得する
+     * 階層文字列表記 : [main()]-[if (...)]-[if (...)]
+     * CompoundBlock（空文）は省略する.
+     * @return      階層文字列表記
+     */
+    @Override
+    public String toStringModuleScope() {
+        return this.toStringScope(true);
+    }
+
+
+    /**
+     * ブロックの階層文字列表記を取得する
+     * 階層文字列表記 : [main()]-[if (...)]-[if (...)]
+     * CompoundBlock（空文）は省略する.
+     * @param   module     true=Moduleまでの階層文字列表記とする
+     * @return      階層文字列表記
+     */
+    @Override
+    public String toStringScope(boolean module) {
+        String statement = this.toString();
+        statement = "[" + statement + "]";
+        if (this.getMotherBlock() != null) {
+            String buf = null;
+            if (module) buf = this.getMotherBlock().toStringModuleScope();
+            else buf = this.getMotherBlock().toStringProcedureScope();
+            if (buf != null && !buf.isEmpty()) {
+                statement = buf + "-" + statement;
+            }
+        }
+        return statement;
+    }
+
+
+    /**
+     * 式の変数リストを取得する.
+     * ブロックのみの変数リストを取得する。
+     * @return        式の変数リスト
+     */
+    @Override
+    public Set<Variable> getBlockVariables() {
+        return this.getAllVariables();
+    }
+
+
+    /**
+     * 関数呼出を含む自身の子ブロックのリストを返す。
+     * @return 子ブロックのリスト
+     */
+    public List<IBlock> getBlocks() {
+        List<IBlock> blk = new ArrayList<IBlock>();
+        if (this.definitions != null) {
+            for (VariableDefinition def : this.definitions) {
+                List<IBlock> list = def.getBlocks();
+                if (list != null) {
+                    blk.addAll(list);
+                }
+            }
+        }
+        return blk;
+    }
+
+    /**
+     * 構造体が再帰構造であるかチェックする
+     * @return        true=再帰構造
+     */
+    private boolean isRecursiveStruct(IBlock block) {
+
+        IBlock mother_block = block.getMotherBlock();
+        if (mother_block == this) return true;
+        while (mother_block != this) {
+            if (mother_block == this) return true;
+            if (mother_block == null) return false;
+            mother_block = mother_block.getMotherBlock();
+        }
+        if (mother_block != null) return true;
+
+        Structure block_struct = null;
+        if (block instanceof VariableDefinition) {
+            VariableDefinition def = (VariableDefinition)block;
+            if (def.getType() != null && def.getType().isStruct()) {
+                block_struct = ((VariableType)def.getType()).getStructure();
+            }
+        }
+        else if (block instanceof Structure) {
+            block_struct = (Structure)block;
+        }
+
+        if (block_struct.getDefinitions() != null) {
+            for (VariableDefinition def : this.getDefinitions()) {
+                if ((IBlock)def == (IBlock)this) return true;
+                if (this.isRecursiveStruct(def)) return true;
+            }
+        }
+
+        return false;
+    }
+
+
+    /**
+     * 構造体メンバの変数定義を取得する
+     * @param mem_names        構造体変数メンバ文字列
+     * @return        構造体メンバの変数定義
+     */
+    public VariableDefinition getStructMember(String mem_name) {
+        String[] mem_names = LanguageUtils.splitVariableNames(mem_name);
+        return this.getStructMember(mem_names);
+    }
+
+    /**
+     * 構造体メンバの変数定義を取得する
+     * @param mem_names        構造体変数メンバ文字列
+     * @return        構造体メンバの変数定義
+     */
+    public VariableDefinition getStructMember(String[] mem_names) {
+        if (mem_names == null || mem_names.length <= 0) return null;
+        if (this.definitions == null || this.definitions.size() <= 0) return null;
+
+        String name = this.transferDeclarationName(mem_names[0]);
+        if (name == null) return null;
+
+        for (VariableDefinition mem : this.definitions) {
+            VariableDefinition mem_def = mem.getStructMember(mem_names);
+            if (mem_def != null) {
+                return mem_def;
+            }
+        }
+
+        return null;
+    }
+
+
+    /**
+     * 変数・関数の宣言名に変換する.
+     * Fortranの場合は、小文字に変換する.
+     * C言語の場合は、大文字・小文字を区別する
+     * @param name        変数・関数名
+     * @return            変換変数・関数名
+     */
+    public String transferDeclarationName(String name) {
+        if (name == null || name.isEmpty()) return null;
+        // Fortranの場合は、小文字に変換する.
+        if (this.isFortran()) return name.toLowerCase();
+        return name;
+    }
+
+
+    /**
+     * 変数宣言の文字列表現を返す。
+     *
+     * @return 変数宣言の文字列表現
+     */
+    @Override
+    public String toString() {
+        if (this.isClang()) {
+            return this.toStringClang();
+        }
+        else {
+            return this.toStringFortran();
+        }
+    }
+
+
+    /**
+     * 変数宣言のC言語文字列表現を返す。
+     *
+     * @return 変数宣言のC言語文字列表現
+     */
+    public String toStringClang() {
+        return "struct " + this.name;
+    }
+
+    /**
+     * 変数宣言のFortran文字列表現を返す。
+     *
+     * @return 変数宣言のFortran文字列表現
+     */
+    public String toStringFortran() {
+        return "struct " + this.name;
+    }
 }
+

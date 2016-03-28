@@ -26,6 +26,10 @@ package jp.riken.kscope.language;
 public class DoNothing extends jp.riken.kscope.language.Block {
     /** シリアル番号 */
     private static final long serialVersionUID = 7666146678194125791L;
+
+    /** ラベル */
+    private String label;
+
     /**
      * コンストラクタ。
      *
@@ -34,6 +38,15 @@ public class DoNothing extends jp.riken.kscope.language.Block {
      */
     public DoNothing(Block parent) {
         super(parent);
+    }
+
+    /**
+     * コンストラクタ。
+     *
+     * @param label         行ラベル
+     */
+    public DoNothing(String label) {
+        this.label = label;
     }
 
     /**

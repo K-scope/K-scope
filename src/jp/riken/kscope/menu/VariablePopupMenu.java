@@ -66,7 +66,7 @@ public class VariablePopupMenu extends JPopupMenu implements PopupMenuListener {
 
     /**
      * コンストラクタ
-     * @param controller		アプリケーションコントローラ
+     * @param controller        アプリケーションコントローラ
      */
     public VariablePopupMenu(AppController controller) {
         this.controller = controller;
@@ -101,7 +101,7 @@ public class VariablePopupMenu extends JPopupMenu implements PopupMenuListener {
         this.add(menuAnalysisReference);
 
         // 分析:変数有効域
-        JMenuItem menuAnalysisValid = new JMenuItem(Message.getString("mainmenu.analysis.valiablescope"));//変数有効域
+        JMenuItem menuAnalysisValid = new JMenuItem(Message.getString("mainmenu.analysis.variablescope"));//変数有効域
         actionAnalysisScope = new AnalysisScopeAction(this.controller, FRAME_VIEW.ANALYSIS_VIEW);
         menuAnalysisValid.addActionListener(actionAnalysisScope);
         this.add(menuAnalysisValid);
@@ -114,7 +114,7 @@ public class VariablePopupMenu extends JPopupMenu implements PopupMenuListener {
 
     /**
      * ポップアップメニュー可視イベント
-     * @param event		イベント情報
+     * @param event        イベント情報
      */
     @Override
     public void popupMenuWillBecomeVisible(PopupMenuEvent event) {
@@ -123,7 +123,7 @@ public class VariablePopupMenu extends JPopupMenu implements PopupMenuListener {
 
     /**
      * ポップアップメニューが取り消されたイベント
-     * @param event		イベント情報
+     * @param event        イベント情報
      */
     @Override
     public void popupMenuWillBecomeInvisible(PopupMenuEvent event) { }
@@ -131,14 +131,14 @@ public class VariablePopupMenu extends JPopupMenu implements PopupMenuListener {
 
     /**
      * ポップアップメニューが取り消されたイベント
-     * @param event		イベント情報
+     * @param event        イベント情報
      */
     @Override
     public void popupMenuCanceled(PopupMenuEvent event) { }
 
     /**
      * 分析:演算カウントアクションを取得する
-     * @return		分析:演算カウントアクション
+     * @return        分析:演算カウントアクション
      */
     public AnalysisOperandAction getActionAnalysisOperand() {
         return actionAnalysisOperand;
@@ -146,7 +146,7 @@ public class VariablePopupMenu extends JPopupMenu implements PopupMenuListener {
 
     /**
      * 分析:付加情報アクションを取得する
-     * @return		分析:付加情報アクション
+     * @return        分析:付加情報アクション
      */
     public EditInformationEditAction getActionAnalysisInformation() {
         return actionAnalysisInformation;
@@ -154,7 +154,7 @@ public class VariablePopupMenu extends JPopupMenu implements PopupMenuListener {
 
     /**
      * 分析:宣言・定義・参照アクションを取得する
-     * @return		分析:宣言・定義・参照アクション
+     * @return        分析:宣言・定義・参照アクション
      */
     public AnalysisReferenceAction getActionAnalysisReference() {
         return actionAnalysisReference;
@@ -162,7 +162,7 @@ public class VariablePopupMenu extends JPopupMenu implements PopupMenuListener {
 
     /**
      * 分析:分析:変数有効域アクションを取得する
-     * @return		分析:分析:変数有効域アクション
+     * @return        分析:分析:変数有効域アクション
      */
     public AnalysisScopeAction getActionAnalysisScope() {
         return actionAnalysisScope;

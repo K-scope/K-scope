@@ -29,6 +29,7 @@ import jp.riken.kscope.language.KeywordArgument;
 import jp.riken.kscope.language.ProcedureUsage;
 import jp.riken.kscope.language.Variable;
 import jp.riken.kscope.language.fortran.VariableType;
+import jp.riken.kscope.utils.StringUtils;
 import jp.riken.kscope.xcodeml.fortran.XcodeMLTypeManager;
 import jp.riken.kscope.xcodeml.fortran.utils.XmlNodeUtil;
 import jp.riken.kscope.xcodeml.fortran.xml.EnumType;
@@ -191,7 +192,7 @@ public class ExpressionParser {
 
     /**
      * パースIXmlNode要素を取得する
-     * @return		パースIXmlNode要素
+     * @return        パースIXmlNode要素
      */
     public IXmlNode getParseNode() {
         return parseNode;
@@ -199,7 +200,7 @@ public class ExpressionParser {
 
     /**
      * パースIXmlNode要素を設定する
-     * @param parseNode		パースIXmlNode要素
+     * @param parseNode        パースIXmlNode要素
      */
     public void setParseNode(IXmlNode parseNode) {
         this.parseNode = parseNode;
@@ -207,7 +208,7 @@ public class ExpressionParser {
 
     /**
      * typeTableを取得する
-     * @return		typeTable
+     * @return        typeTable
      */
     public XcodeMLTypeManager getTypeManager() {
         return typeManager;
@@ -215,7 +216,7 @@ public class ExpressionParser {
 
     /**
      * typeTableを設定する
-     * @param typeManager		typeTable
+     * @param typeManager        typeTable
      */
     public void setTypeManager(XcodeMLTypeManager typeManager) {
         this.typeManager = typeManager;
@@ -267,25 +268,25 @@ public class ExpressionParser {
             expr = getExpression((UserUnaryExpr) node);
         /*
          * DefModelBinaryOperation要素
-         * 		DivExpr
-         *		FconcatExpr
-         * 		FpowerExpr
-         * 		LogAndExpr
-         * 		LogEQExpr
-         * 		LogEQVExpr
-         * 		LogGEExpr
-         * 		LogGTExpr
-         * 		LogLEExpr
-         * 		LogLTExpr
-         * 		LogNEQExpr
-         * 		LogNEQVExpr
-         * 		LogNotExpr (単項)
-         * 		LogOrExpr
-         * 		MinusExpr
-         * 		MulExpr
-         * 		PlusExpr
-         * 		UnaryMinusExpr (単項)
-         * 		UserBinaryExpr (単項)
+         *         DivExpr
+         *        FconcatExpr
+         *         FpowerExpr
+         *         LogAndExpr
+         *         LogEQExpr
+         *         LogEQVExpr
+         *         LogGEExpr
+         *         LogGTExpr
+         *         LogLEExpr
+         *         LogLTExpr
+         *         LogNEQExpr
+         *         LogNEQVExpr
+         *         LogNotExpr (単項)
+         *         LogOrExpr
+         *         MinusExpr
+         *         MulExpr
+         *         PlusExpr
+         *         UnaryMinusExpr (単項)
+         *         UserBinaryExpr (単項)
          */
         else if (node instanceof LogNotExpr)
             expr = getExpression((LogNotExpr) node);
@@ -308,8 +309,8 @@ public class ExpressionParser {
             expr = getExpression((Var) node);
         /*
          * DefModelExprList
-         * 		FarrayConstructor
-         * 		FstructConstructor
+         *         FarrayConstructor
+         *         FstructConstructor
          */
         else if (node instanceof DefModelExprList)
             expr = getExpression((DefModelExprList) node);
@@ -640,7 +641,7 @@ public class ExpressionParser {
                 expr.incrementPow();
             }
         }
-        
+
         // 変数のパース
         VariableType varType = getVariableType(node.getType());
         expr.setVariableType(varType);
@@ -669,11 +670,12 @@ public class ExpressionParser {
         // 子要素の取得
         IXmlNode child = XmlNodeUtil.getXmlNodeChoice(node);
         Expression expr = getExpression(child);
-        
+        if (expr == null) return null;
+
         // バッファ追加
         buf.append(expr.getLine());
         buf.append(EXPR_SPACE);
-        
+
         // 変数のパース
         VariableType varType = getVariableType(node.getType());
         expr.setVariableType(varType);
@@ -696,17 +698,19 @@ public class ExpressionParser {
         // 式バッファ
         StringBuffer buf = new StringBuffer();
 
-        // バッファ追加 : '.NOT.' : 論理否定
+        // バッファ追加 : '-' : 符号反転
+        buf.append(EXPR_UNARYMINUS); // '-' : 符号反転
+
         buf.append(EXPR_UNARYMINUS);
 
         // 子要素の取得
         IXmlNode child = XmlNodeUtil.getXmlNodeChoice(node);
         Expression expr = getExpression(child);
-        
+        if (expr == null) return null;
+
         // バッファ追加
         buf.append(expr.getLine());
         buf.append(EXPR_SPACE);
-        
         // 変数のパース
         VariableType varType = getVariableType(node.getType());
         expr.setVariableType(varType);
@@ -816,7 +820,7 @@ public class ExpressionParser {
         return exprVar;
     }
 
-    
+
     /**
      * FcoArrayRef(coarrayの参照)要素から式クラスを作成する
      *
@@ -924,12 +928,15 @@ public class ExpressionParser {
                 list.add(expr);
                 count++;
             }
+            buf.append(EXPR_COMMA);        // カンマ
         }
         if (list.size() > 0) {
             exprValue = mergeExpression(list.toArray(new Expression[0]));
         }
 
         Expression exprVar = getExpression(var);
+        // バッファ追加
+        buf.append(exprVar.getLine());
 
         // バッファ追加:=
         buf.append(EXPR_EQUAL); // =
@@ -1114,6 +1121,17 @@ public class ExpressionParser {
         // Expressionクラス生成
         Expression expr = new Expression(value);
         expr.setVariableType(varType);
+
+        // Kind
+        String kind = node.getKind();
+        if (kind != null && !kind.isEmpty()
+            && !StringUtils.isNumeric(kind) ) {
+            buf.append("_" + kind);
+            if (!StringUtils.isNumeric(kind)) {
+                Variable kind_var = new Variable(kind);
+                expr.addVariable(kind_var);
+            }
+        }
 
         // FrealConstant:式文字列
         expr.setLine(buf.toString());
@@ -1342,7 +1360,7 @@ public class ExpressionParser {
 
         // Expressionクラス生成
         Expression expr = new Expression();
-       
+
         // 変数のパース
         VariableParser varParser = new VariableParser(this.typeManager);
         Variable var = varParser.getVariable(node);
@@ -1816,8 +1834,8 @@ public class ExpressionParser {
 
     /**
      * Expressionの集計を行う
-     * @param exprs		Expressionリスト
-     * @return				合計Expression
+     * @param exprs        Expressionリスト
+     * @return                合計Expression
      */
     private Expression mergeExpression(Expression[] exprs) {
         if (exprs == null) return null;
@@ -1860,8 +1878,8 @@ public class ExpressionParser {
 
     /**
      *  変数データ型を取得する
-     * @param typename		データタイプ名
-     * @return			変数データ型
+     * @param typename        データタイプ名
+     * @return            変数データ型
      */
     private VariableType getVariableType(String typename) {
         if (typename == null || typename.isEmpty()) return null;
@@ -1875,7 +1893,7 @@ public class ExpressionParser {
 
     /**
      * 演算子を取得する
-     * @param node		XMLノード
+     * @param node        XMLノード
      * @return   演算子文字列
      */
     private String getOperation(IXmlNode node) {
@@ -1950,8 +1968,8 @@ public class ExpressionParser {
 
     /**
      * 外部手続きリストに追加する
-     * @param funcName		外部手続き名
-     * @param varType		データ型
+     * @param funcName        外部手続き名
+     * @param varType        データ型
      */
     private void addExternalFunction(String funcName, IVariableType varType) {
         if (this.externalFunctionList == null) {
@@ -1966,7 +1984,7 @@ public class ExpressionParser {
 
     /**
      * 外部手続きリストを取得する
-     * @return		外部手続きリスト
+     * @return        外部手続きリスト
      */
     public Map<String, IVariableType> getExternalFunction() {
         return this.externalFunctionList;

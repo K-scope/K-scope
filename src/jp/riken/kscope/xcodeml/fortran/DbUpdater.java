@@ -62,6 +62,7 @@ import jp.riken.kscope.xcodeml.fortran.xml.IXmlNode;
 import jp.riken.kscope.xcodeml.fortran.xml.IXmlTypeTableChoice;
 import jp.riken.kscope.xcodeml.fortran.xml.gen.Alloc;
 import jp.riken.kscope.xcodeml.fortran.xml.gen.Arguments;
+import jp.riken.kscope.xcodeml.fortran.xml.gen.Body;
 import jp.riken.kscope.xcodeml.fortran.xml.gen.ContinueStatement;
 import jp.riken.kscope.xcodeml.fortran.xml.gen.Else;
 import jp.riken.kscope.xcodeml.fortran.xml.gen.ExprStatement;
@@ -188,43 +189,43 @@ public class DbUpdater extends XcodeMLVisitorImpl {
         // データベース登録
         if (XmlNodeUtil.isBoolean(functionTypeElem.isIsProgram())) {
             // 既存のプログラムが存在するかチェックする.
-        	Procedure errorProc = m_database.getMainProgram();
-        	if (errorProc != null) {
-        		addDuplicateError(functionname, lineInfo, errorProc);
+            Procedure errorProc = m_database.getMainProgram();
+            if (errorProc != null) {
+                addDuplicateError(functionname, lineInfo, errorProc);
             }
             // PROGRAM
             m_database.init_main(functionname);
         }
         else {
-        	if (typeId == EnumType.VOID) {
-	            // 既存のサブルーチンが存在するかチェックする.
-        		Procedure errorProc = m_database.getProcedure(m_database.getCurrentUnit(), functionname);
-	        	if (errorProc != null) {
-	            	addDuplicateError(functionname, lineInfo, errorProc);
-	        	}
-	            // SUBROUTINE
-	            if (args.size() <= 0) {
-	                m_database.initSubroutine(functionname);
-	            } else {
-	                m_database.initSubroutine(functionname,
-	                        args.toArray(new String[0]));
-	            }
-	            funcType = new VariableType(PrimitiveDataType.VOID);
-	        }
-        	else {
-	            // 既存の関数が存在するかチェックする.
-        		Procedure errorProc = m_database.getProcedure(m_database.getCurrentUnit(), functionname);
-	        	if (errorProc != null) {
-	            	addDuplicateError(functionname, lineInfo, errorProc);
-	        	}
-	            // FUNCTION
-	            if (args.size() <= 0) {
-	                m_database.init_function(functionname);
-	            } else {
-	                m_database.init_function(functionname,
-	                        args.toArray(new String[0]));
-	            }
-	        }
+            if (typeId == EnumType.VOID) {
+                // 既存のサブルーチンが存在するかチェックする.
+                Procedure errorProc = m_database.getProcedure(m_database.get_current_unit(), functionname);
+                if (errorProc != null) {
+                    addDuplicateError(functionname, lineInfo, errorProc);
+                }
+                // SUBROUTINE
+                if (args.size() <= 0) {
+                    m_database.initSubroutine(functionname);
+                } else {
+                    m_database.initSubroutine(functionname,
+                            args.toArray(new String[0]));
+                }
+                funcType = new VariableType(PrimitiveDataType.VOID);
+            }
+            else {
+                // 既存の関数が存在するかチェックする.
+                Procedure errorProc = m_database.getProcedure(m_database.get_current_unit(), functionname);
+                if (errorProc != null) {
+                    addDuplicateError(functionname, lineInfo, errorProc);
+                }
+                // FUNCTION
+                if (args.size() <= 0) {
+                    m_database.init_function(functionname);
+                } else {
+                    m_database.init_function(functionname,
+                            args.toArray(new String[0]));
+                }
+            }
         }
         m_database.get_current_unit().set_start(lineInfo);
 
@@ -385,8 +386,8 @@ public class DbUpdater extends XcodeMLVisitorImpl {
 
     /**
      * 文番号をパースする。
-     * @param visitable		StatementLabel
-     * @param nextNode		文番号対象要素
+     * @param visitable        StatementLabel
+     * @param nextNode        文番号対象要素
      * @return 成否
      */
     public boolean enterStatementLabel(StatementLabel visitable,
@@ -468,7 +469,9 @@ public class DbUpdater extends XcodeMLVisitorImpl {
             VariableParser varParser = new VariableParser(m_context.getTypeManager());
 
             // 左辺
-            Variable leftVar = varParser.getVariable(leftExpr);
+            // Variable leftVar = varParser.getVariable(leftExpr);
+            exprParser.setParseNode(leftExpr);
+            Expression leftVar = exprParser.getExpression();
 
             // 右辺
             exprParser.setParseNode(rightExpr);
@@ -586,7 +589,7 @@ public class DbUpdater extends XcodeMLVisitorImpl {
         // 既存のモジュールが存在するかチェックする.
         Module module = m_database.module(name);
         if (module != null && module.get_start() != null && module.get_start().getLineInfo() != null) {
-        	addDuplicateError(name, lineInfo, module);
+            addDuplicateError(name, lineInfo, module);
         }
         m_database.init_module(name);
         m_database.get_current_unit().set_start(lineInfo);
@@ -1061,7 +1064,7 @@ public class DbUpdater extends XcodeMLVisitorImpl {
                                                     visitable.getValue());
             Expression init_value = exprParser.getExpression();
             if (init_value != null) {
-                varDef.setInitValue(init_value.getLine()); // 初期値
+                varDef.setInitValue(init_value); // 初期値
             }
             // 外部手続きの登録
             addExternalFunction(exprParser.getExternalFunction());
@@ -1193,11 +1196,9 @@ public class DbUpdater extends XcodeMLVisitorImpl {
 
         List<IXmlNode> content = visitable.getContent();
         // 左辺
-        IXmlNode leftExpr = (content != null && content.size() >= 1) ? content
-                .get(0) : null;
+        IXmlNode leftExpr = (content != null && content.size() >= 1) ? content.get(0) : null;
         // 右辺
-        IXmlNode rightExpr = (content != null && content.size() >= 2) ? content
-                .get(1) : null;
+        IXmlNode rightExpr = (content != null && content.size() >= 2) ? content.get(1) : null;
 
         // ExpressionParserモデルパーサ
         ExpressionParser exprParser = new ExpressionParser(m_context.getTypeManager());
@@ -1206,7 +1207,9 @@ public class DbUpdater extends XcodeMLVisitorImpl {
         VariableParser varParser = new VariableParser(m_context.getTypeManager());
 
         // 左辺
-        Variable leftVar = varParser.getVariable(leftExpr);
+        // Variable leftVar = varParser.getVariable(leftExpr);
+        exprParser.setParseNode(leftExpr);
+        Expression leftVar = exprParser.getExpression();
 
         // 右辺
         exprParser.setParseNode(rightExpr);
@@ -1812,8 +1815,8 @@ public class DbUpdater extends XcodeMLVisitorImpl {
 
     /**
      * 外部手続きリストに追加する
-     * @param funcName		外部手続き名
-     * @param varType		データ型
+     * @param funcName        外部手続き名
+     * @param varType        データ型
      */
     private void addExternalFunction(String funcName, IVariableType varType) {
         if (funcName == null || varType == null) return;
@@ -1824,7 +1827,7 @@ public class DbUpdater extends XcodeMLVisitorImpl {
 
     /**
      * 外部手続きリストに追加する
-     * @param list		外部手続きリスト
+     * @param list        外部手続きリスト
      */
     private void addExternalFunction(Map<String, IVariableType> list) {
         if (list == null || list.size() <= 0) return;
@@ -1838,111 +1841,125 @@ public class DbUpdater extends XcodeMLVisitorImpl {
         }
     }
 
-	@Override
-	public void leave(FstructDecl visitable) {
+    @Override
+    public void leave(FstructDecl visitable) {
         // ソースファイル、ソースコード行
         CodeLine lineInfo = m_context.getCodeBuilder().getLastCodeLine();
 
         // 変数名
         Name nameStruct = visitable.getName();
         String name = nameStruct.getValue();
-        if (this.m_database.getCurrentUnit() == null) return;
-        jp.riken.kscope.language.fortran.Type type = this.m_database.getCurrentUnit().getType(name);
+        if (this.m_database.get_current_unit() == null) return;
+        jp.riken.kscope.language.fortran.Type type = this.m_database.get_current_unit().getType(name);
         if (type == null) return;
         type.setEndCodeLine(lineInfo);
 
-	}
+    }
 
-	/**
-	 * エラー情報を登録する.
-	 * @param line		コード行情報
-	 * @param message	エラーメッセージ
-	 */
-	private void addErrorInfo(CodeLine line, String message) {
-		if (this.listErrorInfo == null) {
-			this.listErrorInfo = new ArrayList<ErrorInfo>();
-		}
-		this.listErrorInfo.add(new ErrorInfo(line, message));
-	}
+    /**
+     * エラー情報を登録する.
+     * @param line        コード行情報
+     * @param message    エラーメッセージ
+     */
+    private void addErrorInfo(CodeLine line, String message) {
+        if (this.listErrorInfo == null) {
+            this.listErrorInfo = new ArrayList<ErrorInfo>();
+        }
+        this.listErrorInfo.add(new ErrorInfo(line, message));
+    }
 
-	/**
-	 * エラーリストを取得する.
-	 * @return    エラーリスト
-	 */
-	public ErrorInfo[] getListErrorInfo() {
-		if (this.listErrorInfo == null || this.listErrorInfo.size() <= 0) {
-			return null;
-		}
-		return this.listErrorInfo.toArray(new ErrorInfo[0]);
-	}
+    /**
+     * エラーリストを取得する.
+     * @return    エラーリスト
+     */
+    public ErrorInfo[] getListErrorInfo() {
+        if (this.listErrorInfo == null || this.listErrorInfo.size() <= 0) {
+            return null;
+        }
+        return this.listErrorInfo.toArray(new ErrorInfo[0]);
+    }
 
-	/**
-	 * プロシージャの重複エラーメッセージを取得する.
-	 * @param overridename		重複プロシージャ名
-	 * @param lineInfo		エラーコード情報
-	 * @param duplicateUnit		重複ブロック
-	 */
-	private void addDuplicateError(String overridename, CodeLine lineInfo, ProgramUnit duplicateUnit) {
-		if (overridename == null) return;
-		if (lineInfo == null) return;
-		if (duplicateUnit == null) return;
+    /**
+     * プロシージャの重複エラーメッセージを取得する.
+     * @param overridename        重複プロシージャ名
+     * @param lineInfo        エラーコード情報
+     * @param duplicateUnit        重複ブロック
+     */
+    private void addDuplicateError(String overridename, CodeLine lineInfo, ProgramUnit duplicateUnit) {
+        if (overridename == null) return;
+        if (lineInfo == null) return;
+        if (duplicateUnit == null) return;
 
-		String errorname = overridename;
-		if (!overridename.equalsIgnoreCase(duplicateUnit.get_name())) {
-			errorname += "," + duplicateUnit.get_name();
-		}
-    	String dupInfo = getErrorLineInfo(duplicateUnit);
-    	if (dupInfo == null) return;
-    	String key = null;
-		// dbupdate.error.duplicate.module=[警告] MODULE[%s]が重複しています。override=%s.
-		if (duplicateUnit instanceof Module) {
-			key = "dbupdate.error.duplicate.module";
-		}
-		else if (duplicateUnit instanceof Procedure) {
-			// dbupdate.error.duplicate.program=[警告] PROGRAM[%s, %s]が重複しています。override=%s.
-			if (((Procedure) duplicateUnit).isProgram()) {
-				key = "dbupdate.error.duplicate.program";
-			}
-			// dbupdate.error.duplicate.subroutine=[警告] SUBROUTINE[%s]が重複しています。override=%s.
-			else if (((Procedure) duplicateUnit).isSubroutine()) {
-				key = "dbupdate.error.duplicate.subroutine";
-			}
-			// dbupdate.error.duplicate.function=[警告] FUNCTION[%s]が重複しています。override=%s.
-			else if (((Procedure) duplicateUnit).isFunction()) {
-				key = "dbupdate.error.duplicate.function";
-			}
-		}
-		if (key == null) return;
-    	String msg = Message.getString(key, errorname, dupInfo);
-    	addErrorInfo(lineInfo, msg);
-	}
+        String errorname = overridename;
+        if (!overridename.equalsIgnoreCase(duplicateUnit.get_name())) {
+            errorname += "," + duplicateUnit.get_name();
+        }
+        String dupInfo = getErrorLineInfo(duplicateUnit);
+        if (dupInfo == null) return;
+        String key = null;
+        // dbupdate.error.duplicate.module=[警告] MODULE[%s]が重複しています。override=%s.
+        if (duplicateUnit instanceof Module) {
+            key = "dbupdate.error.duplicate.module";
+        }
+        else if (duplicateUnit instanceof Procedure) {
+            // dbupdate.error.duplicate.program=[警告] PROGRAM[%s, %s]が重複しています。override=%s.
+            if (((Procedure) duplicateUnit).isProgram()) {
+                key = "dbupdate.error.duplicate.program";
+            }
+            // dbupdate.error.duplicate.subroutine=[警告] SUBROUTINE[%s]が重複しています。override=%s.
+            else if (((Procedure) duplicateUnit).isSubroutine()) {
+                key = "dbupdate.error.duplicate.subroutine";
+            }
+            // dbupdate.error.duplicate.function=[警告] FUNCTION[%s]が重複しています。override=%s.
+            else if (((Procedure) duplicateUnit).isFunction()) {
+                key = "dbupdate.error.duplicate.function";
+            }
+        }
+        if (key == null) return;
+        String msg = Message.getString(key, errorname, dupInfo);
+        addErrorInfo(lineInfo, msg);
+    }
 
-	/**
-	 * コード行情報のエラー表示文字列を作成する.
-	 * @param block		エラーブロック
-	 * @return			エラー表示文字列
-	 */
-	private String getErrorLineInfo(ProgramUnit block) {
-		if (block == null) return null;
-		if (block.get_start() == null) return null;
-		if (block.get_start().getLineInfo() == null) return null;
-		CodeLine line = block.get_start().getLineInfo();
-		if (line.getSourceFile() == null || line.getSourceFile().getFile() == null) return null;
-		// File baseFolder = m_context.getBaseFolder();
-		// if (baseFolder == null) return null;
-		String relative = line.getSourceFile().getFile().getPath();
-		if (relative == null) return null;
+    /**
+     * コード行情報のエラー表示文字列を作成する.
+     * @param block        エラーブロック
+     * @return            エラー表示文字列
+     */
+    private String getErrorLineInfo(ProgramUnit block) {
+        if (block == null) return null;
+        if (block.get_start() == null) return null;
+        if (block.get_start().getLineInfo() == null) return null;
+        CodeLine line = block.get_start().getLineInfo();
+        if (line.getSourceFile() == null || line.getSourceFile().getFile() == null) return null;
+        // File baseFolder = m_context.getBaseFolder();
+        // if (baseFolder == null) return null;
+        String relative = line.getSourceFile().getFile().getPath();
+        if (relative == null) return null;
 
-		StringBuffer buf = new StringBuffer();
+        StringBuffer buf = new StringBuffer();
         buf.append("[");
-		buf.append(relative);
+        buf.append(relative);
         buf.append("] ");
         buf.append(line.getStartLine());
         buf.append(":");
         buf.append(block.toString());
 
         return buf.toString();
-	}
+    }
+
+    /**
+     * body要素の開始要素を登録する。
+     * @param visitable         Body要素
+     * @return 成否
+     */
+    @Override
+    public boolean enter(Body visitable) {
+        // body開始
+        m_database.startBody();
+        return true;
+    }
+
+
 }
 
 

@@ -24,7 +24,7 @@ import jp.riken.kscope.language.VariableDefinition;
 
 /**
  * map型クラス。
- *
+ * @deprecated 未使用
  * @author RIKEN
  *
  */
@@ -35,6 +35,20 @@ public class Map implements Serializable {
      * structure型とほぼ同じなため、structureを包含して使う。
      */
     private Structure core = new Structure();
+
+    /**
+     * コンストラクタ
+     */
+    public Map() {
+    }
+
+    /**
+     * コピーコンストラクタ
+     */
+    public Map(Map map) {
+        if (map == null) return;
+        this.core = map.core;
+    }
 
     /**
      * 変数定義文の追加。

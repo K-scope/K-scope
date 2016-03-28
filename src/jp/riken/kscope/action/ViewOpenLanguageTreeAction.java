@@ -85,7 +85,7 @@ public class ViewOpenLanguageTreeAction extends ActionBase {
         LanguageTreeModel languageModel = new LanguageTreeModel();
 
         // 構造解析サービス
-        LanguageService service = new LanguageService(fortran);
+        LanguageService service = new LanguageService(fortran, false);
         // 構造ツリーモデルを設定する
         service.setLanguageTreeModel(languageModel);
         // エラー情報モデルを設定する。

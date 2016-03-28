@@ -93,7 +93,7 @@ public class LanguageTreePanel extends javax.swing.JPanel implements ITabCompone
 
     /**
      * コンストラクタ
-     * @param panel		エクスプローラパネル識別子
+     * @param panel        エクスプローラパネル識別子
      */
     public LanguageTreePanel(EXPLORE_PANEL panel) {
         this.enumPanel = panel;
@@ -214,8 +214,8 @@ public class LanguageTreePanel extends javax.swing.JPanel implements ITabCompone
 
     /**
      * ツリーモデルの変更通知イベント
-     * @param o			通知元
-     * @param arg		通知項目
+     * @param o            通知元
+     * @param arg        通知項目
      */
     @Override
     public void update(Observable o, Object arg) {
@@ -249,21 +249,21 @@ public class LanguageTreePanel extends javax.swing.JPanel implements ITabCompone
 
     /**
      * 選択ノードを設定する
-     * @param selectnode		選択ノード
+     * @param selectnode        選択ノード
      */
     @Override
     public void setSelectedNode(Object selectnode) {
         if (selectnode == null) return;
-	// 引数がノードの場合はそのままノードパスを設定するように変更(2014/4/8 ohichi)
+    // 引数がノードの場合はそのままノードパスを設定するように変更(2014/4/8 ohichi)
         if(selectnode instanceof  DefaultMutableTreeNode){
-        	TreePath path = new TreePath(((DefaultMutableTreeNode)selectnode).getPath());
-        	this.treeExplore.setSelectionPath(path);
-        	this.treeExplore.scrollPathToVisibleForVertical(path);
+            TreePath path = new TreePath(((DefaultMutableTreeNode)selectnode).getPath());
+            this.treeExplore.setSelectionPath(path);
+            this.treeExplore.scrollPathToVisibleForVertical(path);
         }else{
-        	// 選択ノードを展開する
-        	this.treeExplore.expandObjectPath(selectnode);
-        	// 選択ノードを設定する
-        	this.treeExplore.setSelectedNode(selectnode);
+            // 選択ノードを展開する
+            this.treeExplore.expandObjectPath(selectnode);
+            // 選択ノードを設定する
+            this.treeExplore.setSelectedNode(selectnode);
         }
 
         return;
@@ -271,7 +271,7 @@ public class LanguageTreePanel extends javax.swing.JPanel implements ITabCompone
 
     /**
      * 複数選択ノードを設定する
-     * @param selectnodes		選択ノードリスト
+     * @param selectnodes        選択ノードリスト
      */
     @Override
     public void setSelectedNodes(Object[] selectnodes) {
@@ -285,8 +285,8 @@ public class LanguageTreePanel extends javax.swing.JPanel implements ITabCompone
 
     /**
      * ノード範囲を選択する
-     * @param startnode		選択開始ノード
-     * @param endnode		選択終了ノード
+     * @param startnode        選択開始ノード
+     * @param endnode        選択終了ノード
      */
     @Override
     public void setSelectedNodeArea(Object startnode, Object endnode) {
@@ -298,8 +298,8 @@ public class LanguageTreePanel extends javax.swing.JPanel implements ITabCompone
 
     /**
      * ノード選択範囲を追加する
-     * @param startnode		選択開始ノード
-     * @param endnode		選択終了ノード
+     * @param startnode        選択開始ノード
+     * @param endnode        選択終了ノード
      */
     @Override
     public void addSelectedNodeArea(Object startnode, Object endnode) {
@@ -311,7 +311,7 @@ public class LanguageTreePanel extends javax.swing.JPanel implements ITabCompone
 
     /**
      * 現在選択されているノードを取得する。
-     * @return		選択ノード
+     * @return        選択ノード
      */
     @Override
     public DefaultMutableTreeNode getSelectedNode() {
@@ -327,7 +327,7 @@ public class LanguageTreePanel extends javax.swing.JPanel implements ITabCompone
 
     /**
      * 現在選択されているノードリストを取得する。
-     * @return		選択ノードリスト
+     * @return        選択ノードリスト
      */
     @Override
     public DefaultMutableTreeNode[] getSelectedNodes() {
@@ -368,9 +368,12 @@ public class LanguageTreePanel extends javax.swing.JPanel implements ITabCompone
     @Override
     public void expandTreeAll() {
         int row = 0;
-        while(row<this.treeExplore.getRowCount()) {
+        int tree_row_first = this.treeExplore.getRowCount();
+        int tree_row = this.treeExplore.getRowCount();
+        while(row<tree_row) {
             this.treeExplore.expandRow(row);
             row++;
+            tree_row = this.treeExplore.getRowCount();
         }
     }
 
@@ -392,11 +395,11 @@ public class LanguageTreePanel extends javax.swing.JPanel implements ITabCompone
     /**
      * ツリーパス配下を展開、折り畳み表示を行う。
      *
-     * @param parent		ツリーパス
-     * @param expand		展開(true)/折り畳み(false)
+     * @param parent        ツリーパス
+     * @param expand        展開(true)/折り畳み(false)
      */
     public void visitAll(TreePath parent, boolean expand) {
-    	// modify 2012/03/01 by @hira
+        // modify 2012/03/01 by @hira
         if(expand) this.treeExplore.expandPath(parent);
         else       this.treeExplore.collapsePath(parent);
 
@@ -437,7 +440,7 @@ public class LanguageTreePanel extends javax.swing.JPanel implements ITabCompone
 
     /**
      * 選択ファイルを取得する
-     * @return		選択ファイル
+     * @return        選択ファイル
      */
     @Override
     public File[] getSelectedNodeFiles() {
@@ -453,7 +456,7 @@ public class LanguageTreePanel extends javax.swing.JPanel implements ITabCompone
 
     /**
      * 親コンポーネントを取得する.
-     * @return		親コンポーネント
+     * @return        親コンポーネント
      */
     @Override
     public ITabComponent getParentComponent() {
@@ -462,7 +465,7 @@ public class LanguageTreePanel extends javax.swing.JPanel implements ITabCompone
 
     /**
      * 親コンポーネントを設定する.
-     * @param component		親コンポーネント
+     * @param component        親コンポーネント
      */
     @Override
     public void setParentComponent(ITabComponent component) {
@@ -471,7 +474,7 @@ public class LanguageTreePanel extends javax.swing.JPanel implements ITabCompone
 
     /**
      * タブフォーカスリスナを追加する
-     * @param listener			タブフォーカスリスナ
+     * @param listener            タブフォーカスリスナ
      */
     @Override
     public void addTabFocusListener(TabFocusListener listener) {
@@ -492,7 +495,7 @@ public class LanguageTreePanel extends javax.swing.JPanel implements ITabCompone
 
     /**
      * 選択ソースコード行情報を取得する
-     * @return		選択ソースコード行情報
+     * @return        選択ソースコード行情報
      */
     @Override
     public CodeLine[] getSelectedCodeLines() {
@@ -522,7 +525,7 @@ public class LanguageTreePanel extends javax.swing.JPanel implements ITabCompone
 
     /**
      * 選択ブロックを取得する
-     * @return		選択ブロック
+     * @return        選択ブロック
      */
     @Override
     public IBlock[] getSelectedBlocks() {
@@ -552,7 +555,7 @@ public class LanguageTreePanel extends javax.swing.JPanel implements ITabCompone
 
     /**
      * 構造ツリーのポップアップメニューを設定する
-     * @param menuPopup		構造ツリーポップアップメニュー
+     * @param menuPopup        構造ツリーポップアップメニュー
      */
     public void setPopupMenu(LanguageTreePopupMenu menuPopup) {
 
@@ -574,7 +577,7 @@ public class LanguageTreePanel extends javax.swing.JPanel implements ITabCompone
 
     /**
      * エクスプローラツリーをエクスポートする
-     * @param file		出力ファイル
+     * @param file        出力ファイル
      */
     @Override
     public void export(File file) { }
@@ -582,7 +585,7 @@ public class LanguageTreePanel extends javax.swing.JPanel implements ITabCompone
 
     /**
      * エクスプローラパネル識別子を取得する
-     * @return		エクスプローラパネル識別子
+     * @return        エクスプローラパネル識別子
      */
     @Override
     public EXPLORE_PANEL getEnumPanel() {
@@ -591,7 +594,7 @@ public class LanguageTreePanel extends javax.swing.JPanel implements ITabCompone
 
     /**
      * ツリーの変更リスナの登録を行う。
-     * @param action		ツリーの変更リスナ
+     * @param action        ツリーの変更リスナ
      */
     @Override
     public void addTreeSelectionListener(ExploreTreeChangeAction action) {
@@ -600,7 +603,7 @@ public class LanguageTreePanel extends javax.swing.JPanel implements ITabCompone
 
     /**
      * ツリーモデルを取得する
-     * @return		ツリーモデル
+     * @return        ツリーモデル
      */
     @Override
     public TreeModel getTreeModel() {
@@ -609,7 +612,7 @@ public class LanguageTreePanel extends javax.swing.JPanel implements ITabCompone
 
     /**
      * ツリーモデルがブランクであるかチェックする
-     * @return		true=ブランクモデル
+     * @return        true=ブランクモデル
      */
     public boolean isBlankTreeModel() {
 
@@ -622,47 +625,47 @@ public class LanguageTreePanel extends javax.swing.JPanel implements ITabCompone
 
     /**
      * ツリーノード選択を行う.
-     * @param path		選択ツリーパス
+     * @param path        選択ツリーパス
      */
     @Override
     public void setSelectionPath(TreePath path) {
-    	TreePath real = null;
-    	int loop = 0;
-    	while (true) {
-	        // 実際のツリーパスを取得する
-	        real = this.treeExplore.getRealTreePath(path);
-	        if (real == null) {
-	            // 選択ツリーパスが存在しないので、親ノードを選択する
-	            Object[] objs = path.getPath();
-	            if (objs == null || objs.length <= 0) return;
-	            DefaultMutableTreeNode[] pathNodes = new DefaultMutableTreeNode[objs.length];
-	            for (int i=0; i<objs.length; i++) {
-	                pathNodes[i] = (DefaultMutableTreeNode) objs[i];
-	            }
-	            // パスノードの末尾から親ノードを検索する
-	            // 末尾は既に存在しないので１つ前から検索する。
-	            for (int i=pathNodes.length-2; i>=0; i--) {
-	                DefaultMutableTreeNode node = pathNodes[i];
-	                TreePath nodePath = new TreePath(node.getPath());
-	                real = this.treeExplore.getRealTreePath(nodePath);
-	                if (real != null) {
-	                    break;
-	                }
-	            }
-	        }
-	        if (real == null) break;
+        TreePath real = null;
+        int loop = 0;
+        while (true) {
+            // 実際のツリーパスを取得する
+            real = this.treeExplore.getRealTreePath(path);
+            if (real == null) {
+                // 選択ツリーパスが存在しないので、親ノードを選択する
+                Object[] objs = path.getPath();
+                if (objs == null || objs.length <= 0) return;
+                DefaultMutableTreeNode[] pathNodes = new DefaultMutableTreeNode[objs.length];
+                for (int i=0; i<objs.length; i++) {
+                    pathNodes[i] = (DefaultMutableTreeNode) objs[i];
+                }
+                // パスノードの末尾から親ノードを検索する
+                // 末尾は既に存在しないので１つ前から検索する。
+                for (int i=pathNodes.length-2; i>=0; i--) {
+                    DefaultMutableTreeNode node = pathNodes[i];
+                    TreePath nodePath = new TreePath(node.getPath());
+                    real = this.treeExplore.getRealTreePath(nodePath);
+                    if (real != null) {
+                        break;
+                    }
+                }
+            }
+            if (real == null) break;
 
-	        // ツリーパスを選択する
-	        this.treeExplore.expandSelectionPath(real);
-	        this.treeExplore.setSelectionPath(real);
-	        loop++;
-	        if (path.getPathCount() <= real.getPathCount()) {
-	        	break;
-	        }
-	        if (path.getPathCount() <= loop) {
-	        	break;
-	        }
-    	}
+            // ツリーパスを選択する
+            this.treeExplore.expandSelectionPath(real);
+            this.treeExplore.setSelectionPath(real);
+            loop++;
+            if (path.getPathCount() <= real.getPathCount()) {
+                break;
+            }
+            if (path.getPathCount() <= loop) {
+                break;
+            }
+        }
         if (real == null) return;
         if (real.getPathCount() != path.getPathCount()) return;
 
@@ -676,8 +679,8 @@ public class LanguageTreePanel extends javax.swing.JPanel implements ITabCompone
     /**
      * ツリーパスが存在するかチェックする.<br/>
      * ツリーノードのUserObjectによりパスを検索する.
-     * @param path		検索ツリーパス
-     * @return			true=ツリーパスが存在する
+     * @param path        検索ツリーパス
+     * @return            true=ツリーパスが存在する
      */
     public boolean existsTreePath(TreePath path) {
         if (path == null) return false;
@@ -689,7 +692,7 @@ public class LanguageTreePanel extends javax.swing.JPanel implements ITabCompone
 
     /**
      * 構造ツリーモデルを取得する
-     * @return		構造ツリーモデル
+     * @return        構造ツリーモデル
      */
     public LanguageTreeModel getModel() {
         return this.model;
@@ -697,7 +700,7 @@ public class LanguageTreePanel extends javax.swing.JPanel implements ITabCompone
 
     /**
      * 構造ツリーモデルを設定する
-     * @param model		構造ツリーモデル
+     * @param model        構造ツリーモデル
      */
     public void setModel(LanguageTreeModel model) {
         this.model = model;
@@ -710,7 +713,7 @@ public class LanguageTreePanel extends javax.swing.JPanel implements ITabCompone
 
     /**
      * 構造ツリーにフィルタを設定する
-     * @param filters		構造ツリーフィルタ
+     * @param filters        構造ツリーフィルタ
      */
     public void setLanguageTreeFilter(FILTER_TYPE[] filters) {
         this.model.setListFilter(filters);
@@ -719,7 +722,7 @@ public class LanguageTreePanel extends javax.swing.JPanel implements ITabCompone
 
     /**
      * 選択ブロックを設定する
-     * @param blocks		選択ブロック階層リスト
+     * @param blocks        選択ブロック階層リスト
      */
     public void setSelectedBlocks(IBlock[] blocks) {
         if (blocks == null) return;
@@ -729,7 +732,7 @@ public class LanguageTreePanel extends javax.swing.JPanel implements ITabCompone
         //this.treeExplore.setSelectedChainNode(blocks);
         for (IBlock block : blocks) {
             this.treeExplore.expandObjectPath(block);
-        	this.treeExplore.setSelectedNode(block);
+            this.treeExplore.setSelectedNode(block);
         }
 
         return;
@@ -749,7 +752,7 @@ public class LanguageTreePanel extends javax.swing.JPanel implements ITabCompone
 
     /**
      * 複数選択ノードを追加する
-     * @param selectnodes		選択ノードリスト
+     * @param selectnodes        選択ノードリスト
      */
     @Override
     public void addSelectedNodes(Object[] selectnodes) {
@@ -763,7 +766,7 @@ public class LanguageTreePanel extends javax.swing.JPanel implements ITabCompone
 
     /**
      * ソースビュープロパティを設定する
-     * @param properties		ソースビュープロパティ
+     * @param properties        ソースビュープロパティ
      */
     public void setSourceProperties(SourceProperties properties) {
         this.treeExplore.setSourceProperties(properties);
@@ -772,9 +775,9 @@ public class LanguageTreePanel extends javax.swing.JPanel implements ITabCompone
     /**
      * 選択ノードの変更イベントを発生させる
      */
-	@Override
-	public void fireSelectNodeChanged() {
-		this.treeExplore.fireSelectNodeChanged();
-	}
+    @Override
+    public void fireSelectNodeChanged() {
+        this.treeExplore.fireSelectNodeChanged();
+    }
 }
 

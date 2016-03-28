@@ -28,6 +28,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
 
+import jp.riken.kscope.data.BlockList;
 import jp.riken.kscope.data.CodeLine;
 import jp.riken.kscope.data.SourceFile;
 import jp.riken.kscope.information.InformationBlock;
@@ -45,7 +46,7 @@ public class ViewOpenAnalysisLineAction extends ActionBase implements MouseListe
 
     /**
      * コンストラクタ
-     * @param controller	アプリケーションコントローラ
+     * @param controller    アプリケーションコントローラ
      */
     public ViewOpenAnalysisLineAction(AppController controller) {
         super(controller);
@@ -66,7 +67,7 @@ public class ViewOpenAnalysisLineAction extends ActionBase implements MouseListe
 
     /**
      * 検索結果ツリーパスを開く
-     * @param  path			検索結果ツリーパス
+     * @param  path            検索結果ツリーパス
      */
     public void openSearchLine(TreePath path) {
         if (path == null) return;
@@ -113,7 +114,7 @@ public class ViewOpenAnalysisLineAction extends ActionBase implements MouseListe
 
     /**
      * トレース結果該当個所を開く
-     * @param		block		トレース結果ブロック
+     * @param        block        トレース結果ブロック
      */
     public void openTraceBlock(IBlock block) {
         // 選択ブロックの構造ツリー、ソースビューの該当個所を選択状態にする
@@ -125,7 +126,7 @@ public class ViewOpenAnalysisLineAction extends ActionBase implements MouseListe
 
     /**
      * 指定ブロックを構造ツリー、ソースビューの該当個所を選択状態にする
-     * @param block			選択ブロック
+     * @param block            選択ブロック
      */
     public void viewSelectedBlock(IBlock block) {
         if (block == null) return;
@@ -179,7 +180,7 @@ public class ViewOpenAnalysisLineAction extends ActionBase implements MouseListe
 
     /**
      * 指定ブロックをソースビューの該当個所を選択状態にする
-     * @param code			選択コード範囲
+     * @param code            選択コード範囲
      */
     public void viewSelectedSourceBlock(CodeLine code) {
         // 選択ソースコード行情報からファイルを開く
@@ -195,7 +196,7 @@ public class ViewOpenAnalysisLineAction extends ActionBase implements MouseListe
 
     /**
      * 指定パスを構造ツリー、ソースビューの該当個所を選択状態にする
-     * @param path			指定パス
+     * @param path            指定パス
      */
     public void viewSelectedPath(TreePath path) {
         if (path == null) return;
@@ -214,7 +215,7 @@ public class ViewOpenAnalysisLineAction extends ActionBase implements MouseListe
 
     /**
      * 指定ブロックのソースコード行を表示する
-     * @param block		ブロック
+     * @param block        ブロック
      */
     public void viewSourceBlock(IBlock block) {
 
@@ -228,11 +229,11 @@ public class ViewOpenAnalysisLineAction extends ActionBase implements MouseListe
         try {
             this.controller.openSourceFile(line);
         } catch (Exception ex) {
-        	ex.printStackTrace();
-        	String msg = ex.getMessage();
-        	if (msg == null) {
-        		msg = ex.toString();
-        	}
+            ex.printStackTrace();
+            String msg = ex.getMessage();
+            if (msg == null) {
+                msg = ex.toString();
+            }
             this.controller.getErrorInfoModel().addErrorInfo(line, msg);
         }
 
@@ -281,6 +282,18 @@ public class ViewOpenAnalysisLineAction extends ActionBase implements MouseListe
                 lines = new CodeLine[] {infostartlines, infoendlines};
             }
         }
+        else if (block instanceof BlockList) {
+            List<IBlock> block_list = ((BlockList)block).getBlocks();
+            List<CodeLine> line_list = new ArrayList<CodeLine>();
+            if (block_list != null) {
+                for (IBlock item : block_list) {
+                    line_list.add(item.getStartCodeLine());
+                }
+            }
+            if (line_list.size() > 0) {
+                lines = line_list.toArray(new CodeLine[0]);
+            }
+        }
         this.controller.getMainframe().getPanelSourceView().setSelectedBlock(lines);
 
 /*********  暫定コード:end  at 2012/03/21 by @hira   **********/
@@ -299,7 +312,7 @@ public class ViewOpenAnalysisLineAction extends ActionBase implements MouseListe
 
     /**
      * 指定ブロックのソースコード行を表示する
-     * @param line		選択ソースコード行
+     * @param line        選択ソースコード行
      */
     public void viewSourceLine(CodeLine line) {
 
@@ -316,19 +329,19 @@ public class ViewOpenAnalysisLineAction extends ActionBase implements MouseListe
         // 選択コード行を選択状態にする
         this.controller.getMainframe().getPanelSourceView().setSelectedLine(line);
 
-		LanguageUtils utils = new LanguageUtils(this.controller.getFortranLanguage());
-	    IBlock[] blocks = utils.getCodeLineBlocks(line);
-	    if (blocks != null && blocks.length > 0) {
+        LanguageUtils utils = new LanguageUtils(this.controller.getFortranLanguage());
+        IBlock[] blocks = utils.getCodeLineBlocks(line);
+        if (blocks != null && blocks.length > 0) {
             // 構造ツリーを選択状態にする
             this.controller.getMainframe().getPanelExplorerView().setSelectedNode(blocks[blocks.length-1]);
-	    }
+        }
 
     }
 
 
     /**
      * 指定ソースファイルを表示する
-     * @param file		選択ソースファイル
+     * @param file        選択ソースファイル
      */
     public void viewSourceFile(SourceFile file) {
 
@@ -345,7 +358,7 @@ public class ViewOpenAnalysisLineAction extends ActionBase implements MouseListe
 
     /**
      * アクション発生イベント
-     * @param event		イベント情報
+     * @param event        イベント情報
      */
     @Override
     public void actionPerformed(ActionEvent event) {
@@ -355,7 +368,7 @@ public class ViewOpenAnalysisLineAction extends ActionBase implements MouseListe
 
     /**
      * マウスクリックイベント
-     * @param event			イベント情報
+     * @param event            イベント情報
      */
     @Override
     public void mouseClicked(MouseEvent event) {
@@ -374,28 +387,28 @@ public class ViewOpenAnalysisLineAction extends ActionBase implements MouseListe
 
     /**
      * マウスボタンダウンイベント
-     * @param e		マウスイベント情報
+     * @param e        マウスイベント情報
      */
     @Override
     public void mousePressed(MouseEvent e) { }
 
     /**
      * マウスボタンアップイベント
-     * @param e		マウスイベント情報
+     * @param e        マウスイベント情報
      */
     @Override
     public void mouseReleased(MouseEvent e) {}
 
     /**
      * マウスオーバーイベント
-     * @param e		マウスイベント情報
+     * @param e        マウスイベント情報
      */
     @Override
     public void mouseEntered(MouseEvent e) {}
 
     /**
      * マウスアウトイベント
-     * @param e		マウスイベント情報
+     * @param e        マウスイベント情報
      */
     @Override
     public void mouseExited(MouseEvent e) {}
@@ -403,7 +416,7 @@ public class ViewOpenAnalysisLineAction extends ActionBase implements MouseListe
 
     /**
      * トレース結果該当個所を開く
-     * @param		blocks		トレース結果ブロックリスト
+     * @param        blocks        トレース結果ブロックリスト
      */
     public void openTraceBlocks(IBlock[] blocks) {
         if (blocks == null || blocks.length <= 0) return;
@@ -418,7 +431,7 @@ public class ViewOpenAnalysisLineAction extends ActionBase implements MouseListe
 
     /**
      * 複数の指定ブロックを構造ツリー、ソースビューの該当個所を選択状態にする
-     * @param blocks			選択ブロック
+     * @param blocks            選択ブロック
      */
     public void viewSelectedArea(IBlock[] blocks) {
         if (blocks == null) return;
@@ -454,7 +467,7 @@ public class ViewOpenAnalysisLineAction extends ActionBase implements MouseListe
 
     /**
      * 複数の指定ブロックを構造ツリー、ソースビューの該当個所を選択状態にする
-     * @param areas			選択ブロック
+     * @param areas            選択ブロック
      */
     public void viewSelectedAreas(List<IBlock[]> areas) {
         if (areas == null) return;

@@ -46,7 +46,7 @@ public class LanguageVisitor implements ILanguageEntry {
 
     /**
      * コンストラクタ
-     * @param visitor		Entryインターフェイス
+     * @param visitor        Entryインターフェイス
      */
     public LanguageVisitor(ILanguageEntry visitor) {
         this.language = visitor.getLanguage();
@@ -91,15 +91,15 @@ public class LanguageVisitor implements ILanguageEntry {
 
     /**
      * ProgramUnitを探索する.
-     * @param program		ProgramUnit
+     * @param program        ProgramUnit
      */
     public void entryProgramUnit(ProgramUnit program) {
 
-        Collection<Procedure> procs = program.getChildren();
-        if (procs != null && procs.size() > 0) {
-            entry(procs.toArray(new Procedure[0]));
+        List<IBlock> blocks = program.getChildren();
+        if (blocks != null && blocks.size() > 0) {
+            entryBlocks(blocks.toArray(new IBlock[0]));
         }
-        Map<String,VariableDefinition> variables = program.getVariables();
+        Map<String,VariableDefinition> variables = program.getVariableDefinitionMap();
         for (String name : variables.keySet()) {
             VariableDefinition variable = variables.get(name);
             entry(variable);
@@ -138,7 +138,7 @@ public class LanguageVisitor implements ILanguageEntry {
 
     /**
      * サブルーチン,関数リストを探索する.
-     * @param procedures	サブルーチン,関数リスト
+     * @param procedures    サブルーチン,関数リスト
      */
     private void entry(Procedure[] procedures) {
         if (procedures == null || procedures.length <= 0) return;
@@ -183,8 +183,8 @@ public class LanguageVisitor implements ILanguageEntry {
     /**
      * サブルーチン、関数が再帰呼出リストに含まれているかチェックする.
      * 再帰呼出リストに含まれていない場合は、再帰呼出リストに追加する.
-     * @param procedure		サブルーチン、関数
-     * @return		true=再帰呼出リストに含まれている
+     * @param procedure        サブルーチン、関数
+     * @return        true=再帰呼出リストに含まれている
      */
     private boolean containsProcedure(Procedure procedure) {
         if (this.recursiveProcedures == null || this.recursiveProcedures.size() <= 0) {
@@ -214,7 +214,7 @@ public class LanguageVisitor implements ILanguageEntry {
 
     /**
      * CALL文、関数呼出リストを探索する.
-     * @param calls		CALL文、関数呼出リスト
+     * @param calls        CALL文、関数呼出リスト
      */
     private void entry(ProcedureUsage[] calls) {
         if (calls == null || calls.length <= 0) return;
@@ -228,7 +228,7 @@ public class LanguageVisitor implements ILanguageEntry {
 
     /**
      * COMMON文リストを探索する.
-     * @param commons		COMMON文リスト
+     * @param commons        COMMON文リスト
      */
     private void entry(Common[] commons) {
         if (commons == null || commons.length <= 0) return;
@@ -240,7 +240,7 @@ public class LanguageVisitor implements ILanguageEntry {
 
     /**
      * USE文リストを探索する.
-     * @param uses		USE文リスト
+     * @param uses        USE文リスト
      */
     private void entry(UseState[] uses) {
         if (uses == null || uses.length <= 0) return;
@@ -252,7 +252,7 @@ public class LanguageVisitor implements ILanguageEntry {
 
     /**
      * DATA文リストを探索する.
-     * @param datas		DATA文リスト
+     * @param datas        DATA文リスト
      */
     private void entry(Data[] datas) {
         if (datas == null || datas.length <= 0) return;
@@ -264,7 +264,7 @@ public class LanguageVisitor implements ILanguageEntry {
 
     /**
      * 総称関数群(interface文)リストを探索する.
-     * @param inters		総称関数群(interface文)リスト
+     * @param inters        総称関数群(interface文)リスト
      */
     private void entry(Procedures[] inters) {
         if (inters == null || inters.length <= 0) return;
@@ -276,7 +276,7 @@ public class LanguageVisitor implements ILanguageEntry {
 
     /**
      * EQUIVALENCE文リストを探索する.
-     * @param equivalences		EQUIVALENCE文リスト
+     * @param equivalences        EQUIVALENCE文リスト
      */
     private void entry(Equivalence[] equivalences) {
         if (equivalences == null || equivalences.length <= 0) return;
@@ -288,7 +288,7 @@ public class LanguageVisitor implements ILanguageEntry {
 
     /**
      * DIRECTIVE文リストを探索する.
-     * @param directives		DIRECTIVE文リスト
+     * @param directives        DIRECTIVE文リスト
      */
     private void entry(Directive[] directives) {
         if (directives == null || directives.length <= 0) return;
@@ -324,8 +324,8 @@ public class LanguageVisitor implements ILanguageEntry {
     public void entry(ExecutableBody body) {
         if (body == null) return;
         visitor.entry(body);
-        List<Block> blocks = body.getChildren();
-        for (Block children : blocks) {
+        List<IBlock> blocks = body.getChildren();
+        for (IBlock children : blocks) {
             if (children != null) {
                 entryBlock(children);
             }
@@ -335,11 +335,11 @@ public class LanguageVisitor implements ILanguageEntry {
 
     /**
      * Blockリストを探索する.
-     * @param blocks		Blockリスト
+     * @param blocks        Blockリスト
      */
-    private void entryBlocks(Block[] blocks) {
+    private void entryBlocks(IBlock[] blocks) {
         if (blocks == null || blocks.length <= 0) return;
-        for (Block children : blocks) {
+        for (IBlock children : blocks) {
             if (children != null) {
                 entryBlock(children);
             }
@@ -349,9 +349,9 @@ public class LanguageVisitor implements ILanguageEntry {
 
     /**
      * Blockを探索する
-     * @param block		Blockクラスオブジェクト
+     * @param block        Blockクラスオブジェクト
      */
-    private void entryBlock(Block block) {
+    private void entryBlock(IBlock block) {
         if (block == null) return;
         if (block instanceof Break) {
             entry((Break)block);
@@ -423,9 +423,9 @@ public class LanguageVisitor implements ILanguageEntry {
             entry((Continue)block);
         }
 
-        List<Block> childrenblocks = block.getChildren();
+        List<IBlock> childrenblocks = block.getChildren();
         if (childrenblocks != null && childrenblocks.size() > 0) {
-            entryBlocks(childrenblocks.toArray(new Block[0]));
+            entryBlocks(childrenblocks.toArray(new IBlock[0]));
         }
         return;
     }
@@ -669,7 +669,7 @@ public class LanguageVisitor implements ILanguageEntry {
 
         addVisitList(block);
         visitor.entry(block);
-        Variable leftVar = block.getLeftValue();
+        Expression leftVar = block.getLeftValue();
         entry(leftVar);
         Expression rightVar = block.getRightValue();
         entry(rightVar);
@@ -725,7 +725,7 @@ public class LanguageVisitor implements ILanguageEntry {
 
     /**
      * 変数宣言文リストを探索する.
-     * @param variables		変数宣言文リスト
+     * @param variables        変数宣言文リスト
      */
     private void entry(Variable[] variables) {
         if (variables == null || variables.length <= 0) return;
@@ -854,7 +854,7 @@ public class LanguageVisitor implements ILanguageEntry {
 
     /**
      * TYPE文リストを探索する.
-     * @param types		TYPE文リスト
+     * @param types        TYPE文リスト
      */
     private void entry(Type[]  types) {
         if (types == null || types.length <= 0) return;
@@ -867,6 +867,8 @@ public class LanguageVisitor implements ILanguageEntry {
     @Override
     public void entry(Type  type) {
         if (type == null) return;
+        if (this.containsListVisit(type)) return;
+
         addVisitList(type);
         visitor.entry(type);
         List<VariableDefinition> varDefs = type.getDefinitions();
@@ -941,7 +943,7 @@ public class LanguageVisitor implements ILanguageEntry {
 
     /**
      * 探索履歴リストに追加する.
-     * @param block		探索履歴リスト
+     * @param block        探索履歴リスト
      */
     private void addVisitList(Object block) {
         if (this.listVisit == null) {
@@ -952,7 +954,7 @@ public class LanguageVisitor implements ILanguageEntry {
 
     /**
      * 探索履歴リストから削除する.
-     * @param block		探索履歴リスト
+     * @param block        探索履歴リスト
      */
     private void removeVisitList(Object block) {
         if (this.listVisit == null) return;
@@ -961,7 +963,7 @@ public class LanguageVisitor implements ILanguageEntry {
 
     /**
      * 探索履歴リストを取得する.
-     * @return		探索履歴リスト
+     * @return        探索履歴リスト
      */
     @Override
     public List<Object> getListVisit() {
@@ -971,7 +973,7 @@ public class LanguageVisitor implements ILanguageEntry {
 
     /**
      * 探索履歴リストを設定する
-     * @param list		探索履歴リスト
+     * @param list        探索履歴リスト
      */
     @Override
     public void setListVisit(List<Object> list) {
@@ -980,8 +982,8 @@ public class LanguageVisitor implements ILanguageEntry {
 
     /**
      * 探索履歴リストに存在するかチェックする.
-     * @param obj		探索オブジェクト
-     * @return		true=追加済み
+     * @param obj        探索オブジェクト
+     * @return        true=追加済み
      */
     @Override
     public boolean containsListVisit(Object obj) {
@@ -1002,7 +1004,7 @@ public class LanguageVisitor implements ILanguageEntry {
 
     /**
      * 付加情報ブロックの探索を行う
-     * @param info		付加情報ブロック
+     * @param info        付加情報ブロック
      */
     public void entryInformation(IInformation info) {
         if (info == null) return;

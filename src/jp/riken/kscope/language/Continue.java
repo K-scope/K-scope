@@ -55,6 +55,14 @@ public class Continue extends jp.riken.kscope.language.Block {
 
     /**
      * コンストラクタ。
+     * @param lbl       ラベル
+     */
+    public Continue(String lbl) {
+        label = lbl;
+    }
+
+    /**
+     * コンストラクタ。
      */
     public Continue() {
         super();
@@ -95,4 +103,5 @@ public class Continue extends jp.riken.kscope.language.Block {
             return "continue";
         }
     }
+
 }

@@ -51,7 +51,7 @@ public class ClearDefinitions implements ILanguageEntry {
 
     /**
      * Fortranデータベースを取得する.
-     * @return		Fortranデータベース
+     * @return        Fortranデータベース
      */
     public Fortran getLanguage() {
         return language;
@@ -59,7 +59,7 @@ public class ClearDefinitions implements ILanguageEntry {
 
     /**
      * Fortranデータベースを設定する.
-     * @param language		Fortranデータベース
+     * @param language        Fortranデータベース
      */
     public void setLanguage(Fortran language) {
         this.language = language;
@@ -67,7 +67,7 @@ public class ClearDefinitions implements ILanguageEntry {
 
     /**
      * 探索リストを設定する.
-     * @param list	探索リスト
+     * @param list    探索リスト
      */
     @Override
     public List<Object> getListVisit() {
@@ -76,7 +76,7 @@ public class ClearDefinitions implements ILanguageEntry {
 
     /**
      * 探索リストを設定する.
-     * @param list	探索リスト
+     * @param list    探索リスト
      */
     @Override
     public void setListVisit(List<Object> list) {
@@ -85,8 +85,8 @@ public class ClearDefinitions implements ILanguageEntry {
 
     /**
      * 探索履歴リストに存在するかチェックする.
-     * @param obj		探索オブジェクト
-     * @return		true=追加済み
+     * @param obj        探索オブジェクト
+     * @return        true=追加済み
      */
     @Override
     public boolean containsListVisit(Object obj) {
@@ -124,14 +124,14 @@ public class ClearDefinitions implements ILanguageEntry {
 
     /**
      * VariableDefinitionマップをクリアする.
-     * @param entry		ProgramUnit
+     * @param entry        ProgramUnit
      */
     public void entry(ProgramUnit entry) {
         if (entry == null) return;
-        java.util.Map<String, VariableDefinition> map = entry.getVariableMap();
-        java.util.Iterator<String> itr = map.keySet().iterator();
+        java.util.Map<Variable, VariableDefinition> map = entry.getVariableMap();
+        java.util.Iterator<Variable> itr = map.keySet().iterator();
         while(itr.hasNext()) {
-            String key = itr.next();
+            Variable key = itr.next();
             VariableDefinition def = map.get(key);
             if (containsClearVariableDefinition(def)) {
                 itr.remove();
@@ -313,7 +313,7 @@ public class ClearDefinitions implements ILanguageEntry {
 
     /**
      * クリア対象モジュールを設定する
-     * @param list		クリア対象モジュールマップ <旧モジュール, 新モジュール>
+     * @param list        クリア対象モジュールマップ <旧モジュール, 新モジュール>
      */
     public void setListClearModule(java.util.Map<Module, Module> mapModule) {
         this.mapClearModule = mapModule;
@@ -321,8 +321,8 @@ public class ClearDefinitions implements ILanguageEntry {
 
     /**
      * モジュールがクリア対象モジュールであるかチェックする.
-     * @param module		クリアチェックモジュール
-     * @return		true=クリアモジュール
+     * @param module        クリアチェックモジュール
+     * @return        true=クリアモジュール
      */
     private boolean containsClearModule(Module module) {
         if (this.mapClearModule == null) return false;
@@ -332,8 +332,8 @@ public class ClearDefinitions implements ILanguageEntry {
 
     /**
      * クリア対象のモジュールに含まれるProcedureであるかチェックする.
-     * @param definition		Procedure
-     * @return		true=クリアモジュールのProcedure
+     * @param definition        Procedure
+     * @return        true=クリアモジュールのProcedure
      */
     private boolean containsClearProcedure(Procedure definition) {
         Module module = getParentModule(definition);
@@ -343,8 +343,8 @@ public class ClearDefinitions implements ILanguageEntry {
 
     /**
      * クリア対象のモジュールに含まれるVariableDefinitionであるかチェックする.
-     * @param definition		VariableDefinition
-     * @return		true=クリアモジュールのVariableDefinition
+     * @param definition        VariableDefinition
+     * @return        true=クリアモジュールのVariableDefinition
      */
     private boolean containsClearVariableDefinition(VariableDefinition definition) {
         Module module = getParentModule(definition);
@@ -354,8 +354,8 @@ public class ClearDefinitions implements ILanguageEntry {
 
     /**
      * クリア対象のモジュールに含まれるProgramUnitであるかチェックする.
-     * @param definition		ProgramUnit
-     * @return		true=クリアモジュールのProgramUnit
+     * @param definition        ProgramUnit
+     * @return        true=クリアモジュールのProgramUnit
      */
     private boolean containsClearProgramUnit(ProgramUnit definition) {
         if (definition == null) return false;
@@ -370,8 +370,8 @@ public class ClearDefinitions implements ILanguageEntry {
 
     /**
      * クリア対象のモジュールに含まれるBlockであるかチェックする.
-     * @param definition		Block
-     * @return		true=クリアモジュールのBlock
+     * @param definition        Block
+     * @return        true=クリアモジュールのBlock
      */
     private boolean containsClearBlock(IBlock definition) {
         if (definition == null) return false;
@@ -389,8 +389,8 @@ public class ClearDefinitions implements ILanguageEntry {
 
     /**
      * モジュールがデータベースのモジュールであるかチェックする.
-     * @param module		クリアチェックモジュール
-     * @return		true=データベースモジュール
+     * @param module        クリアチェックモジュール
+     * @return        true=データベースモジュール
      */
     private boolean containsLanguageModule(Module module) {
         if (module == null) return false;
@@ -400,8 +400,8 @@ public class ClearDefinitions implements ILanguageEntry {
 
     /**
      * データベースのモジュールに含まれるProcedureであるかチェックする.
-     * @param definition		Procedure
-     * @return		true=クリアモジュールのProcedure
+     * @param definition        Procedure
+     * @return        true=クリアモジュールのProcedure
      */
     private boolean containsLanguageProcedure(Procedure definition) {
         Module module = getParentModule(definition);
@@ -411,8 +411,8 @@ public class ClearDefinitions implements ILanguageEntry {
 
     /**
      * データベースのモジュールに含まれるVariableDefinitionであるかチェックする.
-     * @param definition		VariableDefinition
-     * @return		true=クリアモジュールのVariableDefinition
+     * @param definition        VariableDefinition
+     * @return        true=クリアモジュールのVariableDefinition
      */
     private boolean containsLanguageVariableDefinition(VariableDefinition definition) {
         Module module = getParentModule(definition);
@@ -422,8 +422,8 @@ public class ClearDefinitions implements ILanguageEntry {
 
     /**
      * データベースのモジュールに含まれるProgramUnitであるかチェックする.
-     * @param definition		ProgramUnit
-     * @return		true=クリアモジュールのProgramUnit
+     * @param definition        ProgramUnit
+     * @return        true=クリアモジュールのProgramUnit
      */
     private boolean containsLanguageProgramUnit(ProgramUnit definition) {
         if (definition == null) return false;
@@ -438,8 +438,8 @@ public class ClearDefinitions implements ILanguageEntry {
 
     /**
      * データベースのモジュールに含まれるBlockであるかチェックする.
-     * @param definition		Block
-     * @return		true=クリアモジュールのBlock
+     * @param definition        Block
+     * @return        true=クリアモジュールのBlock
      */
     private boolean containsLanguageBlock(IBlock definition) {
         if (definition == null) return false;
@@ -457,8 +457,8 @@ public class ClearDefinitions implements ILanguageEntry {
 
     /**
      * Procedureの親モジュールを取得する
-     * @param definition		Procedure
-     * @return		モジュール
+     * @param definition        Procedure
+     * @return        モジュール
      */
     private Module getParentModule(Procedure definition) {
         if (definition == null) return null;
@@ -481,18 +481,22 @@ public class ClearDefinitions implements ILanguageEntry {
 
     /**
      * VariableDefinitionの親モジュールを取得する
-     * @param definition		VariableDefinition
-     * @return		モジュール
+     * @param definition        VariableDefinition
+     * @return        モジュール
      */
     private Module getParentModule(VariableDefinition definition) {
         if (definition == null) return null;
-        ProgramUnit block = definition.getMother();
+        IBlock block = definition.getMotherBlock();
         if (block == null) return null;
         while (true) {
-            if (block.get_mother() == null) {
+            if (block.getMotherBlock() == null) {
                 break;
             }
-            block = block.get_mother();
+            block = block.getMotherBlock();
+        }
+
+        if (block instanceof ExecutableBody) {
+            block = ((ExecutableBody)block).getParent();
         }
 
         if (!(block instanceof Module)) {

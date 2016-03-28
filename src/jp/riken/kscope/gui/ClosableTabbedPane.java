@@ -64,7 +64,7 @@ public abstract class ClosableTabbedPane extends JTabbedPane  implements ITabCom
 
     /**
      * コンストラクタ
-     * @param   type		ビューの識別子
+     * @param   type        ビューの識別子
      */
     public ClosableTabbedPane(FRAME_VIEW type) {
         super();
@@ -81,13 +81,13 @@ public abstract class ClosableTabbedPane extends JTabbedPane  implements ITabCom
 
     /**
      * タブを閉じる
-     * @param index		タブインデックス
+     * @param index        タブインデックス
      */
     protected abstract void closeTab(int index);
 
     /**
      * アクティブタブを切り替える。
-     * @param index		アクティブタブインデックス
+     * @param index        アクティブタブインデックス
      */
     @Override
     public void setSelectedIndex(int index) {
@@ -120,8 +120,8 @@ public abstract class ClosableTabbedPane extends JTabbedPane  implements ITabCom
 
     /**
      * タブにコンポーネントを追加する。
-     * @param title		タブ表示文字列
-     * @param content	追加コンポーネント
+     * @param title        タブ表示文字列
+     * @param content    追加コンポーネント
      */
     @Override
     public void addTab(String title, final Component content) {
@@ -150,8 +150,8 @@ public abstract class ClosableTabbedPane extends JTabbedPane  implements ITabCom
     /**
      *
      * タブにコンポーネントを追加する。
-     * @param title		タブ表示文字列
-     * @param content	追加コンポーネント
+     * @param title        タブ表示文字列
+     * @param content    追加コンポーネント
      * @param index   追加インデックス
      */
     public void insertTab(String title, TraceResultPanel content, int index) {
@@ -176,8 +176,8 @@ public abstract class ClosableTabbedPane extends JTabbedPane  implements ITabCom
 
     /**
      * タブラベル部分の作成 (タブ表示文字列+閉じるボタン)
-     * @param title			タイトル
-     * @return		タブラベル部分
+     * @param title            タイトル
+     * @return        タブラベル部分
      */
     private JPanel createTabComponent(String title) {
         // タブラベル部分の作成 (タブ表示文字列+閉じるボタン)
@@ -204,8 +204,8 @@ public abstract class ClosableTabbedPane extends JTabbedPane  implements ITabCom
 
     /**
      * タブラベルを設定する.
-     * @param index		タブインデックス
-     * @param title		タブ表示ラベル
+     * @param index        タブインデックス
+     * @param title        タブ表示ラベル
      */
     public void setTabTitle(int index, String title) {
         Component comp = this.getTabComponentAt(index);
@@ -255,7 +255,7 @@ public abstract class ClosableTabbedPane extends JTabbedPane  implements ITabCom
     /**
      * アクティブタブのみ閉じるボタンを表示する.<br/>
      * 非アクティブタブの閉じるボタンは非表示とする。
-     * @param activeIndex		アクティブタブインデックス
+     * @param activeIndex        アクティブタブインデックス
      */
     private void changeSelectedTab(int activeIndex) {
         if (activeIndex < 0) return;
@@ -287,8 +287,8 @@ public abstract class ClosableTabbedPane extends JTabbedPane  implements ITabCom
      *
      */
     private static class CloseTabIcon implements Icon {
-        private int width;			///< アイコン幅
-        private int height;			///< アイコン高さ
+        private int width;            ///< アイコン幅
+        private int height;            ///< アイコン高さ
 
         /**
          * コンストラクタ
@@ -356,7 +356,7 @@ public abstract class ClosableTabbedPane extends JTabbedPane  implements ITabCom
 
     /**
      * 親コンポーネントを取得する.
-     * @return		親コンポーネント
+     * @return        親コンポーネント
      */
     @Override
     public ITabComponent getParentComponent() {
@@ -365,7 +365,7 @@ public abstract class ClosableTabbedPane extends JTabbedPane  implements ITabCom
 
     /**
      * 親コンポーネントを設定する.
-     * @param component		親コンポーネント
+     * @param component        親コンポーネント
      */
     @Override
     public void setParentComponent(ITabComponent component) {
@@ -374,7 +374,7 @@ public abstract class ClosableTabbedPane extends JTabbedPane  implements ITabCom
 
     /**
      * フォーカスリスナを設定する
-     * @param listener		フォーカスリスナ
+     * @param listener        フォーカスリスナ
      */
     @Override
     public void addTabFocusListener(TabFocusListener listener) {
@@ -401,7 +401,7 @@ public abstract class ClosableTabbedPane extends JTabbedPane  implements ITabCom
 
     /**
      * ビューの識別子を設定する
-     * @param type		ビューの識別子
+     * @param type        ビューの識別子
      */
     public void setViewType(FRAME_VIEW type) {
         this.viewType = type;

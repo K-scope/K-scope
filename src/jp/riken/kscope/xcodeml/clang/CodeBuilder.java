@@ -154,7 +154,7 @@ public class CodeBuilder extends XcodeMLVisitorImpl {
 
     /**
      * コンストラクタ
-     * @param context		XcodeMLパーサ実行状況クラス
+     * @param context        XcodeMLパーサ実行状況クラス
      */
     public CodeBuilder(XcodeMLContext context) {
         _context = context;
@@ -163,7 +163,7 @@ public class CodeBuilder extends XcodeMLVisitorImpl {
 
     /**
      * ソースコード行を取得する
-     * @return		コード行リスト
+     * @return        コード行リスト
      */
     public CodeLine[] getCodeLineList() {
         if (m_sourceList == null || m_sourceList.size() <= 0)
@@ -225,8 +225,8 @@ public class CodeBuilder extends XcodeMLVisitorImpl {
 
     /**
      * 変数宣言文を出力する。
-     * @param visitable		変数宣言文要素:VarDecl
-     * @return		true=成功
+     * @param visitable        変数宣言文要素:VarDecl
+     * @return        true=成功
      */
     private boolean writeVarDecl(VarDecl visitable) {
         if (visitable == null) return false;
@@ -255,8 +255,8 @@ public class CodeBuilder extends XcodeMLVisitorImpl {
 
     /**
      * データID要素からデータ型を出力する。
-     * @param types		データID要素
-     * @return		true=成功
+     * @param types        データID要素
+     * @return        true=成功
      */
     private boolean _writeSymbol(Id symbol) {
         if (symbol == null) return false;
@@ -388,7 +388,7 @@ public class CodeBuilder extends XcodeMLVisitorImpl {
     /**
      * シンボルのsclassを出力する.
      * 'extern','static', 'register'のみ出力する.
-     * @param symbol	シンボル
+     * @param symbol    シンボル
      */
     private boolean _writeSclass(Id symbol) {
         if (symbol == null) return false;
@@ -484,9 +484,9 @@ public class CodeBuilder extends XcodeMLVisitorImpl {
      * コード行を出力する。
      *
      * @param  node    出力ノード
-     * @param filename			ソースファイル名
-     * @param startlineno		開始行番号
-     * @param endlineno			終了行番号
+     * @param filename            ソースファイル名
+     * @param startlineno        開始行番号
+     * @param endlineno            終了行番号
      * @return  成否
      */
     private boolean updateCodeLine(
@@ -524,11 +524,11 @@ public class CodeBuilder extends XcodeMLVisitorImpl {
     /**
      * コード行クラスを生成する。
      *
-     * @param filename			ソースファイル名
-     * @param startlineno		開始行番号
-     * @param endlineno			終了行番号
-     * @param statement			コードステートメント
-     * @return			生成コード行クラス
+     * @param filename            ソースファイル名
+     * @param startlineno        開始行番号
+     * @param endlineno            終了行番号
+     * @param statement            コードステートメント
+     * @return            生成コード行クラス
      */
     private CodeLine createCodeLine(String filename, String startlineno,
             String endlineno, String statement) {
@@ -547,8 +547,19 @@ public class CodeBuilder extends XcodeMLVisitorImpl {
         }
 
         // ソースファイル、ソースコード行
-        File srcFile = FileUtils.joinFilePath(_context.getSourceXmlFile()
-                .getFile().getParentFile(), filename);
+        // modify by @hira at 2016/01/28
+        File srcFile = null;
+        if (filename != null && !filename.isEmpty()) {
+            if (new File(filename).exists()) {
+                srcFile = new File(filename);
+            }
+            else {
+                srcFile = FileUtils.joinFilePath(_context.getBaseFolder(), filename);
+                if (srcFile == null || !srcFile.exists()) {
+                    srcFile = FileUtils.joinFilePath(_context.getSourceXmlFile().getFile().getParentFile(), filename);
+                }
+            }
+        }
         SourceFile codeFile = null;
         if (srcFile != null) {
             if (_context.getBaseFolder() != null) {
@@ -570,7 +581,7 @@ public class CodeBuilder extends XcodeMLVisitorImpl {
     /**
      * コード行クラスを生成する。
      *
-     * @param node			XMLノード
+     * @param node            XMLノード
      * @return コード行クラス
      */
     public CodeLine createCodeLine(IXmlNode node) {
@@ -591,8 +602,8 @@ public class CodeBuilder extends XcodeMLVisitorImpl {
     /**
      * コード行クラスを生成する。
      *
-     * @param node		XMLノード
-     * @param line		コード行文字列
+     * @param node        XMLノード
+     * @param line        コード行文字列
      * @return コード行クラス
      */
     public CodeLine createCodeLine(IXmlNode node, String line) {
@@ -628,7 +639,7 @@ public class CodeBuilder extends XcodeMLVisitorImpl {
 
     /**
      * 文字リストを出力する.
-     * @param chArray		文字リスト
+     * @param chArray        文字リスト
      */
     private void _writeCharacterArray(char[] chArray) {
         if (m_dummyBuf != null) {
@@ -642,7 +653,7 @@ public class CodeBuilder extends XcodeMLVisitorImpl {
 
     /**
      * 最終コード行を取得する。
-     * @return		最終コード行
+     * @return        最終コード行
      */
     public CodeLine getLastCodeLine() {
         if (m_sourceList.size() == 0)
@@ -972,8 +983,8 @@ public class CodeBuilder extends XcodeMLVisitorImpl {
 
     /**
      * 括弧が必要であるかチェックする
-     * @param   operation		オペレータ文字列
-     * @return		true = 括弧が必要
+     * @param   operation        オペレータ文字列
+     * @return        true = 括弧が必要
      */
     private boolean needParentheses(String operation) {
 
@@ -1193,7 +1204,7 @@ public class CodeBuilder extends XcodeMLVisitorImpl {
             return false;
         }
         writeToken(")");
-        
+
         return true;
     }
 

@@ -69,9 +69,9 @@ public class ProjectService extends BaseService {
     private ProjectProperties propertiesProject;
     /** 要求Byte/FLOP設定プロパティ */
     private RequiredBFProperties propertiesMemory;
-    
+
     private SSHconnectProperties propertiesSSH;
-    
+
     /**
      * コンストラクタ
      */
@@ -81,7 +81,7 @@ public class ProjectService extends BaseService {
 
     /**
      * コンストラクタ
-     * @param model		プロジェクトモデル
+     * @param model        プロジェクトモデル
      */
     public ProjectService(ProjectModel model) {
         this.setProjectModel(model);
@@ -89,11 +89,11 @@ public class ProjectService extends BaseService {
 
     /**
      * 新規プロジェクトを作成する
-     * @param title			プロジェクトタイトル
-     * @param projectFolder		プロジェクトフォルダ
-     * @param list			    ファイルリスト
-     * @param type				ファイルタイプ
-     * @return			プロジェクト情報モデル
+     * @param title            プロジェクトタイトル
+     * @param projectFolder        プロジェクトフォルダ
+     * @param list                ファイルリスト
+     * @param type                ファイルタイプ
+     * @return            プロジェクト情報モデル
      */
     public ProjectModel createProject(String title, File projectFolder, List<File> list, FILE_TYPE type) {
         if (this.projectModel == null) {
@@ -121,8 +121,8 @@ public class ProjectService extends BaseService {
 
     /**
      * プロジェクトにXMLフォルダを追加する。
-     * @param listAddFile		追加ファイルリスト
-     * @return		成否
+     * @param listAddFile        追加ファイルリスト
+     * @return        成否
      */
     public boolean addProjectSelectedFile(List<File> listAddFile) {
 
@@ -145,8 +145,8 @@ public class ProjectService extends BaseService {
 
     /**
      * プロジェクトにFortranフォルダを追加する。
-     * @param listAddFile		追加ファイルリスト
-     * @return		成否
+     * @param listAddFile        追加ファイルリスト
+     * @return        成否
      */
     public boolean addProjectFortranFile(List<File> listAddFile) {
 
@@ -169,8 +169,8 @@ public class ProjectService extends BaseService {
 
     /**
      * プロジェクトからXMLファイルを削除する。
-     * @param listDeleteFile		削除ファイルリスト
-     * @return		成否
+     * @param listDeleteFile        削除ファイルリスト
+     * @return        成否
      */
     public boolean deleteProjectSelectedFile(List<SourceFile> listDeleteFile) {
 
@@ -196,11 +196,11 @@ public class ProjectService extends BaseService {
      * @return サブディレクトリのファイルリスト
      */
     private File[] searchFiles(File dir, FILE_TYPE ftype, boolean subDir) {
-    	if (dir == null) return null;
-    	// settings.ppaフォルダは追加しない。
-    	if (dir.isDirectory() && KscopeProperties.SETTINGS_FOLDER.equalsIgnoreCase(dir.getName())) {
-    		return null;
-    	}
+        if (dir == null) return null;
+        // settings.ppaフォルダは追加しない。
+        if (dir.isDirectory() && KscopeProperties.SETTINGS_FOLDER.equalsIgnoreCase(dir.getName())) {
+            return null;
+        }
 
         ArrayList<File> sublist = new ArrayList<File>();
         FileFilter filter = ftype.getFileFilter();
@@ -251,7 +251,7 @@ public class ProjectService extends BaseService {
             if (sourceFiles == null) continue;
             for (int j = 0; j < sourceFiles.length; j++) {
                 if (!filelist.contains(sourceFiles[j])) {
-                	filelist.add(sourceFiles[j]);
+                    filelist.add(sourceFiles[j]);
                 }
             }
         }
@@ -284,15 +284,15 @@ public class ProjectService extends BaseService {
 
     /**
      * プロジェクトモデルを取得する。
-     * @return projectModel		プロジェクトモデル
+     * @return projectModel        プロジェクトモデル
      */
     public ProjectModel getProjectModel() {
         return projectModel;
     }
-    
+
         /**
      * プロジェクトモデルを設定する
-     * @param projectModel 		プロジェクトモデル
+     * @param projectModel         プロジェクトモデル
      */
     public void setProjectModel(ProjectModel projectModel) {
         this.projectModel = projectModel;
@@ -301,7 +301,7 @@ public class ProjectService extends BaseService {
 
     /**
      * プロジェクトを保存する
-     * @param	saveFolder	プロジェクトフォルダ
+     * @param    saveFolder    プロジェクトフォルダ
      * @throws Exception   プロジェクト保存エラー
      */
     public void saveProject(File saveFolder) throws Exception {
@@ -325,7 +325,7 @@ public class ProjectService extends BaseService {
     /**
      * プロジェクトXMLファイル出力する
      * @param saveFolder    保存フォルダ
-     * @throws Exception 		プロパティ出力エラー
+     * @throws Exception         プロパティ出力エラー
      */
     private void writeProjectModel(File saveFolder) throws Exception {
 
@@ -353,7 +353,7 @@ public class ProjectService extends BaseService {
     /**
      * プロパティのXMLファイル出力する
      * @param saveFolder    保存フォルダ
-     * @throws Exception 		プロパティ出力エラー
+     * @throws Exception         プロパティ出力エラー
      */
     public void writeProperties(File saveFolder) throws Exception {
 
@@ -403,8 +403,8 @@ public class ProjectService extends BaseService {
 
     /**
      * XMLドキュメントをファイル出力する
-     * @param output		出力ファイル
-     * @param document		XMLドキュメント
+     * @param output        出力ファイル
+     * @param document        XMLドキュメント
      * @throws Exception    XML出力エラー
      */
     private void writeXmlFile(File output, org.w3c.dom.Document document) throws Exception {
@@ -429,7 +429,7 @@ public class ProjectService extends BaseService {
 
     /**
      * キーワードプロパティを設定する
-     * @param propertiesKeyword		キーワードプロパティ
+     * @param propertiesKeyword        キーワードプロパティ
      */
     public void setPropertiesKeyword(KeywordProperties propertiesKeyword) {
         this.propertiesKeyword = propertiesKeyword;
@@ -437,7 +437,7 @@ public class ProjectService extends BaseService {
 
     /**
      * 外部ツールプロパティを設定する
-     * @param propertiesExtension		外部ツールプロパティ
+     * @param propertiesExtension        外部ツールプロパティ
      */
     public void setPropertiesExtension(ProgramProperties propertiesExtension) {
         this.propertiesExtension = propertiesExtension;
@@ -445,7 +445,7 @@ public class ProjectService extends BaseService {
 
     /**
      * 演算カウントプロパティを設定する
-     * @param propertiesOperand			演算カウントプロパティ
+     * @param propertiesOperand            演算カウントプロパティ
      */
     public void setPropertiesOperand(OperationProperties propertiesOperand) {
         this.propertiesOperand = propertiesOperand;
@@ -453,7 +453,7 @@ public class ProjectService extends BaseService {
 
     /**
      * ソースビュー設定を設定する
-     * @param propertiesSource		ソースビュー設定
+     * @param propertiesSource        ソースビュー設定
      */
     public void setPropertiesSource(SourceProperties propertiesSource) {
         this.propertiesSource = propertiesSource;
@@ -461,7 +461,7 @@ public class ProjectService extends BaseService {
 
     /**
      * プロファイラプロパティ設定を設定する
-     * @param propertiesProfiler		プロファイラプロパティ設定
+     * @param propertiesProfiler        プロファイラプロパティ設定
      */
     public void setPropertiesProfiler(ProfilerProperties propertiesProfiler) {
         this.propertiesProfiler = propertiesProfiler;
@@ -469,27 +469,27 @@ public class ProjectService extends BaseService {
 
     /**
      * プロジェクト設定を設定する
-     * @param propertiesProject		プロジェクト設定
+     * @param propertiesProject        プロジェクト設定
      */
     public void setPropertiesProject(ProjectProperties propertiesProject) {
-    	this.propertiesProject = propertiesProject;
+        this.propertiesProject = propertiesProject;
     }
 
     /**
      * 要求Byte/FLOP設定プロパティ設定を設定する
-     * @param propertiesMemory		要求Byte/FLOP設定プロパティ
+     * @param propertiesMemory        要求Byte/FLOP設定プロパティ
      */
     public void setPropertiesMemory(RequiredBFProperties propertiesMemory) {
-    	this.propertiesMemory = propertiesMemory;
+        this.propertiesMemory = propertiesMemory;
     }
-    
+
     public void setPropertiesSSH(SSHconnectProperties propertiesSSH) {
-    	this.propertiesSSH = propertiesSSH;
+        this.propertiesSSH = propertiesSSH;
     }
 
     /**
      * プロジェクトを開く
-     * @param openFolder		プロジェクトフォルダ
+     * @param openFolder        プロジェクトフォルダ
      * @throws Exception        プロジェクトオープンエラー
      */
     public void openProject(File openFolder) throws Exception {
@@ -534,7 +534,7 @@ public class ProjectService extends BaseService {
 
     /**
      * プロジェクトのプロパティを設定する
-     * @param model			プロパティモデル
+     * @param model            プロパティモデル
      */
     public void setProperties(PropertiesTableModel model) {
 
@@ -570,14 +570,14 @@ public class ProjectService extends BaseService {
      * @return    true=プロパティ設定完了
      */
     public boolean existAllProperties() {
-    	if(this.propertiesExtension == null) return false;
-    	if(this.propertiesKeyword == null) return false;
-    	if(this.propertiesMemory == null) return false;
-    	if(this.propertiesOperand == null) return false;
-    	if(this.propertiesProfiler == null) return false;
-    	if(this.propertiesProject == null) return false;
-    	if(this.propertiesSource == null) return false;
-    	return true;
+        if(this.propertiesExtension == null) return false;
+        if(this.propertiesKeyword == null) return false;
+        if(this.propertiesMemory == null) return false;
+        if(this.propertiesOperand == null) return false;
+        if(this.propertiesProfiler == null) return false;
+        if(this.propertiesProject == null) return false;
+        if(this.propertiesSource == null) return false;
+        return true;
     }
 
 }

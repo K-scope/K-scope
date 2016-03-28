@@ -30,9 +30,11 @@ import java.io.File;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
@@ -65,7 +67,7 @@ import jp.riken.kscope.utils.SwingUtils;
 public class SettingProjectDialog extends javax.swing.JDialog implements ActionListener, ListSelectionListener  {
 
     /** シリアル番号 */
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
     /** 最終アクセスフォルダ */
     private String lastAccessFolder;
@@ -85,7 +87,7 @@ public class SettingProjectDialog extends javax.swing.JDialog implements ActionL
     /** プロジェクト設定パネル */
     private JPanel panelProperty;
 
-	/** ダイアログの戻り値 */
+    /** ダイアログの戻り値 */
     private int result = Constant.CANCEL_DIALOG;
 
     /** プロジェクトプロパティ */
@@ -93,46 +95,48 @@ public class SettingProjectDialog extends javax.swing.JDialog implements ActionL
 
     /** 列名 */
     private final String[] COLUMN_HEADER = {
-    	Message.getString("settingprojectdialog.column_header.propertyvalue"), //MakePropertyValue
-    	Message.getString("settingprojectdialog.column_header.key"), //キー
-    	Message.getString("settingprojectdialog.column_header.type"), //タイプ
-    	Message.getString("settingprogramdialog.label.name"), //名前
-    	Message.getString("settingprojectdialog.column_header.value"), //値
-    	Message.getString("settingprojectdialog.column_header.message")  //メッセージ
+        Message.getString("settingprojectdialog.column_header.propertyvalue"), //MakePropertyValue
+        Message.getString("settingprojectdialog.column_header.key"), //キー
+        Message.getString("settingprojectdialog.column_header.type"), //タイプ
+        Message.getString("settingprogramdialog.label.name"), //名前
+        Message.getString("settingprojectdialog.column_header.value"), //値
+        Message.getString("settingprojectdialog.column_header.message")  //メッセージ
     };
 
     /** 選択ボタン */
     private JButton btnSelect;
     /** 値入力テキストフィールド */
     private JTextField txtValue;
+    /** 真偽値入力ラジオボタンフィールド */
+    private JCheckBox checkValue;
 
     /** 選択プロパティ */
     private ProjectPropertyValue selectedvalue;
 
-	/**
+    /**
      * コンストラクタ
-     * @param owner		親フレーム
-     * @param modal		true=モーダルダイアログを表示する
+     * @param owner        親フレーム
+     * @param modal        true=モーダルダイアログを表示する
      */
-	public SettingProjectDialog(Frame owner, boolean modal) {
+    public SettingProjectDialog(Frame owner, boolean modal) {
         super(owner, modal);
         initGUI();
-	}
-
-	/**
-     * コンストラクタ
-     * @param frame		親フレーム
-     */
-	public SettingProjectDialog(Frame frame) {
-		super(frame);
-		initGUI();
-	}
+    }
 
     /**
      * コンストラクタ
-     * @param frame		親フレーム
-     * @param modal		true=モーダルダイアログを表示する
-     * @param properities		プロジェクト設定プロパティ
+     * @param frame        親フレーム
+     */
+    public SettingProjectDialog(Frame frame) {
+        super(frame);
+        initGUI();
+    }
+
+    /**
+     * コンストラクタ
+     * @param frame        親フレーム
+     * @param modal        true=モーダルダイアログを表示する
+     * @param properities        プロジェクト設定プロパティ
      * @wbp.parser.constructor
      */
     public SettingProjectDialog(Frame frame, boolean modal, ProjectProperties properities) {
@@ -143,7 +147,7 @@ public class SettingProjectDialog extends javax.swing.JDialog implements ActionL
 
     /**
      * プロジェクト設定を設定する。
-     * @param properties		ソース設定プロパティ
+     * @param properties        ソース設定プロパティ
      */
     public void setProjectProperties(ProjectProperties properties) {
 
@@ -171,7 +175,7 @@ public class SettingProjectDialog extends javax.swing.JDialog implements ActionL
     /**
      * GUI初期化を行う。
      */
-	private void initGUI() {
+    private void initGUI() {
         try {
             BorderLayout thisLayout = new BorderLayout();
             thisLayout.setHgap(5);
@@ -365,14 +369,14 @@ public class SettingProjectDialog extends javax.swing.JDialog implements ActionL
         } catch (Exception e) {
             e.printStackTrace();
         }
-	}
+    }
 
     /**
      * ボタンクリックイベント
-     * @param event		イベント情報
+     * @param event        イベント情報
      */
-	@Override
-	public void actionPerformed(ActionEvent event) {
+    @Override
+    public void actionPerformed(ActionEvent event) {
         // 登録
         if (event.getSource() == this.btnOk) {
             this.result = Constant.OK_DIALOG;
@@ -408,7 +412,7 @@ public class SettingProjectDialog extends javax.swing.JDialog implements ActionL
         }
         // 選択
         else if (event.getSource() == this.btnSelect) {
-        	// カレントフォルダ
+            // カレントフォルダ
             String currentFolder = this.txtValue.getText();
             if (currentFolder == null || currentFolder.isEmpty()) {
                 if (this.lastAccessFolder != null) {
@@ -418,30 +422,30 @@ public class SettingProjectDialog extends javax.swing.JDialog implements ActionL
                     currentFolder = System.getProperty("user.dir");
                 }
             }
-        	String dlgTitle = "";
-        	if ("file".equalsIgnoreCase(selectedvalue.getType())) {
-        		File[] selected = null;
-        		dlgTitle = Message.getString("informationdialog.selectfiledialog.title"); //ファイルの選択
+            String dlgTitle = "";
+            if ("file".equalsIgnoreCase(selectedvalue.getType())) {
+                File[] selected = null;
+                dlgTitle = Message.getString("informationdialog.selectfiledialog.title"); //ファイルの選択
                 /*if (selectedvalue != null
-                	&& ProjectProperties.MAKEFILE_PATH.equalsIgnoreCase(selectedvalue.getKey())) {
-            		// Makefile選択ダイアログを表示する。
+                    && ProjectProperties.MAKEFILE_PATH.equalsIgnoreCase(selectedvalue.getKey())) {
+                    // Makefile選択ダイアログを表示する。
                     selected = SwingUtils.showOpenMakefileDialog(this, dlgTitle, currentFolder, false);
                 }
-                else*/ 
-        		{
-	        		// ファイル選択ダイアログを表示する。
-	                selected = SwingUtils.showOpenFileDialog(this, dlgTitle, currentFolder, null, true);
+                else*/
+                {
+                    // ファイル選択ダイアログを表示する。
+                    selected = SwingUtils.showOpenFileDialog(this, dlgTitle, currentFolder, null, true);
                 }
                 if (selected == null || selected.length <= 0) return;
                 txtValue.setText(selected[0].toString());
-        	}
-        	else if ("folder".equalsIgnoreCase(selectedvalue.getType())) {
-        		dlgTitle = Message.getString("settingprojectdialog.selectfolderdialog.title"); //フォルダの選択
-        		// フォルダ選択ダイアログを表示する。
+            }
+            else if ("folder".equalsIgnoreCase(selectedvalue.getType())) {
+                dlgTitle = Message.getString("settingprojectdialog.selectfolderdialog.title"); //フォルダの選択
+                // フォルダ選択ダイアログを表示する。
                 File[] selected = SwingUtils.showOpenFolderDialog(this, dlgTitle, currentFolder, false);
                 if (selected == null || selected.length <= 0) return;
                 txtValue.setText(selected[0].toString());
-        	}
+            }
 
             return;
         }
@@ -455,14 +459,21 @@ public class SettingProjectDialog extends javax.swing.JDialog implements ActionL
 
             int col = 4;
 
-            this.modelProperties.setValueAt(txtValue.getText(), selectedrow, col);
+            String update_value = null;
+            if ("boolean".equalsIgnoreCase(selectedvalue.getType())) {
+                update_value = Boolean.toString(checkValue.isSelected());
+            }
+            else {
+                update_value = txtValue.getText();
+            }
+            this.modelProperties.setValueAt(update_value, selectedrow, col);
 
         }
-	}
+    }
 
     /**
      * 最終アクセスフォルダを設定する
-     * @param folder		最終アクセスフォルダ
+     * @param folder        最終アクセスフォルダ
      */
     public void setLastAccessFolder(String folder) {
         if (folder == null) return;
@@ -486,7 +497,7 @@ public class SettingProjectDialog extends javax.swing.JDialog implements ActionL
 
     /**
      * 文字列設定パネルを設定する
-     * @param value		文字列設定プロパティ
+     * @param value        文字列設定プロパティ
      */
     private void setTextPanel(ProjectPropertyValue value) {
 
@@ -530,19 +541,19 @@ public class SettingProjectDialog extends javax.swing.JDialog implements ActionL
 
     /**
      * ファイル設定パネルを設定する
-     * @param value		ファイル設定プロパティ
+     * @param value        ファイル設定プロパティ
      */
     private void setFilePanel(ProjectPropertyValue value) {
 
         if (!("file".equalsIgnoreCase(value.getType())) &&
-        		!("folder".equalsIgnoreCase(value.getType()))) return;
+                !("folder".equalsIgnoreCase(value.getType()))) return;
 
         String valueLabel = "";
         if ("file".equalsIgnoreCase(value.getType())) {
-        	valueLabel = Message.getString("settingprojectdialog.label.file-colon"); //ファイル
+            valueLabel = Message.getString("settingprojectdialog.label.file-colon"); //ファイル
         }
         else if ("folder".equalsIgnoreCase(value.getType())) {
-        	valueLabel = Message.getString("settingprojectdialog.label.folder-colon"); //フォルダ
+            valueLabel = Message.getString("settingprojectdialog.label.folder-colon"); //フォルダ
         }
 
         // 設定ファイル
@@ -596,7 +607,7 @@ public class SettingProjectDialog extends javax.swing.JDialog implements ActionL
 
     /**
      * 固定文字列表示パネルを設定する
-     * @param value		固定文字列設定プロパティ
+     * @param value        固定文字列設定プロパティ
      */
     private void setFixedTextPanel(ProjectPropertyValue value) {
 
@@ -625,7 +636,7 @@ public class SettingProjectDialog extends javax.swing.JDialog implements ActionL
             lblValue.setText(Message.getString("settingprojectdialog.column_header.value"));//値
         }
         {
-        	JLabel txtValue = new JLabel();
+            JLabel txtValue = new JLabel();
             this.panelProperty.add(txtValue, new GridBagConstraints(1, 1, 2, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
             txtValue.setText(str);
             txtValue.setBorder(BorderFactory.createEtchedBorder());
@@ -641,9 +652,54 @@ public class SettingProjectDialog extends javax.swing.JDialog implements ActionL
     }
 
     /**
+     * 真偽値設定パネルを設定する
+     * @param value        真偽値設定プロパティ
+     */
+    private void setBooleanPanel(ProjectPropertyValue value) {
+
+        if (!("boolean".equalsIgnoreCase(value.getType()))) return;
+
+        // 設定値
+        String str = value.getValue();
+        this.panelProperty.removeAll();
+
+        // プロパティ名
+        {
+            JLabel label = new JLabel();
+            this.panelProperty.add(label, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
+            label.setText(Message.getString("settingprogramdialog.label.name"));//名前
+        }
+        {
+            JLabel lblName = new JLabel();
+            this.panelProperty.add(lblName, new GridBagConstraints(1, 0, 2, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
+            lblName.setText(value.getName());
+        }
+
+        // 値
+        {
+            JLabel lblValue = new JLabel();
+            this.panelProperty.add(lblValue, new GridBagConstraints(0, 1, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
+            lblValue.setText(Message.getString("settingprojectdialog.column_header.value"));//値
+        }
+        {
+            checkValue = new JCheckBox();
+            this.panelProperty.add(checkValue, new GridBagConstraints(1, 1, 2, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
+            checkValue.setSelected(Boolean.parseBoolean(str));
+        }
+        // メッセージ
+        {
+            JComponent lblMassage = createMessageLabel(value.getMessage());
+            if (lblMassage != null) {
+                this.panelProperty.add(lblMassage, new GridBagConstraints(1, 2, 2, 2, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
+            }
+        }
+    }
+
+
+    /**
      * メッセージラベルコンポーネントを作成する
      * @param  message   表示メッセージ
-     * @return			メッセージラベルコンポーネント
+     * @return            メッセージラベルコンポーネント
      */
     private JComponent createMessageLabel(String  message) {
         if (message == null) return null;
@@ -663,35 +719,40 @@ public class SettingProjectDialog extends javax.swing.JDialog implements ActionL
 
     /**
      * プロパティ設定パネルを設定する
-     * @param value		設定プロパティ
+     * @param value        設定プロパティ
      */
     private void setPropertyPanel(ProjectPropertyValue value) {
-    	if (value == null) return;
+        if (value == null) return;
 
         if ("text".equalsIgnoreCase(value.getType())) {
             // テキスト設定
-        	setTextPanel(value);
-        	btnReg.setEnabled(true);
+            setTextPanel(value);
+            btnReg.setEnabled(true);
         }
         else if ("file".equalsIgnoreCase(value.getType()) ||
-        		"folder".equalsIgnoreCase(value.getType())) {
-        	// ファイル設定／フォルダ設定
-        	setFilePanel(value);
-        	btnReg.setEnabled(true);
+                "folder".equalsIgnoreCase(value.getType())) {
+            // ファイル設定／フォルダ設定
+            setFilePanel(value);
+            btnReg.setEnabled(true);
         }
         else if ("fixed-text".equalsIgnoreCase(value.getType())) {
-        	// テキスト表示のみ
-        	setFixedTextPanel(value);
-        	btnReg.setEnabled(false);
+            // テキスト表示のみ
+            setFixedTextPanel(value);
+            btnReg.setEnabled(false);
+        }
+        else if ("boolean".equalsIgnoreCase(value.getType())) {
+            // 真偽値設定
+            setBooleanPanel(value);
+            btnReg.setEnabled(true);
         }
 
         this.panelProperty.revalidate();
         this.panelProperty.repaint();
     }
 
-	@Override
-	public void valueChanged(ListSelectionEvent event) {
-		if (event.getSource() == this.tblProperties.getSelectionModel()) {
+    @Override
+    public void valueChanged(ListSelectionEvent event) {
+        if (event.getSource() == this.tblProperties.getSelectionModel()) {
             // 選択行を取得する。
             int selectedrow = this.tblProperties.getSelectedRow();
             if (selectedrow < 0) return;
@@ -710,7 +771,7 @@ public class SettingProjectDialog extends javax.swing.JDialog implements ActionL
             // 設定パネルに表示する
             this.setPropertyPanel(value);
         }
-	}
+    }
 
     /**
      * プロジェクトプロパティを設定する。
@@ -738,13 +799,13 @@ public class SettingProjectDialog extends javax.swing.JDialog implements ActionL
 
         /**
          * セルの描画コンポーネントを取得する
-         * @param table			描画テーブル
-         * @param value			セルデータ
-         * @param isSelected	選択状態
-         * @param hasFocus		フォーカス
-         * @param row			行インデックス
-         * @param column		列インデックス
-         * @return		描画コンポーネント
+         * @param table            描画テーブル
+         * @param value            セルデータ
+         * @param isSelected    選択状態
+         * @param hasFocus        フォーカス
+         * @param row            行インデックス
+         * @param column        列インデックス
+         * @return        描画コンポーネント
          */
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value,

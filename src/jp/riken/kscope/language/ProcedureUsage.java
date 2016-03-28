@@ -28,7 +28,7 @@ import jp.riken.kscope.information.InformationBlocks;
 /**
  * 手続き呼び出しを表現するクラス。
  *
- * @author RIKEN 
+ * @author RIKEN
  * @version    2015/03/15     関数名同一チェックメソッド追加
  *
  */
@@ -70,7 +70,7 @@ public class ProcedureUsage extends Block {
     public ProcedureUsage(Block mama, String subroutineName, List<Expression> argmnts) {
         super(mama);
         callName = subroutineName;
-        arguments = argmnts;
+        this.setArguments(argmnts);
     }
 
     /**
@@ -84,7 +84,7 @@ public class ProcedureUsage extends Block {
     public ProcedureUsage(String subroutineName, List<Expression> argmnts) {
         super();
         callName = subroutineName;
-        arguments = argmnts;
+        this.setArguments(argmnts);
     }
 
     /**
@@ -191,6 +191,11 @@ public class ProcedureUsage extends Block {
      */
     public void setArguments(List<Expression> args) {
         this.arguments = args;
+        if (this.arguments != null) {
+            for (Expression exp : this.arguments) {
+                exp.setParentStatement(this);
+            }
+        }
     }
 
     /**
@@ -215,7 +220,7 @@ public class ProcedureUsage extends Block {
 
     /**
      * 組込関数であるか取得する
-     * @return		true=組込関数
+     * @return        true=組込関数
      */
     public boolean isIntrinsic() {
         return intrinsic;
@@ -430,8 +435,8 @@ public class ProcedureUsage extends Block {
 
     /**
      * 同一ブロックであるかチェックする.
-     * @param block		ブロック
-     * @return		true=一致
+     * @param block        ブロック
+     * @return        true=一致
      */
     @Override
     public boolean equalsBlocks(Block block) {
@@ -471,8 +476,8 @@ public class ProcedureUsage extends Block {
 
     /**
      * 同一ブロックを検索する
-     * @param block			IInformationブロック
-     * @return		同一ブロック
+     * @param block            IInformationブロック
+     * @return        同一ブロック
      */
     @Override
     public IInformation[] searchInformationBlocks(IInformation block) {
@@ -515,8 +520,8 @@ public class ProcedureUsage extends Block {
      * ファイルタイプから文字列に一致条件を変更する.
      *     C言語  : 大文字・小文字を区別する.
      *     Fortran : 大文字・小文字を区別しない.
-     * @param value		チェックプログラム名、モジュール名、サブルーチン名、関数名
-     * @return		true = 一致
+     * @param value        チェックプログラム名、モジュール名、サブルーチン名、関数名
+     * @return        true = 一致
      */
     public boolean equalsName(String value) {
         if (value == null) return false;
@@ -527,5 +532,49 @@ public class ProcedureUsage extends Block {
         else {
             return (value.equalsIgnoreCase(this.callName));
         }
+    }
+
+
+    /**
+     * 式の変数リストを取得する.
+     * 子ブロックの変数リストも取得する。
+     * @return        式の変数リスト
+     */
+    @Override
+    public Set<Variable> getAllVariables() {
+        Set<Variable> list = new HashSet<Variable>();
+        Set<Variable> vars = super.getAllVariables();
+        if (vars != null && vars.size() > 0) {
+            list.addAll(vars);
+        }
+        vars = this.getBlockVariables();
+        if (vars != null && vars.size() > 0) {
+            list.addAll(vars);
+        }
+
+        if (list.size() <= 0) return null;
+        return list;
+    }
+
+    /**
+     * 式の変数リストを取得する.
+     * ブロックのみの変数リストを取得する。
+     * @return        式の変数リスト
+     */
+    @Override
+    public Set<Variable> getBlockVariables() {
+
+        Set<Variable> list = new HashSet<Variable>();
+        if (this.arguments != null) {
+            for (Expression exp : this.arguments) {
+                Set<Variable> vars = exp.getAllVariables();
+                if (vars != null && vars.size() > 0) {
+                    list.addAll(vars);
+                }
+            }
+        }
+
+        if (list.size() <= 0) return null;
+        return list;
     }
 }

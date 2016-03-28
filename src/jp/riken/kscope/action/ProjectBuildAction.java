@@ -18,6 +18,7 @@ package jp.riken.kscope.action;
 
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
+import java.io.File;
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -54,7 +55,7 @@ public class ProjectBuildAction extends ActionBase {
 
     /**
      * コンストラクタ
-     * @param controller	アプリケーションコントローラ
+     * @param controller    アプリケーションコントローラ
      */
     public ProjectBuildAction(AppController controller) {
         super(controller);
@@ -63,7 +64,7 @@ public class ProjectBuildAction extends ActionBase {
     /**
      * アクションが実行可能であるかチェックする.<br/>
      * アクションの実行前チェック、メニューのイネーブルの切替を行う。<br/>
-     * @return		true=アクションが実行可能
+     * @return        true=アクションが実行可能
      */
     @Override
     public boolean validateAction() {
@@ -95,7 +96,7 @@ public class ProjectBuildAction extends ActionBase {
 
     /**
      * アクション発生イベント
-     * @param event		イベント情報
+     * @param event        イベント情報
      */
     @Override
     public void actionPerformed(ActionEvent event) {
@@ -160,7 +161,8 @@ public class ProjectBuildAction extends ActionBase {
         // XMLツリーモデルを設定する。
         service.setXmlTreeModel(xmlModel);
         // プロジェクトフォルダを設定する
-        service.setProjectFolder(this.controller.getProjectModel().getProjectFolder());
+        File project_folder = this.controller.getProjectModel().getProjectFolder();
+        service.setProjectFolder(project_folder);
 
         // スレッドタスクサービスの生成を行う。
         FutureService<Integer> future = new FutureService<Integer>(
@@ -172,7 +174,7 @@ public class ProjectBuildAction extends ActionBase {
                      * スレッド実行を行う
                      */
                     @Override
-					public Integer call() {
+                    public Integer call() {
                         try {
                             // 解析実行
                             service.parseSourceFile();

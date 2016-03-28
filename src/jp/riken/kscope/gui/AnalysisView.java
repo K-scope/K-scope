@@ -118,9 +118,9 @@ public class AnalysisView  extends ClosableTabbedPane implements PropertyChangeL
             this.addTab(ANALYSIS_PANEL.SEARCHRESULT.getTabName(),  panelSearchResult);
 
             // 変数特性一覧パネル
-            panelVariable = new VariableTablePanel(ANALYSIS_PANEL.VALIABLE);
+            panelVariable = new VariableTablePanel(ANALYSIS_PANEL.VARIABLE);
             panelVariable.setParentComponent(this);
-            this.addTab(ANALYSIS_PANEL.VALIABLE.getTabName(), panelVariable);
+            this.addTab(ANALYSIS_PANEL.VARIABLE.getTabName(), panelVariable);
 
             // 演算カウント
             panelOperand = new OperandTablePanel(ANALYSIS_PANEL.OPERAND);

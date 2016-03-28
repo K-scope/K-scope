@@ -150,7 +150,7 @@ public class VariableTablePanel extends AnalisysPanelBase implements Observer, I
 
     /**
      * コンストラクタ
-     * @param proparties		分析情報パネル識別子
+     * @param proparties        分析情報パネル識別子
      */
     public VariableTablePanel(ANALYSIS_PANEL proparties) {
         super(proparties);
@@ -305,7 +305,7 @@ public class VariableTablePanel extends AnalisysPanelBase implements Observer, I
             btnEdit.setToolTipText(Message.getString("replacementresulttablepanel.tooltip.info")); //付加情報
             btnOperand.setToolTipText(Message.getString("mainmenu.project.config.operation")); //演算数カウント
             btnReference.setToolTipText(Message.getString("mainmenu.analysis.dec-def-ref")); //宣言・定義・参照
-            btnScope.setToolTipText(Message.getString("mainmenu.analysis.valiablescope")); //変数有効域
+            btnScope.setToolTipText(Message.getString("mainmenu.analysis.variablescope")); //変数有効域
             btnOpenFile.setToolTipText(Message.getString("informationpanel.tooltip.openblock")); //選択箇所を開く
             btnExport.setToolTipText(Message.getString("mainmenu.file.export")); //エクスポート
 
@@ -316,8 +316,8 @@ public class VariableTablePanel extends AnalisysPanelBase implements Observer, I
 
     /**
      * 変数特性一覧モデルの変更通知イベント
-     * @param o			通知元
-     * @param arg		通知項目
+     * @param o            通知元
+     * @param arg        通知項目
      */
     @Override
     public void update(Observable o, Object arg) {
@@ -342,7 +342,7 @@ public class VariableTablePanel extends AnalisysPanelBase implements Observer, I
 
     /**
      * 変数特性一覧を追加する
-     * @param info			変数特性一覧情報
+     * @param info            変数特性一覧情報
      */
     public void addVariableInfo(VariableTableModel.ProcedureInfo info) {
 
@@ -372,7 +372,7 @@ public class VariableTablePanel extends AnalisysPanelBase implements Observer, I
 
     /**
      * コンテンツパネルにコンポーネントを追加する
-     * @param component		追加コンポーネント
+     * @param component        追加コンポーネント
      */
     private void addComponent(final JComponent component) {
         // 追加コンポーネントサイズの変更
@@ -414,8 +414,8 @@ public class VariableTablePanel extends AnalisysPanelBase implements Observer, I
 
     /**
      * 変数特性一覧パネルの追加
-     * @param info		変数特性一覧情報
-     * @return			変数特性一覧パネル
+     * @param info        変数特性一覧情報
+     * @return            変数特性一覧パネル
      */
     private JComponent makeRowsPanel(VariableTableModel.ProcedureInfo info) {
         // 変数特性一覧パネル
@@ -443,7 +443,7 @@ public class VariableTablePanel extends AnalisysPanelBase implements Observer, I
         panelName.add(button);
         String name = "BLOCK";
         if (info.getBlock() != null) {
-            name = info.getBlock().toString();
+            name = info.getBlock().toStringProcedureScope();
         }
         JLabel label = new JLabel(name);
         label.setOpaque(false);
@@ -526,7 +526,7 @@ public class VariableTablePanel extends AnalisysPanelBase implements Observer, I
 
         /**
          * コンストラクタ
-         * @param block		変数特性ブロック
+         * @param block        変数特性ブロック
          */
         public NodePanel(VariableTableModel.ProcedureInfo block) {
             this.block = block;
@@ -534,7 +534,7 @@ public class VariableTablePanel extends AnalisysPanelBase implements Observer, I
 
         /**
          * 変数特性ブロックを取得する
-         * @return		変数特性ブロック
+         * @return        変数特性ブロック
          */
         @SuppressWarnings("unused")
         public VariableTableModel.ProcedureInfo getBlock() {
@@ -543,7 +543,7 @@ public class VariableTablePanel extends AnalisysPanelBase implements Observer, I
 
         /**
          * 変数特性テーブルを設定する
-         * @param tableVariable		変数特性テーブル
+         * @param tableVariable        変数特性テーブル
          */
         public void setTableVariable(JTable tableVariable) {
             this.tableVariable = tableVariable;
@@ -551,7 +551,7 @@ public class VariableTablePanel extends AnalisysPanelBase implements Observer, I
 
         /**
          * 変数特性テーブルを取得する
-         * @return		変数特性テーブル
+         * @return        変数特性テーブル
          */
         public JTable getTableVariable() {
             return this.tableVariable;
@@ -562,7 +562,7 @@ public class VariableTablePanel extends AnalisysPanelBase implements Observer, I
 
     /**
      * 変数特性一覧テーブルモデルを取得する
-     * @return		変数特性一覧テーブルモデル
+     * @return        変数特性一覧テーブルモデル
      */
     public VariableTableModel getModel() {
         return model;
@@ -571,7 +571,7 @@ public class VariableTablePanel extends AnalisysPanelBase implements Observer, I
 
     /**
      * フォーカスリスナを設定する
-     * @param listener		フォーカスリスナ
+     * @param listener        フォーカスリスナ
      */
     @Override
     public void addTabFocusListener(TabFocusListener listener) {
@@ -594,7 +594,7 @@ public class VariableTablePanel extends AnalisysPanelBase implements Observer, I
     /**
      * パネルにアクションリスナを設定する.<br/>
      * メニューバーに作成済みのアクションリスナをパネルボタンに割り当てる。
-     * @param menu		メニューバー
+     * @param menu        メニューバー
      */
     @Override
     public void setActionListener(MainMenu menu) {
@@ -624,7 +624,7 @@ public class VariableTablePanel extends AnalisysPanelBase implements Observer, I
 
         /**
          * コンストラクタ
-         * @param panel		表示切替を行う変数特性一覧パネル
+         * @param panel        表示切替を行う変数特性一覧パネル
          */
         public VariableExpandAction(JPanel panel) {
             this.panelRow = panel;
@@ -632,7 +632,7 @@ public class VariableTablePanel extends AnalisysPanelBase implements Observer, I
 
         /**
          * ボタンのクリックイベント
-         * @param event		イベント情報
+         * @param event        イベント情報
          */
         @Override
         public void actionPerformed(ActionEvent event) {
@@ -655,7 +655,7 @@ public class VariableTablePanel extends AnalisysPanelBase implements Observer, I
 
     /**
      * マウスクリックイベント
-     * @param event		マウスイベント情報
+     * @param event        マウスイベント情報
      */
     @Override
     public void mouseClicked(MouseEvent event) {
@@ -677,6 +677,21 @@ public class VariableTablePanel extends AnalisysPanelBase implements Observer, I
             // 選択付加情報ブロックを設定する
             this.selectedInfo = panel;
 
+            // 選択変数宣言文を設定する
+            JTable table = panel.getTableVariable();
+            int selection = table.getSelectedRow();
+            if (selection >= 0) {
+                // テーブル・モデルの行数に変換
+                int modelRow = table.convertRowIndexToModel(selection);
+                if (modelRow >= 0) {
+                    Object cell = table.getModel().getValueAt(modelRow, 0);
+                    if (cell != null && cell instanceof VariableDefinition) {
+                        // 選択変数宣言文を設定する
+                        VariableTablePanel.this.model.setSelectedVariable((VariableDefinition)cell);
+                    }
+                }
+            }
+
             // 選択パネルの背景色を設定する.
             setSelectedBackgroud(this.selectedInfo);
 
@@ -690,28 +705,28 @@ public class VariableTablePanel extends AnalisysPanelBase implements Observer, I
 
     /**
      * マウスボタンダウンイベント
-     * @param e		マウスイベント情報
+     * @param e        マウスイベント情報
      */
     @Override
     public void mousePressed(MouseEvent e) { }
 
     /**
      * マウスボタンアップイベント
-     * @param e		マウスイベント情報
+     * @param e        マウスイベント情報
      */
     @Override
     public void mouseReleased(MouseEvent e) {}
 
     /**
      * マウスオーバーイベント
-     * @param e		マウスイベント情報
+     * @param e        マウスイベント情報
      */
     @Override
     public void mouseEntered(MouseEvent e) {}
 
     /**
      * マウスアウトイベント
-     * @param e		マウスイベント情報
+     * @param e        マウスイベント情報
      */
     @Override
     public void mouseExited(MouseEvent e) {}
@@ -729,7 +744,7 @@ public class VariableTablePanel extends AnalisysPanelBase implements Observer, I
 
         /**
          * コンストラクタ
-         * @param table		リスナ対象テーブル
+         * @param table        リスナ対象テーブル
          */
         public VariableListSelectionListener(JTable table) {
             this.table = table;
@@ -737,7 +752,7 @@ public class VariableTablePanel extends AnalisysPanelBase implements Observer, I
 
         /**
          * 変数特性一覧テーブル選択変更イベント.
-         * @param event		イベント情報
+         * @param event        イベント情報
          */
         @Override
         public void valueChanged(ListSelectionEvent event) {
@@ -758,7 +773,7 @@ public class VariableTablePanel extends AnalisysPanelBase implements Observer, I
 
     /**
      * 選択ソースコード行情報を取得する(未使用)
-     * @return		選択ソースコード行情報
+     * @return        選択ソースコード行情報
      */
     @Override
     public CodeLine getSelectedCodeLine() {
@@ -768,7 +783,7 @@ public class VariableTablePanel extends AnalisysPanelBase implements Observer, I
 
     /**
      * コンテキストメニューを設定する
-     * @param variablePopupMenu		コンテキストメニュー
+     * @param variablePopupMenu        コンテキストメニュー
      */
     public void setPopupMenu(VariablePopupMenu variablePopupMenu) {
         this.variablePopupMenu = variablePopupMenu;
@@ -785,7 +800,7 @@ public class VariableTablePanel extends AnalisysPanelBase implements Observer, I
 
     /**
      * 選択ブロックを取得する
-     * @return		選択ブロック
+     * @return        選択ブロック
      */
     @Override
     public IBlock getSelectedBlock() {
@@ -798,7 +813,7 @@ public class VariableTablePanel extends AnalisysPanelBase implements Observer, I
 
     /**
      * 選択付加情報を取得する
-     * @return		選択付加情報
+     * @return        選択付加情報
      */
     @Override
     public IInformation getSelectedInformation() {
@@ -811,19 +826,19 @@ public class VariableTablePanel extends AnalisysPanelBase implements Observer, I
 
     /**
      * ソースビュープロパティを設定する
-     * @param properties		ソースビュープロパティ
+     * @param properties        ソースビュープロパティ
      */
     @Override
     public void setSourceProperties(SourceProperties properties) {
-    	// 選択パネルの背景色
-    	this.colorSelectedPanel = properties.getBackgoundView2Color();
+        // 選択パネルの背景色
+        this.colorSelectedPanel = properties.getBackgoundView2Color();
         // 選択パネルの背景色を設定する.
         setSelectedBackgroud(this.selectedInfo);
     }
 
     /**
      * ボタンのクリックイベント
-     * @param event			イベント情報
+     * @param event            イベント情報
      */
     @Override
     public void actionPerformed(ActionEvent event) {
@@ -875,25 +890,25 @@ public class VariableTablePanel extends AnalisysPanelBase implements Observer, I
     /**
      * エキスポートする情報があるか否か
      */
-	@Override
-	public boolean isExportable() {
-		if (this.model == null) return false;
-		return (!this.model.isEmpty());
-	}
+    @Override
+    public boolean isExportable() {
+        if (this.model == null) return false;
+        return (!this.model.isEmpty());
+    }
 
-	/**
-	 * 選択パネルの背景色を設定する.
-	 */
-	private void setSelectedBackgroud(JPanel panel) {
+    /**
+     * 選択パネルの背景色を設定する.
+     */
+    private void setSelectedBackgroud(JPanel panel) {
         // すべてクリア
-		if (this.contentInfo != null) {
-			SwingUtils.setBackgroundChildPanel(this.contentInfo, null);
-		}
+        if (this.contentInfo != null) {
+            SwingUtils.setBackgroundChildPanel(this.contentInfo, null);
+        }
         // 選択パネルの背景色を選択色に変更する
         if (panel != null) {
             SwingUtils.setBackgroundChildPanel(panel, this.colorSelectedPanel);
         }
-	}
+    }
 }
 
 

@@ -21,6 +21,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -137,6 +138,7 @@ public class Expression implements Serializable {
      */
     public Set<Variable> getAllVariables() {
         Set<Variable> vars = new HashSet<Variable>(this.variables);
+        vars.addAll(this.variables);
         for (Variable var: this.variables) {
             vars.addAll(var.getAllVariables());
         }
@@ -385,8 +387,8 @@ public class Expression implements Serializable {
     /**
      * 同一の式であるかチェックする.
      * 式の文字列表現が同じかチェックする.
-     * @param destExp		式
-     * @return			true=同一
+     * @param destExp        式
+     * @return            true=同一
      */
     public boolean equalsExpression(Expression destExp) {
         if (destExp == null) return false;
@@ -407,8 +409,8 @@ public class Expression implements Serializable {
 
     /**
      * 同一ブロックを検索する
-     * @param block			IInformationブロック
-     * @return		同一ブロック
+     * @param block            IInformationブロック
+     * @return        同一ブロック
      */
     public IInformation[] searchInformationBlocks(IInformation block) {
 
@@ -580,6 +582,35 @@ public class Expression implements Serializable {
             }
         }
         return count;
+    }
+
+    /**
+     * 変数を削除する
+     * @param var 削除変数
+     */
+    public void removeVariable(Variable rm_var) {
+        if (rm_var == null) return;
+        if (rm_var.getName() == null) return;
+        if (this.variables == null || this.variables.size() <= 0) return;
+
+        Iterator<Variable> itr = this.variables.iterator();
+        while (itr.hasNext()){
+            Variable var = itr.next();
+            if (var == null) continue;
+            if (rm_var.getName().equals(var.getName())) {
+                itr.remove();
+            }
+        }
+        return;
+    }
+
+    /**
+     * 式の変数リストを取得する.
+     * ブロックのみの変数リストを取得する。
+     * @return        式の変数リスト
+     */
+    public Set<Variable> getBlockVariables() {
+        return this.getAllVariables();
     }
 
 }

@@ -47,7 +47,7 @@ public class XcodeMLVisitor extends XcodeMLVisitorImpl {
 
     /**
      * コンストラクタ
-     * @param context		XcodeMLパーサコンテキストクラス
+     * @param context        XcodeMLパーサコンテキストクラス
      */
     public XcodeMLVisitor(XcodeMLContext context) {
         _context = context;
@@ -537,6 +537,12 @@ public class XcodeMLVisitor extends XcodeMLVisitorImpl {
     @Override
     public boolean enter(Body visitable) {
         // DONE: Body
+        boolean result = true;
+        DbUpdater updater = _context.getDbUpdater();
+        result = updater.enter(visitable);
+        if (!result)
+            return result;
+
         List<IXmlNode> list = visitable.getDefModelStatement();
         IXmlNode[] array = list.toArray(new IXmlNode[0]);
         if (_invokeEnter(array) == false) {

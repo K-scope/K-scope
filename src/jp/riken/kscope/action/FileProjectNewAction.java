@@ -70,7 +70,7 @@ public class FileProjectNewAction extends ActionBase {
     /**
      * コンストラクタ
      *
-     * @param controller	アプリケーションコントローラ
+     * @param controller    アプリケーションコントローラ
      */
     public FileProjectNewAction(AppController controller) {
         super(controller);
@@ -80,7 +80,7 @@ public class FileProjectNewAction extends ActionBase {
      * アクションが実行可能であるかチェックする.<br/>
      * アクションの実行前チェック、メニューのイネーブルの切替を行う。<br/>
      *
-     * @return	true=アクションが実行可能
+     * @return    true=アクションが実行可能
      */
     @Override
     public boolean validateAction() {
@@ -90,46 +90,46 @@ public class FileProjectNewAction extends ActionBase {
 
     /**
      * アクション発生イベント
-     * @param event		イベント情報
+     * @param event        イベント情報
      */
     @Override
     public void actionPerformed(ActionEvent event) {
-    	 // 親Frameの取得を行う。
+         // 親Frameの取得を行う。
         Frame frame = getWindowAncestor( event );
-    	// Check if have opened project we need to save and close
-    	FileProjectSaveAction save_action = new FileProjectSaveAction(this.controller);
-    	if (save_action.validateAction()) {
-    		int option = JOptionPane.showConfirmDialog(frame,
-    				Message.getString("fileprojectsaveaction.save.confirm.dialog.message"), //プロジェクトを保存しますか？
-    				Message.getString("mainmenu.file.closeproject"), //プロジェクトを閉じる, //プロジェクトの保存
-    				JOptionPane.OK_CANCEL_OPTION,
-    				JOptionPane.WARNING_MESSAGE);
+        // Check if have opened project we need to save and close
+        FileProjectSaveAction save_action = new FileProjectSaveAction(this.controller);
+        if (save_action.validateAction()) {
+            int option = JOptionPane.showConfirmDialog(frame,
+                    Message.getString("fileprojectsaveaction.save.confirm.dialog.message"), //プロジェクトを保存しますか？
+                    Message.getString("mainmenu.file.closeproject"), //プロジェクトを閉じる, //プロジェクトの保存
+                    JOptionPane.OK_CANCEL_OPTION,
+                    JOptionPane.WARNING_MESSAGE);
 
-    		if (option == JOptionPane.OK_OPTION) {
-    			save_action.saveProject(frame);
-    		}
-    		FileProjectCloseAction close_action = new FileProjectCloseAction(this.controller);
-    		try {
-				close_action.closeProject();
-			} catch (Exception e) {
-				System.err.println("Error closing project");
-				e.printStackTrace();
-			}
-    	}
-    	
+            if (option == JOptionPane.OK_OPTION) {
+                save_action.saveProject(frame);
+            }
+            FileProjectCloseAction close_action = new FileProjectCloseAction(this.controller);
+            try {
+                close_action.closeProject();
+            } catch (Exception e) {
+                System.err.println("Error closing project");
+                e.printStackTrace();
+            }
+        }
+
         final String message = Message.getString("mainmenu.file.newproject"); //プロジェクトの新規作成
         SSHconnectProperties sshc_properties = null;
-        
+
         Application.status.setMessageMain(message);
 
-       
+
 
         // 最終アクセスフォルダ
         String currentFolder = this.controller.getLastAccessFolder();
         // Read default value of use_sshconnect
         ProjectProperties pproperties = this.controller.getPropertiesProject();
         sshc_properties = this.controller.getPropertiesSSH();
-        
+
         // プロジェクトの新規作成ダイアログを表示する。
         FileProjectNewDialog dialog = new FileProjectNewDialog(frame, true, pproperties,sshc_properties, this.controller);
         dialog.setLastAccessFolder(currentFolder);
@@ -156,11 +156,11 @@ public class FileProjectNewAction extends ActionBase {
         this.controller.setLastAccessFolder(new File(dialog.getProjectFolder()));
         // 中間コードの生成を行うか否か
         boolean genCode = dialog.isGenerateIntermediateCode();
-        
+
         boolean use_sshconnect = dialog.useSSHconnect();
         // Set Project property
         this.controller.getPropertiesProject().getPropertyValue(ProjectProperties.USE_SSHCONNECT).setValue(use_sshconnect ? "true" : "false");
-        
+
         // 選択ソース
         boolean selectedXml = dialog.isSelectedXml();
         FILE_TYPE type = FILE_TYPE.XCODEML_XML;
@@ -169,10 +169,10 @@ public class FileProjectNewAction extends ActionBase {
             type = FILE_TYPE.FORTRANLANG;
         }
         try {
-        	//String makeCom = dialog.getMakeCommand();  // make command as set in New Project dialog. Full path if executable file. 
-        	//String makefilePath = dialog.getMakefilePath(); // path to makefile as set in New Project dialog. If set " " (space), makefilePath = " ".
-        	String build_command = dialog.getBuildCommand(); // build command as set in text field in New Project dialog.
-        	
+            //String makeCom = dialog.getMakeCommand();  // make command as set in New Project dialog. Full path if executable file.
+            //String makefilePath = dialog.getMakefilePath(); // path to makefile as set in New Project dialog. If set " " (space), makefilePath = " ".
+            String build_command = dialog.getBuildCommand(); // build command as set in text field in New Project dialog.
+
             // プロジェクトを閉じる
             FileProjectCloseAction closeAction = new FileProjectCloseAction(this.controller);
             closeAction.clearProject();
@@ -214,6 +214,8 @@ public class FileProjectNewAction extends ActionBase {
             languageService.setSourceTreeModel(fileModel);
             // プロジェクトフォルダを設定する
             languageService.setProjectFolder(this.controller.getProjectModel().getProjectFolder());
+            // プロジェクトの中間コード選択フォルダ・ファイルリスト
+            languageService.setListSearchPath(project.getListSearchPath());
 
             /** プロパティ情報設定　ファイル保存時必須 */
             // キーワードプロパティの設定
@@ -230,7 +232,7 @@ public class FileProjectNewAction extends ActionBase {
             projectService.setPropertiesProject(this.controller.getPropertiesProject());
             // 要求Byte/FLOP設定プロパティ
             projectService.setPropertiesMemory(this.controller.getPropertiesMemory());
-            
+
             projectService.setPropertiesSSH(this.controller.getPropertiesSSH());
 
             // Make関連情報
@@ -239,34 +241,34 @@ public class FileProjectNewAction extends ActionBase {
             // 中間コードの生成を行う
             if (genCode) {
                 // コンソールを表示
-            	this.controller.setSelectedAnalysisPanel(ANALYSIS_PANEL.CONSOLE);
+                this.controller.setSelectedAnalysisPanel(ANALYSIS_PANEL.CONSOLE);
 
                 work = project.getProjectFolder();
-                
+
                 // プロジェクトプロパティ設定
                 this.controller.getPropertiesProject().setBuildCommand(build_command);
-                
+
                 if (use_sshconnect) { // Set command line options for SSHconnect call
-                	sshc_properties = this.controller.getPropertiesSSH();
-                	sshc_properties.setLocalPath(work.getAbsolutePath());
-                	sshc_properties.setFileFilter(dialog.getFileFilter());
-                	sshc_properties.setPreprocessFiles(dialog.getPreprocessFiles());
+                    sshc_properties = this.controller.getPropertiesSSH();
+                    sshc_properties.setLocalPath(work.getAbsolutePath());
+                    sshc_properties.setFileFilter(dialog.getFileFilter());
+                    sshc_properties.setPreprocessFiles(dialog.getPreprocessFiles());
                 }
             }
             // 中間コードの生成を行わない
             else
             {
-	            if (project.getListSelectedFile().size() < 1) {
-	            	Application.status.setMessageMain(message + Message.getString("action.common.error.status")); //:エラー
-	            	String filetype = "XML";
-	            	if (type == FILE_TYPE.FORTRANLANG)
-	            		filetype = "Fortran";
-	            	String msg = Message.getString("fileprojectnewaction.createprojecterr.dialog.message", filetype); //指定したフォルダには  filetype ファイルがありません。...
-	            	JOptionPane.showMessageDialog(frame, msg,
-	            			Message.getString("fileprojectnewaction.createprojecterr.dialog.title"), //プロジェクト作成エラー
-	            			JOptionPane.ERROR_MESSAGE);
-	            	return;
-	            }
+                if (project.getListSelectedFile().size() < 1) {
+                    Application.status.setMessageMain(message + Message.getString("action.common.error.status")); //:エラー
+                    String filetype = "XML";
+                    if (type == FILE_TYPE.FORTRANLANG)
+                        filetype = "Fortran";
+                    String msg = Message.getString("fileprojectnewaction.createprojecterr.dialog.message", filetype); //指定したフォルダには  filetype ファイルがありません。...
+                    JOptionPane.showMessageDialog(frame, msg,
+                            Message.getString("fileprojectnewaction.createprojecterr.dialog.title"), //プロジェクト作成エラー
+                            JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
             }
             // プロジェクトプロパティ設定
             this.controller.getPropertiesProject().setProjectTitle(dialog.getPeojectTitle());
@@ -277,21 +279,21 @@ public class FileProjectNewAction extends ActionBase {
             // NO MORE NEED IN REBUILD FLAG. "REBUILD" MENU DEPENDS ONLY ON GENXML AND FULL_PROJECT PROPERTIES
             // Flag that project can be rebuilt
             //if (genCode) this.controller.getPropertiesProject().setRebuildFlag(true);
-            
+
             // ソースビューにプロジェクトフォルダを設定する
             this.controller.getMainframe().getPanelSourceView().setProjectFolder(project.getProjectFolder());
             if (dialog.isBuild()) {
-            	this.controller.getMainframe().getPanelExplorerView().setSelectedPanel(EXPLORE_PANEL.LANGUAGE);
+                this.controller.getMainframe().getPanelExplorerView().setSelectedPanel(EXPLORE_PANEL.LANGUAGE);
             }
             else {
-	            if (project.getFileType() == FILE_TYPE.XCODEML_XML) {
-	                // XMLタブをアクティブにする
-	                this.controller.getMainframe().getPanelExplorerView().setSelectedPanel(EXPLORE_PANEL.XML);
-	            }
-	            else if (project.getFileType() == FILE_TYPE.FORTRANLANG) {
-	                // ソースタブをアクティブにする
-	                this.controller.getMainframe().getPanelExplorerView().setSelectedPanel(EXPLORE_PANEL.SOURCE);
-	            }
+                if (project.getFileType() == FILE_TYPE.XCODEML_XML) {
+                    // XMLタブをアクティブにする
+                    this.controller.getMainframe().getPanelExplorerView().setSelectedPanel(EXPLORE_PANEL.XML);
+                }
+                else if (project.getFileType() == FILE_TYPE.FORTRANLANG) {
+                    // ソースタブをアクティブにする
+                    this.controller.getMainframe().getPanelExplorerView().setSelectedPanel(EXPLORE_PANEL.SOURCE);
+                }
             }
 
 
@@ -313,8 +315,8 @@ public class FileProjectNewAction extends ActionBase {
 
     }
 
-   
-	/**
+
+    /**
      * プロジェクトの新規作成を実行する
      * @param build_command
      * @param work
@@ -329,17 +331,17 @@ public class FileProjectNewAction extends ActionBase {
         final String message = Message.getString("mainmenu.file.newproject"); //プロジェクトの新規作成
         makeService = new ProjectMakeService(work, this.controller);
         final ConsolePanel console = this.controller.getMainframe().getPanelAnalysisView().getPanelConsole();
-		console.clearConsole();
-		OutputStream out = console.getOutputStream();
-    	makeService.setOutputStream(out);
-    	final boolean bMake = make;
-    	final boolean bBuild = build;
-    	final boolean bSave = save;
-    	final boolean bModeXML = mode;
-    	final File prjFolder = model.getProjectFolder();
-    	final File settingFolder = new File(prjFolder.getAbsoluteFile() + File.separator + KscopeProperties.SETTINGS_FOLDER);
-    	final ProjectModel prjModel = model;
-    	final List<File> sourceFiles = xmls;
+        console.clearConsole();
+        OutputStream out = console.getOutputStream();
+        makeService.setOutputStream(out);
+        final boolean bMake = make;
+        final boolean bBuild = build;
+        final boolean bSave = save;
+        final boolean bModeXML = mode;
+        final File prjFolder = model.getProjectFolder();
+        final File settingFolder = new File(prjFolder.getAbsoluteFile() + File.separator + KscopeProperties.SETTINGS_FOLDER);
+        final ProjectModel prjModel = model;
+        final List<File> sourceFiles = xmls;
 
         // スレッドタスクサービスの生成を行う。
         FutureService<Integer> future = new FutureService<Integer>(
@@ -351,54 +353,54 @@ public class FileProjectNewAction extends ActionBase {
                      * スレッド実行を行う
                      */
                     @Override
-					public Integer call() {
+                    public Integer call() {
                         try {
                             // 解析実行
-                        	if (bMake) {
-                        		console.disable_horizontal_scroll = true; // disable scroll
-                        		boolean result = makeService.executeMakeCommand();
-                        		console.disable_horizontal_scroll = false; // enable scroll
-                        		if (!result) {
-                        			return Constant.CANCEL_RESULT;
-                        		}                        		
-                        	}
-                        	Application.status.setMessageStatus("Set files...");
-                        	// 中間コードをまたはFortranファイルをソースリストに追加
-                        	FILE_TYPE filter = FILE_TYPE.XCODEML_XML;
-                        	FileTreeModel treeModel = controller.getXmlTreeModel();
-                        	if (!bModeXML) {
-                        		filter = FILE_TYPE.FORTRANLANG;
-                        		treeModel = controller.getSourceTreeModel();
-                        	}
-                        	SourceFile [] srcs = projectService.getSourceFiles(sourceFiles.toArray(new File[0]), filter, true);
-                        	if (srcs.length<1) return Constant.ERROR_RESULT;
-                        	ArrayList<SourceFile> ls = new ArrayList<SourceFile>(Arrays.asList(srcs));
+                            if (bMake) {
+                                console.disable_horizontal_scroll = true; // disable scroll
+                                boolean result = makeService.executeMakeCommand();
+                                console.disable_horizontal_scroll = false; // enable scroll
+                                if (!result) {
+                                    return Constant.CANCEL_RESULT;
+                                }
+                            }
+                            Application.status.setMessageStatus("Set files...");
+                            // 中間コードをまたはFortranファイルをソースリストに追加
+                            FILE_TYPE filter = FILE_TYPE.XCODEML_XML;
+                            FileTreeModel treeModel = controller.getXmlTreeModel();
+                            if (!bModeXML) {
+                                filter = FILE_TYPE.FORTRANLANG;
+                                treeModel = controller.getSourceTreeModel();
+                            }
+                            SourceFile [] srcs = projectService.getSourceFiles(sourceFiles.toArray(new File[0]), filter, true);
+                            if (srcs.length<1) return Constant.ERROR_RESULT;
+                            ArrayList<SourceFile> ls = new ArrayList<SourceFile>(Arrays.asList(srcs));
 
-                        	prjModel.setListXmlFile(ls);
-                        	languageService.setSourceFiles(ls.toArray(new SourceFile[0]));
-            	            // XMLツリーの更新
-            	            if (treeModel != null) {
-            	            	treeModel.setProjectFolder(prjFolder);
-            	                treeModel.setSourceFile(ls.toArray(new SourceFile[0]));
-            				}
+                            prjModel.setListXmlFile(ls);
+                            languageService.setSourceFiles(ls.toArray(new SourceFile[0]));
+                            // XMLツリーの更新
+                            if (treeModel != null) {
+                                treeModel.setProjectFolder(prjFolder);
+                                treeModel.setSourceFile(ls.toArray(new SourceFile[0]));
+                            }
 
-                        	if (bBuild) {
-                        		if (languageService.canParse()) {
-                        			languageService.parseSourceFile();
-                        		}
-                        		else {
-                        			return Constant.ERROR_RESULT;
-                        		}
-                        	}
-                        	if (bSave) {
-                        		if (projectService.existAllProperties()) {
-	                        		projectService.saveProject(prjFolder);
-	                        		languageService.writeLanguage(settingFolder);
-                        		}
-                        		else {
-                        			return Constant.ERROR_RESULT;
-                        		}
-                        	}
+                            if (bBuild) {
+                                if (languageService.canParse()) {
+                                    languageService.parseSourceFile();
+                                }
+                                else {
+                                    return Constant.ERROR_RESULT;
+                                }
+                            }
+                            if (bSave) {
+                                if (projectService.existAllProperties()) {
+                                    projectService.saveProject(prjFolder);
+                                    languageService.writeLanguage(settingFolder);
+                                }
+                                else {
+                                    return Constant.ERROR_RESULT;
+                                }
+                            }
 
                             return Constant.SUCCESS_RESULT;
                         } catch (Exception e) {
@@ -423,10 +425,10 @@ public class FileProjectNewAction extends ActionBase {
                         }
                         // サービス実行の停止
                         if (makeService != null) {
-                        	makeService.cancelRunning();
+                            makeService.cancelRunning();
                         }
                         if (languageService != null) {
-                        	languageService.cancelRunning();
+                            languageService.cancelRunning();
                         }
 
                         super.done();
