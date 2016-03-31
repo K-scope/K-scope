@@ -5,7 +5,7 @@
 ### not ignore
 
 ## dirs (Do not ignore directories)
-!/src/*
+!*/
 !/utils/*
 
 ## files
