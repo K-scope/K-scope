@@ -1,12 +1,13 @@
 ## default is ignore for all files
-*
-.*
+/*
+/.*
 
 ### not ignore
 
 ## dirs (Do not ignore directories)
 !*/
 !/utils/*
+
 
 ## files
 !.gitignore

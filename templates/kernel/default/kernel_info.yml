@@ -1,0 +1,24 @@
+#
+# Kernel Meta Information
+#
+create_datetime : ${current_time}
+filename : ${source_filename}
+procedure : ${source_procedurename}
+start_lineno : ${source_startlineno}
+end_lineno : ${source_endlineno}
+error :
+#foreach ( ${msg} in ${error_messages})
+  - "${msg}"
+#end
+warning :
+#foreach ( ${msg} in ${warning_messages})
+  - "${msg}"
+#end
+attention:
+#foreach ( ${msg} in ${attention_messages})
+  - "${msg}"
+#end
+information:
+#foreach ( ${msg} in ${information_messages})
+  - "${msg}"
+#end

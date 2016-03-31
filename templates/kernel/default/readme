@@ -1,0 +1,119 @@
+#
+# K-scope Kernel Program
+# created : ${current_time}
+# filename : ${source_filename}
+# procedure : ${source_procedurename}
+# lineno : ${source_startlineno} - ${source_endlineno}
+#
+
+Please read following 10 steps before you use this suite of a kernel code.
+If you won’t use the dump function, you can omit step 1, 2 and 3.
+
+1. In the Fortran programming, when a user uses zero-based indexing in a
+   caller subroutine, in a callee subroutine, the lower bound is reset as 1.
+   To variables in the kernel code correctly, please add the following
+   code before the extracted subroutine in an application.
+   In first added subroutine (kscope_set_bouds) defines array size, shape
+   size and lower/upper bound.
+        !-----------------------------------------------------
+        ! Set bound data of variable
+        !
+        use kscope_mod_fileio
+        integer :: ierr
+
+#set ($bounds_list = ${original_definitions})
+#set ($var_error = "ierr")
+#set ($btab = "")
+#parse("${template_path}/kscope_variable_bounds.f90")
+
+2. After step 1, to dump variables, please add the following code
+   before the extracted subroutine in the application.
+   The added subroutine (kscope_export_yaml) takes variable name
+   and exports value of them with yaml format to "initialize.yml" file.
+   Exported "initialize.yml" is read by a kernel, and sets the
+   initial values.
+        !-----------------------------------------------------
+        ! export yaml file for initialized value of variable
+        !
+        use kscope_mod_fileio
+        integer :: ierr
+
+        ! export yaml file
+        call kscope_export_yaml( &
+                'initialize', &
+#foreach ( ${def} in ${fileio_definitions})
+                ${def.toStringName()}, &
+#end
+                ierr &
+                )
+        !-----------------------------------------------------
+
+3. To dump variables to compare values between the kernel program and
+   the application, please add the following subroutine after the extracted
+   subroutine in the application.
+   The added subroutine (kscope_export_bin) takes takes variable name and
+   exports value of them with binary format to "var_dump_app.bin" file.
+   The kscope_finalize() aborts the application.
+   If you won’t stop running of the application after dump the variables,
+   you can omit to add kscope_finalize().
+        !-----------------------------------------------------
+        ! export binary file for compared value of variable
+        !
+        use kscope_mod_fileio
+        integer :: ierr
+
+        ! export binary file
+        call kscope_export_bin( &
+                'var_dump_app', &
+#foreach ( ${def} in ${fileio_definitions})
+                ${def.toStringName()}, &
+#end
+                ierr &
+                )
+        !-----------------------------------------------------
+        ! application stop
+        call kscope_finalize()
+        !-----------------------------------------------------
+
+4. Copy "kscope_mod_bounds.f90" and "kscope_mod_fileio.f90" to application,
+        $ cp [kernel directory]/kscope_mod_bounds.f90 [application directory]/
+        $ cp [kernel directory]/kscope_mod_fileio.f90 [application directory]/
+#if (${note_type})
+        $ cp [kernel directory]/kscope_mod_local.f90 [application directory]/
+#end
+
+5. Add the following kernel files in makefile before selected kernel,
+   and build.
+            kscope_mod_bounds.f90
+            kscope_mod_fileio.f90
+   Kernel files must add preprocessing option -Cpp|cpp.
+   If application is MPI parallel program, makefile must is added the following define macro.
+            -DKSCOPE_MPI
+
+6. Run the application, and output "initialize.yml" and "var_dump_app.bin"
+   to the application directory.
+   "initialize.yml" is a dump file for initial values setting of variables,
+   "var_dump_app.bin" is a dump file for result values comparison of variable.
+
+7. Copy "initialize.yml" and "var_dump_app.bin" to kernel directory.
+        $ cp [application directory]/initialize.yml   [kernel directory]/initialize.yml
+        $ cp [application directory]/var_dump_app.bin [kernel directory]/var_dump_app.bin
+
+8. If you set different initial values, file name, optimization or etc,
+   modify the kernel code or Makefile.
+
+9. Build the kernel program.
+        $ cd [kernel directory]
+        $ make
+
+10. Run kernel program, and output "report_cmp.csv" and "var_dump.bin"
+        $ cd [kernel directory]
+        $ kernel.out
+        or
+        $ pjsub run.sh
+
+11. Check kernel measurement time in stdout,
+   and "report_cmp.csv" of the result of comparison between "var_dump_app.bin"
+   and "var_dump.bin".
+   "var_dump_app.bin" is a dump file that has been exported from the application.
+   "var_dump.bin" is a dump file that has been exported from the kernel program.
