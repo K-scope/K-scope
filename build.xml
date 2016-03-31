@@ -3,14 +3,15 @@
 <project basedir="." default="jar" name="kscope">
     <property environment="env"/>
     <property name="debuglevel" value="source,lines,vars"/>
-    <property name="target" value="1.8"/>
-    <property name="source" value="1.8"/>
+    <property name="target" value="1.7"/>
+    <property name="source" value="1.7"/>
 
     <property name="src.dir" value="src"/>
     <property name="bin.dir" value="bin"/>
     <property name="lib.dir" value="lib"/>
     <property name="resources.dir" value="resources"/>
     <property name="properties.dir" value="properties"/>
+    <property name="templates.dir" value="templates"/>
     <property name="javadoc.dir" value="docs"/>
     <property name="jar.name" value="kscope.jar"/>
 
@@ -22,11 +23,11 @@
 
     <target name="clean">
         <delete dir="${bin.dir}"/>
-    	<delete file="${jar.name}"/>
+        <delete file="${jar.name}"/>
     </target>
-	
+
     <target name="cleanall" depends="clean"/>
-	
+
     <target name="init">
         <mkdir dir="${bin.dir}"/>
         <copy includeemptydirs="false" todir="${bin.dir}">
@@ -43,18 +44,21 @@
             <classpath refid="kscope.classpath"/>
         </javac>
     </target>
-	
+
     <target name="jar" depends="build">
         <echo message="${ant.project.name}: ${jar.name}"/>
         <unjar src="${lib.dir}/snakeyaml-1.15.jar" dest="bin"/>
-    	<jar destfile="${jar.name}" filesetmanifest="mergewithoutmain">
+        <unjar src="${lib.dir}/velocity-1.7-dep.jar" dest="bin"/>
+        <jar destfile="${jar.name}" filesetmanifest="mergewithoutmain">
             <manifest>
                 <attribute name="Main-Class" value="jp.riken.kscope.Kscope"/>
                 <attribute name="Class-Path" value="."/>
             </manifest>
             <fileset dir="${bin.dir}"/>
             <fileset dir="${resources.dir}"/>
-    	</jar>
+            <!--  fileset dir="${templates.dir}"/  -->
+            <fileset dir="./"  includes="${templates.dir}/**" />
+        </jar>
     </target>
 
     <target name="run">
@@ -63,5 +67,5 @@
             <classpath refid="kscope.classpath"/>
         </java>
     </target>
-	
+
 </project>
