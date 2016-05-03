@@ -22,21 +22,16 @@ ${tab}${tab2}    include 'mpif.h'
 ${tab}${tab2}    include 'omp_lib.h'
 
 #end
-## TYPE文出力
-#foreach ( ${type} in ${block.getTypeList()})
-${tab}${tab2}    ${type.toStructure()}
-
-#end
-## 変数宣言文出力
-#foreach ( ${def} in ${block.get_variables()})
+## TYPE文,変数宣言文出力
+#foreach ( ${def} in ${block.getVariableDeclarations()})
 ${tab}${tab2}    ${def}
 #end
 
 ## DATA文出力
 #foreach ( ${data} in ${block.getDataList()})
 ${tab}${tab2}    ${data}
-
 #end
+
 ## INTERFACE文出力
 #foreach ( ${inter} in ${block.getInterfaceList()})
 ${tab}${tab2}    ${inter.toStructure()}

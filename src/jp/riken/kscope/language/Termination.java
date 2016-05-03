@@ -95,7 +95,7 @@ public class Termination extends jp.riken.kscope.language.Block {
         if (this.argument == null) {
             return "stop";
         } else {
-            return "stop '" + this.argument + "'";
+            return "stop \"" + this.argument + "\"";
         }
     }
 }

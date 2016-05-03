@@ -322,7 +322,15 @@ public class CodeBuilder extends XcodeMLVisitorImpl {
             else {
                 srcFile = FileUtils.joinFilePath(_context.getBaseFolder(), filename);
                 if (srcFile == null || !srcFile.exists()) {
-                    srcFile = FileUtils.joinFilePath(_context.getSourceXmlFile().getFile().getParentFile(), filename);
+                	srcFile = FileUtils.joinFilePath(_context.getSourceXmlFile().getFile().getParentFile(), filename);
+                	if (!srcFile.exists()) {
+	                    // add プロジェクトフォルダから検索する。 at 2016/04/01 by @hira
+	                    // includeファイルを-IオプションでF_Frontした場合、フォルダは存在しない。
+	                    List<File> files = FileUtils.searchFiles(_context.getBaseFolder(), filename);
+	                    if (files != null && files.size() > 0) {
+	                        srcFile = files.get(0);
+	                    }
+                	}
                 }
             }
         }
@@ -1927,7 +1935,7 @@ public class CodeBuilder extends XcodeMLVisitorImpl {
     @Override
     public boolean enter(FdataDecl visitable) {
 
-        //XcodeMLVisitor visiter = _context.getVisitor();
+        XcodeMLVisitor visiter = _context.getVisitor();
 
         // DONE: FdataDecl
         writeLineDirective(visitable.getLineno(), visitable.getFile());
@@ -1938,8 +1946,15 @@ public class CodeBuilder extends XcodeMLVisitorImpl {
 
         // ((varList, valueList)+)
         IXmlNode[] array = (IXmlNode[]) list.toArray(new IXmlNode[0]);
-        if (_invokeEnterAndWriteDelim(array, ", ") == false) {
-            return false;
+        for (IXmlNode node : array) {
+            // modify at 2016/04/01 by @hira
+            //if (_invokeEnterAndWriteDelim(node, ", ") == false) {
+            //    return false;
+            //}
+            if (visiter.invokeEnter(node) == false) {
+                return false;
+            }
+            writeToken(" ");
         }
 
         if (!updateCodeLine(visitable)) {
@@ -2709,16 +2724,18 @@ public class CodeBuilder extends XcodeMLVisitorImpl {
         }
 
         if (_context.isInvokeNodeOf(Else.class, 2)) {
-            boolean isElseIf = false;
-            Else elseNode = (Else) _context.getInvokeNode(2);
-            // 開始行番号が設定されているか？
-            if (StringUtils.isNullOrEmpty(elseNode.getLineno())) {
-                // 2つ上のElse要素の開始行番号が設定されていないのでElseIF文である。
-                isElseIf = true;
-            }
-            if (isElseIf) {
-                // ELSE IF
-                writeToken(toCaseSensitive("ELSE "));
+            if (_context.hasEndlineno()) {
+                boolean isElseIf = false;
+                Else elseNode = (Else) _context.getInvokeNode(2);
+                // 開始行番号が設定されているか？
+                if (StringUtils.isNullOrEmpty(elseNode.getLineno())) {
+                    // 2つ上のElse要素の開始行番号が設定されていないのでElseIF文である。
+                    isElseIf = true;
+                }
+                if (isElseIf) {
+                    // ELSE IF
+                    writeToken(toCaseSensitive("ELSE "));
+                }
             }
         }
 
@@ -4715,13 +4732,18 @@ public class CodeBuilder extends XcodeMLVisitorImpl {
         IXmlNode child = XmlNodeUtil.getXmlNodeChoice(visitable);
 
         // modify コンパイル時に、"警告:  Extension: Unary operator following arithmetic operator (use parentheses)"の為
-        // 算術式内の場合、括弧を付ける。  at 2016/03/28 by @hira
+        // 値の場合は括弧を付けない。
+        // xx=-1.0の場合は括弧を付けない。
+        // 算術式の場合、括弧を付ける。  at 2016/03/28 by @hira
         //// if (_isConstantExpr(visitable.rGetParentRNode()) &&
         //// _isConstantExpr(child, visitable)) {
         // if (_isConstantExpr(child, visitable)) {
         //    grouping = false;
         //}
-        if (_context.isInvokeNodeOf(FassignStatement.class, 1)) {
+        if (_context.isInvokeNodeOf(Value.class, 1)) {
+            grouping = false;
+        }
+        else if (_context.isInvokeNodeOf(FassignStatement.class, 1)) {
             grouping = false;
         }
 

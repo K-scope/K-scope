@@ -37,6 +37,7 @@ end module ${module.getName()}
 #if ( !${module.isModule()} && ${module.isNoModule()} )
 ## サブルーチン・関数出力
 #set ($tab = "")
+#set ($tab2 = "")
 #parse("${template_path}/kscope_procedures.f90")
 #end
 #end

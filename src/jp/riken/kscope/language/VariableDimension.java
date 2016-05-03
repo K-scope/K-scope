@@ -105,18 +105,36 @@ public class VariableDimension implements Serializable {
 
     @Override
     public String toString() {
-        StringBuilder st = new StringBuilder();
-        st.append("(");
-        for (int i = 0; i < indices.length; i++) {
-            st.append(this.get_index_start(i).toString());
-            st.append(":");
-            st.append(this.get_index_end(i).toString());
-            st.append(",");
-        }
-        st.replace(st.length() - 1, st.length()
+        if (this.indices == null || this.indices.length <= 0) return null;
 
-        , ")");
-        return st.toString();
+        StringBuilder buf = new StringBuilder();
+        for (DimensionIndex idx : this.indices) {
+            String start = null;
+            String end = null;
+            if (idx.get_start() != null) start = idx.get_start().toString();
+            if (idx.get_end() != null) end = idx.get_end().toString();
+            if (start != null && start.trim().isEmpty()) start = null;
+            if (end != null && end.trim().isEmpty()) end = null;
+
+            if (buf.length() > 0) buf.append(",");
+            if (start != null && end != null) {
+                buf.append(start);
+                buf.append(":");
+                buf.append(end);
+            }
+            else if (start != null && end == null) {
+                buf.append(start);
+            }
+            else if (start == null && end != null) {
+                buf.append(end);
+            }
+            else if (start == null && end == null) {
+                buf.append(":");
+            }
+        }
+        if (buf.length() <= 0) return null;
+
+        return "(" + buf.toString() + ")";
     }
 
 

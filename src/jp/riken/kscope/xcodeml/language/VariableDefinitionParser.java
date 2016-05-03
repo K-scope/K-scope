@@ -179,6 +179,10 @@ public class VariableDefinitionParser {
 
         if (type != null && type.isPrimitive()) {
             varDef = parseVarDefEnumType(var_name, type);
+        }
+        // add EXTERNAL [SUBROUTINE] 対応 at 2016/04/01 by @hira
+        else if (type != null && type == EnumType.VOID) {
+            varDef = parseVarDefEnumType(var_name, type);
         } else {
             IXmlTypeTableChoice typeChoice = this.typeManager.findType(name);
             if (typeChoice instanceof FbasicType) {

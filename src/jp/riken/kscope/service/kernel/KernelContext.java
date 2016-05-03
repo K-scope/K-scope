@@ -11,7 +11,6 @@ import jp.riken.kscope.language.IBlock;
 import jp.riken.kscope.language.Module;
 import jp.riken.kscope.language.Program;
 import jp.riken.kscope.properties.KernelProperties;
-import jp.riken.kscope.utils.LineFormattedWriter;
 
 public class KernelContext extends VelocityContext {
 
@@ -20,7 +19,7 @@ public class KernelContext extends VelocityContext {
     /** インデント幅 */
     private int indent_column = KernelProperties.DEFAULT_INDELT_COLUMN;
     /** Writer */
-    private LineFormattedWriter writer;
+    private FortranFormattedWriter writer;
     /** カーネルプロパティ */
     private KernelProperties properties;
 
@@ -165,7 +164,7 @@ public class KernelContext extends VelocityContext {
      * Writerを取得する.
      * @return writer        Writer
      */
-    public LineFormattedWriter getLineWriter() {
+    public FortranFormattedWriter getLineWriter() {
         return this.writer;
     }
 
@@ -173,7 +172,7 @@ public class KernelContext extends VelocityContext {
      *  Writerを設定する.
      * @param writer     Writer
      */
-    public void setLineWriter(LineFormattedWriter writer) {
+    public void setLineWriter(FortranFormattedWriter writer) {
         this.writer = writer;
     }
 

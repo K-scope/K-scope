@@ -367,6 +367,59 @@ public class LanguageUtils {
         return list;
     }
 
+
+
+
+    /**
+     * 構造体構造定義,変数宣言ソートを行う。
+     * @return 構造体構造定義,変数宣言ソート結果
+     */
+    public static List<IBlock> sortDeclarations(List<IBlock> list) {
+        if (list == null) return null;
+        if (list.size() <= 0) return null;
+
+        final List<String> filenames = new ArrayList<String>();
+        ProgramUnit parent = list.get(0).getScopeDeclarationsBlock();
+        VariableDefinition[] var_defs = parent.get_variables();
+
+        if (var_defs != null) {
+            for (VariableDefinition def : var_defs) {
+                CodeLine line = def.getStartCodeLine();
+                if (line == null) continue;
+                SourceFile file = line.getSourceFile();
+                if (file == null) continue;
+                String path = file.getPath();
+                if (path != null && !filenames.contains(path)) {
+                    filenames.add(path);
+                }
+            }
+        }
+
+        Collections.sort(list, new Comparator<IBlock>(){
+            public int compare(IBlock block1, IBlock block2) {
+                if (block1 == null) return 0;
+                if (block2 == null) return 0;
+                CodeLine code1 = block1.getStartCodeLine();
+                CodeLine code2 = block2.getStartCodeLine();
+                if (code1 == null || code2 == null) return 0;
+                SourceFile file1 = code1.getSourceFile();
+                SourceFile file2 = code2.getSourceFile();
+                if (file1 == null || file2 == null) return 0;
+                String path1 = file1.getPath();
+                String path2 = file2.getPath();
+                if (path1 == null || path2 == null) return 0;
+                int idx1 = filenames.indexOf(path1);
+                int idx2 = filenames.indexOf(path2);
+                if (idx1 != idx2) return idx1 - idx2;
+
+                return code1.compareTo(code2);
+            }
+        });
+
+        return list;
+    }
+
+
     /**
      * VariableDefinitionのソートを行う.
      * @param list

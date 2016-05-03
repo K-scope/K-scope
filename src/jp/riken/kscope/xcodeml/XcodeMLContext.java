@@ -46,7 +46,7 @@ public class XcodeMLContext {
 
         /**
          * スタック済みノードを文字列出力する
-         * @return			文字列出力
+         * @return            文字列出力
          */
         @Override
         public String toString() {
@@ -80,6 +80,8 @@ public class XcodeMLContext {
     private XcodeMLVisitor _visitor;
     /** ソースファイルの基準フォルダ */
     private File baseFoleder;
+    /** XcodeMLがnedlineno属性を持つか */
+    private boolean hasEndlineno = false;
 
     /**
      * コンストラクタ
@@ -155,7 +157,7 @@ public class XcodeMLContext {
 
     /**
      * エラー発生しているかチェックする
-     * @return		true=エラー発生
+     * @return        true=エラー発生
      */
     public boolean hasError() {
         if (m_lastErrorMessage != null) {
@@ -166,7 +168,7 @@ public class XcodeMLContext {
 
     /**
      * エラーメッセージを設定する
-     * @param message		エラーメッセージ
+     * @param message        エラーメッセージ
      */
     public void setLastErrorMessage(String message) {
         m_lastErrorMessage = message;
@@ -175,7 +177,7 @@ public class XcodeMLContext {
 
     /**
      * エラーメッセージを取得する
-     * @return		エラーメッセージ
+     * @return        エラーメッセージ
      */
     public String getLastErrorMessage() {
         if (hasError() == false) {
@@ -186,7 +188,7 @@ public class XcodeMLContext {
 
     /**
      * デバッグ出力を行う
-     * @param message		出力メッセージ
+     * @param message        出力メッセージ
      */
     public void debugPrint(String message) {
         if (isDebugMode() != false) {
@@ -197,8 +199,8 @@ public class XcodeMLContext {
 
     /**
      * 書式付きデバッグ出力を行う
-     * @param format		書式
-     * @param args			出力メッセージ
+     * @param format        書式
+     * @param args            出力メッセージ
      */
     public void debugPrint(String format, Object... args) {
         if (isDebugMode() != false) {
@@ -209,7 +211,7 @@ public class XcodeMLContext {
 
     /**
      * デバッグ出力を行う
-     * @param message		出力メッセージ
+     * @param message        出力メッセージ
      */
     public void debugPrintLine(String message) {
         if (isDebugMode() != false) {
@@ -220,7 +222,7 @@ public class XcodeMLContext {
 
     /**
      * ソースコード生成クラスを取得する
-     * @return		ソースコード生成クラス
+     * @return        ソースコード生成クラス
      */
     public CodeBuilder getCodeBuilder() {
         return m_codebuilder;
@@ -228,7 +230,7 @@ public class XcodeMLContext {
 
     /**
      * ソースコード生成クラスを設定する
-     * @param writer		ソースコード生成クラス
+     * @param writer        ソースコード生成クラス
      */
     public void setCodeBuilder(CodeBuilder writer) {
         m_codebuilder = writer;
@@ -236,7 +238,7 @@ public class XcodeMLContext {
 
     /**
      * 読込XMLファイルを取得する
-     * @return		読込XMLファイル
+     * @return        読込XMLファイル
      */
     public SourceFile getSourceXmlFile() {
         return m_sourceXmlFile;
@@ -244,7 +246,7 @@ public class XcodeMLContext {
 
     /**
      * 読込XMLファイルを設定する
-     * @param sourceXmlFile		読込XMLファイル
+     * @param sourceXmlFile        読込XMLファイル
      */
     public void setSourceXmlFile(SourceFile sourceXmlFile) {
         m_sourceXmlFile = sourceXmlFile;
@@ -252,7 +254,7 @@ public class XcodeMLContext {
 
     /**
      * XMLノードスタックを取得する
-     * @return		XMLノードスタック
+     * @return        XMLノードスタック
      */
     public InvokeNodeStack getInvokeNodeStack() {
         return _invokeNodeStack;
@@ -260,7 +262,7 @@ public class XcodeMLContext {
 
     /**
      * XMLノードスタック数を取得する
-     * @return		XMLノードスタック数
+     * @return        XMLノードスタック数
      */
     public int getInvokeNodeStackSize() {
         return _invokeNodeStack.size();
@@ -268,8 +270,8 @@ public class XcodeMLContext {
 
     /**
      * 指定インデックスのXMLノードを取得する
-     * @param idx		取得インデックス
-     * @return		XMLノード
+     * @param idx        取得インデックス
+     * @return        XMLノード
      */
     public IXmlNode getInvokeNode(int idx) {
 
@@ -286,7 +288,7 @@ public class XcodeMLContext {
 
     /**
      * XMLノードスタックから最初のノードを取得する.(削除なし)
-     * @return		最初ノード
+     * @return        最初ノード
      */
     public IXmlNode peekInvokeNode() {
         return _invokeNodeStack.peek();
@@ -294,7 +296,7 @@ public class XcodeMLContext {
 
     /**
      * XMLノードスタックの最終ノードにXMLノードを追加する
-     * @param node		追加XMLノード
+     * @param node        追加XMLノード
      */
     public void pushInvokeNode(IXmlNode node) {
         _invokeNodeStack.push(node);
@@ -302,7 +304,7 @@ public class XcodeMLContext {
 
     /**
      * XMLノードスタックから最初のノードを取得する.(削除あり)
-     * @return		最初ノード
+     * @return        最初ノード
      */
     public IXmlNode popInvokeNode() {
         return _invokeNodeStack.pop();
@@ -310,8 +312,8 @@ public class XcodeMLContext {
 
     /**
      * 指定XMLノードクラスがXMLノードスタックに含まれているかチェックする
-     * @param clazz		指定XMLノードクラス
-     * @return			true=存在する
+     * @param clazz        指定XMLノードクラス
+     * @return            true=存在する
      */
     public boolean isInvokeAncestorNodeOf(Class<? extends IXmlNode> clazz) {
 
@@ -327,9 +329,9 @@ public class XcodeMLContext {
 
     /**
      * 指定XMLノードクラスがXMLノードスタックの指定インデックスと一致するかチェックする
-     * @param clazz			指定XMLノードクラス
-     * @param parentRank		指定インデックス
-     * @return		true=一致する
+     * @param clazz            指定XMLノードクラス
+     * @param parentRank        指定インデックス
+     * @return        true=一致する
      */
     public boolean isInvokeNodeOf(Class<? extends IXmlNode> clazz,
             int parentRank) {
@@ -426,10 +428,26 @@ public class XcodeMLContext {
 
     /**
      * ソースファイルの基準フォルダを設定する
-     * @param folder		ソースファイルの基準フォルダ
+     * @param folder        ソースファイルの基準フォルダ
      */
     public void setBaseFolder(File folder) {
         this.baseFoleder = folder;
+    }
+
+    /**
+     * XcodeMLがnedlineno属性を持つか
+     * @return hasEndlineno
+     */
+    public boolean hasEndlineno() {
+        return this.hasEndlineno;
+    }
+
+    /**
+     * XcodeMLがnedlineno属性を持つか
+     * @param hasEndlineno XcodeMLがnedlineno属性を持つかセットする
+     */
+    public void setHasEndlineno(boolean hasEndlineno) {
+        this.hasEndlineno = hasEndlineno;
     }
 }
 

@@ -22,6 +22,7 @@ ${tab}    ${block.toKernels()}
 ${tab}contains
 
 #foreach ( ${child_proc} in ${procedure.getChildren()})
+#set ($tab2 = "")
 ${tab}    !
 ${tab}    ! ${child_proc.getType()} :: ${child_proc.getName()}
 ${tab}    !
@@ -44,4 +45,5 @@ ${tab}    ${child_proc.toEndString()}
 #end
 ${tab}${procedure.toEndString()}
 
+#set ($tab2 = "")
 #end

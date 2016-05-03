@@ -394,7 +394,7 @@ public abstract class ProgramUnit implements Serializable, IInformation, IBlock 
         if (this.children == null) {
             this.children = new LinkedHashMap<String, Procedure>();
         }
-        children.put(child.get_name(), child);
+        this.children.put(child.get_name(), child);
     }
 
     /**
@@ -404,7 +404,7 @@ public abstract class ProgramUnit implements Serializable, IInformation, IBlock 
      */
     protected void set_child(String type_name, String proc_name) {
         Procedure proc = new Procedure(type_name, proc_name);
-        put_child(proc);
+        this.put_child(proc);
     }
 
     /**
@@ -562,6 +562,26 @@ public abstract class ProgramUnit implements Serializable, IInformation, IBlock 
     public VariableDefinition get_variable(String var_name) {
         return variables.get(var_name);
     }
+
+    /**
+     * 変数宣言文のサイズを返す。
+     * @return   変数宣言文サイズ
+     */
+    public int getVariableDefinitionSize() {
+        if (this.variables == null) return 0;
+        return this.variables.size();
+    }
+
+    /**
+     * 変数宣言文の宣言位置を返す。
+     * @return   変数宣言文位置
+     */
+    public int getVariableDefinitionIndex(String var_name) {
+        if (this.variables == null) return -1;
+        List<String> list = new ArrayList<String>(this.variables.keySet());
+        return list.indexOf(var_name);
+    }
+
 
     /**
      * 自身に係わる変数宣言のマップを返す。
@@ -1620,6 +1640,17 @@ public abstract class ProgramUnit implements Serializable, IInformation, IBlock 
                 }
             }
         }
+        // 変数宣言文
+        if (this.get_variables() != null) {
+            VariableDefinition[] defs = this.get_variables();
+            for (VariableDefinition def : defs) {
+                Set<Variable> vars = def.getAllVariables();
+                if (vars != null) {
+                    list.addAll(vars);
+                }
+            }
+        }
+
         if (this.commonList != null) {
             for (Common common : this.commonList) {
                 List<Variable> vars = common.getVariables();
@@ -1631,6 +1662,14 @@ public abstract class ProgramUnit implements Serializable, IInformation, IBlock 
         if (this.equivalenceList != null) {
             for (Equivalence equivalence : this.equivalenceList) {
                 List<Variable> vars = equivalence.getVariables();
+                if (vars != null && vars.size() > 0) {
+                    list.addAll(vars);
+                }
+            }
+        }
+        if (this.dataList != null) {
+            for (Data data : this.dataList) {
+                Set<Variable> vars = data.getAllVariables();
                 if (vars != null && vars.size() > 0) {
                     list.addAll(vars);
                 }

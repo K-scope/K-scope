@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package jp.riken.kscope.utils;
+package jp.riken.kscope.service.kernel;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -28,12 +28,15 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import jp.riken.kscope.utils.LanguageTokenizer;
+import jp.riken.kscope.utils.StringUtils;
+
 /**
  * ラインバッファーライタクラス
  * 指定桁数以上の行は改行を挿入する。
  * @author RIKEN
  */
-public class LineFormattedWriter extends StringWriter {
+public class FortranFormattedWriter extends StringWriter {
 
     /** 改行コード */
     protected static final byte CODE_LF = 10;
@@ -52,6 +55,8 @@ public class LineFormattedWriter extends StringWriter {
     private String endofline = "\n";
     /** 次行インデント幅 */
     private int next_indent = 4;
+    /** 最大インデント幅 */
+    private int limit_indent = 40;
     /** コメント接頭文字 */
     private List<String> comments = new ArrayList<String>();
     /** 現在行のインデント */
@@ -62,7 +67,7 @@ public class LineFormattedWriter extends StringWriter {
     /**
      * コンストラクタ
      */
-    public LineFormattedWriter() {
+    public FortranFormattedWriter() {
         this.output_filename = null;
         this.clearLineBuffer();
 
@@ -204,11 +209,8 @@ public class LineFormattedWriter extends StringWriter {
         }
 
         // ディレクティブ文のインデント削除
-        for (String prefix : this.none_indents) {
-            if (StringUtils.startsWithIgnoreCase(line.trim(), prefix)) {
-                line = StringUtils.trimLeft(line);
-                break;
-            }
+        if (this.isDelectiveLine(line)) {
+            line = StringUtils.trimLeft(line);
         }
 
         if (line.length() <= this.limit_column) {
@@ -255,6 +257,7 @@ public class LineFormattedWriter extends StringWriter {
     private String formatLineNumber(String line) {
         if (line == null) return null;
 
+        int line_len = line.length();
         // 途中から番号が始まる場合
         String regex = "^([ \t]+)([0-9]+)[ ]+(.*)";
         Pattern p = Pattern.compile(regex, Pattern.DOTALL);
@@ -270,15 +273,35 @@ public class LineFormattedWriter extends StringWriter {
             String code = m.group(3);
             int num_sp = top_indent - line_str.length();
             if (num_sp <= 0) num_sp = 1;
+            else if (num_sp+line_str.length() > this.limit_indent) {
+                num_sp = this.limit_indent - line_str.length();
+            }
             String formatted = line_str + StringUtils.repeat(" ", num_sp);
             formatted += code;
 
             return formatted;
         }
-        else {
-            return line;
+        else if (line_len > this.limit_indent) {
+            regex = "^([ \t]+)(.*)";
+            p = Pattern.compile(regex, Pattern.DOTALL);
+            m = p.matcher(line);
+            top_indent = 0;
+            if (m.find() && m.groupCount() >= 2){
+                String indent_str = m.group(1);
+                indent_str = indent_str.replaceAll("\t", "    ");
+                top_indent = indent_str.length();
+                String code = m.group(2);
+                if (top_indent > this.limit_indent) {
+                    top_indent = this.limit_indent;
+                    String formatted = StringUtils.repeat(" ", top_indent);
+                    formatted += code;
+
+                    return formatted;
+                }
+            }
         }
 
+        return line;
     }
 
     /**
@@ -298,6 +321,9 @@ public class LineFormattedWriter extends StringWriter {
             top_indent = m.end();
         }
 
+        // ディレクティブ文のインデント
+        String delective_prefix = this.getDelectivePrefix(line);
+
         List<String> list = new ArrayList<String>();
         try {
             LanguageTokenizer spliter = new LanguageTokenizer(line);
@@ -316,8 +342,11 @@ public class LineFormattedWriter extends StringWriter {
             spliter.useDelimiter("/");
             // spliter.useDelimiter("+");
             // spliter.useDelimiter("-");
-            for (String comment : this.comments) {
-                spliter.useDelimiter(comment);
+            // ディレクティブ文の場合、コメント設定は行わない
+            if (delective_prefix == null) {
+                for (String comment : this.comments) {
+                    spliter.useDelimiter(comment);
+                }
             }
             spliter.wordChar('\t');
             spliter.eolIsSignificant(true);
@@ -343,12 +372,25 @@ public class LineFormattedWriter extends StringWriter {
                 }
                 else {
                     if (buf.trim().length() > 0) {
-                        buf += this.suffix + this.endofline;
-                        list.add(buf);
+                        String trim = buf.trim();
+                        if (!this.suffix.equals(trim)) {
+                            buf += this.suffix + this.endofline;
+                            list.add(buf);
+                        }
                     }
                     // 新規行
-                    buf = StringUtils.repeat(" ", top_indent + this.next_indent);
-                    buf += this.suffix;
+                    if (top_indent + this.next_indent <= this.limit_indent) {
+                        buf = StringUtils.repeat(" ", top_indent + this.next_indent);
+                    }
+                    else {
+                        buf = StringUtils.repeat(" ", this.limit_indent);
+                    }
+                    // ディレクティブ文を付ける。
+                    if (delective_prefix != null) {
+                        buf = delective_prefix + buf;
+                    }
+
+                    if (list.size() > 0) buf += this.suffix;
                     buf += spliter.sval;
                 }
             }
@@ -570,6 +612,38 @@ public class LineFormattedWriter extends StringWriter {
         return this.current_indent;
     }
 
+    /**
+     * ディレクティブ文であるかチェックする.
+     * @param line        ライン
+     * @return        true = ディレクティブ文
+     */
+    private boolean isDelectiveLine(String line) {
+        // ディレクティブ文
+        for (String prefix : this.none_indents) {
+            if (StringUtils.startsWithIgnoreCase(line.trim(), prefix)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+
+    /**
+     * ディレクティブ文指示文接頭語を取得する.
+     * @param line        ライン
+     * @return        指示文接頭語
+     */
+    private String getDelectivePrefix(String line) {
+        // ディレクティブ文
+        for (String prefix : this.none_indents) {
+            if (StringUtils.startsWithIgnoreCase(line.trim(), prefix)) {
+                return line.trim().substring(0, prefix.length());
+            }
+        }
+
+        return null;
+    }
 }
 
 

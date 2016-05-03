@@ -189,6 +189,10 @@ public class VariableTypeParser {
     public VariableType parseVarDefEnumType(EnumType type) {
         // データ型
         String type_name = type.fortranName();
+        // add VOID対応 at 2016/04/01 by @hira
+        if (type_name == null) {
+            type_name = type.name();
+        }
 
         PrimitiveDataType primitive = PrimitiveDataType.findTypeBy(type_name);
         VariableType varType = new VariableType(primitive);

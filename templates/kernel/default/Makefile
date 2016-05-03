@@ -18,6 +18,11 @@
 #           big                      -fconvert=big-endian     -convert big_endian
 #
 
+# for debug env in @hira
+#export PATH := /usr/local/openmpi-1.8.4_gcc/bin:$(PATH)
+#export PATH := /usr/local/openmpi-1.8.4_intel/bin:$(PATH)
+#export LD_LIBRARY_PATH := /opt/intel/lib/intel64:$(LD_LIBRARY_PATH)
+
 # kernel complier :
 #    FJ    = fijitsu compiler in k computer
 #    GNU   = gnu compliler
@@ -28,6 +33,7 @@ KERNEL_COMP = FJ
 
 FFLAGS =
 CFLAGS =
+LIBS =
 # select compiler
 ifeq ($(KERNEL_COMP), FJ)    # for fujitsu compiler
     FC = mpifrtpx
@@ -35,6 +41,8 @@ ifeq ($(KERNEL_COMP), FJ)    # for fujitsu compiler
     FFLAGS += -Cpp
     FFLAGS += -Kfast,parallel
     FFLAGS += -Kopenmp,ocl -Qt
+#    LIBS += -I/home/apps/fftw/3.3.3/include -L/home/apps/fftw/3.3.3/lib64
+#    LIBS += -SCALAPACK -SSL2BLAMP -lfftw3_omp -lfftw3 -lm
     CFLAGS = -Xg
 else ifeq  ($(KERNEL_COMP), GNU)    # for gnu compiler
     #FC = gfortran
@@ -53,6 +61,7 @@ else ifeq  ($(KERNEL_COMP), INTEL)    # for intel compiler
     FFLAGS += -O3
     FFLAGS += -openmp
     FFLAGS += -mcmodel=large -shared-intel
+    FFLAGS += -list
 #    FFLAGS += -assume nounderscore
 endif
 
@@ -78,7 +87,7 @@ CPPFLAGS = -E -std=gnu99 -Wall -Wpointer-arith
 PROG = ./kernel.out
 CMP_PROG = ./kscope_cmp.out
 
-LINK  =
+LINK  = $(LIBS)
 
 SRCS_F77 =
 

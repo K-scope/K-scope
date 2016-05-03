@@ -148,6 +148,11 @@ public class DbUpdater extends XcodeMLVisitorImpl {
     @Override
     public boolean enter(FfunctionDefinition visitable) {
 
+        // add 終了行番号が設定されている場合のみELSE-IF文をチェックする。 at 2016/03/31 by @hira
+        // 終了行番号が設定されているか？
+        m_context.setHasEndlineno(
+                !StringUtils.isNullOrEmpty(visitable.getEndlineno()));
+
         // コード出力クラス
         XcodeMLTypeManager typeManager = m_context.getTypeManager();
         VariableTypeParser typePaser = new VariableTypeParser(typeManager);
@@ -828,13 +833,16 @@ public class DbUpdater extends XcodeMLVisitorImpl {
 
         // ElseIF文であるかチェックする。
         boolean isElseIf = false;
-        // 2つ上のノードがElseであるか？
-        if (m_context.isInvokeNodeOf(Else.class, 2)) {
-            Else elseNode = (Else) m_context.getInvokeNode(2);
-            // 開始行番号が設定されているか？
-            if (StringUtils.isNullOrEmpty(elseNode.getLineno())) {
-                // 2つ上のElse要素の開始行番号が設定されていないのでElseIF文である。
-                isElseIf = true;
+        // add 終了行番号が設定されている場合のみELSE-IF文をチェックする。 at 2016/03/31 by @hira
+        if (m_context.hasEndlineno()) {
+            // 2つ上のノードがElseであるか？
+            if (m_context.isInvokeNodeOf(Else.class, 2)) {
+                Else elseNode = (Else) m_context.getInvokeNode(2);
+                // 開始行番号が設定されているか？
+                if (StringUtils.isNullOrEmpty(elseNode.getLineno())) {
+                    // 2つ上のElse要素の開始行番号が設定されていないのでElseIF文である。
+                    isElseIf = true;
+                }
             }
         }
 
@@ -876,13 +884,16 @@ public class DbUpdater extends XcodeMLVisitorImpl {
 
         // ElseIF文デあるかチェックする。
         boolean isElseIf = false;
-        // 2つ上のノードがElseであるか？
-        if (m_context.isInvokeNodeOf(Else.class, 2)) {
-            Else elseNode = (Else) m_context.getInvokeNode(2);
-            // 開始行番号が設定されているか？
-            if (StringUtils.isNullOrEmpty(elseNode.getLineno())) {
-                // 2つ上のElse要素の開始行番号が設定されていないのでElseIF文である。
-                isElseIf = true;
+        // add 終了行番号が設定されている場合のみELSE-IF文をチェックする。 at 2016/03/31 by @hira
+        if (m_context.hasEndlineno()) {
+            // 2つ上のノードがElseであるか？
+            if (m_context.isInvokeNodeOf(Else.class, 2)) {
+                Else elseNode = (Else) m_context.getInvokeNode(2);
+                // 開始行番号が設定されているか？
+                if (StringUtils.isNullOrEmpty(elseNode.getLineno())) {
+                    // 2つ上のElse要素の開始行番号が設定されていないのでElseIF文である。
+                    isElseIf = true;
+                }
             }
         }
 
@@ -924,10 +935,13 @@ public class DbUpdater extends XcodeMLVisitorImpl {
 
         // Elseであるかチェックする。
         boolean isElseIf = false;
-        // 開始行番号が設定されているか？
-        if (StringUtils.isNullOrEmpty(visitable.getLineno())) {
-            // 開始行番号が設定されていないのでElseIF文である。
-            isElseIf = true;
+        // add 終了行番号が設定されている場合のみELSE-IF文をチェックする。 at 2016/03/31 by @hira
+        if (m_context.hasEndlineno()) {
+            // 開始行番号が設定されているか？
+            if (StringUtils.isNullOrEmpty(visitable.getLineno())) {
+                // 開始行番号が設定されていないのでElseIF文である。
+                isElseIf = true;
+            }
         }
 
         // ELSE-IF文の場合は次のIF要素でDBに登録する。
@@ -951,10 +965,13 @@ public class DbUpdater extends XcodeMLVisitorImpl {
 
         // ElseIF文デあるかチェックする。
         boolean isElseIf = false;
-        // 開始行番号が設定されているか？
-        if (StringUtils.isNullOrEmpty(visitable.getLineno())) {
-            // 開始行番号が設定されていないのでElseIF文である。
-            isElseIf = true;
+        // add 終了行番号が設定されている場合のみELSE-IF文をチェックする。 at 2016/03/31 by @hira
+        if (m_context.hasEndlineno()) {
+            // 開始行番号が設定されているか？
+            if (StringUtils.isNullOrEmpty(visitable.getLineno())) {
+                // 開始行番号が設定されていないのでElseIF文である。
+                isElseIf = true;
+            }
         }
 
         // ELSE-IF文の場合はend_conditionを呼び出さない。

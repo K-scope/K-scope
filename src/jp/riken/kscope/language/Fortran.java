@@ -560,7 +560,7 @@ public final class Fortran extends Program {
                 if (varDef != null && varDef.getStartCodeLine() != null) {
                     CodeLine def_lineinfo = varDef.getStartCodeLine();
                     // 宣言文が変数行番号より大きいことはない
-                    if (def_lineinfo.compareTo(var_lineinfo) < 0) {
+                    if (def_lineinfo.compareTo(var_lineinfo) <= 0) {
                         dec_block.putVariableMap(var, varDef);
                         return;
                     }
@@ -620,6 +620,11 @@ public final class Fortran extends Program {
                         me.putVariableMap(var, vd);
                         vd.addReferMember(me);
                         return true;
+                    }
+                    if (useModule.getUseList() != null) {
+                        if (searchVariableDefinitionForUse(useModule, var, me)) {
+                            return true;
+                        }
                     }
                 } else {
                     String nm = useEle.getTranslationName(var_name);

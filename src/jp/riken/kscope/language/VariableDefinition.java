@@ -377,10 +377,11 @@ public class VariableDefinition implements Serializable, IInformation, IBlock {
         StringBuilder var = new StringBuilder();
 
         boolean is_void = false;        // subroutine, function型
+        VariableType var_type = null;
         if (type != null) {
             // データ型
             var.append(type.toString());
-            VariableType var_type = (VariableType)this.type;
+            var_type = (VariableType)this.type;
             if (var_type.getPrimitiveDataType() == PrimitiveDataType.VOID) {
                 is_void = true;
             }
@@ -444,41 +445,13 @@ public class VariableDefinition implements Serializable, IInformation, IBlock {
         }
 
         if (dimension != null) {
-            if (var.length() > 0) var.append(",");
-            var.append("dimension(");
-            String dims = "";
-            boolean explicitly = false;
-            for (int i = 0; i < dimension.get_index_size(); i++) {
-                String start = dimension.get_index_start(i).toString();
-                String end = dimension.get_index_end(i).toString();
-                if (start != null && start.trim().isEmpty()) start = null;
-                if (end != null && end.trim().isEmpty()) end = null;
-
-                String dim = "";
-                if (start != null) {
-                    dim += start;
-                }
-                dim += ":";
-                if (end != null) {
-                    dim += end;
-                    explicitly = true;
-                }
-                if (start == null && end != null && end.equals("*")) {
-                    dim = "*";
-                }
-                else if (explicitly && start == null && end == null) {
-                    dim = "*";
-                }
-                else if (explicitly && end == null) {
-                    dim += "*";
-                }
-                dims += dim;
-                if (i + 1 < dimension.get_index_size()) {
-                    dims += ",";
-                }
+            // modify at 2016/04/01 by @hira
+            String dims = this.dimension.toString();
+            if (dims != null) {
+                if (var.length() > 0) var.append(",");
+                var.append("dimension");
+                var.append(dims);
             }
-            var.append(dims);
-            var.append(")");
         }
 
         var.append(" ");
@@ -490,6 +463,14 @@ public class VariableDefinition implements Serializable, IInformation, IBlock {
         // 初期値
         if (initValue != null) {
             var.append("=");
+            String type_name = null;
+            // 構造体の初期値設定の場合、構造体名を付ける。但し配列の場合は除く。 at 2016/03/30 by @hira
+            if (dimension == null) {
+                if (var_type != null && var_type.isStruct()) {
+                    type_name = var_type.getName();
+                    if (type_name != null) var.append(type_name);
+                }
+            }
             var.append(initValue.getLine());
         }
         return var.toString();

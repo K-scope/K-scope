@@ -39,19 +39,37 @@ public class Data extends jp.riken.kscope.language.Block {
 
     /**
      * コンストラクタ。
+     */
+    public Data() {
+        super();
+    }
+
+    /**
+     * コンストラクタ。
      *
-     * @param parent
-     *          親ブロック
+     * @param parent    親ブロック
      */
     public Data(Block parent) {
         super(parent);
     }
 
     /**
-     * コンストラクタ。
+     * コピーコンストラクタ。
+     *
+     * @param dest    コピーデータ
      */
-    public Data() {
-        super();
+    public Data(Data dest) {
+        super.clone(dest);
+        if (dest.variables != null) {
+            for (Variable var : dest.variables) {
+                this.variables.add(new Variable(var));
+            }
+        }
+        if (dest.values != null) {
+            for (Expression exp : dest.values) {
+                this.values.add(new Expression(exp));
+            }
+        }
     }
 
     /**
@@ -71,6 +89,11 @@ public class Data extends jp.riken.kscope.language.Block {
      */
     public void setVariables(List<Variable> vars) {
         this.variables = vars;
+        if (this.variables != null) {
+            for (Variable var : this.variables) {
+                var.setParentStatement(this);
+            }
+        }
     }
 
     /**
@@ -91,6 +114,16 @@ public class Data extends jp.riken.kscope.language.Block {
      */
     public void setValues(List<Expression> vals) {
         this.values = vals;
+        if (this.values != null) {
+            for (Expression exp : this.values) {
+                exp.setParentStatement(this);
+                Set<Variable> vars = exp.getAllVariables();
+                if (vars == null || vars.size() <= 0) continue;
+                for (Variable var : vars) {
+                    var.setParentStatement(this);
+                }
+            }
+        }
     }
 
     /**
@@ -356,6 +389,8 @@ public class Data extends jp.riken.kscope.language.Block {
      */
     @Override
     public String toString() {
+
+        /***
         StringBuilder buf = new StringBuilder();
         buf.append("data ");
 
@@ -384,7 +419,11 @@ public class Data extends jp.riken.kscope.language.Block {
         buf.append(value_buf);
 
         buf.append(" /");
-
         return buf.toString();
+        */
+        if (this.getStartCodeLine() == null) {
+            throw new NullPointerException("Data::Codeline is null");
+        }
+        return this.getStartCodeLine().getStatement();
     }
 }

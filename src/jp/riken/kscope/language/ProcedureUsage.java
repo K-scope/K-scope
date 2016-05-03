@@ -60,7 +60,9 @@ public class ProcedureUsage extends Block {
     public ProcedureUsage(ProcedureUsage dest_proc) {
         this(dest_proc, null);
         if (dest_proc == null) return;
-        this.callDefinition = new Procedure(dest_proc.getCallDefinition());
+        // modify 2016/04/01 by @hira
+        // this.callDefinition = new Procedure(dest_proc.getCallDefinition());
+        this.callDefinition = dest_proc.getCallDefinition();
     }
 
     /**

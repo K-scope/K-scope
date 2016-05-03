@@ -18,6 +18,8 @@ package jp.riken.kscope.service.kernel;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 
@@ -45,6 +47,7 @@ import jp.riken.kscope.language.fortran.VariableAttribute.ScopeAttribute;
 import jp.riken.kscope.language.fortran.VariableType;
 import jp.riken.kscope.language.fortran.VariableType.PrimitiveDataType;
 import jp.riken.kscope.language.generic.Procedures;
+import jp.riken.kscope.language.utils.LanguageUtils;
 import jp.riken.kscope.properties.KernelProperties;
 import jp.riken.kscope.utils.StringUtils;
 
@@ -102,6 +105,9 @@ public class KernelBlock implements IBlock {
         if (this.kernel_block instanceof Procedure) {
             // サブルーチン・関数の場合仮引数を付加する
             code = ((Procedure)this.kernel_block).toStringProcedure();
+        }
+        else if (this.kernel_block instanceof jp.riken.kscope.language.fortran.Type) {
+            code = this.toStructure();
         }
         else {
             code = this.kernel_block.toString();
@@ -235,7 +241,21 @@ public class KernelBlock implements IBlock {
         if (this.kernel_block == null) return null;
         if (this.kernel_block.getChildren() == null) return null;
         List<IBlock> list = new ArrayList<IBlock>();
-        for (IBlock block : this.kernel_block.getChildren() ) {
+
+        CodeLine line = this.kernel_block.getStartCodeLine();
+        if (line != null) {
+            if (line.getSourceFile() != null) {
+                String name = line.getSourceFile().getFile().getName();
+                System.out.println("name = " + name);
+            }
+        }
+
+        // 子プロシージャをソートする。
+        List<IBlock> child_list = this.kernel_block.getChildren();
+        if (this.kernel_block instanceof ProgramUnit) {
+            child_list = LanguageUtils.sortBlock(child_list);
+        }
+        for (IBlock block : child_list ) {
             list.add(new KernelBlock(block, this.root_block, this.context));
         }
         if (list.size() <= 0) return null;
@@ -857,7 +877,6 @@ public class KernelBlock implements IBlock {
         return this.kernel_block.getCalls();
     }
 
-
     /**
      * VariableDefinition文のリストを返す。
      * @return    変数定義のリスト
@@ -1109,8 +1128,10 @@ public class KernelBlock implements IBlock {
     /**
      * public,private,save属性を削除する.
      * @param def        変数宣言文
+     * @param    remove_mother     宣言文の親の削除：true=親を削除する
      */
-    private void removeModuleVariableAttributes(VariableDefinition def) {
+    private void removeModuleVariableAttributes(
+                        VariableDefinition def) {
         String attr = new String();
         // public属性削除
         attr = VariableAttribute.ScopeAttribute.PUBLIC.toString().toLowerCase();
@@ -1358,6 +1379,112 @@ public class KernelBlock implements IBlock {
         if (buf == null) return "";
 
         return buf;
+    }
+
+    /**
+     * プログラム単位に属する構造体構造定義,変数宣言のリストを返す。
+     *
+     * @return 構造体構造定義,変数宣言のリスト。無ければ空のリストを返す。
+     */
+    public List<KernelBlock> getVariableDeclarations() {
+        IBlock this_block = this.getKernelBlock();
+        if (this_block == null) return null;
+        if (!(this_block instanceof ProgramUnit)) {
+            return null;
+        }
+
+        // 構造体構造定義,変数宣言のリスト
+        List<KernelBlock> list = new ArrayList<KernelBlock>();
+        List<KernelBlock> type_list = this.getTypeList();
+        List<KernelBlock> var_list = this.get_variables();
+        if (type_list != null) list.addAll(type_list);
+        if (var_list != null) list.addAll(var_list);
+
+        // ソート
+        list = this.sortDeclarations(list, (ProgramUnit)this_block);
+
+        return list;
+    }
+
+
+    /**
+     * ブロックのソートを行うを返す。
+     *
+     * @return ブロックのソート結果
+     */
+    private List<KernelBlock> sortKernelBlock(List<KernelBlock> kernel_list) {
+        if (kernel_list == null) return null;
+
+        List<IBlock> block_list = new ArrayList<IBlock>();
+        for (KernelBlock block : kernel_list) {
+            block_list.add(block);
+        }
+        // ソート
+        block_list = LanguageUtils.sortBlock(block_list);
+        if (block_list == null) return kernel_list;
+
+        kernel_list.clear();
+        for (IBlock block : block_list) {
+            kernel_list.add((KernelBlock)block);
+        }
+
+        return kernel_list;
+    }
+
+
+    /**
+     * 構造体構造定義,変数宣言ソートを行う。
+     * @param   kernel_list   ソート対象構造体構造定義,変数宣言文
+     * @param   parent        宣言プロシージャ
+     * @return 構造体構造定義,変数宣言ソート結果
+     */
+    private List<KernelBlock> sortDeclarations(
+                        List<KernelBlock> kernel_list,
+                        final ProgramUnit parent) {
+        if (kernel_list == null) return kernel_list;
+        if (parent == null) return kernel_list;
+
+        final String filename = parent.getSourceFile()!=null
+                                ?parent.getSourceFile().getPath() : null;
+
+        Collections.sort(kernel_list, new Comparator<KernelBlock>(){
+            public int compare(KernelBlock block1, KernelBlock block2) {
+                if (block1 == null) return 0;
+                if (block2 == null) return 0;
+                CodeLine code1 = block1.getStartCodeLine();
+                CodeLine code2 = block2.getStartCodeLine();
+                if (code1 == null || code2 == null) return 0;
+
+                SourceFile file1 = code1.getSourceFile();
+                SourceFile file2 = code2.getSourceFile();
+                // 暗黙宣言（ソースファイルなし）の場合は、先頭に出力する。
+                if (file1 == null) return -1;
+                if (file2 == null) return +1;
+                String path1 = file1.getPath();
+                String path2 = file2.getPath();
+                if (path1 == null || path2 == null) return 0;
+
+                // 同一ファイルであるので行番号によるソートを行う。
+                if (path1.equals(path2)) {
+                    return code1.compareTo(code2);
+                }
+
+                // 変数宣言文の挿入順番によりソートを行う。
+                String var_name1 = block1.getName();
+                String var_name2 = block2.getName();
+                int idx1 = parent.getVariableDefinitionIndex(var_name1);
+                int idx2 = parent.getVariableDefinitionIndex(var_name2);
+                if (idx1 >= 0 && idx2 >= 0) {
+                    return idx1 - idx2;
+                }
+
+                // 宣言プロシージャと異なるファイルの宣言文を先頭にする。
+                if (path1.equals(filename)) return +1;
+                else return -1;
+            }
+        });
+
+        return kernel_list;
     }
 }
 

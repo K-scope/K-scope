@@ -245,9 +245,11 @@ public class Procedure extends ProgramUnit {
         }
         if (dest.calls != null && dest.calls.size() > 0) {
             this.calls = new LinkedHashSet<ProcedureUsage>();
-            for (ProcedureUsage call : dest.calls) {
-                this.calls.add(new ProcedureUsage(call, this));
-            }
+            // modify 2016/04/01 by @hira
+            //for (ProcedureUsage call : dest.calls) {
+            //    this.calls.add(new ProcedureUsage(call, this));
+            //}
+            this.calls.addAll(dest.calls);
         }
         this.result = dest.result;
         if (dest.body != null) {

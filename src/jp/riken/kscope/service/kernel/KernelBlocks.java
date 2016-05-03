@@ -14,7 +14,6 @@ import jp.riken.kscope.language.IBlock;
 import jp.riken.kscope.language.ProcedureUsage;
 import jp.riken.kscope.language.ProgramUnit;
 import jp.riken.kscope.language.Variable;
-import jp.riken.kscope.utils.LineFormattedWriter;
 
 /**
  * 複数ブロックを持つカーネルファイルクラス.

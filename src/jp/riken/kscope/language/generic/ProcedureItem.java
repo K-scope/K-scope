@@ -220,7 +220,15 @@ public class ProcedureItem
      */
     public String toStructure(int indent) {
         boolean is_function = false;
-        if (this.type != null || this.result != null) {
+        if (this.type != null) {
+            VariableType var_type = (VariableType)this.type;
+            VariableType.PrimitiveDataType premit = var_type.getPrimitiveDataType();
+            if (!(premit == VariableType.PrimitiveDataType.UNKOWN
+                || premit == VariableType.PrimitiveDataType.VOID)) {
+                is_function = true;
+            }
+        }
+        else if (this.result != null && !this.result.isEmpty()) {
             is_function = true;
         }
         StringBuilder buf = new StringBuilder();

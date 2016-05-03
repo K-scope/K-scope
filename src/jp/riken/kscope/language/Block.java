@@ -212,26 +212,34 @@ public abstract class Block implements Serializable, IInformation, IBlock {
             if (child instanceof ProcedureUsage) {
                 list.add((ProcedureUsage) child);
             } else if (child instanceof Selection) {
-                for (int j = 0; j < ((Selection) (child)).getNumOfConditions(); j++) {
-                    Block child_block = ((((Selection) child)
-                            .getConditions()
-                            .get(j)));
-                    List<ProcedureUsage> calls = child_block.getCalls();
-                    if (calls == null || calls.size() <= 0) continue;
+                // modify getCallsに変更 at 2016/04/01 by @hira
+//                for (int j = 0; j < ((Selection) (child)).getNumOfConditions(); j++) {
+//                    Block child_block = ((((Selection) child)
+//                            .getConditions()
+//                            .get(j)));
+//                    List<ProcedureUsage> calls = child_block.getCalls();
+//                    if (calls == null || calls.size() <= 0) continue;
+//                    list.addAll(calls);
+//                }
+                List<ProcedureUsage> calls = ((Selection)child).getCalls();
+                if (calls != null && calls.size() > 0) {
                     list.addAll(calls);
                 }
 
             } else if (child instanceof Substitution){
-                List<ProcedureUsage> funcCalls = ((Substitution)child).getRightValue().getFuncCalls();
-                for (ProcedureUsage call:funcCalls) {
-                    list.add(call);
+                // modify getAllFunctionsに変更 at 2016/04/01 by @hira
+                Set<ProcedureUsage> funcCalls = ((Substitution)child).getAllFunctions();
+                if (funcCalls != null) {
+                    for (ProcedureUsage call:funcCalls) {
+                        list.add(call);
+                    }
                 }
             } else if (child instanceof Block){
                 List<ProcedureUsage> calls = ((Block)child).getCalls();
                 if (calls != null && calls.size() > 0) {
                     list.addAll(calls);
+                }
             }
-        }
         }
         if (list.size() <= 0) return null;
         return list;

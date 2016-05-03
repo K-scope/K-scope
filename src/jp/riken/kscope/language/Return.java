@@ -19,15 +19,15 @@ package jp.riken.kscope.language;
 
 /**
  * 手続きの終了を表すクラス。
- * 
+ *
  * @author RIKEN
- * 
+ *
  */
 public class Return extends Block {
-	/** シリアル番号 */
-	private static final long serialVersionUID = 2144326483810706905L;
+    /** シリアル番号 */
+    private static final long serialVersionUID = 2144326483810706905L;
     /**
-     * 
+     *
      * コンストラクタ。
      */
     Return() {
@@ -35,7 +35,7 @@ public class Return extends Block {
     }
 
     /**
-     * 
+     *
      * コンストラクタ。
      */
     Return(Block mama) {
@@ -53,8 +53,5 @@ public class Return extends Block {
     public String toString() {
         return this.toStringBase();
     }
-    @Override
-    protected String toStringBase() {
-        return "return";
-    }
+
 }

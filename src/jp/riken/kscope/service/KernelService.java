@@ -26,6 +26,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
@@ -65,8 +66,8 @@ import jp.riken.kscope.properties.KernelProperties;
 import jp.riken.kscope.service.kernel.KernelBlock;
 import jp.riken.kscope.service.kernel.KernelBlocks;
 import jp.riken.kscope.service.kernel.KernelContext;
+import jp.riken.kscope.service.kernel.FortranFormattedWriter;
 import jp.riken.kscope.utils.FileUtils;
-import jp.riken.kscope.utils.LineFormattedWriter;
 import jp.riken.kscope.utils.ResourceUtils;
 import jp.riken.kscope.utils.StringUtils;
 
@@ -364,13 +365,9 @@ public class KernelService extends BaseService {
                 File outdir) throws Exception {
         if (this.kernel_modules == null) return null;
 
-        // USE文の依存関係順にソートする.
-        List<Module> mod_list = this.sortModule(this.kernel_modules);
-
         // ファイル毎にまとめる
-        List<File> filelist = new ArrayList<File>();
         List<KernelBlocks> list = new ArrayList<KernelBlocks>();
-        for (Module kernel_module : mod_list) {
+        for (Module kernel_module : this.kernel_modules) {
             SourceFile mod_file = kernel_module.getSourceFile();
             if (mod_file == null) continue;
             boolean add_block = false;
@@ -386,12 +383,19 @@ public class KernelService extends BaseService {
             KernelBlocks kernels = new KernelBlocks();
             kernels.addKernelBlock(new KernelBlock(kernel_module, kernel_module));
             list.add(kernels);
-            filelist.add(mod_file.getFile());
         }
 
+        // USE文の依存関係順にソートする.
+        list = this.sortKernelBlocks(list);
+
         // テンプレート出力
+        List<File> filelist = new ArrayList<File>();
         for (KernelBlocks kernels : list) {
             this.evaluateModule(context, template_name, outdir, kernels);
+            SourceFile kernel_file = kernels.getSourceFile();
+            if (kernel_file != null && kernel_file.getFile() != null) {
+                filelist.add(kernel_file.getFile());
+            }
         }
 
         if (filelist.size() <= 0) return null;
@@ -447,7 +451,7 @@ public class KernelService extends BaseService {
         try {
             // Writer生成
             File mod_file = kernel_module.getModuleFile();
-            LineFormattedWriter fileWriter = this.factoryFileWriter(outdir, mod_file);
+            FortranFormattedWriter fileWriter = this.factoryFileWriter(outdir, mod_file);
             if (fileWriter == null || fileWriter.getOutputFilename() == null) {
                 return null;
             }
@@ -504,7 +508,7 @@ public class KernelService extends BaseService {
         try {
             // Writer生成
             File mod_file = kernel_blocks.getSourceFile().getFile();
-            LineFormattedWriter fileWriter = this.factoryFileWriter(outdir, mod_file);
+            FortranFormattedWriter fileWriter = this.factoryFileWriter(outdir, mod_file);
             if (fileWriter == null || fileWriter.getOutputFilename() == null) {
                 return null;
             }
@@ -552,7 +556,7 @@ public class KernelService extends BaseService {
 
         try {
             // Writerの生成
-            LineFormattedWriter fileWriter = this.factoryFileWriter(outdir, new File(template_name));
+            FortranFormattedWriter fileWriter = this.factoryFileWriter(outdir, new File(template_name));
             if (fileWriter == null || fileWriter.getOutputFilename() == null) {
                 return null;
             }
@@ -672,34 +676,6 @@ public class KernelService extends BaseService {
 
 
     /**
-     * 選択ブロックの変数宣言文を取得する
-     * 変数宣言文をKernelBlockクラスに変換する
-     * @param kernel_blocks        選択ブロック
-     * @return        変数宣言文
-     */
-    private List<VariableDefinition> getVariableDeclarations(List<IBlock> kernel_blocks) {
-        if (kernel_blocks == null || kernel_blocks.size() <= 0) return null;
-
-        List<VariableDefinition> list = new ArrayList<VariableDefinition>();
-        List<Variable> vars = this.getAllVariables(kernel_blocks);
-        if (vars != null && vars.size() > 0) {
-            for (Variable var : vars) {
-                VariableDefinition def = var.getDefinition();
-                if (def != null && !list.contains(def)) {
-                    list.add(def);
-                }
-            }
-        }
-        if (list.size() <= 0) return null;
-
-        // ソートを行う
-        list = this.sortVariableDefinition(list);
-
-        return list;
-    }
-
-
-    /**
      * カーネル抽出を行うブロックを取得する.
      * @param blocks        選択ブロック
      * @param expand        true=子ブロックを展開する
@@ -783,26 +759,6 @@ public class KernelService extends BaseService {
 
         list = LanguageUtils.sortBlock(list);
         return list;
-    }
-
-
-    /**
-     * モジュールのパスを取得する.
-     * @param mod_name        モジュール名
-     * @return        モジュールファイルパス
-     * @throws Exception
-     */
-    private String getModulePath(String mod_name) {
-        if (mod_name == null || mod_name.isEmpty()) return null;
-        Module mod = this.fortranDb.module(mod_name);
-        if (mod == null) {
-            String msg = "モジュールを取得できません。 module name=" + mod_name;
-            this.addErrorInfo(msg);
-            return null;
-        }
-        String path = mod.getFilePath();
-
-        return path;
     }
 
 
@@ -957,43 +913,52 @@ public class KernelService extends BaseService {
         return modules;
     }
 
-
-    /*
-    private List<Module> sortModule(List<Module> modules) {
-        if (modules == null || modules.size() <= 0) return null;
-        int count = 5;
+    /**
+     * モジュールのUSE文からモジュールの依存関係をチェックして、依存順に並べる
+     * @param def_map        モジュール変数リスト
+     * @return        依存順モジュール
+     */
+    private List<KernelBlocks> sortKernelBlocks(List<KernelBlocks> kernel_blocks) {
+        if (kernel_blocks == null || kernel_blocks.size() <= 0) return null;
+        int count = kernel_blocks.size();
 
         for (int i=0; i<count; i++) {
-        Collections.sort(modules, new Comparator<Module>(){
-            public int compare(Module module1, Module module2) {
-                if (module1 == null) return 0;
-                if (module2 == null) return 0;
+            for (int j=i+1; j<count; j++) {
+                KernelBlocks blocks1 = kernel_blocks.get(i);
+                KernelBlocks blocks2 = kernel_blocks.get(j);
+                if (blocks1 == null) continue;
+                if (blocks2 == null) continue;
+                List<UseState> use1_list = this.getAllUseStates(blocks1);
+                List<UseState> use2_list = this.getAllUseStates(blocks2);
 
-                List<UseState> use1_list = KernelService.this.getAllUseStates(module1);
-                List<UseState> use2_list = KernelService.this.getAllUseStates(module2);
-
+                int compare = 0;
                 int use1_count = 0;
                 int use2_count = 0;
                 if (use1_list != null) use1_count = use1_list.size();
                 if (use2_list != null) use2_count = use2_list.size();
-                if (use1_count == 0 && use2_count > 0) return -1;
-                if (use1_count > 0 && use2_count == 0) return +1;
-                if (use1_count == 0 && use2_count == 0) return 0;
-
-                // USE文の依存関係をチェックする
-                return comparatorModuleUse(module1, module2);
+                if (use1_count == 0 && use2_count > 0) compare = -1;
+                else if (use1_count > 0 && use2_count == 0) compare = +1;
+                else if (use1_count == 0 && use2_count == 0) compare = 0;
+                else {
+                    // USE文の依存関係をチェックする
+                    compare = comparatorBlocksUse(blocks1, blocks2);
+                }
+                if (compare == +1) {
+                    kernel_blocks.remove(j);
+                    kernel_blocks.add(i, blocks2);
+                    j = i;
+                }
             }
-        });
         }
 
-        return modules;
+        return kernel_blocks;
     }
-    */
+
     /**
      * USE文の依存関係をチェックする
      * @return
      */
-    private int comparatorModuleUse(Module module1, Module module2) {
+    private int comparatorModuleUse(ProgramUnit module1, ProgramUnit module2) {
         if (module1 == null) return 0;
         if (module2 == null) return 0;
         String module1_name = module1.get_name();
@@ -1064,6 +1029,33 @@ public class KernelService extends BaseService {
 
 
     /**
+     * USE文の依存関係をチェックする
+     * @return
+     */
+    private int comparatorBlocksUse(KernelBlocks kernel_blocks1, KernelBlocks kernel_blocks2) {
+        if (kernel_blocks1 == null) return 0;
+        if (kernel_blocks2 == null) return 0;
+
+        int compare = 0;
+        for (KernelBlock block1 : kernel_blocks1) {
+            if (!(block1.getKernelBlock() instanceof ProgramUnit)) continue;
+            for (KernelBlock block2 : kernel_blocks2) {
+                if (!(block2.getKernelBlock() instanceof ProgramUnit)) continue;
+
+                // USE文の依存関係をチェックする
+                compare = this.comparatorModuleUse(
+                                (ProgramUnit)block1.getKernelBlock(),
+                                (ProgramUnit)block2.getKernelBlock());
+                if (compare > 0) {
+                    return compare;
+                }
+            }
+        }
+
+        return compare;
+    }
+
+    /**
      * カーネル化モジュールを作成する。
      * @param kernel_blocks        カーネルブロック
      * @return        カーネル化モジュール
@@ -1102,16 +1094,6 @@ public class KernelService extends BaseService {
             }
         }
 
-        // COMMON文,EQUIVALENCE文の変数を取得する.
-        List<VariableDefinition> common_defs = this.getCommonVariableDefinition(kernel_def_list);
-        if (common_defs != null) {
-            for (VariableDefinition def : common_defs) {
-                if (def == null) continue;
-                if (kernel_def_list.contains(def)) continue;
-                kernel_def_list.add(def);
-            }
-        }
-
         // 手続呼出一覧
         List<Procedure> proc_list = this.getAllFunctions(kernel_blocks, null);
 
@@ -1132,7 +1114,9 @@ public class KernelService extends BaseService {
                         def = def.getStructDefinition();
                     }
                     // ローカル変数は除外
-                    if (def.getScopeDeclarationsBlock() == proc) continue;
+                    if (!def.hasExternal()) {
+                        if (def.getScopeDeclarationsBlock() == proc) continue;
+                    }
                     if (var.getBlockType() == BlockType.PROCEDURE) {
                         Procedure var_proc = (Procedure)var.getParentStatement();
                         if (var_proc.isArgumentVariableDefinition(def)) {
@@ -1145,6 +1129,9 @@ public class KernelService extends BaseService {
             }
         }
 
+        // 外部定義手続
+        List<Procedure> externalProcedures = new ArrayList<Procedure>();
+        List<VariableDefinition> externalDefinitions = new ArrayList<VariableDefinition>();
         if (proc_list != null) {
             for (Procedure proc : proc_list) {
                 // 手続の外部定義
@@ -1153,7 +1140,33 @@ public class KernelService extends BaseService {
                 if (def == null) continue;
                 if (!kernel_def_list.contains(def)) {
                     kernel_def_list.add(def);
+                    externalProcedures.add(proc);
+                    externalDefinitions.add(def);
                 }
+            }
+        }
+        if (kernel_def_list != null) {
+            for (VariableDefinition def : kernel_def_list) {
+                if (!def.hasExternal()) continue;
+                String name = def.get_name();
+                Procedure proc = this.fortranDb.getProcedure(name);
+                if (proc == null) continue;
+                if (!proc_list.contains(proc)) {
+                    proc_list.add(proc);
+                    externalProcedures.add(proc);
+                    externalDefinitions.add(def);
+                }
+            }
+
+        }
+
+        // COMMON文,DATA文の変数を取得する.
+        List<VariableDefinition> common_defs = this.getCommonVariableDefinition(kernel_def_list);
+        if (common_defs != null) {
+            for (VariableDefinition def : common_defs) {
+                if (def == null) continue;
+                if (kernel_def_list.contains(def)) continue;
+                kernel_def_list.add(def);
             }
         }
 
@@ -1172,32 +1185,36 @@ public class KernelService extends BaseService {
                 // カーネルローカル変数
                 IBlock def_block = def.getScopeDeclarationsBlock();
                 if (def_block == null) continue;
+
+                // 外部関数の変数定義であるか
+                boolean externel = externalDefinitions.contains(def);
+
+                // カーネルモジュールの追加
+                Module def_mod = null;
                 if (def_block.getBlockType() == BlockType.PROCEDURE
                     && (def_block == kernel_proc
                         || def_block == kernel_proc.getMotherBlock()) ) {
                     // ローカル変数モジュールに変数定義の追加
-                    Module local_mod = this.createKernelLocalModule();
-                    local_mod = this.addKernelVariableDefinition(
-                            local_mod,
-                            def);
-                    if (!list.contains(local_mod)) {
-                        list.add(local_mod);
+                    def_mod = this.createKernelLocalModule();
+                    def_mod = this.addKernelVariableDefinition(def_mod, def, externel);
+                    if (!list.contains(def_mod)) {
+                        list.add(def_mod);
                     }
                 }
                 else if (def_block.getBlockType() == BlockType.MODULE) {
                     // 変数定義追加
-                    Module mod = this.addKernelVariableDefinition(def);
-                    if (mod == null) {
+                    def_mod = this.addKernelVariableDefinition(def, externel);
+                    if (def_mod == null) {
                         String msg = "変数定義文のモジュールを取得できませんでした。";
                         msg += "[definition=" + def.toString() + "]";
                         this.addErrorInfo(msg);
                         continue;
                     }
-                    if (!list.contains(mod)) {
-                        list.add(mod);
+                    if (!list.contains(def_mod)) {
+                        list.add(def_mod);
                     }
                     if (parent_mod == def_block) {
-                        this.kernel_parent_module = mod;
+                        this.kernel_parent_module = def_mod;
                     }
                 }
             }
@@ -1230,14 +1247,15 @@ public class KernelService extends BaseService {
             for (Procedure proc : proc_list) {
                 Module mod = null;
                 if (kernel_proc == proc.get_mother()) {
-                    mod = addKernelLocalProcedure(proc);
+                    mod = this.addKernelLocalProcedure(proc);
                 }
                 else {
                     // 手続追加
                     mod = this.addKernelProcedure(proc);
                 }
                 if (mod == null) {
-                    String msg = "副プログラムのモジュールを取得できませんでした。";
+                    // [エラー]副プログラムのモジュールを取得できませんでした。
+                    String msg = Message.getString("kernel.notfound_procedure.error.message");
                     msg += "[procedure =" + proc.toString() + "]";
                     this.addErrorInfo(msg);
                     continue;
@@ -1729,9 +1747,13 @@ public class KernelService extends BaseService {
                 }
             }
             else {
-                // 未定義CALL文
-                if (!this.undefined_call.contains((ProcedureUsage)block)) {
-                    this.undefined_call.add((ProcedureUsage)block);
+                // 引数渡しの手続であるかチェックする
+                boolean is_argment = this.isExternalArgment((ProcedureUsage)block);
+                if (!is_argment) {
+                    // 未定義CALL文
+                    if (!this.undefined_call.contains((ProcedureUsage)block)) {
+                        this.undefined_call.add((ProcedureUsage)block);
+                    }
                 }
 
                 // XcodeML/FのUSE文のrenameバグ対策
@@ -1751,9 +1773,13 @@ public class KernelService extends BaseService {
                     }
                 }
                 else {
-                    // 未定義CALL文
-                    if (!this.undefined_call.contains(call)) {
-                        this.undefined_call.add(call);
+                    // 引数渡しの手続であるかチェックする
+                    boolean is_argment = this.isExternalArgment(call);
+                    if (!is_argment) {
+                        // 未定義CALL文
+                        if (!this.undefined_call.contains(call)) {
+                            this.undefined_call.add(call);
+                        }
                     }
 
                     // XcodeML/FのUSE文のrenameバグ対策
@@ -2013,12 +2039,13 @@ public class KernelService extends BaseService {
     /**
      * カーネル化モジュールに変数定義文を追加する
      * 追加済みであれば追加しない。
-     * @param mod_name       カーネル化モジュール名
      * @param var_def        変数定義
+     * @param externel       true=外部関数定義
      * @return        カーネル化モジュール
      */
     private Module addKernelVariableDefinition(
-                    VariableDefinition var_def) {
+                    VariableDefinition var_def,
+                    boolean externel) {
         if (var_def == null) return null;
         // モジュール
         ProgramUnit proc = var_def.getScopeDeclarationsBlock();
@@ -2037,7 +2064,11 @@ public class KernelService extends BaseService {
         VariableDefinition kernel_def = kernel_mod.get_variable(var_def.get_name());
         if (kernel_def != null) return kernel_mod;
 
-        kernel_mod.set_variable_def(new VariableDefinition(var_def));
+        VariableDefinition new_def = new VariableDefinition(var_def);
+        if (externel) {
+            new_def.addVariableAttributes(VariableAttribute.FunctionPositionAttribute.EXTERNAL.toString());
+        }
+        kernel_mod.set_variable_def(new_def);
 
         return kernel_mod;
     }
@@ -2047,11 +2078,13 @@ public class KernelService extends BaseService {
      * 追加済みであれば追加しない。
      * @param module       カーネル化モジュール
      * @param var_def        変数定義
+     * @param externel       true=外部関数定義
      * @return        カーネル化モジュール
      */
     private Module addKernelVariableDefinition(
                     Module module,
-                    VariableDefinition var_def) {
+                    VariableDefinition var_def,
+                    boolean externel) {
         if (module == null) return null;
         if (var_def == null) return null;
 
@@ -2065,8 +2098,14 @@ public class KernelService extends BaseService {
         VariableDefinition kernel_def = kernel_mod.get_variable(var_def.get_name());
         if (kernel_def != null) return kernel_mod;
 
+        // 変数定義生成
+        VariableDefinition new_def = new VariableDefinition(var_def);
+        // 外部関数属性追加
+        if (externel) {
+            new_def.addVariableAttributes(VariableAttribute.FunctionPositionAttribute.EXTERNAL.toString());
+        }
         // 変数定義を追加する
-        kernel_mod.set_variable_def(new VariableDefinition(var_def));
+        kernel_mod.set_variable_def(new_def);
 
         return kernel_mod;
     }
@@ -2203,7 +2242,6 @@ public class KernelService extends BaseService {
     /**
      * カーネル化モジュールにサブルーチン・関数を追加する
      * 追加済みであれば追加しない。
-     * @param mod_name       カーネル化モジュール名
      * @param proc        サブルーチン・関数
      * @return        カーネル化モジュール
      */
@@ -2275,6 +2313,7 @@ public class KernelService extends BaseService {
 
         return local_mod;
     }
+
 
     /**
      * カーネル化モジュールを追加する
@@ -2386,6 +2425,21 @@ public class KernelService extends BaseService {
             ProgramUnit src_proc = null;
             if (KernelProperties.MODULE_NAME_LOCAL.equalsIgnoreCase(mod.get_name())) {
                 src_proc = kernel_proc;
+                Module kernel_module = kernel_proc.getParentModule();
+                String mod_name = kernel_module.get_name();
+                Set<Variable> vars = mod.getAllVariables();
+                if (vars != null) {
+                    for (Variable var : vars) {
+                        VariableDefinition def = var.getDefinition();
+                        if (def == null) continue;
+                        if (def.getScopeDeclarationsBlock() == null) continue;
+                        if (def.getScopeDeclarationsBlock().getBlockType() != BlockType.MODULE) continue;
+                        if (mod_name.equalsIgnoreCase(def.getScopeDeclarationsBlock().get_name())) {
+                            mod.addUse(new UseState(mod_name));
+                            break;
+                        }
+                    }
+                }
             }
             else {
                 src_proc = this.fortranDb.module(mod.get_name());
@@ -2558,32 +2612,38 @@ public class KernelService extends BaseService {
     private UseState normalizeUseStates(UseState use) throws Exception {
         if (use == null) return null;
         if (this.kernel_modules == null) return null;
-        String msg_notfound = "カーネルモジュールが存在しません.";
 
-        // USE文のONLY変数が存在しているかチェックする。
+        // USE文の変数が存在しているかチェックする。
         String mod_name = use.getModuleName();
-        Set<String> onlys = use.getOnlyMember();
-        if (onlys == null || onlys.size() <= 0) return use;
         Module mod = this.getKernelModule(mod_name);
         if (mod == null) {
-            this.addErrorInfo(msg_notfound + "[modulename=" + mod_name + "]");
-            throw new Exception(msg_notfound + "[modulename=" + mod_name + "]");
+            // [エラー]カーネルモジュールが存在しません。
+            String msg = Message.getString("kernel.validate.notfound_module.error.message");
+            msg += "[modulename=" + mod_name + "]";
+            this.addErrorInfo(msg);
+            throw new Exception(msg);
         }
-        Iterator<String> itr = onlys.iterator();
+
+        Set<String> members = new HashSet<String>();
+        Set<String> onlys = use.getOnlyMember();
+        Map<String, String> trans = use.getTranslationNameReverse();
+        if (onlys != null) members.addAll(onlys);
+        if (trans != null) members.addAll(trans.keySet());
+        if (members.size() <= 0) return use;
+
+        Iterator<String> itr = members.iterator();
         while (itr.hasNext()) {
             String var_name = itr.next();
-            // 変数、手続が存在しているかチェックする。
-            if (mod.get_variable(var_name) == null
-                && mod.get_child(var_name) == null) {
+            if (!this.hasDefinition(mod, var_name)) {
                 itr.remove();
                 use.removeMember(var_name);
             }
         }
-        if (onlys.size() <= 0) return null;
+
+        if (members.size() <= 0) return null;
 
         return use;
     }
-
 
     /**
      * USE文の連携を探索してUSE文を検索する。
@@ -2591,8 +2651,16 @@ public class KernelService extends BaseService {
     private List<UseState> getAllKernelUseStates(ProgramUnit kernel_mod) {
         if (kernel_mod == null) return null;
         if (this.kernel_modules == null) return null;
-        List<UseState> search_uses = kernel_mod.getUseList();
-        if (search_uses == null) return null;
+        List<UseState> search_uses = new ArrayList<UseState>();
+        List<UseState> uses = kernel_mod.getUseList();
+        if (uses != null) search_uses.addAll(uses);
+        if (kernel_mod.get_children() != null) {
+            for (Procedure proc : kernel_mod.get_children()) {
+                uses = proc.getUseList();
+                if (uses != null) search_uses.addAll(uses);
+            }
+        }
+        if (search_uses.size() <= 0) return null;
 
         List<UseState> found_list = new ArrayList<UseState>();
         found_list.addAll(search_uses);
@@ -2917,7 +2985,7 @@ public class KernelService extends BaseService {
      * @param mod_file
      * @return
      */
-    private LineFormattedWriter factoryFileWriter(
+    private FortranFormattedWriter factoryFileWriter(
                     File outdir,
                     File mod_file) {
 
@@ -2929,7 +2997,7 @@ public class KernelService extends BaseService {
         if (mod_file.getPath().isEmpty()) return null;
 
         // 出力F90書式設定
-        LineFormattedWriter fileWriter = new LineFormattedWriter();
+        FortranFormattedWriter fileWriter = new FortranFormattedWriter();
         fileWriter.setLimitColumn(this.properties.getLimitColumn());
         fileWriter.addComments(this.properties.getLanguageCommnet());
 
@@ -2991,7 +3059,7 @@ public class KernelService extends BaseService {
                 // [エラー]サブルーチン・関数の定義がありません。
                 String msg = Message.getString("kernel.validate.undefined_call.error.message");
                 msg += "[call=" + call.getCallName() + "]";
-                this.addWarningInfo(call.getStartCodeLine(), msg);
+                this.addErrorInfo(call.getStartCodeLine(), msg);
             }
         }
 
@@ -3296,6 +3364,18 @@ public class KernelService extends BaseService {
         this.error_messages.add(errorMessage);
     }
 
+    /**
+     * エラーメッセージを設定する
+     * @param line         エラー行情報
+     * @param warningMessage         エラーメッセージ
+     */
+    public void addErrorInfo(CodeLine line, String errorMessage) {
+        super.addErrorInfo(line, errorMessage);
+        if (this.error_messages == null) {
+            this.error_messages = new ArrayList<String>();
+        }
+        this.error_messages.add(errorMessage);
+    }
 
     /**
      * 警告メッセージを設定する
@@ -3700,6 +3780,29 @@ public class KernelService extends BaseService {
 
 
     /**
+     * KernelBlocks内のすべてのUSE文を取得する。
+     * @param   kernel_blocks      カーネルブロック群
+     */
+    private List<UseState> getAllUseStates(KernelBlocks kernel_blocks) {
+        if (kernel_blocks == null) return null;
+
+        List<UseState> list = new ArrayList<UseState>();
+        for (KernelBlock block : kernel_blocks) {
+            if (block.getKernelBlock() instanceof ProgramUnit) {
+                List<UseState> uses = this.getAllKernelUseStates((ProgramUnit)block.getKernelBlock());
+                if (uses != null) {
+                    list.addAll(uses);
+                }
+            }
+        }
+
+        if (list.size() <= 0) return null;
+
+        return list;
+    }
+
+
+    /**
      * DATA文を追加する。
      * モジュールのDATA文のみ追加する。
      * サブルーチン・関数のDATA文はサブルーチン・関数単位でコピーしているので追加する必要はない。
@@ -3723,16 +3826,20 @@ public class KernelService extends BaseService {
                 if (var_list == null) continue;
                 if (value_list == null) continue;
                 List<Variable> new_vars = new ArrayList<Variable>();
-                for (Variable var : var_list) {
+                List<Expression> new_values = new ArrayList<Expression>();
+                for (int i=0; i<var_list.size(); i++) {
+                    Variable var = var_list.get(i);
+                    if (var == null) continue;
                     String var_name = var.getName();
                     if (mod.get_variable(var_name) != null) {
                         new_vars.add(var);
+                        new_values.add(value_list.get(i));
                     }
                 }
                 if (new_vars.size() <= 0) continue;
                 // 定義されている変数のみのDATA文を作成する
-                jp.riken.kscope.language.Data new_data = new jp.riken.kscope.language.Data();
-                new_data.setVariables(new_vars);
+                jp.riken.kscope.language.Data new_data = new jp.riken.kscope.language.Data(data);
+                new_data.setVariables(var_list);
                 new_data.setValues(value_list);
 
                 // DATA文を追加する
@@ -3997,7 +4104,7 @@ public class KernelService extends BaseService {
 
 
     /**
-     * Common文,EQUIVALENCE文に使用されている変数の定義文を取得する.
+     * Common文,DATA文に使用されている変数の定義文を取得する.
      * @param kernel_def_list        カーネル使用変数定義
      * @return        Common文に使用されている変数
      */
@@ -4017,6 +4124,26 @@ public class KernelService extends BaseService {
         // 変数定義を取得する
         for (Common common : common_list) {
             List<Variable> vars = common.getVariables();
+            for (Variable var : vars) {
+                VariableDefinition def = var.getDefinition();
+                if (def == null) continue;
+                if (!list.contains(def)) {
+                    list.add(def);
+                }
+            }
+        }
+
+        // モジュール、サブルーチンからDATA文を検索する
+        Set<jp.riken.kscope.language.Data> data_list = new HashSet<jp.riken.kscope.language.Data>();
+        for (VariableDefinition def : kernel_def_list) {
+            List<jp.riken.kscope.language.Data> datas = this.serachDataList(def);
+            if (datas == null || datas.size() <= 0) continue;
+            data_list.addAll(datas);
+        }
+
+        // 変数定義を取得する
+        for (jp.riken.kscope.language.Data data : data_list) {
+            Set<Variable> vars = data.getAllVariables();
             for (Variable var : vars) {
                 VariableDefinition def = var.getDefinition();
                 if (def == null) continue;
@@ -4066,6 +4193,42 @@ public class KernelService extends BaseService {
         return list;
     }
 
+
+    /**
+     * 変数定義の変数を含むDATA文を取得する。
+     * @param var_def        検索変数定義文
+     * @return        DATA文リスト
+     */
+    private List<jp.riken.kscope.language.Data> serachDataList(VariableDefinition var_def) {
+        if (var_def == null) return null;
+        if (var_def.get_name() == null) return null;
+
+        ProgramUnit proc = var_def.getScopeDeclarationsBlock();
+        if (proc == null) return null;
+
+        // モジュール、サブルーチンからCOMMON文を検索する
+        List<jp.riken.kscope.language.Data> list = new ArrayList<jp.riken.kscope.language.Data>();
+        List<jp.riken.kscope.language.Data> datas = proc.getDataList();
+        if (datas == null || datas.size() <= 0) return null;
+        for (jp.riken.kscope.language.Data data : datas) {
+            List<Variable> vars = data.getVariables();
+            boolean exists = false;
+            for (Variable var : vars) {
+                VariableDefinition data_def = var.getDefinition();
+                if (data_def == var_def) {
+                    exists = true;
+                    break;
+                }
+            }
+
+            if (exists) {
+                list.add(data);
+            }
+        }
+        if (list.size() <= 0) return null;
+
+        return list;
+    }
 
     /**
      * 変数定義の変数を含むEQUIVALENCE 文を取得する。
@@ -4291,6 +4454,80 @@ public class KernelService extends BaseService {
         if (use_list.size() <= 0) return null;
 
         return use_list;
+    }
+
+
+    /**
+     * モジュール定義名（変数、関数）がモジュールに定義されているかチェックする。
+     * モジュール内のUSE文の先のモジュールに定義されているかチェックする。
+     * @param module        探索モジュール
+     * @param var_name        モジュール定義名
+     * @return        true=モジュールに定義されている
+     */
+    private boolean hasDefinition(Module module, String var_name)  throws Exception {
+        if (module == null) return false;
+        if (var_name == null) return false;
+
+        // 変数、手続が存在しているかチェックする。
+        if (module.get_variable(var_name) != null) return true;
+        if (module.get_child(var_name) != null) return true;
+
+        List<UseState> uses = module.getUseList();
+        if (uses == null || uses.size() <= 0) return false;
+        for (UseState use : uses) {
+            String mod_name = use.getModuleName();
+            Module use_mod = this.getKernelModule(mod_name);
+            if (use_mod == null) {
+                // [エラー]カーネルモジュールが存在しません。
+                String msg = Message.getString("kernel.validate.notfound_module.error.message");
+                msg += "[modulename=" + mod_name + "]";
+                this.addErrorInfo(msg);
+                throw new Exception(msg);
+            }
+            String trans_name = null;
+            if (use.hasOnlyMember(var_name))  trans_name = var_name;
+            else {
+                trans_name = use.getTranslationName(var_name);
+            }
+            if (trans_name == null) continue;
+
+            if (this.hasDefinition(use_mod, trans_name)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * CALL文の手続がサブルーチン・関数の引数であるかチェックする。
+     * @param call        CALL文
+     * @return        true=サブルーチン・関数の引数
+     */
+    private boolean isExternalArgment(ProcedureUsage call) {
+        if (call == null) return false;
+        if (call.getCallName() == null) return false;
+
+        String call_name = call.getCallName();
+        // 引数渡しの手続の場合は行う。
+        ProgramUnit parent = call.getScopeDeclarationsBlock();
+        if (parent == null) return false;
+        if (!(parent.getBlockType() == BlockType.PROCEDURE)) return false;
+
+        // 引数の取得
+        Variable[] vars = ((Procedure)parent).get_args();
+        if (vars == null) return false;
+        for (Variable var : vars) {
+            VariableDefinition def = var.getDefinition();
+            if (def == null) continue;
+            if (!def.hasExternal()) continue;
+            String arg_name = var.getName();
+            if (arg_name.equalsIgnoreCase(call_name)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
 

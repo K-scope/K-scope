@@ -173,14 +173,9 @@ public class KernelBuildAction extends ActionBase {
                 // カーネル抽出実行
                 service.buildKernel(kernel_list, selected_folder);
 
-                if (!service.existsErrorInfo()) {
-                    // 実行終了しました。
-                    action_message = Message.getString("appcontroller.thread.message.success");
-                }
-                else {
-                    // エラーにより終了しました。
-                    action_message = Message.getString("appcontroller.thread.message.error");
-                }
+                // 実行終了しました。
+                action_message = Message.getString("appcontroller.thread.message.success");
+
             }
             else {
                 // エラーにより終了しました。

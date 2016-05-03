@@ -444,11 +444,16 @@ public class Selection extends Block {
      */
     @Override
     public String toEndString() {
-        if (this.isIF()) return "end if";
-        if (this.isSelect()) return "end select";
-        if (this.isWHERE()) return "end where";
+        String buf = null;
+        if (this.isIF()) buf = "end if";
+        if (this.isSelect()) buf = "end select";
+        if (this.isWHERE()) buf = "end where";
+        if (buf == null) return null;
 
-        return null;
+        if (this.get_start().is_labeled()) {
+            buf += " " + this.get_start().get_label();
+        }
+        return buf;
     }
 
     /**

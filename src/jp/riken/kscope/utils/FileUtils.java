@@ -23,6 +23,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * ファイルユーティリティクラス
@@ -593,5 +594,41 @@ public class FileUtils {
         }
 
         return new File(filepath + "." + ext);
+    }
+
+    /**
+     * サブディレクトリからファイルを検索する。
+     * @param   base_folder    検索基準パス
+     * @param   filename       検索ファイル名
+     * @return   検索結果ファイル一覧
+     */
+    public static List<File> searchFiles(File base_folder, String filename) {
+        if (base_folder == null) return null;
+        if (filename == null) return null;
+
+        List<File> list = new ArrayList<File>();
+        File serach_file = new File(filename);
+
+        try {
+            File[] childs = base_folder.listFiles();
+            for (File file : childs) {
+                if (file.isFile()) {
+                    if (file.getName().equals(serach_file.getName())) {
+                        if (file.getPath().endsWith(filename)) {
+                            list.add(file);
+                        }
+                    }
+                } else if (file.isDirectory()) {
+                    List<File> child_files = searchFiles(file.getAbsoluteFile(), filename);
+                    if (child_files != null) {
+                        list.addAll(child_files);
+                    }
+                }
+            }
+        } catch (Exception ex) {}
+
+        if (list.size() <= 0) return null;
+
+        return list;
     }
 }

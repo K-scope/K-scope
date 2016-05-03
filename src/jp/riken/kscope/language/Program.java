@@ -370,13 +370,13 @@ public abstract class Program implements Serializable {
         // 分析機能のために参照をセット
         ProgramUnit dec_block = block.getScopeDeclarationsBlock();    // 変数の定義ブロックの検索
         if (arguments != null && dec_block != null) {
-        for (Expression arg: arguments) {
-            Set<Variable> vars = arg.getAllVariables();
-            for (Variable var: vars) {
-                    dec_block.putRefVariableName(var.getName(), block);
-                    dec_block.putVariableMap(var);
+            for (Expression arg: arguments) {
+                Set<Variable> vars = arg.getAllVariables();
+                for (Variable var: vars) {
+                        dec_block.putRefVariableName(var.getName(), block);
+                        dec_block.putVariableMap(var);
+                }
             }
-        }
         }
     }
 

@@ -110,7 +110,8 @@ public class VariableType implements Serializable,
         public static PrimitiveDataType findTypeBy(String typeName) {
             PrimitiveDataType result = PrimitiveDataType.UNKOWN;
             for (PrimitiveDataType type : PrimitiveDataType.values()) {
-                if (type.getName().equalsIgnoreCase(typeName)) {
+                if (type.getName().equalsIgnoreCase(typeName)
+                    || type.toString().equalsIgnoreCase(typeName)) {
                     result = type;
                     break;
                 }

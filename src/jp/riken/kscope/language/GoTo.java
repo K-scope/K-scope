@@ -19,9 +19,9 @@ package jp.riken.kscope.language;
 
 /**
  * 指定の箇所へ移動する制御文に対応したクラス。
- * 
+ *
  * @author RIKEN
- * 
+ *
  */
 public class GoTo extends jp.riken.kscope.language.Block {
     /** シリアル番号 */
@@ -40,7 +40,7 @@ public class GoTo extends jp.riken.kscope.language.Block {
 
     /**
      * コンストラクタ。
-     * 
+     *
      * @param parent
      *            親ブロック
      * @param argmnt
@@ -60,7 +60,7 @@ public class GoTo extends jp.riken.kscope.language.Block {
 
     /**
      * ブロックタイプの取得。
-     * 
+     *
      * @return BlockType.GOTO
      */
     public BlockType getBlockType() {
@@ -69,7 +69,7 @@ public class GoTo extends jp.riken.kscope.language.Block {
 
     /**
      * 引数のセット。
-     * 
+     *
      * @param str
      *            引数
      */
@@ -79,7 +79,7 @@ public class GoTo extends jp.riken.kscope.language.Block {
 
     /**
      * 引数の取得。
-     * 
+     *
      * @return 引数
      */
     public String getArgument() {
@@ -95,7 +95,7 @@ public class GoTo extends jp.riken.kscope.language.Block {
         if (this.argument == null) {
             return "goto";
         } else {
-            return "goto " + this.argument;
+            return super.toStringBase();
         }
     }
 }
