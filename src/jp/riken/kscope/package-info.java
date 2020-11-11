@@ -16,8 +16,8 @@
  */
 
 /**
- * アプリケーションのmain関数、基本クラスを提供します.<br/>
- * 起動mainクラス、ログ設定ファイル、プロパティファイル、及びプロパティファイルの読込クラスを提供します。
+ * Provides the main function and base class of the application. <br/>
+ * Provides the startup main class, log configuration file, property file, and read class of property file.
  */
 package jp.riken.kscope;
 

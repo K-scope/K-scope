@@ -16,6 +16,6 @@
  */
 
 /**
- * XcodeMLのXML解析、データベースへの登録クラスを提供します.
+ * Provides XML parsing of XcodeML and registration class to database.
  */
 package jp.riken.kscope.xcodeml;

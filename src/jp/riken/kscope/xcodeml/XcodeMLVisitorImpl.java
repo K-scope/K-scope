@@ -25,7 +25,7 @@ import jp.riken.kscope.xcodeml.xml.IXmlVisitor;
 import jp.riken.kscope.xcodeml.xml.gen.*;
 
 /**
- * XcodeMLノード探索クラス
+ * XcodeML node search class
  * @author RIKEN
  *
  */

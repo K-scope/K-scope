@@ -19,22 +19,22 @@ package jp.riken.kscope;
 import java.util.Enumeration;
 
 /**
- * 英語、日本語メッセージクラス.
- * シングルトンクラス
+ * English and Japanese message classes.
+ * Singleton class
  */
 public class Message {
-	/** プロパティファイル */
+	/** Property file */
 	private static final String PROPERTIES_FILE = "jp.riken.kscope.message";
-	/** プロパティリソース */
+	/** Property resource */
 	private java.util.ResourceBundle bundle = null;
-	/** Messageクラスインスタンス */
+	/** Message class instance */
     private static Message instance = new Message();
     private static boolean debug = (System.getenv("DEBUG")!= null);
 	private static boolean debug_l2=false;
 	private static boolean debug_l3=false;
 
     /**
-     * コンストラクタ
+     * Constructor
      */
     private Message() {
     	if (debug) {
@@ -45,16 +45,16 @@ public class Message {
     }
 
     /**
-     * Messageクラスインスタンスを取得する.
-     * @return		Messageクラスインスタンス
+     * Get a Message class instance.
+     * @return Message class instance
      */
     public static Message getInstance() {
         return instance;
     }
 
     /**
-     * プロパティファイルからリソースを作成する.
-     * @return   プロパティフリソース
+     * Create a resource from the properties file.
+     * @return property resource
      */
 	private static java.util.ResourceBundle getBundle() {
         try {
@@ -73,10 +73,10 @@ public class Message {
 	}
 
 	/**
-	 * キーのメッセージを取得する.
-	 * @param key	キー
-	 * @return		メッセージ文字列
-	 */
+* Get the key message.
+* @param key key
+* @return message string
+*/
 	public static String getString(String key) {
 		if (key == null || key.isEmpty()) return null;
 		if (getBundle() == null) return null;
@@ -96,11 +96,11 @@ public class Message {
 	}
 
 	/**
-	 * キーの書式文字列からメッセージする.
-	 * @param key	キー
-	 * @param args		書式パラメータ
-	 * @return		メッセージ文字列
-	 */
+* Message from the key format string.
+* @param key key
+* @param args Format parameters
+* @return message string
+*/
 	public static String getString(String key, Object... args) {
 		if (key == null || key.isEmpty()) return null;
 		if (getBundle() == null) return null;
@@ -115,10 +115,10 @@ public class Message {
 	}
 
 	/**
-	 * メッセージのキーを取得する.
-	 * @param message	メッセージ文字列
-	 * @return		キー
-	 */
+* Get the key of the message.
+* @param message message string
+* @return key
+*/
 	public static String getKey(String message) {
 		if (message == null || message.isEmpty()) return null;
 		if (getBundle() == null) return null;
@@ -138,10 +138,10 @@ public class Message {
 	}
 
 	/**
-	 * メッセージのキーが存在するかチェックする.
-	 * @param key	キー
-	 * @return		true=キーが存在する
-	 */
+* Check if the message key exists.
+* @param key key
+* @return true = key exists
+*/
 	public static boolean containsKey(String key) {
 		if (key == null || key.isEmpty()) return false;
 		if (getBundle() == null) return false;

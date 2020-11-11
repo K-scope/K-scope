@@ -22,55 +22,55 @@ import java.util.Observer;
 import javax.swing.SwingUtilities;
 
 /**
- * アプリケーションの進捗メッセージ、進捗状況等のグローバル設定クラス
+ * Global settings class for application progress messages, progress, etc.
  *
  * @author RIKEN
  */
 public class Application {
 
-    /** 進捗情報 */
+    /** Progress information */
     public static StatusPrint status = new StatusPrint();
 
     /**
-     * コンストラクタ
+     * Constructor
      */
     private Application() {
     }
 
     /**
-     * ステータス情報のオブザーバーの追加を行う
+     * Add status information observer
      *
      * @param o
-     *            オブザーバー
+     * Observer
      */
     public static void addStatus(Observer o) {
         status.addObserver(o);
     }
 
     /**
-     * 進捗情報クラス
+     * Progress information class
      *
      * @author RIKEN
      *
      */
     public static class StatusPrint extends Observable {
-        /** メインメッセージ */
+        /** Main message */
         private StringBuffer messageMain = new StringBuffer();
-        /** ロケーションメッセージ */
+        /** Location message */
         private StringBuffer messageLocation = new StringBuffer();
-        /** ステータスメッセージ */
+        /** Status message */
         private StringBuffer messageStatus = new StringBuffer();
-        /** プログレスバー:最小値 */
+        /** Progress bar: Minimum value */
         private Integer progressMin = null;
-        /** プログレスバー:最大値 */
+        /** Progress bar: Maximum value */
         private Integer progressMax = null;
-        /** プログレスバー:値 */
+        /** Progress bar: Value */
         private Integer progressValue = null;
-        /** プログレスバー:開始 */
+        /** Progress bar: Start */
         private boolean progressStart = false;
 
         /**
-         * ステータスの変更を通知する
+         * Notify status change
          */
         private void notifyStatus() {
             SwingUtilities.invokeLater(new Runnable() {
@@ -93,10 +93,10 @@ public class Application {
         }
 
         /**
-         * メインメッセージを設定する
+         * Set the main message
          *
          * @param message
-         *            メインメッセージ
+         * Main message
          */
         public void setMessageMain(String message) {
             this.messageMain = new StringBuffer();
@@ -107,19 +107,19 @@ public class Application {
         }
 
         /**
-         * メインメッセージを取得する
+         * Get the main message
          *
-         * @return メインメッセージ
+         * @return main message
          */
         public String getMessageMain() {
             return this.messageMain.toString();
         }
 
         /**
-         * ステータスメッセージを設定する
+         * Set status message
          *
          * @param message
-         *            ステータスメッセージ
+         * Status message
          */
         public void setMessageStatus(String message) {
             this.messageStatus = new StringBuffer();
@@ -130,9 +130,9 @@ public class Application {
         }
 
         /**
-         * ステータスメッセージを取得する
+         * Get status message
          *
-         * @return ステータスメッセージ
+         * @return status message
          */
         public String getMessageStatus() {
         	try {
@@ -145,10 +145,10 @@ public class Application {
         }
 
         /**
-         * ロケーションメッセージを設定する
+         * Set location message
          *
          * @param message
-         *            ロケーションメッセージ
+         * Location message
          */
         public void setMessageLocation(String message) {
             this.messageLocation = new StringBuffer();
@@ -159,14 +159,14 @@ public class Application {
         }
 
         /**
-         * ロケーションメッセージを設定する
+         * Set location message
          *
          * @param row
-         *            行番号
+         *            line number
          * @param col
-         *            列番号
+         *            Column index
          * @param word
-         *            ロケーションメッセージ
+         * Location message
          */
         public void setMessageLocation(int row, int col, String word) {
             this.messageLocation = new StringBuffer();
@@ -182,23 +182,23 @@ public class Application {
         }
 
         /**
-         * ロケーションメッセージを取得する
+         * Get location message
          *
-         * @return ロケーションメッセージ
+         * @return Location message
          */
         public String getMessageLocation() {
             return this.messageLocation.toString();
         }
 
         /**
-         * プログレスバーを設定する
+         * Set the progress bar
          *
          * @param orient
-         *            値
+         *            value
          * @param min
-         *            最小値
+         *            minimum value
          * @param max
-         *            最大値
+         *            Maximum value
          */
         public void setProgress(int orient, int min, int max) {
             this.progressValue = orient;
@@ -209,12 +209,12 @@ public class Application {
         }
 
         /**
-         * プログレスバーを設定する。
+         * Set the progress bar.
          *
          * @param min
-         *            最小値
+         *            minimum value
          * @param max
-         *            最大値
+         *            Maximum value
          */
         public void setProgress(int min, int max) {
             this.progressValue = null;
@@ -224,10 +224,10 @@ public class Application {
         }
 
         /**
-         * プログレスバーを設定する。
+         * Set the progress bar.
          *
          * @param value
-         *            値
+         *            value
          */
         public void setProgressValue(int value) {
             this.progressValue = value;
@@ -236,15 +236,15 @@ public class Application {
         }
 
         /**
-         * プログレスバーの開始状態を設定する
+         * Set the start state of the progress bar
          *
          * @param start
-         *            true=開始
+         * true = start
          */
         public void setProgressStart(boolean start) {
             this.progressStart = start;
             if (!start) {
-                // プログレスバーの設定のクリア
+                // Clear progress bar settings
                 this.progressValue = null;
                 this.progressMin = null;
                 this.progressMax = null;
@@ -253,36 +253,36 @@ public class Application {
         }
 
         /**
-         * プログレスバー:値を取得する.
+         * Progress bar: Get the value.
          *
-         * @return プログレスバー:値
+         * @return progress bar: value
          */
         public Integer getProgressValue() {
             return this.progressValue;
         }
 
         /**
-         * プログレスバー:最小値を取得する.
+         * Progress bar: Get the minimum value.
          *
-         * @return プログレスバー:最小値
+         * @return Progress bar: Minimum
          */
         public Integer getProgressMin() {
             return this.progressMin;
         }
 
         /**
-         * プログレスバー:最大値を取得する.
+         * Progress bar: Get the maximum value.
          *
-         * @return プログレスバー:最大値
+         * @return Progress bar: Maximum
          */
         public Integer getProgressMax() {
             return this.progressMax;
         }
 
         /**
-         * プログレスバーの開始状態を取得する
+         * Get the start status of the progress bar
          *
-         * @return true=開始
+         * @return true = start
          */
         public boolean isProgressStart() {
             return this.progressStart;

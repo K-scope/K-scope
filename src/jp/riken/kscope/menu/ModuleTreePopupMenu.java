@@ -50,153 +50,153 @@ import jp.riken.kscope.common.FRAME_VIEW;
 import jp.riken.kscope.service.AppController;
 
 /**
- * モジュールツリーポップアップメニュークラス
+ * Module tree pop-up menu class
  * @author RIKEN
  */
 public class ModuleTreePopupMenu extends JPopupMenu implements PopupMenuListener, ITreePopupMenu {
 
-    /** シリアル番号 */
+    /** Serial number */
     private static final long serialVersionUID = 1L;
 
-    /** アプリケーションコントローラ */
+    /** Application controller */
     private AppController controller;
 
-    /** すべて収納リスナ */
+    /** All storage listener */
     private ActionListener actionTreeCollapseAll;
-    /** すべて展開リスナ */
+    /** All deployment listener */
     private ActionListener actionTreeExpandAll;
-    /** 選択展開リスナ */
+    /** Selective expansion listener */
     private ActionListener actionTreeExpandSelect;
-    /** ファイルを開くリスナ */
+    /** Open file Listener */
     private EventListener actionOpenFile;
 
-    /** ファイルを開くメニュー */
+    /** Open file menu */
     private JMenuItem menuOpenFile;
-    /** 編集:付加情報編集 */
+    /** Edit: Edit additional information */
     JMenuItem menuEditInformationEdit;
 
-    /** 解析:変数特性一覧アクション */
+    /** Analysis: Variable Characteristic List Action */
     private AnalysisVariableAction actionAnalysisVariable;
-    /** 付加情報編集アクション */
+    /** Additional information editing action */
     private EditInformationEditAction actionEditInformation;
-    /** エクスプローラエクスポートアクション */
+    /** Explorer export action */
     private ActionListener actionExportExplore;
 
     /**
-     * コンストラクタ
+     * Constructor
      */
     public ModuleTreePopupMenu() {
-        // メニューの作成を行う。
+        // Create a menu.
         initialize();
     }
 
 
     /**
-     * コンストラクタ
-     * @param controller		アプリケーションコントローラ
+     * Constructor
+     * @param controller Application controller
      */
     public ModuleTreePopupMenu(AppController controller) {
         this.controller = controller;
 
-        // メニューの作成を行う。
+        // Create a menu.
         initialize();
     }
 
     /**
-     * メニューの作成を行う。
+     * Create a menu.
      */
     private void initialize() {
 
-        // メニューの作成
-        // すべて収納
-        JMenuItem menuCollapseAll = new JMenuItem(Message.getString("treechooserdialog.tooltip.collapseall")); //すべて収納
+        // Create menu
+        // store everything
+        JMenuItem menuCollapseAll = new JMenuItem(Message.getString("treechooserdialog.tooltip.collapseall")); // All stored
         this.add(menuCollapseAll);
         this.actionTreeCollapseAll = new TreeCollapseAllAction(this.controller);
         menuCollapseAll.addActionListener(this.actionTreeCollapseAll);
 
-        // すべて展開
-        JMenuItem menuExpandAll = new JMenuItem(Message.getString("treechooserdialog.tooltip.expandall")); //すべて展開
+        // Expand all
+        JMenuItem menuExpandAll = new JMenuItem(Message.getString("treechooserdialog.tooltip.expandall")); // Expand all
         this.add(menuExpandAll);
         this.actionTreeExpandAll = new TreeExpandAllAction(this.controller);
         menuExpandAll.addActionListener(this.actionTreeExpandAll);
 
-        // 選択展開
-        JMenuItem menuExpandSelect = new JMenuItem(Message.getString("mainmenu.view.collapse-expand.selective")); //選択展開
+        // Selective expansion
+        JMenuItem menuExpandSelect = new JMenuItem(Message.getString("mainmenu.view.collapse-expand.selective")); // Selective expansion
         this.add(menuExpandSelect);
         this.actionTreeExpandSelect = new TreeExpandSelectAction(this.controller);
         menuExpandSelect.addActionListener(this.actionTreeExpandSelect);
 
-        // スペーサー
+        // spacer
         this.add(new JSeparator());
 
-        // ツリー検索
-        JMenuItem menuSearchTree = new JMenuItem(Message.getString("mainmenu.search.tree")); //ツリー検索
+        // Tree search
+        JMenuItem menuSearchTree = new JMenuItem(Message.getString("mainmenu.search.tree")); // Tree search
         this.add(menuSearchTree);
         menuSearchTree.addActionListener(new SearchTreeAction(this.controller));
 
-        // 解析:変数特性一覧
-        JMenuItem menuAnalysisVariable = new JMenuItem(Message.getString("mainmenu.analysis.valiableproperty")); //変数特性一覧
+        // Analysis: List of variable characteristics
+        JMenuItem menuAnalysisVariable = new JMenuItem(Message.getString("mainmenu.analysis.valiableproperty")); // List of variable characteristics
         this.add(menuAnalysisVariable);
         actionAnalysisVariable = new AnalysisVariableAction(this.controller);
         menuAnalysisVariable.addActionListener(actionAnalysisVariable);
 
-        // 解析:演算カウント
-        JMenuItem menuAnalysisCount = new JMenuItem(Message.getString("mainmenu.analysis.operation")); //演算カウント
+        // Analysis: Calculation count
+        JMenuItem menuAnalysisCount = new JMenuItem(Message.getString("mainmenu.analysis.operation")); // Calculation count
         AnalysisOperandAction actionAnalysisOperand = new AnalysisOperandAction(this.controller, FRAME_VIEW.EXPLORE_VIEW);
         this.add(menuAnalysisCount);
         menuAnalysisCount.addActionListener(actionAnalysisOperand);
 
-        // 編集:付加情報編集
-        menuEditInformationEdit = new JMenuItem(Message.getString("mainmenu.edit.info")); //付加情報編集
+        // Edit: Edit additional information
+        menuEditInformationEdit = new JMenuItem(Message.getString("mainmenu.edit.info")); // Edit additional information
         this.add(menuEditInformationEdit);
         actionEditInformation = new EditInformationEditAction(this.controller, FRAME_VIEW.EXPLORE_VIEW);
         menuEditInformationEdit.addActionListener(actionEditInformation);
 
-        // 解析:参照
-        JMenuItem menuAnalysisReference = new JMenuItem(Message.getString("mainmenu.analysis.dec-def-ref")); //宣言・定義・参照
+        // Analysis: Reference
+        JMenuItem menuAnalysisReference = new JMenuItem(Message.getString("mainmenu.analysis.dec-def-ref")); // Declaration / Definition / Reference
         this.add(menuAnalysisReference);
         menuAnalysisReference.addActionListener(new AnalysisReferenceAction(this.controller, FRAME_VIEW.EXPLORE_VIEW));
 
-        // 分析:変数有効域
-        JMenuItem menuAnalysisValid = new JMenuItem(Message.getString("mainmenu.analysis.valiablescope")); //変数有効域
+        // Analysis: Variable scope
+        JMenuItem menuAnalysisValid = new JMenuItem(Message.getString("mainmenu.analysis.valiablescope")); // Variable valid area
         this.add(menuAnalysisValid);
         menuAnalysisValid.addActionListener(new AnalysisScopeAction(this.controller, FRAME_VIEW.EXPLORE_VIEW));
 
-        // スペーサー
+        // spacer
         this.add(new JSeparator());
 
-        // 表示:新規構造ツリー
-        JMenuItem menuViewOpenTree = new JMenuItem(Message.getString("languagetreepopupmenu.menu.newstructuretree")); //新規構造ツリー
+        // View: New Structure Tree
+        JMenuItem menuViewOpenTree = new JMenuItem(Message.getString("languagetreepopupmenu.menu.newstructuretree")); // New structure tree
         this.add(menuViewOpenTree);
         menuViewOpenTree.addActionListener(new ViewOpenLanguageTreeAction(this.controller));
 
-        // ファイルを開く
-        menuOpenFile = new JMenuItem(Message.getString("languagetreepopupmenu.menu.opensource")); //選択箇所をソースビューに表示
+        // open the file
+        menuOpenFile = new JMenuItem(Message.getString("languagetreepopupmenu.menu.opensource")); // Show your selection in source view
         this.add(menuOpenFile);
         actionOpenFile = new ViewOpenExploreBlockAction(this.controller);
         menuOpenFile.addActionListener((ActionListener) actionOpenFile);
 
-        // ファイル:外部ツールでソースファイルを開く
-        JMenuItem menuFileOpenSourceFile = new JMenuItem(Message.getString("mainmenu.file.program")); //外部ツールで開く
+        // File: Open the source file with an external tool
+        JMenuItem menuFileOpenSourceFile = new JMenuItem(Message.getString("mainmenu.file.program")); // Open with an external tool
         this.add(menuFileOpenSourceFile);
         menuFileOpenSourceFile.addActionListener(new FileOpenSourceFileAction(this.controller, FRAME_VIEW.EXPLORE_VIEW));
 
-        // プロパティ
-        JMenuItem menuFileProperties = new JMenuItem(Message.getString("mainmenu.project.property")); //プロパティ
+        // Properties
+        JMenuItem menuFileProperties = new JMenuItem(Message.getString("mainmenu.project.property")); // Properties
         this.add(menuFileProperties);
         menuFileProperties.addActionListener(new LanguagePropertiesAction(this.controller));
 
-        // エクスポート（ポップアップ非表示：アクション作成のみ）
+        // Export (Hide pop-up: Create action only)
         actionExportExplore = new FileExportExploreAction(this.controller);
 
         this.addPopupMenuListener(this);
     }
 
     /**
-     * ポップアップメニューをJTreeのノード上でのみ表示する。
-     * @param invoker		コンポーネント
-     * @param x				座標X
-     * @param y				座標Y
+     * Show the pop-up menu only on JTree nodes.
+     * @param invoker component
+     * @param x coordinate X
+     * @param y Coordinate Y
      */
     @Override
     public void show(Component invoker, int x, int y) {
@@ -211,8 +211,8 @@ public class ModuleTreePopupMenu extends JPopupMenu implements PopupMenuListener
     }
 
     /**
-     * すべて収納アクションリスナを取得する
-     * @return		すべて収納アクションリスナ
+     * Get all storage action listeners
+     * @return All storage action listener
      */
     @Override
     public ActionListener getActionTreeCollapseAll() {
@@ -220,8 +220,8 @@ public class ModuleTreePopupMenu extends JPopupMenu implements PopupMenuListener
     }
 
     /**
-     * すべて展開アクションリスナを取得する
-     * @return		すべて展開アクションリスナ
+     * Get all deployment action listeners
+     * @return All deployment action listener
      */
     @Override
     public ActionListener getActionTreeExpandAll() {
@@ -229,8 +229,8 @@ public class ModuleTreePopupMenu extends JPopupMenu implements PopupMenuListener
     }
 
     /**
-     * 選択展開アクションリスナを取得する
-     * @return		選択展開アクションリスナ
+     * Get Selective Deployment Action Listener
+     * @return Selective expansion action listener
      */
     @Override
     public ActionListener getActionTreeExpandSelect() {
@@ -238,8 +238,8 @@ public class ModuleTreePopupMenu extends JPopupMenu implements PopupMenuListener
     }
 
     /**
-     * ファイルを開くリスナを取得する。
-     * @return			ファイルを開くリスナ
+     * Get the listener to open the file.
+     * @return Open file Listener
      */
     @Override
     public EventListener getActionOpenFile() {
@@ -247,8 +247,8 @@ public class ModuleTreePopupMenu extends JPopupMenu implements PopupMenuListener
     }
 
     /**
-     * エクスプローラエクスポートアクションを取得する
-     * @return		エクスプローラエクスポートアクション
+     * Get the explorer export action
+     * @return explorer export action
      */
     @Override
     public ActionListener getActionExportExplore() {
@@ -257,13 +257,13 @@ public class ModuleTreePopupMenu extends JPopupMenu implements PopupMenuListener
 
 
     /**
-     * ポップアップメニュー可視イベント
-     * @param event		イベント情報
+     * Pop-up menu visible event
+     * @param event Event information
      */
     @Override
     public void popupMenuWillBecomeVisible(PopupMenuEvent event) {
 
-        // アクションが実行可能かチェックする
+        // Check if the action is executable
         JPopupMenu menu = (JPopupMenu) event.getSource();
         int count = menu.getComponentCount();
         for (int i=0; i<count; i++) {
@@ -283,16 +283,16 @@ public class ModuleTreePopupMenu extends JPopupMenu implements PopupMenuListener
     }
 
     /**
-     * ポップアップメニューが取り消されたイベント
-     * @param event		イベント情報
+     * Events with the pop-up menu canceled
+     * @param event Event information
      */
     @Override
     public void popupMenuWillBecomeInvisible(PopupMenuEvent event) { }
 
 
     /**
-     * ポップアップメニューが取り消されたイベント
-     * @param event		イベント情報
+     * Events with the pop-up menu canceled
+     * @param event Event information
      */
     @Override
     public void popupMenuCanceled(PopupMenuEvent event) { }

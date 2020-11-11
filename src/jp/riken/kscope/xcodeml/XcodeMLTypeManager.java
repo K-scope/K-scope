@@ -38,26 +38,26 @@ import jp.riken.kscope.xcodeml.xml.gen.Name;
  * @author RIKEN
  */
 public class XcodeMLTypeManager {
-    /** データ型テーブル */
+    /** Data type table */
     private TypeMap m_typeMap;
-    /** シンボルスタック */
+    /** Symbol stack */
     private SymbolMapStack m_symbolMapStack;
-    /** 参照型識別子スタック */
+    /** Reference identifier stack */
     private AliasMapStack m_aliasMapStack;
-    /** 参照型識別子テーブル */
+    /** Reference type identifier table */
     private AliasMap m_reverseBasicRefMap;
 
     /**
-     * データ型テーブルクラス
+     * Data type table class
      * @author RIKEN
      */
     private class TypeMap extends HashMap<String, IXmlTypeTableChoice> {
-        /** シリアル番号 */
+        /** Serial number */
         private static final long serialVersionUID = 1L;
 
         /**
-         * TypeMapを文字列にする
-         * @return		TypeMap文字列
+         * Make TypeMap a string
+         * @return TypeMap string
          */
         @Override
         public String toString() {
@@ -74,16 +74,16 @@ public class XcodeMLTypeManager {
     }
 
     /**
-     * シンボルテーブルクラス
+     * Symbol table class
      * @author RIKEN
      */
     private class SymbolMap extends HashMap<String, Id> {
-        /** シリアル番号 */
+        /** Serial number */
         private static final long serialVersionUID = 1L;
 
         /**
-         * SymbolMapを文字列にする
-         * @return		SymbolMap文字列
+         * Make SymbolMap a string
+         * @return SymbolMap string
          */
         @Override
         public String toString() {
@@ -100,17 +100,17 @@ public class XcodeMLTypeManager {
     }
 
     /**
-     * シンボルスタッククラス
+     * Symbol stack class
      * @author RIKEN
      *
      */
     private class SymbolMapStack extends LinkedList<SymbolMap> {
-        /** シリアル番号 */
+        /** Serial number */
         private static final long serialVersionUID = 1L;
 
         /**
-         * SymbolMapStackを文字列にする
-         * @return		SymbolMapStack文字列
+         * Make SymbolMapStack a string
+         * @return SymbolMapStack string
          */
         @Override
         public String toString() {
@@ -124,16 +124,16 @@ public class XcodeMLTypeManager {
     }
 
     /**
-     * 参照型識別子テーブルクラス
+     * Reference type identifier table class
      * @author RIKEN
      */
     private class AliasMap extends HashMap<String, String> {
-        /** シリアル番号 */
+        /** Serial number */
         private static final long serialVersionUID = 1L;
 
         /**
-         * AliasMapを文字列にする
-         * @return		AliasMap文字列
+         * Make AliasMap a string
+         * @return AliasMap string
          */
         @Override
         public String toString() {
@@ -150,16 +150,16 @@ public class XcodeMLTypeManager {
     }
 
     /**
-     * 参照型識別子スタッククラス
+     * Reference type identifier stack class
      * @author RIKEN
      */
     private class AliasMapStack extends LinkedList<AliasMap> {
-        /** シリアル番号 */
+        /** Serial number */
         private static final long serialVersionUID = 1L;
 
         /**
-         * AliasMapStackを文字列にする
-         * @return		AliasMapStack文字列
+         * Make AliasMapStack a string
+         * @return AliasMapStack string
          */
         @Override
         public String toString() {
@@ -173,16 +173,16 @@ public class XcodeMLTypeManager {
     }
 
     /**
-     * データ型テーブルクラス
+     * Data type table class
      * @author RIKEN
      */
     public class TypeList extends LinkedList<IXmlTypeTableChoice> {
-        /** シリアル番号 */
+        /** Serial number */
         private static final long serialVersionUID = 1L;
 
         /**
-         * TypeListを文字列にする
-         * @return		TypeList文字列
+         * Make TypeList a string
+         * @return TypeList string
          */
         @Override
         public String toString() {
@@ -199,7 +199,7 @@ public class XcodeMLTypeManager {
     }
 
     /**
-     * コンストラクタ
+     * Constructor
      */
     public XcodeMLTypeManager() {
         m_typeMap = new TypeMap();
@@ -209,8 +209,8 @@ public class XcodeMLTypeManager {
     }
 
     /**
-     * シンボルスタックを取得する
-     * @return		シンボルスタック
+     * Get the symbol stack
+     * @return Symbol stack
      */
     private SymbolMap _getCurrentSymbolMap() {
         if (m_symbolMapStack.size() <= 0) {
@@ -220,8 +220,8 @@ public class XcodeMLTypeManager {
     }
 
     /**
-     * 参照型識別子スタックを取得する
-     * @return		参照型識別子スタック
+     * Get the reference identifier stack
+     * @return Reference type identifier stack
      */
     private AliasMap _getCurrentAliasMap() {
         if (m_aliasMapStack.size() <= 0) {
@@ -231,7 +231,7 @@ public class XcodeMLTypeManager {
     }
 
     /**
-     * データ型要素のパースを開始する
+     * Start parsing data type elements
      */
     public void enterScope() {
         m_symbolMapStack.push(new SymbolMap());
@@ -239,7 +239,7 @@ public class XcodeMLTypeManager {
     }
 
     /**
-     * データ型要素のパースを終了する
+     * Exit parsing of data type elements
      */
     public void leaveScope() {
         m_symbolMapStack.pop();
@@ -247,8 +247,8 @@ public class XcodeMLTypeManager {
     }
 
     /**
-     * シンボルを追加する
-     * @param id		シンボルID要素
+     * Add a symbol
+     * @param id Symbol ID element
      */
     public void addSymbol(Id id) {
         Name name = id.getName();
@@ -291,9 +291,9 @@ public class XcodeMLTypeManager {
     }
 
     /**
-     * シンボルを検索する
-     * @param symbolName		シンボル名
-     * @return		シンボルID要素
+     * Search for symbols
+     * @param symbolName Symbol name
+     * @return Symbol ID element
      */
     public Id findSymbol(String symbolName) {
         Id id = null;
@@ -308,8 +308,8 @@ public class XcodeMLTypeManager {
     }
 
     /**
-     * データ型要素を追加する
-     * @param type		データ型要素
+     * Add a data type element
+     * @param type Data type element
      */
     public void addType(IXmlTypeTableChoice type) {
         String typeName = type.getType();
@@ -336,9 +336,9 @@ public class XcodeMLTypeManager {
     }
 
     /**
-     * タイプ要素を検索する
-     * @param typeName		タイプ名
-     * @return			タイプ要素
+     * Search for type elements
+     * @param typeName type name
+     * @return type element
      */
     public IXmlTypeTableChoice findType(String typeName) {
         if (StringUtils.isNullOrEmpty(typeName) != false) {
@@ -350,9 +350,9 @@ public class XcodeMLTypeManager {
     }
 
     /**
-     * タイプ要素を検索する
-     * @param nameElem		タイプ名要素
-     * @return			タイプ要素
+     * Search for type elements
+     * @param nameElem Type name element
+     * @return type element
      */
     public IXmlTypeTableChoice findType(Name nameElem) {
         if (nameElem == null) {
@@ -388,10 +388,10 @@ public class XcodeMLTypeManager {
     }
 
     /**
-     * タイプを追加する
+     * Add type
      *
-     * @param typeId		タイプID
-     * @param typeName		タイプ名
+     * @param typeId Type ID
+     * @param typeName type name
      */
     public void putAliasTypeName(String typeId, String typeName) {
         if (StringUtils.isNullOrEmpty(typeName)) {
@@ -410,7 +410,7 @@ public class XcodeMLTypeManager {
     /**
      * Get alias of type name.
      *
-     * @param typeName		タイプ名
+     * @param typeName type name
      * @return When alias not found, return argument type name.
      */
     public String getAliasTypeName(String typeName) {
@@ -546,8 +546,8 @@ public class XcodeMLTypeManager {
      * return if xcodemlTypeName is not the type which is able to be decompiled
      * as Fortran token.
      *
-     * @param xcodemlTypeName		タイプ名
-     * @return			true=decompile
+     * @param xcodemlTypeName Type name
+     * @return true = decompile
      */
     public boolean isDecompilableType(String xcodemlTypeName) {
         return isTypeOf(xcodemlTypeName, EnumType.VOID) == false

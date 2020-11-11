@@ -24,26 +24,26 @@ import javax.swing.plaf.FontUIResource;
 import javax.swing.plaf.metal.OceanTheme;
 
 /**
- * Windows用ルックアンドフィール
+ * Look and Feel for Windows
  * @author RIKEN
  */
 public class ThemeWindows extends OceanTheme {
 
-    /** デフォルト、論理フォント */
+    /** Default, logical font */
     private Font font_normal;
-    /** デフォルト、論理フォント:スモール */
+    /** Default, logical font: Small */
     private Font font_small;
-    /** コントロールテキストフォント */
+    /** Control text font */
     private FontUIResource controlFont = null;
-    /** システムテキストフォント */
+    /** System text font */
     private FontUIResource systemFont = null;
-    /** ユーザーテキストフォント */
+    /** User text font */
     private FontUIResource userFont = null;
-    /** サブテキストフォント */
+    /** Subtext font */
     private FontUIResource smallFont = null;
 
     /**
-     * ルックアンドフィール名
+     * Look and feel name
      */
     @Override
     public String getName() {
@@ -51,19 +51,19 @@ public class ThemeWindows extends OceanTheme {
     }
 
     /**
-     * コンストラクタ
+     * Constructor
      */
     public ThemeWindows() {
-        //物理フォントを優先、デフォルトは論理フォント
-        // フォント名リストの取得
+        // Prefer physical fonts, default logical fonts
+        // Get the font name list
         GraphicsEnvironment env = GraphicsEnvironment.getLocalGraphicsEnvironment();
         String[] fontNames = env.getAvailableFontFamilyNames();
 
-        //デフォルト、論理フォントを設定
+        // Set default, logical font
         font_normal = new Font("Monospaced", Font.PLAIN, 11);
         font_small  = new Font("Monospaced", Font.PLAIN, 9);
 
-        //物理フォントの探索
+        // Search for physical fonts
         if (fontNames != null && fontNames.length > 0) {
             for (int i = 0; i < fontNames.length; i++) {
                 if (fontNames[i].equals("Meiryo UI")) {
@@ -74,7 +74,7 @@ public class ThemeWindows extends OceanTheme {
             }
         }
 
-        //フォントの設定
+        // Font settings
         controlFont = new FontUIResource(font_normal);
         systemFont  = new FontUIResource(font_normal);
         userFont    = new FontUIResource(font_normal);

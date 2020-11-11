@@ -39,20 +39,20 @@ import jp.riken.kscope.utils.Logger;
 import jp.riken.kscope.utils.ResourceUtils;
 
 /**
- * メインクラス
+ * Main class
  *
  * @author RIKEN
  */
 public class Kscope {
 
     /**
-     * メインメソッド
+     * Main method
      *
-     * @param args 起動引数
+     * @param args Start argument
      */
     public static void main(String args[]) {
-        // 初期設定
-        // MacOSXでのJava実行環境用のシステムプロパティの設定.
+        // Initial setting
+        // Set system properties for Java runtime environment on MacOSX.
     	boolean debug = (System.getenv("DEBUG")!= null);
         String version = KscopeProperties.APPLICATION_VERSION;        
         if (debug) {
@@ -66,7 +66,7 @@ public class Kscope {
         			+ " any other value, but not empy - less debug info.\nCurrently DEBUG is set to \""+System.getenv("DEBUG")+"\"");
         }
         if (KscopeProperties.isMac()) {
-        	// JFrameにメニューをつけるのではなく、一般的なOSXアプリ同様に画面上端のスクリーンメニューにする.
+        	// Instead of adding a menu to JFrame, make it a screen menu at the top of the screen like a general OSX application.
         	System.setProperty("apple.laf.useScreenMenuBar", "true");
             System.setProperty("com.apple.macos.smallTabs", "true");           
             try {
@@ -75,7 +75,7 @@ public class Kscope {
                 ex.printStackTrace();
                 return;
             }
-            // スクリーンメニュー左端に表記されるアプリケーション名を設定する (何も設定しないとクラス名になる。)
+            // Set the application name displayed on the left end of the screen menu (If nothing is set, it will be the class name)
             String title = Message.getString("application.name");
             System.setProperty( "com.apple.mrj.application.apple.menu.about.name",title);
         }
@@ -89,7 +89,7 @@ public class Kscope {
                 return;
             }
         } 
-        // Linuxの場合は設定しない。
+        // Not set for Linux.
         else {
                 /*
         	try {
@@ -120,7 +120,7 @@ public class Kscope {
         Kscope app = new Kscope();
         app.initApp();
 
-        // メインフレーム表示
+        // Mainframe display
         EventQueue.invokeLater(new Runnable() {
             @Override
             public void run() {
@@ -134,33 +134,33 @@ public class Kscope {
     }
 
     /**
-     * メインフレームを表示する。
+     * Display the mainframe.
      */
     private static void showMainFrame() {
 
         try {
-            // メインフレームの作成
+            // Create mainframe
             MainFrame frame = new MainFrame();
 
-            // コントローラの作成
+            // Create controller
             AppController ctrl = new AppController();
 
-            // メインフレームの初期化
+            // Mainframe initialization
             frame.initialize(ctrl);
 
-            // コントローラの初期化
+            // Controller initialization
             ctrl.initialize(frame);
            
             String status = Message.getString("go.status.start");
             Application.status.setMessageMain(status);
 
-            // メインフレームの表示
+            // Mainframe display
             frame.setVisible(true);
 
         } catch (Exception ex) {
             ex.printStackTrace();
 
-            // エラーメッセージ
+            // Error message
             String title = Message.getString("go.message.start.error.title");
             String msg = ex.getMessage();
             if (msg == null) {
@@ -172,7 +172,7 @@ public class Kscope {
                     title,
                     JOptionPane.ERROR_MESSAGE);
 
-            // 終了
+            // end
             System.exit(-1);
 
             return;
@@ -180,11 +180,11 @@ public class Kscope {
     }
 
     /**
-     * アプリケーションの初期化を行う。
+     * Initialize the application.
      */
     private void initApp() {
-        // ログの初期化を行う。
-        // true=デバッグモードログ出力（CONFIGレベルも出力する)
+        // Initialize the log.
+        // true = Debug mode log output (also outputs CONFIG level)
         inititalizeLogging(true);
 
         KscopeProperties.PROPERTIES_FILE = KscopeProperties.PROPERTIES_FILE_DEFAULT;
@@ -197,23 +197,23 @@ public class Kscope {
             e.printStackTrace();
         }
 
-        // プロパティファイルの読込
+        // Read property file
         KscopeProperties.loadXml();
     }
 
     /**
-     * 出力ログ設定
+     * Output log settings
      *
-     * @param debugMode 出力デバッグモードフラグ
+     * @param debugMode Output debug mode flag
      */
     private void inititalizeLogging(boolean debugMode) {
-        // ログ設定
+        // Log settings
         InputStream logProp = getClass().getResourceAsStream("logging.properties");
 
         String appName = this.getClass().getName();
         Logger.configure(logProp, appName, debugMode);
 
-        // システムプロパティ値出力
+        // System property value output
         String[] props = {"java.version", "java.vm.version",
             "java.runtime.version", "java.vendor", "java.compiler",
             "os.name", "os.version", "os.arch", "user.home", "java.home",
