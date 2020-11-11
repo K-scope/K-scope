@@ -30,128 +30,128 @@ import jp.riken.kscope.language.IBlock;
 
 
 /**
- * ツリーパネルコンポーネントインターフェイス.<br/>
- * ツリー構成を持つパネルコンポーネントのインターフェイス
+ * Tree panel component interface. <br/>
+ * Interface of panel components with tree structure
  * @author RIKEN
  */
 public interface ITreeComponent {
 
     /**
-     * 選択タブのツリーをすべて収納する。
+     * Stores the entire tree of selection tabs.
      */
     public void collapseTreeAll();
 
     /**
-     * 選択タブのツリーをすべて展開する。
+     * Expand the entire tree on the Selection tab.
      */
     public void expandTreeAll();
 
     /**
-     * 選択タブの選択ツリー配下ノードを展開する。
+     * Expand the nodes under the selection tree on the selection tab.
      */
     public void expandTreeSelect();
 
     /**
-     * 選択ファイルを取得する
-     * @return		選択ファイル
+     * Get the selected file
+     * @return selection file
      */
     public SourceFile[] getSelectedSourceFiles();
 
     /**
-     * 選択ノードのフォルダ・ファイルを取得する
-     * @return		選択フォルダ・ファイル
+     * Get the folder / file of the selected node
+     * @return Selected folder / file
      */
     public File[] getSelectedNodeFiles();
 
     /**
-     * 選択ソースコード行情報を取得する
-     * @return		選択ソースコード行情報
+     * Get selected source code line information
+     * @return Selected source code line information
      */
     public CodeLine[] getSelectedCodeLines();
 
     /**
-     * 選択ブロックを取得する
-     * @return		選択ブロック
+     * Get the selected block
+     * @return selection block
      */
     public IBlock[] getSelectedBlocks();
 
     /**
-     * エクスプローラツリーをエクスポートする
-     * @param file		出力ファイル
+     * Export explorer tree
+     * @param file Output file
      */
     public void export(File file);
 
     /**
-     * エクスプローラパネル識別子を設定する
-     * @return enumPanel		エクスプローラパネル識別子
+     * Set the explorer panel identifier
+     * @return enumPanel Explorer panel identifier
      */
     public EXPLORE_PANEL getEnumPanel();
 
     /**
-     * 現在選択されているノードを取得する。
-     * @return		選択ノード
+     * Get the currently selected node.
+     * @return Selected node
      */
     public DefaultMutableTreeNode getSelectedNode();
 
     /**
-     * 現在選択されているノードリストを取得する。
-     * @return		選択ノードリスト
+     * Get the currently selected node list.
+     * @return Selected node list
      */
     public DefaultMutableTreeNode[] getSelectedNodes();
 
 
     /**
-     * ツリーの変更リスナの登録を行う。
-     * @param action		ツリーの変更リスナ
+     * Change tree Register the listener.
+     * @param action Tree change listener
      */
     public void addTreeSelectionListener(ExploreTreeChangeAction action);
 
     /**
-     * 選択ノードを設定する
-     * @param node		選択ノード
+     * Set the selected node
+     * @param node Selected node
      */
     public void setSelectedNode(Object node);
 
     /**
-     * 選択ノードを設定する
-     * @param nodes		選択ノード
+     * Set the selected node
+     * @param nodes Selected nodes
      */
     public void setSelectedNodes(Object[] nodes);
 
     /**
-     * ツリーモデルを取得する
-     * @return		ツリーモデル
+     * Get a tree model
+     * @return Tree model
      */
     public TreeModel getTreeModel();
 
     /**
-     * ツリーパスからノードを選択する
-     * @param path		ツリーパス
+     * Select a node from the tree path
+     * @param path Tree path
      */
     public void setSelectionPath(TreePath path);
 
     /**
-     * ノード範囲を選択する
-     * @param startnode		選択開始ノード
-     * @param endnode		選択終了ノード
+     * Select a node range
+     * @param startnode Selection start node
+     * @param endnode Selection end node
      */
 	public void setSelectedNodeArea(Object startnode, Object endnode);
 
     /**
-     * ノード選択範囲を追加する
-     * @param startnode		選択開始ノード
-     * @param endnode		選択終了ノード
+     * Add node selection
+     * @param startnode Selection start node
+     * @param endnode Selection end node
      */
     public void addSelectedNodeArea(Object startnode, Object endnode);
 
     /**
-     * 選択ノードを追加する
-     * @param nodes		選択ノード
+     * Add a selection node
+     * @param nodes Selected nodes
      */
     public void addSelectedNodes(Object[] nodes);
 
     /**
-     * 選択ノードの変更イベントを発生させる
+     * Raise a change event for the selected node
      */
     public void fireSelectNodeChanged();
 }

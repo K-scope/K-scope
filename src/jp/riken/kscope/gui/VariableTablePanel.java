@@ -75,97 +75,97 @@ import jp.riken.kscope.utils.ResourceUtils;
 import jp.riken.kscope.utils.SwingUtils;
 
 /**
- * 変数特性一覧パネルクラス
+ * Variable characteristic list panel class
  * @author RIKEN
  *
  */
 public class VariableTablePanel extends AnalisysPanelBase implements Observer, IAnalisysComponent, MouseListener, ActionListener {
 
-    /** シリアル番号 */
+    /** Serial number */
     private static final long serialVersionUID = 1L;
 
-    /** クリアボタン */
+    /** Clear button */
     private JButton btnClear;
-    /** 付加情報ボタン */
+    /** Additional information button */
     private JButton btnEdit;
-    /** 演算カウントボタン */
+    /** Calculation count button */
     private JButton btnOperand;
-    /** 宣言・定義・参照ボタン */
+    /** Declaration / definition / reference button */
     private JButton btnReference;
-    /** 変数有効域ボタン */
+    /** Variable scope button */
     private JButton btnScope;
-    /** ファイルを開くボタン */
+    /** Open file button */
     private JButton btnOpenFile;
-    /** エクスポートボタン */
+    /** Export button */
     private JButton btnExport;
-    /** 変数特性一覧ラベル */
+    /** Variable characteristic list label */
     private JLabel label;
-    /** コンテンツボックス */
+    /** Content Box */
     private Box contentInfo;
-    /** 余白ボックス */
+    /** Margin box */
     private final Component glue = Box.createVerticalGlue();
-    /** スクロールパイン */
+    /** Scroll pine */
     private JScrollPane scrollPane;
 
-    /** 変数特性一覧テーブルモデル */
+    /** Variable characteristic list table model */
     private VariableTableModel model;
 
-    /** 展開ボタンアイコン */
+    /** Expand button icon */
     private Icon expand_icon = ResourceUtils.getIcon("expand_arrow.gif");
-    /** 収納ボタンアイコン */
+    /** Storage button icon */
     private Icon collapse_icon = ResourceUtils.getIcon("collapse_arrow.gif");
 
-    /** 変数特性一覧コンテキストメニュー */
+    /** Variable characteristics list Context menu */
     private VariablePopupMenu variablePopupMenu;
 
-    /** 選択付加情報ノードパネル */
+    /** Select additional information node panel */
     private NodePanel selectedInfo;
 
-    /** 付加情報編集アクション */
+    /** Additional information editing action */
     private EditInformationEditAction actionEdit;
-    /** 演算カウントアクション */
+    /** Arithmetic count action */
     private AnalysisOperandAction actionOperand;
-    /** 宣言・定義・参照アクション */
+    /** Declaration / Definition / Reference Action */
     private AnalysisReferenceAction actionReference;
-    /** 変数有効域アクション */
+    /** Variable scope action */
     private AnalysisScopeAction actionScope;
-    /** 選択パネル背景色 */
+    /** Selection panel background color */
     private Color colorSelectedPanel;
 
     /**
-     * コンストラクタ
+     * Constructor
      */
     public VariableTablePanel() {
         super();
 
-        // モデルの生成を行う
+        // Generate a model
         model = new VariableTableModel();
-        // オブザーバを設定する。
+        // Set the observer.
         model.addObserver(this);
 
-        // GUI初期化を行う。
+        // Initialize the GUI.
         initGUI();
 
     }
 
     /**
-     * コンストラクタ
-     * @param proparties		分析情報パネル識別子
+     * Constructor
+     * @param proparties Analysis Information Panel Identifier
      */
     public VariableTablePanel(ANALYSIS_PANEL proparties) {
         super(proparties);
 
-        // モデルの生成を行う
+        // Generate a model
         model = new VariableTableModel();
-        // オブザーバを設定する。
+        // Set the observer.
         model.addObserver(this);
 
-        // GUI初期化を行う。
+        // Initialize the GUI.
         initGUI();
     }
 
     /**
-     * GUI初期化を行う。
+     * Initialize the GUI.
      */
     private void initGUI() {
         try {
@@ -173,7 +173,7 @@ public class VariableTablePanel extends AnalisysPanelBase implements Observer, I
             this.setLayout(thisLayout);
 //            setPreferredSize(new Dimension(400, 24));
 
-            // 上部の情報ラベル、ボタンの配置パネル
+            // Information label at the top, button placement panel
             {
                 JPanel panelTop = new JPanel();
                 panelTop.setLayout(new BorderLayout());
@@ -181,14 +181,14 @@ public class VariableTablePanel extends AnalisysPanelBase implements Observer, I
                 panelTop.setBorder(new CompoundBorder(
                         new LineBorder(Color.BLACK, 1),
                         BorderFactory.createEmptyBorder(0, 5, 0, 20)));
-                // ボタン配置パネル
+                // Button layout panel
                 {
                     JPanel panelButtons = new JPanel();
                     panelButtons.setLayout(new BoxLayout(panelButtons, BoxLayout.LINE_AXIS));
                     panelTop.add(panelButtons, BorderLayout.EAST);
 
                     java.awt.Dimension buttonSize = new java.awt.Dimension(24, 24);
-                    // クリアボタン
+                    // Clear button
                     {
                         Icon icon = ResourceUtils.getIcon("removeall.gif");
                         btnClear = new JButton(icon);
@@ -199,9 +199,9 @@ public class VariableTablePanel extends AnalisysPanelBase implements Observer, I
                         btnClear.setContentAreaFilled(false);
                         btnClear.setBorderPainted(false);
                     }
-                    // 余白設定
+                    // Margin setting
                     //panelButtons.add(Box.createHorizontalStrut(5));
-                    // 付加情報編集ボタン
+                    // Additional information edit button
                     {
                         Icon icon = ResourceUtils.getIcon("edit_info.gif");
                         btnEdit = new JButton(icon);
@@ -212,7 +212,7 @@ public class VariableTablePanel extends AnalisysPanelBase implements Observer, I
                         btnEdit.setMinimumSize(buttonSize);
                         btnEdit.setMaximumSize(buttonSize);
                     }
-                    // 演算カウントボタン
+                    // Calculation count button
                     {
                         Icon icon = ResourceUtils.getIcon("count.gif");
                         btnOperand = new JButton(icon);
@@ -223,7 +223,7 @@ public class VariableTablePanel extends AnalisysPanelBase implements Observer, I
                         btnOperand.setMinimumSize(buttonSize);
                         btnOperand.setMaximumSize(buttonSize);
                     }
-                    // 宣言・定義・参照ボタン
+                    // Declaration / definition / reference button
                     {
                         Icon icon = ResourceUtils.getIcon("reference.gif");
                         btnReference = new JButton(icon);
@@ -234,7 +234,7 @@ public class VariableTablePanel extends AnalisysPanelBase implements Observer, I
                         btnReference.setMinimumSize(buttonSize);
                         btnReference.setMaximumSize(buttonSize);
                     }
-                    // 変数有効域ボタン
+                    // Variable scope button
                     {
                         Icon icon = ResourceUtils.getIcon("area.gif");
                         btnScope = new JButton(icon);
@@ -267,7 +267,7 @@ public class VariableTablePanel extends AnalisysPanelBase implements Observer, I
                     }
                 }
 
-                // ラベル配置
+                // Label placement
                 {
                     label = new JLabel();
                     panelTop.add(label, BorderLayout.CENTER);
@@ -276,38 +276,38 @@ public class VariableTablePanel extends AnalisysPanelBase implements Observer, I
             }
             {
                 {
-                    // 変数特性一覧パネル
+                    // Variable characteristic list panel
                     contentInfo = Box.createVerticalBox();
                     //contentInfo.setBorder(BorderFactory.createLineBorder(Color.RED, 1));
                     contentInfo.setOpaque(false);
 
-                    // スクロールパイン
+                    // Scroll pine
                     scrollPane = new JScrollPane();
                     scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
                     scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
                     scrollPane.setViewportView(contentInfo);
                     scrollPane.getViewport().setBackground(Color.WHITE);
-                    // スクロール量を調整
+                    // Adjust scroll amount
                     scrollPane.getVerticalScrollBar().setUnitIncrement(Constant.VERTICALSCROLL_INCREMENT);
                     add(scrollPane);
                 }
 
             }
-            // イベント追加
+            // Add event
             btnClear.addActionListener(this);
             btnEdit.addActionListener(this);
             btnOperand.addActionListener(this);
             btnReference.addActionListener(this);
             btnScope.addActionListener(this);
 
-            // ツールチップ設定
-            btnClear.setToolTipText(Message.getString("informationdialog.button.clear.tooltip")); //クリア
-            btnEdit.setToolTipText(Message.getString("replacementresulttablepanel.tooltip.info")); //付加情報
-            btnOperand.setToolTipText(Message.getString("mainmenu.project.config.operation")); //演算数カウント
-            btnReference.setToolTipText(Message.getString("mainmenu.analysis.dec-def-ref")); //宣言・定義・参照
-            btnScope.setToolTipText(Message.getString("mainmenu.analysis.valiablescope")); //変数有効域
-            btnOpenFile.setToolTipText(Message.getString("informationpanel.tooltip.openblock")); //選択箇所を開く
-            btnExport.setToolTipText(Message.getString("mainmenu.file.export")); //エクスポート
+            // Tooltip settings
+            btnClear.setToolTipText(Message.getString("informationdialog.button.clear.tooltip")); //clear
+            btnEdit.setToolTipText(Message.getString("replacementresulttablepanel.tooltip.info")); //Additional information
+            btnOperand.setToolTipText(Message.getString("mainmenu.project.config.operation")); // Count the number of operations
+            btnReference.setToolTipText(Message.getString("mainmenu.analysis.dec-def-ref")); // Declaration / Definition / Reference
+            btnScope.setToolTipText(Message.getString("mainmenu.analysis.valiablescope")); // Variable valid area
+            btnOpenFile.setToolTipText(Message.getString("informationpanel.tooltip.openblock")); // open the selection
+            btnExport.setToolTipText(Message.getString("mainmenu.file.export")); //export
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -315,73 +315,73 @@ public class VariableTablePanel extends AnalisysPanelBase implements Observer, I
     }
 
     /**
-     * 変数特性一覧モデルの変更通知イベント
-     * @param o			通知元
-     * @param arg		通知項目
+     * Variable characteristic list Model change notification event
+     * @param o Notification source
+     * @param arg Notification item
      */
     @Override
     public void update(Observable o, Object arg) {
-        // 変数特性一覧のクリア
+        // Clear variable characteristic list
         clearComponent();
 
-        // テーブルモデル
+        // Table model
         VariableTableModel observer = (VariableTableModel)o;
 
-        // パネルタイトル
+        // Panel title
         this.label.setText(observer.getTitle());
 
         int count = observer.getListProcedureInfoCount();
         for (int i=0; i<count; i++) {
             VariableTableModel.ProcedureInfo info = observer.getProcedureInfo(i);
 
-            // 変数特性一覧を追加する
+            // Add variable characteristic list
             addVariableInfo(info);
         }
 
     }
 
     /**
-     * 変数特性一覧を追加する
-     * @param info			変数特性一覧情報
+     * Add variable characteristic list
+     * @param info Variable characteristic list information
      */
     public void addVariableInfo(VariableTableModel.ProcedureInfo info) {
 
-        // 追加コンポーネントの作成
+        // Create additional components
         JComponent component = makeRowsPanel(info);
 
-        // コンテンツパネルにコンポーネントを追加する
+        // Add a component to the content panel
         addComponent(component);
 
     }
 
 
     /**
-     * コンテンツパネルをクリアする
+     * Clear the content panel
      */
     public void clearComponent() {
         if (this.contentInfo.getComponentCount() > 0) {
             this.contentInfo.removeAll();
         }
 
-        // 再描画
+        // redraw
         refreshPanel();
 
-        // 選択付加情報ブロックのクリア
+        // Clear the selective additional information block
         this.selectedInfo = null;
     }
 
     /**
-     * コンテンツパネルにコンポーネントを追加する
-     * @param component		追加コンポーネント
+     * Add components to the content panel
+     * @param component Additional component
      */
     private void addComponent(final JComponent component) {
-        // 追加コンポーネントサイズの変更
+        // Change the size of additional components
         component.setMaximumSize(new Dimension(Short.MAX_VALUE, component.getPreferredSize().height));
 
-        // 追加コンポーネントは左詰めで配置する
+        // Place additional components left-justified
         component.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        // コンポーネントの追加
+        // Add component
         this.contentInfo.remove(glue);
 //        this.contentInfo.add(Box.createVerticalStrut(5));
         this.contentInfo.add(component);
@@ -394,18 +394,18 @@ public class VariableTablePanel extends AnalisysPanelBase implements Observer, I
             }
         });
 
-        // 再描画
+        // redraw
         refreshPanel();
 
         return;
     }
 
     /**
-     * パネルを再描画する
+     * Redraw the panel
      */
     private void refreshPanel() {
 
-        // 再描画
+        // redraw
         this.contentInfo.revalidate();
         this.validate();
         this.repaint();
@@ -413,24 +413,24 @@ public class VariableTablePanel extends AnalisysPanelBase implements Observer, I
     }
 
     /**
-     * 変数特性一覧パネルの追加
-     * @param info		変数特性一覧情報
-     * @return			変数特性一覧パネル
+     * Addition of variable characteristic list panel
+     * @param info Variable characteristic list information
+     * @return Variable characteristics list panel
      */
     private JComponent makeRowsPanel(VariableTableModel.ProcedureInfo info) {
-        // 変数特性一覧パネル
+        // Variable characteristic list panel
         NodePanel rows = new NodePanel(info);
         rows.setLayout(new BoxLayout(rows, BoxLayout.Y_AXIS));
         rows.setOpaque(false);
         rows.setBorder(BorderFactory.createLineBorder(Color.GRAY, 1));
         rows.addMouseListener(this);
 
-        // 名前パネル
+        // Name panel
         JPanel panelName = new JPanel();
         panelName.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 0));
         panelName.setOpaque(false);
 
-        // パネル展開ボタン：初期表示は展開ボタン
+        // Panel expansion button: The initial display is the expansion button
         java.awt.Dimension buttonSize = new java.awt.Dimension(18, 18);
         JButton button = new JButton(expand_icon);
         button.setContentAreaFilled(false);
@@ -439,7 +439,7 @@ public class VariableTablePanel extends AnalisysPanelBase implements Observer, I
         button.setMinimumSize(buttonSize);
         button.setMaximumSize(buttonSize);
 
-        // 名前ラベル
+        // Name label
         panelName.add(button);
         String name = "BLOCK";
         if (info.getBlock() != null) {
@@ -449,13 +449,13 @@ public class VariableTablePanel extends AnalisysPanelBase implements Observer, I
         label.setOpaque(false);
         panelName.add(label);
 
-        // 変数特性一覧パネル
+        // Variable characteristic list panel
         JPanel panelTable = new JPanel();
         panelTable.setLayout(new BoxLayout(panelTable, BoxLayout.Y_AXIS));
         panelTable.setOpaque(false);
         panelTable.setBorder(new EmptyBorder(5, 40, 5, 40));
 
-        // 変数特性一覧テーブル
+        // Variable characteristic list table
         JTable tableVariable = new JStripeTable();
         tableVariable.setModel(info.getTableModel());
 
@@ -463,78 +463,78 @@ public class VariableTablePanel extends AnalisysPanelBase implements Observer, I
         tableVariable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION );
         tableVariable.setColumnSelectionAllowed(false);
         tableVariable.addMouseListener(this);
-        // テーブル変更イベント
+        // Table change event
         VariableListSelectionListener listener = new VariableListSelectionListener(tableVariable);
         tableVariable.getSelectionModel().addListSelectionListener(listener);
 
-        // テーブル列幅設定
+        // Table column width setting
         DefaultTableColumnModel columnModel = (DefaultTableColumnModel)tableVariable.getColumnModel();
         model.setTableColumnWidth(columnModel);
 
-        // テーブルヘッダーと行を別々に描画する
+        // Draw table headers and rows separately
         JTableHeader tableHeader = tableVariable.getTableHeader();
 
         tableVariable.setShowGrid(false);
         tableVariable.setIntercellSpacing(new Dimension(0,0));
 
-        // ソート
+        // sort
         tableVariable.setAutoCreateRowSorter(true);
         int index = 1;
         tableVariable.getRowSorter().setSortKeys(
             Arrays.asList(new RowSorter.SortKey(index, SortOrder.DESCENDING)));
 
-        // 変数特性一覧テーブルのボーダー設定
+        // Border setting of variable characteristic list table
         LineBorder border = new LineBorder(Color.GRAY, 1, false);
         tableVariable.setBorder(border);
         tableHeader.setBorder(border);
 
-        // 変数特性一覧パネルに追加
+        // Add to variable characteristic list panel
         panelTable.add(tableHeader);
         panelTable.add(tableVariable);
 
         tableVariable.validate();
         tableVariable.updateUI();
 
-        // 変数特性一覧展開ボタンのアクションリスナの設定
+        // Setting the action listener of the variable characteristic list expansion button
         button.addActionListener(new VariableExpandAction(panelTable));
 
-        // 変数特性一覧パネルに名前パネル、本文パネルの追加
+        // Add name panel and body panel to variable characteristic list panel
         rows.add(panelName);
         rows.add(panelTable);
 
-        // テーブルを設定
+        // set the table
         rows.setTableVariable(tableVariable);
 
-        // コンテキストメニューを設定する
+        // Set the context menu
         tableVariable.setComponentPopupMenu(this.variablePopupMenu);
 
         return rows;
     }
 
     /**
-     * 変数特性ノードパネル
+     * Variable Characteristics Node Panel
      * @author RIKEN
      */
     private class NodePanel extends JPanel {
-        /** シリアル番号 */
+        /** Serial number */
         private static final long serialVersionUID = 1L;
 
-        /** 変数特性ブロック */
+        /** Variable characteristic block */
         private VariableTableModel.ProcedureInfo block;
-        /** 変数特性テーブル */
+        /** Variable characteristic table */
         private JTable tableVariable;
 
         /**
-         * コンストラクタ
-         * @param block		変数特性ブロック
+         * Constructor
+         * @param block Variable characteristic block
          */
         public NodePanel(VariableTableModel.ProcedureInfo block) {
             this.block = block;
         }
 
         /**
-         * 変数特性ブロックを取得する
-         * @return		変数特性ブロック
+         * Get the variable characteristic block
+         * @return Variable characteristic block
          */
         @SuppressWarnings("unused")
         public VariableTableModel.ProcedureInfo getBlock() {
@@ -542,16 +542,16 @@ public class VariableTablePanel extends AnalisysPanelBase implements Observer, I
         }
 
         /**
-         * 変数特性テーブルを設定する
-         * @param tableVariable		変数特性テーブル
+         * Set variable characteristic table
+         * @param tableVariable variable characteristic table
          */
         public void setTableVariable(JTable tableVariable) {
             this.tableVariable = tableVariable;
         }
 
         /**
-         * 変数特性テーブルを取得する
-         * @return		変数特性テーブル
+         * Get the variable characteristic table
+         * @return Variable characteristic table
          */
         public JTable getTableVariable() {
             return this.tableVariable;
@@ -561,8 +561,8 @@ public class VariableTablePanel extends AnalisysPanelBase implements Observer, I
 
 
     /**
-     * 変数特性一覧テーブルモデルを取得する
-     * @return		変数特性一覧テーブルモデル
+     * Get variable characteristic list table model
+     * @return Variable characteristics list Table model
      */
     public VariableTableModel getModel() {
         return model;
@@ -570,19 +570,19 @@ public class VariableTablePanel extends AnalisysPanelBase implements Observer, I
 
 
     /**
-     * フォーカスリスナを設定する
-     * @param listener		フォーカスリスナ
+     * Set focus listener
+     * @param listener Focus listener
      */
     @Override
     public void addTabFocusListener(TabFocusListener listener) {
         this.addFocusListener(listener);
-        // 子コンポーネントにもフォーカスリスナを設定する
+        // Set focus listener for child components as well
         SwingUtils.addChildFocusListener(this, listener);
     }
 
 
     /**
-     * エクスポートを行う
+     * Export
      */
     @Override
     public void export(File file) {
@@ -592,59 +592,59 @@ public class VariableTablePanel extends AnalisysPanelBase implements Observer, I
     }
 
     /**
-     * パネルにアクションリスナを設定する.<br/>
-     * メニューバーに作成済みのアクションリスナをパネルボタンに割り当てる。
-     * @param menu		メニューバー
+     * Set an action listener on the panel. <br/>
+     * Assign the created action listener to the menu bar to the panel button.
+     * @param menu Menu bar
      */
     @Override
     public void setActionListener(MainMenu menu) {
-        // 分析情報エクスポートアクション
+        // Analysis information export action
         this.btnExport.addActionListener(menu.getActionExportAnalysis());
 
-        // 該当箇所を開く
+        // Open the relevant part
         this.btnOpenFile.addActionListener((ActionListener) menu.getActionOpenAnalysisLine());
     }
 
     /**
-     * モデルのクリアを行う。
+     * Clear the model.
      */
     @Override
     public void clearModel() {
-        // モデルクリア
+        // Model clear
         model.clearVariable();
     }
 
     /**
-     * 変数特性パネル展開ボタンアクションリスナ
+     * Variable Characteristics Panel Expand Button Action Listener
      * @author RIKEN
      */
     private class VariableExpandAction implements ActionListener {
-        /** 変数特性一覧テーブルパネル */
+        /** Variable characteristics list table panel */
         private JPanel panelRow;
 
         /**
-         * コンストラクタ
-         * @param panel		表示切替を行う変数特性一覧パネル
+         * Constructor
+         * @param panel Variable characteristic list panel for switching display
          */
         public VariableExpandAction(JPanel panel) {
             this.panelRow = panel;
         }
 
         /**
-         * ボタンのクリックイベント
-         * @param event		イベント情報
+         * Button click event
+         * @param event Event information
          */
         @Override
         public void actionPerformed(ActionEvent event) {
             JButton btn = (JButton) event.getSource();
-            // 変数特性一覧パネルの表示をトグルする
+            // Toggle the display of the variable characteristic list panel
             if (panelRow.isVisible()) {
-                // 変数特性一覧パネルを非表示する
+                // Hide the variable characteristic list panel
                 btn.setIcon(collapse_icon);
                 panelRow.setVisible(false);
             }
             else {
-                // 変数特性一覧パネルを表示する
+                // Display the variable characteristic list panel
                 btn.setIcon(expand_icon);
                 panelRow.setVisible(true);
             }
@@ -654,12 +654,12 @@ public class VariableTablePanel extends AnalisysPanelBase implements Observer, I
     }
 
     /**
-     * マウスクリックイベント
-     * @param event		マウスイベント情報
+     * Mouse click event
+     * @param event Mouse event information
      */
     @Override
     public void mouseClicked(MouseEvent event) {
-        // クリックチェック
+        // Click check
         if (SwingUtilities.isLeftMouseButton(event)) {
 
             NodePanel panel = null;
@@ -667,98 +667,98 @@ public class VariableTablePanel extends AnalisysPanelBase implements Observer, I
                 panel = (NodePanel)event.getSource();
             }
             else if (event.getSource() instanceof JTable) {
-                // 親の親パネル
+                // Parent parent panel
                 Container cont = ((JTable)event.getSource()).getParent().getParent();
                 if (cont instanceof NodePanel) {
                     panel = (NodePanel)cont;
                 }
             }
 
-            // 選択付加情報ブロックを設定する
+            // Set the selective additional information block
             this.selectedInfo = panel;
 
-            // 選択パネルの背景色を設定する.
+            // Set the background color of the selection panel.
             setSelectedBackgroud(this.selectedInfo);
 
-            // ダブルクリック
+            // Double click
             if (event.getClickCount() == 2) {
-                // 該当個所を開く
+                // Open the relevant part
                 this.btnOpenFile.doClick();
             }
         }
     }
 
     /**
-     * マウスボタンダウンイベント
-     * @param e		マウスイベント情報
+     * Mouse button down event
+     * @param e Mouse event information
      */
     @Override
     public void mousePressed(MouseEvent e) { }
 
     /**
-     * マウスボタンアップイベント
-     * @param e		マウスイベント情報
+     * Mouse button up event
+     * @param e Mouse event information
      */
     @Override
     public void mouseReleased(MouseEvent e) {}
 
     /**
-     * マウスオーバーイベント
-     * @param e		マウスイベント情報
+     * Mouseover event
+     * @param e Mouse event information
      */
     @Override
     public void mouseEntered(MouseEvent e) {}
 
     /**
-     * マウスアウトイベント
-     * @param e		マウスイベント情報
+     * Mouse out event
+     * @param e Mouse event information
      */
     @Override
     public void mouseExited(MouseEvent e) {}
 
     /**
-     * タブのクローズを行う
+     * Close the tab
      */
     @Override
     public void closeTab() { }
 
 
     private class VariableListSelectionListener implements ListSelectionListener {
-        /** リスナ対象テーブル */
+        /** Listener target table */
         private JTable table;
 
         /**
-         * コンストラクタ
-         * @param table		リスナ対象テーブル
+         * Constructor
+         * @param table Listener target table
          */
         public VariableListSelectionListener(JTable table) {
             this.table = table;
         }
 
         /**
-         * 変数特性一覧テーブル選択変更イベント.
-         * @param event		イベント情報
+         * Variable characteristic list table selection change event.
+         * @param event Event information
          */
         @Override
         public void valueChanged(ListSelectionEvent event) {
             if (event.getValueIsAdjusting()) return;
 
             int selection = table.getSelectedRow();
-            // テーブル・モデルの行数に変換
+            // Convert to the number of rows in the table model
             int modelRow = table.convertRowIndexToModel(selection);
             if (modelRow < 0) return;
             Object cell = this.table.getModel().getValueAt(modelRow, 0);
             if (cell == null) return;
             if (cell instanceof VariableDefinition) {
-                // 選択変数宣言文を設定する
+                // Set the selection variable declaration statement
                 VariableTablePanel.this.model.setSelectedVariable((VariableDefinition)cell);
             }
         }
     }
 
     /**
-     * 選択ソースコード行情報を取得する(未使用)
-     * @return		選択ソースコード行情報
+     * Get selected source code line information (unused)
+     * @return Selected source code line information
      */
     @Override
     public CodeLine getSelectedCodeLine() {
@@ -767,25 +767,25 @@ public class VariableTablePanel extends AnalisysPanelBase implements Observer, I
 
 
     /**
-     * コンテキストメニューを設定する
-     * @param variablePopupMenu		コンテキストメニュー
+     * Set the context menu
+     * @param variablePopupMenu Context menu
      */
     public void setPopupMenu(VariablePopupMenu variablePopupMenu) {
         this.variablePopupMenu = variablePopupMenu;
 
-        // 付加情報
+        // Additional information
         this.actionEdit = variablePopupMenu.getActionAnalysisInformation();
-        // 演算カウント
+        // Calculation count
         this.actionOperand = variablePopupMenu.getActionAnalysisOperand();
-        // 宣言・定義・参照
+        // Declaration / Definition / Reference
         this.actionReference = variablePopupMenu.getActionAnalysisReference();
-        // 変数有効域
+        // Variable valid area
         this.actionScope = variablePopupMenu.getActionAnalysisScope();
     }
 
     /**
-     * 選択ブロックを取得する
-     * @return		選択ブロック
+     * Get the selected block
+     * @return selection block
      */
     @Override
     public IBlock getSelectedBlock() {
@@ -797,8 +797,8 @@ public class VariableTablePanel extends AnalisysPanelBase implements Observer, I
     }
 
     /**
-     * 選択付加情報を取得する
-     * @return		選択付加情報
+     * Get additional selection information
+     * @return Selectable additional information
      */
     @Override
     public IInformation getSelectedInformation() {
@@ -810,36 +810,36 @@ public class VariableTablePanel extends AnalisysPanelBase implements Observer, I
     }
 
     /**
-     * ソースビュープロパティを設定する
-     * @param properties		ソースビュープロパティ
+     * Set source view properties
+     * @param properties Source view properties
      */
     @Override
     public void setSourceProperties(SourceProperties properties) {
-    	// 選択パネルの背景色
+    	// Background color of selection panel
     	this.colorSelectedPanel = properties.getBackgoundView2Color();
-        // 選択パネルの背景色を設定する.
+        // Set the background color of the selection panel.
         setSelectedBackgroud(this.selectedInfo);
     }
 
     /**
-     * ボタンのクリックイベント
-     * @param event			イベント情報
+     * Button click event
+     * @param event Event information
      */
     @Override
     public void actionPerformed(ActionEvent event) {
-        // クリア
+        // clear
         if (event.getSource() == this.btnClear) {
-            // モデルクリア
+            // Model clear
             clearModel();
         }
-        // 付加情報編集
+        // Edit additional information
         else if (event.getSource() == this.btnEdit) {
             VariableDefinition value = this.model.getSelectedVariable();
             if (value instanceof IInformation) {
                 this.actionEdit.editInformation((IInformation)value);
             }
         }
-        // 演算数カウント
+        // Count the number of operations
         else if (event.getSource() == this.btnOperand) {
             IBlock block = this.getSelectedBlock();
             if (block != null) {
@@ -847,12 +847,12 @@ public class VariableTablePanel extends AnalisysPanelBase implements Observer, I
                 actionOperand.analysisOperand(blocks);
             }
         }
-        // 宣言・定義・参照
+        // Declaration / Definition / Reference
         else if (event.getSource() == this.btnReference) {
             VariableDefinition variable = this.model.getSelectedVariable();
             actionReference.analysisReference(variable);
         }
-        // 変数有効域
+        // Variable valid area
         else if (event.getSource() == this.btnScope) {
             VariableDefinition variable = this.model.getSelectedVariable();
             actionScope.analysisScope(variable);
@@ -860,7 +860,7 @@ public class VariableTablePanel extends AnalisysPanelBase implements Observer, I
     }
 
     /**
-     * 選択項目をクリップボードにコピーする.
+     * Copy the selection to the clipboard.
      */
     @Override
     public void copyClipboard() {
@@ -868,12 +868,12 @@ public class VariableTablePanel extends AnalisysPanelBase implements Observer, I
         String text = SwingUtils.toCsvOfSeletedRows(this.selectedInfo.getTableVariable());
         if (text == null) return;
 
-        // クリップボードにコピーする
+        // copy to clipboard
         SwingUtils.copyClipboard(text);
     }
 
     /**
-     * エキスポートする情報があるか否か
+     * Whether there is information to export
      */
 	@Override
 	public boolean isExportable() {
@@ -882,14 +882,14 @@ public class VariableTablePanel extends AnalisysPanelBase implements Observer, I
 	}
 
 	/**
-	 * 選択パネルの背景色を設定する.
-	 */
+* Set the background color of the selection panel.
+*/
 	private void setSelectedBackgroud(JPanel panel) {
-        // すべてクリア
+        // Clear all
 		if (this.contentInfo != null) {
 			SwingUtils.setBackgroundChildPanel(this.contentInfo, null);
 		}
-        // 選択パネルの背景色を選択色に変更する
+        // Change the background color of the selection panel to the selection color
         if (panel != null) {
             SwingUtils.setBackgroundChildPanel(panel, this.colorSelectedPanel);
         }

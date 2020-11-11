@@ -50,44 +50,44 @@ import javax.swing.text.ViewFactory;
 import jp.riken.kscope.utils.SwingUtils;
 
 /**
- * ソースコード表示用テキストパイン
+ * Text pine for displaying source code
  * @author RIKEN
  */
 public class CodePane extends JTextPane implements ITabComponent, FocusListener {
 
-    /** シリアル番号 */
+    /** Serial number */
     private static final long serialVersionUID = 1L;
 
-    /** 自動改行文字位置（0=自動改行しない） */
+    /** Automatic line feed character position (0 = no automatic line feed) */
     private int wordwrap;
 
     //(2012/4/18) changed by teraim
-    private Font sourceFont;       //ソース・フォント
-    private Color activeRowColor;  //選択行背景色
+    private Font sourceFont;       // Source font
+    private Color activeRowColor;  // Selected line background color
 
-    /** 親コンポーネント */
+    /** Parent component */
     private ITabComponent parentComponent = null;
 
-    /** 行背景色リスト */
+    /** Line background color list */
     private List<LinesBackground> listLinesColor;
 
     /**
-     * 複数行範囲の背景色の情報クラス
+     * Multi-line range background color information class
      * @author RIKEN
      */
     public class LinesBackground {
-        /** 開始行番号(1〜) */
+        /** Start line number (1 ~) */
         public int start;
-        /** 終了行番号(1〜) */
+        /** End line number (1 ~) */
         public int end;
-        /** 背景色 */
+        /** Background color */
         public Color color;
 
         /**
-         * コンストラクタ
-         * @param start		開始行
-         * @param end		終了行
-         * @param color		背景色
+         * Constructor
+         * @param start Start line
+         * @param end End line
+         * @param color Background color
          */
         public LinesBackground(int start, int end, Color color) {
             this.start = start;
@@ -98,7 +98,7 @@ public class CodePane extends JTextPane implements ITabComponent, FocusListener 
 
 
     /**
-     * コンストラクタ
+     * Constructor
      */
     public CodePane() {
         super();
@@ -107,8 +107,8 @@ public class CodePane extends JTextPane implements ITabComponent, FocusListener 
     }
 
     /**
-     * コンストラクタ
-     * @param doc		スタイル付きドキュメント
+     * Constructor
+     * @param doc Styled documentation
      */
     public CodePane(StyledDocument doc) {
         super(doc);
@@ -117,15 +117,15 @@ public class CodePane extends JTextPane implements ITabComponent, FocusListener 
 
 
     /**
-     * GUIの初期化を行う
+     * Initialize the GUI
      */
     private void initGUI() {
 
         //(2012/4/18) added by teraim
         try{
-            //アクティブ行の背景色を設定
+            // Set the background color of the active line
             this.activeRowColor = new jp.riken.kscope.properties.SourceProperties().getActiverowColor();
-            //ソースビューのフォントの設定
+            // Source view font settings
             this.sourceFont = new jp.riken.kscope.properties.SourceProperties().getFont();
             this.setFont(sourceFont);
         }catch(Exception e){
@@ -139,8 +139,8 @@ public class CodePane extends JTextPane implements ITabComponent, FocusListener 
     }
 
     /**
-     * 折り返し文字列数から折り返し位置（ピクセル）を取得する。
-     * @return		折り返し位置（ピクセル）
+     * Get the wrapping position (pixel) from the number of wrapping character strings.
+     * @return Return position (pixels)
      */
     private int getWordWrapWidth() {
         if (wordwrap <= 0) return 0;
@@ -150,16 +150,16 @@ public class CodePane extends JTextPane implements ITabComponent, FocusListener 
     }
 
     /**
-     * 自動改行文字位置を取得する。
-     * @return wordwrap		自動改行文字位置
+     * Get the automatic newline character position.
+     * @return wordwrap Automatic newline character position
      */
     public int getWordwrap() {
         return wordwrap;
     }
 
     /**
-     * 自動改行文字位置を設定する。
-     * @param wordwrap 自動改行文字位置
+     * Set the automatic newline character position.
+     * @param wordwrap Automatic newline character position
      */
     public void setWordwrap(int wordwrap) {
         this.wordwrap = wordwrap;
@@ -168,24 +168,24 @@ public class CodePane extends JTextPane implements ITabComponent, FocusListener 
 
 
     /**
-     * 行折り返し段落のビュークラス
+     * Line wrap paragraph view class
      * @author RIKEN
      */
     private class WordWrapParagraphView extends ParagraphView {
         /**
-         * コンストラクタ
-         * @param elem		このビューが扱う要素
+         * Constructor
+         * @param elem Elements handled by this view
          */
         public WordWrapParagraphView(Element elem) {
             super(elem);
         }
 
         /**
-         * 行の幅のサイズ要件を計算します.<br/>
-         * １行の折り返しサイズを設定する。
-         * @param axis			行位置
-         * @param r				コンポーネントのサイズと位置オブジェクト
-         * @return				コンポーネントのサイズと位置オブジェクト
+         * Calculate the row width size requirement. <br/>
+         * Set the wrapping size for one line.
+         * @param axis Line position
+         * @param r Component size and position object
+         * @return Component size and position object
          */
         @Override
         protected SizeRequirements calculateMinorAxisRequirements(int axis, SizeRequirements r) {
@@ -202,9 +202,9 @@ public class CodePane extends JTextPane implements ITabComponent, FocusListener 
         }
 
         /**
-         * 指定された子のインデックスに反してフローする制約スパンを取り出します。
-         * @param index		照会されるビューのインデックス
-         * @return			ビューの制約スパン
+         * Fetches the constraint span that flows against the specified child index.
+         * @param index Index of the queried view
+         * @return View constraint span
          */
         @Override
         public int getFlowSpan(int index) {
@@ -225,14 +225,14 @@ public class CodePane extends JTextPane implements ITabComponent, FocusListener 
     }
 
     /**
-     * ビューの作成クラス
+     * View creation class
      * @author RIKEN
      */
     private class WordWrapViewFactory implements ViewFactory {
         /**
-         * 要素に基づいてビューを作成します。
-         * @param elem		作成対象要素
-         * @return			ビュー
+         * Create a view based on the element.
+         * @param elem Element to be created
+         * @return view
          */
         @Override
         public View create(Element elem) {
@@ -255,12 +255,12 @@ public class CodePane extends JTextPane implements ITabComponent, FocusListener 
     }
 
     /**
-     * 現在行に背景色を設定する。
+     * Set the background color for the current line.
      * @author RIKEN
      */
     public class LineHighlightTextPaneUI extends BasicTextPaneUI {
         /**
-         * コンストラクタ
+         * Constructor
          */
         public LineHighlightTextPaneUI() {
             CodePane.this.addCaretListener(new CaretListener() {
@@ -272,33 +272,33 @@ public class CodePane extends JTextPane implements ITabComponent, FocusListener 
         }
 
         /**
-         * 背景色を描画する.
-         * @param g		描画グラフィック
+         * Draw the background color.
+         * @param g drawing graphic
          */
         @Override
         public void paintBackground(Graphics g) {
             super.paintBackground(g);
             try {
 
-                // 行の背景色を設定する
+                // Set the line background color
                 if (CodePane.this.listLinesColor != null) {
 
                     int startline = CodePane.this.getViewStartLine();
                     int endline = CodePane.this.getViewEndLine();
                     for (LinesBackground line : CodePane.this.listLinesColor) {
-                        // 表示範囲内であるか
+                        // Is it within the display range?
                         if (startline > line.end) continue;
                         if (endline < line.start) continue;
 
-                        // 範囲行番号のオフセット位置
+                        // Offset position of range line number
                         int start = CodePane.this.getLineStartOffset(line.start);
                         int end = CodePane.this.getLineEndOffset(line.end);
 
-                        // 開始、終了行の描画範囲の取得
+                        // Get the drawing range of the start and end lines
                         Rectangle startRect = modelToView(CodePane.this, start);
                         Rectangle endRect = modelToView(CodePane.this, end);
 
-                        // 描画を行う範囲の取得
+                        // Get the range to draw
                         Rectangle drawRect = new Rectangle(startRect);
                         drawRect.height = endRect.y + endRect.height - startRect.y;
                         if (startRect.x > endRect.x) {
@@ -308,13 +308,13 @@ public class CodePane extends JTextPane implements ITabComponent, FocusListener 
                         int endEndPos = endRect.x+endRect.width;
                         drawRect.width = (startEndPos > endEndPos) ?  startEndPos - drawRect.x : endEndPos - drawRect.x;
 
-                        // 背景色の描画
+                        // Draw background color
                         g.setColor(line.color);
                         g.fillRect(0, drawRect.y, CodePane.this.getWidth(), drawRect.height);
                     }
                 }
 
-                // 現在キャレット位置のハイライト表示
+                // Highlight the current caret position
                 if (activeRowColor != null) {
                     Rectangle rect = modelToView(CodePane.this, CodePane.this.getCaretPosition());
                     int y = rect.y;
@@ -330,16 +330,16 @@ public class CodePane extends JTextPane implements ITabComponent, FocusListener 
     }
 
     /**
-     * 書式付きテキストスタイル
+     * Formatted text style
      * @author RIKEN
      */
     private class WordWrapEditorKit extends StyledEditorKit {
-        /** シリアル番号 */
+        /** Serial number */
         private static final long serialVersionUID = 1L;
 
         /**
-         * ビュー作成クラスを取得する。
-         * @return		ビュー作成クラス
+         * Get the view creation class.
+         * @return View creation class
          */
         @Override
         public ViewFactory getViewFactory() {
@@ -349,8 +349,8 @@ public class CodePane extends JTextPane implements ITabComponent, FocusListener 
 
 
     /**
-     * 親コンポーネントを取得する.
-     * @return		親コンポーネント
+     * Get the parent component.
+     * @return Parent component
      */
     @Override
     public ITabComponent getParentComponent() {
@@ -358,8 +358,8 @@ public class CodePane extends JTextPane implements ITabComponent, FocusListener 
     }
 
     /**
-     * 親コンポーネントを設定する.
-     * @param component		親コンポーネント
+     * Set the parent component.
+     * @param component Parent component
      */
     @Override
     public void setParentComponent(ITabComponent component) {
@@ -367,8 +367,8 @@ public class CodePane extends JTextPane implements ITabComponent, FocusListener 
     }
 
     /**
-     * フォーカスリスナを設定する
-     * @param listener		フォーカスリスナ
+     * Set focus listener
+     * @param listener Focus listener
      */
     @Override
     public void addTabFocusListener(TabFocusListener listener) {
@@ -376,20 +376,20 @@ public class CodePane extends JTextPane implements ITabComponent, FocusListener 
     }
 
     /**
-     * タブを閉じる
+     * Close tab
      */
     @Override
     public void closeTabComponent() {
-        // 親のタブパインにてタブを閉じる。
+        // Close the tab with the parent tab pine.
         if (this.parentComponent != null) {
             this.parentComponent.closeTabComponent();
         }
     }
 
     /**
-     * フォーカス取得イベント.<br/>
-     * フォーカス移動時にキャレットが非表示となるので、フォーカス取得時にキャレット表示を再設定する。
-     * @param event		イベント情報
+     * Focus acquisition event. <br/>
+     * Since the caret is hidden when the focus is moved, the caret display is reset when the focus is acquired.
+     * @param event Event information
      */
     @Override
     public void focusGained(FocusEvent event) {
@@ -397,15 +397,15 @@ public class CodePane extends JTextPane implements ITabComponent, FocusListener 
     }
 
     /**
-     * フォーカス喪失イベント
-     * @param event		イベント情報
+     * Loss of focus event
+     * @param event Event information
      */
     @Override
     public void focusLost(FocusEvent event) { }
 
     /**
-     * 選択行背景色を設定する。
-     * @param color		選択行背景色
+     * Set the background color of the selected line.
+     * @param color Selected line background color
      */
     public void setActiveRowColor(Color color) {
         this.activeRowColor = color;
@@ -414,16 +414,16 @@ public class CodePane extends JTextPane implements ITabComponent, FocusListener 
 
 
     /**
-     * 選択行背景色を取得する。
-     * @return		選択行背景色
+     * Get the background color of the selected line.
+     * @return Selected line background color
      */
     public Color getActiveRowColor() {
         return this.activeRowColor;
     }
 
     /**
-     * 表示先頭位置のドキュメントの先頭からのオフセット (0 以上)を取得する。
-     * @return		ドキュメントの先頭からのオフセット (0 以上)
+     * Get the offset (0 or more) from the beginning of the document at the beginning of the display.
+     * @return Offset from the beginning of the document (0 or more)
      */
     public int getViewStartOffset() {
         if (this.parentComponent == null) return 0;
@@ -436,8 +436,8 @@ public class CodePane extends JTextPane implements ITabComponent, FocusListener 
     }
 
     /**
-     * 表示末尾位置のドキュメントの先頭からのオフセット (0 以上)を取得する。
-     * @return		ドキュメントの先頭からのオフセット (0 以上)
+     * Get the offset (0 or more) from the beginning of the document at the end of the display.
+     * @return Offset from the beginning of the document (0 or more)
      */
     public int getViewEndOffset() {
         if (this.parentComponent == null) return 0;
@@ -453,11 +453,11 @@ public class CodePane extends JTextPane implements ITabComponent, FocusListener 
     }
 
     /**
-     * 表示先頭位置の行番号を取得する。
-     * @return		先頭行番号 (1〜)
+     * Get the line number at the beginning of the display.
+     * @return First line number (1 ~)
      */
     public int getViewStartLine() {
-        // 表示開始位置
+        // Display start position
         int start = getViewStartOffset();
         if (start < 0) return 0;
 
@@ -468,11 +468,11 @@ public class CodePane extends JTextPane implements ITabComponent, FocusListener 
     }
 
     /**
-     * 表示末尾位置の行番号を取得する。
-     * @return		末尾行番号 (1〜)
+     * Get the line number at the end of the display.
+     * @return Last line number (1 ~)
      */
     public int getViewEndLine() {
-        // 表示終了位置
+        // Display end position
         int end = getViewEndOffset();
         if (end <= 0) return 0;
 
@@ -483,8 +483,8 @@ public class CodePane extends JTextPane implements ITabComponent, FocusListener 
     }
 
     /**
-     * 表示ドキュメントの行数を取得する。
-     * @return		ドキュメント行数
+     * Get the number of lines in the displayed document.
+     * @return Number of document lines
      */
     public int getEndLine() {
         Document doc = this.getDocument();
@@ -493,14 +493,14 @@ public class CodePane extends JTextPane implements ITabComponent, FocusListener 
     }
 
     /**
-     * 指定行番号の先頭のドキュメントの先頭からのオフセット (0 以上)を取得する。
-     * @param line		指定行番号(１〜)
-     * @return		ドキュメントの先頭からのオフセット (0 以上)
+     * Get the offset (0 or more) from the beginning of the document at the beginning of the specified line number.
+     * @param line Specified line number (1-)
+     * @return Offset from the beginning of the document (0 or more)
      */
     public int getLineStartOffset(int line) {
         if (line <= 0) return 0;
 
-        // 開始、終了キャレット位置
+        // Start and end caret positions
         Document doc = this.getDocument();
         if (doc == null) return 0;
         Element root = doc.getDefaultRootElement();
@@ -512,13 +512,13 @@ public class CodePane extends JTextPane implements ITabComponent, FocusListener 
     }
 
     /**
-     * 指定行番号の末尾のドキュメントの先頭からのオフセット (0 以上)を取得する。
-     * @param line		指定行番号(１〜)
-     * @return		ドキュメントの先頭からのオフセット (0 以上)
+     * Get the offset (0 or more) from the beginning of the document at the end of the specified line number.
+     * @param line Specified line number (1-)
+     * @return Offset from the beginning of the document (0 or more)
      */
     public int getLineEndOffset(int line) {
         if (line <= 0) return 0;
-        // 開始、終了キャレット位置
+        // Start and end caret positions
         Document doc = this.getDocument();
         if (doc == null) return 0;
         Element root = doc.getDefaultRootElement();
@@ -530,18 +530,18 @@ public class CodePane extends JTextPane implements ITabComponent, FocusListener 
     }
 
     /**
-     * ドキュメントの先頭からのオフセット (0 以上)から行番号を取得する
-     * @param  pos		ドキュメントの先頭からのオフセット (0 以上)
-     * @return		    行番号
+     * Get the line number from the offset (0 or greater) from the beginning of the document
+     * @param pos Offset from the beginning of the document (0 or greater)
+     * @return line number
      */
     public int getRow(int pos) {
 
         if (this.parentComponent == null) {
-            // ドキュメント先頭から探索する
+            // Search from the beginning of the document
             return SwingUtils.getRow(this, pos);
         }
         if (!(this.parentComponent instanceof ScrollCodePane)) {
-            // ドキュメント先頭から探索する
+            // Search from the beginning of the document
             return SwingUtils.getRow(this, pos);
         }
         int startOffset = getViewStartOffset();
@@ -550,14 +550,14 @@ public class CodePane extends JTextPane implements ITabComponent, FocusListener 
         int endLine = getViewEndLine();
 
         if (pos < startOffset) {
-            // ドキュメント先頭から探索する
+            // Search from the beginning of the document
             return SwingUtils.getRow(this, pos);
         }
         if (pos >= endOffset) {
             return endLine;
         }
 
-        // 行ライン内に存在するかチェックする
+        // Check if it exists in the line
         for (int line = startLine; line<=endLine; line++) {
             int start = getLineStartOffset(line);
             int end = getLineEndOffset(line);
@@ -570,9 +570,9 @@ public class CodePane extends JTextPane implements ITabComponent, FocusListener 
     }
 
     /**
-     * 列番号を取得する
-     * @param  pos		ドキュメントの先頭からのオフセット (0 以上)
-     * @return		    列番号
+     * Get column number
+     * @param pos Offset from the beginning of the document (0 or greater)
+     * @return Column number
      */
     public int getColumn(int pos) {
         return 0;
@@ -580,24 +580,24 @@ public class CodePane extends JTextPane implements ITabComponent, FocusListener 
 
 
     /**
-     * 行背景色リストを取得する
-     * @return		行背景色リスト
+     * Get the row background color list
+     * @return line background color list
      */
     public List<LinesBackground> getListLinesColor() {
         return listLinesColor;
     }
 
     /**
-     * 行背景色リストを設定する
-     * @param list		行背景色リスト
+     * Set line background color list
+     * @param list Line background color list
      */
     public void setListLinesColor(List<LinesBackground> list) {
         this.listLinesColor = list;
     }
 
     /**
-     * 行背景色を追加する
-     * @param line		行背景色
+     * Add line background color
+     * @param line Line background color
      */
     public void addListLinesColor(LinesBackground line) {
         if (this.listLinesColor == null) {
@@ -607,17 +607,17 @@ public class CodePane extends JTextPane implements ITabComponent, FocusListener 
     }
 
     /**
-     * 行背景色リストをクリアする
+     * Clear the row background color list
      */
     public void clearListLinesColor() {
         this.listLinesColor = null;
     }
 
     /**
-     * 行背景色を追加する
-     * @param start		開始行
-     * @param end		終了行
-     * @param color		背景色
+     * Add line background color
+     * @param start Start line
+     * @param end End line
+     * @param color Background color
      */
     public void addLinesBackground(int start, int end, Color color) {
         LinesBackground line = new LinesBackground(start, end, color);

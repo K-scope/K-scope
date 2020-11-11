@@ -46,52 +46,52 @@ import javax.swing.text.StyleConstants;
 import javax.swing.text.Utilities;
 
 /**
- * ソースコード行番号表示クラス
+ * Source code line number display class
  * @author RIKEN
  */
 public class TextLineNumber extends JPanel implements CaretListener, DocumentListener, PropertyChangeListener {
 
-    /** シリアル番号 */
+    /** Serial number */
     private static final long serialVersionUID = 1L;
 
-    /** 行番号の配置:左 */
+    /** Line number placement: Left */
     public final static float LEFT = 0.0f;
-    /** 行番号の配置:中央 */
+    /** Line number placement: Center */
     public final static float CENTER = 0.5f;
-    /** 行番号の配置:右 */
+    /** Line number placement: Right */
     public final static float RIGHT = 1.0f;
-    /** 行番号表示エリアのボーダ設定 */
+    /** Border setting for line number display area */
     private final static Border OUTER = new MatteBorder(0, 0, 0, 2, Color.GRAY);
-    /** 行番号表示エリア高さ */
+    /** Line number display area height */
     private final static int HEIGHT = Integer.MAX_VALUE - 1000000;
 
-    /** 行番号表示対象のテキストコンポーネント */
+    /** Text component to display line number */
     private JTextComponent component;
 
-    /** フォントの変更フラグ */
+    /** Font change flag */
     private boolean updateFont;
-    /** 行番号の左と右の余白 */
+    /** Margins to the left and right of line numbers */
     private int borderGap;
-    /** 行番号の現在行のフォントからー */
+    /** From the font of the current line of the line number-*/
     private Color currentLineForeground;
-    /** 行番号の配置 */
+    /** Line number placement */
     private float digitAlignment;
-    /** 行番号の最小桁数 */
+    /** Minimum number of digits in line number */
     private int minimumDisplayDigits;
 
-    /** 現在行番号桁数 */
+    /** Current line number Number of digits */
     private int lastDigits;
-    /** 現在行番号エリア高さ */
+    /** Current line number area height */
     private int lastHeight;
-    /** 現在行番号 */
+    /** Current line number */
     private int lastLine;
 
-    /** フォントテーブル */
+    /** Font table */
     private HashMap<String, FontMetrics> fonts;
 
     /**
-     * コンストラクタ
-     * @param component		行番号表示対象のテキストコンポーネント
+     * Constructor
+     * @param component Line number The text component to be displayed
      */
     public TextLineNumber(JTextComponent component) {
         this(component, 3);
@@ -99,9 +99,9 @@ public class TextLineNumber extends JPanel implements CaretListener, DocumentLis
 
 
     /**
-     * コンストラクタ
-     * @param component		行番号表示対象のテキストコンポーネント
-     * @param minimumDisplayDigits		行番号桁数
+     * Constructor
+     * @param component Line number The text component to be displayed
+     * @param minimumDisplayDigits Line number Number of digits
      */
     public TextLineNumber(JTextComponent component, int minimumDisplayDigits) {
         this.component = component;
@@ -120,33 +120,33 @@ public class TextLineNumber extends JPanel implements CaretListener, DocumentLis
     }
 
     /**
-     * フォントの更新フラグを取得する。
-     * @return 		フォント更新フラグ
+     * Get the font update flag.
+     * @return Font update flag
      */
     public boolean getUpdateFont() {
         return updateFont;
     }
 
     /**
-     * フォントの更新フラグを設定する。
-     * @param updateFont		フォント更新フラグ（true=フォント更新)
+     * Set the font update flag.
+     * @param updateFont Font update flag (true = font update)
      */
     public void setUpdateFont(boolean updateFont) {
         this.updateFont = updateFont;
     }
 
     /**
-     * 行番号の左と右の余白を取得する。
-     * @return  行番号の左と右の余白
+     * Get the left and right margins of the line number.
+     * @return Left and right margins for line numbers
      */
     public int getBorderGap() {
         return borderGap;
     }
 
     /**
-     * 行番号の左と右の余白を設定する.<br/>
-     * デフォルト余白=5px
-     * @param borderGap			行番号の左と右の余白
+     * Set the left and right margins for line numbers. <br/>
+     * Default margin = 5px
+     * @param borderGap Left and right margins for line numbers
      */
     public void setBorderGap(int borderGap) {
         this.borderGap = borderGap;
@@ -157,8 +157,8 @@ public class TextLineNumber extends JPanel implements CaretListener, DocumentLis
     }
 
     /**
-     * 行番号の現在行のフォントカラーを取得する
-     * @return   行番号の現在行のフォントカラー
+     * Get the font color of the current line of the line number
+     * @return Font color of the current line of the line number
      */
     public Color getCurrentLineForeground() {
         return currentLineForeground == null ? getForeground()
@@ -166,30 +166,30 @@ public class TextLineNumber extends JPanel implements CaretListener, DocumentLis
     }
 
     /**
-     * 行番号の現在行のフォントカラーを設定する.<br/>
-     * デフォルトカラー=RED
-     * @param currentLineForeground		行番号の現在行のフォントカラー
+     * Set the font color of the current line of the line number. <br/>
+     * Default color = RED
+     * @param currentLineForeground Font color of the current line of the line number
      */
     public void setCurrentLineForeground(Color currentLineForeground) {
         this.currentLineForeground = currentLineForeground;
     }
 
     /**
-     * 行番号の配置（LEFT、CENTER、RIGHT）を取得する。
-     * @return   行番号の配置（LEFT、CENTER、RIGHT）
+     * Get the line number placement (LEFT, CENTER, RIGHT).
+     * @return Line number placement (LEFT, CENTER, RIGHT)
      */
     public float getDigitAlignment() {
         return digitAlignment;
     }
 
     /**
-     * 行番号の配置（LEFT、CENTER、RIGHT）を設定する.<br/>
+     * Set the line number placement (LEFT, CENTER, RIGHT). <br/>
      * <ul>
-     * <li>TextLineNumber.LEFT
-     * <li>TextLineNumber.CENTER
-     * <li>TextLineNumber.RIGHT (default)
-     * </ul>
-     * @param digitAlignment		行番号の配置（LEFT、CENTER、RIGHT）
+     * <li> TextLineNumber.LEFT
+     * <li> TextLineNumber.CENTER
+     * <li> TextLineNumber.RIGHT (default)
+     * </ ul>
+     * @param digitAlignment Line number alignment (LEFT, CENTER, RIGHT)
      */
     public void setDigitAlignment(float digitAlignment) {
         this.digitAlignment = digitAlignment > 1.0f ? 1.0f
@@ -197,16 +197,16 @@ public class TextLineNumber extends JPanel implements CaretListener, DocumentLis
     }
 
     /**
-     * 行番号の最小桁数を取得する.
-     * @return   行番号の最小桁数
+     * Get the minimum number of digits in a line number.
+     * @return Minimum number of digits in line number
      */
     public int getMinimumDisplayDigits() {
         return minimumDisplayDigits;
     }
 
     /**
-     * 行番号の最小桁数を設定する.
-     * @param minimumDisplayDigits   行番号の最小桁数
+     * Set the minimum number of digits in the line number.
+     * @param minimumDisplayDigits Minimum number of digits in line number
      */
     public void setMinimumDisplayDigits(int minimumDisplayDigits) {
         this.minimumDisplayDigits = minimumDisplayDigits;
@@ -214,7 +214,7 @@ public class TextLineNumber extends JPanel implements CaretListener, DocumentLis
     }
 
     /**
-     * 行番号表示幅を設定する.
+     * Set the line number display width.
      */
     private void setPreferredWidth() {
         Element root = component.getDocument().getDefaultRootElement();
@@ -239,7 +239,7 @@ public class TextLineNumber extends JPanel implements CaretListener, DocumentLis
     }
 
     /**
-     * 行番号を描画する.
+     * Draw line numbers.
      */
     @Override
     public void paintComponent(Graphics g) {
@@ -284,8 +284,8 @@ public class TextLineNumber extends JPanel implements CaretListener, DocumentLis
     }
 
     /**
-     * 現在行であるか判断する。
-     * @return    true=現在行
+     * Determine if it is the current line.
+     * @return true = current line
      */
     private boolean isCurrentLine(int rowStartOffset) {
         int caretPosition = component.getCaretPosition();
@@ -299,9 +299,9 @@ public class TextLineNumber extends JPanel implements CaretListener, DocumentLis
     }
 
     /**
-     * 現在行番号を取得する
-     * @param rowStartOffset		行オフセット
-     * @return			行番号文字列
+     * Get the current line number
+     * @param rowStartOffset Row offset
+     * @return line number string
      */
     protected String getTextLineNumber(int rowStartOffset) {
         Element root = component.getDocument().getDefaultRootElement();
@@ -315,9 +315,9 @@ public class TextLineNumber extends JPanel implements CaretListener, DocumentLis
     }
 
     /**
-     * 行番号描画X位置を取得する
-     * @param   availableWidth		表示幅
-     * @param   stringWidth			行番号文字列幅
+     * Get line number drawing X position
+     * @param availableWidth Display width
+     * @param stringWidth Line number string width
      */
     private int getOffsetX(int availableWidth, int stringWidth) {
         return (int) ((availableWidth - stringWidth) * digitAlignment);
@@ -325,9 +325,9 @@ public class TextLineNumber extends JPanel implements CaretListener, DocumentLis
 
 
     /**
-     * 行番号描画Y位置を取得する
-     * @param   rowStartOffset		表示始点高さ
-     * @param   fontMetrics			行番号文字フォント
+     * Get line number drawing Y position
+     * @param rowStartOffset Display start point height
+     * @param fontMetrics Line number character font
      */
     private int getOffsetY(int rowStartOffset, FontMetrics fontMetrics)
             throws BadLocationException {
@@ -378,8 +378,8 @@ public class TextLineNumber extends JPanel implements CaretListener, DocumentLis
     }
 
     /**
-     * テキストキャレット位置の更新イベント
-     * @param e			テキストキャレット位置の更新イベント
+     * Text caret position update event
+     * @param e Text caret position update event
      */
     @Override
     public void caretUpdate(CaretEvent e) {
@@ -398,8 +398,8 @@ public class TextLineNumber extends JPanel implements CaretListener, DocumentLis
     }
 
     /**
-     * ドキュメントの変更イベント
-     * @param e		ドキュメントの変更イベント
+     * Document change event
+     * @param e Document change event
      */
     @Override
     public void changedUpdate(DocumentEvent e) {
@@ -407,8 +407,8 @@ public class TextLineNumber extends JPanel implements CaretListener, DocumentLis
     }
 
     /**
-     * ドキュメントの追加イベント
-     * @param e		ドキュメントの変更イベント
+     * Additional document event
+     * @param e Document change event
      */
     @Override
     public void insertUpdate(DocumentEvent e) {
@@ -416,8 +416,8 @@ public class TextLineNumber extends JPanel implements CaretListener, DocumentLis
     }
 
     /**
-     * ドキュメントの削除イベント
-     * @param e		ドキュメントの変更イベント
+     * Document deletion event
+     * @param e Document change event
      */
     @Override
     public void removeUpdate(DocumentEvent e) {
@@ -425,7 +425,7 @@ public class TextLineNumber extends JPanel implements CaretListener, DocumentLis
     }
 
     /**
-     * ドキュメントの変更イベント
+     * Document change event
      */
     private void documentChanged() {
         // Preferred size of the component has not been updated at the time
@@ -449,8 +449,8 @@ public class TextLineNumber extends JPanel implements CaretListener, DocumentLis
     }
 
     /**
-     * プロパティ変更イベント
-     * @param evt		プロパティ変更イベント
+     * Property change event
+     * @param evt Property change event
      */
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
@@ -467,7 +467,7 @@ public class TextLineNumber extends JPanel implements CaretListener, DocumentLis
     }
 
     /**
-     * 再描画する。
+     * Redraw.
      */
     public void update() {
         documentChanged();

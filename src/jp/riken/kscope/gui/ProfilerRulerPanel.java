@@ -51,56 +51,56 @@ import jp.riken.kscope.properties.ProfilerProperties;
 import jp.riken.kscope.utils.SwingUtils;
 
 /**
- * プロファイラルーラパネルクラス
+ * Profile Laura Panel Class
  * @author RIKEN
  */
 public class ProfilerRulerPanel extends JPanel implements ChangeListener, MouseListener, Observer, MouseMotionListener, ComponentListener {
 
-    /** シリアル番号 */
+    /** Serial number */
 	private static final long serialVersionUID = 1L;
 
-	/** 表示コスト情報名 */
+	/** Display cost information name */
 	private JLabel labelName;
-	/** コスト表示パネル */
+	/** Cost display panel */
 	private JPanel panelProfiler;
-	/** コーナーパネル */
+	/** Corner panel */
 	private JPanel panelConer;
-	/** ソースコードパネル */
+	/** Source Code Panel */
     private ScrollCodePane panelScrollCode;
-	/** ソースコード表示パネル */
+	/** Source code display panel */
     private JPanel panelCodeView;
-    /** プロファイラデータ */
+    /** Profiler data */
     private List<ISourceBargraph> listData;
-    /** プロファイラプロパティ */
+    /** Profiler Properties */
     private ProfilerProperties properties;
-	/** デフォルト幅 */
+	/** Default width */
 	private int DEFLALT_WIDTH = 60;
-	/** ソースビューパネルデフォルト高さ */
+	/** Source View Panel Default Height */
 	private int DEFLALT_VIEWHEIGHT = 1;
-    /** プロファイラデータ表示高さ */
+    /** Profiler data display height */
 	private float PROFILER_DATA_MINHEIGHT = 3.0F;
-	/** ソースコード表示パネルボーダー色 = Color.GRAY*/
+	/** Source code display panel border color = Color.GRAY */
 	private final Color DEFAULT_BORDERCOLORPANEL = Color.GRAY;
-	/** ソースコード表示パネル背景色  new Color(220, 220, 220, 64) */
+	/** Source code display panel background color new Color (220, 220, 220, 64) */
     @SuppressWarnings("unused")
 	private final Color DEFAULT_BACKCOLORPANEL = new Color(220, 220, 220, 64);
-	/** プロファイラデータ:最大値 */
+	/** Profiler data: Maximum value */
 	private float maxValue;
-	/** プロファイラデータ:最小値 */
+	/** Profiler data: Minimum value */
 	private float minValue;
 
 	/**
-	 * コンストラクタ
-	 */
+* Constructor
+*/
 	public ProfilerRulerPanel() {
         super();
         initGUI();
     }
 
 	/**
-	 * コンストラクタ
-	 * @param panelCode     ソースコードパネル
-	 */
+* Constructor
+* @param panelCode Source code panel
+*/
 	public ProfilerRulerPanel(ScrollCodePane panelCode) {
         super();
         this.panelScrollCode = panelCode;
@@ -108,15 +108,15 @@ public class ProfilerRulerPanel extends JPanel implements ChangeListener, MouseL
     }
 
     /**
-     * 初期化を行う.<br/>
-     * プロファイラルーラパネルを配置する。
+     * Initialize. <br/>
+     * Place the profiler ruler panel.
      */
     private void initGUI() {
         try {
             BorderLayout thisLayout = new BorderLayout();
             this.setLayout(thisLayout);
 
-            // プロファイラ表示コスト名
+            // Profiler display cost name
             {
             	this.labelName = new JLabel();
                 this.add(this.labelName, BorderLayout.NORTH);
@@ -129,15 +129,15 @@ public class ProfilerRulerPanel extends JPanel implements ChangeListener, MouseL
                 Font font = org.deriveFont(Font.PLAIN, (float) 11.0);
                 this.labelName.setFont(font);
             }
-            // プロファイラプレビューパネル
+            // Profiler preview panel
             {
             	this.panelProfiler = new JPanel() {
-            		/** シリアル番号 */
+            		/** Serial number */
 					private static final long serialVersionUID = 1L;
 
 					/**
-            		 * プロファイラデータを描画する.
-            		 */
+            * Draw profiler data.
+            */
 					@Override
 					protected void paintComponent(Graphics g) {
 						super.paintComponent(g);
@@ -149,13 +149,13 @@ public class ProfilerRulerPanel extends JPanel implements ChangeListener, MouseL
                 this.panelProfiler.setBorder(new LineBorder(Color.BLACK, 1));
                 this.panelProfiler.setLayout(null);
             }
-            // コーナーパネル
+            // Corner panel
             {
             	this.panelConer = new JPanel();
                 this.panelConer.setOpaque(true);
                 this.add(this.panelConer, BorderLayout.SOUTH);
             }
-            // ソースコード表示パネル
+            // Source code display panel
             {
             	this.panelCodeView = new JPanel();
                 this.panelCodeView.setBorder(new LineBorder(DEFAULT_BORDERCOLORPANEL, 1));
@@ -164,21 +164,21 @@ public class ProfilerRulerPanel extends JPanel implements ChangeListener, MouseL
                 this.panelProfiler.add(this.panelCodeView);
             }
 
-            // ソースコードパネルのスクロールイベント
+            // Source code panel scroll event
             if (this.panelScrollCode != null) {
             	this.panelScrollCode.getViewport().addChangeListener(this);
-                // オブザーバを設定する。
+                // Set the observer.
             	if (this.panelScrollCode.getModel() != null) {
             		this.panelScrollCode.getModel().addObserver(this);
             	}
             }
-            // マウスクリックイベント
+            // Mouse click event
             this.panelProfiler.addMouseListener(this);
             this.panelProfiler.addMouseMotionListener(this);
-            // パネルのサイズ変更イベント
+            // Panel resizing event
             this.addComponentListener(this);
 
-    		// ソースコードパネル表示位置を設定する。
+    		// Set the source code panel display position.
     		setPanelsBounds();
 
 	    } catch (Exception e) {
@@ -187,21 +187,21 @@ public class ProfilerRulerPanel extends JPanel implements ChangeListener, MouseL
     }
 
 	/**
-	 * ソースコードパネルのスクロール変更イベント
-	 */
+* Source code panel scroll change event
+*/
 	@Override
 	public void stateChanged(ChangeEvent e) {
-		// ソースコードパネル表示位置を設定する。
+		// Set the source code panel display position.
 		setPanelsBounds();
 	}
 
 	/**
-	 * ソースコードパネル表示位置を設定する。
-	 */
+* Set the source code panel display position.
+*/
 	private void setPanelsBounds() {
         if (this.panelScrollCode == null) return;
 
-        // コーナーパネル
+        // Corner panel
         JScrollBar barVertical = this.panelScrollCode.getVerticalScrollBar();
         JScrollBar barHorizontal = this.panelScrollCode.getHorizontalScrollBar();
         int cornerhight = 0;
@@ -214,13 +214,13 @@ public class ProfilerRulerPanel extends JPanel implements ChangeListener, MouseL
         Dimension sizeCorner = new Dimension(DEFLALT_WIDTH, cornerhight);
         this.panelConer.setPreferredSize(sizeCorner);
 
-        // 再描画
+        // redraw
         this.revalidate();
         this.repaint();
 
-        // ソースコードパネル
+        // Source code panel
         if (barVertical != null && barVertical.isShowing()) {
-	        // 表示位置
+	        // Display position
 	        Rectangle viewrect = this.panelScrollCode.getViewport().getViewRect();
 	        Rectangle coderect = this.panelScrollCode.getSourcePane().getBounds();
 	        int height = this.panelProfiler.getHeight();
@@ -240,9 +240,9 @@ public class ProfilerRulerPanel extends JPanel implements ChangeListener, MouseL
 	}
 
     /**
-     * ソースビューモデルの変更通知イベント
-     * @param o			通知元
-     * @param arg		通知項目
+     * Source view model change notification event
+     * @param o Notification source
+     * @param arg Notification item
      */
 	@Override
 	public void update(Observable o, Object arg) {
@@ -257,7 +257,7 @@ public class ProfilerRulerPanel extends JPanel implements ChangeListener, MouseL
         float max = observer.getMaxValue();
         float min = observer.getMinValue();
 
-        // プロファイラデータをセットする
+        // Set profiler data
         setProfilerData(list, max, min);
 
         this.repaint();
@@ -265,10 +265,10 @@ public class ProfilerRulerPanel extends JPanel implements ChangeListener, MouseL
 	}
 
     /**
-     * プロファイラデータを設定する
-     * @param list			プロファイラデータ
-     * @param max			プロファイラデータ:最大値
-     * @param min			プロファイラデータ:最小値
+     * Set profiler data
+     * @param list Profiler data
+     * @param max Profiler data: Maximum
+     * @param min Profiler data: Minimum
      */
     public void setProfilerData(List<ISourceBargraph> list, float max, float min) {
         if (this.listData == null) {
@@ -279,12 +279,12 @@ public class ProfilerRulerPanel extends JPanel implements ChangeListener, MouseL
         this.maxValue = max;
         this.minValue = min;
 
-        // プロファイラデータを昇順に並べ替えを行う
+        // Sort profiler data in ascending order
         Collections.sort(this.listData, new AscendingComparator());
     }
 
     /**
-     * プロファイラをクリアする。
+     * Clear the profiler.
      */
     public void clearProfilerData() {
         if (this.listData == null) {
@@ -297,37 +297,37 @@ public class ProfilerRulerPanel extends JPanel implements ChangeListener, MouseL
     }
 
 	/**
-	 * プロファイラデータを描画する.
-	 * @param g    グラフィックスオブジェクト
-	 */
+* Draw profiler data.
+* @param g graphics object
+*/
 	protected void paintProfilerData(Graphics g) {
 		Graphics2D g2 = (Graphics2D)g;
-		// 描画領域
+		// Drawing area
 		Rectangle rectDraw = this.panelProfiler.getBounds();
-		// クリア
+		// clear
 		g2.clearRect(rectDraw.x, rectDraw.y, rectDraw.width, rectDraw.height);
-		// データラベル
+		// Data label
 		this.labelName.setText("");
 
-		// データチェック
+		// data check
 		if (this.listData == null) return;
 		if (this.listData.size() <= 0) return;
 		if (maxValue - minValue == 0.0) return;
 
-		// データラベル
+		// Data label
 		this.labelName.setText(this.listData.get(0).getTypeName());
 
-        // 表示行数
+        // Number of lines to display
         int rows = this.panelScrollCode.getSourcePane().getEndLine();
-        // 描画バーの高さ
+        // Height of drawing bar
 		float barheight = PROFILER_DATA_MINHEIGHT;
 		if ((float)rectDraw.height/(float)rows > barheight ) {
-			// 描画バーの高さを1行高さにする.
+			// Set the height of the drawing bar to one line height.
 			barheight = (float)rectDraw.height/(float)rows;
 		}
 
-        // 行位置に描画
-        // プロファイラデータは昇順に並べ替え済みであるので、値の小さいバーから描画する。
+        // Draw at line position
+        // Profiler data has been sorted in ascending order, so draw from the bar with the smallest value.
         Color minColor = this.properties.getRulerColorMin();
         Color maxColor = this.properties.getRulerColorMax();
 		for (int i=0; i<this.listData.size(); i++) {
@@ -350,62 +350,62 @@ public class ProfilerRulerPanel extends JPanel implements ChangeListener, MouseL
 	}
 
 	/**
-	 * マウスクリックイベント.
-	 * クリック位置の行番号をソースビューに表示する。
-	 * @param event マウスイベント
-	 */
+* Mouse click event.
+* Display the line number of the click position in the source view.
+* @param event Mouse event
+*/
 	@Override
 	public void mouseClicked(MouseEvent event) {
-		// クリック, ドラッグ行番号を表示する
+		// Click, display drag line number
 		setSourceLinePosition(event);
 	}
 
 	/**
-	 * マウスボタンのプレスイベント
-	 * @param e マウスイベント
-	 */
+* Mouse button press event
+* @param e Mouse event
+*/
 	@Override
 	public void mousePressed(MouseEvent event) { }
 
 	/**
-	 * マウスボタンのリリースイベント
-	 * @param e マウスイベント
-	 */
+* Mouse button release event
+* @param e Mouse event
+*/
 	@Override
 	public void mouseReleased(MouseEvent e) { }
 
 	/**
-	 * マウスカーソルが領域に入ったイベント
-	 * @param e マウスイベント
-	 */
+* Event where the mouse cursor enters the area
+* @param e Mouse event
+*/
 	@Override
 	public void mouseEntered(MouseEvent event) { }
 
 	/**
-	 * マウスカーソルが領域から出たイベント
-	 * @param e マウスイベント
-	 */
+* Event when the mouse cursor leaves the area
+* @param e Mouse event
+*/
 	@Override
 	public void mouseExited(MouseEvent e) { }
 
 	/**
-	 * ソースコードモデルのオブザーバを登録する。
-	 */
+* Register the observer of the source code model.
+*/
 	public void addObserver() {
         if (this.panelScrollCode != null && this.panelScrollCode.getModel() != null) {
-            // オブザーバを設定する。
+            // Set the observer.
        		this.panelScrollCode.getModel().addObserver(this);
         }
 	}
 
 	/**
-	 * プロファイラデータを昇順に並べ替えを行う。
-	 */
+* Sort profiler data in ascending order.
+*/
 	public class AscendingComparator implements Comparator<ISourceBargraph> {
 
 		/**
-		 * プロファイラデータの比較を行う.
-		 */
+* Compare profiler data.
+*/
 		@Override
 		public int compare(ISourceBargraph o1, ISourceBargraph o2) {
 			float value1 = o1.getBarValue();
@@ -417,46 +417,46 @@ public class ProfilerRulerPanel extends JPanel implements ChangeListener, MouseL
 	}
 
     /**
-     * プロファイラプロパティを設定する.
-     * @param properties		プロファイラプロパティ
+     * Set profiler properties.
+     * @param properties Profiler properties
      */
 	public void setProfilerProperties(ProfilerProperties properties) {
 		this.properties = properties;
 
-		// コードパネル
+		// Code panel
         this.panelCodeView.setBorder(new LineBorder(this.properties.getRulerPanelBorderColor(), 1));
         this.panelCodeView.setBackground(this.properties.getRulerPanelBackColor());
 		this.repaint();
 	}
 
 	/**
-	 * マウスドラッグイベント
-	 * @param event マウスイベント
-	 */
+* Mouse drag event
+* @param event Mouse event
+*/
 	@Override
 	public void mouseDragged(MouseEvent event) {
-		// クリック, ドラッグ行番号を表示する
+		// Click, display drag line number
 		setSourceLinePosition(event);
 	}
 
 	/**
-	 * クリック, ドラッグ行番号を表示する
-	 * @param event マウスイベント
-	 */
+* Display click and drag line numbers
+* @param event Mouse event
+*/
 	private void setSourceLinePosition(MouseEvent event) {
 		try {
 			if (!SwingUtilities.isLeftMouseButton(event)) return;
 
-			// マウスクリック位置
+			// Mouse click position
 			Point point = event.getPoint();
 			int height = this.panelProfiler.getHeight();
-			// 表示行数
+			// Number of lines to display
 			int docend = this.panelScrollCode.getSourcePane().getEndLine();
-			// クリック行番号
+			// Click line number
 			int lineheight = (int)((float)point.y / (float)height * (float)docend);
 			lineheight += 1;
 
-			// クリック行番号を表示する
+			// Display the click line number
 			this.panelScrollCode.setLinePosition(lineheight);
 
 		} catch (Exception ex) {
@@ -465,36 +465,36 @@ public class ProfilerRulerPanel extends JPanel implements ChangeListener, MouseL
 
 
 	/**
-	 * マウス移動イベント
-	 * @param event マウスイベント
-	 */
+* Mouse movement event
+* @param event Mouse event
+*/
 	@Override
 	public void mouseMoved(MouseEvent e) { }
 
 	/**
-	 * サイズの変更イベント
-	 */
+* Resize event
+*/
 	@Override
 	public void componentResized(ComponentEvent e) {
-		// ソースコードパネル表示位置を設定する。
+		// Set the source code panel display position.
 		setPanelsBounds();
 	}
 
 	/**
-	 * 移動イベント
-	 */
+* Moving event
+*/
 	@Override
 	public void componentMoved(ComponentEvent e) { }
 
 	/**
-	 * 表示イベント
-	 */
+* Display event
+*/
 	@Override
 	public void componentShown(ComponentEvent e) { }
 
 	/**
-	 * 非表示イベント
-	 */
+* Hidden event
+*/
 	@Override
 	public void componentHidden(ComponentEvent e) { }
 

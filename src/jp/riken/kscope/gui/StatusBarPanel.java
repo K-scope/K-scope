@@ -34,34 +34,34 @@ import javax.swing.border.BevelBorder;
 import jp.riken.kscope.Application;
 
 /**
- * ステータスバーパネル
+ * Status bar panel
  * @author RIKEN
  *
  */
 public class StatusBarPanel extends javax.swing.JPanel implements Observer {
 
-    /** シリアル番号 */
+    /** Serial number */
     private static final long serialVersionUID = 1L;
-    /** メインメッセージ */
+    /** Main message */
     private JLabel lblMessageMain;
-    /** ロケーションメッセージ */
+    /** Location message */
     private JLabel lblMessageLocation;
-    /** ステータスメッセージ */
+    /** Status message */
     private JLabel lblMessageStatus;
-    /** プログレスバー */
+    /** progress bar */
     private JProgressBar progressBar;
 
     /**
-     * プログレスバー不確定：インターバル時間(ms).<br/>
-     * PROGRESSBAR_CYCLETIME / PROGRESSBAR_INTERVAL = 偶数であること
+     * Progress bar uncertain: Interval time (ms). <br/>
+     * PROGRESSBAR_CYCLETIME / PROGRESSBAR_INTERVAL = even number
      */
     private final int PROGRESSBAR_INTERVAL = 200;
-    /** プログレスバー不確定：最大時間(ms) */
+    /** Progress bar uncertain: Maximum time (ms) */
     private final int PROGRESSBAR_CYCLETIME = 2000;
 
 
     /**
-     * コンストラクタ
+     * Constructor
      */
     public StatusBarPanel() {
         super();
@@ -69,7 +69,7 @@ public class StatusBarPanel extends javax.swing.JPanel implements Observer {
     }
 
     /**
-     * GUI初期化を行う
+     * Initialize the GUI
      */
     private void initGUI() {
         try {
@@ -124,8 +124,8 @@ public class StatusBarPanel extends javax.swing.JPanel implements Observer {
     }
 
     /**
-     * メインメッセージを設定する
-     * @param message		メインメッセージ
+     * Set the main message
+     * @param message Main message
      */
     private void setMessageMain(final String message) {
 
@@ -138,8 +138,8 @@ public class StatusBarPanel extends javax.swing.JPanel implements Observer {
     }
 
     /**
-     * ロケーションメッセージを設定する
-     * @param message		ロケーションメッセージ
+     * Set location message
+     * @param message Location message
      */
     private void setMessageLocation(final String message) {
 
@@ -152,8 +152,8 @@ public class StatusBarPanel extends javax.swing.JPanel implements Observer {
     }
 
     /**
-     * ステータスメッセージを設定する
-     * @param message		ステータスメッセージ
+     * Set status message
+     * @param message Status message
      */
     private void setMessageStatus(final String message) {
 
@@ -168,9 +168,9 @@ public class StatusBarPanel extends javax.swing.JPanel implements Observer {
 
 
     /**
-     * メッセージ、進捗状況の更新通知
-     * @param o			通知元
-     * @param arg		通知項目
+     * Message, progress update notification
+     * @param o Notification source
+     * @param arg Notification item
      */
     @Override
     public void update(Observable o, Object arg) {
@@ -178,21 +178,21 @@ public class StatusBarPanel extends javax.swing.JPanel implements Observer {
         try {
 			Application.StatusPrint status = (Application.StatusPrint)o;
 
-			// メインメッセージ
+			// Main message
 			String mainMessage = status.getMessageMain();
 			setMessageMain(mainMessage);
 
-			// ロケーションメッセージ
+			// Location message
 			String locationMessage = status.getMessageLocation();
 			setMessageLocation(locationMessage);
 
-			// ステータスメッセージ
+			// Status message
 			String statusMessage = status.getMessageStatus();
 			setMessageStatus(statusMessage);
 
-			// プログレスバー
+			// progress bar
 			if (status.isProgressStart()) {
-			    // プログレスバー開始
+			    // Start progress bar
 			    Integer value = status.getProgressValue();
 			    Integer min = status.getProgressMin();
 			    Integer max = status.getProgressMax();
@@ -208,7 +208,7 @@ public class StatusBarPanel extends javax.swing.JPanel implements Observer {
 			    }
 			}
 			else {
-			    // プログレスバー停止
+			    // Progress bar stop
 			    progressBar.setMinimum(0);
 			    progressBar.setMaximum(0);
 			    progressBar.setValue(0);
