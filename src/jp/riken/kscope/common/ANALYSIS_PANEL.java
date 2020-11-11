@@ -19,65 +19,65 @@ package jp.riken.kscope.common;
 import jp.riken.kscope.Message;
 
 /**
- * 分析情報パネルの識別文字列
+ * Identification string in the analysis information panel
  * @author RIKEN
  */
 public enum ANALYSIS_PANEL {
-    // パネル一覧
-    /** 付加情報パネル */
-    INFORMATION(Message.getString("mainmenu.window.analysis.information"), "information.csv"), //付加情報
-    /**  検索結果パネル   */
-    SEARCHRESULT(Message.getString("mainmenu.window.analysis.search"), "search.csv"), //検索結果
-    /** 変数特性一覧パネル */
-    VALIABLE(Message.getString("mainmenu.analysis.valiableproperty"), "variable.csv"), //変数特性一覧
-    /** 宣言・定義・参照パネル */
-    REFERENCE(Message.getString("mainmenu.analysis.dec-def-ref"), "reference.csv"), //宣言・定義・参照
-    /** トレースパネル */
-    TRACE(Message.getString("mainmenu.window.analysis.trace"), "trace.csv"), //トレース
-    /** 演算カウントパネル */
-    OPERAND(Message.getString("mainmenu.analysis.operation"), "count.csv"), //演算カウント
-    /** 要求Byte/FLOP算出結果パネル */
-    REQUIRED(Message.getString("mainmenu.window.analysis.byteflop"), "required.csv"), // 要求Byte/FLOP算出結果パネル
-    /** プロパティパネル */
-    PROPARTIES(Message.getString("mainmenu.project.property"), "proparty.csv"), //プロパティ
-    /** エラー箇所パネル */
-    ERROR(Message.getString("mainmenu.window.analysis.error"), "error.csv"), //エラー箇所
-    /** コンソールパネル */
-    CONSOLE(Message.getString("mainmenu.window.analysis.console"), "console.txt"), //コンソール
-    /** 変数有効域パネル */
-    SCOPE(Message.getString("mainmenu.analysis.valiablescope"), "scope.csv"), //変数有効域
-    /** 差替結果パネル */
-    REPLACE(Message.getString("mainmenu.window.analysis.structureinfo"), "replaceResult.csv"), //構造情報差替結果
-    /** プロファイラ:コスト情報:手続パネル */
-    COST_PROCEDURE(Message.getString("analysis_panel.enum.costinfo-procedure"), "cost_procedure.csv"), //コスト情報：手続
-    /** プロファイラ:コスト情報:ループパネル */
-    COST_LOOP(Message.getString("analysis_panel.enum.costinfo-loop"), "cost_loop.csv"), //コスト情報：ループ
-    /** プロファイラ:コスト情報:ラインパネル */
-    COST_LINE(Message.getString("analysis_panel.enum.costinfo-line"), "cost_line.csv"), //コスト情報：ライン
-    /** プロファイラ:コールグラフ情報パネル */
-    CALLGRAPH(Message.getString("analysis_panel.enum.callgraph"), "callgraph.csv"), //コールグラフ情報
-    /** Eprof:イベントカウンタ情報:ハードウェアモニタ情報（ＰＡ情報）テーブル=Cacheのテーブルパネル */
-    EVENTCOUNTER_CACHE(Message.getString("analysis_panel.enum.detail-cache"), "cache.csv"), //詳細情報：Cache
-    /** Eprof:イベントカウンタ情報:ハードウェアモニタ情報（ＰＡ情報）テーブル=Instructionsのテーブルパネル */
-    EVENTCOUNTER_INSTRUCTIONS(Message.getString("analysis_panel.enum.detail-instructions"), "instructions.csv"), //詳細情報：Instructions
-    /** Eprof:イベントカウンタ情報:ハードウェアモニタ情報（ＰＡ情報）テーブル=MEM_accessのテーブルパネル */
-    EVENTCOUNTER_MEM_ACCESS(Message.getString("analysis_panel.enum.detail-mem"), "mem_access.csv"), //詳細情報：MEM_access
-    /** Eprof:イベントカウンタ情報:ハードウェアモニタ情報（ＰＡ情報）テーブル=Performanceのテーブルパネル */
-    EVENTCOUNTER_PERFORMANCE(Message.getString("analysis_panel.enum.detail-performance"), "performance.csv"), //詳細情報：Performance
-    /** Eprof:イベントカウンタ情報:ハードウェアモニタ情報（ＰＡ情報）テーブル=Statisticsのテーブルパネル */
-    EVENTCOUNTER_STATISTICS(Message.getString("analysis_panel.enum.detail-statistics"), "statistics.csv"), //詳細情報：Statistics
-    /** 詳細プロファイラ:測定区間 */
-    EPROF_MEASURE(Message.getString("analysis_panel.enum.mesuermentrange"), "eprof_measure.csv"); //測定区間
+    // Panel list
+    /** Additional information panel */
+    INFORMATION(Message.getString("mainmenu.window.analysis.information"), "information.csv"), //Additional information
+    /** Search Results Panel */
+    SEARCHRESULT(Message.getString("mainmenu.window.analysis.search"), "search.csv"), //search results
+    /** Variable characteristic list panel */
+    VALIABLE(Message.getString("mainmenu.analysis.valiableproperty"), "variable.csv"), // List of variable characteristics
+    /** Declaration / Definition / Reference Panel */
+    REFERENCE(Message.getString("mainmenu.analysis.dec-def-ref"), "reference.csv"), // Declaration / Definition / Reference
+    /** Trace panel */
+    TRACE(Message.getString("mainmenu.window.analysis.trace"), "trace.csv"), //trace
+    /** Calculation count panel */
+    OPERAND(Message.getString("mainmenu.analysis.operation"), "count.csv"), // Calculation count
+    /** Request Byte / FLOP calculation result panel */
+    REQUIRED(Message.getString("mainmenu.window.analysis.byteflop"), "required.csv"), // Request Byte / FLOP calculation result panel
+    /** Property Panel */
+    PROPARTIES(Message.getString("mainmenu.project.property"), "proparty.csv"), // Properties
+    /** Error location panel */
+    ERROR(Message.getString("mainmenu.window.analysis.error"), "error.csv"), // Error location
+    /** Console panel */
+    CONSOLE(Message.getString("mainmenu.window.analysis.console"), "console.txt"), //console
+    /** Variable Effectiveness Panel */
+    SCOPE(Message.getString("mainmenu.analysis.valiablescope"), "scope.csv"), // Variable valid area
+    /** Replacement result panel */
+    REPLACE(Message.getString("mainmenu.window.analysis.structureinfo"), "replaceResult.csv"), // Structural information replacement result
+    /** Profiler: Cost Information: Procedure Panel */
+    COST_PROCEDURE(Message.getString("analysis_panel.enum.costinfo-procedure"), "cost_procedure.csv"), // Cost information: Procedure
+    /** Profiler: Cost Information: Loop Panel */
+    COST_LOOP(Message.getString("analysis_panel.enum.costinfo-loop"), "cost_loop.csv"), // Cost information: Loop
+    /** Profiler: Cost Information: Line Panel */
+    COST_LINE(Message.getString("analysis_panel.enum.costinfo-line"), "cost_line.csv"), // Cost information: Line
+    /** Profiler: Call Graph Information Panel */
+    CALLGRAPH(Message.getString("analysis_panel.enum.callgraph"), "callgraph.csv"), // Call graph information
+    /** Eprof: Event counter information: Hardware monitor information (PA information) table = Cache table panel */
+    EVENTCOUNTER_CACHE(Message.getString("analysis_panel.enum.detail-cache"), "cache.csv"), // More info: Cache
+    /** Eprof: Event counter information: Hardware monitor information (PA information) table = Instructions table panel */
+    EVENTCOUNTER_INSTRUCTIONS(Message.getString("analysis_panel.enum.detail-instructions"), "instructions.csv"), // More info: Instructions
+    /** Eprof: Event counter information: Hardware monitor information (PA information) table = MEM_access table panel */
+    EVENTCOUNTER_MEM_ACCESS(Message.getString("analysis_panel.enum.detail-mem"), "mem_access.csv"), // Detailed information: MEM_access
+    /** Eprof: Event counter information: Hardware monitor information (PA information) table = Performance table panel */
+    EVENTCOUNTER_PERFORMANCE(Message.getString("analysis_panel.enum.detail-performance"), "performance.csv"), // Detailed information: Performance
+    /** Eprof: Event counter information: Hardware monitor information (PA information) table = Statistics table panel */
+    EVENTCOUNTER_STATISTICS(Message.getString("analysis_panel.enum.detail-statistics"), "statistics.csv"), // More info: Statistics
+    /** Detailed profiler: Measurement interval */
+    EPROF_MEASURE(Message.getString("analysis_panel.enum.mesuermentrange"), "eprof_measure.csv"); // Measurement section
 
-    /** タブ名 */
+    /** Tab name */
     private String tabname;
-    /** エクスポートデフォルトファイル名 */
+    /** Export default file name */
     private String filename;
 
     /**
-     * コンストラクタ
-     * @param tabname		タブ名
-     * @param filename		エクスポートデフォルトファイル名
+     * Constructor
+     * @param tabname Tab name
+     * @param filename Export default file name
      */
     private ANALYSIS_PANEL(String tabname, String filename) {
         this.tabname = tabname;
@@ -85,16 +85,16 @@ public enum ANALYSIS_PANEL {
     }
 
     /**
-     * タブ名を取得する
-     * @return		タブ名
+     * Get the tab name
+     * @return tab name
      */
     public String getTabName() {
         return this.tabname;
     }
 
     /**
-     * エクスポートデフォルトファイル名を取得する
-     * @return		エクスポートデフォルトファイル名
+     * Get the export default file name
+     * @return Export default file name
      */
     public String getFilename() {
         return this.filename;

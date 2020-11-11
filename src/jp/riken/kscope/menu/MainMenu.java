@@ -103,379 +103,379 @@ import jp.riken.kscope.properties.ProfilerProperties;
 import jp.riken.kscope.service.AppController;
 
 /**
- * メインメニューバークラス
+ * Main menu bar class
  * @author RIKEN
  *
  */
 public class MainMenu extends JMenuBar implements  MenuListener {
 
-    /** シリアル番号 */
+    /** Serial number */
     private static final long serialVersionUID = 1L;
-    /** プロジェクトメニュー */
+    /** Project menu */
     private JMenu menuProject;
-    /** プロジェクト:XMLファイル削除 */
+    /** Project: XML file deletion */
     private JMenuItem menuProjectDeleteXmlFile;
-    /** 構造解析キャンセルメニュー */
+    /** Structural analysis cancel menu */
     private JMenuItem menuProjectCancel;
-    /** ウィンドウメニュー */
+    /** Window menu */
     private JMenu menuWindow;
-    /** ウィンドウ:進捗状況 */
+    /** Window: Progress */
     private JMenuItem menuWindowProgress;
-    /** ウィンドウ:エクスプローラビュー */
+    /** Window: Explorer View */
     private JMenu menuWindowExplore;
-    /** ウィンドウ:ソースビュー */
+    /** Window: Source view */
     private JMenu menuWindowSource;
-    /** アプリケーションコントローラ */
+    /** Application controller */
     private AppController controller;
-    /** ウィンドウ:エクスプローラビュー:構造 */
+    /** Window: Explorer View: Structure */
     private JMenuItem menuWindowExploreLanguage;
-    /** ウィンドウ:分析ビュー:トレース */
+    /** Window: Analysis View: Trace */
     private JMenuItem menuWindowAnalysisTrace;
-    /** ウィンドウ:分析ビュー */
+    /** Window: Analysis view */
     private JMenu menuWindowAnalysis;
-    /** 表示 */
+    /** Display */
     private JMenu menuView;
-    /** 表示:構造フィルタ */
+    /** Display: Structural filter */
     private JMenu menuViewFilter;
-    /** プロファイラバーグラフ表示 */
+    /** Profile bar graph display */
     private JCheckBoxMenuItem menuProfilerBarVisibled;
-    /** プロファイラコストルーラ表示 */
+    /** Profiler cost ruler display */
     private JCheckBoxMenuItem menuProfilerRulerVisibled;
-    /** 付加情報編集アクション */
+    /** Additional information editing action */
     private EditInformationEditAction actionEditInformation;
-    /** 分析情報エクスポートアクション */
+    /** Analytical information export action */
     private FileExportAnalysisAction actionExportAnalysis;
-    /** エラー箇所を開くアクション */
+    /** Action to open the error part */
     private ErrorOpenFileAction actionErrorOpenFile;
-    /** 分析結果該当個所を開くアクション */
+    /** Analysis result Action to open the relevant part */
     private ViewOpenAnalysisLineAction actionOpenAnalysisLine;
-    /** 分析:変数特性一覧アクション */
+    /** Analysis: Variable Characteristic List Action */
     private AnalysisVariableAction actionAnalysisVariable;
-    /** 分析:演算カウントアクション */
+    /** Analysis: Arithmetic Count Action */
     private AnalysisOperandAction actionAnalysisOperand;
-    /** すべて収納アクション */
+    /** All storage action */
     private TreeCollapseAllAction actionTreeCollapseAll;
-    /** 新規構造ツリーアクション */
+    /** New Structure Tree Action */
     private ViewOpenLanguageTreeAction actionOpenLanguageTree;
 
     /**
-     * コンストラクタ
+     * Constructor
      */
     public MainMenu() {
-        // メニューの作成を行う。
+        // Create a menu.
         initialize();
     }
 
 
     /**
-     * コンストラクタ
-     * @param controller		アプリケーションコントローラ
+     * Constructor
+     * @param controller Application controller
      */
     public MainMenu(AppController controller) {
         this.controller = controller;
-        // メニューの作成を行う。
+        // Create a menu.
         initialize();
     }
 
     /**
-     * メニューの作成を行う。
+     * Create a menu.
      */
     private void initialize() {
 
-        // ファイル
-        JMenu menuFile = new JMenu(Message.getString("mainmenu.file")); //ファイル
+        // File
+        JMenu menuFile = new JMenu(Message.getString("mainmenu.file")); //File
         this.add(menuFile);
         menuFile.addMenuListener(this);
         
-        // ファイル:プロジェクトの新規作成
-        JMenuItem menuFileProjectNew = new JMenuItem(Message.getString("mainmenu.file.newproject")); //プロジェクトの新規作成
+        // File: New project
+        JMenuItem menuFileProjectNew = new JMenuItem(Message.getString("mainmenu.file.newproject")); // Create a new project
         menuFileProjectNew.addActionListener(new FileProjectNewAction(this.controller));
 
         menuFile.add(menuFileProjectNew);
-        // ファイル:プロジェクトを開く
-        JMenuItem menuFileProjectOpen = new JMenuItem(Message.getString("mainmenu.file.openproject")); //プロジェクトを開く
+        // File: Open the project
+        JMenuItem menuFileProjectOpen = new JMenuItem(Message.getString("mainmenu.file.openproject")); // open the project
         menuFile.add(menuFileProjectOpen);
         menuFileProjectOpen.addActionListener(new FileProjectOpenAction(this.controller));
 
-        // ファイル:プロジェクトを閉じる
-        JMenuItem menuFileProjectClose = new JMenuItem(Message.getString("mainmenu.file.closeproject")); //プロジェクトを閉じる
+        // File: Close project
+        JMenuItem menuFileProjectClose = new JMenuItem(Message.getString("mainmenu.file.closeproject")); // close the project
         menuFile.add(menuFileProjectClose);
         menuFileProjectClose.addActionListener(new FileProjectCloseAction(this.controller));
 
-        // ファイル:プロジェクトの保存
-        JMenuItem menuFileProjectSave = new JMenuItem(Message.getString("mainmenu.file.saveproject")); //プロジェクトの保存
+        // File: Save project
+        JMenuItem menuFileProjectSave = new JMenuItem(Message.getString("mainmenu.file.saveproject")); // Save project
         menuFile.add(menuFileProjectSave);
         menuFileProjectSave.addActionListener(new FileProjectSaveAction(this.controller));
 
-        // セパレータ
+        // Separator
         menuFile.addSeparator();
 
-        // ファイル:エクスポート
-        JMenu menuFileExport = new JMenu(Message.getString("mainmenu.file.export")); //エクスポート
+        // File: Export
+        JMenu menuFileExport = new JMenu(Message.getString("mainmenu.file.export")); //export
         menuFile.add(menuFileExport);
         
-        // ファイル:エクスポート:構造情報(TEXT)
-        JMenuItem menuFileExportLanguage = new JMenuItem(Message.getString("mainmenu.file.export.structure")); //構造情報(TEXT)
+        // File: Export: Structural Information (TEXT)
+        JMenuItem menuFileExportLanguage = new JMenuItem(Message.getString("mainmenu.file.export.structure")); // Structural information (TEXT)
         menuFileExport.add(menuFileExportLanguage);
         menuFileExportLanguage.addActionListener(new FileExportExploreAction(this.controller));
         
-        // ファイル:エクスポート:分析情報
-        JMenuItem menuFileExportAnalysis = new JMenuItem(Message.getString("mainmenu.file.export.analysis")); //分析情報
+        // File: Export: Analytical information
+        JMenuItem menuFileExportAnalysis = new JMenuItem(Message.getString("mainmenu.file.export.analysis")); // Analytical information
         menuFileExport.add(menuFileExportAnalysis);
         actionExportAnalysis = new FileExportAnalysisAction(this.controller);
         menuFileExportAnalysis.addActionListener(actionExportAnalysis);
         
-        // ファイル：エクスポート：ソースファイル
-        JMenuItem menuFileExportSourceFile = new JMenuItem(Message.getString("mainmenu.file.export.source")); //ソースファイル
+        // File: Export: Source file
+        JMenuItem menuFileExportSourceFile = new JMenuItem(Message.getString("mainmenu.file.export.source")); //source file
         menuFileExport.add(menuFileExportSourceFile);
         menuFileExportSourceFile.addActionListener(new FileExportSourceFileAction(controller));
 
         menuFile.add(menuFileExport);
 
-        // ファイル:外部ツールでソースファイルを開く
-        JMenuItem menuFileOpenSourceFile = new JMenuItem(Message.getString("mainmenu.file.program")); //外部ツールで開く
+        // File: Open the source file with an external tool
+        JMenuItem menuFileOpenSourceFile = new JMenuItem(Message.getString("mainmenu.file.program")); // Open with an external tool
         menuFile.add(menuFileOpenSourceFile);
         menuFileOpenSourceFile.addActionListener(new FileOpenSourceFileAction(this.controller, FRAME_VIEW.EXPLORE_VIEW));
 
-        // セパレータ
+        // Separator
         menuFile.addSeparator();
         
-        // ファイル:終了
-        JMenuItem menuFileExit = new JMenuItem(Message.getString("mainmenu.file.close")); //終了
+        // File: Finish
+        JMenuItem menuFileExit = new JMenuItem(Message.getString("mainmenu.file.close")); // end
         menuFile.add(menuFileExit);
         menuFileExit.addActionListener(new FileExitAction(this.controller));
 
-        // 編集
-        JMenu menuEdit = new JMenu(Message.getString("mainmenu.edit")); //編集
+        // Edit
+        JMenu menuEdit = new JMenu(Message.getString("mainmenu.edit")); // edit
         this.add(menuEdit);
         menuEdit.addMenuListener(this);
-        // 編集:切り取り
-        JMenuItem menuEditCut = new JMenuItem(Message.getString("mainmenu.edit.cut")); //切り取り
+        // Edit: Cut
+        JMenuItem menuEditCut = new JMenuItem(Message.getString("mainmenu.edit.cut")); // Cut out
         menuEdit.add(menuEditCut);
-        // 編集:切り取り機能は未使用の為DisEnableにする。
+        // Edit: Since the cut function is unused, set it to DisEnable.
         menuEditCut.setEnabled(false);
 
-        // 編集:コピー
-        JMenuItem menuEditCopy = new JMenuItem(Message.getString("mainmenu.edit.copy")); //コピー
+        // Edit: Copy
+        JMenuItem menuEditCopy = new JMenuItem(Message.getString("mainmenu.edit.copy")); //copy
         menuEdit.add(menuEditCopy);
         menuEditCopy.addActionListener(new EditClipboardCopyAction(this.controller, FRAME_VIEW.SOURCE_VIEW));
-        // 編集:貼り付け
-        JMenuItem menuEditPaste = new JMenuItem(Message.getString("mainmenu.edit.paste")); //貼り付け
+        // Edit: Paste
+        JMenuItem menuEditPaste = new JMenuItem(Message.getString("mainmenu.edit.paste")); //pasting
         menuEdit.add(menuEditPaste);
-        // 編集:貼り付け機能は未使用の為DisEnableにする。
+        // Edit: Since the paste function is unused, set it to DisEnable.
         menuEditPaste.setEnabled(false);
 
-        // セパレータ
+        // Separator
         menuEdit.addSeparator();
 
-        // 編集:付加情報編集
-        JMenuItem menuEditInformationEdit = new JMenuItem(Message.getString("mainmenu.edit.info")); //付加情報編集
+        // Edit: Edit additional information
+        JMenuItem menuEditInformationEdit = new JMenuItem(Message.getString("mainmenu.edit.info")); // Edit additional information
         menuEdit.add(menuEditInformationEdit);
         actionEditInformation = new EditInformationEditAction(this.controller, FRAME_VIEW.EXPLORE_VIEW);
         menuEditInformationEdit.addActionListener(actionEditInformation);
 
-        // 検索
-        JMenu menuSearch = new JMenu(Message.getString("mainmenu.search")); //検索
+        // Search
+        JMenu menuSearch = new JMenu(Message.getString("mainmenu.search")); // search
         this.add(menuSearch);
         menuSearch.addMenuListener(this);
-        // 検索:ソース検索
-        JMenuItem menuSearchFind = new JMenuItem(Message.getString("mainmenu.search.source")); //ソース検索
+        // Search: Source search
+        JMenuItem menuSearchFind = new JMenuItem(Message.getString("mainmenu.search.source")); // Source search
         menuSearch.add(menuSearchFind);
         menuSearchFind.addActionListener(new SearchFindAction(this.controller));
-        // 検索:ファイル検索...
-        JMenuItem menuSearchGrep = new JMenuItem(Message.getString("mainmenu.search.file")); //ファイル検索
+        // Search: File search ...
+        JMenuItem menuSearchGrep = new JMenuItem(Message.getString("mainmenu.search.file")); // File search
         menuSearch.add(menuSearchGrep);
         menuSearchGrep.addActionListener(new SearchGrepAction(this.controller));
-        // 検索:ツリー検索...
-        JMenuItem menuSearchTree = new JMenuItem(Message.getString("mainmenu.search.tree")); //ツリー検索
+        // Search: Tree search ...
+        JMenuItem menuSearchTree = new JMenuItem(Message.getString("mainmenu.search.tree")); // Tree search
         menuSearch.add(menuSearchTree);
         menuSearchTree.addActionListener(new SearchTreeAction(this.controller));
-        // セパレータ
+        // Separator
         menuSearch.addSeparator();
-        // 検索:前を検索
-        JMenuItem menuSearchUp = new JMenuItem(Message.getString("mainmenu.search.backward")); //前を検索
+        // Search: Search before
+        JMenuItem menuSearchUp = new JMenuItem(Message.getString("mainmenu.search.backward")); // Search before
         menuSearch.add(menuSearchUp);
         menuSearchUp.addActionListener(new SearchResultAction(this.controller, TRACE_DIR.UP));
-        // 検索:次を検索
-        JMenuItem menuSearchBackward = new JMenuItem(Message.getString("mainmenu.search.forward")); //次を検索
+        // Search: Find Next
+        JMenuItem menuSearchBackward = new JMenuItem(Message.getString("mainmenu.search.forward")); // Find next
         menuSearch.add(menuSearchBackward);
         menuSearchBackward.addActionListener(new SearchResultAction(this.controller, TRACE_DIR.DOWN));
-        // 検索:リフレッシュ
-        JMenuItem menuSearchRefresh = new JMenuItem(Message.getString("mainmenu.search.refresh"));//検索結果更新
+        // Search: Refresh
+        JMenuItem menuSearchRefresh = new JMenuItem(Message.getString("mainmenu.search.refresh"));// Update search results
         menuSearch.add(menuSearchRefresh);
         menuSearchRefresh.addActionListener(new SearchResultAction(this.controller, TRACE_DIR.REFRESH));
-        // 検索:検索結果クリア
-        JMenuItem menuSearchClear = new JMenuItem(Message.getString("mainmenu.search.clear"));//検索結果クリア
+        // Search: Clear search results
+        JMenuItem menuSearchClear = new JMenuItem(Message.getString("mainmenu.search.clear"));// Clear search results
         menuSearch.add(menuSearchClear);
         menuSearchClear.addActionListener(new SearchResultAction(this.controller, TRACE_DIR.END));
 
-        // プロジェクト
-        this.menuProject = new JMenu(Message.getString("mainmenu.project"));//プロジェクト
+        // Project
+        this.menuProject = new JMenu(Message.getString("mainmenu.project"));//project
         this.add(menuProject);
         menuProject.addMenuListener(this);
 
-        // プロジェクト:構造解析実行
-        JMenuItem menuProjectBuild = new JMenuItem(Message.getString("mainmenu.project.startanalysis"));//構造解析実行
+        // Project: Perform structural analysis
+        JMenuItem menuProjectBuild = new JMenuItem(Message.getString("mainmenu.project.startanalysis"));// Structural analysis execution
         menuProject.add(menuProjectBuild);
         menuProjectBuild.addActionListener(new ProjectBuildAction((this.controller)));
         
-        // プロジェクト:構造解析キャンセル
-        menuProjectCancel = new JMenuItem(Message.getString("mainmenu.project.endanalysis"));//構造解析キャンセル
+        // Project: Cancel structural analysis
+        menuProjectCancel = new JMenuItem(Message.getString("mainmenu.project.endanalysis"));// Cancel structural analysis
         menuProject.add(menuProjectCancel);
         menuProjectCancel.addActionListener(new ThreadCancelAction((this.controller)));
 
-        // プロジェクト:構造解析クリア
-        JMenuItem menuProjectClear = new JMenuItem(Message.getString("mainmenu.project.clearanalysis"));//構造解析クリア
+        // Project: Clear structural analysis
+        JMenuItem menuProjectClear = new JMenuItem(Message.getString("mainmenu.project.clearanalysis"));// Clear structural analysis
         menuProject.add(menuProjectClear);
         menuProjectClear.addActionListener(new ProjectClearLanguageAction((this.controller)));
 
-        // プロジェクト：構造解析再実行
-        JMenuItem menuProjectRebuild = new JMenuItem(Message.getString("mainmenu.project.restertanalysis"));//構造解析再実行
+        // Project: Re-execute structural analysis
+        JMenuItem menuProjectRebuild = new JMenuItem(Message.getString("mainmenu.project.restertanalysis"));// Re-execute structural analysis
         menuProject.add(menuProjectRebuild);
         menuProjectRebuild.addActionListener(new ProjectRebuildAction((this.controller)));
 
-        // セパレータ
+        // Separator
         menuProject.addSeparator();
-        // プロジェクト:フォルダ追加...
-        JMenuItem menuProjectAddXmlFolder = new JMenuItem(Message.getString("mainmenu.project.addxmlfolder"));//フォルダ追加...
+        // Project: Add folder ...
+        JMenuItem menuProjectAddXmlFolder = new JMenuItem(Message.getString("mainmenu.project.addxmlfolder"));// Add folder ...
         menuProject.add(menuProjectAddXmlFolder);
         menuProjectAddXmlFolder.addActionListener(new ProjectAddFolderAction(this.controller, null));
-        // プロジェクト:ファイル追加...
-        JMenuItem menuProjectAddXmlFile = new JMenuItem(Message.getString("mainmenu.project.addxmlfile"));//ファイル追加...
+        // Project: Add file ...
+        JMenuItem menuProjectAddXmlFile = new JMenuItem(Message.getString("mainmenu.project.addxmlfile"));// Add file ...
         menuProject.add(menuProjectAddXmlFile);
         menuProjectAddXmlFile.addActionListener(new ProjectAddFileAction(this.controller, null));
-        // プロジェクト:ファイル削除...
-        this.menuProjectDeleteXmlFile = new JMenuItem(Message.getString("mainmenu.project.removexmlfile"));//ファイル削除...
+        // Project: Delete files ...
+        this.menuProjectDeleteXmlFile = new JMenuItem(Message.getString("mainmenu.project.removexmlfile"));// Delete files ...
         menuProject.add(menuProjectDeleteXmlFile);
         menuProjectDeleteXmlFile.addActionListener(new ProjectDeleteFileAction(this.controller, null));
-        // セパレータ
+        // Separator
         menuProject.addSeparator();
 
-        // プロジェクト:プロパティ
-        JMenuItem menuProjectProperty = new JMenuItem(Message.getString("mainmenu.project.property"));//プロパティ
+        // Project: Properties
+        JMenuItem menuProjectProperty = new JMenuItem(Message.getString("mainmenu.project.property"));// Properties
         menuProject.add(menuProjectProperty);
         menuProjectProperty.addActionListener(new ProjectPropertyAction(this.controller));
 
-        // プロジェクト:設定
-        JMenu menuProjectSetting = new JMenu(Message.getString("mainmenu.project.config"));//設定
+        // Project: Settings
+        JMenu menuProjectSetting = new JMenu(Message.getString("mainmenu.project.config"));//Configuration
         menuProject.add(menuProjectSetting);
 
-        // プロジェクト：設定：プロジェクト
-        JMenuItem menuProjectSettingProject = new JMenuItem(Message.getString("mainmenu.project.config.project")); // プロジェクト
+        // Project: Settings: Project
+        JMenuItem menuProjectSettingProject = new JMenuItem(Message.getString("mainmenu.project.config.project")); // Project
         menuProjectSetting.add(menuProjectSettingProject);
         menuProjectSettingProject.addActionListener(new ProjectSettingProjectAction(this.controller));
 
-        // プロジェクト:設定:キーワード
-        JMenuItem menuProjectSettingKeyword = new JMenuItem(Message.getString("mainmenu.project.config.keyword"));//キーワード
+        // Project: Settings: Keywords
+        JMenuItem menuProjectSettingKeyword = new JMenuItem(Message.getString("mainmenu.project.config.keyword"));//keyword
         menuProjectSetting.add(menuProjectSettingKeyword);
         menuProjectSettingKeyword.addActionListener(new ProjectSettingKeywordAction(this.controller));
 
-        // プロジェクト:設定:ソースビュー
-        JMenuItem menuProjectSettingView = new JMenuItem(Message.getString("mainmenu.project.config.display"));//ソースビュー
+        // Project: Settings: Source view
+        JMenuItem menuProjectSettingView = new JMenuItem(Message.getString("mainmenu.project.config.display"));// Source view
         menuProjectSetting.add(menuProjectSettingView);
         menuProjectSettingView.addActionListener(new ProjectSettingViewAction(this.controller));
 
-        // プロジェクト:設定:演算カウント
-        JMenuItem menuProjectSettingOperation = new JMenuItem(Message.getString("mainmenu.project.config.operation"));//演算カウント
+        // Project: Settings: Calculation count
+        JMenuItem menuProjectSettingOperation = new JMenuItem(Message.getString("mainmenu.project.config.operation"));// Calculation count
         menuProjectSetting.add(menuProjectSettingOperation);
         menuProjectSettingOperation.addActionListener(new ProjectSettingOperationAction(this.controller));
 
-        // プロジェクト:設定:外部ツール
-        JMenuItem menuProjectSettingTools = new JMenuItem(Message.getString("mainmenu.project.config.program"));//外部ツール
+        // Project: Settings: External tools
+        JMenuItem menuProjectSettingTools = new JMenuItem(Message.getString("mainmenu.project.config.program"));// External tools
         menuProjectSetting.add(menuProjectSettingTools);
         menuProjectSettingTools.addActionListener(new ProjectSettingToolsAction(this.controller));
 
-        // プロジェクト:設定:プロファイラ設定
-        JMenuItem menuProjectSettingProfiler = new JMenuItem(Message.getString("mainmenu.project.config.profiler"));//プロファイラ
+        // Project: Settings: Profiler settings
+        JMenuItem menuProjectSettingProfiler = new JMenuItem(Message.getString("mainmenu.project.config.profiler"));// Profiler
         menuProjectSetting.add(menuProjectSettingProfiler);
         menuProjectSettingProfiler.addActionListener(new ProjectSettingProfilerAction(this.controller));
 
-        // プロジェクト:設定:要求Bye/FLOP設定
-        JMenuItem menuProjectSettingRequiredBF = new JMenuItem(Message.getString("mainmenu.project.config.requiredbf"));//要求Bye/FLOP
+        // Project: Settings: Request Bye / FLOP settings
+        JMenuItem menuProjectSettingRequiredBF = new JMenuItem(Message.getString("mainmenu.project.config.requiredbf"));// Request Bye / FLOP
         menuProjectSetting.add(menuProjectSettingRequiredBF);
         menuProjectSettingRequiredBF.addActionListener(new ProjectSettingRequiredBFAction(this.controller));
         
-        // 分析
-        JMenu menuAnalysis = new JMenu(Message.getString("mainmenu.analysis"));//分析
+        // Analysis
+        JMenu menuAnalysis = new JMenu(Message.getString("mainmenu.analysis"));//analysis
         this.add(menuAnalysis);
         menuAnalysis.addMenuListener(this);
 
-        // 分析:変数特性一覧
-        JMenuItem menuAnalysisVariable = new JMenuItem(Message.getString("mainmenu.analysis.valiableproperty"));//変数特性一覧
+        // Analysis: List of variable characteristics
+        JMenuItem menuAnalysisVariable = new JMenuItem(Message.getString("mainmenu.analysis.valiableproperty"));// List of variable characteristics
         menuAnalysis.add(menuAnalysisVariable);
         actionAnalysisVariable = new AnalysisVariableAction(this.controller);
         menuAnalysisVariable.addActionListener(actionAnalysisVariable);
         this.controller.setActionVariable(actionAnalysisVariable);
 
-        // 分析:演算カウント
-        JMenuItem menuAnalysisCount = new JMenuItem(Message.getString("mainmenu.analysis.operation"));//演算カウント
+        // Analysis: Calculation count
+        JMenuItem menuAnalysisCount = new JMenuItem(Message.getString("mainmenu.analysis.operation"));// Calculation count
         actionAnalysisOperand = new AnalysisOperandAction(this.controller, FRAME_VIEW.EXPLORE_VIEW);
         menuAnalysis.add(menuAnalysisCount);
         menuAnalysisCount.addActionListener(actionAnalysisOperand);
 
-        // 分析:変数有効域
-        JMenuItem menuAnalysisValid = new JMenuItem(Message.getString("mainmenu.analysis.valiablescope"));//変数有効域
+        // Analysis: Variable scope
+        JMenuItem menuAnalysisValid = new JMenuItem(Message.getString("mainmenu.analysis.valiablescope"));// Variable valid area
         menuAnalysis.add(menuAnalysisValid);
         menuAnalysisValid.addActionListener(new AnalysisScopeAction(this.controller, FRAME_VIEW.EXPLORE_VIEW));
 
-        // セパレータ
+        // Separator
         menuAnalysis.addSeparator();
 
-        // 分析:宣言・定義・参照
-        JMenuItem menuAnalysisReference = new JMenuItem(Message.getString("mainmenu.analysis.dec-def-ref"));//宣言・定義・参照
+        // Analysis: Declaration / Definition / Reference
+        JMenuItem menuAnalysisReference = new JMenuItem(Message.getString("mainmenu.analysis.dec-def-ref"));// Declaration / Definition / Reference
         menuAnalysis.add(menuAnalysisReference);
         menuAnalysisReference.addActionListener(new AnalysisReferenceAction(this.controller, FRAME_VIEW.EXPLORE_VIEW));
 
-        // セパレータ
+        // Separator
         menuAnalysis.addSeparator();
-        // 分析:トレース：開始
-        JMenuItem menuAnalysisTraceStart = new JMenuItem(Message.getString("mainmenu.analysis.starttrace"));//トレース：開始
+        // Analysis: Trace: Start
+        JMenuItem menuAnalysisTraceStart = new JMenuItem(Message.getString("mainmenu.analysis.starttrace"));// Trace: Start
         menuAnalysis.add(menuAnalysisTraceStart);
         menuAnalysisTraceStart.addActionListener(new AnalysisTraceAction(this.controller, TRACE_DIR.START));
 
-        // 分析:トレース：更新
-        JMenuItem menuAnalysisTraceRefresh = new JMenuItem(Message.getString("mainmenu.analysis.updatetrace"));//トレース：更新
+        // Analysis: Trace: Update
+        JMenuItem menuAnalysisTraceRefresh = new JMenuItem(Message.getString("mainmenu.analysis.updatetrace"));// Trace: Update
         menuAnalysis.add(menuAnalysisTraceRefresh);
         menuAnalysisTraceRefresh.addActionListener(new AnalysisTraceAction(this.controller, TRACE_DIR.REFRESH));
 
-        // 分析:トレース：クリア
-        JMenuItem menuAnalysisTraceClear = new JMenuItem(Message.getString("mainmenu.analysis.cleartrace"));//トレース：クリア
+        // Analysis: Trace: Clear
+        JMenuItem menuAnalysisTraceClear = new JMenuItem(Message.getString("mainmenu.analysis.cleartrace"));// Trace: Clear
         menuAnalysis.add(menuAnalysisTraceClear);
         menuAnalysisTraceClear.addActionListener(new AnalysisTraceAction(this.controller, TRACE_DIR.END));
 
-        // セパレータ
+        // Separator
         menuAnalysis.addSeparator();
 
-        // 分析:トレース：前へ
-        JMenuItem menuAnalysisUp = new JMenuItem(Message.getString("mainmenu.analysis.up"));//トレース：アップ
+        // Analysis: Trace: Previous
+        JMenuItem menuAnalysisUp = new JMenuItem(Message.getString("mainmenu.analysis.up"));// Trace: Up
         menuAnalysis.add(menuAnalysisUp);
         menuAnalysisUp.addActionListener(new AnalysisTraceAction(this.controller, TRACE_DIR.UP));
 
-        // 分析:トレース：次へ
-        JMenuItem menuAnalysisDown = new JMenuItem(Message.getString("mainmenu.analysis.down"));//トレース：ダウン
+        // Analysis: Trace: Next
+        JMenuItem menuAnalysisDown = new JMenuItem(Message.getString("mainmenu.analysis.down"));// Trace: Down
         menuAnalysis.add(menuAnalysisDown);
         menuAnalysisDown.addActionListener(new AnalysisTraceAction(this.controller, TRACE_DIR.DOWN));
 
-        // 分析:トレース：イン
-        JMenuItem menuAnalysisInside = new JMenuItem(Message.getString("mainmenu.analysis.in"));//トレース：イン
+        // Analysis: Trace: In
+        JMenuItem menuAnalysisInside = new JMenuItem(Message.getString("mainmenu.analysis.in"));// Trace: In
         menuAnalysis.add(menuAnalysisInside);
         menuAnalysisInside.addActionListener(new AnalysisTraceAction(this.controller, TRACE_DIR.IN));
 
-        // 分析:トレース：アウト
-        JMenuItem menuAnalysisOutside = new JMenuItem(Message.getString("mainmenu.analysis.out"));//トレース：アウト
+        // Analysis: Trace: Out
+        JMenuItem menuAnalysisOutside = new JMenuItem(Message.getString("mainmenu.analysis.out"));// Trace: Out
         menuAnalysis.add(menuAnalysisOutside);
         menuAnalysisOutside.addActionListener(new AnalysisTraceAction(this.controller, TRACE_DIR.OUT));
 
-        // 分析:トレース：フォワード
-        JMenuItem menuAnalysisForward = new JMenuItem(Message.getString("mainmenu.analysis.forward"));//トレース：フォワード
+        // Analysis: Trace: Forward
+        JMenuItem menuAnalysisForward = new JMenuItem(Message.getString("mainmenu.analysis.forward"));// Trace: Forward
         menuAnalysis.add(menuAnalysisForward);
         menuAnalysisForward.addActionListener(new AnalysisTraceAction(this.controller, TRACE_DIR.FORWARD));
 
-        // セパレータ
+        // Separator
         menuAnalysis.addSeparator();
 
-        // 分析:アクセス先設定
-        JMenuItem menuAnalysisMemoryAccess = new JMenuItem(Message.getString("mainmenu.analysis.access"));  // 変数アクセス先設定
+        // Analysis: Access destination setting
+        JMenuItem menuAnalysisMemoryAccess = new JMenuItem(Message.getString("mainmenu.analysis.access"));  // Variable access destination setting
         menuAnalysis.add(menuAnalysisMemoryAccess);
         menuAnalysisMemoryAccess.addActionListener(
         				new AnalysisMemoryAction(
@@ -483,8 +483,8 @@ public class MainMenu extends JMenuBar implements  MenuListener {
         							AnalysisMemoryAction.ACTION_MODE.ACCESS_SETTING,
         							FRAME_VIEW.EXPLORE_VIEW));
 
-        // 分析:要求Byte/FLOP算出
-        JMenuItem menuAnalysisMemoryCalculate = new JMenuItem(Message.getString("mainmenu.analysis.calculate"));  // 要求Byte/FLOP算出
+        // Analysis: Request Byte / FLOP calculation
+        JMenuItem menuAnalysisMemoryCalculate = new JMenuItem(Message.getString("mainmenu.analysis.calculate"));  // Request Byte / FLOP calculation
         menuAnalysis.add(menuAnalysisMemoryCalculate);
         menuAnalysisMemoryCalculate.addActionListener(
 						new AnalysisMemoryAction(
@@ -492,134 +492,134 @@ public class MainMenu extends JMenuBar implements  MenuListener {
 									AnalysisMemoryAction.ACTION_MODE.MEMORY_CALCULATE,
 									FRAME_VIEW.EXPLORE_VIEW));
 
-        //分析:要求Byte/FLOP算出  (2014/4/8追加 ohichi)
+        // Analysis: Request Byte / FLOP calculation (2014/4/8 added ohichi)
         JMenuItem menuAllAMC = new JMenuItem(Message.getString("mainmenu.analysis.allcalculate"));
         menuAnalysis.add(menuAllAMC);
         menuAllAMC.addActionListener(new AllAnalysisMemoryAction((this.controller)));
      
 
-        // プロファイラ
+        // Profiler
         JMenu menuProfiler = new JMenu(Message.getString("mainmenu.project.profiler"));
         this.add(menuProfiler);
         menuProfiler.addMenuListener(this);
 
-        // プロファイラ：プロファイラの読込
+        // Profiler: Loading Profiler
         JMenuItem menuProfilerOpen = new JMenuItem(Message.getString("mainmenu.profiler.read"));
         menuProfiler.add(menuProfilerOpen);
         menuProfilerOpen.addActionListener(new ProfilerOpenFileAction(this.controller));
 
-        // プロファイラ：プロファイラのクリア
+        // Profiler: Clear Profiler
         JMenuItem menuProfilerClear = new JMenuItem(Message.getString("mainmenu.profiler.clear"));
         menuProfiler.add(menuProfilerClear);
         menuProfilerClear.addActionListener(new ProfilerClearAction(this.controller));
 
-        // プロファイラ：コスト表示
+        // Profiler: Cost display
         this.menuProfilerBarVisibled = new JCheckBoxMenuItem(Message.getString("mainmenu.profiler.cost"));
         menuProfiler.add(menuProfilerBarVisibled);
         menuProfilerBarVisibled.addActionListener(new ProfilerViewBargraphAction(this.controller));
 
-        // プロファイラ：コストルーラ表示
+        // Profiler: Cost ruler display
         this.menuProfilerRulerVisibled = new JCheckBoxMenuItem(Message.getString("mainmenu.profiler.costruler"));
         menuProfiler.add(menuProfilerRulerVisibled);
         menuProfilerRulerVisibled.addActionListener(new ProfilerViewRulerAction(this.controller));
 
-        // セパレータ
+        // Separator
         menuProfiler.addSeparator();
 
-        // プロファイラ：測定区間設定
+        // Profiler: Measurement interval setting
         JMenuItem menuProfilerAddEprofArea = new JMenuItem(Message.getString("mainmenu.profiler.set-mesuermentrange"));
         menuProfiler.add(menuProfilerAddEprofArea);
         menuProfilerAddEprofArea.addActionListener(new ProfilerAddEprofAction(this.controller, FRAME_VIEW.EXPLORE_VIEW));
-        // プロファイラ：測定区間上書き保存
+        // Profiler: Overwrite measurement section
         JMenuItem menuProfilerSavefile = new JMenuItem(Message.getString("mainmenu.profiler.save-mesuermentrange"));
         menuProfiler.add(menuProfilerSavefile);
         menuProfilerSavefile.addActionListener(new ProfilerSaveFileAction(this.controller));
-        // プロファイラ：測定区間フォルダ保存
+        // Profiler: Save measurement section folder
         JMenuItem menuProfilerSavefolder = new JMenuItem(Message.getString("mainmenu.profiler.savefolder-mesuermentrange"));
         menuProfiler.add(menuProfilerSavefolder);
         menuProfilerSavefolder.addActionListener(new ProfilerSaveFolderAction(this.controller));
 
-        // 表示
-        menuView = new JMenu(Message.getString("mainmenu.view"));//表示
+        // Display
+        menuView = new JMenu(Message.getString("mainmenu.view"));//display
         this.add(menuView);
         menuView.addMenuListener(this);
 
-        // 表示:ツリー収納・展開
-        JMenu menuViewTreeNode = new JMenu(Message.getString("mainmenu.view.collapse-expand"));//ツリー収納・展開
+        // Display: Tree storage / expansion
+        JMenu menuViewTreeNode = new JMenu(Message.getString("mainmenu.view.collapse-expand"));// Tree storage / expansion
         menuView.add(menuViewTreeNode);
-        // 表示:ツリー収納・展開:すべて収納
-        JMenuItem menuViewTreeNodeAllCollapse = new JMenuItem(Message.getString("mainmenu.view.collapse-expand.collapse-all"));//すべて収納
+        // Display: Tree storage / expansion: All storage
+        JMenuItem menuViewTreeNodeAllCollapse = new JMenuItem(Message.getString("mainmenu.view.collapse-expand.collapse-all"));// All stored
         menuViewTreeNode.add(menuViewTreeNodeAllCollapse);
         this.actionTreeCollapseAll = new TreeCollapseAllAction(this.controller);
         menuViewTreeNodeAllCollapse.addActionListener(this.actionTreeCollapseAll);
 
-        // 表示:ツリー収納・展開:すべて収納
-        JMenuItem menuViewTreeNodeAllExpand = new JMenuItem(Message.getString("mainmenu.view.collapse-expand.expand-all"));//すべて展開
+        // Display: Tree storage / expansion: All storage
+        JMenuItem menuViewTreeNodeAllExpand = new JMenuItem(Message.getString("mainmenu.view.collapse-expand.expand-all"));// Expand all
         menuViewTreeNode.add(menuViewTreeNodeAllExpand);
         menuViewTreeNodeAllExpand.addActionListener(new TreeExpandAllAction(this.controller));
-        // 表示:ツリー収納・展開:展開
-        JMenuItem menuViewTreeNodeExpand = new JMenuItem(Message.getString("mainmenu.view.collapse-expand.selective"));//選択展開
+        // Display: Tree storage / expansion: Expansion
+        JMenuItem menuViewTreeNodeExpand = new JMenuItem(Message.getString("mainmenu.view.collapse-expand.selective"));// Selective expansion
         menuViewTreeNode.add(menuViewTreeNodeExpand);
         menuViewTreeNodeExpand.addActionListener(new TreeExpandSelectAction(this.controller));
 
-        // 表示:新規構造ツリー
-        JMenuItem menuViewOpenTree = new JMenuItem(Message.getString("mainmenu.view.newtree"));//新規構造ツリー
+        // View: New Structure Tree
+        JMenuItem menuViewOpenTree = new JMenuItem(Message.getString("mainmenu.view.newtree"));// New structure tree
         menuView.add(menuViewOpenTree);
         this.actionOpenLanguageTree = new ViewOpenLanguageTreeAction(this.controller);
         menuViewOpenTree.addActionListener(this.actionOpenLanguageTree);
 
-        // 表示:ファイルを開く
-        JMenuItem menuViewOpenFile = new JMenuItem(Message.getString("mainmenu.view.openfile"));//ファイルを開く
+        // View: Open file
+        JMenuItem menuViewOpenFile = new JMenuItem(Message.getString("mainmenu.view.openfile"));// open the file
         menuView.add(menuViewOpenFile);
         menuViewOpenFile.addActionListener(new ViewOpenExploreBlockAction(this.controller));
-        // 表示:閉じる
-        JMenuItem menuViewClose = new JMenuItem(Message.getString("mainmenu.view.closefile"));//ファイルを閉じる
+        // Display: Close
+        JMenuItem menuViewClose = new JMenuItem(Message.getString("mainmenu.view.closefile"));// close the file
         menuView.add(menuViewClose);
         menuViewClose.addActionListener(new ViewCloseAction(this.controller));
-        // 表示:すべて閉じる
-        JMenuItem menuViewAllClose = new JMenuItem(Message.getString("mainmenu.view.close-all-file"));//すべて閉じる
+        // Display: Close all
+        JMenuItem menuViewAllClose = new JMenuItem(Message.getString("mainmenu.view.close-all-file"));// close all
         menuView.add(menuViewAllClose);
         menuViewAllClose.addActionListener(new ViewCloseAction(this.controller, true));
 
-        // セパレータ
+        // Separator
         menuView.addSeparator();
-        // 表示:構造フィルタ
-        menuViewFilter = new JMenu(Message.getString("mainmenu.view.filter"));//構造フィルタ
+        // Display: Structural filter
+        menuViewFilter = new JMenu(Message.getString("mainmenu.view.filter"));// Structural filter
         menuView.add(menuViewFilter);
-        // 表示:構造フィルタ:すべて表示
-        JCheckBoxMenuItem menuViewFilterAll = new JCheckBoxMenuItem(Message.getString("mainmenu.view.filter.viewall"));//すべて表示
+        // View: Structural Filter: Show All
+        JCheckBoxMenuItem menuViewFilterAll = new JCheckBoxMenuItem(Message.getString("mainmenu.view.filter.viewall"));// Show all
         menuViewFilter.add(menuViewFilterAll);
         menuViewFilterAll.addActionListener(new ViewLangugeFilterAction(this.controller, FILTER_TYPE.ALL));
-        // 表示:構造フィルタ:サブルーチン・関数
-        JCheckBoxMenuItem menuViewFilterSubroutine = new JCheckBoxMenuItem(Message.getString("mainmenu.view.filter.subroutine-function"));//サブルーチン・関数
+        // Display: Structural filter: Subroutines / functions
+        JCheckBoxMenuItem menuViewFilterSubroutine = new JCheckBoxMenuItem(Message.getString("mainmenu.view.filter.subroutine-function"));// Subroutines / functions
         menuViewFilter.add(menuViewFilterSubroutine);
         menuViewFilterSubroutine.addActionListener(new ViewLangugeFilterAction(this.controller, FILTER_TYPE.PROCEDURE));
-        // 表示:構造フィルタ:CALL文・関数呼出文
-        JCheckBoxMenuItem menuViewFilterCall = new JCheckBoxMenuItem(Message.getString("mainmenu.view.filter.call"));//CALL文・関数呼出文
+        // Display: Structural filter: CALL statement / function call statement
+        JCheckBoxMenuItem menuViewFilterCall = new JCheckBoxMenuItem(Message.getString("mainmenu.view.filter.call"));// CALL statement / function call statement
         menuViewFilter.add(menuViewFilterCall);
         menuViewFilterCall.addActionListener(new ViewLangugeFilterAction(this.controller, FILTER_TYPE.PROCEDUREUSAGE));
-        // 表示:構造フィルタ:DO文
-        JCheckBoxMenuItem menuViewFilterDo = new JCheckBoxMenuItem(Message.getString("mainmenu.view.filter.do"));//DO文
+        // Display: Structural filter: DO statement
+        JCheckBoxMenuItem menuViewFilterDo = new JCheckBoxMenuItem(Message.getString("mainmenu.view.filter.do"));// DO statement
         menuViewFilter.add(menuViewFilterDo);
         menuViewFilterDo.addActionListener(new ViewLangugeFilterAction(this.controller, FILTER_TYPE.REPETITION));
-        // 表示:構造フィルタ:IF文
+        // Display: Structural filter: IF statement
         JCheckBoxMenuItem menuViewFilterIf = new JCheckBoxMenuItem(FILTER_TYPE.SELECTION_IF.getName());
         menuViewFilter.add(menuViewFilterIf);
         menuViewFilterIf.addActionListener(new ViewLangugeFilterAction(this.controller, FILTER_TYPE.SELECTION_IF));
-        // 表示:構造フィルタ:SELECT文
+        // Display: Structural filter: SELECT statement
         JCheckBoxMenuItem menuViewFilterSelect = new JCheckBoxMenuItem(FILTER_TYPE.SELECTION_SELECT.getName());
         menuViewFilter.add(menuViewFilterSelect);
         menuViewFilterSelect.addActionListener(new ViewLangugeFilterAction(this.controller, FILTER_TYPE.SELECTION_SELECT));
-        // 表示:構造フィルタ:代入文
-        JCheckBoxMenuItem menuViewFilterAssignment = new JCheckBoxMenuItem(Message.getString("mainmenu.view.filter.expression-array"));//代入文
+        // Display: Structural filter: Assignment statement
+        JCheckBoxMenuItem menuViewFilterAssignment = new JCheckBoxMenuItem(Message.getString("mainmenu.view.filter.expression-array"));// Assignment statement
         menuViewFilter.add(menuViewFilterAssignment);
         menuViewFilterAssignment.addActionListener(new ViewLangugeFilterAction(this.controller, FILTER_TYPE.SUBSTITUTION));
-        // 表示:構造フィルタ:フロー制御文
-        JCheckBoxMenuItem menuViewFilterFlow = new JCheckBoxMenuItem(Message.getString("mainmenu.view.filter.other-flow-control"));//フロー制御文
+        // Display: Structural filter: Flow control statement
+        JCheckBoxMenuItem menuViewFilterFlow = new JCheckBoxMenuItem(Message.getString("mainmenu.view.filter.other-flow-control"));// Flow control statement
         menuViewFilter.add(menuViewFilterFlow);
         menuViewFilterFlow.addActionListener(new ViewLangugeFilterAction(this.controller, FILTER_TYPE.FLOW));
-        // 表示:構造フィルタ:ディレクティブ文
-        JMenu menuViewFilterDirective = new JMenu(Message.getString("mainmenu.view.filter.directive"));//ディレクティブ文
+        // Display: Structural filter: Directive statement
+        JMenu menuViewFilterDirective = new JMenu(Message.getString("mainmenu.view.filter.directive"));// Directive statement
         JCheckBoxMenuItem menuViewFilterDirectiveOmp = new JCheckBoxMenuItem(Message.getString("mainmenu.view.filter.openmp"));//OPENMP
         JCheckBoxMenuItem menuViewFilterDirectiveOcl = new JCheckBoxMenuItem(Message.getString("mainmenu.view.filter.ocl"));//OCL
         menuViewFilterDirective.add(menuViewFilterDirectiveOmp);
@@ -628,189 +628,189 @@ public class MainMenu extends JMenuBar implements  MenuListener {
         menuViewFilterDirectiveOmp.addActionListener(new ViewLangugeFilterAction(this.controller, FILTER_TYPE.DIRECTIVE_OPENML));
         menuViewFilterDirectiveOcl.addActionListener(new ViewLangugeFilterAction(this.controller, FILTER_TYPE.DIRECTIVE_OCL));
 
-        // セパレータ
+        // Separator
         menuViewFilter.addSeparator();
 
-        // 表示:構造フィルタ:デフォルト
-        JMenuItem menuViewFilterDefault = new JMenuItem(Message.getString("mainmenu.view.filter.default"));//デフォルトに戻す
+        // Display: Structural filter: Default
+        JMenuItem menuViewFilterDefault = new JMenuItem(Message.getString("mainmenu.view.filter.default"));// return to default
         menuViewFilter.add(menuViewFilterDefault);
         menuViewFilterDefault.addActionListener(new ViewLangugeFilterAction(this.controller, FILTER_TYPE.DEFAULT));
 
-        // ウィンドウ
-        menuWindow = new JMenu(Message.getString("mainmenu.window"));//ウィンドウ
+        // window
+        menuWindow = new JMenu(Message.getString("mainmenu.window"));//window
         this.add(menuWindow);
         menuWindow.addMenuListener(this);
 
-        // ウィンドウ:エクスプローラビュー
-        menuWindowExplore = new JMenu(Message.getString("mainmenu.window.explore"));//エクスプローラビュー
+        // Window: Explorer view
+        menuWindowExplore = new JMenu(Message.getString("mainmenu.window.explore"));// Explorer view
         menuWindow.add(menuWindowExplore);
-        // ウィンドウ:エクスプローラビュー:構造
-        menuWindowExploreLanguage = new JMenuItem(Message.getString("mainmenu.window.explore.structure"));//構造
+        // Window: Explorer View: Structure
+        menuWindowExploreLanguage = new JMenuItem(Message.getString("mainmenu.window.explore.structure"));//Construction
         menuWindowExplore.add(menuWindowExploreLanguage);
         menuWindowExploreLanguage.addActionListener(new WindowViewAction(this.controller, EXPLORE_PANEL.LANGUAGE));
 
-        // ウィンドウ:エクスプローラビュー:モジュール
-        JMenuItem menuWindowExploreModule = new JMenuItem(Message.getString("mainmenu.window.explore.module"));//モジュール
+        // Window: Explorer View: Module
+        JMenuItem menuWindowExploreModule = new JMenuItem(Message.getString("mainmenu.window.explore.module"));//module
         menuWindowExplore.add(menuWindowExploreModule);
         menuWindowExploreModule.addActionListener(new WindowViewAction(this.controller, EXPLORE_PANEL.MODULE));
 
-        // ウィンドウ:エクスプローラビュー:ソース
-        JMenuItem menuWindowExploreSource = new JMenuItem(Message.getString("mainmenu.window.explore.source"));//ソース
+        // Window: Explorer View: Source
+        JMenuItem menuWindowExploreSource = new JMenuItem(Message.getString("mainmenu.window.explore.source"));//Source
         menuWindowExplore.add(menuWindowExploreSource);
         menuWindowExploreSource.addActionListener(new WindowViewAction(this.controller, EXPLORE_PANEL.SOURCE));
 
-        // ウィンドウ:エクスプローラビュー:XML
+        // Window: Explorer View: XML
         JMenuItem menuWindowExploreXml = new JMenuItem(Message.getString("mainmenu.window.explore.xml"));//XML
         menuWindowExplore.add(menuWindowExploreXml);
         menuWindowExploreXml.addActionListener(new WindowViewAction(this.controller, EXPLORE_PANEL.XML));
 
-        // ウィンドウ:ソースビュー
-        menuWindowSource = new JMenu(Message.getString("mainmenu.window.source"));//ソースビュー
+        // Window: Source view
+        menuWindowSource = new JMenu(Message.getString("mainmenu.window.source"));// Source view
         menuWindow.add(menuWindowSource);
 
-        // ウィンドウ:ソースビュー:ソースファイル
-        // menuSelectedイベントで開いているファイルを追加する。
+        // Window: Source View: Source File
+        // Add the file that is open in the menuSelected event.
 
-        // ウィンドウ:分析ビュー
-        menuWindowAnalysis = new JMenu(Message.getString("mainmenu.window.analysis"));//分析ビュー
+        // Window: Analysis view
+        menuWindowAnalysis = new JMenu(Message.getString("mainmenu.window.analysis"));// Analysis view
         menuWindow.add(menuWindowAnalysis);
-        // ウィンドウ:分析ビュー:付加情報
-        JMenuItem menuWindowAnalysisInformation = new JMenuItem(Message.getString("mainmenu.window.analysis.information"));//付加情報
+        // Window: Analysis view: Additional information
+        JMenuItem menuWindowAnalysisInformation = new JMenuItem(Message.getString("mainmenu.window.analysis.information"));//Additional information
         menuWindowAnalysis.add(menuWindowAnalysisInformation);
         menuWindowAnalysisInformation.addActionListener(new WindowViewAction(this.controller, ANALYSIS_PANEL.INFORMATION));
 
-        // ウィンドウ:分析ビュー:検索結果
-        JMenuItem menuWindowAnalysisSearch = new JMenuItem(Message.getString("mainmenu.window.analysis.search"));//検索結果
+        // Window: Analysis view: Search results
+        JMenuItem menuWindowAnalysisSearch = new JMenuItem(Message.getString("mainmenu.window.analysis.search"));//search results
         menuWindowAnalysis.add(menuWindowAnalysisSearch);
         menuWindowAnalysisSearch.addActionListener(new WindowViewAction(this.controller, ANALYSIS_PANEL.SEARCHRESULT));
 
-        // ウィンドウ:分析ビュー:変数特性一覧
-        JMenuItem menuWindowAnalysisVariable = new JMenuItem(Message.getString("mainmenu.analysis.valiableproperty"));//変数特性一覧
+        // Window: Analysis view: List of variable characteristics
+        JMenuItem menuWindowAnalysisVariable = new JMenuItem(Message.getString("mainmenu.analysis.valiableproperty"));// List of variable characteristics
         menuWindowAnalysis.add(menuWindowAnalysisVariable);
         menuWindowAnalysisVariable.addActionListener(new WindowViewAction(this.controller, ANALYSIS_PANEL.VALIABLE));
 
-        // ウィンドウ:分析ビュー:演算カウント
-        JMenuItem menuWindowAnalysisCount = new JMenuItem(Message.getString("mainmenu.analysis.operation"));//演算カウント
+        // Window: Analysis view: Calculation count
+        JMenuItem menuWindowAnalysisCount = new JMenuItem(Message.getString("mainmenu.analysis.operation"));// Calculation count
         menuWindowAnalysis.add(menuWindowAnalysisCount);
         menuWindowAnalysisCount.addActionListener(new WindowViewAction(this.controller, ANALYSIS_PANEL.OPERAND));
 
-        // ウィンドウ:分析ビュー:要求B/F算出結果
-        JMenuItem menuWindowAnalysisRequired = new JMenuItem(Message.getString("mainmenu.window.analysis.byteflop"));//要求B/F算出結果
+        // Window: Analysis view: Request B / F calculation result
+        JMenuItem menuWindowAnalysisRequired = new JMenuItem(Message.getString("mainmenu.window.analysis.byteflop"));// Request B / F calculation result
         menuWindowAnalysis.add(menuWindowAnalysisRequired);
         menuWindowAnalysisRequired.addActionListener(new WindowViewAction(this.controller, ANALYSIS_PANEL.REQUIRED));
 
-        // ウィンドウ:分析ビュー:参照一覧
-        JMenuItem menuWindowAnalysisReference = new JMenuItem(Message.getString("mainmenu.analysis.dec-def-ref"));//参照一覧
+        // Window: Analysis view: Reference list
+        JMenuItem menuWindowAnalysisReference = new JMenuItem(Message.getString("mainmenu.analysis.dec-def-ref"));// Reference list
         menuWindowAnalysis.add(menuWindowAnalysisReference);
         menuWindowAnalysisReference.addActionListener(new WindowViewAction(this.controller, ANALYSIS_PANEL.REFERENCE));
 
-        // ウィンドウ:分析ビュー:トレース
-        menuWindowAnalysisTrace = new JMenuItem(Message.getString("mainmenu.window.analysis.trace"));//トレース
+        // Window: Analysis View: Trace
+        menuWindowAnalysisTrace = new JMenuItem(Message.getString("mainmenu.window.analysis.trace"));//trace
         menuWindowAnalysis.add(menuWindowAnalysisTrace);
         menuWindowAnalysisTrace.addActionListener(new WindowViewAction(this.controller, ANALYSIS_PANEL.TRACE));
 
-        // ウィンドウ:分析ビュー:変数有効域
-        JMenuItem menuWindowAnalysisScope = new JMenuItem(Message.getString("mainmenu.analysis.valiablescope"));//変数有効域
+        // Window: Analysis view: Variable scope
+        JMenuItem menuWindowAnalysisScope = new JMenuItem(Message.getString("mainmenu.analysis.valiablescope"));// Variable valid area
         menuWindowAnalysis.add(menuWindowAnalysisScope);
         menuWindowAnalysisScope.addActionListener(new WindowViewAction(this.controller, ANALYSIS_PANEL.SCOPE));
 
-        // ウィンドウ:分析ビュー:構造情報差替え
-        JMenuItem menuWindowReplace = new JMenuItem(Message.getString("mainmenu.window.analysis.structureinfo"));//構造情報差替え
+        // Window: Analysis view: Structural information replacement
+        JMenuItem menuWindowReplace = new JMenuItem(Message.getString("mainmenu.window.analysis.structureinfo"));// Structural information replacement
         menuWindowAnalysis.add(menuWindowReplace);
         menuWindowReplace.addActionListener(new WindowViewAction(
                 this.controller, ANALYSIS_PANEL.REPLACE));
 
-        // ウィンドウ:分析ビュー:プロパティ
-        JMenuItem menuWindowAnalysisProparty = new JMenuItem(Message.getString("mainmenu.project.property"));//分析プロパティ
+        // Window: Analysis View: Properties
+        JMenuItem menuWindowAnalysisProparty = new JMenuItem(Message.getString("mainmenu.project.property"));// Analysis properties
         menuWindowAnalysis.add(menuWindowAnalysisProparty);
         menuWindowAnalysisProparty.addActionListener(new WindowViewAction(this.controller, ANALYSIS_PANEL.PROPARTIES));
 
-        // ウィンドウ:分析ビュー:エラー箇所
-        JMenuItem menuWindowAnalysisError = new JMenuItem(Message.getString("mainmenu.window.analysis.error"));//エラー箇所
+        // Window: Analysis view: Error location
+        JMenuItem menuWindowAnalysisError = new JMenuItem(Message.getString("mainmenu.window.analysis.error"));// Error location
         menuWindowAnalysis.add(menuWindowAnalysisError);
         menuWindowAnalysisError.addActionListener(new WindowViewAction(this.controller, ANALYSIS_PANEL.ERROR));
 
-        // ウィンドウ:分析ビュー:コンソール
-        JMenuItem menuWindowAnalysisConsole = new JMenuItem(Message.getString("mainmenu.window.analysis.console"));//コンソール
+        // Window: Analysis View: Console
+        JMenuItem menuWindowAnalysisConsole = new JMenuItem(Message.getString("mainmenu.window.analysis.console"));//console
         menuWindowAnalysis.add(menuWindowAnalysisConsole);
         menuWindowAnalysisConsole.addActionListener(new WindowViewAction(this.controller, ANALYSIS_PANEL.CONSOLE));
 
-        // ウィンドウ:分析ビュー:コスト情報
+        // Window: Analysis view: Cost information
         {
             JMenu menuViewProfilerInfo = new JMenu(Message.getString("mainmenu.window.analysis.profiler-info"));
             menuWindowAnalysis.add(menuViewProfilerInfo);
-            // ウィンドウ:分析ビュー:コスト情報:手続
+            // Window: Analysis View: Cost Information: Procedure
             JMenuItem menuWindowAnalysisCostProcedure = new JMenuItem(ANALYSIS_PANEL.COST_PROCEDURE.getTabName());
             menuViewProfilerInfo.add(menuWindowAnalysisCostProcedure);
             menuWindowAnalysisCostProcedure.addActionListener(new WindowViewAction(this.controller, ANALYSIS_PANEL.COST_PROCEDURE));
-            // ウィンドウ:分析ビュー:コスト情報:ループ
+            // Window: Analysis View: Cost Information: Loop
             JMenuItem menuWindowAnalysisCostLoop = new JMenuItem(ANALYSIS_PANEL.COST_LOOP.getTabName());
             menuViewProfilerInfo.add(menuWindowAnalysisCostLoop);
             menuWindowAnalysisCostLoop.addActionListener(new WindowViewAction(this.controller, ANALYSIS_PANEL.COST_LOOP));
-            // ウィンドウ:分析ビュー:コスト情報:ライン
+            // Window: Analysis View: Cost Information: Line
             JMenuItem menuWindowAnalysisCostLine = new JMenuItem(ANALYSIS_PANEL.COST_LINE.getTabName());
             menuViewProfilerInfo.add(menuWindowAnalysisCostLine);
             menuWindowAnalysisCostLine.addActionListener(new WindowViewAction(this.controller, ANALYSIS_PANEL.COST_LINE));
-            // ウィンドウ:分析ビュー:コールグラフ情報
+            // Window: Analysis view: Call graph information
             JMenuItem menuWindowAnalysisCallGraph = new JMenuItem(ANALYSIS_PANEL.CALLGRAPH.getTabName());
             menuViewProfilerInfo.add(menuWindowAnalysisCallGraph);
             menuWindowAnalysisCallGraph.addActionListener(new WindowViewAction(this.controller, ANALYSIS_PANEL.CALLGRAPH));
-            // ウィンドウ:分析ビュー:プロファイラ:イベントカウンタ情報:Eprof:CACHE
+            // Window: Analysis View: Profiler: Event Counter Information: Eprof: CACHE
             JMenuItem menuWindowAnalysisEprofCache = new JMenuItem(ANALYSIS_PANEL.EVENTCOUNTER_CACHE.getTabName());
             menuViewProfilerInfo.add(menuWindowAnalysisEprofCache);
             menuWindowAnalysisEprofCache.addActionListener(new WindowViewAction(this.controller, ANALYSIS_PANEL.EVENTCOUNTER_CACHE));
-            // ウィンドウ:分析ビュー:プロファイラ:イベントカウンタ情報:Eprof:INSTRUCTIONS
+            // Window: Analysis View: Profiler: Event Counter Information: Eprof: INSTRUCTIONS
             JMenuItem menuWindowAnalysisEprofInstructions = new JMenuItem(ANALYSIS_PANEL.EVENTCOUNTER_INSTRUCTIONS.getTabName());
             menuViewProfilerInfo.add(menuWindowAnalysisEprofInstructions);
             menuWindowAnalysisEprofInstructions.addActionListener(new WindowViewAction(this.controller, ANALYSIS_PANEL.EVENTCOUNTER_INSTRUCTIONS));
-            // ウィンドウ:分析ビュー:プロファイラ:イベントカウンタ情報:Eprof:MEM_ACCESS
+            // Window: Analysis View: Profiler: Event Counter Information: Eprof: MEM_ACCESS
             JMenuItem menuWindowAnalysisEprofMemaccess = new JMenuItem(ANALYSIS_PANEL.EVENTCOUNTER_MEM_ACCESS.getTabName());
             menuViewProfilerInfo.add(menuWindowAnalysisEprofMemaccess);
             menuWindowAnalysisEprofMemaccess.addActionListener(new WindowViewAction(this.controller, ANALYSIS_PANEL.EVENTCOUNTER_MEM_ACCESS));
-            // ウィンドウ:分析ビュー:プロファイラ:イベントカウンタ情報:Eprof:PERFORMANCE
+            // Window: Analysis View: Profiler: Event Counter Information: Eprof: PERFORMANCE
             JMenuItem menuWindowAnalysisEprofPerformance = new JMenuItem(ANALYSIS_PANEL.EVENTCOUNTER_PERFORMANCE.getTabName());
             menuViewProfilerInfo.add(menuWindowAnalysisEprofPerformance);
             menuWindowAnalysisEprofPerformance.addActionListener(new WindowViewAction(this.controller, ANALYSIS_PANEL.EVENTCOUNTER_PERFORMANCE));
-            // ウィンドウ:分析ビュー:プロファイラ:イベントカウンタ情報:Eprof:STATISTICS
+            // Window: Analysis View: Profiler: Event Counter Information: Eprof: STATISTICS
             JMenuItem menuWindowAnalysisEprofStatistics = new JMenuItem(ANALYSIS_PANEL.EVENTCOUNTER_STATISTICS.getTabName());
             menuViewProfilerInfo.add(menuWindowAnalysisEprofStatistics);
             menuWindowAnalysisEprofStatistics.addActionListener(new WindowViewAction(this.controller, ANALYSIS_PANEL.EVENTCOUNTER_STATISTICS));
-            // ウィンドウ:分析ビュー:タイマ情報
+            // Window: Analysis view: Timer information
             JMenuItem menuWindowAnalysisEprofMeasure = new JMenuItem(ANALYSIS_PANEL.EPROF_MEASURE.getTabName());
             menuViewProfilerInfo.add(menuWindowAnalysisEprofMeasure);
             menuWindowAnalysisEprofMeasure.addActionListener(new WindowViewAction(this.controller, ANALYSIS_PANEL.EPROF_MEASURE));
         }
 
-        // ウィンドウ:進捗状況
-        menuWindowProgress = new JMenuItem(Message.getString("mainmenu.window.analysis.progress"));//進捗状況
+        // Window: Progress
+        menuWindowProgress = new JMenuItem(Message.getString("mainmenu.window.analysis.progress"));//progress
         menuWindow.add(menuWindowProgress);
         menuWindowProgress.addActionListener(new WindowProgressAction(this.controller));
 
-        // ウィンドウ:プロファイラ凡例
-        JMenuItem menuWindowSourcePreview = new JMenuItem(Message.getString("mainmenu.window.analysis.profiler-legend"));//プロファイラ凡例
+        // Window: Profiler Legend
+        JMenuItem menuWindowSourcePreview = new JMenuItem(Message.getString("mainmenu.window.analysis.profiler-legend"));// Profiler legend
         menuWindow.add(menuWindowSourcePreview);
         menuWindowSourcePreview.addActionListener(new WindowProfilerLegendAction(this.controller));
 
-        // ヘルプ
-        JMenu menuHelp = new JMenu(Message.getString("mainmenu.help"));//ヘルプ
+        // help
+        JMenu menuHelp = new JMenu(Message.getString("mainmenu.help"));//help
         this.add(menuHelp);
-        JMenuItem menuHelpVersion = new JMenuItem(Message.getString("mainmenu.help.about"));//バージョン情報...
+        JMenuItem menuHelpVersion = new JMenuItem(Message.getString("mainmenu.help.about"));//version information...
         menuHelp.add(menuHelpVersion);
         menuHelpVersion.addActionListener(new HelpVersionAction(this.controller));
 
-        // メニュー非表示
-        // エラー箇所を開く
+        // Hide menu
+        // Open the error part
         actionErrorOpenFile = new ErrorOpenFileAction(this.controller);
         actionOpenAnalysisLine = new ViewOpenAnalysisLineAction(this.controller);
 
-        // メニュー選択状態の初期化
+        // Initialize menu selection state
         this.clearSelectedMenu();
     }
 
 
     /**
-     * 分析情報エクスポートアクション
-     * @return		分析情報エクスポートアクション
+     * Analytical information export action
+     * @return Analysis information export action
      */
     public FileExportAnalysisAction getActionExportAnalysis() {
         return actionExportAnalysis;
@@ -818,27 +818,27 @@ public class MainMenu extends JMenuBar implements  MenuListener {
 
 
     /**
-     * メニュー選択アクション<br/>
-     * メニュー表示、イネーブルの切替を行う。
-     * @param event		イベント情報
+     * Menu selection action <br/>
+     * Display menu and switch enable.
+     * @param event Event information
      */
     @Override
     public void menuSelected(MenuEvent event) {
 
-        // ウィンドウ:ソースビュー
+        // Window: Source view
         if (event.getSource() == this.menuWindow) {
-            // 開いているファイルの一覧を取得する
+            // Get a list of open files
             SourceFile[] list = this.controller.getMainframe().getPanelSourceView().getOpenedSourceFile();
-            // ソースビューのイネーブルの切替
+            // Toggle source view enable
             menuWindowSource.setEnabled((list != null));
 
-            // 表示ソースファイルのクリア
+            // Clear display source file
             menuWindowSource.removeAll();
 
-            // ソースファイル名の追加
+            // Add source file name
             if (list != null) {
                 for (SourceFile file : list) {
-                    // ウィンドウ:ソースビュー:ソースファイル
+                    // Window: Source View: Source File
                     JMenuItem menuWindowSourceFile = new JMenuItem(file.getFile().getName());
                     WindowSourceAction action = new WindowSourceAction(this.controller, file);
                     menuWindowSourceFile.addActionListener(action);
@@ -846,19 +846,19 @@ public class MainMenu extends JMenuBar implements  MenuListener {
                 }
             }
 
-            // 構造メニュー
+            // Structure menu
             {
                 int pos = getMenuItemPos(menuWindowExplore, menuWindowExploreLanguage);
                 if (pos >= 0) {
-                    // 開いている構造タブの一覧を取得する
+                    // Get a list of open structure tabs
                     LanguageTreeModel[] models = this.controller.getMainframe().getPanelExplorerView().getLanguageModels();
-                    // 構造タブのプロシージャ名の追加
+                    // Add procedure name on the Structure tab
                     if (models != null && models.length > 0) {
                         menuWindowExplore.remove(menuWindowExploreLanguage);
-                        menuWindowExploreLanguage = new JMenu(Message.getString("mainmenu.window.explore.structure"));//構造
+                        menuWindowExploreLanguage = new JMenu(Message.getString("mainmenu.window.explore.structure"));//Construction
                         menuWindowExplore.insert(menuWindowExploreLanguage, pos);
                         for (LanguageTreeModel model : models) {
-                            // ウィンドウ:エクスプローラビュー:構造
+                            // Window: Explorer View: Structure
                             DefaultMutableTreeNode root = model.getRootNode();
                             String menuname = EXPLORE_PANEL.LANGUAGE.getTabName();
                             if (root != null && root.getChildCount() > 0) {
@@ -878,22 +878,22 @@ public class MainMenu extends JMenuBar implements  MenuListener {
                     }
                     else {
                         menuWindowExplore.remove(menuWindowExploreLanguage);
-                        menuWindowExploreLanguage = new JMenuItem(Message.getString("mainmenu.window.explore.structure"));//構造
+                        menuWindowExploreLanguage = new JMenuItem(Message.getString("mainmenu.window.explore.structure"));//Construction
                         menuWindowExplore.insert(menuWindowExploreLanguage, pos);
                         menuWindowExploreLanguage.addActionListener(new WindowViewAction(this.controller, EXPLORE_PANEL.LANGUAGE));
                     }
                 }
             }
-            // トレースメニュー
+            // Trace menu
             {
                 int pos = getMenuItemPos(menuWindowAnalysis, menuWindowAnalysisTrace);
                 if (pos >= 0) {
-                    // 開いているトレースタブの一覧を取得する
+                    // Get a list of open trace tabs
                     TraceResultModel[] models = this.controller.getMainframe().getPanelAnalysisView().getTraceResultModels();
-                    // トレースタブのプロシージャ名の追加
+                    // Add procedure name on the trace tab
                     if (models != null && models.length > 0) {
                         menuWindowAnalysis.remove(menuWindowAnalysisTrace);
-                        menuWindowAnalysisTrace = new JMenu(Message.getString("mainmenu.window.analysis.trace"));//トレース
+                        menuWindowAnalysisTrace = new JMenu(Message.getString("mainmenu.window.analysis.trace"));//trace
                         menuWindowAnalysis.insert(menuWindowAnalysisTrace, pos);
                         for (TraceResultModel model : models) {
                             IBlock block = model.getRootBlock();
@@ -923,9 +923,9 @@ public class MainMenu extends JMenuBar implements  MenuListener {
             }
 
         }
-        // 表示:構造フィルタ
+        // Display: Structural filter
         if (event.getSource() == this.menuView) {
-            // 構造ツリーフィルタ取得
+            // Get structure tree filter
             List<FILTER_TYPE> filters = this.controller.getListLanguageFilter();
             if (filters != null && filters.size() > 0) {
                 int count = this.menuViewFilter.getMenuComponentCount();
@@ -946,14 +946,14 @@ public class MainMenu extends JMenuBar implements  MenuListener {
             }
         }
 
-        // アクションが実行可能かチェックする
+        // Check if the action is executable
         JMenu menu = (JMenu) event.getSource();
         validateAction(menu);
     }
 
     /**
-     * アクションが実行可能かチェックする
-     * @param menu		チェックメニュー
+     * Check if the action is executable
+     * @param menu Check menu
      */
     private void validateAction(JMenu menu) {
 
@@ -978,18 +978,18 @@ public class MainMenu extends JMenuBar implements  MenuListener {
                 }
             }
         }
-        // すべてディスイネーブルであれば、親メニューもディスイネーブルにする
+        // If all are disabled, disable the parent menu as well
         menu.setEnabled((count != disenabled));
 
     }
 
 
     /**
-     * メニュー項目の位置を取得する.<br/>
-     * メニュー項目が存在しない場合は、-1を返す.
-     * @param menu		親メニュー
-     * @param item		メニュー項目
-     * @return			メニュー項目位置
+     * Get the position of the menu item. <br/>
+     * Returns -1 if the menu item does not exist.
+     * @param menu Parent menu
+     * @param item Menu item
+     * @return Menu item position
      */
     private int getMenuItemPos(JMenu menu, JMenuItem item) {
         int count = menu.getMenuComponentCount();
@@ -1004,24 +1004,24 @@ public class MainMenu extends JMenuBar implements  MenuListener {
 
 
     /**
-     * メニュー選択解除アクション
-     * @param event		イベント情報
+     * Menu deselection action
+     * @param event Event information
      */
     @Override
     public void menuDeselected(MenuEvent event) { }
 
 
     /**
-     * メニューキャンセルアクション
-     * @param event		イベント情報
+     * Menu cancel action
+     * @param event Event information
      */
     @Override
     public void menuCanceled(MenuEvent event) { }
 
 
     /**
-     * エラー箇所を開くアクションを取得する
-     * @return		エラー箇所を開くアクション
+     * Get the action to open the error location
+     * @return Action to open the error part
      */
     public EventListener getActionErrorOpenFile() {
         return this.actionErrorOpenFile;
@@ -1029,65 +1029,65 @@ public class MainMenu extends JMenuBar implements  MenuListener {
 
 
     /**
-     * 分析結果該当個所を開くアクションを取得する
-     * @return		分析結果該当個所を開くアクション
+     * Get the action to open the analysis result
+     * @return Analysis result Action to open the relevant part
      */
     public EventListener getActionOpenAnalysisLine() {
         return this.actionOpenAnalysisLine;
     }
 
     /**
-     * 付加情報編集アクションを取得する
-     * @return		付加情報編集アクション
+     * Get additional information edit action
+     * @return Additional information editing action
      */
     public EditInformationEditAction getActionEditInformation() {
         return actionEditInformation;
     }
 
     /**
-     * 演算カウントアクションを取得する
-     * @return		演算カウントアクション
+     * Get the arithmetic count action
+     * @return Arithmetic count action
      */
     public AnalysisOperandAction getActionAnalysisOperand() {
         return this.actionAnalysisOperand;
     }
 
     /**
-     * トレースアクションを取得する
-     * @param dir		トレース方向
-     * @return			トレースアクション
+     * Get a trace action
+     * @param dir Trace direction
+     * @return Trace action
      */
     public AnalysisTraceAction getActionAnalysisTrace(TRACE_DIR dir) {
         return new AnalysisTraceAction(this.controller, dir);
     }
 
     /**
-     * 新規構造ツリーアクションを取得する
-     * @return		新規構造ツリーアクション
+     * Get a new structure tree action
+     * @return New structure tree action
      */
     public ViewOpenLanguageTreeAction getActionOpenLanguageTree() {
         return actionOpenLanguageTree;
     }
 
     /**
-     * 検索結果アクションを取得する
-     * @param dir		検索結果方向
-     * @return			検索結果アクション
+     * Get search result action
+     * @param dir Search result direction
+     * @return Search result action
      */
     public SearchResultAction getActionSearchResult(TRACE_DIR dir) {
         return new SearchResultAction(this.controller, dir);
     }
 
     /**
-     * メニュー表示（コンボボックス）を初期化する
+     * Initialize the menu display (combo box)
      */
     public void clearSelectedMenu() {
-        // プロファイラ：コスト表示
+        // Profiler: Cost display
     	if (menuProfilerBarVisibled != null) {
 	        boolean visibleBar = ProfilerProperties.INITIALIZE_VISIBLE_BARGRAPH;
 	        menuProfilerBarVisibled.setSelected(visibleBar);
     	}
-        // プロファイラ：コストルーラ表示
+        // Profiler: Cost ruler display
     	if (menuProfilerRulerVisibled != null) {
 	        boolean visibleRuler = ProfilerProperties.INITIALIZE_VISIBLE_RULER;
 	        menuProfilerRulerVisibled.setSelected(visibleRuler);

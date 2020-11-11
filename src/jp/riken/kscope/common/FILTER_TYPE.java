@@ -23,67 +23,67 @@ import jp.riken.kscope.Message;
 
 
 /**
- * 構造ツリーフィルタタイプ
+ * Structure tree filter type
  * @author RIKEN
  */
 public enum FILTER_TYPE {
-    // 構造ツリーフィルタタイプ
-    /** サブルーチン・関数 */
-    PROCEDURE(Message.getString("mainmenu.view.filter.subroutine-function"), //サブルーチン・関数
+    // Structure tree filter type
+    /** Subroutines / functions */
+    PROCEDURE(Message.getString("mainmenu.view.filter.subroutine-function"), // Subroutines / functions
     		new Class<?>[]{jp.riken.kscope.language.Procedure.class}), 
-    /** CALL文 */
-    PROCEDUREUSAGE(Message.getString("filter_type.enum.call"), //CALL文
+    /** CALL statement */
+    PROCEDUREUSAGE(Message.getString("filter_type.enum.call"), // CALL statement
     		new Class<?>[]{jp.riken.kscope.language.ProcedureUsage.class}),
-    /** DO文 */
-    REPETITION(Message.getString("filter_type.enum.do"), //DO文 
+    /** DO statement */
+    REPETITION(Message.getString("filter_type.enum.do"), // DO statement
     		new Class<?>[]{
     								jp.riken.kscope.language.Repetition.class,
             						jp.riken.kscope.language.ArrayExpression.class}),
-    /** SELECT文 */
-    SELECTION_SELECT(Message.getString("filter_type.enum.selection"), //SELECT,CASE文 
+    /** SELECT statement */
+    SELECTION_SELECT(Message.getString("filter_type.enum.selection"), // SELECT, CASE statement
     		new Class<?>[]{
                                     jp.riken.kscope.language.Selection.class,
                                     jp.riken.kscope.language.Condition.class}),
-    /** IF文 */
-    SELECTION_IF(Message.getString("filter_type.enum.if"), //IF,WHERE,ELSE文
+    /** IF statement */
+    SELECTION_IF(Message.getString("filter_type.enum.if"), // IF, WHERE, ELSE statement
     		new Class<?>[]{
                                     jp.riken.kscope.language.Selection.class,
                                     jp.riken.kscope.language.Condition.class}),
-    /** 代入文 */
-    SUBSTITUTION(Message.getString("filter_type.enum.assign"), //代入文
+    /** Assignment statement */
+    SUBSTITUTION(Message.getString("filter_type.enum.assign"), // Assignment statement
     		new Class<?>[]{jp.riken.kscope.language.Substitution.class}),
-    /** フロー制御文 */
-    FLOW(Message.getString("filter_type.enum.flow"), //フロー制御文
+    /** Flow control statement */
+    FLOW(Message.getString("filter_type.enum.flow"), // Flow control statement
     		new Class<?>[]{jp.riken.kscope.language.Return.class,
                                      jp.riken.kscope.language.Break.class,
                                      jp.riken.kscope.language.Continue.class,
                                      jp.riken.kscope.language.GoTo.class,
                                      jp.riken.kscope.language.Termination.class
                                      }),
-    /** ディレクティブ文:OpenMP */
+    /** Directive statement: OpenMP */
     DIRECTIVE_OPENML(Message.getString("mainmenu.view.filter.openmp"), //OpenMP
     		new Class<?>[]{jp.riken.kscope.language.Directive.class}),
-    /** ディレクティブ文:OCL */
+    /** Directive statement: OCL */
     DIRECTIVE_OCL(Message.getString("mainmenu.view.filter.ocl"), //OCL
     		new Class<?>[]{jp.riken.kscope.language.Directive.class}),
-    /** デフォルト */
-    DEFAULT(Message.getString("mainmenu.view.filter.default"), null), //デフォルト
-    /** すべて表示(フィルタ無し) */
-    ALL(Message.getString("filter_type.enum.show-all"), null), //すべて表示
-    /** すべて非表示 */
-    NONE(Message.getString("filter_type.enum.hide-all"), null), //すべて非表示
-    /** 不明 */
-    UNKNOWN(Message.getString("filter_type.enum.trace-unknown"), null); //トレース：不明
+    /** Default */
+    DEFAULT(Message.getString("mainmenu.view.filter.default"), null), //Default
+    /** Show all (no filter) */
+    ALL(Message.getString("filter_type.enum.show-all"), null), // Show all
+    /** Hide all */
+    NONE(Message.getString("filter_type.enum.hide-all"), null), // Hide all
+    /** Unknown */
+    UNKNOWN(Message.getString("filter_type.enum.trace-unknown"), null); // Trace: Unknown
 
-    /** フィルタ名 */
+    /** Filter name */
     private String name;
-    /** フィルタクラス */
+    /** Filter class */
     private Class<?>[] filterClass;
 
     /**
-     * コンストラクタ
-     * @param name		フィルタ名
-     * @param filterClass		フィルタクラス
+     * Constructor
+     * @param name Filter name
+     * @param filterClass Filter class
      */
     private FILTER_TYPE(String name, Class<?>[] filterClass) {
         this.name = name;
@@ -91,16 +91,16 @@ public enum FILTER_TYPE {
     }
 
     /**
-     * フィルタ名を取得する
-     * @return		フィルタ名
+     * Get the filter name
+     * @return filter name
      */
     public String getName() {
         return this.name;
     }
 
     /**
-     * フィルタクラスを取得する
-     * @return		フィルタクラス
+     * Get the filter class
+     * @return filter class
      */
     public Class<?>[] getFilterClass() {
         return this.filterClass;
@@ -108,22 +108,22 @@ public enum FILTER_TYPE {
 
 
     /**
-     * フォートランクラスとフィルタが一致しているかチェックする
-     * @param node			ノードオブジェクト
-     * @return				true=一致
+     * Check if the Fortran class and filter match
+     * @param node node object
+     * @return true = match
      */
     public boolean isFilter(Object node) {
 
         if (this == FILTER_TYPE.ALL) {
-            // フィルタ適用無し（すべて表示）
+            // No filter applied (display all)
             return true;
         }
 
-        // フィルタクラス
+        // Filter class
         Class<?>[] filterClasses = this.getFilterClass();
         if (filterClasses == null) return true;
 
-        // フィルタクラスであるか？
+        // Is it a filter class?
         boolean filter = false;
         for (Class<?> subclass : filterClasses) {
             if (subclass.isInstance(node)) {
@@ -133,7 +133,7 @@ public enum FILTER_TYPE {
         }
         if (filter == false) return false;
 
-        // SELECT, IF文
+        // SELECT, IF statement
         if (this == FILTER_TYPE.SELECTION_SELECT || this == FILTER_TYPE.SELECTION_IF) {
             jp.riken.kscope.language.Selection selection = null;
             if (node instanceof jp.riken.kscope.language.Selection) {
@@ -156,20 +156,20 @@ public enum FILTER_TYPE {
         else if (this == FILTER_TYPE.DIRECTIVE_OPENML) {
             jp.riken.kscope.language.Directive directive = (jp.riken.kscope.language.Directive)node;
             String message = directive.getArgument();
-            // OpenMP指示文の検索
+            // Search for OpenMP directives
             String regex = "^omp.*";
             int flags = Pattern.CASE_INSENSITIVE + Pattern.MULTILINE;
-            // 正規表現検索
+            // Regular expression search
             Matcher m = Pattern.compile(regex, flags).matcher(message);
             return m.matches();
         }
         else if (this == FILTER_TYPE.DIRECTIVE_OCL) {
             jp.riken.kscope.language.Directive directive = (jp.riken.kscope.language.Directive)node;
             String message = directive.getArgument();
-            // OCL指示文の検索
+            // Search for OCL directives
             String regex = "^ocl.*";
             int flags = Pattern.CASE_INSENSITIVE + Pattern.MULTILINE;
-            // 正規表現検索
+            // Regular expression search
             Matcher m = Pattern.compile(regex, flags).matcher(message);
             return m.matches();
         }

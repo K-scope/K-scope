@@ -30,29 +30,29 @@ import jp.riken.kscope.utils.StringUtils;
 import jp.riken.kscope.utils.XmlUtils;
 
 /**
- * プロジェクト情報クラス
+ * Project information class
  * @author RIKEN
  */
 public class ProjectModel  {
 
-    /** プロジェクトタイトル */
+    /** Project title */
     private String projectTitle;
 
-    /** プロジェクトフォルダ */
+    /** Project folder */
     private File projectFolder;
-    /** プロジェクトファイルタイプ */
+    /** Project file type */
     private FILE_TYPE fileType;
-    /** プロジェクトファイルリスト */
+    /** Project file list */
     private List<SourceFile> listXmlFile;
-    /** 作成日付 */
+    /** date of creation */
     private String createDate;
-    /** 更新日付 */
+    /** Update date */
     private String updateDate;
-    /** プロジェクト:中間コード選択フォルダ、ファイルリスト */
+    /** Project: Intermediate code selection folder, file list */
     private List<File> listSearchPath;
 
     /**
-     * コンストラクタ
+     * Constructor
      */
     public ProjectModel() {
     	listXmlFile = new ArrayList<SourceFile>();
@@ -60,56 +60,56 @@ public class ProjectModel  {
     }
 
     /**
-     * プロジェクトタイトルを取得する。
-     * @return projectTitle		プロジェクトタイトル
+     * Get the project title.
+     * @return projectTitle Project title
      */
     public String getProjectTitle() {
         return projectTitle;
     }
 
     /**
-     * プロジェクトタイトルを設定する
-     * @param projectTitle 		プロジェクトタイトル
+     * Set the project title
+     * @param projectTitle Project title
      */
     public void setProjectTitle(String projectTitle) {
         this.projectTitle = projectTitle;
     }
 
     /**
-     * プロジェクトフォルダを取得する
-     * @return projectFolder		プロジェクトフォルダ
+     * Get the project folder
+     * @return projectFolder project folder
      */
     public File getProjectFolder() {
         return projectFolder;
     }
 
     /**
-     * プロジェクトフォルダを設定する。
-     * @param projectFolder 		プロジェクトフォルダ
+     * Set the project folder.
+     * @param projectFolder project folder
      */
     public void setProjectFolder(File projectFolder) {
         this.projectFolder = projectFolder;
     }
 
     /**
-     * プロジェクトXMLファイルリストを取得する
-     * @return listXmlFile		プロジェクトXMLファイルリスト
+     * Get the project XML file list
+     * @return listXmlFile Project XML file list
      */
     public List<SourceFile> getListSelectedFile() {
         return listXmlFile;
     }
 
     /**
-     * プロジェクトXMLファイルリストを設定する
-     * @param listXmlFile 		プロジェクトXMLファイルリスト
+     * Set the project XML file list
+     * @param listXmlFile Project XML file list
      */
     public void setListXmlFile(List<SourceFile> listXmlFile) {
         this.listXmlFile = listXmlFile;
     }
 
     /**
-     * プロジェクトXMLファイルリストを設定する
-     * @param listXmlFile 		プロジェクトXMLファイルリスト
+     * Set the project XML file list
+     * @param listXmlFile Project XML file list
      */
     public void setListXmlFile(SourceFile[] listXmlFile) {
         if (listXmlFile == null || listXmlFile.length <=0) return;
@@ -121,8 +121,8 @@ public class ProjectModel  {
     }
 
     /**
-     * プロジェクトXMLファイルを追加する
-     * @param xmlFile 		プロジェクトXMLファイル
+     * Add project XML file
+     * @param xmlFile Project XML file
      */
     public void addProjectSelectedFile(SourceFile xmlFile) {
         if (this.listXmlFile == null || this.listXmlFile.size() <=0) {
@@ -132,39 +132,39 @@ public class ProjectModel  {
     }
 
     /**
-     * 作成日付を取得する.
-     * @return		作成日付
+     * Get the creation date.
+     * @return Creation date
      */
     public String getCreateDate() {
         return createDate;
     }
 
     /**
-     * 作成日付を設定する
-     * @param createDate		作成日付
+     * Set the creation date
+     * @param createDate Creation date
      */
     public void setCreateDate(String createDate) {
         this.createDate = createDate;
     }
 
     /**
-     * 更新日付を取得する.
-     * @return		更新日付
+     * Get the update date.
+     * @return Update date
      */
     public String getUpdateDate() {
         return updateDate;
     }
 
     /**
-     * 更新日付を設定する
-     * @param updateDate		更新日付
+     * Set the update date
+     * @param updateDate Update date
      */
     public void setUpdateDate(String updateDate) {
         this.updateDate = updateDate;
     }
 
     /**
-     * プロジェクトモデルをクリアする。
+     * Clear the project model.
      */
     public void clearProjectModel() {
 
@@ -180,18 +180,18 @@ public class ProjectModel  {
     }
 
     /**
-     * プロジェクトXMLファイル出力する.
-     * @param node		出力ノード
+     * Output the project XML file.
+     * @param node Output node
      */
     public void writeProjectModel(org.w3c.dom.Node node) {
 
-        // ドキュメントの取得
+        // Get documentation
         org.w3c.dom.Document document = node.getOwnerDocument();
 
-        // 作成日付
+        // date of creation
         {
             if (this.createDate == null || this.createDate.isEmpty()) {
-                // 作成日付
+                // date of creation
                 SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
                 this.createDate = format.format(new Date());
             }
@@ -199,9 +199,9 @@ public class ProjectModel  {
             node.appendChild(elem);
             elem.appendChild(document.createTextNode(this.createDate));
         }
-        // 更新日付:現在日付
+        // Updated date: Current date
         {
-            // 更新日付
+            // Update date
             SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
             this.updateDate = format.format(new Date());
 
@@ -210,13 +210,13 @@ public class ProjectModel  {
             elem.appendChild(document.createTextNode(this.updateDate));
         }
 
-        // プロジェクトタイトル
+        // Project title
         {
             org.w3c.dom.Element elem = document.createElement("title");
             node.appendChild(elem);
             elem.appendChild(document.createTextNode(this.getProjectTitle()));
         }
-        // 選択ファイルタイプ
+        // Selected file type
         {
             String typeAttr = null;
             if (this.fileType == FILE_TYPE.XCODEML_XML) {
@@ -232,7 +232,7 @@ public class ProjectModel  {
             elem.setAttributeNode(attribute);
         }
 
-        // 読込XMLファイル出力
+        // Read XML file output
         if (this.getListSelectedFile() != null && this.getListSelectedFile().size() > 0) {
 
             List<SourceFile> xmlfiles = new ArrayList<SourceFile>();
@@ -247,7 +247,7 @@ public class ProjectModel  {
             }
 
             if (xmlfiles.size() > 0) {
-                // xcodeml要素
+                // xcodeml element
                 org.w3c.dom.Element elem = document.createElement("xcodeml");
                 String typeAttr = "f_front";
                 String fileAttr = "xml";
@@ -262,12 +262,12 @@ public class ProjectModel  {
                     path = StringUtils.escapeFilePath(path);
                     if (path == null) continue;
 
-                    // file要素
+                    // file element
                     org.w3c.dom.Element elemFile = document.createElement("file");
                     org.w3c.dom.Attr attrFile = document.createAttribute("type");
                     attrFile.setValue(fileAttr);
                     elemFile.setAttributeNode(attrFile);
-                    // XMLファイル名
+                    // XML file name
                     elemFile.appendChild(document.createTextNode(path));
 
                     elem.appendChild(elemFile);
@@ -275,7 +275,7 @@ public class ProjectModel  {
             }
 
             if (srcfiles.size() > 0) {
-                // source要素
+                // source element
                 org.w3c.dom.Element elem = document.createElement("source");
                 String typeAttr = "fortran";
                 String fileAttr = "fortran";
@@ -289,12 +289,12 @@ public class ProjectModel  {
                     String path = FileUtils.getRelativePath(file, this.getProjectFolder());
                     path = StringUtils.escapeFilePath(path);
                     if (path == null) continue;
-                    // file要素
+                    // file element
                     org.w3c.dom.Element elemFile = document.createElement("file");
                     org.w3c.dom.Attr attrFile = document.createAttribute("type");
                     attrFile.setValue(fileAttr);
                     elemFile.setAttributeNode(attrFile);
-                    // XMLファイル名
+                    // XML file name
                     elemFile.appendChild(document.createTextNode(path));
 
                     elem.appendChild(elemFile);
@@ -302,11 +302,11 @@ public class ProjectModel  {
             }
         }
 
-        // 選択フォルダ・ファイル出力
+        // Select folder / file output
         if (this.getListSearchPath() != null && this.getListSearchPath().size() > 0) {
             List<File> list = this.getListSearchPath();
 
-            // searchpath要素
+            // searchpath element
             org.w3c.dom.Element elem = document.createElement("searchpath");
             node.appendChild(elem);
 
@@ -314,9 +314,9 @@ public class ProjectModel  {
                 String path = FileUtils.getRelativePath(file, this.getProjectFolder());
                 path = StringUtils.escapeFilePath(path);
                 if (path == null) continue;
-                // path要素
+                // path element
                 org.w3c.dom.Element elemFile = document.createElement("path");
-                // 選択フォルダ・ファイル名
+                // Selected folder / file name
                 elemFile.appendChild(document.createTextNode(path));
 
                 elem.appendChild(elemFile);
@@ -326,40 +326,40 @@ public class ProjectModel  {
 
 
     /**
-     * プロジェクト設定ファイルの読込を行う.
-     * @param loadFile		読込設定ファイル
-     * @throws Exception 		読込エラー
+     * Read the project setting file.
+     * @param loadFile Load configuration file
+     * @throws Exception Read error
      */
     public void loadProjectModel(File loadFile) throws Exception {
 
         if (!loadFile.exists()) {
-            throw(new Exception("Project Configuration is not exist.")); //プロジェクト設定ファイルが存在しません。
+            throw(new Exception("Project Configuration is not exist.")); // The project configuration file does not exist.
         }
 
-        // リソースファイルの読込
+        // Read resource file
         XmlUtils xml = new XmlUtils(loadFile);
 
-        // 作成日付
+        // date of creation
         this.createDate = xml.getString("/project/createdate");
-        // 更新日付
+        // Update date
         this.updateDate = xml.getString("/project/updatedate");
-        // タイトル
+        // Title
         this.projectTitle = xml.getString("/project/title");
-        // プロジェクトフォルダ
+        // Project folder
         this.projectFolder = loadFile.getParentFile();
-        // 選択ファイルリスト
+        // Selected file list
         String type = xml.getString("/project/filetype/@type");
         if ("xcodeml".equalsIgnoreCase(type)) {
             this.fileType = FILE_TYPE.XCODEML_XML;
         }
         else if ("fortran".equalsIgnoreCase(type)) {
-            // ファイルタイプ
+            // File type
             this.fileType = FILE_TYPE.FORTRANLANG;
         }
         else {
             this.fileType = FILE_TYPE.XCODEML_XML;
         }
-        // XMLファイルリスト
+        // XML file list
         List<String> list = xml.getList("/project/xcodeml/file");
         if (list != null && list.size() > 0) {
 
@@ -368,7 +368,7 @@ public class ProjectModel  {
 
 	            File file = new File(value);
 	            if (!file.isAbsolute()) {
-	                // 相対パスであるので、プロジェクトフォルダを付ける
+	                // Since it is a relative path, add a project folder
 	                file = new File(this.projectFolder.getAbsoluteFile() + File.separator + value);
 	            }
 	            if (file.exists()) {
@@ -377,7 +377,7 @@ public class ProjectModel  {
 	            }
 	        }
         }
-        // ソースファイルリスト
+        // Source file list
         List<String> sourcelist = xml.getList("/project/source/file");
         if (sourcelist != null && sourcelist.size() > 0) {
             for (String value : sourcelist) {
@@ -385,7 +385,7 @@ public class ProjectModel  {
 
                 File file = new File(value);
                 if (!file.isAbsolute()) {
-                    // 相対パスであるので、プロジェクトフォルダを付ける
+                    // Since it is a relative path, add a project folder
                     file = new File(this.projectFolder.getAbsoluteFile() + File.separator + value);
                 }
                 if (file.exists()) {
@@ -395,7 +395,7 @@ public class ProjectModel  {
             }
         }
 
-        // 選択フォルダ・ファイルリスト
+        // Selected folder / file list
         List<String> listSelect = xml.getList("/project/searchpath/path");
         if (listSelect != null && listSelect.size() > 0) {
 
@@ -404,7 +404,7 @@ public class ProjectModel  {
 
 	            File file = new File(value);
 	            if (!file.isAbsolute()) {
-	                // 相対パスであるので、プロジェクトフォルダを付ける
+	                // Since it is a relative path, add a project folder
 	                file = new File(this.projectFolder.getAbsoluteFile() + File.separator + value);
 	            }
 	            addSearchPath(file);
@@ -413,9 +413,9 @@ public class ProjectModel  {
     }
 
     /**
-     * プロジェクトの中間コード選択フォルダ・ファイルリストに追加する.
-     * プロジェクト新規作成の中間コード選択時のフォルダ・ファイルを保持する.
-     * @param file		中間コード選択フォルダ・ファイル
+     * Add to the intermediate code selection folder / file list of the project.
+     * Holds the folder / file when the intermediate code for creating a new project is selected.
+     * @param file Intermediate code selection folder file
      */
     private void addSearchPath(File path) {
     	if (this.listSearchPath.contains(path)) {
@@ -425,18 +425,18 @@ public class ProjectModel  {
 	}
 
     /**
-     * プロジェクトの中間コード選択フォルダ・ファイルリストを取得する.
-     * プロジェクト新規作成の中間コード選択時のフォルダ・ファイルを保持する.
-     * @return		中間コード選択フォルダ・ファイルリスト
+     * Get the intermediate code selection folder / file list of the project.
+     * Holds the folder / file when the intermediate code for creating a new project is selected.
+     * @return Intermediate code selection folder / file list
      */
     public List<File> getListSearchPath() {
     	return this.listSearchPath;
 	}
 
     /**
-     * プロジェクトの中間コード選択フォルダ・ファイルリストを取得する.
-     * プロジェクト新規作成の中間コード選択時のフォルダ・ファイルを保持する.
-     * @return		中間コード選択フォルダ・ファイルリスト
+     * Get the intermediate code selection folder / file list of the project.
+     * Holds the folder / file when the intermediate code for creating a new project is selected.
+     * @return Intermediate code selection folder / file list
      */
     public void setListSearchPath(List<File> list) {
     	this.listSearchPath.clear();
@@ -444,25 +444,25 @@ public class ProjectModel  {
 	}
 
 	/**
-     * プロジェクトファイルタイプ を設定する
-     * @param type		プロジェクトファイルタイプ :FILE_TYPE.XCODEML_XML or FILE_TYPE.FORTRANLANG
+     * Set the project file type
+     * @param type Project file type: FILE_TYPE.XCODEML_XML or FILE_TYPE.FORTRANLANG
      */
     public void setFileType(FILE_TYPE type) {
         this.fileType = type;
     }
 
     /**
-     * プロジェクトファイルタイプを取得する
-     * @return		プロジェクトファイルタイプ
+     * Get the project file type
+     * @return project file type
      */
     public FILE_TYPE getFileType() {
         return this.fileType;
     }
 
     /**
-     * プロジェクト設定が有効であるかチェックします.
-     * プロジェクトフォルダが設定されているかチェックする.
-     * @return		true=プロジェクト設定が有効
+     * Check if the project settings are valid.
+     * Check if the project folder is set.
+     * @return true = Project settings are valid
      */
     public boolean isVaildProject() {
     	return (this.projectFolder!= null);

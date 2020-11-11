@@ -22,17 +22,17 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 
 /**
- * AppleScriptの実行クラス
+ * AppleScript execution class
  * @author RIKEN
  */
 public class AppleScriptEngine {
 
     /**
-     * フォルダ選択ダイアログ表示のAppleScriptを実行する.
+     * Execute AppleScript in the folder selection dialog display.
      *
-     * @param title	タイトル
-     * @param currentDirectoryPath	デフォルトパス
-     * @return	選択フォルダ
+     * @param title Title
+     * @param currentDirectoryPath Default path
+     * @return Selected folder
      */
     public static File showFolderDialog(
             String title,
@@ -52,11 +52,11 @@ public class AppleScriptEngine {
     }
 
     /**
-     * フォルダ選択ダイアログ表示のAppleScriptを作成する.
+     * Create an AppleScript to display the folder selection dialog.
      *
-     * @param title	ダイアログ記述
-     * @param path	デフォルトパス
-     * @return	AppleScript
+     * @param title Dialog description
+     * @param path Default path
+     * @return AppleScript
      */
     private static String createChooseFolderScript(String title, String path) {
         StringBuffer buf = new StringBuffer();

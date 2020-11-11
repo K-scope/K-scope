@@ -19,34 +19,34 @@ package jp.riken.kscope.common;
 import jp.riken.kscope.Message;
 
 /**
- * メインフレームのビュー画面識別列挙クラス
+ * Mainframe view screen identification enumeration class
  * @author RIKEN
  */
 public enum FRAME_VIEW {
-    // ビュー一覧
-    /** メインフレーム */
-    MAIN_FRAME(Message.getString("frame_view.enum.main")), //メインフレーム
-    /** エクスプローラビュー */
-    EXPLORE_VIEW(Message.getString("mainmenu.window.explore")), //エクスプローラビュー
-    /** ソースビュー */
-    SOURCE_VIEW(Message.getString("mainmenu.window.source")), //ソースビュー
-    /** 分析ビュー */
-    ANALYSIS_VIEW(Message.getString("mainmenu.window.analysis")); //分析ビュー
+    // View list
+    /** main frame */
+    MAIN_FRAME(Message.getString("frame_view.enum.main")), //main frame
+    /** Explorer view */
+    EXPLORE_VIEW(Message.getString("mainmenu.window.explore")), // Explorer view
+    /** Source view */
+    SOURCE_VIEW(Message.getString("mainmenu.window.source")), // Source view
+    /** Analysis view */
+    ANALYSIS_VIEW(Message.getString("mainmenu.window.analysis")); // Analysis view
 
-    /** ビュー名 */
+    /** View name */
     private String viewname;
 
     /**
-     * コンストラクタ
-     * @param tabname		ビュー名
+     * Constructor
+     * @param tabname View name
      */
     private FRAME_VIEW(String viewname) {
         this.viewname = viewname;
     }
 
     /**
-     * ビュー名を取得する
-     * @return		ビュー名
+     * Get the view name
+     * @return View name
      */
     public String getViewName() {
         return this.viewname;

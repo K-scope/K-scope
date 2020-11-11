@@ -16,6 +16,6 @@
  */
 
 /**
- * メインメニュー、ポップアップメニューを提供します.<br/>
+ * Provides main menu and pop-up menu. <br/>
  */
 package jp.riken.kscope.menu;

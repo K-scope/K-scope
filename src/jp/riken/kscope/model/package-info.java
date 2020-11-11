@@ -16,6 +16,6 @@
  */
 
 /**
- * 画面構成パネルのデータモデルです.
+ * This is the data model of the screen configuration panel.
  */
 package jp.riken.kscope.model;

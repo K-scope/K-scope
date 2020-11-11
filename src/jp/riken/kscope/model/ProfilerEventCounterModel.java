@@ -36,139 +36,139 @@ import jp.riken.kscope.profiler.eprof.HardwareMonitorInfo;
 import jp.riken.kscope.profiler.eprof.HardwarePaTable;
 
 /**
- * プロファイラ:イベントカウンタ情報モデル
+ * Profiler: Event counter information model
  * @author RIKEN
  *
  */
 public class ProfilerEventCounterModel extends ProfilerTableBaseModel {
 
     /**
-     * テーブルヘッダーリスト(5列):ハードウェアモニタ情報（ＰＡ情報）テーブル:Cacheのテーブル<br/>
-     * 1列目はプロファイラ情報とする。
+     * Table header list (5 columns): Hardware monitor information (PA information) table: Cache table <br/>
+     * The first column is profiler information.
      */
     private String[] HEADER_COLUMNS_CACHE = {"",
-    		Message.getString("profilereventcountermodel.header_columns_cache.threadnum"), //スレッド番号
-    		Message.getString("profilereventcountermodel.header_columns_cache.elapsedtime"), //経過時間(s)
-    		Message.getString("profilereventcountermodel.header_columns_cache.usertime"), //ユーザ時間(s)
-    		Message.getString("profilereventcountermodel.header_columns_cache.num-instruction-exe"), //命令実行数
-    		Message.getString("profilereventcountermodel.header_columns_cache.num-load-store"), //ロード/ストア命令数
-    		Message.getString("profilereventcountermodel.header_columns_cache.num-prefetch"), //prefetch命令数
-    		Message.getString("profilereventcountermodel.header_columns_cache.num-SIMD-load-store"), //SIMD ロード/ストア命令数
-    		Message.getString("profilereventcountermodel.header_columns_cache.num-L1-cachemisses"), //L1データキャッシュミス数
-    		Message.getString("profilereventcountermodel.header_columns_cache.num-L2-cachedemandmisses"), //L2キャッシュdemandミス数
-    		Message.getString("profilereventcountermodel.header_columns_cache.num-L2-cacheprefetchmisses"), //L2キャッシュprefetchミス数
-    		Message.getString("profilereventcountermodel.header_columns_cache.num-dataaccessMDTLBmisses")}; //データアクセスMDTLBミス数
+    		Message.getString("profilereventcountermodel.header_columns_cache.threadnum"), // Thread number
+    		Message.getString("profilereventcountermodel.header_columns_cache.elapsedtime"), // elapsed time (s)
+    		Message.getString("profilereventcountermodel.header_columns_cache.usertime"), // User time (s)
+    		Message.getString("profilereventcountermodel.header_columns_cache.num-instruction-exe"), // Number of instruction executions
+    		Message.getString("profilereventcountermodel.header_columns_cache.num-load-store"), // Number of load / store instructions
+    		Message.getString("profilereventcountermodel.header_columns_cache.num-prefetch"), // Number of prefetch instructions
+    		Message.getString("profilereventcountermodel.header_columns_cache.num-SIMD-load-store"), // SIMD load / store instructions
+    		Message.getString("profilereventcountermodel.header_columns_cache.num-L1-cachemisses"), // Number of L1 data cache misses
+    		Message.getString("profilereventcountermodel.header_columns_cache.num-L2-cachedemandmisses"), // L2 cache demand number of misses
+    		Message.getString("profilereventcountermodel.header_columns_cache.num-L2-cacheprefetchmisses"), // L2 cache prefetch number of misses
+    		Message.getString("profilereventcountermodel.header_columns_cache.num-dataaccessMDTLBmisses")}; // Number of data access MDTLB mistakes
     /**
-     * テーブルヘッダーリスト(5列):ハードウェアモニタ情報（ＰＡ情報）テーブル:Instructionsのテーブル<br/>
-     * 1列目はプロファイラ情報とする。
+     * Table header list (5 columns): Hardware monitor information (PA information) table: Instructions table <br/>
+     * The first column is profiler information.
      */
     private String[] HEADER_COLUMNS_INSTRUCTIONS = {"",
-    		Message.getString("profilereventcountermodel.header_columns_cache.threadnum"), //スレッド番号
-    		Message.getString("profilereventcountermodel.header_columns_cache.elapsedtime"), //経過時間(s)
-    		Message.getString("profilereventcountermodel.header_columns_cache.usertime"), //ユーザ時間(s)
-    		Message.getString("profilereventcountermodel.header_columns_cache.num-instruction-exe"), //命令実行数
-    		Message.getString("profilereventcountermodel.header_columns_cache.num-load-store"), //ロード/ストア命令数
-    		Message.getString("profilereventcountermodel.header_columns_instructions.num-floating-point"), //浮動小数点演算命令数
-    		Message.getString("profilereventcountermodel.header_columns_instructions.num-high-speed"), //高速演算命令数
-    		Message.getString("profilereventcountermodel.header_columns_cache.num-SIMD-load-store"), //SIMD ロード/ストア命令数
-    		Message.getString("profilereventcountermodel.header_columns_instructions.num-SIMD-floating-point"), //SIMD浮動小数点演算命令数
-    		Message.getString("profilereventcountermodel.header_columns_instructions.num-SIMD-high-speed")}; //SIMD高速演算命令数
+    		Message.getString("profilereventcountermodel.header_columns_cache.threadnum"), // Thread number
+    		Message.getString("profilereventcountermodel.header_columns_cache.elapsedtime"), // elapsed time (s)
+    		Message.getString("profilereventcountermodel.header_columns_cache.usertime"), // User time (s)
+    		Message.getString("profilereventcountermodel.header_columns_cache.num-instruction-exe"), // Number of instruction executions
+    		Message.getString("profilereventcountermodel.header_columns_cache.num-load-store"), // Number of load / store instructions
+    		Message.getString("profilereventcountermodel.header_columns_instructions.num-floating-point"), // Number of floating point arithmetic instructions
+    		Message.getString("profilereventcountermodel.header_columns_instructions.num-high-speed"), // Number of high-speed arithmetic instructions
+    		Message.getString("profilereventcountermodel.header_columns_cache.num-SIMD-load-store"), // SIMD load / store instructions
+    		Message.getString("profilereventcountermodel.header_columns_instructions.num-SIMD-floating-point"), // Number of SIMD floating point arithmetic instructions
+    		Message.getString("profilereventcountermodel.header_columns_instructions.num-SIMD-high-speed")}; // Number of SIMD high-speed arithmetic instructions
     /**
-     * テーブルヘッダーリスト(5列):ハードウェアモニタ情報（ＰＡ情報）テーブル:MEM_accessのテーブル<br/>
-     * 1列目はプロファイラ情報とする。
+     * Table header list (5 columns): Hardware monitor information (PA information) table: MEM_access table <br/>
+     * The first column is profiler information.
      */
     private String[] HEADER_COLUMNS_MEM_ACCESS = {"",
-    		Message.getString("profilereventcountermodel.header_columns_cache.threadnum"), //スレッド番号
-    		Message.getString("profilereventcountermodel.header_columns_cache.elapsedtime"), //経過時間(s)
-    		Message.getString("profilereventcountermodel.header_columns_cache.usertime"), //ユーザ時間(s)
-    		Message.getString("profilereventcountermodel.header_columns_cache.num-instruction-exe"), //命令実行数
-    		Message.getString("profilereventcountermodel.header_columns_cache.num-load-store"), //ロード/ストア命令数
-    		Message.getString("profilereventcountermodel.header_columns_cache.num-prefetch"), //prefetch命令数
-    		Message.getString("profilereventcountermodel.header_columns_cache.num-SIMD-load-store"), //SIMD ロード/ストア命令数
-    		Message.getString("profilereventcountermodel.header_columns_cache.num-L2-cachedemandmisses"), //L2キャッシュdemandミス数
-    		Message.getString("profilereventcountermodel.header_columns_cache.num-L2-cacheprefetchmisses"), //L2キャッシュprefetchミス数
-    		Message.getString("profilereventcountermodel.header_columns_mem.num-L2-cachedemandmiss"), //L2キャッシュdemandミスライトバック数
-    		Message.getString("profilereventcountermodel.header_columns_mem.num-L2-prefetchmiss")}; //"L2キャッシュprefetchミスライトバック数"
+    		Message.getString("profilereventcountermodel.header_columns_cache.threadnum"), // Thread number
+    		Message.getString("profilereventcountermodel.header_columns_cache.elapsedtime"), // elapsed time (s)
+    		Message.getString("profilereventcountermodel.header_columns_cache.usertime"), // User time (s)
+    		Message.getString("profilereventcountermodel.header_columns_cache.num-instruction-exe"), // Number of instruction executions
+    		Message.getString("profilereventcountermodel.header_columns_cache.num-load-store"), // Number of load / store instructions
+    		Message.getString("profilereventcountermodel.header_columns_cache.num-prefetch"), // Number of prefetch instructions
+    		Message.getString("profilereventcountermodel.header_columns_cache.num-SIMD-load-store"), // SIMD load / store instructions
+    		Message.getString("profilereventcountermodel.header_columns_cache.num-L2-cachedemandmisses"), // L2 cache demand number of misses
+    		Message.getString("profilereventcountermodel.header_columns_cache.num-L2-cacheprefetchmisses"), // L2 cache prefetch number of misses
+    		Message.getString("profilereventcountermodel.header_columns_mem.num-L2-cachedemandmiss"), // L2 cache demand Miss writeback number
+    		Message.getString("profilereventcountermodel.header_columns_mem.num-L2-prefetchmiss")}; // "L2 cache prefetch miswriteback count"
     /**
-     * テーブルヘッダーリスト(5列):ハードウェアモニタ情報（ＰＡ情報）テーブル:Performanceのテーブル<br/>
-     * 1列目はプロファイラ情報とする。
+     * Table header list (5 columns): Hardware monitor information (PA information) table: Performance table <br/>
+     * The first column is profiler information.
      */
     private String[] HEADER_COLUMNS_PERFORMANCE = {"",
-    		Message.getString("profilereventcountermodel.header_columns_cache.threadnum"), //スレッド番号
-    		Message.getString("profilereventcountermodel.header_columns_cache.elapsedtime"), //経過時間(s)
-    		Message.getString("profilereventcountermodel.header_columns_cache.usertime"), //ユーザ時間(s)
-    		Message.getString("profilereventcountermodel.header_columns_performance.num-cycles"), //サイクル数
-    		Message.getString("profilereventcountermodel.header_columns_performance.num-cycles0"), //命令完了数0サイクル数
-    		Message.getString("profilereventcountermodel.header_columns_performance.num-cycles1"), //命令完了数1サイクル数
-    		Message.getString("profilereventcountermodel.header_columns_performance.floating-point.num-cycles0"), //浮動小数点数演算:命令完了数0サイクル数
-    		Message.getString("profilereventcountermodel.header_columns_performance.waitmem.num-cycles0"), //メモリアクセスデータ待ち:命令完了数0サイクル数
-    		Message.getString("profilereventcountermodel.header_columns_performance.num-cycles-L2-cachemiss"), //L2キャッスミス待ちサイクル数
-    		Message.getString("profilereventcountermodel.header_columns_performance.CSE-empty.num-cycles0"), //CSE空:命令完了数0サイクル数
-    		Message.getString("profilereventcountermodel.header_columns_performance.CSE-empty-store.num-cycles0")}; //CSE空・ストアポートフル:命令完了数0サイクル数
+    		Message.getString("profilereventcountermodel.header_columns_cache.threadnum"), // Thread number
+    		Message.getString("profilereventcountermodel.header_columns_cache.elapsedtime"), // elapsed time (s)
+    		Message.getString("profilereventcountermodel.header_columns_cache.usertime"), // User time (s)
+    		Message.getString("profilereventcountermodel.header_columns_performance.num-cycles"), // number of cycles
+    		Message.getString("profilereventcountermodel.header_columns_performance.num-cycles0"), // Number of instruction completions 0 Number of cycles
+    		Message.getString("profilereventcountermodel.header_columns_performance.num-cycles1"), // Number of completed instructions 1 Number of cycles
+    		Message.getString("profilereventcountermodel.header_columns_performance.floating-point.num-cycles0"), // Floating point arithmetic: Number of instruction completions 0 Number of cycles
+    		Message.getString("profilereventcountermodel.header_columns_performance.waitmem.num-cycles0"), // Waiting for memory access data: Number of completed instructions 0 Number of cycles
+    		Message.getString("profilereventcountermodel.header_columns_performance.num-cycles-L2-cachemiss"), // Number of L2 Cass Smith waiting cycles
+    		Message.getString("profilereventcountermodel.header_columns_performance.CSE-empty.num-cycles0"), // CSE empty: number of completed instructions 0 number of cycles
+    		Message.getString("profilereventcountermodel.header_columns_performance.CSE-empty-store.num-cycles0")}; // CSE empty / store port full: number of completed instructions 0 number of cycles
     /**
-     * テーブルヘッダーリスト(5列):ハードウェアモニタ情報（ＰＡ情報）テーブル:Statisticsのテーブル<br/>
-     * 1列目はプロファイラ情報とする。
+     * Table header list (5 columns): Hardware monitor information (PA information) table: Statistics table <br/>
+     * The first column is profiler information.
      */
     private String[] HEADER_COLUMNS_STATISTICS = {"",
-    		Message.getString("profilereventcountermodel.header_columns_cache.threadnum"), //スレッド番号
-    		Message.getString("profilereventcountermodel.header_columns_cache.elapsedtime"), //経過時間(s)
-    		Message.getString("profilereventcountermodel.header_columns_cache.usertime"), //ユーザ時間(s)
-    		Message.getString("profilereventcountermodel.header_columns_cache.num-instruction-exe"), //命令実行数
-    		Message.getString("profilereventcountermodel.header_columns_instructions.num-floating-point"), //浮動小数点演算命令数
-    		Message.getString("profilereventcountermodel.header_columns_instructions.num-high-speed"), //高速演算命令数
-    		Message.getString("profilereventcountermodel.header_columns_cache.num-SIMD-load-store"), //SIMD ロード/ストア命令数
-    		Message.getString("profilereventcountermodel.header_columns_instructions.num-SIMD-floating-point"), //SIMD浮動小数点演算命令数
-    		Message.getString("profilereventcountermodel.header_columns_instructions.num-SIMD-high-speed"), //SIMD高速演算命令数
-    		Message.getString("profilereventcountermodel.header_columns_statistics.datatransfer-r"), //メモリCPU間データ転送量(r)
-    		Message.getString("profilereventcountermodel.header_columns_statistics.datatransfer-w")}; //メモリCPU間データ転送量(w)
-    /** テーブル列の表示状態 */
+    		Message.getString("profilereventcountermodel.header_columns_cache.threadnum"), // Thread number
+    		Message.getString("profilereventcountermodel.header_columns_cache.elapsedtime"), // elapsed time (s)
+    		Message.getString("profilereventcountermodel.header_columns_cache.usertime"), // User time (s)
+    		Message.getString("profilereventcountermodel.header_columns_cache.num-instruction-exe"), // Number of instruction executions
+    		Message.getString("profilereventcountermodel.header_columns_instructions.num-floating-point"), // Number of floating point arithmetic instructions
+    		Message.getString("profilereventcountermodel.header_columns_instructions.num-high-speed"), // Number of high-speed arithmetic instructions
+    		Message.getString("profilereventcountermodel.header_columns_cache.num-SIMD-load-store"), // SIMD load / store instructions
+    		Message.getString("profilereventcountermodel.header_columns_instructions.num-SIMD-floating-point"), // Number of SIMD floating point arithmetic instructions
+    		Message.getString("profilereventcountermodel.header_columns_instructions.num-SIMD-high-speed"), // Number of SIMD high-speed arithmetic instructions
+    		Message.getString("profilereventcountermodel.header_columns_statistics.datatransfer-r"), // Data transfer amount between memory CPU (r)
+    		Message.getString("profilereventcountermodel.header_columns_statistics.datatransfer-w")}; // Data transfer amount between memory CPU (w)
+    /** Table column display status */
     private boolean[] visibledcolumns = {false, true, true, true, true, true, true, true, true, true, true, true};
     /**
-     * テーブル列配置.<br/>
+     * Table column arrangement. <br/>
      */
     private int[] COLUMNS_ALIGNMENTS = {SwingConstants.LEFT, SwingConstants.RIGHT, SwingConstants.RIGHT, SwingConstants.RIGHT, SwingConstants.RIGHT, SwingConstants.RIGHT, SwingConstants.RIGHT, SwingConstants.RIGHT, SwingConstants.RIGHT, SwingConstants.RIGHT, SwingConstants.RIGHT, SwingConstants.RIGHT};
 
-    // テーブル列サイズ -1=非表示とする
-    /** テーブル列サイズ : ハードウェアモニタ情報（ＰＡ情報）テーブル:Cacheのテーブル */
+    // Table column size -1 = Hide
+    /** Table column size: Hardware monitor information (PA information) Table: Cache table */
     private int[] HEADER_COLUMNS_PREFERREDWIDTH_CACHE         = { -1, 100, 100, 100, 140, 140, 140, 160, 160, 180, 180, 180 };
-    /** テーブル列サイズ : ハードウェアモニタ情報（ＰＡ情報）テーブル:Instructionsのテーブル */
+    /** Table column size: Hardware monitor information (PA information) table: Instructions table */
     private int[] HEADER_COLUMNS_PREFERREDWIDTH_INSTRUCTIONS  = { -1, 100, 100, 100, 140, 140, 140, 140, 160, 180, 180};
-    /** テーブル列サイズ : ハードウェアモニタ情報（ＰＡ情報）テーブル:MEM_accessのテーブル */
+    /** Table column size: Hardware monitor information (PA information) table: MEM_access table */
     private int[] HEADER_COLUMNS_PREFERREDWIDTH_MEM_ACCESS    = { -1, 100, 100, 100, 140, 140, 140, 160, 180, 180, 260, 260 };
-    /** テーブル列サイズ : ハードウェアモニタ情報（ＰＡ情報）テーブル:Performanceのテーブル */
+    /** Table column size: Hardware monitor information (PA information) Table: Performance table */
     private int[] HEADER_COLUMNS_PREFERREDWIDTH_PERFORMANCE   = { -1, 100, 100, 100, 140, 140, 140, 240, 300, 200, 200, 300 };
-    /** テーブル列サイズ : ハードウェアモニタ情報（ＰＡ情報）テーブル:Statisticsのテーブル */
+    /** Table column size: Hardware monitor information (PA information) Table: Statistics table */
     private int[] HEADER_COLUMNS_PREFERREDWIDTH_STATISTICS    = { -1, 100, 100, 100, 140, 140, 100, 160, 180, 140, 180, 200 };
 
     /**
-     * テーブル列最小サイズ.<br/>
-     * -1=非表示とする
+     * Minimum table column size. <br/>
+     * -1 = Hide
      */
     private int[] HEADER_COLUMNS_MINWIDTH =  { -1, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80};
 
-    /** タイトル */
+    /** Title */
     private String title;
 
     /**
-     * プロファイラ:イベントカウンタ情報マップ
-     * キー：プロファイラのプロセス、スレッドを表記する一意の文字列
-     * 値：イベントカウンタ情報リスト
+     * Profiler: Event Counter Information Map
+     * Key: A unique string that describes the profiler process and thread
+     * Value: Event counter information list
      */
     private Map<String, List<ProfilerEprofData>> mapInfo;
-    /** 選択イベントカウンタ情報 */
+    /** Selected event counter information */
     private ProfilerBaseData selectedInfo;
-    /** 小数点表示最大値:指数表示との切替 */
+    /** Maximum decimal point display: Switching to exponential notation */
     private double MAX_EXPONENT = 1000000.0;
     /**
-     * コンストラクタ
-     * @param type		プロファイラ情報タイプ
+     * Constructor
+     * @param type Profiler information type
      */
     public ProfilerEventCounterModel(PROFILERINFO_TYPE type) {
         super(type);
     }
 
     /**
-     * モデルの変更を通知する
+     * Notify model changes
      */
     @Override
     protected void notifyModel() {
@@ -178,9 +178,9 @@ public class ProfilerEventCounterModel extends ProfilerTableBaseModel {
     }
 
     /**
-     * イベントカウンタ情報マップ数を取得する.
-     * Eprofの場合、マップ数xプロファイラ情報リスト数とする
-     * @return		イベントカウンタ情報マップ数
+     * Get the number of event counter information maps.
+     * For Eprof, the number of maps x the number of profiler information lists
+     * @return Number of event counter information maps
      */
     @Override
     public int getInfoMapCount() {
@@ -200,10 +200,10 @@ public class ProfilerEventCounterModel extends ProfilerTableBaseModel {
 
 
     /**
-     * イベントカウンタ情報マップキー名を取得する
-     * Eprofの場合、キー名はマップキー+'/'+カウンタグループ名とする
-     * @param   index    マップインデックス
-     * @return		イベントカウンタ情報マップキー名
+     * Get event counter information map key name
+     * For Eprof, the key name is map key +'/' + counter group name
+     * @param index Map index
+     * @return Event counter information map key name
      */
     @Override
     public String getInfoMapKey(int index) {
@@ -218,7 +218,7 @@ public class ProfilerEventCounterModel extends ProfilerTableBaseModel {
             if (list == null) continue;
             for (ProfilerEprofData data : list) {
                 if (i == index) {
-                    // カウンタグループ名
+                    // Counter group name
                     String name = data.getSymbol();
                     return key + "/" + name;
                 }
@@ -231,19 +231,19 @@ public class ProfilerEventCounterModel extends ProfilerTableBaseModel {
 
 
     /**
-     * イベントカウンタ情報リストを取得する
-     * @param   index    マップインデックス
-     * @return		イベントカウンタ情報リスト
+     * Get the event counter information list
+     * @param index Map index
+     * @return Event counter information list
      */
     public List<ProfilerEprofData> getInfoMapValue(int index) {
         return getInfoMap(getInfoMapKey(index));
     }
 
     /**
-     * イベントカウンタ情報リストを取得する
-     * Eprofの場合、キー名はマップキー+'/'+カウンタグループ名とする
-     * @param   key    マップキー
-     * @return		イベントカウンタ情報リスト
+     * Get the event counter information list
+     * For Eprof, the key name is map key +'/' + counter group name
+     * @param key Map key
+     * @return Event counter information list
      */
     public List<ProfilerEprofData> getInfoMap(String key) {
         if (this.mapInfo == null) {
@@ -254,7 +254,7 @@ public class ProfilerEventCounterModel extends ProfilerTableBaseModel {
         if (keys == null || keys.length != 2) return null;
         List<ProfilerEprofData> list = this.mapInfo.get(keys[0]);
         if (list == null) return null;
-        // Eprofの場合, イベントカウンタ情報１つだけのはず。
+        // In the case of Eprof, there should be only one event counter information.
         List<ProfilerEprofData> result = new ArrayList<ProfilerEprofData>();
         for (ProfilerEprofData data : list) {
             String name = data.getSymbol();
@@ -266,11 +266,11 @@ public class ProfilerEventCounterModel extends ProfilerTableBaseModel {
     }
 
     /**
-     * テーブルモデルを取得する
-     * @return		テーブルモデル
+     * Get the table model
+     * @return table model
      */
     public DefaultTableModel getDefaultTableModel() {
-        // テーブルモデルの作成
+        // Create a table model
         String[] header = getHeaderColumns();
         DefaultTableModel tableModel = new DefaultTableModel(header, 0);
         return tableModel;
@@ -279,12 +279,12 @@ public class ProfilerEventCounterModel extends ProfilerTableBaseModel {
 
 
     /**
-     * ヘッダー列リストを取得する。
-     * @return		ヘッダー列リスト
+     * Get the header column list.
+     * @return Header column list
      */
     @Override
     public String[] getHeaderColumns() {
-        // ヘッダー列リスト
+        // Header column list
         String[] header = HEADER_COLUMNS_STATISTICS;
         if (this.getEnumInfo() == PROFILERINFO_TYPE.EVENTCOUNTER_CACHE) {
             header = HEADER_COLUMNS_CACHE;
@@ -306,12 +306,12 @@ public class ProfilerEventCounterModel extends ProfilerTableBaseModel {
     }
 
     /**
-     * ヘッダー推奨列幅リストを取得する。
-     * @return		ヘッダー推奨列幅
+     * Get the header recommended column width list.
+     * @return Header recommended column width
      */
     @Override
     protected int[] getHeaderColumnsPreferredWidth() {
-        // ヘッダー列リスト
+        // Header column list
         int[] header = HEADER_COLUMNS_PREFERREDWIDTH_STATISTICS;
         if (this.getEnumInfo() == PROFILERINFO_TYPE.EVENTCOUNTER_CACHE) {
             header = HEADER_COLUMNS_PREFERREDWIDTH_CACHE;
@@ -332,8 +332,8 @@ public class ProfilerEventCounterModel extends ProfilerTableBaseModel {
     }
 
     /**
-     * ヘッダー最小列幅リストを取得する。
-     * @return		ヘッダー最小列幅
+     * Get the header minimum column width list.
+     * @return Header minimum column width
      */
     @Override
     protected int[] getHeaderColumnsMinWidth() {
@@ -341,16 +341,16 @@ public class ProfilerEventCounterModel extends ProfilerTableBaseModel {
     }
 
     /**
-     * イベントカウンタ情報を追加する
-     * @param key			イベントカウンタ情報キー
-     * @param info			イベントカウンタ情報
+     * Add event counter information
+     * @param key Event counter information key
+     * @param info Event counter information
      */
     public void addInfo(String key, ProfilerEprofData info) {
 
         if (key == null) return;
         if (info == null) return;
 
-        // イベントカウンタ情報マップの生成
+        // Generate event counter information map
         if (this.mapInfo == null) {
             this.mapInfo = new TreeMap<String, List<ProfilerEprofData>>();
         }
@@ -361,25 +361,25 @@ public class ProfilerEventCounterModel extends ProfilerTableBaseModel {
         }
         list.add(info);
 
-        // モデルの変更を通知
+        // Notify model changes
         notifyModel();
     }
 
     /**
-     * イベントカウンタ情報を設定する
-     * @param key			イベントカウンタ情報キー
-     * @param infos			イベントカウンタ情報リスト
+     * Set event counter information
+     * @param key Event counter information key
+     * @param infos Event counter information list
      */
     @Override
     public void setProfilerData(String key, ProfilerBaseData[] infos) {
 
         if (key == null) return;
-        // イベントカウンタ情報マップの生成
+        // Generate event counter information map
         if (this.mapInfo == null) {
             this.mapInfo = new TreeMap<String, List<ProfilerEprofData>>();
         }
 
-        // イベントカウンタ情報リストがnullの場合は、イベントカウンタ情報削除
+        // If the event counter information list is null, delete the event counter information
         if (infos == null) {
             if (this.mapInfo.containsKey(key)) {
                 this.mapInfo.remove(key);
@@ -402,30 +402,30 @@ public class ProfilerEventCounterModel extends ProfilerTableBaseModel {
             }
         }
 
-        // モデルの変更を通知
+        // Notify model changes
         notifyModel();
     }
 
 
     /**
-     * テーブルモデルをクリアする。
+     * Clear the table model.
      */
     @Override
     public void clearModel() {
-        // イベントカウンタ情報マップのクリア
+        // Clear event counter information map
         if (this.mapInfo != null) {
             this.mapInfo = new TreeMap<String, List<ProfilerEprofData>>();
         }
-        // タイトルのクリア
+        // Clear title
         this.title = null;
 
-        // モデルの変更を通知
+        // Notify model changes
         notifyModel();
     }
 
     /**
-     * タイトルを取得する
-     * @return	タイトル
+     * Get the title
+     * @return title
      */
     @Override
     public String getTitle() {
@@ -433,8 +433,8 @@ public class ProfilerEventCounterModel extends ProfilerTableBaseModel {
     }
 
     /**
-     * タイトルを設定する
-     * @param title		タイトル
+     * Set the title
+     * @param title Title
      */
     @Override
     public void setTitle(String title) {
@@ -442,8 +442,8 @@ public class ProfilerEventCounterModel extends ProfilerTableBaseModel {
     }
 
     /**
-     * 選択イベントカウンタ情報を設定する
-     * @param 	info        選択イベントカウンタ情報
+     * Set selection event counter information
+     * @param info Select event counter information
      */
     @Override
     public void setSelectedInfo(ProfilerBaseData info) {
@@ -451,8 +451,8 @@ public class ProfilerEventCounterModel extends ProfilerTableBaseModel {
     }
 
     /**
-     * 選択イベントカウンタ情報を取得する
-     * @return		選択イベントカウンタ情報
+     * Get selection event counter information
+     * @return Select event counter information
      */
     @Override
     public ProfilerBaseData getSelectedInfo() {
@@ -461,26 +461,26 @@ public class ProfilerEventCounterModel extends ProfilerTableBaseModel {
 
 
     /**
-     * テーブルモデルを取得する
-     * @param index		イベントカウンタ情報マップインデックス
-     * @return		テーブルモデル
+     * Get the table model
+     * @param index Event counter information map index
+     * @return table model
      */
     public DefaultTableModel getInfoTableModel(int index) {
         return getInfoTableModel(this.getInfoMapKey(index));
     }
 
     /**
-     * テーブルモデルを取得する
-     * @param key		イベントカウンタ情報識別文字列
-     * @return		テーブルモデル
+     * Get the table model
+     * @param key Event counter information identification string
+     * @return table model
      */
     public DefaultTableModel getInfoTableModel(String key) {
         if (key == null) return null;
-        // テーブルモデルの作成
+        // Create a table model
         DefaultTableModel tableModel = getDefaultTableModel();
         List<ProfilerEprofData> list = getInfoMap(key);
 
-        // Eprofの場合, イベントカウンタ情報１つだけのはず。
+        // In the case of Eprof, there should be only one event counter information.
         for (ProfilerEprofData info : list) {
             HardwareMonitorInfo hardwareInfo = info.getHardwareInfo();
             if (hardwareInfo == null) continue;
@@ -489,11 +489,11 @@ public class ProfilerEventCounterModel extends ProfilerTableBaseModel {
             for (HardwarePaTable pa : paInfo) {
                 int columncount = tableModel.getColumnCount();
                 Object[] cols = new Object[columncount];
-                // 1列目はProfilerEprofData：非表示
+                // First column is ProfilerEprofData: Hide
                 cols[0] = info;
-                // スレッド番号
+                // Thread number
                 cols[1] = pa.getThreadno();
-                // ハードウェアモニタ情報（ＰＡ情報）テーブル
+                // Hardware monitor information (PA information) table
                 double[] patable = pa.getPaTable();
                 for (int i=0; i<patable.length; i++) {
                     if (i+2>=columncount) break;
@@ -508,28 +508,28 @@ public class ProfilerEventCounterModel extends ProfilerTableBaseModel {
     }
 
     /**
-     * プロファイル情報サブタイトルを取得する
-     * @param   index    マップインデックス
-     * @return		サブタイトル
+     * Get profile information subtitle
+     * @param index Map index
+     * @return Subtitle
      */
     @Override
     public String getSubTitle(int index) {
         String key = getInfoMapKey(index);
-        // ファイル名 + グループ名
+        // File name + Group name
         String[] keys = key.split("/");
         if (keys == null || keys.length != 2) return null;
-        // Eprofの場合, グループ名
+        // For Eprof, group name
         String subtitle = keys[1];
         if (this.mapInfo.size() > 1) {
-            // 複数ファイルが存在する場合は、ファイル名を付加する。
+            // If multiple files exist, add the file name.
             subtitle += ":" + keys[0];
         }
         return subtitle;
     }
 
     /**
-     * プロファイラバーグラフデータを取得する
-     * @return   プロファイラバーグラフデータ
+     * Get profile bar graph data
+     * @return Profile bar graph data
      */
     @Override
     public ISourceBargraph[] getSelectedBargraph() {
@@ -538,8 +538,8 @@ public class ProfilerEventCounterModel extends ProfilerTableBaseModel {
 
 
     /**
-     * 選択プロファイルデータのテキストデータを取得する
-     * @return		選択テキストデータ
+     * Get text data of selected profile data
+     * @return Selected text data
      */
     @Override
     public String getSelectedText() {
@@ -547,7 +547,7 @@ public class ProfilerEventCounterModel extends ProfilerTableBaseModel {
         if (!(this.selectedInfo instanceof ProfilerEprofData)) return null;
         ProfilerEprofData info = (ProfilerEprofData)this.selectedInfo;
         StringBuffer buf = new StringBuffer();
-        // ヘッダー:1列目はデータ列であるので除外
+        // Header: Exclude the first column because it is a data column
         String[] header = getHeaderColumns();
         for (int i=1; i<header.length; i++) {
             if (visibledcolumns[i]) {
@@ -564,11 +564,11 @@ public class ProfilerEventCounterModel extends ProfilerTableBaseModel {
         if (paInfo == null) return null;
         for (HardwarePaTable pa : paInfo) {
             if (visibledcolumns[1]) {
-                // スレッド番号
+                // Thread number
                 buf.append(pa.getThreadno());
                 buf.append(", ");
             }
-            // ハードウェアモニタ情報（ＰＡ情報）テーブル
+            // Hardware monitor information (PA information) table
             double[] patable = pa.getPaTable();
             for (int i=0; i<patable.length; i++) {
                 if (visibledcolumns[i+2]) {
@@ -584,19 +584,19 @@ public class ProfilerEventCounterModel extends ProfilerTableBaseModel {
     }
 
     /**
-     * double値を表示用テキストに書式化する.
-     * @param value		double値
-     * @return			書式化テキスト
+     * Format double values into display text.
+     * @param value double value
+     * @return Formatted text
      */
     private String formatDouble(double value) {
         String text = null;
         if (value >= MAX_EXPONENT) {
-            // 指数表示
+            // exponential notation
             DecimalFormat decimal = new DecimalFormat("0.000E00");
             text = decimal.format(value);
         }
         else {
-            // 小数点表示
+            // Decimal point display
             DecimalFormat decimal = new DecimalFormat("#.###");
             text = decimal.format(value);
         }
@@ -604,8 +604,8 @@ public class ProfilerEventCounterModel extends ProfilerTableBaseModel {
     }
 
     /**
-     * ヘッダー列の表示状態を取得する
-     * @return		ヘッダー列表示状態リスト
+     * Get the display status of the header column
+     * @return Header column display status list
      */
     @Override
     public boolean[] getVisibledColumns() {
@@ -613,9 +613,9 @@ public class ProfilerEventCounterModel extends ProfilerTableBaseModel {
     }
 
     /**
-     * ヘッダー列の表示状態を設定する
-     * @param col		ヘッダー列番号
-     * @param checked   表示状態
+     * Set the display state of the header column
+     * @param col Header column number
+     * @param checked Display status
      */
     @Override
     public void setVisibledColumns(int col, boolean checked) {
@@ -625,8 +625,8 @@ public class ProfilerEventCounterModel extends ProfilerTableBaseModel {
     }
 
     /**
-     * テーブル列配置を取得する
-     * @return		テーブル列配置
+     * Get table column placement
+     * @return Table column placement
      */
     @Override
     public int[] getTableColumnAlignments() {

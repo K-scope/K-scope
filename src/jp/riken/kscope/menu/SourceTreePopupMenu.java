@@ -49,136 +49,136 @@ import jp.riken.kscope.common.FRAME_VIEW;
 import jp.riken.kscope.service.AppController;
 
 /**
- * ソースエクスプローラパネルポップアップメニュー
+ * Source Explorer Panel pop-up menu
  * @author RIKEN
  *
  */
 public class SourceTreePopupMenu extends JPopupMenu implements PopupMenuListener, ITreePopupMenu {
 
-    /** シリアル番号 */
+    /** Serial number */
     private static final long serialVersionUID = 1L;
 
-    /** アプリケーションコントローラ */
+    /** Application controller */
     private AppController controller;
-    /** すべて収納リスナ */
+    /** All storage listener */
     private ActionListener actionTreeCollapseAll;
-    /** すべて展開リスナ */
+    /** All deployment listener */
     private ActionListener actionTreeExpandAll;
-    /** 選択展開リスナ */
+    /** Selective expansion listener */
     private ActionListener actionTreeExpandSelect;
-    /** ファイルを開くリスナ */
+    /** Open file Listener */
     private EventListener actionOpenFile;
-    /** エクスプローラエクスポートアクション */
+    /** Explorer export action */
     private ActionListener actionExportExplore;
 
-    /** ファイルを開くメニュー */
+    /** Open file menu */
     private JMenuItem menuOpenFile;
 
     /**
-     * コンストラクタ
+     * Constructor
      */
     public SourceTreePopupMenu() {
-        // メニューの作成を行う。
+        // Create a menu.
         initialize();
     }
 
 
     /**
-     * コンストラクタ
-     * @param controller		アプリケーションコントローラ
+     * Constructor
+     * @param controller Application controller
      */
     public SourceTreePopupMenu(AppController controller) {
         this.controller = controller;
 
-        // メニューの作成を行う。
+        // Create a menu.
         initialize();
     }
 
     /**
-     * メニューの作成を行う。
+     * Create a menu.
      */
     private void initialize() {
 
-        // メニューの作成
-        // すべて収納
-        JMenuItem menuCollapseAll = new JMenuItem(Message.getString("treechooserdialog.tooltip.collapseall")); //すべて収納
+        // Create menu
+        // store everything
+        JMenuItem menuCollapseAll = new JMenuItem(Message.getString("treechooserdialog.tooltip.collapseall")); // All stored
         this.add(menuCollapseAll);
         this.actionTreeCollapseAll = new TreeCollapseAllAction(this.controller);
         menuCollapseAll.addActionListener(this.actionTreeCollapseAll);
 
-        // すべて展開
-        JMenuItem menuExpandAll = new JMenuItem(Message.getString("treechooserdialog.tooltip.expandall")); //すべて展開
+        // Expand all
+        JMenuItem menuExpandAll = new JMenuItem(Message.getString("treechooserdialog.tooltip.expandall")); // Expand all
         this.add(menuExpandAll);
         this.actionTreeExpandAll = new TreeExpandAllAction(this.controller);
         menuExpandAll.addActionListener(this.actionTreeExpandAll);
 
-        // 選択展開
-        JMenuItem menuExpandSelect = new JMenuItem(Message.getString("mainmenu.view.collapse-expand.selective")); //選択展開
+        // Selective expansion
+        JMenuItem menuExpandSelect = new JMenuItem(Message.getString("mainmenu.view.collapse-expand.selective")); // Selective expansion
         this.add(menuExpandSelect);
         this.actionTreeExpandSelect = new TreeExpandSelectAction(this.controller);
         menuExpandSelect.addActionListener(this.actionTreeExpandSelect);
 
-        // スペーサー
+        // spacer
         this.add(new JSeparator());
 
-        // ファイル検索
-        JMenuItem menuSearchGrep = new JMenuItem(Message.getString("mainmenu.search.file")); //ファイル検索
+        // File search
+        JMenuItem menuSearchGrep = new JMenuItem(Message.getString("mainmenu.search.file")); // File search
         this.add(menuSearchGrep);
         menuSearchGrep.addActionListener(new SearchGrepAction(this.controller));
 
-        // ツリー検索
-        JMenuItem menuSearchTree = new JMenuItem(Message.getString("mainmenu.search.tree")); //ツリー検索
+        // Tree search
+        JMenuItem menuSearchTree = new JMenuItem(Message.getString("mainmenu.search.tree")); // Tree search
         this.add(menuSearchTree);
         menuSearchTree.addActionListener(new SearchTreeAction(this.controller));
 
-        // スペーサー
+        // spacer
         this.add(new JSeparator());
         
-        // ソースフォルダ追加...
-        JMenuItem menuAddFolder = new JMenuItem(Message.getString("sourcetreepopupmenu.menu.addsrcfolder")); //ソースフォルダ追加
+        // Add source folder ...
+        JMenuItem menuAddFolder = new JMenuItem(Message.getString("sourcetreepopupmenu.menu.addsrcfolder")); // Add source folder
         this.add(menuAddFolder);
         menuAddFolder.addActionListener(new ProjectAddFolderAction(this.controller, EXPLORE_PANEL.SOURCE));
 
-        // ソースファイル追加...
-        JMenuItem menuAddFile = new JMenuItem(Message.getString("sourcetreepopupmenu.menu.addsrcfile")); //ソースファイル追加
+        // Add source file ...
+        JMenuItem menuAddFile = new JMenuItem(Message.getString("sourcetreepopupmenu.menu.addsrcfile")); // Add source file
         this.add(menuAddFile);
         menuAddFile.addActionListener(new ProjectAddFileAction(this.controller, EXPLORE_PANEL.SOURCE));
 
-        // ソースファイル削除
-        JMenuItem menuDeleteFile = new JMenuItem(Message.getString("sourcetreepopupmenu.menu.deletesrcfile")); //ソースファイル削除
+        // Delete source file
+        JMenuItem menuDeleteFile = new JMenuItem(Message.getString("sourcetreepopupmenu.menu.deletesrcfile")); // Delete source file
         this.add(menuDeleteFile);
         menuDeleteFile.addActionListener(new ProjectDeleteFileAction(this.controller, EXPLORE_PANEL.SOURCE));
 
-        // スペーサー
+        // spacer
         this.add(new JSeparator());
 
-        // ファイルを開く
-        menuOpenFile = new JMenuItem(Message.getString("sourcetreepopupmenu.menu.openfile")); //選択ファイルをソースビューに表示
+        // open the file
+        menuOpenFile = new JMenuItem(Message.getString("sourcetreepopupmenu.menu.openfile")); // Show selected files in source view
         this.add(menuOpenFile);
         actionOpenFile = new ViewOpenExploreBlockAction(this.controller);
         menuOpenFile.addActionListener((ActionListener) actionOpenFile);
 
-        // ファイル:外部ツールでソースファイルを開く
-        JMenuItem menuFileOpenSourceFile = new JMenuItem(Message.getString("mainmenu.file.program")); //外部ツールで開く
+        // File: Open the source file with an external tool
+        JMenuItem menuFileOpenSourceFile = new JMenuItem(Message.getString("mainmenu.file.program")); // Open with an external tool
         this.add(menuFileOpenSourceFile);
         menuFileOpenSourceFile.addActionListener(new FileOpenSourceFileAction(this.controller, FRAME_VIEW.EXPLORE_VIEW));
 
-        // プロパティ
-        JMenuItem menuFileProperties = new JMenuItem(Message.getString("mainmenu.project.property")); //プロパティ
+        // Properties
+        JMenuItem menuFileProperties = new JMenuItem(Message.getString("mainmenu.project.property")); // Properties
         this.add(menuFileProperties);
         menuFileProperties.addActionListener(new FilePropertiesAction(this.controller));
 
-        // エクスポート（ポップアップ非表示：アクション作成のみ）
+        // Export (Hide pop-up: Create action only)
         actionExportExplore = new FileExportExploreAction(this.controller);
 
         this.addPopupMenuListener(this);
     }
 
     /**
-     * ポップアップメニューをJTreeのノード上でのみ表示する。
-     * @param invoker		コンポーネント
-     * @param x				座標X
-     * @param y				座標Y
+     * Show the pop-up menu only on JTree nodes.
+     * @param invoker component
+     * @param x coordinate X
+     * @param y Coordinate Y
      */
     @Override
     public void show(Component invoker, int x, int y) {
@@ -194,8 +194,8 @@ public class SourceTreePopupMenu extends JPopupMenu implements PopupMenuListener
 
 
     /**
-     * すべて収納アクションリスナを取得する
-     * @return		すべて収納アクションリスナ
+     * Get all storage action listeners
+     * @return All storage action listener
      */
     @Override
     public ActionListener getActionTreeCollapseAll() {
@@ -203,8 +203,8 @@ public class SourceTreePopupMenu extends JPopupMenu implements PopupMenuListener
     }
 
     /**
-     * すべて展開アクションリスナを取得する
-     * @return		すべて展開アクションリスナ
+     * Get all deployment action listeners
+     * @return All deployment action listener
      */
     @Override
     public ActionListener getActionTreeExpandAll() {
@@ -212,8 +212,8 @@ public class SourceTreePopupMenu extends JPopupMenu implements PopupMenuListener
     }
 
     /**
-     * 選択展開アクションリスナを取得する
-     * @return		選択展開アクションリスナ
+     * Get Selective Deployment Action Listener
+     * @return Selective expansion action listener
      */
     @Override
     public ActionListener getActionTreeExpandSelect() {
@@ -221,8 +221,8 @@ public class SourceTreePopupMenu extends JPopupMenu implements PopupMenuListener
     }
 
     /**
-     * ファイルを開くリスナを取得する。
-     * @return		ファイルを開くリスナ
+     * Get the listener to open the file.
+     * @return Open file Listener
      */
     @Override
     public EventListener getActionOpenFile() {
@@ -231,14 +231,14 @@ public class SourceTreePopupMenu extends JPopupMenu implements PopupMenuListener
 
 
     /**
-     * ポップアップメニュー可視イベント.<br/>
-     * アクションが実行可能かチェックする
-     * @param event		イベント情報
+     * Pop-up menu visible event. <br/>
+     * Check if the action is executable
+     * @param event Event information
      */
     @Override
     public void popupMenuWillBecomeVisible(PopupMenuEvent event) {
 
-        // アクションが実行可能かチェックする
+        // Check if the action is executable
         JPopupMenu menu = (JPopupMenu) event.getSource();
         int count = menu.getComponentCount();
         for (int i=0; i<count; i++) {
@@ -258,24 +258,24 @@ public class SourceTreePopupMenu extends JPopupMenu implements PopupMenuListener
 
 
     /**
-     * ポップアップメニューが取り消されたイベント
-     * @param event		イベント情報
+     * Events with the pop-up menu canceled
+     * @param event Event information
      */
     @Override
     public void popupMenuWillBecomeInvisible(PopupMenuEvent event) { }
 
 
     /**
-     * ポップアップメニューが取り消されたイベント
-     * @param event		イベント情報
+     * Events with the pop-up menu canceled
+     * @param event Event information
      */
     @Override
     public void popupMenuCanceled(PopupMenuEvent event) { }
 
 
     /**
-     * エクスプローラエクスポートアクションを取得する
-     * @return		エクスプローラエクスポートアクション
+     * Get the explorer export action
+     * @return explorer export action
      */
     @Override
     public ActionListener getActionExportExplore() {

@@ -32,65 +32,65 @@ import jp.riken.kscope.common.FRAME_VIEW;
 import jp.riken.kscope.service.AppController;
 
 /**
- * 変数特性一覧ポップアップメニュークラス
+ * Variable characteristic list pop-up menu class
  * @author RIKEN
  */
 public class ReplacePopupMenu extends JPopupMenu implements PopupMenuListener {
 
-    /** シリアル番号 */
+    /** Serial number */
     private static final long serialVersionUID = 1L;
 
-    /** アプリケーションコントローラ */
+    /** Application controller */
     private AppController controller;
 
-    /** エクスポートアクション */
+    /** Export action */
     @SuppressWarnings("unused")
     private FileExportExploreAction actionExportExplore;
-    /** 分析:付加情報アクション */
+    /** Analysis: Additional Information Action */
     private EditInformationEditAction actionAnalysisInformation;
 
     /**
-     * コンストラクタ
+     * Constructor
      */
     public ReplacePopupMenu() {
-        // メニューの作成を行う。
+        // Create a menu.
         initialize();
     }
 
 
     /**
-     * コンストラクタ
-     * @param controller		アプリケーションコントローラ
+     * Constructor
+     * @param controller Application controller
      */
     public ReplacePopupMenu(AppController controller) {
         this.controller = controller;
 
-        // メニューの作成を行う。
+        // Create a menu.
         initialize();
     }
 
     /**
-     * メニューの作成を行う。
+     * Create a menu.
      */
     private void initialize() {
 
-        // メニューの作成
+        // Create menu
 
-        // 分析:付加情報
+        // Analysis: Additional information
         JMenuItem menuAnalysisInformation = new JMenuItem("付加情報");
         actionAnalysisInformation = new EditInformationEditAction(this.controller, FRAME_VIEW.ANALYSIS_VIEW);
         this.add(menuAnalysisInformation);
         menuAnalysisInformation.addActionListener(actionAnalysisInformation);
 
-        // エクスポート（ポップアップ非表示：アクション作成のみ）
+        // Export (Hide pop-up: Create action only)
         actionExportExplore = new FileExportExploreAction(this.controller);
 
         this.addPopupMenuListener(this);
     }
 
     /**
-     * ポップアップメニュー可視イベント
-     * @param event		イベント情報
+     * Pop-up menu visible event
+     * @param event Event information
      */
     @Override
     public void popupMenuWillBecomeVisible(PopupMenuEvent event) {
@@ -98,23 +98,23 @@ public class ReplacePopupMenu extends JPopupMenu implements PopupMenuListener {
     }
 
     /**
-     * ポップアップメニューが取り消されたイベント
-     * @param event		イベント情報
+     * Events with the pop-up menu canceled
+     * @param event Event information
      */
     @Override
     public void popupMenuWillBecomeInvisible(PopupMenuEvent event) { }
 
 
     /**
-     * ポップアップメニューが取り消されたイベント
-     * @param event		イベント情報
+     * Events with the pop-up menu canceled
+     * @param event Event information
      */
     @Override
     public void popupMenuCanceled(PopupMenuEvent event) { }
 
     /**
-     * 分析:付加情報アクションを取得する
-     * @return		分析:付加情報アクション
+     * Analysis: Get additional information actions
+     * @return Analysis: Additional Information Action
      */
     public EditInformationEditAction getActionAnalysisInformation() {
         return actionAnalysisInformation;

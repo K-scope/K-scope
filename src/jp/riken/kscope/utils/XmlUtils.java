@@ -38,69 +38,69 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 /**
- * XMLファイル入出力ユーティリティクラス
- * 
+ * XML file I / O utility class
+ *
  * @author RIKEN
  */
 public class XmlUtils {
 
-	/** XMLドキュメント */
+	/** XML document */
 	private Document document;
-	/** XMLパス */
+	/** XML path */
 	private XPath xpath;
 
 	/**
-	 * コンストラクタ
-	 * 
-	 * @param filename
-	 *            XMLファイル名
-	 * @throws Exception
-	 *             ファイルが存在しない, DOM生成エラー
-	 */
+* Constructor
+*
+* @param filename
+* XML file name
+* @throws Exception
+* File does not exist, DOM generation error
+*/
 	public XmlUtils(String filename) throws Exception {
 		InputStream is = new FileInputStream(filename);
-		// DOMの生成を行う
+		// Generate DOM
 		initialize(is);
 	}
 
 	/**
-	 * コンストラクタ
-	 * 
-	 * @param file
-	 *            XMLファイル
-	 * @throws Exception
-	 *             ファイルが存在しない, DOM生成エラー
-	 */
+* Constructor
+*
+* @param file
+* XML file
+* @throws Exception
+* File does not exist, DOM generation error
+*/
 	public XmlUtils(File file) throws Exception {
 		InputStream is = new FileInputStream(file);
-		// DOMの生成を行う
+		// Generate DOM
 		initialize(is);
 	}
 
 	/**
-	 * コンストラクタ
-	 * 
-	 * @param is
-	 *            XML入力ストリーム
-	 * @throws Exception
-	 *             DOM生成エラー
-	 */
+* Constructor
+*
+* @param is
+* XML input stream
+* @throws Exception
+* DOM generation error
+*/
 	public XmlUtils(InputStream is) throws Exception {
-		// DOMの生成を行う
+		// Generate DOM
 		initialize(is);
 	}
 
 	/**
-	 * 初期化を行う.<br/>
-	 * DOMの生成を行う
-	 * 
-	 * @param is
-	 *            XML入力ストリーム
-	 * @throws Exception
-	 */
+* Initialize. <br/>
+* Generate DOM
+*
+* @param is
+* XML input stream
+* @throws Exception
+*/
 	private void initialize(InputStream is) throws Exception {
 
-		// XMLパース
+		// XML perspective
 		DocumentBuilderFactory dbfactory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder builder = dbfactory.newDocumentBuilder();
 		this.document = builder.parse(is);
@@ -110,12 +110,12 @@ public class XmlUtils {
 	}
 
 	/**
-	 * XPATHの要素、属性の値を取得する:数値.
-	 * 
-	 * @param path
-	 *            XPATH
-	 * @return 値:数値
-	 */
+* Get XPATH element, attribute values: numbers.
+*
+* @param path
+* XPATH
+* @return Value: Numeric
+*/
 	public int getInt(String path) {
 
 		int value = 0;
@@ -134,12 +134,12 @@ public class XmlUtils {
 	}
 
 	/**
-	 * XPATHの要素、属性の値を取得する:文字列.
-	 * 
-	 * @param path
-	 *            XPATH
-	 * @return 値:文字列
-	 */
+* Get XPATH element, attribute value: string.
+*
+* @param path
+* XPATH
+* @return Value: String
+*/
 	public String getString(String path) {
 
 		String value = null;
@@ -157,12 +157,12 @@ public class XmlUtils {
 	}
 
 	/**
-	 * XPATHの要素、属性のリストを取得する
-	 * 
-	 * @param path
-	 *            XPATH
-	 * @return リスト:文字列
-	 */
+* Get a list of XPATH elements and attributes
+*
+* @param path
+* XPATH
+* @return list: string
+*/
 	public List<String> getList(String path) {
 
 		List<String> list = new ArrayList<String>();
@@ -196,12 +196,12 @@ public class XmlUtils {
 	}
 
 	/**
-	 * XPATHの要素、属性の値を取得する:色.
-	 * 
-	 * @param path
-	 *            XPATH
-	 * @return 値:色
-	 */
+* Get XPATH element, attribute values: color.
+*
+* @param path
+* XPATH
+* @return Value: Color
+*/
 	public Color getColor(String path) {
 
 		Color color = null;
@@ -220,17 +220,17 @@ public class XmlUtils {
 	}
 
 	/**
-	 * XPATHの要素の値を取得する:フォント.<br/>
-	 * フォント要素の属性からフォントを作成する.<br/>
-	 * name:フォント名<br/>
-	 * size:フォントサイズ<br/>
-	 * bold:ボイド('true' or 'false')<br/>
-	 * italic:ボイド('true' or 'false')
-	 * 
-	 * @param path
-	 *            XPATH
-	 * @return 値:フォント
-	 */
+* Get the value of an XPATH element: Font. <br/>
+* Create a font from the attributes of the font element. <br/>
+* name: font name <br/>
+* size: font size <br/>
+* bold: Void ('true' or'false') <br/>
+* italic: void ('true' or'false')
+*
+* @param path
+* XPATH
+* @return Value: Font
+*/
 	public Font getFont(String path) {
 
 		Font font = null;
@@ -275,31 +275,31 @@ public class XmlUtils {
 	}
 
 	/**
-	 * フォント属性を作成する
-	 * 
-	 * @param node
-	 *            作成ノード
-	 * @param font
-	 *            作成フォント
-	 */
+* Create font attributes
+*
+* @param node
+* Create node
+* @param font
+* Created font
+*/
 	public static void createFontAttribute(org.w3c.dom.Element node, Font font) {
 
-		// ドキュメントの取得
+		// Get documentation
 		org.w3c.dom.Document document = node.getOwnerDocument();
 
-		// name属性
+		// name attribute
 		{
 			org.w3c.dom.Attr attr = document.createAttribute("fontname");
 			attr.setValue(font.getFamily());
 			node.setAttributeNode(attr);
 		}
-		// サイズ
+		// size
 		{
 			org.w3c.dom.Attr attr = document.createAttribute("size");
 			attr.setValue(String.valueOf(font.getSize()));
 			node.setAttributeNode(attr);
 		}
-		// スタイル
+		// Style
 		int style = font.getStyle();
 		boolean bold = false;
 		boolean italic = false;
@@ -324,20 +324,20 @@ public class XmlUtils {
 	}
 
 	/**
-	 * 色属性を作成する
-	 * 
-	 * @param node
-	 *            作成ノード
-	 * @param color
-	 *            作成色
-	 */
+* Create color attributes
+*
+* @param node
+* Create node
+* @param color
+* Created color
+*/
 	public static void createColorAttribute(org.w3c.dom.Element node,
 			Color color) {
 
-		// ドキュメントの取得
+		// Get documentation
 		org.w3c.dom.Document document = node.getOwnerDocument();
 
-		// 色属性
+		// Color attributes
 		{
 			org.w3c.dom.Attr attr = document.createAttribute("color");
 			String value = StringUtils.parseColorCode(color);

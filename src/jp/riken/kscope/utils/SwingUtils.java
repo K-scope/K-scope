@@ -89,24 +89,24 @@ import jp.riken.kscope.data.SourceFile;
 import jp.riken.kscope.properties.KscopeProperties;
 
 /**
- * Swingユーティリティクラス
- * 
+ * Swing utility class
+ *
  * @author RIKEN
  */
 public class SwingUtils {
 	private static Boolean debug = (System.getenv("DEBUG") != null);
 	private static boolean debug_l2 = false;
-	/** タブサイズチェック用文字 */
+	/** Tab size check characters */
 	private static final char TAB_CHECK_CHARACTOR = 'o';
 
 	/**
-	 * テキストコンポーネントのタブサイズを設定する
-	 * 
-	 * @param component
-	 *            テキストコンポーネント
-	 * @param tabsize
-	 *            タブサイズ
-	 */
+* Set the tab size of the text component
+*
+* @param component
+* Text component
+* @param tabsize
+* Tab size
+*/
 	public static void setTabSize(JTextComponent component, int tabsize) {
 		if (debug) debug_l2 = (System.getenv("DEBUG").equalsIgnoreCase("high"));
 		SimpleAttributeSet attrs = new SimpleAttributeSet();
@@ -130,40 +130,40 @@ public class SwingUtils {
 	}
 
 	/**
-	 * 折り返し無しのテキストビューの作成
-	 * 
-	 * @return 折り返し無しテキストビュー
-	 */
+* Creating a text view without wrapping
+*
+* @return Text view without wrapping
+*/
 	public static NoWrapEditorKit factoryNoWrapEditorKit() {
 		return new SwingUtils().new NoWrapEditorKit();
 	}
 
 	/**
-	 * 行折り返し段落のビュークラス
-	 * 
-	 * @author RIKEN
-	 */
+* Line wrap paragraph view class
+*
+* @author RIKEN
+*/
 	private class NoWrapParagraphView extends ParagraphView {
 		/**
-		 * コンストラクタ
-		 * 
-		 * @param elem
-		 *            このビューが扱う要素
-		 */
+* Constructor
+*
+* @param elem
+* Elements handled by this view
+*/
 		public NoWrapParagraphView(Element elem) {
 			super(elem);
 		}
 
 		/**
-		 * 行の幅のサイズ要件を計算します.<br/>
-		 * １行の折り返しサイズを設定する。
-		 * 
-		 * @param axis
-		 *            行位置
-		 * @param r
-		 *            コンポーネントのサイズと位置オブジェクト
-		 * @return コンポーネントのサイズと位置オブジェクト
-		 */
+* Calculate the row width size requirement. <br/>
+* Set the wrapping size for one line.
+*
+* @param axis
+* Line position
+* @param r
+* Component size and position object
+* @return Component size and position object
+*/
 		@Override
 		protected SizeRequirements calculateMinorAxisRequirements(int axis,
 				SizeRequirements r) {
@@ -174,12 +174,12 @@ public class SwingUtils {
 		}
 
 		/**
-		 * 指定された子のインデックスに反してフローする制約スパンを取り出します。
-		 * 
-		 * @param index
-		 *            照会されるビューのインデックス
-		 * @return ビューの制約スパン
-		 */
+* Fetches the constraint span that flows against the specified child index.
+*
+* @param index
+* Index of viewed view
+* @return View constraint span
+*/
 		@Override
 		public int getFlowSpan(int index) {
 			return Integer.MAX_VALUE;
@@ -187,18 +187,18 @@ public class SwingUtils {
 	}
 
 	/**
-	 * ビューの作成クラス
-	 * 
-	 * @author RIKEN
-	 */
+* View creation class
+*
+* @author RIKEN
+*/
 	class NoWrapViewFactory implements ViewFactory {
 		/**
-		 * 要素に基づいてビューを作成します。
-		 * 
-		 * @param elem
-		 *            作成対象要素
-		 * @return ビュー
-		 */
+* Create a view based on the element.
+*
+* @param elem
+* Elements to be created
+* @return view
+*/
 		@Override
 		public View create(Element elem) {
 			String kind = elem.getName();
@@ -220,18 +220,18 @@ public class SwingUtils {
 	}
 
 	/**
-	 * 書式付きテキストスタイル
-	 * 
-	 * @author RIKEN
-	 */
+* Formatted text style
+*
+* @author RIKEN
+*/
 	@SuppressWarnings("serial")
 	class NoWrapEditorKit extends StyledEditorKit {
 
 		/**
-		 * ビュー作成クラスを取得する。
-		 * 
-		 * @return ビュー作成クラス
-		 */
+* Get the view creation class.
+*
+* @return View creation class
+*/
 		@Override
 		public ViewFactory getViewFactory() {
 			return new NoWrapViewFactory();
@@ -239,37 +239,37 @@ public class SwingUtils {
 	}
 
 	/**
-	 * HTML形式テキスト要素から指定要素、属性の値の取得を行う
-	 * 
-	 * @param elem
-	 *            HTML形式テキスト要素
-	 * @param tagname
-	 *            要素名
-	 * @param attrname
-	 *            属性名
-	 * @return 属性値
-	 */
+* Get the value of specified element and attribute from HTML format text element
+*
+* @param elem
+* HTML text element
+* @param tagname
+* Element name
+* @param attrname
+* Attribute name
+* @return attribute value
+*/
 	public static String getAttributeValue(javax.swing.text.Element elem,
 			HTML.Tag tagname, HTML.Attribute attrname) {
 
-		// タグの探索
+		// Search for tags
 		javax.swing.text.AttributeSet attrs = elem.getAttributes();
 		String attrValue = null;
 		for (Enumeration<?> enumAttrs = attrs.getAttributeNames(); enumAttrs
 				.hasMoreElements();) {
 			Object attrTag = enumAttrs.nextElement();
 
-			// 検索要素名と一致しているか
+			// Does it match the search element name?
 			if (attrTag instanceof HTML.Tag && (HTML.Tag) attrTag == tagname) {
 				javax.swing.text.SimpleAttributeSet atag = (SimpleAttributeSet) attrs
 						.getAttribute(attrTag);
 
-				// 属性の探索
+				// Search for attributes
 				for (Enumeration<?> enumAtag = atag.getAttributeNames(); enumAtag
 						.hasMoreElements();) {
 					Object attrAtag = enumAtag.nextElement();
 
-					// 検索属性と一致しているか
+					// Does it match the search attribute?
 					if (attrAtag instanceof HTML.Attribute
 							&& (HTML.Attribute) attrAtag == attrname) {
 						attrValue = (String) atag.getAttribute(attrAtag);
@@ -282,17 +282,17 @@ public class SwingUtils {
 	}
 
 	/**
-	 * 外部プログラムを起動する.<br/>
-	 * program指定が無い場合は、OS関連付けによる起動(java.awt.Desktop)による起動を行う。
-	 * 
-	 * @param filename
-	 *            起動ファイル名
-	 * @param program
-	 *            起動プログラム
-	 * @param options
-	 *            起動引数
-	 * @return エラーメッセージ（null=正常起動)
-	 */
+* Launch an external program. <br/>
+* If no program is specified, start by OS association (java.awt.Desktop).
+*
+* @param filename
+* Startup file name
+* @param program
+* Startup program
+* @param options
+* Start argument
+* @return error message (null = normal startup)
+*/
 	public static String processOpenProgram(String filename, String program,
 			String[] options) {
 		String errMsg = null;
@@ -300,25 +300,25 @@ public class SwingUtils {
 			if (program == null || program.isEmpty()) {
 
 				if (filename == null || filename.isEmpty()) {
-					// swingutils.processopenprogram.error.empty=起動URL又はファイル名が指定されていません。
+					// swingutils.processopenprogram.error.empty = The startup URL or file name is not specified.
 					errMsg = Message
 							.getString("swingutils.processopenprogram.error.empty");
 					return errMsg;
 				}
 
-				// add by @hira at 2013/05/13 : デスクトップがサポートされているか.
+				// add by @hira at 2013/05/13: Is desktop supported?
 				if (!Desktop.isDesktopSupported()) {
-					// デスクトップがサポートされていません。
+					// Desktop is not supported.
 					errMsg = Message
 							.getString("swingutils.processopenprogram.error.desktopsupported");
 					return errMsg;
 				}
 
-				// OS関連付けによる起動
+				// Boot by OS association
 				Desktop desktop = Desktop.getDesktop();
 				if (filename.startsWith("http://")
 						|| filename.startsWith("https://")) {
-					// OS依存によるブラウザ起動
+					// OS-dependent browser startup
 					URI uri = null;
 					try {
 						uri = new URI(filename);
@@ -342,7 +342,7 @@ public class SwingUtils {
 						openFile = new File(filename);
 					}
 					if (!openFile.exists()) {
-						// swingutils.processopenprogram.error.notexists.file=起動ファイル[%s]が存在しません。
+						// swingutils.processopenprogram.error.notexists.file = The startup file [% s] does not exist.
 						errMsg = Message
 								.getString(
 										"swingutils.processopenprogram.error.notexists.file",
@@ -351,11 +351,11 @@ public class SwingUtils {
 					}
 					if (openFile != null) {
 						try {
-							// ファイル起動
+							// File startup
 							desktop.open(openFile);
 						} catch (IOException e) {
 							// e.printStackTrace();
-							// swingutils.processopenprogram.error.notexists.program=ファイル[%s]に関連付けられたプログラムが存在しません。
+							// swingutils.processopenprogram.error.notexists.program = The program associated with the file [% s] does not exist.
 							errMsg = Message
 									.getString(
 											"swingutils.processopenprogram.error.notexists.program",
@@ -377,7 +377,7 @@ public class SwingUtils {
 						openFilename = openFile.getAbsolutePath();
 					}
 				}
-				// プログラム指定による起動
+				// Start by specifying the program
 				List<String> args = new ArrayList<String>();
 				args.add(program);
 				if (options != null && options.length > 0) {
@@ -386,7 +386,7 @@ public class SwingUtils {
 				if (openFilename != null) {
 					args.add(openFilename);
 				}
-				// swingutils.processopenprogram.error.invalid.process=起動プログラム[%s]によるプロセス起動に失敗しました。
+				// swingutils.processopenprogram.error.invalid.process = Failed to start the process by the start program [% s].
 				errMsg = Message.getString(
 						"swingutils.processopenprogram.error.invalid.process",
 						program);
@@ -414,18 +414,18 @@ public class SwingUtils {
 	}
 
 	/**
-	 * 外部プログラムを起動する.<br/>
-	 * program指定が無い場合は、OS関連付けによる起動(java.awt.Desktop)による起動を行う。
-	 * 
-	 * @param commands
-	 *            起動コマンドリスト
-	 * @param workdirectory
-	 *            実行フォルダ
-	 * @param outStream
-	 *            実行コンソール出力ストリーム
-	 * @return エラーメッセージ（null=正常起動)
-	 * @throws Exception
-	 */
+* Launch an external program. <br/>
+* If no program is specified, start by OS association (java.awt.Desktop).
+*
+* @param commands
+* Start command list
+* @param workdirectory
+* Execution folder
+* @param outStream
+* Run console output stream
+* @return error message (null = normal startup)
+* @throws Exception
+*/
 	public static int processRun(String commands[], File workdirectory,	OutputStream outStream) throws Exception {
 		String errMsg = null;
 		int result = -1;
@@ -457,7 +457,7 @@ public class SwingUtils {
 						cmdString);
 				throw new Exception(errMsg);
 			}
-			// プロセスのエラーストリーム取得
+			// Get process error stream
 			InputStream is = process.getInputStream();
 			while (true) {
 				int c = is.read();
@@ -496,14 +496,14 @@ public class SwingUtils {
 	}
 
 	/**
-	 * 指定キャレット位置の行番号を取得する
-	 * 
-	 * @param editor
-	 *            テキストコンポーネント
-	 * @param pos
-	 *            キャレット位置
-	 * @return 行番号(1〜)
-	 */
+* Get the line number of the specified caret position
+*
+* @param editor
+* Text component
+* @param pos
+* Caret position
+* @return line number (1 ~)
+*/
 	public static int getRow(JTextComponent editor, int pos) {
 		int rn = (pos == 0) ? 1 : 0;
 		try {
@@ -519,14 +519,14 @@ public class SwingUtils {
 	}
 
 	/**
-	 * 指定キャレット位置の列番号を取得する
-	 * 
-	 * @param editor
-	 *            テキストコンポーネント
-	 * @param pos
-	 *            キャレット位置
-	 * @return 列番号(1〜)
-	 */
+* Get the column number of the specified caret position
+*
+* @param editor
+* Text component
+* @param pos
+* Caret position
+* @return Column number (1 ~)
+*/
 	public static int getColumn(JTextComponent editor, int pos) {
 		try {
 			return pos - Utilities.getRowStart(editor, pos) + 1;
@@ -537,13 +537,13 @@ public class SwingUtils {
 	}
 
 	/**
-	 * 子コンポーネントすべてにフォーカスリスナを設定する
-	 * 
-	 * @param container
-	 *            親コンポーネント
-	 * @param listener
-	 *            フォーカスリスナ
-	 */
+* Set focus listener on all child components
+*
+* @param container
+* Parent component
+* @param listener
+* Focus listener
+*/
 	public static void addChildFocusListener(Container container,
 			FocusListener listener) {
 		Component[] comps = container.getComponents();
@@ -557,13 +557,13 @@ public class SwingUtils {
 	}
 
 	/**
-	 * 子コンポーネントのJPanelすべてに背景色を設定する
-	 * 
-	 * @param container
-	 *            親コンポーネント
-	 * @param background
-	 *            背景色
-	 */
+* Set the background color for all JPanel child components
+*
+* @param container
+* Parent component
+* @param background
+	 *            Background color
+*/
 	public static void setBackgroundChildPanel(Container container,
 			Color background) {
 
@@ -586,28 +586,28 @@ public class SwingUtils {
 	}
 
 	/**
-	 * フォルダ選択ダイアログを表示する. Macの場合、java.awt.FileDialogを使用してフォルダ選択ダイアログを表示する. Linux,
-	 * Windowsの場合はjavax.swing.JFileChooserを使用する。
-	 * 
-	 * @param parent
-	 *            親コンポーネント
-	 * @param title
-	 *            ダイアログタイトル
-	 * @param currentDirectoryPath
-	 *            表示フォルダ
-	 * @param multiselection
-	 *            複数選択(true=複数選択):(Macでは使用不可)
-	 * @return 選択ファイル
-	 */
+* Show a folder selection dialog. For Mac, use java.awt.FileDialog to show a folder selection dialog. Linux,
+* For Windows, use javax.swing.JFileChooser.
+*
+* @param parent
+* Parent component
+* @param title
+* Dialog title
+* @param currentDirectoryPath
+* Display folder
+* @param multiselection
+* Multiple selection (true = multiple selection): (Not available on Mac)
+* @return selection file
+*/
 	public static File[] showOpenFolderDialog(Component parent, String title,
 			String currentDirectoryPath, boolean multiselection) {
 
 		try {
 			// for Mac
 			// add at 2013/05/31 by @hira
-			// Macのフォルダダイアログの表示フラグ
-			// java1.7以上はAppleScriptにてフォルダダイアログを表示する
-			// java1.6以下はjava.awt.FileDialogを使用する。
+			// Display flag in the folder dialog on Mac
+			// Display the folder dialog with AppleScript for java 1.7 and above
+			// Use java.awt.FileDialog for java1.6 and below.
 			//boolean applescript = KscopeProperties.isJava17Later();
 			boolean applescript = KscopeProperties.isApplescript();
 			if (debug_l2) {
@@ -622,11 +622,11 @@ public class SwingUtils {
 				File[] files = { selected };
 				return files;
 			} else if (KscopeProperties.isMac()) {
-				// フォルダ選択に変更
+				// Change to folder selection
 				System.setProperty("apple.awt.fileDialogForDirectories", "true");
 				//System.setProperty("apple.awt.fileDialogForDirectories", "falase");
 				
-				// java.awt.FileDialogを使用
+				// use java.awt.FileDialog
 				FileDialog dialog = null;
 				if (parent instanceof Frame) {
 					dialog = new FileDialog((Frame) parent, title,
@@ -639,17 +639,17 @@ public class SwingUtils {
 							FileDialog.LOAD);
 				}
 
-				// 親フォルダ
+				// parent folder
 				dialog.setDirectory(currentDirectoryPath);
-				// フォルダ選択ダイアログの表示
+				// Display the folder selection dialog
 				dialog.setVisible(true);
 
-				// 選択ファイル
+				// Selected file
 				String file = dialog.getFile();
 				if (file == null || file.isEmpty())
 					return null;
 
-				// 選択ファイルの取得
+				// Get the selected file
 				String selected = dialog.getDirectory() + File.separator
 						+ dialog.getFile();
 				if (selected != null) {
@@ -679,7 +679,7 @@ public class SwingUtils {
 		} catch (Exception e) {
 
 		} finally {
-			// フォルダ選択を解除
+			// Deselect folder
 			System.setProperty("apple.awt.fileDialogForDirectories", "false");
 		}
 
@@ -688,17 +688,17 @@ public class SwingUtils {
 	}
 
 	/**
-	 * プロジェクト選択ダイアログを表示する. Macの場合、java.awt.FileDialogを使用してフォルダ選択ダイアログを表示する.
-	 * Linux, Windowsの場合はjavax.swing.JFileChooserを使用する。
-	 * 
-	 * @param parent
-	 *            親コンポーネント
-	 * @param title
-	 *            ダイアログタイトル
-	 * @param currentDirectoryPath
-	 *            表示フォルダ
-	 * @return 選択ファイル
-	 */
+* Show the project selection dialog. For Mac, use java.awt.FileDialog to show the folder selection dialog.
+* For Linux and Windows, use javax.swing.JFileChooser.
+*
+* @param parent
+* Parent component
+* @param title
+* Dialog title
+* @param currentDirectoryPath
+* Display folder
+* @return selection file
+*/
 	public static File showOpenProjectDialog(Component parent, String title,
 			String currentDirectoryPath) {
 		try {
@@ -707,20 +707,20 @@ public class SwingUtils {
 
 			// for Mac
 			// add at 2013/05/31 by @hira
-			// Macのフォルダダイアログの表示フラグ
-			// java1.7以上はAppleScriptにてフォルダダイアログを表示する
-			// java1.6以下はjava.awt.FileDialogを使用する。
+			// Display flag in the folder dialog on Mac
+			// Display the folder dialog with AppleScript for java 1.7 and above
+			// Use java.awt.FileDialog for java1.6 and below.
 			//boolean applescript = KscopeProperties.isJava17Later();
             boolean applescript = KscopeProperties.isApplescript();
 			if (KscopeProperties.isMac() && applescript) {
 				File projectfile = AppleScriptEngine.showFolderDialog(title, currentDirectoryPath);
 				return projectfile;
 			} else if (KscopeProperties.isMac()) {
-				// フォルダ選択に変更
+				// Change to folder selection
 				System.setProperty("apple.awt.fileDialogForDirectories", "true");
 				//System.setProperty("apple.awt.fileDialogForDirectories", "false");
 				
-				// java.awt.FileDialogを使用
+				// use java.awt.FileDialog
 				FileDialog dialog = null;
 				if (parent instanceof Frame) {
 					dialog = new FileDialog((Frame) parent, title, FileDialog.LOAD);
@@ -730,19 +730,19 @@ public class SwingUtils {
 					dialog = new FileDialog((Frame) null, title, FileDialog.LOAD);
 				}
 
-				// 親フォルダ
+				// parent folder
 				dialog.setDirectory(currentDirectoryPath);
-				// ファイルフィルタ
+				// File filter
 				// dialog.setFilenameFilter(filter);
-				// フォルダ選択ダイアログの表示
+				// Display the folder selection dialog
 				dialog.setVisible(true);
 
-				// 選択ファイル
+				// Selected file
 				String file = dialog.getFile();
 				if (file == null || file.isEmpty())
 					return null;
 
-				// 選択ファイルの取得
+				// Get the selected file
 				String selected = dialog.getDirectory() + File.separator + dialog.getFile();
 				if (selected != null) {
 					File projectfile = new File(selected);
@@ -754,11 +754,11 @@ public class SwingUtils {
 
 				JFileChooser filechooser = new JFileChooser(
 						currentDirectoryPath);
-				// ファイルとフォルダを選択可能とする.
+				// Make files and folders selectable.
 				filechooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
 				filechooser.setDialogTitle(title);
 				filechooser.addChoosableFileFilter(filter);
-				// JDK7の場合はsetFileFilterを設定しないとフィルタが選択されない。 at 2013/05/14 by
+				// In case of JDK7, the filter is not selected unless setFileFilter is set. at 2013/05/14 by
 				// @hira
 				filechooser.setFileFilter(filter);
 				int selected = filechooser.showOpenDialog(parent);
@@ -770,7 +770,7 @@ public class SwingUtils {
 		} catch (Exception e) {
 
 		} finally {
-			// フォルダ選択を解除
+			// Deselect folder
 			System.setProperty("apple.awt.fileDialogForDirectories", "false");
 		}
 
@@ -778,27 +778,27 @@ public class SwingUtils {
 	}
 
 	/**
-	 * フォルダ保存ダイアログを表示する. Macの場合、java.awt.FileDialogを使用してフォルダ選択ダイアログを表示する. Linux,
-	 * Windowsの場合はjavax.swing.JFileChooserを使用する。
-	 * 
-	 * @param parent
-	 *            親コンポーネント
-	 * @param title
-	 *            ダイアログタイトル
-	 * @param currentDirectoryPath
-	 *            表示フォルダ
-	 * @param multiselection
-	 *            複数選択(true=複数選択):(Macでは使用不可)
-	 * @return 選択ファイル
-	 */
+* Show a folder save dialog. For Mac, use java.awt.FileDialog to show a folder selection dialog. Linux,
+* For Windows, use javax.swing.JFileChooser.
+*
+* @param parent
+* Parent component
+* @param title
+* Dialog title
+* @param currentDirectoryPath
+* Display folder
+* @param multiselection
+* Multiple selection (true = multiple selection): (Not available on Mac)
+* @return selection file
+*/
 	public static File[] showSaveFolderDialog(Component parent, String title,
 			String currentDirectoryPath, boolean multiselection) {
 		try {
 			// for Mac
 			// add at 2013/05/31 by @hira
-			// Macのフォルダダイアログの表示フラグ
-			// java1.7以上はAppleScriptにてフォルダダイアログを表示する
-			// java1.6以下はjava.awt.FileDialogを使用する。
+			// Display flag in the folder dialog on Mac
+			// Display the folder dialog with AppleScript for java 1.7 and above
+			// Use java.awt.FileDialog for java1.6 and below.
 			//boolean applescript = KscopeProperties.isJava17Later();
                         boolean applescript = KscopeProperties.isApplescript();
 			if (KscopeProperties.isMac() && applescript) {
@@ -810,14 +810,14 @@ public class SwingUtils {
 				File[] files = { selected };
 				return files;
 			} else if (KscopeProperties.isMac()) {
-				// フォルダ選択に変更
+				// Change to folder selection
 				System.setProperty("apple.awt.fileDialogForDirectories", "true");
 				//System.setProperty("apple.awt.fileDialogForDirectories", "false");
 				
-				// java.awt.FileDialogを使用
+				// use java.awt.FileDialog
 				// modify FileDialog Mode from FileDialog.SAVE to
 				// FileDialog.LOAD at 2013/05/31 by @hira
-				// フォルダ保存ダイアログから選択ダイアログに変更する。既存フォルダが選択できない（入力が必要）為
+				// Change from the folder save dialog to the selection dialog. Because the existing folder cannot be selected (input is required)
 				FileDialog dialog = null;
 				if (parent instanceof Frame) {
 					dialog = new FileDialog((Frame) parent, title,
@@ -829,17 +829,17 @@ public class SwingUtils {
 					dialog = new FileDialog((Frame) null, title,
 							FileDialog.LOAD);
 				}
-				// 親フォルダ
+				// parent folder
 				dialog.setDirectory(currentDirectoryPath);
-				// フォルダ選択ダイアログの表示
+				// Display the folder selection dialog
 				dialog.setVisible(true);
 
-				// 選択ファイル
+				// Selected file
 				String file = dialog.getFile();
 				if (file == null || file.isEmpty())
 					return null;
 
-				// 選択ファイルの取得
+				// Get the selected file
 				String selected = dialog.getDirectory() + File.separator
 						+ dialog.getFile();
 				if (selected != null) {
@@ -870,7 +870,7 @@ public class SwingUtils {
 		} catch (Exception e) {
 
 		} finally {
-			// フォルダ選択を解除
+			// Deselect folder
 			System.setProperty("apple.awt.fileDialogForDirectories", "false");
 		}
 
@@ -879,21 +879,21 @@ public class SwingUtils {
 	}
 
 	/**
-	 * ファイル選択ダイアログを表示する. Macの場合、java.awt.FileDialogを使用してフォルダ選択ダイアログを表示する. Linux,
-	 * Windowsの場合はjavax.swing.JFileChooserを使用する。
-	 * 
-	 * @param parent
-	 *            親コンポーネント
-	 * @param title
-	 *            ダイアログタイトル
-	 * @param currentDirectoryPath
-	 *            表示フォルダ
-	 * @param filter
-	 *            ファイルフィルタ
-	 * @param multiselection
-	 *            複数選択(true=複数選択):(Macでは使用不可)
-	 * @return 選択ファイル
-	 */
+* Show a file selection dialog. For Mac, use java.awt.FileDialog to show a folder selection dialog. Linux,
+* For Windows, use javax.swing.JFileChooser.
+*
+* @param parent
+* Parent component
+* @param title
+* Dialog title
+* @param currentDirectoryPath
+* Display folder
+* @param filter
+* File filter
+* @param multiselection
+* Multiple selection (true = multiple selection): (Not available on Mac)
+* @return selection file
+*/
 	public static File[] showOpenFileDialog(Component parent, String title,
 			String currentDirectoryPath, ExtFileFilter filter,
 			boolean multiselection) {
@@ -910,24 +910,24 @@ public class SwingUtils {
 					dialog = new FileDialog((Frame) null, title,
 							FileDialog.LOAD);
 				}
-				// 親フォルダ
+				// parent folder
 				dialog.setDirectory(currentDirectoryPath);
 
-				// ファイルフィルタ
+				// File filter
 				dialog.setFilenameFilter(filter);
 
 				// Multiselection
 				dialog.setMultipleMode(multiselection);
 				
-				// フォルダ選択ダイアログの表示
+				// Display the folder selection dialog
 				dialog.setVisible(true);
 
-				// 選択ファイル
+				// Selected file
 				String file = dialog.getFile();
 				if (file == null || file.isEmpty())
 					return null;
 
-				// 選択ファイルの取得
+				// Get the selected file
 				String selected = dialog.getDirectory() + File.separator
 						+ dialog.getFile();
 				if (selected != null) {
@@ -936,18 +936,18 @@ public class SwingUtils {
 				}
 			} else {
 
-				// ファイル選択ダイアログを表示する。
+				// Display the file selection dialog.
 				JFileChooser filechooser = new JFileChooser(currentDirectoryPath);
 				filechooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 				filechooser.setMultiSelectionEnabled(multiselection);
 				filechooser.setDialogTitle(title);
 				if (filter != null) {
 					filechooser.addChoosableFileFilter(filter);
-					// JDK7の場合はsetFileFilterを設定しないとフィルタが選択されない。 at 2013/05/14 by
+					// In case of JDK7, the filter is not selected unless setFileFilter is set. at 2013/05/14 by
 					// @hira
 					filechooser.setFileFilter(filter);
 				}
-				// XMLファイル選択ダイアログの表示
+				// Display XML file selection dialog
 				int selected = filechooser.showOpenDialog(parent);
 				if (selected != JFileChooser.APPROVE_OPTION)
 					return null;
@@ -969,48 +969,48 @@ public class SwingUtils {
 	}
 
 	/**
-	 * 拡張子ファイルフィルタ.
-	 * 
-	 * @author RIKEN
-	 */
+* Extension file filter.
+*
+* @author RIKEN
+*/
 	public class ExtFileFilter extends FileFilter implements FilenameFilter {
-		/** ファイルフィルタ説明文 */
+		/** File filter description */
 		private String description;
-		/** 拡張子 */
+		/** extension */
 		private String[] exts;
-		/** フィルタ */
+		/** Filter */
 		private FileFilter filter;
 
 		/**
-		 * コンストラクタ
-		 * 
-		 * @param description
-		 *            ファイルフィルタ説明文
-		 * @param exts
-		 *            拡張子リスト
-		 */
+* Constructor
+*
+* @param description
+* File filter description
+* @param exts
+* Extension list
+*/
 		public ExtFileFilter(String description, String[] exts) {
 			this.description = description;
 			this.exts = exts;
 		}
 
 		/**
-		 * コンストラクタ
-		 * 
-		 * @param filter
-		 */
+* Constructor
+*
+* @param filter
+*/
 		public ExtFileFilter(FileFilter filter) {
 			this.description = filter.getDescription();
 			this.filter = filter;
 		}
 
 		/**
-		 * ファイルのフィルタチェックを行う
-		 * 
-		 * @param file
-		 *            表示ファイル
-		 * @return true=フィルタ対象ファイル
-		 */
+* Filter files
+*
+* @param file
+* Display file
+* @return true = Filtered files
+*/
 		@Override
 		public boolean accept(File file) {
 			if (file.isDirectory())
@@ -1019,36 +1019,36 @@ public class SwingUtils {
 		}
 
 		/**
-		 * ファイルフィルタ説明文を取得する
-		 * 
-		 * @return ファイルフィルタ説明文
-		 */
+* Get the file filter description
+*
+* @return File filter description
+*/
 		@Override
 		public String getDescription() {
 			return this.description;
 		}
 
 		/**
-		 * ファイルのフィルタチェックを行う
-		 * 
-		 * @param dir
-		 *            表示フォルダ
-		 * @param name
-		 *            表示ファイル
-		 * @return true=フィルタ対象ファイル
-		 */
+* Filter files
+*
+* @param dir
+* Display folder
+* @param name
+* Display file
+* @return true = Filtered files
+*/
 		@Override
 		public boolean accept(File dir, String name) {
 			return accept(name);
 		}
 
 		/**
-		 * ファイルのフィルタチェックを行う
-		 * 
-		 * @param name
-		 *            表示ファイル
-		 * @return true=フィルタ対象ファイル
-		 */
+* Filter files
+*
+* @param name
+* Display file
+* @return true = Filtered files
+*/
 		public boolean accept(String name) {
 			String file_name = name.toLowerCase();
 			String ext = file_name.substring(file_name.lastIndexOf(".") + 1);
@@ -1069,19 +1069,19 @@ public class SwingUtils {
 	}
 
 	/**
-	 * Makeファイル選択ダイアログを表示する. Macの場合、java.awt.FileDialogを使用してフォルダ選択ダイアログを表示する.
-	 * Linux, Windowsの場合はjavax.swing.JFileChooserを使用する。
-	 * 
-	 * @param parent
-	 *            親コンポーネント
-	 * @param title
-	 *            ダイアログタイトル
-	 * @param currentDirectoryPath
-	 *            表示フォルダ
-	 * @param multiselection
-	 *            複数選択(true=複数選択):(Macでは使用不可)
-	 * @return 選択ファイル
-	 */
+* Show the Make file selection dialog. For Mac, use java.awt.FileDialog to display the folder selection dialog.
+* For Linux and Windows, use javax.swing.JFileChooser.
+*
+* @param parent
+* Parent component
+* @param title
+* Dialog title
+* @param currentDirectoryPath
+* Display folder
+* @param multiselection
+* Multiple selection (true = multiple selection): (Not available on Mac)
+* @return selection file
+*/
 	public static File[] showOpenMakefileDialog(Component parent, String title,
 			String currentDirectoryPath, boolean multiselection) {
 		try {
@@ -1096,21 +1096,21 @@ public class SwingUtils {
 				} else {
 					dialog = new FileDialog((Frame) null, title, FileDialog.LOAD);
 				}
-				// 親フォルダ
+				// parent folder
 				dialog.setDirectory(currentDirectoryPath);
 
-				// ファイルフィルタ
+				// File filter
 				dialog.setFilenameFilter(filter);
 
-				// フォルダ選択ダイアログの表示
+				// Display the folder selection dialog
 				dialog.setVisible(true);
 
-				// 選択ファイル
+				// Selected file
 				String file = dialog.getFile();
 				if (file == null || file.isEmpty())
 					return null;
 
-				// 選択ファイルの取得
+				// Get the selected file
 				String selected = dialog.getDirectory() + File.separator + dialog.getFile();
 				if (selected != null) {
 					File[] files = { new File(selected) };
@@ -1118,16 +1118,16 @@ public class SwingUtils {
 				}
 			} else {
 
-				// ファイル選択ダイアログを表示する。
+				// Display the file selection dialog.
 				JFileChooser filechooser = new JFileChooser(currentDirectoryPath);
 				filechooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 				filechooser.setMultiSelectionEnabled(multiselection);
 				filechooser.setDialogTitle(title);
 				filechooser.addChoosableFileFilter(filter);
-				// JDK7の場合はsetFileFilterを設定しないとフィルタが選択されない。 at 2013/05/14 by
+				// In case of JDK7, the filter is not selected unless setFileFilter is set. at 2013/05/14 by
 				// @hira
 				filechooser.setFileFilter(filter);
-				// ファイル選択ダイアログの表示
+				// Display file selection dialog
 				int selected = filechooser.showOpenDialog(parent);
 				if (selected != JFileChooser.APPROVE_OPTION)
 					return null;
@@ -1149,31 +1149,31 @@ public class SwingUtils {
 	}
 
 	/**
-	 * Makefileファイルフィルタ.
-	 * 
-	 * @author RIKEN
-	 */
+* Makefile file filter.
+*
+* @author RIKEN
+*/
 	public class MakefileFilter extends FileFilter implements FilenameFilter {
-		/** ファイルフィルタ説明文 */
+		/** File filter description */
 		private String description;
 
 		/**
-		 * コンストラクタ
-		 * 
-		 * @param description
-		 *            ファイルフィルタ説明文
-		 */
+* Constructor
+*
+* @param description
+* File filter description
+*/
 		public MakefileFilter(String description) {
 			this.description = description;
 		}
 
 		/**
-		 * ファイルのフィルタチェックを行う
-		 * 
-		 * @param file
-		 *            表示ファイル
-		 * @return true=フィルタ対象ファイル
-		 */
+* Filter files
+*
+* @param file
+* Display file
+* @return true = Filtered files
+*/
 		@Override
 		public boolean accept(File file) {
 			if (file.isDirectory())
@@ -1182,36 +1182,36 @@ public class SwingUtils {
 		}
 
 		/**
-		 * ファイルフィルタ説明文を取得する
-		 * 
-		 * @return ファイルフィルタ説明文
-		 */
+* Get the file filter description
+*
+* @return File filter description
+*/
 		@Override
 		public String getDescription() {
 			return this.description;
 		}
 
 		/**
-		 * ファイルのフィルタチェックを行う
-		 * 
-		 * @param dir
-		 *            表示フォルダ
-		 * @param name
-		 *            表示ファイル
-		 * @return true=フィルタ対象ファイル
-		 */
+* Filter files
+*
+* @param dir
+* Display folder
+* @param name
+* Display file
+* @return true = Filtered files
+*/
 		@Override
 		public boolean accept(File dir, String name) {
 			return accept(name);
 		}
 
 		/**
-		 * ファイルのフィルタチェックを行う
-		 * 
-		 * @param name
-		 *            表示ファイル
-		 * @return true=フィルタ対象ファイル
-		 */
+* Filter files
+*
+* @param name
+* Display file
+* @return true = Filtered files
+*/
 		public boolean accept(String name) {
 			if (name.length() >= 8) {
 				String s = name.substring(0, 8);
@@ -1224,31 +1224,31 @@ public class SwingUtils {
 	}
 
 	/**
-	 * Projectファイルフィルタ.
-	 * 
-	 * @author RIKEN
-	 */
+* Project file filter.
+*
+* @author RIKEN
+*/
 	public class ProjectFilter extends FileFilter implements FilenameFilter {
-		/** ファイルフィルタ説明文 */
+		/** File filter description */
 		private String description;
 
 		/**
-		 * コンストラクタ
-		 * 
-		 * @param description
-		 *            ファイルフィルタ説明文
-		 */
+* Constructor
+*
+* @param description
+* File filter description
+*/
 		public ProjectFilter(String description) {
 			this.description = description;
 		}
 
 		/**
-		 * ファイルのフィルタチェックを行う
-		 * 
-		 * @param file
-		 *            表示ファイル
-		 * @return true=フィルタ対象ファイル
-		 */
+* Filter files
+*
+* @param file
+* Display file
+* @return true = Filtered files
+*/
 		@Override
 		public boolean accept(File file) {
 			if (file.isDirectory())
@@ -1257,36 +1257,36 @@ public class SwingUtils {
 		}
 
 		/**
-		 * ファイルフィルタ説明文を取得する
-		 * 
-		 * @return ファイルフィルタ説明文
-		 */
+* Get the file filter description
+*
+* @return File filter description
+*/
 		@Override
 		public String getDescription() {
 			return this.description;
 		}
 
 		/**
-		 * ファイルのフィルタチェックを行う
-		 * 
-		 * @param dir
-		 *            表示フォルダ
-		 * @param name
-		 *            表示ファイル
-		 * @return true=フィルタ対象ファイル
-		 */
+* Filter files
+*
+* @param dir
+* Display folder
+* @param name
+* Display file
+* @return true = Filtered files
+*/
 		@Override
 		public boolean accept(File dir, String name) {
 			return accept(name);
 		}
 
 		/**
-		 * ファイルのフィルタチェックを行う
-		 * 
-		 * @param name
-		 *            表示ファイル
-		 * @return true=フィルタ対象ファイル
-		 */
+* Filter files
+*
+* @param name
+* Display file
+* @return true = Filtered files
+*/
 		public boolean accept(String name) {
 			if (KscopeProperties.PROJECT_FILE.equalsIgnoreCase(name)) {
 				return true;
@@ -1296,19 +1296,19 @@ public class SwingUtils {
 	}
 
 	/**
-	 * ファイルの保存ダイアログを表示する. Macの場合、java.awt.FileDialogを使用してフォルダ選択ダイアログを表示する.
-	 * Linux, Windowsの場合はjavax.swing.JFileChooserを使用する。
-	 * 
-	 * @param parent
-	 *            親コンポーネント
-	 * @param title
-	 *            ダイアログタイトル
-	 * @param currentDirectoryPath
-	 *            表示フォルダ
-	 * @param defaultname
-	 *            デフォルトファイル名
-	 * @return 保存ファイル
-	 */
+* Show the file save dialog. On Mac, use java.awt.FileDialog to show the folder selection dialog.
+* For Linux and Windows, use javax.swing.JFileChooser.
+*
+* @param parent
+* Parent component
+* @param title
+* Dialog title
+* @param currentDirectoryPath
+* Display folder
+* @param defaultname
+* Default file name
+* @return Save file
+*/
 	public static File showSaveFileDialog(Component parent, String title,
 			String currentDirectoryPath, String defaultname) {
 		try {
@@ -1325,34 +1325,34 @@ public class SwingUtils {
 					dialog = new FileDialog((Frame) null, title,
 							FileDialog.SAVE);
 				}
-				// 親フォルダ
+				// parent folder
 				dialog.setDirectory(currentDirectoryPath);
-				// デフォルトファイル名
+				// Default file name
 				dialog.setFile(defaultname);
-				// フォルダ選択ダイアログの表示
+				// Display the folder selection dialog
 				dialog.setVisible(true);
 
-				// 選択ファイル
+				// Selected file
 				String file = dialog.getFile();
 				if (file == null || file.isEmpty())
 					return null;
 
-				// 選択ファイルの取得
+				// Get the selected file
 				String selected = dialog.getDirectory() + File.separator + dialog.getFile();
 				if (selected != null) {
 					return new File(selected);
 				}
 			} else {
 
-				// ファイル保存ダイアログを表示する。
+				// Display the file save dialog.
 				JFileChooser filechooser = new JFileChooser(currentDirectoryPath);
 				filechooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 				filechooser.setDialogTitle(title);
 
-				// デフォルトファイル名
+				// Default file name
 				filechooser.setSelectedFile(new File(defaultname));
 
-				// ファイル保存ダイアログの表示
+				// Display file save dialog
 				File file = null;
 				while (file == null) {
 					int selected = filechooser.showSaveDialog(parent);
@@ -1374,21 +1374,21 @@ public class SwingUtils {
 	}
 
 	/**
-	 * ファイル上書き確認ダイアログを表示する。
-	 * 
-	 * @param file
-	 *            上書き対象ファイル
-	 * @param frame
-	 *            親コンポーネント
-	 * @return true=上書き
-	 */
+* Display the file overwrite confirmation dialog.
+*
+* @param file
+* File to be overwritten
+* @param frame
+* Parent component
+* @return true = overwrite
+*/
 	private static boolean isOverwriteConfirmed(File file, Component frame) {
 
 		if (!file.exists())
 			return true;
-		// swingutils.savefiledialog.overwrite.title=上書き確認
+		// swingutils.savefiledialog.overwrite.title = Overwrite confirmation
 		String title = Message.getString("swingutils.savefiledialog.overwrite.title");
-		// swingutils.savefiledialog.overwrite.message=ファイル[%s]は既に存在します。既存のファイルを置き換えますか？
+		// swingutils.savefiledialog.overwrite.message = File [% s] already exists. Do you want to replace the existing file?
 		String message = Message.getString("swingutils.savefiledialog.overwrite.message", file.getName());
 		int confirm = JOptionPane.showConfirmDialog(frame, message, title, JOptionPane.WARNING_MESSAGE, JOptionPane.OK_CANCEL_OPTION);
 
@@ -1399,15 +1399,15 @@ public class SwingUtils {
 	}
 
 	/**
-	 * ツリーノードの親子関係をチェックする.<br/>
-	 * 親ノードと子ノードが同じ場合は、falseを返す
-	 * 
-	 * @param parent
-	 *            親ノード
-	 * @param child
-	 *            子ノード
-	 * @return treu=親子ノード
-	 */
+* Check the parent-child relationship of the tree node. <br/>
+* Returns false if the parent and child nodes are the same
+*
+* @param parent
+* Parent node
+* @param child
+* Child node
+* @return treu = parent-child node
+*/
 	public static boolean isChildNode(DefaultMutableTreeNode parent,
 			DefaultMutableTreeNode child) {
 		if (parent == child)
@@ -1421,12 +1421,12 @@ public class SwingUtils {
 	}
 
 	/**
-	 * ツリーパスを取得する
-	 * 
-	 * @param treeNode
-	 *            ツリーノード
-	 * @return ツリーパス
-	 */
+* Get the tree path
+*
+* @param treeNode
+* Tree node
+* @return Tree path
+*/
 	public static TreePath getTreePath(TreeNode treeNode) {
 		List<Object> nodes = new ArrayList<Object>();
 		if (treeNode != null) {
@@ -1441,12 +1441,12 @@ public class SwingUtils {
 	}
 
 	/**
-	 * TreeNodeからCSV文字列に変換する
-	 * 
-	 * @param node
-	 *            ツリーノード
-	 * @return CSV文字列
-	 */
+* Convert from TreeNode to CSV string
+*
+* @param node
+* Tree node
+* @return CSV string
+*/
 	public static String toCsv(TreeNode node) {
 
 		String buf = toCsv(node, 0);
@@ -1455,40 +1455,40 @@ public class SwingUtils {
 	}
 
 	/**
-	 * TableModelからCSV文字列に変換する
-	 * 
-	 * @param model
-	 *            テーブルモデル
-	 * @return CSV文字列
-	 */
+* Convert from TableModel to CSV string
+*
+* @param model
+* Table model
+* @return CSV string
+*/
 	public static String toCsv(TableModel model) {
 		return toCsv(model, null);
 	}
 
 	/**
-	 * TableModelからCSV文字列に変換する
-	 * 
-	 * @param model
-	 *            テーブルモデル
-	 * @param visibled
-	 *            出力列設定
-	 * @return CSV文字列
-	 */
+* Convert from TableModel to CSV string
+*
+* @param model
+* Table model
+* @param visibled
+* Output column settings
+* @return CSV string
+*/
 	public static String toCsv(TableModel model, boolean[] visibled) {
 
 		StringBuffer buf = new StringBuffer();
 
-		// テーブルデータ
+		// Table data
 		int column = model.getColumnCount();
 		int row = model.getRowCount();
 
-		// ヘッダー
+		// header
 		StringBuffer header = new StringBuffer();
 		for (int i = 0; i < column; i++) {
 			if (visibled != null && !visibled[i])
 				continue;
 			String name = model.getColumnName(i);
-			// 列名が空は出力しない。
+			// Do not output if the column name is empty.
 			if (name == null || name.isEmpty())
 				continue;
 			if (header.length() > 0)
@@ -1498,18 +1498,18 @@ public class SwingUtils {
 		buf.append(header);
 		buf.append("\n");
 
-		// データ
+		// data
 		for (int i = 0; i < row; i++) {
 			StringBuffer line = new StringBuffer();
 			for (int j = 0; j < column; j++) {
 				if (visibled != null && !visibled[j])
 					continue;
 				String name = model.getColumnName(j);
-				// 列名が空は出力しない。
+				// Do not output if the column name is empty.
 				if (name == null || name.isEmpty())
 					continue;
 
-				// データ
+				// data
 				String value = model.getValueAt(i, j) != null ? model
 						.getValueAt(i, j).toString() : "";
 				if (line.length() > 0)
@@ -1524,41 +1524,41 @@ public class SwingUtils {
 	}
 
 	/**
-	 * JTableから選択行のみをCSV文字列に変換する
-	 * 
-	 * @param table
-	 *            テーブル
-	 * @return CSV文字列
-	 */
+* Convert only selected rows from JTable to CSV string
+*
+* @param table
+	 *            table
+* @return CSV string
+*/
 	public static String toCsvOfSeletedRows(JTable table) {
 
 		TableModel model = table.getModel();
 		StringBuffer buf = new StringBuffer();
 
-		// テーブルデータ
+		// Table data
 		int col = model.getColumnCount();
 
-		// 選択行
+		// Selected line
 		int[] selections = table.getSelectedRows();
 		if (selections == null || selections.length <= 0) {
 			return null;
 		}
 		for (int i = 0; i < selections.length; i++) {
-			// テーブル・モデルの行数に変換
+			// Convert to the number of rows in the table model
 			selections[i] = table.convertRowIndexToModel(selections[i]);
 		}
 
 		DefaultTableColumnModel columnModel = (DefaultTableColumnModel) table
 				.getColumnModel();
-		// ヘッダー
+		// header
 		StringBuffer header = new StringBuffer();
 		for (int i = 0; i < col; i++) {
-			// 列幅が0は出力しない
+			// Do not output column width 0
 			TableColumn column = columnModel.getColumn(i);
 			int width = column.getPreferredWidth();
 			if (width <= 0)
 				continue;
-			// 列名が空は出力しない。
+			// Do not output if the column name is empty.
 			String name = model.getColumnName(i);
 			if (name == null || name.isEmpty())
 				continue;
@@ -1569,21 +1569,21 @@ public class SwingUtils {
 		buf.append(header);
 		buf.append("\n");
 
-		// データ
+		// data
 		for (int row : selections) {
 			StringBuffer line = new StringBuffer();
 			for (int j = 0; j < col; j++) {
-				// 列幅が0は出力しない
+				// Do not output column width 0
 				TableColumn column = columnModel.getColumn(j);
 				int width = column.getPreferredWidth();
 				if (width <= 0)
 					continue;
 				String name = model.getColumnName(j);
-				// 列名が空は出力しない。
+				// Do not output if the column name is empty.
 				if (name == null || name.isEmpty())
 					continue;
 
-				// データ
+				// data
 				String value = model.getValueAt(row, j) != null ? model
 						.getValueAt(row, j).toString() : "";
 				if (line.length() > 0)
@@ -1598,14 +1598,14 @@ public class SwingUtils {
 	}
 
 	/**
-	 * TreeNodeからCSV文字列に変換する
-	 * 
-	 * @param node
-	 *            ツリーノード
-	 * @param depth
-	 *            階層
-	 * @return CSV文字列
-	 */
+* Convert from TreeNode to CSV string
+*
+* @param node
+* Tree node
+* @param depth
+* Hierarchy
+* @return CSV string
+*/
 	private static String toCsv(TreeNode node, int depth) {
 		StringBuffer buf = new StringBuffer();
 		String depthtext = "";
@@ -1623,14 +1623,14 @@ public class SwingUtils {
 	}
 
 	/**
-	 * CSV出力文字列をエスケープする.<br/>
-	 * ダブルクォーテーションは'\'を付加する.<br/>
-	 * 文字列中にカンマ、改行が存在する場合は、全体をダブルクォーテーションで囲む.<br/>
-	 * 
-	 * @param text
-	 *            CSV出力文字列
-	 * @return エスケープ文字列
-	 */
+* Escape the CSV output string. <br/>
+* Double quotes add'\'. <br/>
+* If there are commas or line breaks in the string, enclose them in double quotes. <br/>
+*
+* @param text
+* CSV output string
+* @return Escape string
+*/
 	public static String escapeCsv(String text) {
 		if (text == null)
 			return null;
@@ -1642,16 +1642,16 @@ public class SwingUtils {
 	}
 
 	/**
-	 * 2つのビューを同期する
-	 * 
-	 * @param masterViewport
-	 *            元ビュー
-	 * @param slaveViewport
-	 *            同期先ビュー
-	 * @param orientation
-	 *            同期方向(SwingConstants.HORIZONTAL(0x00)=水平方向,
-	 *            SwingConstants.VERTICAL(0x01)=垂直方向)
-	 */
+* Synchronize two views
+*
+* @param masterViewport
+* Original view
+* @param slaveViewport
+* Sync destination view
+* @param orientation
+* Synchronous direction (Swing Constants.HORIZONTAL (0x00) = horizontal direction,
+* SwingConstants.VERTICAL (0x01) = vertical)
+*/
 	public static void synchronizeView(final JViewport masterViewport,
 			final JViewport slaveViewport, final int orientation) {
 		final ChangeListener c1 = new ChangeListener() {
@@ -1680,11 +1680,11 @@ public class SwingUtils {
 	}
 
 	/**
-	 * 文字列をクリップボードにコピーする.
-	 * 
-	 * @param text
-	 *            クリップボードコピー文字列
-	 */
+* Copy the string to the clipboard.
+*
+* @param text
+* Clipboard copy string
+*/
 	public static void copyClipboard(String text) {
 		Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
 		StringSelection selection = new StringSelection(text);
@@ -1694,16 +1694,16 @@ public class SwingUtils {
 	}
 
 	/**
-	 * グラデーション色をRGBで算出する.
-	 * 
-	 * @param ratio
-	 *            グラデーション色の比率(0.0 = minColor ～ 1.0 = maxColor)
-	 * @param minColor
-	 *            比率=0.0の時の色
-	 * @param maxColor
-	 *            比率=1.0の時の色
-	 * @return グラデーション色
-	 */
+* Calculate the gradation color in RGB.
+*
+* @param ratio
+* Gradient color ratio (0.0 = minColor ~ 1.0 = maxColor)
+* @param minColor
+* Color when ratio = 0.0
+* @param maxColor
+* Color when ratio = 1.0
+* @return Gradient color
+*/
 	public static Color getGradientRgbColor(float ratio, Color minColor,
 			Color maxColor) {
 		if (ratio < 0)
@@ -1721,16 +1721,16 @@ public class SwingUtils {
 	}
 
 	/**
-	 * グラデーション色をHSBで算出する.
-	 * 
-	 * @param ratio
-	 *            グラデーション色の比率(0.0 = minColor ～ 1.0 = maxColor)
-	 * @param minColor
-	 *            比率=0.0の時の色
-	 * @param maxColor
-	 *            比率=1.0の時の色
-	 * @return グラデーション色
-	 */
+* Calculate the gradation color in HSB.
+*
+* @param ratio
+* Gradient color ratio (0.0 = minColor ~ 1.0 = maxColor)
+* @param minColor
+* Color when ratio = 0.0
+* @param maxColor
+* Color when ratio = 1.0
+* @return Gradient color
+*/
 	public static Color getGradientHsbColor(float ratio, Color minColor,
 			Color maxColor) {
 		float[] startHSB = Color.RGBtoHSB(minColor.getRed(),
@@ -1757,14 +1757,14 @@ public class SwingUtils {
 	}
 
 	/**
-	 * ブロックツリーからブロックリストのみのツリーを作成する.
-	 * 
-	 * @param root
-	 *            ブロックツリー
-	 * @param list
-	 *            ブロックリスト
-	 * @return ブロックリストのみのツリー
-	 */
+* Create a block list-only tree from the block tree.
+*
+* @param root
+* Block tree
+* @param list
+* Block list
+* @return Block list only tree
+*/
 	public static DefaultMutableTreeNode createTreeNode(
 			DefaultMutableTreeNode root, List<Object> list) {
 		if (root == null)
@@ -1802,24 +1802,24 @@ public class SwingUtils {
 	}
 
 	/**
-	 * ツリーノードからユーザオブジェクトと一致するノードのユーザオブジェクトパスリストを取得する.<br/>
-	 * 
-	 * @param root
-	 *            ツリーノード
-	 * @param obj
-	 *            ユーザオブジェクト
-	 * @return ユーザオブジェクトパスリスト
-	 */
+* Get the user object path list of the node that matches the user object from the tree node. <br/>
+*
+* @param root
+* Tree node
+* @param obj
+* User object
+* @return User object path list
+*/
 	private static Object[] searchTreePath(DefaultMutableTreeNode root,
 			Object obj) {
 
-		// ツリーノードを順方向で列挙
+		// List tree nodes in the forward direction
 		Enumeration<?> depth = root.preorderEnumeration();
 		while (depth.hasMoreElements()) {
 			DefaultMutableTreeNode treeNode = (DefaultMutableTreeNode) depth
 					.nextElement();
 
-			// ノード検索を行う
+			// Do a node search
 			if (treeNode == null || treeNode.getUserObject() == null) {
 				continue;
 			}
@@ -1831,27 +1831,27 @@ public class SwingUtils {
 	}
 
 	/**
-	 * ツリーノードからユーザオブジェクトパスリストと一致するノードを検索する.<br/>
-	 * ユーザオブジェクトパスリストに最も一致しているノードを取得する.<br/>
-	 * ユーザオブジェクトパスリストと同一ノードではない.
-	 * 
-	 * @param root
-	 *            ツリーノード
-	 * @param objpath
-	 *            ユーザオブジェクトパスリスト
-	 * @return 一致ノード
-	 */
+* Search the tree node for a node that matches the user object path list. <br/>
+* Get the node that best matches the user object path list. <br/>
+* Not the same node as the user object path list.
+*
+* @param root
+* Tree node
+* @param objpath
+* User object path list
+* @return Matching node
+*/
 	private static DefaultMutableTreeNode searchParentNode(
 			DefaultMutableTreeNode root, Object[] objpath) {
 
-		// ツリーノードを順方向で列挙
+		// List tree nodes in the forward direction
 		int depthCount = -1;
 		DefaultMutableTreeNode depthNode = root;
 		Enumeration<?> depth = root.preorderEnumeration();
 		while (depth.hasMoreElements()) {
 			DefaultMutableTreeNode treeNode = (DefaultMutableTreeNode) depth
 					.nextElement();
-			// ノード検索を行う
+			// Do a node search
 			if (treeNode == null || treeNode.getUserObject() == null) {
 				continue;
 			}
@@ -1871,12 +1871,12 @@ public class SwingUtils {
 	}
 
 	/**
-	 * 元ノードのコピーを取得する.
-	 * 
-	 * @param srcNode
-	 *            元ノード
-	 * @return ノードのコピー
-	 */
+* Get a copy of the original node.
+*
+* @param srcNode
+* Original node
+* @return Copy node
+*/
 	public static DefaultMutableTreeNode cloneTreeNode(
 			DefaultMutableTreeNode srcNode) {
 		if (srcNode == null)
@@ -1892,14 +1892,14 @@ public class SwingUtils {
 	}
 
 	/**
-	 * 追加子ノードのコピーノードを親ノードに追加する.
-	 * 
-	 * @param srcNode
-	 *            追加子ノード
-	 * @param root
-	 *            追加親ノード
-	 * @return 追加子ノードのコピーノード
-	 */
+* Add a copy node of the additional child node to the parent node.
+*
+* @param srcNode
+* Additional child node
+* @param root
+* Additional parent node
+* @return Copy node of add-on node
+*/
 	private static DefaultMutableTreeNode addCloneNode(
 			DefaultMutableTreeNode srcNode, DefaultMutableTreeNode root) {
 		DefaultMutableTreeNode clone = new DefaultMutableTreeNode(
@@ -1914,12 +1914,12 @@ public class SwingUtils {
 	}
 
 	/**
-	 * 循環参照ノードであるかチェックする.
-	 * 
-	 * @param node
-	 *            チェックノード
-	 * @return true=循環参照ノード
-	 */
+* Check if it is a circular reference node.
+*
+* @param node
+* Check node
+* @return true = Circular reference node
+*/
 	public static boolean recursiveTreeNode(DefaultMutableTreeNode node) {
 		if (node == null)
 			return false;
@@ -1939,12 +1939,12 @@ public class SwingUtils {
 	}
 
 	/**
-	 * ツリーノードのすべての子孫ノード数を取得する.
-	 * 
-	 * @param node
-	 *            ツリーノード
-	 * @return 子孫ノード数
-	 */
+* Get the number of all offspring nodes of the tree node.
+*
+* @param node
+* Tree node
+* @return Number of offspring nodes
+*/
 	public static int getAllChildCount(TreeNode node) {
 		if (node == null)
 			return 0;
@@ -1959,12 +1959,12 @@ public class SwingUtils {
 	}
 
 	/**
-	 * ツリーを昇順にソートを行う.
-	 * 
-	 * @param root
-	 *            ソート対象ツリー
-	 * @return ソート結果ツリー
-	 */
+* Sort the tree in ascending order.
+*
+* @param root
+* Sorted tree
+* @return Sort result tree
+*/
 	public static DefaultMutableTreeNode sortTreeNode(
 			DefaultMutableTreeNode root) {
 		if (root == null)
@@ -2005,23 +2005,23 @@ public class SwingUtils {
 	}
 
 	/**
-	 * "Meiryo UI", "Dialog"のフォントを取得する.<br/>
-	 * "Meiryo UI", "Dialog"のフォントが存在しなければ、"Monospaced"フォントとする.
-	 * 
-	 * @return デフォルトフォント
-	 */
+* Get the fonts for "Meiryo UI" and "Dialog". <br/>
+* If the "Meiryo UI" and "Dialog" fonts do not exist, use the "Monospaced" font.
+*
+* @return Default font
+*/
 	public static Font getDefaultFont() {
 		final int DEFAULTFONT_SIZE = 11;
 		final String[] defaultnames = { "Meiryo UI", "Dialog" };
-		// フォント名リストの取得
+		// Get the font name list
 		GraphicsEnvironment env = GraphicsEnvironment
 				.getLocalGraphicsEnvironment();
 		String[] fontNames = env.getAvailableFontFamilyNames();
 
-		// デフォルト、論理フォントを設定
+		// Set default, logical font
 		Font defaultFont = new Font("Monospaced", Font.PLAIN, DEFAULTFONT_SIZE);
 
-		// 物理フォントの探索
+		// Search for physical fonts
 		if (fontNames != null && fontNames.length > 0) {
 			for (int j = 0; j < defaultnames.length; j++) {
 				String name = defaultnames[j];
@@ -2037,12 +2037,12 @@ public class SwingUtils {
 	}
 
 	/**
-	 * TreeNodeからツリー形式の文字列に変換する
-	 * 
-	 * @param node
-	 *            ツリーノード
-	 * @return CSV文字列
-	 */
+* Convert from TreeNode to tree format string
+*
+* @param node
+* Tree node
+* @return CSV string
+*/
 	public static String toTreeText(TreeNode node) {
 		StringBuffer buf = new StringBuffer();
 		Enumeration<?> elems = ((DefaultMutableTreeNode) node).preorderEnumeration();

@@ -22,16 +22,16 @@ import java.io.InputStream;
 import java.util.logging.*;
 
 /**
- * ログクラス
- * 
+ * Log class
+ *
  * @author hira
- * 
+ *
  */
 public class Logger {
 
 	/**
-	 * コンストラクタ
-	 */
+* Constructor
+*/
 	private Logger() {
 	}
 
@@ -39,37 +39,37 @@ public class Logger {
 	private static java.util.logging.Logger _logger = null;
 
 	/**
-	 * ログ出力をOFFにする。
-	 */
+* Turn off log output.
+*/
 	public static void logOff() {
 		_logger = null;
 		return;
 	}
 
 	/**
-	 * ログ設定をログプロパティファイルから設定する。
-	 * 
-	 * @param propFile
-	 *            ログプロパティファイル
-	 * @param appName
-	 *            アプリケーション名
-	 */
+* Set log settings from the log properties file.
+*
+* @param propFile
+* Log property file
+* @param appName
+* Application name
+*/
 	public static void configure(InputStream propFile, String appName) {
 		configure(propFile, appName, false);
 		return;
 	}
 
 	/**
-	 * ログ設定をログプロパティファイルから設定する。
-	 * 
-	 * @param propFile
-	 *            ログプロパティファイル
-	 * @param appName
-	 *            アプリケーション名
-	 * @param debugMode
-	 *            デバッグモードフラグ<br/>
-	 *            出力レベルをCONFIG出力レベルに変更する。
-	 */
+* Set log settings from the log properties file.
+*
+* @param propFile
+* Log property file
+* @param appName
+* Application name
+* @param debugMode
+* Debug mode flag <br/>
+* Change the output level to the CONFIG output level.
+*/
 	public static void configure(InputStream propFile, String appName,
 			boolean debugMode) {
 		try {
@@ -80,14 +80,14 @@ public class Logger {
 			// ".pattern");
 			// System.out.println(pattern);
 
-			// Loggerオブジェクトの生成
+			// Generate Logger object
 			_logger = java.util.logging.Logger.getLogger(appName);
 
 			if (debugMode) {
 				_logger.setLevel(Level.CONFIG);
 			}
 
-			// ファイルハンドラの取得
+			// Get file handler
 			FileHandler fileHandler = null;
 			Handler handlers[] = _logger.getHandlers();
 			if (handlers == null || handlers.length == 0) {
@@ -107,7 +107,7 @@ public class Logger {
 				_logger.addHandler(fileHandler);
 			}
 
-			// FileHandler作成
+			// Create FileHandler
 			// FileHandler fileHandler = new FileHandler(logfolder + "/" +
 			// pattern);
 			// _logger.addHandler(fileHandler);
@@ -121,12 +121,12 @@ public class Logger {
 	}
 
 	/**
-	 * デバッグモードフラグを設定する。<br/>
-	 * 出力レベルをCONFIGに変更する。
-	 * 
-	 * @param debugMode
-	 *            デバッグモードフラグ
-	 */
+* Set the debug mode flag. <br/>
+* Change the output level to CONFIG.
+*
+* @param debugMode
+* Debug mode flag
+*/
 	public static void setDebugMode(boolean debugMode) {
 		if (_logger == null)
 			return;
@@ -137,11 +137,11 @@ public class Logger {
 	}
 
 	/**
-	 * エラーレベルログを出力する。
-	 * 
-	 * @param msg
-	 *            エラーメッセージ
-	 */
+* Output error level log.
+*
+* @param msg
+	 *            Error message
+*/
 	public static void error(String msg) {
 		if (_logger == null)
 			return;
@@ -149,11 +149,11 @@ public class Logger {
 	}
 
 	/**
-	 * 例外スタックトレースを出力する。
-	 * 
-	 * @param ex
-	 *            エラー例外
-	 */
+* Output an exception stack trace.
+*
+* @param ex
+* Error exception
+*/
 	public static void error(Exception ex) {
 		if (_logger == null)
 			return;
@@ -183,11 +183,11 @@ public class Logger {
 	}
 
 	/**
-	 * 警告レベルログを出力する。
-	 * 
-	 * @param msg
-	 *            ログメッセージ
-	 */
+* Output warning level log.
+*
+* @param msg
+* Log message
+*/
 	public static void warn(String msg) {
 		if (_logger == null)
 			return;
@@ -195,11 +195,11 @@ public class Logger {
 	}
 
 	/**
-	 * 情報レベルログを出力する。
-	 * 
-	 * @param msg
-	 *            ログメッセージ
-	 */
+* Output information level log.
+*
+* @param msg
+* Log message
+*/
 	public static void info(String msg) {
 		if (_logger == null)
 			return;
@@ -207,11 +207,11 @@ public class Logger {
 	}
 
 	/**
-	 * デバッグレベルログを出力する。
-	 * 
-	 * @param msg
-	 *            ログメッセージ
-	 */
+* Output debug level log.
+*
+* @param msg
+* Log message
+*/
 	public static void debug(String msg) {
 		if (_logger == null)
 			return;

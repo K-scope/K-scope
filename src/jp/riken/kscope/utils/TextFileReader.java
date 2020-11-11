@@ -24,29 +24,29 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 
 /**
- * テキストファイルリーダクラス.<br/>
- * 文字コードを判別して読み込む
- * 
+ * Text file reader class. <br/>
+ * Identify and read the character code
+ *
  * @author RIKEN
  */
 public class TextFileReader {
-	/** バッファーサイズ(KB)*1024 = 1MB */
+	/** Buffer size (KB) * 1024 = 1MB */
 	private final int FILEIO_BUFFERSIZE = 1000;
-	/** 読込ファイル */
+	/** Read file */
 	private File m_file = null;
-	/** 読込バッファー */
+	/** Read buffer */
 	private byte[] m_buffer = null;
-	/** ファイルの文字セット */
+	/** File character set */
 	private Charset m_charset = null;
-	/** 次の読込バッファーのインデックス */
+	/** Index of next read buffer */
 	private int m_nextIdx = 0;
 
 	/**
-	 * コンストラクタ
-	 * 
-	 * @param path
-	 *            ファイルパス
-	 */
+* Constructor
+*
+* @param path
+	 *            File Path
+*/
 	public TextFileReader(String path) {
 		if (path == null)
 			return;
@@ -54,35 +54,35 @@ public class TextFileReader {
 	}
 
 	/**
-	 * コンストラクタ
-	 * 
-	 * @param file
-	 *            読込ファイル
-	 */
+* Constructor
+*
+* @param file
+* Read file
+*/
 	public TextFileReader(File file) {
 		this.m_file = file;
 	}
 
 	/**
-	 * ファイルから読み込み、ファイルデータを文字列で返す。
-	 * 
-	 * @throws IOException
-	 *             ファイル読込例外
-	 */
+* Read from a file and return the file data as a string.
+*
+* @throws IOException
+* File read exception
+*/
 	public void readFile() throws IOException {
 		if (m_file == null)
 			return;
 
 		int bufferSize = FILEIO_BUFFERSIZE * 1024;
 
-		// ソースファイルを読み込む
+		// Read the source file
 		m_buffer = new byte[(int) m_file.length()];
 		FileInputStream fis = new FileInputStream(m_file);
 		BufferedInputStream bis = new BufferedInputStream(fis, bufferSize);
 		bis.read(m_buffer);
 		fis.close();
 
-		// 読込データの文字コードチェック
+		// Character code check of read data
 		String enc = StringUtils.getDetectedCharset(m_buffer);
 
 		if (enc == null) {
@@ -94,12 +94,12 @@ public class TextFileReader {
 	}
 
 	/**
-	 * 読込ファイルのすべてのテキストデータを取得する。
-	 * 
-	 * @return テキストデータ
-	 * @throws IOException
-	 *             ファイル読込エラー
-	 */
+* Get all the text data of the read file.
+*
+* @return text data
+* @throws IOException
+* File read error
+*/
 	public String getFileText() throws IOException {
 		if (m_buffer == null || m_charset == null) {
 			readFile();
@@ -110,12 +110,12 @@ public class TextFileReader {
 	}
 
 	/**
-	 * 読込ファイルから１行ずつテキストデータを取得する。
-	 * 
-	 * @return １行テキストデータ
-	 * @throws IOException
-	 *             ファイル読込エラー
-	 */
+* Get text data line by line from the read file.
+*
+* @return 1-line text data
+* @throws IOException
+* File read error
+*/
 	public String readLine() throws IOException {
 		if (m_buffer == null || m_charset == null) {
 			readFile();
@@ -154,19 +154,19 @@ public class TextFileReader {
 	}
 
 	/**
-	 * 読込バッファーを取得する。
-	 * 
-	 * @return 読込バッファー
-	 */
+* Get the read buffer.
+*
+* @return Read buffer
+*/
 	public byte[] getBuffer() {
 		return m_buffer;
 	}
 
 	/**
-	 * ファイルの文字セット
-	 * 
-	 * @return 文字セット
-	 */
+* File character set
+*
+* @return character set
+*/
 	public Charset getCharset() {
 		return m_charset;
 	}

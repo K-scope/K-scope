@@ -35,40 +35,40 @@ import jp.riken.kscope.data.CodeLine;
 import jp.riken.kscope.utils.SwingUtils;
 
 /**
- * 検索結果情報モデル
+ * Search result information model
  * @author RIKEN
  *
  */
 public class SearchResultModel extends Observable {
 
-    /** トレースツリーモデル */
+    /** Trace tree model */
     private SearchTreeModel treeModel;
-    /** タイトル */
+    /** Title */
     private String title;
-    /** 検索結果情報リスト */
+    /** Search result information list */
     private List<CodeLine> listResult = null;
 
-    /** 検索文字列 */
+    /** Search string */
     private String searchText;
-    /** 大文字・小文字の区別(true=大文字・小文字の区別を行う) */
+    /** Case sensitive (true = case sensitive) */
     private boolean sensitivecase;
-    /** 正規表現 */
+    /** Regular expressions */
     private boolean regex;
-    /** 単語検索 */
+    /** Word search */
     private boolean word;
 
     /**
-     * コンストラクタ
+     * Constructor
      */
     public SearchResultModel() {
         super();
 
-        // 検索結果のクリア
+        // Clear search results
         clearSearchResult();
     }
 
     /**
-     * モデルの変更を通知する
+     * Notify model changes
      */
     public void notifyModel() {
         this.setChanged();
@@ -77,8 +77,8 @@ public class SearchResultModel extends Observable {
     }
 
     /**
-     * ルートノードを取得する
-     * @return		ルートノード
+     * Get the root node
+     * @return root node
      */
     public DefaultMutableTreeNode getRootNode() {
         if (treeModel == null) return null;
@@ -86,8 +86,8 @@ public class SearchResultModel extends Observable {
     }
 
     /**
-     * ツリーモデルを取得する
-     * @return		ツリーモデル
+     * Get a tree model
+     * @return Tree model
      */
     public SearchTreeModel getTreeModel() {
         return treeModel;
@@ -95,23 +95,23 @@ public class SearchResultModel extends Observable {
 
 
     /**
-     * 検索結果を追加する
-     * @param result          検索結果
+     * Add search results
+     * @param result Search results
      */
     public void addSearchResult(CodeLine result) {
 
-        // 検索結果を追加する。
+        // Add search results.
         if (this.listResult == null) {
             this.listResult = new ArrayList<CodeLine>();
         }
         this.listResult.add(result);
-        // モデルの変更を通知
+        // Notify model changes
         notifyModel();
     }
 
 
     /**
-     * 検索結果をクリアする。
+     * Clear the search results.
      */
     public void clearSearchResult() {
         if (this.listResult == null) {
@@ -119,27 +119,27 @@ public class SearchResultModel extends Observable {
         }
         this.listResult.clear();
 
-        SearchTreeNode rootNode = new SearchTreeNode(Message.getString("mainmenu.window.analysis.search")); //検索結果
+        SearchTreeNode rootNode = new SearchTreeNode(Message.getString("mainmenu.window.analysis.search")); //search results
         this.treeModel = new SearchTreeModel(rootNode);
 
         this.title = null;
         this.searchText = null;
 
-        // モデルの変更を通知
+        // Notify model changes
         notifyModel();
     }
 
     /**
-     * 検索結果リストを取得する
-     * @return		検索結果リスト
+     * Get the search result list
+     * @return Search result list
      */
     public List<CodeLine> getSearchResultList() {
         return this.listResult;
     }
 
     /**
-     * 検索結果リスト数を取得する
-     * @return		検索結果リスト数
+     * Get the number of search result lists
+     * @return Number of search result lists
      */
     public int getSearchResultListCount() {
         if (this.listResult == null) return 0;
@@ -148,38 +148,38 @@ public class SearchResultModel extends Observable {
 
 
     /**
-     * タイトルを取得する
-     * @return	タイトル
+     * Get the title
+     * @return title
      */
     public String getTitle() {
         return title;
     }
 
     /**
-     * タイトルを設定する
-     * @param title		タイトル
+     * Set the title
+     * @param title Title
      */
     public void setTitle(String title) {
         this.title = title;
     }
 
     /**
-     * テーブル情報をファイル出力する。
-     * @param file		出力ファイル
+     * Output table information to a file.
+     * @param file Output file
      */
     public void writeFile(File file) {
-        // ルートノード
+        // Root node
         DefaultMutableTreeNode root = getRootNode();
         if (root == null) return;
         if (root.getChildCount() <= 0) return;
 
         try {
-            // ファイル出力
+            // File output
             PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(file)));
 
-            // ツリーをCSV文字列にする。
+            // Make the tree a CSV string.
             String buf = SwingUtils.toCsv(root);
-            // ファイル出力
+            // File output
             pw.print(buf);
 
             pw.close();
@@ -189,72 +189,72 @@ public class SearchResultModel extends Observable {
     }
 
     /**
-     * 大文字・小文字の区別を取得する
-     * @return		大文字・小文字の区別
+     * Get case sensitive
+     * @return Case sensitive
      */
     public boolean isSensitivecase() {
         return sensitivecase;
     }
 
     /**
-     * 大文字・小文字の区別を設定する
-     * @param sensitivecase		大文字・小文字の区別
+     * Set case sensitivity
+     * @param sensitivecase Case sensitive
      */
     public void setSensitivecase(boolean sensitivecase) {
         this.sensitivecase = sensitivecase;
     }
 
     /**
-     * 正規表現を取得する
-     * @return		正規表現
+     * Get a regular expression
+     * @return regular expression
      */
     public boolean isRegex() {
         return regex;
     }
 
     /**
-     * 正規表現を設定する
-     * @param regex		正規表現
+     * Set regular expression
+     * @param regex regular expression
      */
     public void setRegex(boolean regex) {
         this.regex = regex;
     }
 
     /**
-     * 単語検索を取得する
-     * @return		単語検索
+     * Get word search
+     * @return word search
      */
     public boolean isWord() {
         return word;
     }
 
     /**
-     * 単語検索を設定する
-     * @param word		単語検索
+     * Set up word search
+     * @param word word search
      */
     public void setWord(boolean word) {
         this.word = word;
     }
 
     /**
-     * 検索文字列を取得する
-     * @return		検索文字列
+     * Get the search string
+     * @return Search string
      */
     public String getSearchText() {
         return searchText;
     }
 
     /**
-     * 検索文字列を設定する
-     * @param searchText		検索文字列
+     * Set the search string
+     * @param searchText Search string
      */
     public void setSearchText(String searchText) {
         this.searchText = searchText;
     }
     
     /**
-     * モデルが空か否か
-     * @return		空か否か（true: 空,false: データあり）
+     * Whether the model is empty
+     * @return Whether it is empty (true: empty, false: with data)
      */
     public boolean isEmpty() {
     	DefaultMutableTreeNode root = getRootNode();

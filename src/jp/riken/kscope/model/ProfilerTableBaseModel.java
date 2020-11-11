@@ -35,134 +35,134 @@ import jp.riken.kscope.properties.ProfilerProperties;
 import jp.riken.kscope.utils.SwingUtils;
 
 /**
- * プロファイラ:情報基底モデル
+ * Profiler: Information-based model
  * @author RIKEN
  */
 public abstract class ProfilerTableBaseModel extends Observable {
 
-    /** プロファイラ情報タイプ */
+    /** Profiler information type */
     private PROFILERINFO_TYPE enumInfo;
-    /** プロファイラプロパティ */
+    /** Profiler Properties */
     private ProfilerProperties properties;
 
     /**
-     * コンストラクタ
-     * @param type		プロファイラ情報タイプ
+     * Constructor
+     * @param type Profiler information type
      */
     public ProfilerTableBaseModel(PROFILERINFO_TYPE type) {
         this.enumInfo = type;
     }
 
     /**
-     * プロファイラ情報タイプを取得する
-     * @return		プロファイラ情報タイプ
+     * Get profiler information type
+     * @return Profiler information type
      */
     public PROFILERINFO_TYPE getEnumInfo() {
         return enumInfo;
     }
 
     /**
-     * プロファイラ情報タイプを設定する
-     * @param type		プロファイラ情報タイプ
+     * Set profiler information type
+     * @param type Profiler information type
      */
     public void setEnumInfo(PROFILERINFO_TYPE type) {
         this.enumInfo = type;
     }
 
     /**
-     * テーブルモデルをクリアする。
+     * Clear the table model.
      */
     public abstract void clearModel();
 
 
     /**
-     * 選択プロファイル情報を設定する
-     * @param 	info        選択プロファイル情報
+     * Set selection profile information
+     * @param info Selection profile information
      */
     public abstract void setSelectedInfo(ProfilerBaseData info);
 
     /**
-     * 選択プロファイル情報を取得する
-     * @return		選択プロファイル情報
+     * Get selection profile information
+     * @return Selection profile information
      */
     public abstract ProfilerBaseData getSelectedInfo();
 
     /**
-     * タイトルを取得する
-     * @return	タイトル
+     * Get the title
+     * @return title
      */
     public abstract String getTitle();
 
     /**
-     * タイトルを設定する
-     * @param title		タイトル
+     * Set the title
+     * @param title Title
      */
     public abstract void setTitle(String title);
 
     /**
-     * プロファイル情報マップ数を取得する
-     * @return		プロファイル情報マップ数
+     * Get the number of profile information maps
+     * @return Number of profile information maps
      */
     public abstract int getInfoMapCount();
 
 
     /**
-     * プロファイル情報マップキー名を取得する
-     * @param   index    マップインデックス
-     * @return		コスト情報マップキー名
+     * Get profile information map key name
+     * @param index Map index
+     * @return Cost information map key name
      */
     public abstract String getInfoMapKey(int index);
 
     /**
-     * プロファイル情報サブタイトルを取得する
-     * @param   index    マップインデックス
-     * @return		サブタイトル
+     * Get profile information subtitle
+     * @param index Map index
+     * @return Subtitle
      */
     public abstract String getSubTitle(int index);
 
     /**
-     * テーブルモデルを取得する
-     * @param index		コスト情報マップインデックス
-     * @return		テーブルモデル
+     * Get the table model
+     * @param index Cost information map index
+     * @return table model
      */
     public abstract DefaultTableModel getInfoTableModel(int index);
 
 
     /**
-     * ヘッダー推奨列幅リストを取得する。
-     * @return		ヘッダー推奨列幅
+     * Get the header recommended column width list.
+     * @return Header recommended column width
      */
     protected abstract int[] getHeaderColumnsPreferredWidth();
 
     /**
-     * ヘッダー最小列幅リストを取得する。
-     * @return		ヘッダー最小列幅
+     * Get the header minimum column width list.
+     * @return Header minimum column width
      */
     protected abstract int[] getHeaderColumnsMinWidth();
 
     /**
-     * プロファイラデータを設定する
-     * @param key		プロファイラデータキー
-     * @param infos		プロファイラデータ
+     * Set profiler data
+     * @param key Profiler data key
+     * @param infos Profiler data
      */
     public abstract void setProfilerData(String key, ProfilerBaseData[] infos);
 
     /**
-     * プロファイラバーグラフデータを取得する
-     * @return   プロファイラバーグラフデータ
+     * Get profile bar graph data
+     * @return Profile bar graph data
      */
     public abstract ISourceBargraph[] getSelectedBargraph();
 
     /**
-     * 列幅を設定する
-     * @param columnModel		テーブル列モデル
+     * Set column width
+     * @param columnModel Table column model
      */
     public void setTableColumnWidth(DefaultTableColumnModel columnModel) {
         boolean[] visibled = getVisibledColumns();
         int[] preferredWidth = getHeaderColumnsPreferredWidth();
         int[] minWidth = getHeaderColumnsMinWidth();
         for (int i=0; i<columnModel.getColumnCount(); i++) {
-            // 列取得
+            // Get column
             TableColumn column = columnModel.getColumn(i);
             if (preferredWidth.length >= i) {
                 if (preferredWidth[i] >= 0 && visibled[i]) {
@@ -184,26 +184,26 @@ public abstract class ProfilerTableBaseModel extends Observable {
     }
 
     /**
-     * テーブル情報をファイル出力する。
-     * @param   file   出力ファイル
+     * Output table information to a file.
+     * @param file Output file
      */
     public void writeFile(File file) {
 
         try {
             boolean[] visibled = getVisibledColumns();
-            // ファイル出力
+            // File output
             PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(file)));
             int mapsize = getInfoMapCount();
             if (mapsize > 0) {
                 for(int i=0; i<mapsize; i++) {
-                    // キー文字列
+                    // key string
                     String key = getSubTitle(i);
                     pw.println(key);
 
-                    // テーブルモデルの取得
+                    // Get table model
                     DefaultTableModel table = this.getInfoTableModel(i);
 
-                    // テーブルを出力する
+                    // Output the table
                     String buf = SwingUtils.toCsv(table, visibled);
                     pw.print(buf);
                     pw.println();
@@ -217,69 +217,69 @@ public abstract class ProfilerTableBaseModel extends Observable {
     }
 
     /**
-     * プロファイラプロパティを設定する
-     * @param properties		プロファイラプロパティ
+     * Set profiler properties
+     * @param properties Profiler properties
      */
     public void setProfilerProperties(ProfilerProperties properties) {
         this.properties = properties;
-        // モデルの変更を通知する
+        // Notify model changes
         notifyModel();
     }
 
     /**
-     * プロファイラプロパティを取得する
-     * @return properties		プロファイラプロパティ
+     * Get profiler properties
+     * @return properties Profiler properties
      */
     public ProfilerProperties getProfilerProperties() {
         return this.properties;
     }
 
     /**
-     * 選択プロファイルデータのテキストデータを取得する
-     * @return		選択テキストデータ
+     * Get text data of selected profile data
+     * @return Selected text data
      */
     public abstract String getSelectedText();
 
     /**
-     * ヘッダー列リストを取得する。
-     * @return		ヘッダー列リスト
+     * Get the header column list.
+     * @return Header column list
      */
     public abstract String[] getHeaderColumns();
 
     /**
-     * ヘッダー列の表示状態を取得する
-     * @return		ヘッダー列表示状態リスト
+     * Get the display status of the header column
+     * @return Header column display status list
      */
     public abstract boolean[] getVisibledColumns();
 
     /**
-     * ヘッダー列の表示状態を設定する
-     * @param col		ヘッダー列番号
-     * @param checked   表示状態
+     * Set the display state of the header column
+     * @param col Header column number
+     * @param checked Display status
      */
     public abstract void setVisibledColumns(int col, boolean checked);
 
     /**
-     * モデルの変更を通知する
+     * Notify model changes
      */
     protected abstract void notifyModel();
 
     /**
-     * 列配置を取得する
-     * @return   列配置
+     * Get column placement
+     * @return Column placement
      */
     public abstract int[] getTableColumnAlignments();
     
     /**
-     * モデルが空か否か
-     * @return	空か否か（true: 空，false: データあり）
+     * Whether the model is empty
+     * @return Whether it is empty (true: empty, false: with data)
      */
     public boolean isEmpty() {
     	return (getInfoMapCount() < 1);
     }
     
     /**
-     * Viewがソート状態か否かを返す
+     * Returns whether View is in sorted state
      * @param sort
      */
     public void setViewSort(boolean sort) {

@@ -57,47 +57,47 @@ import jp.riken.kscope.utils.SwingUtils;
 
 
 /**
- * 付加情報編集ダイアログ
+ * Additional information edit dialog
  * @author RIKEN
  *
  */
 public class InformationDialog extends javax.swing.JDialog implements ActionListener {
 
-    /** シリアル番号 */
+    /** Serial number */
     private static final long serialVersionUID = 1L;
-    /** 付加情報エディトパイン */
+    /** Additional Information Edit Pine */
     private JEditorPane editorInformation;
-    /** OKボタン */
+    /** OK button */
     private JButton btnOk;
-    /** キャンセルボタン */
+    /** Cancel button */
     private JButton btnCancel;
-    /** 参照ボタン */
+    /** Browse button */
     private JButton btnRef;
-    /** クリアボタン */
+    /** Clear button */
     private JButton btnClear;
-    /** 削除ボタン */
+    /** Delete button */
     private JButton btnDelete;
-    /** ダイアログの戻り値 */
+    /** Dialog return value */
     private int result = Constant.CANCEL_DIALOG;
-    /** プロジェクトフォルダ */
+    /** Project folder */
     private File projectFolder;
-    /** 付加情報 */
+    /** Additional information */
     private String information;
-    /** カットボタン */
+    /** Cut button */
     private JButton btnCut;
-    /** コピーボタン */
+    /** Copy button */
     private JButton btnCopy;
-    /** ペーストボタン */
+    /** Paste button */
     private JButton btnPaste;
-    /** 付加情報:ブロック */
+    /** Additional information: Block */
     private JLabel labelBlock;
-    /** 編集可否 */
+    /** Editable */
     private boolean editable;
 
     /**
-     * コンストラクタ
-     * @param owner		親フレーム
-     * @param modal		true=モーダルダイアログを表示する
+     * Constructor
+     * @param owner parent frame
+     * @param modal true = Show modal dialog
      */
     public InformationDialog(Frame owner, boolean modal) {
         super(owner, modal);
@@ -105,7 +105,7 @@ public class InformationDialog extends javax.swing.JDialog implements ActionList
     }
 
     /**
-     * GUI初期化を行う。
+     * Initialize the GUI.
      */
     private void initGUI() {
         try {
@@ -113,7 +113,7 @@ public class InformationDialog extends javax.swing.JDialog implements ActionList
             getContentPane().setLayout(thisLayout);
 
             {
-                // ボタンパネル
+                // Button panel
                 {
                     JPanel panelButtons = new JPanel();
                     FlowLayout layoutButtons = new FlowLayout();
@@ -134,19 +134,19 @@ public class InformationDialog extends javax.swing.JDialog implements ActionList
                     {
                         btnDelete = new JButton();
                         btnDelete.setPreferredSize(buttonSize);
-                        btnDelete.setText(Message.getString("dialog.common.button.delete")); //削除
+                        btnDelete.setText(Message.getString("dialog.common.button.delete")); //Delete
                         btnDelete.addActionListener(this);
                         panelButtons.add(btnDelete);
                     }
                     {
                         btnCancel = new JButton();
                         btnCancel.setPreferredSize(buttonSize);
-                        btnCancel.setText(Message.getString("dialog.common.button.cancel")); //キャンセル
+                        btnCancel.setText(Message.getString("dialog.common.button.cancel")); //Cancel
                         btnCancel.addActionListener(this);
                         panelButtons.add(btnCancel);
                     }
                 }
-                // 付加情報
+                // Additional information
                 {
                     JPanel panelContent = new JPanel();
                     GridBagLayout panelContentLayout = new GridBagLayout();
@@ -157,31 +157,31 @@ public class InformationDialog extends javax.swing.JDialog implements ActionList
                     getContentPane().add(panelContent, BorderLayout.CENTER);
                     panelContent.setLayout(panelContentLayout);
                     panelContent.setPreferredSize(new java.awt.Dimension(390, 230));
-                    // ラベル
+                    // Label
                     {
                         JLabel label = new JLabel();
                         panelContent.add(label, new GridBagConstraints(1, 0, 2, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
-                        label.setText(Message.getString("mainmenu.edit.info")); //付加情報編集
+                        label.setText(Message.getString("mainmenu.edit.info")); // Edit additional information
                     }
-                    // 付加情報:ラベル
+                    // Additional information: Label
                     {
                         JLabel label = new JLabel();
                         panelContent.add(label, new GridBagConstraints(1, 1, 1, 1, 0.0, 0.0, GridBagConstraints.NORTHEAST, GridBagConstraints.NONE, new Insets(0, 0, 0, 7), 0, 0));
-                        label.setText(Message.getString("informationdialog.label.information")); //付加情報
+                        label.setText(Message.getString("informationdialog.label.information")); //Additional information
                     }
-                    // 付加情報:ブロック
+                    // Additional information: Block
                     {
                         labelBlock = new JLabel();
                         panelContent.add(labelBlock, new GridBagConstraints(2, 1, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 7), 0, 0));
                         labelBlock.setText(Message.getString("informationdialog.label.block")); //BLOCK
                     }
-                    // 付加情報テキストボックス
+                    // Additional information text box
                     {
                         editorInformation = new JEditorPane();
                         editorInformation.setEditorKit(new NoWrapEditorKit());
 
                         JScrollPane scrollEditor = new JScrollPane(editorInformation);
-                        // タブサイズ = 4
+                        // Tab size = 4
                         SwingUtils.setTabSize(editorInformation, 4);
                         editorInformation.putClientProperty(JEditorPane.HONOR_DISPLAY_PROPERTIES, Boolean.TRUE);
                         scrollEditor.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
@@ -189,7 +189,7 @@ public class InformationDialog extends javax.swing.JDialog implements ActionList
                         panelContent.add(scrollEditor, new GridBagConstraints(2, 2, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
                     }
 
-                    // ボタンパネル
+                    // Button panel
                     {
                         JPanel panelSubButtons = new JPanel();
                         //FlowLayout panelSubButtonsLayout = new FlowLayout();
@@ -254,16 +254,16 @@ public class InformationDialog extends javax.swing.JDialog implements ActionList
                             btnClear.setBorderPainted(false);
                         }
 
-                        // ツールチップ設定
-                        btnRef.setToolTipText(Message.getString("informationdialog.button.filepaste.tooltip")); //ファイル貼り付け
-                        btnCut.setToolTipText(Message.getString("informationdialog.button.cut.tooltip")); //切り取り
-                        btnCopy.setToolTipText(Message.getString("informationdialog.button.copy.tooltip")); //コピー
-                        btnPaste.setToolTipText(Message.getString("informationdialog.button.paste.tooltip")); //貼り付け
-                        btnClear.setToolTipText(Message.getString("informationdialog.button.clear.tooltip")); //クリア
+                        // Tooltip settings
+                        btnRef.setToolTipText(Message.getString("informationdialog.button.filepaste.tooltip")); // Paste file
+                        btnCut.setToolTipText(Message.getString("informationdialog.button.cut.tooltip")); // Cut out
+                        btnCopy.setToolTipText(Message.getString("informationdialog.button.copy.tooltip")); //copy
+                        btnPaste.setToolTipText(Message.getString("informationdialog.button.paste.tooltip")); //pasting
+                        btnClear.setToolTipText(Message.getString("informationdialog.button.clear.tooltip")); //clear
                     }
                 }
             }
-            this.setTitle(Message.getString("mainmenu.edit.info")); //付加情報編集
+            this.setTitle(Message.getString("mainmenu.edit.info")); // Edit additional information
             this.setSize(640, 400);
 
         } catch (Exception e) {
@@ -272,66 +272,66 @@ public class InformationDialog extends javax.swing.JDialog implements ActionList
     }
 
     /**
-     * ダイアログを表示する。
-     * @return    ダイアログの閉じた時のボタン種別
+     * Display a dialog.
+     * @return Button type when the dialog is closed
      */
     public int showDialog() {
 
-        // 親フレーム中央に表示する。
+        // Display in the center of the parent frame.
         this.setLocationRelativeTo(this.getOwner());
 
-        // ダイアログ表示
+        // Dialog display
         this.setVisible(true);
 
         return this.result;
     }
 
     /**
-     * ボタンクリックイベント
-     * @param event		イベント情報
+     * Button click event
+     * @param event Event information
      */
     @Override
     public void actionPerformed(ActionEvent event) {
 
-        // 削除
+        // Delete
         if (event.getSource() == this.btnDelete) {
-            // 削除確認
+            // Confirm deletion
             int option = JOptionPane.showConfirmDialog(this,
-                    Message.getString("informationdialog.confirmdialog.delete.message"), //付加情報を削除してもよろしいですか？
-                    Message.getString("informationdialog.confirmdialog.delete.title"), //削除確認
+                    Message.getString("informationdialog.confirmdialog.delete.message"), // Are you sure you want to delete the additional information?
+                    Message.getString("informationdialog.confirmdialog.delete.title"), // Confirm deletion
                     JOptionPane.OK_CANCEL_OPTION);
             if (option != JOptionPane.OK_OPTION) return;
 
             this.setInformation("");
             this.result = Constant.DELETE_DIALOG;
 
-            // ダイアログを閉じる。
+            // Close the dialog.
             dispose();
             return;
         }
         // OK
         else if (event.getSource() == this.btnOk) {
-            // 付加情報の登録チェック
+            // Check registration of additional information
             if (validateInformation()) {
                 this.setInformation(this.editorInformation.getText());
                 this.result = Constant.OK_DIALOG;
-                // ダイアログを閉じる。
+                // Close the dialog.
                 dispose();
                 return;
             }
         }
-        // キャンセル
+        // Cancel
         else if (event.getSource() == this.btnCancel) {
             this.result = Constant.CANCEL_DIALOG;
-            // ダイアログを閉じる。
+            // Close the dialog.
             dispose();
             return;
         }
-        // 参照ボタン
+        // Browse button
         else if (event.getSource() == this.btnRef) {
-            // ファイル選択ダイアログを表示する。
+            // Display the file selection dialog.
             File[] selected = SwingUtils.showOpenFileDialog(this,
-            		Message.getString("informationdialog.selectfiledialog.title"), //ファイルの選択
+            		Message.getString("informationdialog.selectfiledialog.title"), // Select file
                     projectFolder.getAbsolutePath(), null, true);
             if (selected == null || selected.length <= 0) return;
 
@@ -339,19 +339,19 @@ public class InformationDialog extends javax.swing.JDialog implements ActionList
                 StringBuffer buf = new StringBuffer();
                 int offset = this.editorInformation.getCaretPosition();
                 if (offset > 0) {
-                    // キャレット位置が行途中ならば、改行を挿入する。
+                    // If the caret position is in the middle of the line, insert a line break.
                     String prev_char = editorInformation.getDocument().getText(offset-1, 1);
                     if (!("\n".equals(prev_char))) {
                         buf.append("\n");
                     }
                 }
                 for (int i=0; i<selected.length; i++) {
-                    // 現在キャレット位置にファイルパスを追加する
+                    // Add the file path to the current caret position
                     String path = FileUtils.getRelativePath(selected[i], this.projectFolder);
                     if (path == null) {
                     	JOptionPane.showMessageDialog(this,
-                    			Message.getString("informationdialog.errordialog.notexist.message", selected[i]), // [file] は存在しません。
-                    			Message.getString("dialog.common.error"), //エラー
+                    			Message.getString("informationdialog.errordialog.notexist.message", selected[i]), // [file] does not exist.
+                    			Message.getString("dialog.common.error"), //error
                     			JOptionPane.ERROR_MESSAGE);
                     	continue;
                     }
@@ -362,28 +362,28 @@ public class InformationDialog extends javax.swing.JDialog implements ActionList
                 editorInformation.getDocument().insertString(offset, buf.toString(), attr);
                 this.editorInformation.setCaretPosition(offset+buf.length());
 
-                // 付加情報テキストボックスにフォーカス移動
+                // Move focus to additional information text box
                 this.editorInformation.requestFocus();
 
             } catch (BadLocationException ex) {
                 ex.printStackTrace();
             }
         }
-        // 切り取りボタン
+        // Cut button
         else if (event.getSource() == this.btnCut) {
             this.editorInformation.cut();
         }
-        // コピーボタン
+        // Copy button
         else if (event.getSource() == this.btnCopy) {
             this.editorInformation.copy();
         }
-        // 貼り付けボタン
+        // Paste button
         else if (event.getSource() == this.btnPaste) {
             this.editorInformation.paste();
         }
-        // クリア
+        // clear
         else if (event.getSource() == this.btnClear) {
-            // 情報をクリアする。
+            // Clear the information.
             this.editorInformation.setText("");
         }
 
@@ -391,18 +391,18 @@ public class InformationDialog extends javax.swing.JDialog implements ActionList
     }
 
     /**
-     * 入力チェックを行う。
-     * @return        成否
+     * Check the input.
+     * @return Success or failure
      */
     private boolean validateInformation() {
 
-        // 情報
+        // Information
         String content = this.editorInformation.getText();
         content = StringUtils.trim(content);
         if (content == null || content.isEmpty()) {
             JOptionPane.showMessageDialog(this,
-            		Message.getString("informationdialog.errordialog.informationempty.message"), //付加情報を入力してください。
-                    Message.getString("dialog.common.error"), //エラー
+            		Message.getString("informationdialog.errordialog.informationempty.message"), // Please enter additional information.
+                    Message.getString("dialog.common.error"), //error
                                                 JOptionPane.ERROR_MESSAGE);
             return false;
         }
@@ -412,32 +412,32 @@ public class InformationDialog extends javax.swing.JDialog implements ActionList
 
 
     /**
-     * プロジェクトフォルダを設定する
-     * @param  folder  プロジェクトフォルダ
+     * Set the project folder
+     * @param folder Project folder
      */
     public void setProjectFolder(File folder) {
         this.projectFolder = folder;
     }
 
     /**
-     * 付加情報を取得する
-     * @return 		付加情報
+     * Get additional information
+     * @return Additional information
      */
     public String getInformation() {
         return this.information;
     }
 
     /**
-     * 付加情報ブロックを設定する。
-     * @param block 	付加情報ブロック
+     * Set additional information block.
+     * @param block Additional information block
      */
     public void setBlockName(String block) {
         this.labelBlock.setText(block);
     }
 
     /**
-     * 付加情報を設定する。
-     * @param information 	付加情報
+     * Set additional information.
+     * @param information Additional information
      */
     public void setInformation(String information) {
         this.information = information;
@@ -445,17 +445,17 @@ public class InformationDialog extends javax.swing.JDialog implements ActionList
     }
 
     /**
-     * 編集可否を取得する.
-	 * @return 編集可否
-	 */
+     * Get editability.
+* @return Editable
+*/
 	public boolean isEditable() {
 		return editable;
 	}
 
 	/**
-	 * 編集可否を設定する.
-	 * @param editable    編集可否
-	 */
+* Set editability.
+* @param editable Editable
+*/
 	public void setEditable(boolean editable) {
 		this.editable = editable;
 		if (this.btnOk != null) {
@@ -467,24 +467,24 @@ public class InformationDialog extends javax.swing.JDialog implements ActionList
 	}
 
 	/**
-     * 行折り返し段落のビュークラス
+     * Line wrap paragraph view class
      * @author RIKEN
      */
     private class NoWrapParagraphView extends ParagraphView {
         /**
-         * コンストラクタ
-         * @param elem		このビューが扱う要素
+         * Constructor
+         * @param elem Elements handled by this view
          */
         public NoWrapParagraphView(Element elem) {
             super(elem);
         }
 
         /**
-         * 行の幅のサイズ要件を計算します.<br/>
-         * １行の折り返しサイズを設定する。
-         * @param axis			行位置
-         * @param r				コンポーネントのサイズと位置オブジェクト
-         * @return				コンポーネントのサイズと位置オブジェクト
+         * Calculate the row width size requirement. <br/>
+         * Set the wrapping size for one line.
+         * @param axis Line position
+         * @param r Component size and position object
+         * @return Component size and position object
          */
         @Override
         protected SizeRequirements calculateMinorAxisRequirements(int axis, SizeRequirements r) {
@@ -494,9 +494,9 @@ public class InformationDialog extends javax.swing.JDialog implements ActionList
         }
 
         /**
-         * 指定された子のインデックスに反してフローする制約スパンを取り出します。
-         * @param index		照会されるビューのインデックス
-         * @return			ビューの制約スパン
+         * Fetches the constraint span that flows against the specified child index.
+         * @param index Index of the queried view
+         * @return View constraint span
          */
         @Override
 		public int getFlowSpan(int index) {
@@ -505,14 +505,14 @@ public class InformationDialog extends javax.swing.JDialog implements ActionList
     }
 
     /**
-     * ビューの作成クラス
+     * View creation class
      * @author RIKEN
      */
     class NoWrapViewFactory implements ViewFactory {
         /**
-         * 要素に基づいてビューを作成します。
-         * @param elem		作成対象要素
-         * @return			ビュー
+         * Create a view based on the element.
+         * @param elem Element to be created
+         * @return view
          */
         @Override
 		public View create(Element elem) {
@@ -535,15 +535,15 @@ public class InformationDialog extends javax.swing.JDialog implements ActionList
     }
 
     /**
-     * 書式付きテキストスタイル
+     * Formatted text style
      * @author RIKEN
      */
     @SuppressWarnings("serial")
     class NoWrapEditorKit extends StyledEditorKit {
 
         /**
-         * ビュー作成クラスを取得する。
-         * @return		ビュー作成クラス
+         * Get the view creation class.
+         * @return View creation class
          */
         @Override
 		public ViewFactory getViewFactory() {

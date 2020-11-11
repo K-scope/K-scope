@@ -41,91 +41,91 @@ import jp.riken.kscope.common.TRACE_DIR;
 import jp.riken.kscope.service.AppController;
 
 /**
- * ソースファイルパネルポップアップメニュークラス
+ * Source File Panel pop-up menu class
  * @author RIKEN
  */
 public class SourcePanelPopupMenu extends JPopupMenu implements PopupMenuListener {
 
-    /** シリアル番号 */
+    /** Serial number */
     private static final long serialVersionUID = 1L;
 
-    /** アプリケーションコントローラ */
+    /** Application controller */
     private AppController controller;
-    /**ダブルクリックアクション (2014/4/8 ohichi)**/
+    /** Double click action (2014/4/8 ohichi) **/
     private ActionListener action;
 
     /**
-     * コンストラクタ
+     * Constructor
      */
     public SourcePanelPopupMenu() {
-        // メニューの作成を行う。
+        // Create a menu.
         initialize();
     }
 
 
     /**
-     * コンストラクタ
-     * @param controller		アプリケーションコントローラ
+     * Constructor
+     * @param controller Application controller
      */
     public SourcePanelPopupMenu(AppController controller) {
         this.controller = controller;
 
-        // メニューの作成を行う。
+        // Create a menu.
         initialize();
     }
 
     /**
-     * メニューの作成を行う。
+     * Create a menu.
      */
     private void initialize() {
 
-        // メニューの作成
-        // ノードを選択する (2014/4/8追加 ohichi)
+        // Create menu
+        // Select a node (2014/4/8 added ohichi)
     	JMenuItem selectNode = new JMenuItem(Message.getString("mainmenu.edit.click"));
     	this.add(selectNode);
     	action = new FSourceTTreeAction(this.controller);
     	selectNode.addActionListener(action);
 
-        // 編集:コピー
-        JMenuItem menuEditCopy = new JMenuItem(Message.getString("mainmenu.edit.copy")); //コピー
+        // Edit: Copy
+        JMenuItem menuEditCopy = new JMenuItem(Message.getString("mainmenu.edit.copy")); //copy
         this.add(menuEditCopy);
         menuEditCopy.addActionListener(new EditClipboardCopyAction(this.controller, FRAME_VIEW.SOURCE_VIEW));
 
-        // スペーサー
+        // spacer
         this.add(new JSeparator());
 
-        // 検索:検索
-        JMenuItem menuSearchFind = new JMenuItem(Message.getString("mainmenu.search.source")); //ソース検索
+        // Search: Search
+        JMenuItem menuSearchFind = new JMenuItem(Message.getString("mainmenu.search.source")); // Source search
         this.add(menuSearchFind);
         menuSearchFind.addActionListener(new SearchFindAction(this.controller));
-        // 検索:ファイル検索...
-        JMenuItem menuSearchGrep = new JMenuItem(Message.getString("mainmenu.search.file")); //ファイル検索
+        // Search: File search ...
+        JMenuItem menuSearchGrep = new JMenuItem(Message.getString("mainmenu.search.file")); // File search
         this.add(menuSearchGrep);
         menuSearchGrep.addActionListener(new SearchGrepAction(this.controller));
 
-        // スペーサー
+        // spacer
         this.add(new JSeparator());
 
-        // 解析:トレース：前へ
-        JMenuItem menuAnalysisStart = new JMenuItem(Message.getString("trace_dir.enum.start")); //トレース：開始
+        // Analysis: Trace: Previous
+        JMenuItem menuAnalysisStart = new JMenuItem(Message.getString("trace_dir.enum.start")); // Trace: Start
         this.add(menuAnalysisStart);
         menuAnalysisStart.addActionListener(new AnalysisTraceAction(this.controller, TRACE_DIR.START));
 
-        // 解析:データフロー解析（宣言・定義・参照）
-        JMenuItem menuAnalysisReference = new JMenuItem(Message.getString("mainmenu.analysis.dec-def-ref")); //宣言・定義・参照
+        // Analysis: Data flow analysis (declaration / definition / reference)
+        JMenuItem menuAnalysisReference = new JMenuItem(Message.getString("mainmenu.analysis.dec-def-ref")); // Declaration / Definition / Reference
         this.add(menuAnalysisReference);
         menuAnalysisReference.addActionListener(new AnalysisReferenceAction(this.controller, FRAME_VIEW.SOURCE_VIEW));
 
-        // プロファイラ：測定区間設定
-        JMenuItem menuViewAddEprofArea = new JMenuItem(Message.getString("languagetreepopupmenu.menu.setmeaurementrange")); // 測定区間設定
+        // Profiler: Measurement interval setting
+        JMenuItem menuViewAddEprofArea = new JMenuItem(Message.getString("languagetreepopupmenu.menu.setmeaurementrange")); // Measurement interval setting
         this.add(menuViewAddEprofArea);
         menuViewAddEprofArea.addActionListener(new ProfilerAddEprofAction(this.controller, FRAME_VIEW.SOURCE_VIEW));
 
-        // スペーサー
+        // spacer
         this.add(new JSeparator());
 
-        // 分析:アクセス先設定
-        JMenuItem menuAnalysisMemoryAccess = new JMenuItem(Message.getString("mainmenu.analysis.access"));  // KEY520=変数アクセス先設定
+        // Analysis: Access destination setting
+        JMenuItem menuAnalysisMemoryAccess = new JMenuItem(Message.getString("mainmenu.analysis.access"));  // KEY520 = Variable access destination setting
         this.add(menuAnalysisMemoryAccess);
         menuAnalysisMemoryAccess.addActionListener(
         				new AnalysisMemoryAction(
@@ -133,8 +133,8 @@ public class SourcePanelPopupMenu extends JPopupMenu implements PopupMenuListene
         							AnalysisMemoryAction.ACTION_MODE.ACCESS_SETTING,
         							FRAME_VIEW.SOURCE_VIEW));
 
-        // 分析:要求Byte/FLOP算出
-        JMenuItem menuAnalysisMemoryCalculate = new JMenuItem(Message.getString("mainmenu.analysis.calculate"));  // KEY521=要求Byte/FLOP算出
+        // Analysis: Request Byte / FLOP calculation
+        JMenuItem menuAnalysisMemoryCalculate = new JMenuItem(Message.getString("mainmenu.analysis.calculate"));  // KEY521 = Request Byte / FLOP calculation
         this.add(menuAnalysisMemoryCalculate);
         menuAnalysisMemoryCalculate.addActionListener(
 						new AnalysisMemoryAction(
@@ -142,11 +142,11 @@ public class SourcePanelPopupMenu extends JPopupMenu implements PopupMenuListene
 									AnalysisMemoryAction.ACTION_MODE.MEMORY_CALCULATE,
 									FRAME_VIEW.SOURCE_VIEW));
 
-        // スペーサー
+        // spacer
         this.add(new JSeparator());
 
-        // ファイル:外部ツールでソースファイルを開く
-        JMenuItem menuFileOpenSourceFile = new JMenuItem(Message.getString("mainmenu.file.program")); //外部ツールで開く
+        // File: Open the source file with an external tool
+        JMenuItem menuFileOpenSourceFile = new JMenuItem(Message.getString("mainmenu.file.program")); // Open with an external tool
         this.add(menuFileOpenSourceFile);
         menuFileOpenSourceFile.addActionListener(new FileOpenSourceFileAction(this.controller, FRAME_VIEW.SOURCE_VIEW));
 
@@ -154,14 +154,14 @@ public class SourcePanelPopupMenu extends JPopupMenu implements PopupMenuListene
     }
 
     /**
-     * ポップアップメニュー可視イベント.<br/>
-     * アクションが実行可能かチェックする
-     * @param event		イベント情報
+     * Pop-up menu visible event. <br/>
+     * Check if the action is executable
+     * @param event Event information
      */
     @Override
     public void popupMenuWillBecomeVisible(PopupMenuEvent event) {
 
-        // アクションが実行可能かチェックする
+        // Check if the action is executable
         JPopupMenu menu = (JPopupMenu) event.getSource();
         int count = menu.getComponentCount();
         for (int i=0; i<count; i++) {
@@ -180,24 +180,24 @@ public class SourcePanelPopupMenu extends JPopupMenu implements PopupMenuListene
     }
 
     /**
-     * 選択展開アクションリスナを取得する(2014/4/8追加 ohichi)
-     * @return		選択展開アクションリスナ
+     * Get select expansion action listener (2014/4/8 added ohichi)
+     * @return Selective expansion action listener
      */
     public ActionListener getAction() {
         return action;
     }
 
     /**
-     * ポップアップメニューが取り消されたイベント
-     * @param event		イベント情報
+     * Events with the pop-up menu canceled
+     * @param event Event information
      */
     @Override
     public void popupMenuWillBecomeInvisible(PopupMenuEvent event) { }
 
 
     /**
-     * ポップアップメニューが取り消されたイベント
-     * @param event		イベント情報
+     * Events with the pop-up menu canceled
+     * @param event Event information
      */
     @Override
     public void popupMenuCanceled(PopupMenuEvent event) { }

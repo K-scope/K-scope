@@ -20,7 +20,7 @@ import jp.riken.kscope.language.Variable;
 import jp.riken.kscope.language.VariableDefinition;
 
 /**
- * アクセス先メモリタイプ
+ * Access memory type
  * @author RIKEN
  */
 public enum ACCESSMEMORY_TYPE {
@@ -32,22 +32,22 @@ public enum ACCESSMEMORY_TYPE {
     L2_CACHE("L2 Cache", "L2", "l2_cache"),
     /** Register */
     REGISTER("Register", "Reg", "register"),
-    /** CUSTOM設定 */
+    /** CUSTOM settings */
     CUSTOM("Custom", "Custom", "custom"),
-    /** Default設定 */
+    /** Default setting */
     DEFAULT("Default", "Default", "default");
 
-    /** アクセス先名 */
+    /** Access name */
     private String name;
-    /** アクセス先短縮名 */
+    /** Short name of access destination */
     private String shortname;
-    /** プロパティファイルキー名 */
+    /** Property file key name */
     private String key;
 
     /**
-     * コンストラクタ
-     * @param name		アクセス先名
-     * @param shortname		アクセス先短縮名
+     * Constructor
+     * @param name Access name
+     * @param shortname Access short name
      */
     private ACCESSMEMORY_TYPE(String name, String shortname, String key) {
         this.name = name;
@@ -56,24 +56,24 @@ public enum ACCESSMEMORY_TYPE {
     }
 
     /**
-     * アクセス先名を取得する
-     * @return name		アクセス先名
+     * Get the access name
+     * @return name Access name
      */
     public String getName() {
         return name;
     }
 
     /**
-     * アクセス先短縮名を取得する
-     * @return name		アクセス先短縮名
+     * Get the access destination short name
+     * @return name Access short name
      */
     public String getShortname() {
         return this.shortname;
     }
 
     /**
-     * プロパティファイルキー名を取得する
-     * @return name		プロパティファイルキー名
+     * Get the property file key name
+     * @return name Property file key name
      */
     public String getKey() {
         return this.key;
@@ -81,8 +81,8 @@ public enum ACCESSMEMORY_TYPE {
 
 
     /**
-     * アクセス先メモリ名リストを取得する
-     * @return			アクセス先メモリ名リスト
+     * Get the access destination memory name list
+     * @return Access memory name list
      */
     public static String[] getAccessMemoryList() {
         ACCESSMEMORY_TYPE types[] = ACCESSMEMORY_TYPE.values();
@@ -94,18 +94,18 @@ public enum ACCESSMEMORY_TYPE {
     }
 
     /**
-     * 変数によるデフォルトアクセス先メモリを取得する.
-     * @param def		変数
-     * @return			デフォルトアクセス先メモリ
+     * Get the default access destination memory by variable.
+     * @param def variable
+     * @return Default access memory
      */
     public static ACCESSMEMORY_TYPE getDefaultType() {
     	return MEMORY;
     }
 
     /**
-     * 変数によるデフォルトアクセス先メモリを取得する.
-     * @param def		変数
-     * @return			デフォルトアクセス先メモリ
+     * Get the default access destination memory by variable.
+     * @param def variable
+     * @return Default access memory
      */
     public static ACCESSMEMORY_TYPE getDefaultType(Variable var) {
     	if (var == null) return getDefaultType();
@@ -114,14 +114,14 @@ public enum ACCESSMEMORY_TYPE {
     }
 
     /**
-     * 変数型によるデフォルトアクセス先メモリを取得する.
-     * @param def		変数定義
-     * @return			デフォルトアクセス先メモリ
+     * Get the default access destination memory by variable type.
+     * @param def Variable definition
+     * @return Default access memory
      */
     public static ACCESSMEMORY_TYPE getDefaultType(VariableDefinition def) {
     	if (def == null) return getDefaultType();
     	if (def.getVariableType() == null) return getDefaultType();
-    	// scaler変数はレジスタとする
+    	// scaler variable is a register
     	if (def.get_dimension_size() <= 0) return REGISTER;
     	if (def.getVariableType().isIntegerType()) return MEMORY;
     	if (def.getVariableType().isRealType()) return MEMORY;
@@ -130,10 +130,10 @@ public enum ACCESSMEMORY_TYPE {
     }
 
     /**
-     * 文字列からACCESSMEMORY_TYPEを取得する.
-     * enum名、アクセス先名, アクセス先短縮名, プロパティファイルキー名から判断する.
-     * @param value		ACCESSMEMORY_TYPE文字列
-     * @return		ACCESSMEMORY_TYPE
+     * Get ACCESSMEMORY_TYPE from the string.
+     * Judge from enum name, access destination name, access destination short name, property file key name.
+     * @param value ACCESSMEMORY_TYPE string
+     * @return ACCESSMEMORY_TYPE
      */
     public static ACCESSMEMORY_TYPE getAccessMemoryType(String value) {
     	if (value == null) return null;

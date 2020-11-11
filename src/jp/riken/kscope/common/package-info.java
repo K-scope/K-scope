@@ -16,6 +16,6 @@
  */
 
 /**
- * 定数、識別子（enum）を提供します.<br/>
+ * Provides constants and identifiers (enums). <br/>
  */
 package jp.riken.kscope.common;

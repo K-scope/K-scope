@@ -19,36 +19,36 @@ package jp.riken.kscope.common;
 import jp.riken.kscope.Message;
 
 /**
- * キーワードタイプ
+ * Keyword type
  * @author RIKEN
  */
 public enum KEYWORD_TYPE {
-    // キーワードタイプ
-    /** 予約語、キーワード */
-    KEYWORD(Message.getString("keyword_type.enum.reserved")), //予約語、キーワード
-    /** テキスト検索 */
-    SEARCH(Message.getString("keyword_type.enum.textsearch")), //テキスト検索
-    /** トレース */
-    TRACE(Message.getString("mainmenu.window.analysis.trace")), //トレース
-    /** 変数アクセス先メモリ */
-    VARIABLE(Message.getString("keyword_type.enum.variablememory")), //変数アクセス先メモリ
-    /** 不明 */
-    UNKNOWN(Message.getString("explore_panel.enum.unknown")); //不明
+    // Keyword type
+    /** Reserved words, keywords */
+    KEYWORD(Message.getString("keyword_type.enum.reserved")), // Reserved words, keywords
+    /** Text search */
+    SEARCH(Message.getString("keyword_type.enum.textsearch")), // Text search
+    /** Trace */
+    TRACE(Message.getString("mainmenu.window.analysis.trace")), //trace
+    /** Variable access destination memory */
+    VARIABLE(Message.getString("keyword_type.enum.variablememory")), // Variable access destination memory
+    /** Unknown */
+    UNKNOWN(Message.getString("explore_panel.enum.unknown")); //unknown
 
-    /** タイプ名 */
+    /** Type name */
     private String name;
 
     /**
-     * コンストラクタ
-     * @param name		タイプ名
+     * Constructor
+     * @param name Type name
      */
     private KEYWORD_TYPE(String name) {
         this.name = name;
     }
 
     /**
-     * タイプ名を取得する
-     * @return		タイプ名
+     * Get the type name
+     * @return type name
      */
     public String getName() {
         return this.name;

@@ -16,7 +16,7 @@
  */
 
 /**
- * アプリケーション、GUIのユーティリティクラスです.
+ * Application, GUI utility class.
  */
 package jp.riken.kscope.utils;
 

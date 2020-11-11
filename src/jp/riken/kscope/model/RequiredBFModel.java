@@ -42,24 +42,24 @@ import jp.riken.kscope.utils.StringUtils;
 import jp.riken.kscope.utils.SwingUtils;
 
 /**
- * 要求Byte/FLOPテーブルモデル
+ * Request Byte / FLOP table model
  * @author RIKEN
  *
  */
 public class RequiredBFModel extends Observable {
 
-    /** タイトル */
+    /** Title */
     private String title;
-    /** 要求Byte/FLOP算出結果リスト:追加毎にグループ化する. */
+    /** Request Byte / FLOP calculation result list: Group by addition. */
     private List<List<RequiredBFResult>> listResults;
-    /** 算出単位 */
+    /** Calculation unit */
     private BF_CALC_TYPE unitType;
-    /** 構造ツリーモデル. */
+    /** Structural tree model. */
     private LanguageTreeModel modelLanguageTree = null;
 
     /**
-     * 要求Byte/FLOPテーブルヘッダーリスト : 29列
-     * 1列目はBlock情報とする。
+     * Request Byte / FLOP table header list: 29 columns
+     * The first column is Block information.
      */
     private String[] HEADER_COLUMNS = {"", "Block", "Load(B)", "Store(B)", "FLOP",
                                        "Required B/F", "Throughput(GB/s)", "Effective B/F", "Peak Ratio(%)", "Memory Variable",
@@ -68,11 +68,11 @@ public class RequiredBFModel extends Observable {
                                        "intrinsic(F)", "Performance(GFLOPS)", "Store Mode", "Memory Band Width(GB/s)",
                                        "L1 Band Width(GB/s)", "L2 Band Width(GB/s)", "Register Band Width(GB/s)", "Custom Band Width(GB/s)", "Memory Coef",
                                        "L1 Coef", "L2 Coef", "Register Coef", "Custom Coef",
-                                       Message.getString("mainmenu.window.analysis.information") // 付加情報
+                                       Message.getString("mainmenu.window.analysis.information") // Additional information
                                        };
     /**
-     * ブロック演算カウントテーブル列サイズ : 31列
-     * -1=非表示とする
+     * Block operation count table column size: 31 columns
+     * -1 = Hide
      */
     private int[] HEADER_COLUMNS_PREFERREDWIDTH = {
                                        -1, 240, 100, 100, 100,
@@ -84,14 +84,14 @@ public class RequiredBFModel extends Observable {
                                        100, 100, 100, 100, 240};
 
     /**
-     * コンストラクタ
+     * Constructor
      */
     public RequiredBFModel() {
         super();
     }
 
     /**
-     * モデルの変更を通知する
+     * Notify model changes
      */
     public void notifyModel() {
         this.setChanged();
@@ -100,8 +100,8 @@ public class RequiredBFModel extends Observable {
     }
 
     /**
-     * 要求Byte/FLOP算出結果リストのグループ数を取得する
-     * @return		要求Byte/FLOP算出結果リスト数
+     * Get the number of groups in the request Byte / FLOP calculation result list
+     * @return Request Byte / FLOP calculation result list number
      */
     public int getListResultGroupCount() {
         if (this.listResults == null) {
@@ -112,10 +112,10 @@ public class RequiredBFModel extends Observable {
 
 
     /**
-     * 要求Byte/FLOP算出結果を取得する
-     * @param   groupId    グループインデックス
-     * @param   index    リストインデックス
-     * @return		要求Byte/FLOP算出結果
+     * Get the request Byte / FLOP calculation result
+     * @param groupId Group index
+     * @param index List index
+     * @return Request Byte / FLOP calculation result
      */
     public RequiredBFResult getRequiredByteFlopResult(int groupId, int index) {
         if (this.listResults == null) {
@@ -128,10 +128,10 @@ public class RequiredBFModel extends Observable {
     }
 
     /**
-     * 要求Byte/FLOP算出結果グループからブロックの一致する要求Byte/FLOP算出結果を取得する
-     * @param   group    グループリスト
-     * @param   block    ブロック
-     * @return		要求Byte/FLOP算出結果
+     * Get the request Byte / FLOP calculation result that matches the block from the request Byte / FLOP calculation result group.
+     * @param group Group list
+     * @param block block
+     * @return Request Byte / FLOP calculation result
      */
     public RequiredBFResult getRequiredByteFlopResult(List<RequiredBFResult> group, Object block) {
         if (group == null || block == null) return null;
@@ -144,24 +144,24 @@ public class RequiredBFModel extends Observable {
     }
 
     /**
-     * 要求Byte/FLOP算出結果テーブルモデルを取得する
-     * @return		要求Byte/FLOP算出結果テーブルモデル
+     * Get the request Byte / FLOP calculation result table model
+     * @return Request Byte / FLOP calculation result table model
      */
     public DefaultTableModel getBlockDefaultTableModel() {
-        // テーブルモデルの作成
+        // Create a table model
         DefaultTableModel tableModel = new DefaultTableModel(HEADER_COLUMNS, 0);
         return tableModel;
     }
 
 
     /**
-     * 要求Byte/FLOP算出結果テーブル列幅を設定する.<br/>
-     * 要求Byte/FLOP算出結果テーブルはすべて固定列幅とする
-     * @param columnModel		テーブル列モデル
+     * Set the request Byte / FLOP calculation result table column width. <br/>
+     * Request Byte / FLOP calculation result table has a fixed column width
+     * @param columnModel Table column model
      */
     public void setTableColumnWidth(DefaultTableColumnModel columnModel) {
         for (int i=0; i<columnModel.getColumnCount(); i++) {
-            // 列取得
+            // Get column
             TableColumn column = columnModel.getColumn(i);
             if (HEADER_COLUMNS_PREFERREDWIDTH.length >= i) {
                 if (HEADER_COLUMNS_PREFERREDWIDTH[i] >= 0) {
@@ -182,8 +182,8 @@ public class RequiredBFModel extends Observable {
 
 
     /**
-     * 要求Byte/FLOP算出結果テーブル行を追加する
-     * @param results		要求Byte/FLOP算出結果リスト
+     * Add request Byte / FLOP calculation result table row
+     * @param results Request Byte / FLOP calculation result list
      */
     public void addRequiredByteFlopResults(RequiredBFResult[] results) {
         if (results == null) return;
@@ -194,34 +194,34 @@ public class RequiredBFModel extends Observable {
         list.addAll(Arrays.asList(results));
         this.listResults.add(list);
 
-        // モデルの変更を通知
+        // Notify model changes
         notifyModel();
     }
 
     /**
-     * テーブルモデルをクリアする。
+     * Clear the table model.
      */
     public void clearModel() {
-        // テーブルモデルのクリア
+        // Clear table model
         this.listResults = new ArrayList<List<RequiredBFResult>>();
-        // タイトルのクリア
+        // Clear title
         title = null;
 
-        // モデルの変更を通知
+        // Notify model changes
         notifyModel();
     }
 
     /**
-     * タイトルを取得する
-     * @return	タイトル
+     * Get the title
+     * @return title
      */
     public String getTitle() {
         return title;
     }
 
     /**
-     * タイトルを設定する
-     * @param title		タイトル
+     * Set the title
+     * @param title Title
      */
     public void setTitle(String title) {
         this.title = title;
@@ -229,19 +229,19 @@ public class RequiredBFModel extends Observable {
 
 
     /**
-     * テーブル情報をファイル出力する。
-     * @param file		出力ファイル
+     * Output table information to a file.
+     * @param file Output file
      */
     public void writeFile(File file) {
 
         try {
-            // 要求Byte/FLOP算出結果テーブル
+            // Request Byte / FLOP calculation result table
             if (this.listResults == null || this.listResults.size() <= 0) return;
 
-            // ファイル出力
+            // File output
             PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(file)));
 
-            // テーブルを出力する
+            // Output the table
             String buf = SwingUtils.toCsv(getTableModel());
             pw.print(buf);
 
@@ -253,8 +253,8 @@ public class RequiredBFModel extends Observable {
     }
 
     /**
-     * テーブルモデルを取得する
-     * @return		テーブルモデル
+     * Get the table model
+     * @return table model
      */
     public DefaultTableModel getTableModel() {
         return createTableModel();
@@ -262,26 +262,26 @@ public class RequiredBFModel extends Observable {
 
 
     /**
-     * テーブルモデルを作成する
-     * @return    テーブルモデル
+     * Create a table model
+     * @return table model
      */
     private DefaultTableModel createTableModel() {
-        // テーブルモデルの作成
+        // Create a table model
         DefaultTableModel tableModel = new DefaultTableModel();
         tableModel.setColumnIdentifiers(HEADER_COLUMNS);
-        // 演算カウントリストからテーブルモデルの作成を行う。
+        // Create a table model from the arithmetic count list.
         if (this.listResults == null) return tableModel;
 
         for (List<RequiredBFResult> group : this.listResults) {
-        	// ブロックリストを作成する
+        	// Create a block list
         	List<Object> listObj = new ArrayList<Object>();
         	for (RequiredBFResult result : group) {
         		listObj.add(result.getBlock());
         	}
-        	// ツリーノードを作成する
+        	// create a tree node
         	DefaultMutableTreeNode root = SwingUtils.createTreeNode(this.modelLanguageTree.getRootNode(), listObj);
 
-            // ツリーノードを順方向で列挙
+            // List tree nodes in the forward direction
             Enumeration<?> depth = root.preorderEnumeration();
             while(depth.hasMoreElements()) {
                 DefaultMutableTreeNode treeNode = (DefaultMutableTreeNode)depth.nextElement();
@@ -295,10 +295,10 @@ public class RequiredBFModel extends Observable {
                 if (depthCount < 0) continue;
                 String depthText = StringUtils.repeat(" ", depthCount*4);
 
-                // テーブル行配列の作成
+                // Create table row array
                 Object[] row = new Object[HEADER_COLUMNS.length];
                 int col = 0;
-                // 要求Byte/FLOP算出結果
+                // Request Byte / FLOP calculation result
                 row[col++] = result;
                 // Block
                 row[col++] = depthText + result.getBlock().toString();
@@ -383,7 +383,7 @@ public class RequiredBFModel extends Observable {
                 row[col++] = result.getRegisterCoef();
                 // Custom Coef
                 row[col++] = result.getCustomCoef();
-                // 付加情報
+                // Additional information
                 if (result.getBlock() != null && result.getBlock() instanceof IInformation) {
                 	TextInfo info = ((IInformation)result.getBlock()).getInformation();
                 	if (info != null && !StringUtils.isNullOrEmpty(info.getContent())) {
@@ -394,7 +394,7 @@ public class RequiredBFModel extends Observable {
                 		row[col++] = "no info";
                 	}
                 }
-                // テーブル行追加
+                // Add table row
                 tableModel.addRow(row);
             }
         }
@@ -403,8 +403,8 @@ public class RequiredBFModel extends Observable {
     }
 
     /**
-     * モデルが空か否か
-     * @return	空か否か（true: 空，false: データあり）
+     * Whether the model is empty
+     * @return Whether it is empty (true: empty, false: with data)
      */
     public boolean isEmpty() {
     	if (this.listResults == null) return true;
@@ -412,20 +412,20 @@ public class RequiredBFModel extends Observable {
     }
 
 	/**
-	 * 算出単位を取得する.
-	 * @return 算出単位
-	 */
+* Get the calculation unit.
+* @return Calculation unit
+*/
 	public BF_CALC_TYPE getUnitType() {
 		return unitType;
 	}
 	/**
-	 * 算出単位を設定する.
-	 * @param type 算出単位
-	 */
+* Set the calculation unit.
+* @param type Calculation unit
+*/
 	public void setUnitType(BF_CALC_TYPE type) {
 		this.unitType = type;
 
-		// ヘッダー表示単位を変更する.
+		// Change the header display unit.
 		for (int i=0; i<this.HEADER_COLUMNS.length; i++) {
 			if (type == BF_CALC_TYPE.FLOP_BYTE) {
 				this.HEADER_COLUMNS[i] = this.HEADER_COLUMNS[i].replaceAll("B/F", "F/B");
@@ -437,17 +437,17 @@ public class RequiredBFModel extends Observable {
 	}
 
 	/**
-	 * 構造ツリーモデルを取得する.
-	 * @return 構造ツリーモデル.
-	 */
+* Get the structure tree model.
+* @return Structural tree model.
+*/
 	public LanguageTreeModel getModelLanguageTree() {
 		return this.modelLanguageTree;
 	}
 
 	/**
-	 * 構造ツリーモデルを設定する.
-	 * @param model    構造ツリーモデル.
-	 */
+* Set the structure tree model.
+* @param model Structural tree model.
+*/
 	public void setModelLanguageTree(LanguageTreeModel model) {
 		this.modelLanguageTree = model;
 	}

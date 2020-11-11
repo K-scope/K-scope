@@ -25,29 +25,29 @@ import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 
 /**
- * ファイルユーティリティクラス
- * 
+ * File utility class
+ *
  * @author RIKEN
- * 
+ *
  */
 public class FileUtils {
 
 	/**
-	 * ２つのパスの階層ファイルのリストを取得する.<br/>
-	 * 子パスが親パスの子階層ではない場合はnullを返す.<br/>
-	 * 子パスと親パスが同一階層の場合はnullを返す.
-	 * 
-	 * @param childFile
-	 *            子パス
-	 * @param parentFile
-	 *            親パス
-	 * @return 階層ファイルリスト
-	 */
+* Get a list of hierarchical files in two paths. <br/>
+* Returns null if the child path is not a child hierarchy of the parent path. <br/>
+* Returns null if the child path and parent path are in the same hierarchy.
+*
+* @param childFile
+* Child path
+* @param parentFile
+* Parent path
+* @return Hierarchical file list
+*/
 	public static File[] getChildPathList(File childFile, File parentFile) {
 		try {
 			ArrayList<File> filelist = new ArrayList<File>();
 
-			// 子ファイルから親パスまでさかのぼる。
+			// Go back from the child file to the parent path.
 			File curPath = childFile.getCanonicalFile();
 			if (!curPath.isDirectory()) {
 				curPath = curPath.getParentFile();
@@ -86,14 +86,14 @@ public class FileUtils {
 	}
 
 	/**
-	 * 子孫ファイルであるかチェックする
-	 * 
-	 * @param childFile
-	 *            検索ファイル
-	 * @param parentFile
-	 *            親ファイル
-	 * @return true=子孫ファイル
-	 */
+* Check if it is a descendant file
+*
+* @param childFile
+* Search file
+* @param parentFile
+* Parent file
+* @return true = Offspring files
+*/
 	public static boolean isChildsFile(File childFile, File parentFile) {
 		File childPath = childFile;
 		File parentPath = parentFile;
@@ -108,20 +108,20 @@ public class FileUtils {
 				return true;
 			}
 		}
-		// ２つのパスの階層ファイルのリストを取得する。
+		// Get a list of hierarchical files in two paths.
 		File[] files = getChildPathList(childPath, parentFile);
 		return (files != null && files.length > 0);
 	}
 
 	/**
-	 * パスの親子関係をチェックする
-	 * 
-	 * @param path
-	 *            親パス
-	 * @param childPath
-	 *            子パス
-	 * @return true=親子パス
-	 */
+* Check the parent-child relationship of the path
+*
+* @param path
+* Parent path
+* @param childPath
+* Child path
+* @return true = parent-child path
+*/
 	public static boolean isChildPath(String path, String childPath) {
 		if (path.equals(childPath)) {
 			return true;
@@ -129,7 +129,7 @@ public class FileUtils {
 		if (childPath.startsWith(path + File.separator)) {
 			return true;
 		}
-		// Windowsの場合
+		// For Windows
 		else {
 			String[] pathArr = path.split("\\\\");
 			String[] childPathArr = childPath.split("\\\\");
@@ -148,15 +148,15 @@ public class FileUtils {
 	}
 
 	/**
-	 * ２つのパスの相対パスを取得する。<br/>
-	 * 子パスが親パスの子階層ではない場合は子パスの絶対パスを返す。
-	 * 
-	 * @param childFile
-	 *            子パス
-	 * @param parentFile
-	 *            親パス
-	 * @return 階層ファイルリスト
-	 */
+* Get the relative path of two paths. <br/>
+* If the child path is not a child hierarchy of the parent path, the absolute path of the child path is returned.
+*
+* @param childFile
+* Child path
+* @param parentFile
+* Parent path
+* @return Hierarchical file list
+*/
 	public static String getRelativePath(File childFile, File parentFile) {
 		if (childFile == null)
 			return null;
@@ -176,14 +176,14 @@ public class FileUtils {
 				return null;
 			}
 
-			// ２つのパスリストの取得を行う
+			// Get two passlists
 			File[] paths = getChildPathList(childFile, parentFile);
 			if (paths == null) {
-				// 子パスではない
+				// not a child path
 				return childFile.getAbsolutePath();
 			}
 
-			// パス階層の組み立てを行う。
+			// Assemble the path hierarchy.
 			StringBuffer buf = new StringBuffer();
 			for (int i = 0; i < paths.length; i++) {
 				buf.append(paths[i].getName());
@@ -204,14 +204,14 @@ public class FileUtils {
 	}
 
 	/**
-	 * 相対パスを取得する
-	 * 
-	 * @param path
-	 *            対象パス
-	 * @param root
-	 *            基準パス
-	 * @return 対象パスの基準パスに対する相対パス
-	 */
+* Get a relative path
+*
+* @param path
+* Target path
+* @param root
+* Reference path
+* @return Relative path to the reference path of the target path
+*/
 	public static String getSubPath(String path, String root) {
 		if (path.length() <= root.length()) {
 			return "";
@@ -250,25 +250,25 @@ public class FileUtils {
 
 
 	/**
-	 * base_fileとnameのファイルを結合したファイルを取得する。
-	 * 
-	 * @param base_file
-	 *            基準パス
-	 * @param name
-	 *            ファイル名
-	 * @return 結合ファイル
-	 */
+* Get the file that combines the files of base_file and name.
+*
+* @param base_file
+* Reference path
+* @param name
+	 *            file name
+* @return Combined file
+*/
 	public static File joinFilePath(File base_file, String name) {
 		if (base_file == null || name == null)
 			return null;
 
-		// ファイル名が絶対パスであるかチェックする。
+		// Check if the file name is an absolute path.
 		if ((new File(name)).isAbsolute()) {
-			// 絶対パスであるので、そのまま返す。
+			// Since it is an absolute path, return it as it is.
 			return new File(name);
 		}
 
-		// 基準パスからの相対パスを取得する
+		// Get the relative path from the reference path
 		String parent = null;
 		if (base_file.isDirectory()) {
 			parent = base_file.getAbsolutePath();
@@ -276,17 +276,17 @@ public class FileUtils {
 			parent = base_file.getParentFile().getAbsolutePath();
 		}
 
-		// 基準パスにファイルを結合する
+		// Combine files to reference path
 		return new File(parent + File.separator + name);
 	}
 
 	/**
-	 * パス中の\\を/に置換する。 WindowsとLinuxのファイルセパレータの違いを吸収する。
-	 * 
-	 * @param path
-	 *            ファイルパス
-	 * @return "/"セパレータパス名
-	 */
+* Replace \\ in the path with /. Absorbs the difference between Windows and Linux file separators.
+*
+* @param path
+	 *            File Path
+* @return "/" Separator path name
+*/
 	public static final String replaceFileSeparator(String path) {
 		if (path == null || path.isEmpty())
 			return null;
@@ -294,12 +294,12 @@ public class FileUtils {
 	}
 
 	/**
-	 * 絶対パスかチェックする
-	 * 
-	 * @param path
-	 *            チェックパス
-	 * @return true:絶対パス
-	 */
+* Check if it is an absolute path
+*
+* @param path
+* Check pass
+* @return true: absolute path
+*/
 	public static final boolean isAbsolutePath(String path) {
 		String slash_path = replaceFileSeparator(path);
 		if (slash_path == null || slash_path.isEmpty())
@@ -308,23 +308,23 @@ public class FileUtils {
 		if (slash_path.startsWith("/"))
 			return true;
 
-		// if (slash_path.indexOf(":") != 1) // 2013/01/22 修正 yabe
+		// if (slash_path.indexOf (":")! = 1) // 2013/01/22 Fixed yabe
 		if (slash_path.indexOf(":") == 1)
 			return true;
 		return false;
 	}
 
 	/**
-	 * ルートパスからのパスリストを取得する。
-	 * 
-	 * @param src_path
-	 *            パス
-	 * @return 階層ファイルリスト
-	 */
+* Get the pass list from the root path.
+*
+* @param src_path
+* Pass
+* @return Hierarchical file list
+*/
 	public static File[] getPathList(File src_path) {
 		ArrayList<File> filelist = new ArrayList<File>();
 
-		// 子ファイルから親パスまでさかのぼる。
+		// Go back from the child file to the parent path.
 		File curPath = src_path;
 		if (!curPath.isDirectory()) {
 			curPath = curPath.getParentFile();
@@ -343,14 +343,14 @@ public class FileUtils {
 	}
 
 	/**
-	 * ２つのファイルが同じでファイルパスであるかチェックする。
-	 * 
-	 * @param src
-	 *            ファイル名1
-	 * @param dest
-	 *            ファイル名2
-	 * @return true=2つファイルは同じ
-	 */
+* Check if the two files are the same and have the same file path.
+*
+* @param src
+* File name 1
+* @param dest
+* File name 2
+* @return true = 2 files are the same
+*/
 	public static boolean isEqualsFile(String src, String dest) {
 		if (src == null || src.isEmpty())
 			return false;
@@ -369,14 +369,14 @@ public class FileUtils {
 	}
 
 	/**
-	 * ２つのファイルが同じでファイルパスであるかチェックする。
-	 * 
-	 * @param srcFile
-	 *            ファイル1
-	 * @param destFile
-	 *            ファイル2
-	 * @return true=2つファイルは同じ
-	 */
+* Check if the two files are the same and have the same file path.
+*
+* @param srcFile
+* File 1
+* @param destFile
+* File 2
+* @return true = 2 files are the same
+*/
 	public static boolean isEqualsFile(File srcFile, File destFile) {
 		if (srcFile == null)
 			return false;
@@ -393,16 +393,16 @@ public class FileUtils {
 	}
 
 	/**
-	 * 配下のファイルを取得する
-	 * 
-	 * @param dir
-	 *            検索ディレクトリ
-	 * @param exclude
-	 *            除外ファイル名（ワイルドカード可）カンマ区切りで指定
-	 * @param excludePath
-	 *            システムフォルダなどのアプリケーション固有の除外パス
-	 * @return 子ファイルリスト
-	 */
+* Get the files under it
+*
+* @param dir
+* Search directory
+* @param exclude
+* Excluded file names (wildcards allowed) Separated by commas
+* @param excludePath
+* Application-specific exclusion paths such as system folders
+* @return Child file list
+*/
 	public static File[] getChildren(File dir, String exclude,
 			String[] excludePath) {
 		File[] res = null;
@@ -437,16 +437,16 @@ public class FileUtils {
 	}
 
 	/**
-	 * 配下のファイルを取得する
-	 * 
-	 * @param dir
-	 *            検索ディレクトリ
-	 * @param exclude
-	 *            除外ファイル名（ワイルドカード可）カンマ区切りで指定
-	 * @param excludePath
-	 *            システムフォルダなどのアプリケーション固有の除外パス
-	 * @return 子ファイルリスト
-	 */
+* Get the files under it
+*
+* @param dir
+* Search directory
+* @param exclude
+* Excluded file names (wildcards allowed) Separated by commas
+* @param excludePath
+* Application-specific exclusion paths such as system folders
+* @return Child file list
+*/
 	private static File[] getChildrenSub(File dir, String exclude,
 			String[] excludePath) {
 		if (dir == null)
@@ -497,14 +497,14 @@ public class FileUtils {
 	}
 
 	/**
-	 * ファイルコピー
-	 * 
-	 * @param from
-	 * @param toDir
-	 * @param to
-	 * @throws IOException
-	 *             ファイルコピーエラー
-	 */
+* File copy
+*
+* @param from
+* @param toDir
+* @param to
+* @throws IOException
+* File copy error
+*/
 	public static void copyFile(File from, File toDir, File to)
 			throws IOException {
 		File[] children = getChildPathList(to, toDir);
@@ -532,14 +532,14 @@ public class FileUtils {
 	}
 
 	/**
-	 * fileがシンボリックリンクであるかチェックする.
-	 * 
-	 * @param file
-	 *            検査ファイル
-	 * @return true=シンボリックリンク
-	 * @throws IOException
-	 *             ファイルIO例外
-	 */
+* Check if file is a symbolic link.
+*
+* @param file
+* Inspection file
+* @return true = symbolic link
+* @throws IOException
+* File IO exception
+*/
 	public static boolean isSymbolicLink(File file) throws IOException {
 		if (file == null)
 			return false;

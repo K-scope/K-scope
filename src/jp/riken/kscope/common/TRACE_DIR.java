@@ -19,44 +19,44 @@ package jp.riken.kscope.common;
 import jp.riken.kscope.Message;
 
 /**
- * トレース方向
+ * Trace direction
  * @author RIKEN
  */
 public enum TRACE_DIR {
-    // トレース方向
-    /** トレース:アップ */
-    UP(Message.getString("trace_dir.enum.up")), //トレース:アップ
-    /** トレース:ダウン */
-    DOWN(Message.getString("trace_dir.enum.down")), //トレース:ダウン
-    /** トレース：イン */
-    IN(Message.getString("trace_dir.enum.in")), //トレース：イン
-    /** トレース：アウト */
-    OUT(Message.getString("trace_dir.enum.out")), //トレース：アウト
-    /** トレース：フォワード */
-    FORWARD(Message.getString("trace_dir.enum.forward")), //トレース：フォワード
-    /** トレース：開始 */
-    START(Message.getString("trace_dir.enum.start")), //トレース：開始
-    /** トレース：終了 */
-    END(Message.getString("trace_dir.enum.stop")), //トレース：終了
-    /** トレース：リフレッシュ */
-    REFRESH(Message.getString("trace_dir.enum.refresh")), //トレース：リフレッシュ
-    /** 不明 */
-    UNKNOWN(Message.getString("trace_dir.enum.unknown")); //トレース：不明
+    // Trace direction
+    /** Trace: Up */
+    UP(Message.getString("trace_dir.enum.up")), // Trace: Up
+    /** Trace: Down */
+    DOWN(Message.getString("trace_dir.enum.down")), // Trace: Down
+    /** Trace: In */
+    IN(Message.getString("trace_dir.enum.in")), // Trace: In
+    /** Trace: Out */
+    OUT(Message.getString("trace_dir.enum.out")), // Trace: Out
+    /** Trace: Forward */
+    FORWARD(Message.getString("trace_dir.enum.forward")), // Trace: Forward
+    /** Trace: Start */
+    START(Message.getString("trace_dir.enum.start")), // Trace: Start
+    /** Trace: End */
+    END(Message.getString("trace_dir.enum.stop")), // Trace: End
+    /** Trace: Refresh */
+    REFRESH(Message.getString("trace_dir.enum.refresh")), // Trace: Refresh
+    /** Unknown */
+    UNKNOWN(Message.getString("trace_dir.enum.unknown")); // Trace: Unknown
 
-    /** トレース方向名 */
+    /** Trace direction name */
     private String tracename;
 
     /**
-     * コンストラクタ
-     * @param tabname		トレース方向名
+     * Constructor
+     * @param tabname Trace direction name
      */
     private TRACE_DIR(String tracename) {
         this.tracename = tracename;
     }
 
     /**
-     * トレース方向名を取得する
-     * @return		トレース方向名
+     * Get the trace direction name
+     * @return Trace direction name
      */
     public String getTraceName() {
         return this.tracename;

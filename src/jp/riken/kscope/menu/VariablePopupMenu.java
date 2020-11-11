@@ -32,89 +32,89 @@ import jp.riken.kscope.common.FRAME_VIEW;
 import jp.riken.kscope.service.AppController;
 
 /**
- * 変数特性一覧ポップアップメニュークラス
+ * Variable characteristic list pop-up menu class
  * @author RIKEN
  */
 public class VariablePopupMenu extends JPopupMenu implements PopupMenuListener {
 
-    /** シリアル番号 */
+    /** Serial number */
     private static final long serialVersionUID = 1L;
 
-    /** アプリケーションコントローラ */
+    /** Application controller */
     private AppController controller;
 
-    /** エクスポートアクション */
+    /** Export action */
     @SuppressWarnings("unused")
     private FileExportExploreAction actionExportExplore;
-    /** 分析:演算カウントアクション */
+    /** Analysis: Arithmetic Count Action */
     private AnalysisOperandAction actionAnalysisOperand;
-    /** 分析:付加情報アクション */
+    /** Analysis: Additional Information Action */
     private EditInformationEditAction actionAnalysisInformation;
-    /** 分析:宣言・定義・参照アクション */
+    /** Analysis: Declaration / Definition / Reference Action */
     private AnalysisReferenceAction actionAnalysisReference;
-    /** 分析:変数有効域アクション */
+    /** Analysis: Variable Scope Action */
     private AnalysisScopeAction actionAnalysisScope;
 
     /**
-     * コンストラクタ
+     * Constructor
      */
     public VariablePopupMenu() {
-        // メニューの作成を行う。
+        // Create a menu.
         initialize();
     }
 
 
     /**
-     * コンストラクタ
-     * @param controller		アプリケーションコントローラ
+     * Constructor
+     * @param controller Application controller
      */
     public VariablePopupMenu(AppController controller) {
         this.controller = controller;
 
-        // メニューの作成を行う。
+        // Create a menu.
         initialize();
     }
 
     /**
-     * メニューの作成を行う。
+     * Create a menu.
      */
     private void initialize() {
 
-        // メニューの作成
+        // Create menu
 
-        // 分析:付加情報
-        JMenuItem menuAnalysisInformation = new JMenuItem(Message.getString("mainmenu.edit.info"));    //付加情報編集
+        // Analysis: Additional information
+        JMenuItem menuAnalysisInformation = new JMenuItem(Message.getString("mainmenu.edit.info"));    // Edit additional information
         actionAnalysisInformation = new EditInformationEditAction(this.controller, FRAME_VIEW.ANALYSIS_VIEW);
         this.add(menuAnalysisInformation);
         menuAnalysisInformation.addActionListener(actionAnalysisInformation);
 
-        // 分析:演算数カウント
-        JMenuItem menuAnalysisCount = new JMenuItem(Message.getString("mainmenu.project.config.operation"));//演算数カウント
+        // Analysis: Calculation count
+        JMenuItem menuAnalysisCount = new JMenuItem(Message.getString("mainmenu.project.config.operation"));// Count the number of operations
         actionAnalysisOperand = new AnalysisOperandAction(this.controller, FRAME_VIEW.ANALYSIS_VIEW);
         this.add(menuAnalysisCount);
         menuAnalysisCount.addActionListener(actionAnalysisOperand);
 
-        // 分析:参照一覧
-        JMenuItem menuAnalysisReference = new JMenuItem(Message.getString("mainmenu.analysis.dec-def-ref"));//宣言・定義・参照
+        // Analysis: Reference list
+        JMenuItem menuAnalysisReference = new JMenuItem(Message.getString("mainmenu.analysis.dec-def-ref"));// Declaration / Definition / Reference
         actionAnalysisReference = new AnalysisReferenceAction(this.controller, FRAME_VIEW.ANALYSIS_VIEW);
         menuAnalysisReference.addActionListener(actionAnalysisReference);
         this.add(menuAnalysisReference);
 
-        // 分析:変数有効域
-        JMenuItem menuAnalysisValid = new JMenuItem(Message.getString("mainmenu.analysis.valiablescope"));//変数有効域
+        // Analysis: Variable scope
+        JMenuItem menuAnalysisValid = new JMenuItem(Message.getString("mainmenu.analysis.valiablescope"));// Variable valid area
         actionAnalysisScope = new AnalysisScopeAction(this.controller, FRAME_VIEW.ANALYSIS_VIEW);
         menuAnalysisValid.addActionListener(actionAnalysisScope);
         this.add(menuAnalysisValid);
 
-        // エクスポート（ポップアップ非表示：アクション作成のみ）
+        // Export (Hide pop-up: Create action only)
         actionExportExplore = new FileExportExploreAction(this.controller);
 
         this.addPopupMenuListener(this);
     }
 
     /**
-     * ポップアップメニュー可視イベント
-     * @param event		イベント情報
+     * Pop-up menu visible event
+     * @param event Event information
      */
     @Override
     public void popupMenuWillBecomeVisible(PopupMenuEvent event) {
@@ -122,47 +122,47 @@ public class VariablePopupMenu extends JPopupMenu implements PopupMenuListener {
     }
 
     /**
-     * ポップアップメニューが取り消されたイベント
-     * @param event		イベント情報
+     * Events with the pop-up menu canceled
+     * @param event Event information
      */
     @Override
     public void popupMenuWillBecomeInvisible(PopupMenuEvent event) { }
 
 
     /**
-     * ポップアップメニューが取り消されたイベント
-     * @param event		イベント情報
+     * Events with the pop-up menu canceled
+     * @param event Event information
      */
     @Override
     public void popupMenuCanceled(PopupMenuEvent event) { }
 
     /**
-     * 分析:演算カウントアクションを取得する
-     * @return		分析:演算カウントアクション
+     * Analysis: Get arithmetic count action
+     * @return Analysis: Arithmetic count action
      */
     public AnalysisOperandAction getActionAnalysisOperand() {
         return actionAnalysisOperand;
     }
 
     /**
-     * 分析:付加情報アクションを取得する
-     * @return		分析:付加情報アクション
+     * Analysis: Get additional information actions
+     * @return Analysis: Additional Information Action
      */
     public EditInformationEditAction getActionAnalysisInformation() {
         return actionAnalysisInformation;
     }
 
     /**
-     * 分析:宣言・定義・参照アクションを取得する
-     * @return		分析:宣言・定義・参照アクション
+     * Analysis: Get declaration / definition / reference actions
+     * @return Analysis: Declaration / Definition / Reference Action
      */
     public AnalysisReferenceAction getActionAnalysisReference() {
         return actionAnalysisReference;
     }
 
     /**
-     * 分析:分析:変数有効域アクションを取得する
-     * @return		分析:分析:変数有効域アクション
+     * Analysis: Analysis: Get variable scope action
+     * @return Analysis: Analysis: Variable Scope Action
      */
     public AnalysisScopeAction getActionAnalysisScope() {
         return actionAnalysisScope;

@@ -23,57 +23,57 @@ import jp.riken.kscope.Message;
 import jp.riken.kscope.properties.ProfilerProperties;
 
 /**
- * プロファイラ情報タイプ
+ * Profiler information type
  * @author RIKEN
  */
 public enum PROFILERINFO_TYPE {
-    /** コスト情報(手続):DPROF */
+    /** Cost information (procedure): DPROF */
     COST_PROCEDURE(
-    		Message.getString("analysis_panel.enum.costinfo-procedure"), //コスト情報:手続
-    		Message.getString("profileinfo_type.enum.procedure")),  //手続
-    /** コスト情報(ループ):DPROF */
+    		Message.getString("analysis_panel.enum.costinfo-procedure"), // Cost information: Procedure
+    		Message.getString("profileinfo_type.enum.procedure")),  //procedure
+    /** Cost information (loop): DPROF */
     COST_LOOP(
-    		Message.getString("analysis_panel.enum.costinfo-loop"), //コスト情報:ループ
-    		Message.getString("profileinfo_type.enum.loop")), //ループ
-    /** コスト情報(ライン):DPROF */
+    		Message.getString("analysis_panel.enum.costinfo-loop"), // Cost information: Loop
+    		Message.getString("profileinfo_type.enum.loop")), //loop
+    /** Cost information (line): DPROF */
     COST_LINE(
-    		Message.getString("analysis_panel.enum.costinfo-line"), //コスト情報:ライン
-    		Message.getString("profileinfo_type.enum.line")), //ライン
-    /** コールグラフ:DPROF */
+    		Message.getString("analysis_panel.enum.costinfo-line"), // Cost information: Line
+    		Message.getString("profileinfo_type.enum.line")), //line
+    /** Call graph: DPROF */
     CALLGRAPH(
-    		Message.getString("analysis_panel.enum.callgraph"), //コールグラフ
-    		Message.getString("analysis_panel.enum.callgraph")), //コールグラフ
-    /** Eprof:イベントカウンタ情報:ハードウェアモニタ情報（ＰＡ情報）テーブル=Cacheのテーブル */
+    		Message.getString("analysis_panel.enum.callgraph"), // Call graph
+    		Message.getString("analysis_panel.enum.callgraph")), // Call graph
+    /** Eprof: Event counter information: Hardware monitor information (PA information) table = Cache table */
     EVENTCOUNTER_CACHE(
     		Message.getString("profileinfo_type.enum.eprof-cache"), //EProf:Cache
     		Message.getString("profileinfo_type.enum.cache")), //Cache
-    /** Eprof:イベントカウンタ情報:ハードウェアモニタ情報（ＰＡ情報）テーブル=Instructionsのテーブル */
+    /** Eprof: Event counter information: Hardware monitor information (PA information) table = Instructions table */
     EVENTCOUNTER_INSTRUCTIONS(
     		Message.getString("profileinfo_type.enum.eprof-instructions"), //EProf:Instructions
     		Message.getString("profileinfo_type.enum.instructions")), //Instructions
-    /** Eprof:イベントカウンタ情報:ハードウェアモニタ情報（ＰＡ情報）テーブル=MEM_accessのテーブル */
+    /** Eprof: Event counter information: Hardware monitor information (PA information) table = MEM_access table */
     EVENTCOUNTER_MEM_ACCESS(
     		Message.getString("profileinfo_type.enum.eprof-mem"), //EProf:MEM_access
     		Message.getString("profileinfo_type.enum.mem")), //MEM_access
-    /** Eprof:イベントカウンタ情報:ハードウェアモニタ情報（ＰＡ情報）テーブル=Performanceのテーブル */
+    /** Eprof: Event counter information: Hardware monitor information (PA information) table = Performance table */
     EVENTCOUNTER_PERFORMANCE(
     		Message.getString("profileinfo_type.enum.eprof-performance"), //EProf:Performance
     		Message.getString("profileinfo_type.enum.performance")), //Performance
-    /** Eprof:イベントカウンタ情報:ハードウェアモニタ情報（ＰＡ情報）テーブル=Statisticsのテーブル */
+    /** Eprof: Event counter information: Hardware monitor information (PA information) table = Statistics table */
     EVENTCOUNTER_STATISTICS(
     		Message.getString("profileinfo_type.enum.eprof-statistics"), //EProf:Statistics
     		Message.getString("profileinfo_type.enum.statistics")); //Statistics
 
-    /** プロファイラ情報名 */
+    /** Profiler information name */
     private String name;
-    /** プロファイラ短縮情報名 */
+    /** Profiler abbreviated information name */
     private String shortname;
-    /** コスト情報の棒グラフ表示の色 */
+    /** Color of bar graph display of cost information */
     private Color barColor;
 
     /**
-     * コンストラクタ
-     * @param name		プロファイラ情報名
+     * Constructor
+     * @param name Profiler information name
      */
     private PROFILERINFO_TYPE(String name, String shortname) {
         this.name = name;
@@ -81,8 +81,8 @@ public enum PROFILERINFO_TYPE {
     }
 
     /**
-     * コスト情報の棒グラフ表示の色を設定する
-     * @param properties			プロファイラプロパティ
+     * Set the color of the bar graph display of cost information
+     * @param properties Profiler properties
      */
     public static void setProfilerProperties(ProfilerProperties properties) {
         if (properties == null) return;
@@ -93,24 +93,24 @@ public enum PROFILERINFO_TYPE {
 
 
     /**
-     * プロファイラ情報名を取得する
-     * @return name		プロファイラ情報名
+     * Get profiler information name
+     * @return name Profiler information name
      */
     public String getName() {
         return name;
     }
 
     /**
-     * プロファイラ短縮情報名を取得する
-     * @return name		プロファイラ短縮情報名
+     * Get profiler abbreviated information name
+     * @return name Profiler short information name
      */
     public String getShortName() {
         return this.shortname;
     }
 
     /**
-     * コスト情報の棒グラフ表示の色
-     * @return コスト情報の棒グラフ表示の色
+     * Color of bar graph display of cost information
+     * @return Color of bar graph display of cost information
      */
     public Color getBarColor() {
         return barColor;
@@ -118,8 +118,8 @@ public enum PROFILERINFO_TYPE {
 
 
     /**
-     * コスト情報の棒グラフ表示の色
-     * @param color コスト情報の棒グラフ表示の色
+     * Color of bar graph display of cost information
+     * @param color Color of bar graph display of cost information
      */
     public void setBarColor(Color color) {
         this.barColor = color;

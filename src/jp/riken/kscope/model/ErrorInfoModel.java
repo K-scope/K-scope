@@ -39,42 +39,42 @@ import jp.riken.kscope.utils.FileUtils;
 import jp.riken.kscope.utils.SwingUtils;
 
 /**
- * エラー情報モデル
+ * Error information model
  * @author RIKEN
  *
  */
 public class ErrorInfoModel extends Observable {
 
     /**
-     * テーブルヘッダーリスト
-     * 1列目はCodeLine情報とする。
+     * Table header list
+     * The first column is CodeLine information.
      */
     private String[] HEADER_COLUMNS = {"",
-        Message.getString("settingprojectdialog.column_header.message"), //メッセージ
-        Message.getString("mainmenu.file"), //ファイル
-        Message.getString("languageservice.properties.linenumber")}; //行番号
+        Message.getString("settingprojectdialog.column_header.message"), //message
+        Message.getString("mainmenu.file"), //File
+        Message.getString("languageservice.properties.linenumber")}; //line number
 
-    /** タイトル */
+    /** Title */
     private String title;
 
-    /** プロジェクトフォルダ */
+    /** Project folder */
     private File projectFolder = null;
 
-    /** エラー情報リスト */
+    /** Error information list */
     private List<ErrorInfo> listError = null;
 
     /**
-     * コンストラクタ
+     * Constructor
      */
     public ErrorInfoModel() {
         super();
 
-        // テーブルモデルの作成
+        // Create a table model
         createTableModel();
     }
 
     /**
-     * モデルの変更を通知する
+     * Notify model changes
      */
     private void notifyModel() {
         SwingUtilities.invokeLater(new Runnable() {
@@ -88,8 +88,8 @@ public class ErrorInfoModel extends Observable {
     }
 
     /**
-     * テーブルモデルを取得する
-     * @return		テーブルモデル
+     * Get the table model
+     * @return table model
      */
     public DefaultTableModel getTableModel() {
         return createTableModel();
@@ -97,14 +97,14 @@ public class ErrorInfoModel extends Observable {
 
 
     /**
-     * テーブルモデルを作成する
+     * Create a table model
      */
     private DefaultTableModel createTableModel() {
-        // テーブルモデルの作成
+        // Create a table model
         DefaultTableModel tableModel = new DefaultTableModel();
         tableModel.setColumnIdentifiers(HEADER_COLUMNS);
 
-        // エラーリストからテーブルモデルの作成を行う。
+        // Create a table model from the error list.
         if (listError == null) return tableModel;
         CopyOnWriteArrayList<ErrorInfo> copyList = new CopyOnWriteArrayList<ErrorInfo>(listError);
         for (ErrorInfo error : copyList) {
@@ -128,10 +128,10 @@ public class ErrorInfoModel extends Observable {
                 no = line.getLineno();
             }
 
-            // テーブル行配列の作成
+            // Create table row array
             Object[] row = {line, message, filename, no};
 
-            // テーブル行追加
+            // Add table row
             tableModel.addRow(row);
         }
 
@@ -139,45 +139,45 @@ public class ErrorInfoModel extends Observable {
     }
 
     /**
-     * ヘッダー列リストを取得する。
-     * @return		ヘッダー列リスト
+     * Get the header column list.
+     * @return Header column list
      */
     public String[] getHeaderColumns() {
         return HEADER_COLUMNS;
     }
 
     /**
-     * エラーメッセージを追加する
-     * @param lineInfo          エラー箇所情報
-     * @param message			エラーメッセージ
+     * Add error message
+     * @param lineInfo Error location information
+     * @param message Error message
      */
     public void addErrorInfo(CodeLine lineInfo, String message) {
 
-        // エラーメッセージをテーブルモデルに行追加する
+        // Add an error message row to the table model
         addTableRow(lineInfo, message);
 
-        // モデルの変更を通知
+        // Notify model changes
         notifyModel();
     }
 
     /**
-     * エラーメッセージを追加する
-     * @param infos          エラー情報リスト
+     * Add error message
+     * @param infos Error information list
      */
     public void addErrorInfos(ErrorInfo[] infos) {
     	if (infos == null) return;
 
-        // エラーメッセージをテーブルモデルに行追加する
+        // Add an error message row to the table model
         addTableRows(infos);
 
-        // モデルの変更を通知
+        // Notify model changes
         notifyModel();
     }
 
     /**
-     * エラーメッセージをエラー情報リストに追加する
-     * @param lineInfo          エラー箇所情報
-     * @param message			エラーメッセージ
+     * Add error message to error information list
+     * @param lineInfo Error location information
+     * @param message Error message
      */
     private void addTableRow(CodeLine lineInfo, String message) {
         if (this.listError == null) {
@@ -188,8 +188,8 @@ public class ErrorInfoModel extends Observable {
 
 
     /**
-     * エラー情報リストをエラー情報リストに追加する
-     * @param infos          エラー情報リスト
+     * Add error information list to error information list
+     * @param infos Error information list
      */
     private void addTableRows(ErrorInfo[] infos) {
     	if (infos == null) return;
@@ -200,8 +200,8 @@ public class ErrorInfoModel extends Observable {
     }
 
     /**
-     * エラー情報をエラー情報リストに追加する
-     * @param info          エラー情報
+     * Add error information to the error information list
+     * @param info Error information
      */
     private void addTableRow(ErrorInfo info) {
     	if (info == null) return;
@@ -212,48 +212,48 @@ public class ErrorInfoModel extends Observable {
     }
     
     /**
-     * エラーメッセージを追加する
-     * @param message			エラーメッセージ
+     * Add error message
+     * @param message Error message
      */
     public void addErrorInfo( String message) {
 
-        // エラーメッセージをエラー情報リストに追加する
+        // Add the error message to the error information list
         addTableRow(null, message);
 
-        // モデルの変更を通知
+        // Notify model changes
         notifyModel();
     }
 
     /**
-     * エラーメッセージを追加する
-     * @param ex			エラー発生例外
+     * Add error message
+     * @param ex Error occurrence exception
      */
     public void addErrorInfo( Exception ex) {
         String message = ex.getMessage();
         if (message == null) {
             message = ex.toString();
         }
-        // エラーメッセージをエラー情報リストに追加する
+        // Add the error message to the error information list
         addTableRow(null, message);
 
-        // モデルの変更を通知
+        // Notify model changes
         notifyModel();
     }
 
     /**
-     * エラーメッセージを追加する
-     * @param file				エラーファイル
-     * @param message			エラーメッセージ
+     * Add error message
+     * @param file Error file
+     * @param message Error message
      */
     public void addErrorInfo(SourceFile file, String message) {
         addErrorInfo(file, message, 0);
     }
 
     /**
-     * エラーメッセージを追加する
-     * @param file				エラーファイル
-     * @param message			エラーメッセージ
-     * @param lineno			エラー行番号
+     * Add error message
+     * @param file Error file
+     * @param message Error message
+     * @param lineno Error line number
      */
     public void addErrorInfo(SourceFile file, String message, int lineno) {
 
@@ -263,35 +263,35 @@ public class ErrorInfoModel extends Observable {
     	}
         CodeLine line = new CodeLine(file, lineno, lineno, fn);
 
-        // エラーメッセージをエラー情報リストに追加する
+        // Add the error message to the error information list
         addTableRow(line, message);
 
-        // モデルの変更を通知
+        // Notify model changes
         notifyModel();
     }
 
 
     /**
-     * エラーメッセージを追加する
-     * @param lineInfos          エラー箇所情報
-     * @param messages			エラーメッセージ
+     * Add error message
+     * @param lineInfos Error location information
+     * @param messages error messages
      */
     public void setErrorInfoList(CodeLine lineInfos[], String messages[]) {
-        // テーブルモデルの作成
+        // Create a table model
         createTableModel();
 
         for (int i=0; i<lineInfos.length; i++) {
-            // エラーメッセージをテーブルモデルに行追加する
+            // Add an error message row to the table model
             addTableRow(lineInfos[i], messages[i]);
         }
 
-        // モデルの変更を通知
+        // Notify model changes
         notifyModel();
     }
 
 
     /**
-     * テーブルモデルをクリアする。
+     * Clear the table model.
      */
     public void clearErrorList() {
         if (this.listError == null) {
@@ -299,21 +299,21 @@ public class ErrorInfoModel extends Observable {
         }
         this.listError.clear();
 
-        // モデルの変更を通知
+        // Notify model changes
         notifyModel();
     }
 
     /**
-     * エラー情報リストを取得する
-     * @return		エラー情報リスト
+     * Get the error information list
+     * @return Error information list
      */
     public List<ErrorInfo> getErrorList() {
         return this.listError;
     }
 
     /**
-     * エラー情報リスト数を取得する
-     * @return		エラー情報リスト数
+     * Get the number of error information list
+     * @return Number of error information lists
      */
     public int getErrorListCount() {
         if (this.listError == null) return 0;
@@ -322,25 +322,25 @@ public class ErrorInfoModel extends Observable {
 
 
     /**
-     * タイトルを取得する
-     * @return	タイトル
+     * Get the title
+     * @return title
      */
     public String getTitle() {
         return title;
     }
 
     /**
-     * タイトルを設定する
-     * @param title		タイトル
+     * Set the title
+     * @param title Title
      */
     public void setTitle(String title) {
         this.title = title;
     }
 
     /**
-     * プロジェクトフォルダからの相対パスを取得する
-     * @param file		対象ファイル
-     * @return			相対パス
+     * Get the relative path from the project folder
+     * @param file Target file
+     * @return Relative path
      */
     private String getRelativePath(File file) {
         if (file == null) return null;
@@ -348,36 +348,36 @@ public class ErrorInfoModel extends Observable {
             return file.getAbsolutePath();
         }
 
-        // 相対パスの取得を行う
+        // Get the relative path
         return FileUtils.getRelativePath(file, this.projectFolder);
     }
 
     /**
-     * プロジェクトフォルダを設定する
-     * @param folder		プロジェクトフォルダ
+     * Set the project folder
+     * @param folder Project folder
      */
     public void setProjectFolder(File folder) {
         this.projectFolder = folder;
     }
 
     /**
-     * テーブル情報をファイル出力する。
-     * @param  file   出力ファイル
+     * Output table information to a file.
+     * @param file Output file
      */
     public void writeFile(File file) {
 
-        // エラーテーブルモデル
+        // Error table model
         DefaultTableModel tableModel = createTableModel();
 
         if (tableModel == null) return;
 
         try {
-            // ファイル出力
+            // File output
             PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(file)));
 
-            // テーブルデータ
+            // Table data
             String buf = SwingUtils.toCsv(tableModel);
-            // ファイル出力
+            // File output
             pw.print(buf);
 
             pw.close();
@@ -389,8 +389,8 @@ public class ErrorInfoModel extends Observable {
     }
 
     /**
-     * モデルが空か否か
-     * @return	空か否か（true: 空，false: データあり）
+     * Whether the model is empty
+     * @return Whether it is empty (true: empty, false: with data)
      */
     public boolean isEmpty() {
     	if (this.listError == null) return true;
@@ -398,16 +398,16 @@ public class ErrorInfoModel extends Observable {
     }
 
     /**
-     * エラーメッセージを追加する
-     * @param error          エラー情報
+     * Add error message
+     * @param error Error information
      */
 	public void addErrorInfo(ErrorInfo error) {
     	if (error == null) return;
 
-        // エラーメッセージをテーブルモデルに行追加する
+        // Add an error message row to the table model
         addTableRow(error);
 
-        // モデルの変更を通知
+        // Notify model changes
         notifyModel();
 	}
 }

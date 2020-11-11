@@ -33,26 +33,26 @@ import java.util.regex.Pattern;
 import jp.riken.kscope.properties.KscopeProperties;
 
 /**
- * 文字列操作ユーティリティクラス
- * 
+ * String manipulation utility class
+ *
  * @author RIKEN
- * 
+ *
  */
 public class StringUtils {
 
 	/**
-	 * テキストタブをHTML変換する時のタブサイズ
-	 */
+* Tab size when converting text tabs to HTML
+*/
 	private static int HTML_TABSIZE = 4;
 
 	/**
-	 * 文字列の文字コードを判別する。 判定優先順位は、EUC_JP > SHIFT_JIS > UTF-8とする。
-	 * 
-	 * @param byts
-	 *            文字コードバイト配列
-	 * @return 判定結果文字コード文字列 "ASCII" ASCII "ISO-2022-JP" JIS "EUC_JP" EUC_JP
-	 *         "SHIFT_JIS" SHIFT-JIS "UTF-8" UTF-8 null 判定不可
-	 */
+* Determine the character code of the character string. The judgment priority is EUC_JP> SHIFT_JIS> UTF-8.
+*
+* @param byts
+* Character code byte array
+* @return Judgment result Character code Character string "ASCII" ASCII "ISO-2022-JP" JIS "EUC_JP" EUC_JP
+* "SHIFT_JIS" SHIFT-JIS "UTF-8" UTF-8 null Judgment is not possible
+*/
 	public static String getDetectedCharset(byte[] byts) {
 		int len = byts.length;
 		int sjis = 0;
@@ -67,7 +67,7 @@ public class StringUtils {
 		int b1, b2, b3, b4, b5, b6;
 		int jp_char = 0;
 
-		// ASCII, JIS判断
+		// ASCII, JIS judgment
 		for (int i = 0; i < len; i++) {
 			b1 = byts[i] & 0xFF;
 			b2 = i < len - 1 ? byts[i + 1] & 0xFF : 0x00;
@@ -82,7 +82,7 @@ public class StringUtils {
 				break;
 			} else {
 				if (b1 <= 0x06 || b1 == 0xFF) {
-					// 制御文字
+					// Control character
 					return null;
 				}
 				if (isJis) {
@@ -115,7 +115,7 @@ public class StringUtils {
 			return "ASCII";
 		}
 
-		// Shift-Jis判断
+		// Shift-Jis judgment
 		for (int i = jp_char; i < len; i++) {
 			b1 = byts[i] & 0xFF;
 			b2 = i < len - 1 ? byts[i + 1] & 0xFF : 0x00;
@@ -126,8 +126,8 @@ public class StringUtils {
 				continue;
 			}
 
-			// SHIFT-JIS未使用文字が表れたら、SHIFT-JISではない。
-			// 参照 : http://charset.7jp.net/sjis.html
+			// SHIFT-JIS If unused characters appear, it is not SHIFT-JIS.
+			// Reference: http://charset.7jp.net/sjis.html
 			if (b1 == 0x82) {
 				if (b2 >= 0x40 && b2 <= 0x15) {
 					i++;
@@ -194,17 +194,17 @@ public class StringUtils {
 					i += 1;
 				} else if ((b1 >= 0xE0 && b1 <= 0xEA)
 						&& ((b2 >= 0x40 && b2 <= 0x7E) || (b2 >= 0x80 && b2 <= 0xFC))) {
-					// あまり使用しない文字であるのでカウントしない。（文字化けの可能性があるため）
+					// Do not count because it is a character that is not used very often. (Because there is a possibility of garbled characters)
 					// sjis++;
 					i += 1;
 				} else if ((b1 >= 0xED && b1 <= 0xEE)
 						&& ((b2 >= 0x40 && b2 <= 0x7E) || (b2 >= 0x80 && b2 <= 0xFC))) {
-					// あまり使用しない文字であるのでカウントしない。（文字化けの可能性があるため）
+					// Do not count because it is a character that is not used very often. (Because there is a possibility of garbled characters)
 					// sjis++;
 					i += 1;
 				} else if ((b1 >= 0xE0 && b1 <= 0xFC)
 						&& ((b2 >= 0x40 && b2 <= 0x7E) || (b2 >= 0x80 && b2 <= 0xFC))) {
-					// 未定義文字、機種依存、拡張の為カウントしない。
+					// Not counted due to undefined characters, machine-dependent, and expansion.
 					sjis_ext++;
 					i += 1;
 				} else {
@@ -214,7 +214,7 @@ public class StringUtils {
 			}
 		}
 
-		// EUC判断
+		// EUC judgment
 		for (int i = jp_char; i < len; i++) {
 			b1 = byts[i] & 0xFF;
 			b2 = i < len - 1 ? byts[i + 1] & 0xFF : 0x00;
@@ -241,7 +241,7 @@ public class StringUtils {
 			}
 		}
 
-		// UTF-8判断
+		// UTF-8 judgment
 		for (int i = jp_char; i < len; i++) {
 			b1 = byts[i] & 0xFF;
 			b2 = i < len - 1 ? byts[i + 1] & 0xFF : 0x00;
@@ -256,7 +256,7 @@ public class StringUtils {
 				utf8 += 1;
 				i += 1;
 			}
-			// 3バイト文字
+			// 3-byte character
 			else if ((b1 == 0xE0) && (b2 >= 0xB8 && b2 <= 0xBB)
 					&& (b3 >= 0x80 && b3 <= 0xBF)) {
 				utf8 += 1;
@@ -279,7 +279,7 @@ public class StringUtils {
 				i += 2;
 			} else if ((b1 == 0xED) && (b2 >= 0x80 && b2 <= 0x9F)
 					&& (b3 >= 0x80 && b3 <= 0xBF)) {
-				// ３バイト文字の未定義の為カウントしない
+				// Do not count because 3-byte characters are undefined
 				i += 2;
 			} else if ((b1 == 0xEF) && (b2 >= 0xA7 && b2 <= 0xBF)
 					&& (b3 >= 0x80 && b3 <= 0xBF)) {
@@ -291,19 +291,19 @@ public class StringUtils {
 				i += 2;
 			} else if ((b1 >= 0xE0 && b1 <= 0xEF) && (b2 >= 0x80 && b2 <= 0xBF)
 					&& (b3 >= 0x80 && b3 <= 0xBF)) {
-				// ３バイト文字の未定義の為カウントしない
+				// Do not count because 3-byte characters are undefined
 				i += 2;
 			} else if ((b1 == 0xF0) && (b2 >= 0x90 && b2 <= 0xBF)
 					&& (b3 >= 0x80 && b3 <= 0xBF) && (b4 >= 0x80 && b4 <= 0xBF)) {
-				// ４バイト文字は未定義の為カウントしない
+				// Do not count 4-byte characters because they are undefined
 				i += 3;
 			} else if ((b1 >= 0xF1 && b1 <= 0xF3) && (b2 >= 0x80 && b2 <= 0xBF)
 					&& (b3 >= 0x80 && b3 <= 0xBF) && (b4 >= 0x80 && b4 <= 0xBF)) {
-				// ４バイト文字は未定義の為カウントしない
+				// Do not count 4-byte characters because they are undefined
 				i += 3;
 			} else if ((b1 == 0xF4) && (b2 >= 0x80 && b2 <= 0x8F)
 					&& (b3 >= 0x80 && b3 <= 0xBF) && (b4 >= 0x80 && b4 <= 0xBF)) {
-				// ４バイト文字は未定義の為カウントしない
+				// Do not count 4-byte characters because they are undefined
 				i += 3;
 			} else if (b1 == 0xEF && b2 == 0xBB && b3 == 0xBF) {
 				utf8 += 1;
@@ -316,7 +316,7 @@ public class StringUtils {
 			}
 		}
 
-		// UTF-8を優先とする (UTF-8 > SHIFT_JIS)
+		// Give priority to UTF-8 (UTF-8> SHIFT_JIS)
 		if (euc >= sjis && euc >= utf8)
 			return "EUC_JP";
 		else if (utf8 >= euc && utf8 >= sjis)
@@ -328,12 +328,12 @@ public class StringUtils {
 	}
 
 	/**
-	 * 文字列が整数値であるかチェックする
-	 * 
-	 * @param str
-	 *            整数値文字列
-	 * @return true:整数値
-	 */
+* Check if the string is an integer value
+*
+* @param str
+* Integer value string
+* @return true: integer value
+*/
 	public static boolean isNumeric(String str) {
 		if (str == null)
 			return false;
@@ -347,12 +347,12 @@ public class StringUtils {
 	}
 
 	/**
-	 * 文字列が浮動小数点数値であるかチェックする
-	 * 
-	 * @param str
-	 *            浮動小数点数値文字列
-	 * @return true:浮動小数点数値
-	 */
+* Check if the string is a floating point number
+*
+* @param str
+* Floating point numeric string
+* @return true: floating point number
+*/
 	public static boolean isFloat(String str) {
 		if (str == null)
 			return false;
@@ -365,12 +365,12 @@ public class StringUtils {
 	}
 
 	/**
-	 * 文字の前後のシングルクォート、ダブルクォートを削除する。
-	 * 
-	 * @param line
-	 *            トリム対象文字列
-	 * @return トリム後の文字列
-	 */
+* Remove single and double quotes before and after the character.
+*
+* @param line
+* Trim target string
+* @return String after trimming
+*/
 	public static String trimQuote(String line) {
 		if (line == null || line.isEmpty())
 			return line;
@@ -387,33 +387,33 @@ public class StringUtils {
 	}
 
 	/**
-	 * 文字列がnullか空文字であるかチェックする。
-	 * 
-	 * @param s
-	 *            チェック文字列
-	 * @return true=nullか空文字
-	 */
+* Check if the string is null or empty.
+*
+* @param s
+* Check string
+* @return true = null or empty string
+*/
 	public static boolean isNullOrEmpty(String s) {
 		return ((s == null) || (s.isEmpty() != false));
 	}
 
 	/**
-	 * 文字列を検索する. <br/>
-	 * (author rist_kobayashi)
-	 * 
-	 * @param text
-	 *            検索対象となる全テキスト
-	 * @param target
-	 *            検索する文字列
-	 * @return キーを行番号、値を対象行先頭からの位置のリストとしたTreeMap （TreeMap<行番号,
-	 *         ArrayList<先頭からの位置>>）。ただし、行頭の位置を0とする。<br>
-	 *         textがnullあるいは空文字、またはtargetがnullあるいは空文字の場合は、空のTreeMapを 返します。
-	 * 
-	 * 
-	 */
+* Search for strings. <br/>
+* (author rist_kobayashi)
+*
+* @param text
+* All text to be searched
+* @param target
+* Search string
+* TreeMap with the @return key as the line number and the value as the list of positions from the beginning of the target line (TreeMap <line number,
+* ArrayList <position from the beginning >>). However, the position at the beginning of the line is set to 0. <br>
+* Returns an empty TreeMap if text is null or empty string, or target is null or empty string.
+*
+*
+*/
 	public static TreeMap<Integer, ArrayList<Integer>> searchString(
 			String text, String target) {
-		// 事前条件
+		// Pre-conditions
 		if (text == null || target == null || text.equals("")
 				|| target.equals("")) {
 			return new TreeMap<Integer, ArrayList<Integer>>();
@@ -423,27 +423,27 @@ public class StringUtils {
 	}
 
 	/**
-	 * 文字列を検索する<br/>
-	 * (author rist_kobayashi)
-	 * 
-	 * @param lines
-	 *            検索対象となる全行
-	 * @param target
-	 *            検索する文字列
-	 * @return キーを行番号、値を対象行先頭からの位置のリストとしたTreeMap （TreeMap<行番号,
-	 *         ArrayList<先頭からの位置>>）。ただし、行頭の位置を0とする。<br>
-	 *         linesがnull、またはtargetがnullあるいは空文字の場合は、空のTreeMapを 返します。
-	 * 
-	 */
+* Search for strings <br/>
+* (author rist_kobayashi)
+*
+* @param lines
+* All lines to be searched
+* @param target
+* Search string
+* TreeMap with the @return key as the line number and the value as the list of positions from the beginning of the target line (TreeMap <line number,
+* ArrayList <position from the beginning >>). However, the position at the beginning of the line is set to 0. <br>
+* If lines is null, or target is null or an empty string, an empty TreeMap is returned.
+*
+*/
 	public static TreeMap<Integer, ArrayList<Integer>> searchString(
 			String[] lines, String target) {
 		TreeMap<Integer, ArrayList<Integer>> result = new TreeMap<Integer, ArrayList<Integer>>();
-		// 事前条件
+		// Pre-conditions
 		if (lines == null || target == null || target.equals("")) {
 			return result;
 		}
 
-		// 検索文字を探索する
+		// Search for search characters
 		int lineNum = 0;
 		for (String line : lines) {
 			ArrayList<Integer> positions = new ArrayList<Integer>();
@@ -466,33 +466,33 @@ public class StringUtils {
 	}
 
 	/**
-	 * 文字列を改行コードで分割する<br/>
-	 * (author rist_kobayashi)
-	 * 
-	 * @param text
-	 *            分割対象テキスト
-	 * @return 改行コードで分割された文字列リスト。textがnullの時は、nullを返します。
-	 * 
-	 */
+* Split the string with a line feed code <br/>
+* (author rist_kobayashi)
+*
+* @param text
+* Text to be split
+* @return A string list separated by a line feed code. If text is null, it returns null.
+*
+*/
 	public static String[] splitByNewlineCode(String text) {
 		String newlineCode = "";
 		String str = text;
 
-		// 事前条件
+		// Pre-conditions
 		if (text == null) {
 			return null;
 		}
 
-		// 改行コードの決定
+		// Determine line feed code
 		if (!str.contains("\r")) {
-			// 改行コードが\nの場合
+			// When the line feed code is \ n
 			newlineCode = "\n";
 		} else if (!str.contains("\n")) {
-			// 改行コードが\rの場合
+			// When the line feed code is \ r
 			newlineCode = "\r";
 		} else {
-			// 改行コードが\r\nあるいは\n\rの場合
-			// 改行コードを\nに変換しておく
+			// When the line feed code is \ r \ n or \ n \ r
+			// Convert the line feed code to \ n
 			str = str.replace("\r", "\n");
 			str = str.replace("\n\n", "\n");
 			newlineCode = "\n";
@@ -502,12 +502,12 @@ public class StringUtils {
 	}
 
 	/**
-	 * HEX2桁を intに変換する。
-	 * 
-	 * @param hex
-	 *            HEX2桁文字列
-	 * @return 変換数値
-	 */
+* Convert HEX 2 digits to int.
+*
+* @param hex
+* HEX 2-digit string
+* @return Converted number
+*/
 	public static int hex2Toint(String hex) {
 		int value = 0;
 		char hexDigit[] = hex.toCharArray();
@@ -517,12 +517,12 @@ public class StringUtils {
 	}
 
 	/**
-	 * intから16進2桁に変換
-	 * 
-	 * @param value
-	 *            int数値
-	 * @return 16進2桁
-	 */
+* Convert from int to 2 hexadecimal digits
+*
+* @param value
+* int number
+* @return 2 hexadecimal digits
+*/
 	public static String intTohex2(int value) {
 		char hex2[] = { Character.forDigit((value >> 4) & 0x0F, 16),
 				Character.forDigit(value & 0x0F, 16) };
@@ -531,12 +531,12 @@ public class StringUtils {
 	}
 
 	/**
-	 * 16進数4桁からintに変換
-	 * 
-	 * @param hex
-	 *            16進数4桁
-	 * @return int数値
-	 */
+* Convert from 4 hexadecimal digits to int
+*
+* @param hex
+* 4 hexadecimal digits
+* @return int number
+*/
 	public static int hex4Toint(String hex) {
 		int value = 0;
 		char HexDigit[] = hex.toCharArray();
@@ -548,12 +548,12 @@ public class StringUtils {
 	}
 
 	/**
-	 * intから16進4桁に変換
-	 * 
-	 * @param value
-	 *            int数値
-	 * @return 16進4桁
-	 */
+* Convert from int to 4 hexadecimal digits
+*
+* @param value
+* int number
+* @return 4 hexadecimal digits
+*/
 	public static String intTohex4(int value) {
 		char hex4[] = { Character.forDigit((value >> 12) & 0x0F, 16),
 				Character.forDigit((value >> 8) & 0x0F, 16),
@@ -564,12 +564,12 @@ public class StringUtils {
 	}
 
 	/**
-	 * 文字列の前後の半角、全角スペースを削除する。
-	 * 
-	 * @param src
-	 *            トリム対象文字列
-	 * @return 前後の半角、全角スペースを削除文字列
-	 */
+* Delete half-width and full-width spaces before and after the character string.
+*
+* @param src
+* Trim target string
+* @return Delete half-width and full-width spaces before and after the character string
+*/
 	public static String trim(String src) {
 		if (src == null)
 			return src;
@@ -594,16 +594,16 @@ public class StringUtils {
 	}
 
 	/**
-	 * カラー文字列からjava.awt.Colorオブジェクトを作成する.<br/>
-	 * カラー文字列は以下の形式とする.<br/>
-	 * 1. RED,WHITE,BLUE等のjava.awt.Color定義のフィールド名 <br/>
-	 * 2. #RRGGBB : '#'で始まり, 16進数6桁 = html色指定 2. #RRGGBBAA : '#'で始まり, 16進数8桁 =
-	 * 透過色
-	 * 
-	 * @param color
-	 *            カラー文字列
-	 * @return java.awt.Colorオブジェクト
-	 */
+* Create a java.awt.Color object from a color string. <br/>
+* The color string is in the following format. <br/>
+* 1. Field name of java.awt.Color definition such as RED, WHITE, BLUE <br/>
+* 2. #RRGGBB: Starts with'#', 6 hexadecimal digits = html color specification 2. #RRGGBBAA: Starts with'#', 8 hexadecimal digits =
+* Transparent color
+*
+* @param color
+* Color string
+* @return java .awt.Color object
+*/
 	public static Color parseColor(String color) {
 		if (color == null || color.isEmpty())
 			return null;
@@ -645,14 +645,14 @@ public class StringUtils {
 	}
 
 	/**
-	 * java.awt.ColorオブジェクトからHTMLカラーコードを作成する.<br/>
-	 * カラー文字列は以下の形式とする.<br/>
-	 * 1. #RRGGBB : '#'で始まり, 16進数6桁 = html色指定
-	 * 
-	 * @param color
-	 *            java.awt.Colorオブジェクト
-	 * @return HTMLカラーコード
-	 */
+* Create HTML color code from java.awt.Color object. <br/>
+* The color string is in the following format. <br/>
+* 1. #RRGGBB: Starts with'#', 6 hexadecimal digits = html color specification
+*
+* @param color
+* java.awt.Color object
+* @return HTML color code
+*/
 	public static String parseColorCode(Color color) {
 		if (color == null)
 			return null;
@@ -676,12 +676,12 @@ public class StringUtils {
 	}
 
 	/**
-	 * 改行文字、空白、タブをHTMLコードに置換する
-	 * 
-	 * @param content
-	 *            元テキスト文字列
-	 * @return HTML変換文字列
-	 */
+* Replace newline characters, whitespace, and tabs with HTML code
+*
+* @param content
+* Original text string
+* @return HTML conversion string
+*/
 	public static String textTohtml(String content) {
 		if (content == null || content.isEmpty())
 			return null;
@@ -690,12 +690,12 @@ public class StringUtils {
 		boolean opening = false;
 		for (int i = 0; i < content.length(); i++) {
 			String str = content.substring(i, i + 1);
-			// ラインフィード
+			// line feed
 			if ("\r".equals(str)) {
 				continue;
 			}
 
-			// タブ文字をチェックする
+			// Check tab characters
 			if (!opening) {
 				if ("<".equals(str)) {
 					if (content.length() > i + 3) {
@@ -724,35 +724,35 @@ public class StringUtils {
 				continue;
 			}
 
-			// 空白文字
+			// Whitespace character
 			if (" ".equals(str)) {
 				buf.append("&nbsp;");
 			}
-			// クォーテーション
+			// Quotation
 			else if ("\"".equals(str)) {
 				buf.append("&quot;");
 			}
-			// アンパサンド
+			// Ampersand
 			else if ("&".equals(str)) {
 				buf.append("&amp;");
 			}
-			// 小なり
+			// less
 			else if ("<".equals(str)) {
 				buf.append("&lt;");
 			}
-			// 大なり
+			// Greater
 			else if (">".equals(str)) {
 				buf.append("&gt;");
 			}
-			// コピーライト
+			// Copywriter
 			else if ("@".equals(str)) {
 				buf.append("&copy;");
 			}
-			// 改行文字
+			// Newline character
 			else if ("\n".equals(str)) {
 				buf.append("<br/>\n");
 			}
-			// タブ文字
+			// Tab character
 			else if ("\t".equals(str)) {
 				for (int j = 0; j < HTML_TABSIZE; j++) {
 					buf.append("&nbsp;");
@@ -766,27 +766,27 @@ public class StringUtils {
 	}
 
 	/**
-	 * 検索文字列から検索対象文字をHTML色設定を行う.<br/>
-	 * 検索文字列をfont,colorのHTMLタグで囲む
-	 * 
-	 * @param text
-	 *            検索対象文字列
-	 * @param search
-	 *            検索文字列
-	 * @param forecolor
-	 *            文字色
-	 * @param backcolor
-	 *            背景色
-	 * @param fontstyle
-	 *            フォントスタイル
-	 * @param sensitivecase
-	 *            大文字・小文字の区別(true=大文字・小文字の区別を行う)
-	 * @param regex
-	 *            正規表現
-	 * @param word
-	 *            単語検索
-	 * @return HTML色設定文字列
-	 */
+* Set the HTML color of the search target character from the search string. <br/>
+* Enclose the search string in font and color HTML tags
+*
+* @param text
+* Search target string
+* @param search
+* Search string
+* @param forecolor
+	 *            Letter color
+* @param backcolor
+	 *            Background color
+* @param fontstyle
+* Font style
+* @param sensitivecase
+* Case sensitive (true = case sensitive)
+* @param regex
+	 *            Regular expressions
+* @param word
+* Word search
+* @return HTML color setting string
+*/
 	public static String searchTextToHtml(String text, String search,
 			Color forecolor, Color backcolor, int fontstyle,
 			boolean sensitivecase, boolean regex, boolean word) {
@@ -794,19 +794,19 @@ public class StringUtils {
 		String contentText = textTohtml(text);
 		String searchText = textTohtml(search);
 
-		// 検索文字列から検索対象文字位置リストを取得する
+		// Get the search target character position list from the search string
 		List<Integer[]> list = getSearchTextList(contentText, searchText,
 				sensitivecase, regex, word);
 		if (list == null || list.size() <= 0)
 			return text;
 
-		// 検索一致文字を置換する
+		// Replace search match character
 		for (int i = list.size() - 1; i >= 0; i--) {
 			int start = list.get(i)[0];
 			int end = list.get(i)[1];
-			// 検索一致文字
+			// Search match character
 			String findText = contentText.substring(start, end);
-			// カラーリング
+			// colouring
 			String html = createHtmlColorTag(findText, forecolor, backcolor,
 					fontstyle);
 			contentText = contentText.substring(0, start) + html
@@ -817,20 +817,20 @@ public class StringUtils {
 	}
 
 	/**
-	 * 検索文字列から検索対象文字の位置情報を取得する.<br/>
-	 * 
-	 * @param text
-	 *            検索対象文字列
-	 * @param search
-	 *            検索文字列
-	 * @param sensitivecase
-	 *            大文字・小文字の区別(true=大文字・小文字の区別を行う)
-	 * @param regex
-	 *            正規表現
-	 * @param word
-	 *            単語検索
-	 * @return HTML色設定文字列
-	 */
+* Get the position information of the search target character from the search string. <br/>
+*
+* @param text
+* Search target string
+* @param search
+* Search string
+* @param sensitivecase
+* Case sensitive (true = case sensitive)
+* @param regex
+	 *            Regular expressions
+* @param word
+* Word search
+* @return HTML color setting string
+*/
 	private static List<Integer[]> getSearchTextList(String text,
 			String search, boolean sensitivecase, boolean regex, boolean word) {
 		if (text == null)
@@ -842,37 +842,37 @@ public class StringUtils {
 		String searchText = search;
 		List<Integer[]> list = new ArrayList<Integer[]>();
 
-		// 正規表現
+		// Regular expressions
 		if (regex) {
 			int flags = 0;
 			if (!sensitivecase) {
-				// 大文字・小文字の区別を行わない
+				// Do not distinguish between uppercase and lowercase letters
 				flags = Pattern.CASE_INSENSITIVE;
 			}
 			flags += Pattern.MULTILINE;
 			Pattern pattern = Pattern.compile(searchText, flags);
 			Matcher m = pattern.matcher(contentText);
 			while (m.find()) {
-				// 一致位置リストの作成
+				// Create a match position list
 				Integer[] findinfo = { m.start(), m.end() };
 				list.add(findinfo);
 			}
 		} else {
 			if (!sensitivecase) {
-				// 大文字・小文字の区別を行わないので、すべて小文字に変換する
+				// Convert to all lowercase as it is not case sensitive
 				contentText = contentText.toLowerCase();
 				searchText = searchText.toLowerCase();
 			}
 
-			// 文字列検索を行う
+			// Perform a string search
 			int fromIndex = 0;
 			int start = -1;
 			while ((start = contentText.indexOf(searchText, fromIndex)) != -1) {
 				int end = start + searchText.length();
 				fromIndex = end;
-				// 単語検索
+				// word search
 				if (word) {
-					// 検索結果の前後の文字がデリミタであるかチェックする
+					// Check if the characters before and after the search result are delimiters
 					if (start > 0) {
 						if (!isDelimiter(contentText
 								.substring(start - 1, start))) {
@@ -888,7 +888,7 @@ public class StringUtils {
 						}
 					}
 				}
-				// 一致位置リストの作成
+				// Create a match position list
 				Integer[] findinfo = { start, end };
 				list.add(findinfo);
 			}
@@ -900,20 +900,20 @@ public class StringUtils {
 	}
 
 	/**
-	 * 検索文字列から検索対象文字が存在するか取得する.<br/>
-	 * 
-	 * @param text
-	 *            検索対象文字列
-	 * @param search
-	 *            検索文字列
-	 * @param sensitivecase
-	 *            大文字・小文字の区別(true=大文字・小文字の区別を行う)
-	 * @param regex
-	 *            正規表現
-	 * @param word
-	 *            単語検索
-	 * @return HTML色設定文字列
-	 */
+* Get whether the search target character exists from the search string. <br/>
+*
+* @param text
+* Search target string
+* @param search
+* Search string
+* @param sensitivecase
+* Case sensitive (true = case sensitive)
+* @param regex
+	 *            Regular expressions
+* @param word
+* Word search
+* @return HTML color setting string
+*/
 	public static boolean existsSearchText(String text, String search,
 			boolean sensitivecase, boolean regex, boolean word) {
 
@@ -922,7 +922,7 @@ public class StringUtils {
 		if (search == null)
 			return false;
 
-		// ダミーの文字色、背景色を設定
+		// Set dummy text color and background color
 		String html = searchTextToHtml(text, search, Color.BLACK, Color.WHITE,
 				Font.BOLD, sensitivecase, regex, word);
 
@@ -930,23 +930,23 @@ public class StringUtils {
 	}
 
 	/**
-	 * 検索文字列から検索対象文字をHTML色設定を行う(変数検索)対象文字列であるかチェックする.<br/>
-	 * 大文字・小文字の区別はしない、単語検索、引用符で囲まれた範囲は対象としない.<br/>
-	 * *
-	 * 
-	 * @param text
-	 *            検索対象文字列
-	 * @param search
-	 *            検索文字列
-	 * @return true=HTML色設定対象文字列
-	 */
+* Set the HTML color of the search target character from the search character string (variable search) Check if it is the target character string. <br/>
+* Not case sensitive, word search, quoted range not covered. <br/>
+* *
+*
+* @param text
+* Search target string
+* @param search
+* Search string
+* @return true = HTML color setting target string
+*/
 	public static boolean existsSearchWord(String text, String search) {
 		if (text == null)
 			return false;
 		if (search == null)
 			return false;
 
-		// ダミーの文字色、背景色を設定
+		// Set dummy text color and background color
 		String html = searchWordToHtml(text, search, Color.BLACK, Color.WHITE,
 				Font.BOLD);
 
@@ -955,22 +955,22 @@ public class StringUtils {
 	}
 
 	/**
-	 * 検索文字列から検索対象文字をHTML色設定を行う(変数検索).<br/>
-	 * 大文字・小文字の区別はしない、単語検索、引用符で囲まれた範囲は対象としない.<br/>
-	 * 検索文字列をfont,colorのHTMLタグで囲む
-	 * 
-	 * @param text
-	 *            検索対象文字列
-	 * @param search
-	 *            検索文字列
-	 * @param forecolor
-	 *            文字色
-	 * @param backcolor
-	 *            背景色
-	 * @param fontstyle
-	 *            フォントスタイル
-	 * @return HTML色設定文字列
-	 */
+* Set the HTML color of the search target character from the search string (variable search). <br/>
+* Not case sensitive, word search, quoted range not covered. <br/>
+* Enclose the search string in font and color HTML tags
+*
+* @param text
+* Search target string
+* @param search
+* Search string
+* @param forecolor
+	 *            Letter color
+* @param backcolor
+	 *            Background color
+* @param fontstyle
+* Font style
+* @return HTML color setting string
+*/
 	public static String searchWordToHtml(String text, String search,
 			Color forecolor, Color backcolor, int fontstyle) {
 		if (text == null)
@@ -985,9 +985,9 @@ public class StringUtils {
 			StringBuffer buf = new StringBuffer();
 			boolean htmltag = false;
 
-			// 検索対象文字列を単語、引用符分解を行う
+			// Decompose the search target string into words and quotation marks
 			LanguageTokenizer token = new LanguageTokenizer(contentText);
-			// デリミタの設定
+			// Delimiter settings
 			String filldelimiters = KscopeProperties.DELIMITER_CHARS;
 			String delimiters = "";
 			for (int i = 0; i < filldelimiters.length(); i++) {
@@ -1008,7 +1008,7 @@ public class StringUtils {
 					break;
 				case LanguageTokenizer.LT_WORD:
 					if (comment) {
-						// コメント
+						// Comment
 						buf.append(token.sval);
 					} else if (searchText.equalsIgnoreCase(token.sval)) {
 						String html = createHtmlColorTag(token.sval, forecolor,
@@ -1024,7 +1024,7 @@ public class StringUtils {
 					break;
 				case LanguageTokenizer.LT_DELIM:
 					if (token.sval == "!") {
-						// 以下コメントとする
+						// Make a comment below
 						comment = true;
 					}
 					buf.append(token.sval);
@@ -1035,7 +1035,7 @@ public class StringUtils {
 				}
 			}
 			if (!htmltag) {
-				// 検索文字列が存在しない。
+				// The search string does not exist.
 				return text;
 			}
 			String html = buf.toString();
@@ -1051,45 +1051,45 @@ public class StringUtils {
 	}
 
 	/**
-	 * 文字列に対してフォントカラー, 背景色, スタイルをHTMLタグを適用する.
-	 * 
-	 * @param text
-	 *            適用文字列
-	 * @param forecolor
-	 *            文字色
-	 * @param backcolor
-	 *            背景色
-	 * @param fontstyle
-	 *            フォントスタイル
-	 * @return HTMLタグ適用文字列
-	 */
+* Apply HTML tags for font color, background color and style to the string.
+*
+* @param text
+* Applicable string
+* @param forecolor
+	 *            Letter color
+* @param backcolor
+	 *            Background color
+* @param fontstyle
+* Font style
+* @return HTML tag applicable string
+*/
 	private static String createHtmlColorTag(String text, Color forecolor,
 			Color backcolor, int fontstyle) {
 
-		// スタイル
+		// Style
 		String style = "";
 
-		// 文字色
+		// Letter color
 		String attrColor = null;
 		if (forecolor != null) {
 			attrColor = parseColorCode(forecolor);
 			attrColor = "color:" + attrColor + ";";
 			style += attrColor;
 		}
-		// 背景色
+		// Background color
 		String attrBackcolor = null;
 		if (backcolor != null) {
 			attrBackcolor = parseColorCode(backcolor);
 			attrBackcolor = "background-color:" + attrBackcolor + ";";
 			style += attrBackcolor;
 		}
-		// 太字
+		// Bold
 		String bold = null;
 		if ((fontstyle & Font.BOLD) != 0) {
 			bold = "font-weight: bold;";
 			style += bold;
 		}
-		// イタリック
+		// italics
 		String italic = null;
 		if ((fontstyle & Font.ITALIC) != 0) {
 			italic = "font-style: italic;";
@@ -1105,36 +1105,36 @@ public class StringUtils {
 	}
 
 	/**
-	 * 文字列をデリミタで分解する.<br/>
-	 * 返す分解文字列リストには、デリミタ、空白も含む
-	 * 
-	 * @param text
-	 *            検索対象文字列
-	 * @return 分解文字列リスト
-	 */
+* Decompose the string with a delimiter. <br/>
+* The returned decomposed string list includes delimiters and spaces.
+*
+* @param text
+* Search target string
+* @return Decomposition string list
+*/
 	public static List<String> tokenizer(String text) {
 		return tokenizer(text, null);
 	}
 
 	/**
-	 * 文字列をデリミタで分解する.<br/>
-	 * 返す分解文字列リストには、デリミタ、空白も含む
-	 * 
-	 * @param text
-	 *            検索対象文字列
-	 * @param unuseddelimiters
-	 *            除外デリミタ
-	 * @return 分解文字列リスト
-	 */
+* Decompose the string with a delimiter. <br/>
+* The returned decomposed string list includes delimiters and spaces.
+*
+* @param text
+* Search target string
+* @param unuseddelimiters
+* Exclusion delimiter
+* @return Decomposition string list
+*/
 	public static List<String> tokenizer(String text, String[] unuseddelimiters) {
 		if (text == null)
 			return null;
 
 		List<String> list = new ArrayList<String>();
 		try {
-			// 検索対象文字列を単語、引用符分解を行う
+			// Decompose the search target string into words and quotation marks
 			LanguageTokenizer token = new LanguageTokenizer(text);
-			// デリミタの設定
+			// Delimiter settings
 			token.useDelimiters(KscopeProperties.DELIMITER_CHARS);
 			if (unuseddelimiters != null) {
 				for (String unused : unuseddelimiters) {
@@ -1158,25 +1158,25 @@ public class StringUtils {
 	}
 
 	/**
-	 * 文字列をデリミタで分解する.<br/>
-	 * 返す分解文字列リストには、デリミタ、空白も含む<br/>
-	 * 引用符は１つの文字列として分割しない.
-	 * 
-	 * @param text
-	 *            検索対象文字列
-	 * @param delimiters
-	 *            デリミタ
-	 * @return 分解文字列リスト
-	 */
+* Decompose the string with a delimiter. <br/>
+* The returned decomposed string list includes delimiters and spaces <br/>
+* Quotation marks are not split as a single string.
+*
+* @param text
+* Search target string
+* @param delimiters
+* Delimiter
+* @return Decomposition string list
+*/
 	public static String[] tokenizerDelimit(String text, String delimiters) {
 		if (text == null)
 			return null;
 
 		List<String> list = new ArrayList<String>();
 		try {
-			// 検索対象文字列を単語、引用符分解を行う
+			// Decompose the search target string into words and quotation marks
 			LanguageTokenizer token = new LanguageTokenizer(text);
-			// デリミタの設定
+			// Delimiter settings
 			token.useDelimiters(delimiters);
 			token.eolIsSignificant(true);
 			int ttype;
@@ -1202,12 +1202,12 @@ public class StringUtils {
 	}
 
 	/**
-	 * 文字が区切り文字であるかチェックする。
-	 * 
-	 * @param character
-	 *            チェック文字
-	 * @return true=区切り文字
-	 */
+* Check if the character is a delimiter.
+*
+* @param character
+* Check character
+* @return true = Delimiter
+*/
 	private static boolean isDelimiter(String character) {
 		if (character == null || character.isEmpty()) {
 			return false;
@@ -1217,12 +1217,12 @@ public class StringUtils {
 	}
 
 	/**
-	 * 文字列の前後のスペース、小括弧を削除する。
-	 * 
-	 * @param arg_str
-	 *            削除対象文字列
-	 * @return 削除後文字列
-	 */
+* Remove spaces and parentheses before and after the string.
+*
+* @param arg_str
+* Character string to be deleted
+* @return Character string after deletion
+*/
 	public static String delete_space(String arg_str) {
 		int start_pos = arg_str.indexOf((String) "(");
 		int last_pos = arg_str.lastIndexOf((String) ")");
@@ -1245,14 +1245,14 @@ public class StringUtils {
 	}
 
 	/**
-	 * 連続した文字列を作成する
-	 * 
-	 * @param str
-	 *            連続文字
-	 * @param repeat
-	 *            繰り返し回数
-	 * @return 連続した文字列
-	 */
+* Create a continuous string
+*
+* @param str
+* Continuous characters
+* @param repeat
+* Number of repetitions
+* @return Consecutive strings
+*/
 	public static String repeat(String str, int repeat) {
 		if (str == null) {
 			return null;
@@ -1272,29 +1272,29 @@ public class StringUtils {
 	}
 
 	/**
-	 * 文字列配列を連結する
-	 * 
-	 * @param array
-	 *            文字列配列
-	 * @param with
-	 *            区切り文字
-	 * @return 連結した文字列
-	 */
+* Concatenate string arrays
+*
+* @param array
+* String array
+* @param with
+	 *            Delimiter
+* @return Concatenated string
+*/
 	public static String join(String[] array, String with) {
 		return join(array, with, 0);
 	}
 
 	/**
-	 * 文字列配列を連結する
-	 * 
-	 * @param array
-	 *            文字列配列
-	 * @param with
-	 *            区切り文字
-	 * @param limit
-	 *            連結の上限（0以下の設定で無制限）
-	 * @return 連結した文字列
-	 */
+* Concatenate string arrays
+*
+* @param array
+* String array
+* @param with
+	 *            Delimiter
+* @param limit
+* Upper limit of connection (unlimited with 0 or less setting)
+* @return Concatenated string
+*/
 	public static String join(String[] array, String with, int limit) {
 		StringBuffer buf = new StringBuffer();
 		int cnt = 0;
@@ -1310,14 +1310,14 @@ public class StringUtils {
 	}
 
 	/**
-	 * InputStreamを文字列に変換する（改行込）
-	 * 
-	 * @param is
-	 *            InputStream
-	 * @return 文字列
-	 * @throws IOException
-	 *             InputStreamエラー
-	 */
+* Convert InputStream to string (including line breaks)
+*
+* @param is
+* InputStream
+* @return string
+* @throws IOException
+* InputStream error
+*/
 	public static String convertString(InputStream is) throws IOException {
 		BufferedReader reader = new BufferedReader(new InputStreamReader(is,
 				"UTF-8"));
@@ -1331,14 +1331,14 @@ public class StringUtils {
 	}
 
 	/**
-	 * 正規表現に一致しているかチェック
-	 * 
-	 * @param str
-	 *            検索文字列
-	 * @param pattern
-	 *            正規表現パターン
-	 * @return true=一致している
-	 */
+* Check if it matches the regular expression
+*
+* @param str
+* Search string
+* @param pattern
+* Regular expression pattern
+* @return true = match
+*/
 	public static boolean patternMatch(String str, String pattern) {
 		Pattern p = Pattern.compile(pattern);
 		if (p == null)
@@ -1349,13 +1349,13 @@ public class StringUtils {
 	}
 
 	/**
-	 * ファイルパス名をエスケープする.<br/>
-	 * '￥'を'/'に変更する.<br/>
-	 * 
-	 * @param path
-	 *            ファイルパス名
-	 * @return エスケープ文字列
-	 */
+* Escape the file pathname. <br/>
+* Change'\'to'/'. <br/>
+*
+* @param path
+* File path name
+* @return Escape string
+*/
 	public static String escapeFilePath(String path) {
 		if (path == null)
 			return null;

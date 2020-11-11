@@ -18,43 +18,43 @@
 package jp.riken.kscope.common;
 
 /**
- * プロパティ値タイプ
+ * Property value type
  * @author RIKEN
  */
 public enum PROPERTY_TYPE {
-    // プロパティ値タイプ 
-	/** フォント設定 */
+    // Property value type
+	/** Font settings */
     FONT("font"),
-    /** 色設定 */
+    /** Color setting */
     COLOR("color"),
-    /** 整数値設定 */
+    /** Integer value setting */
     INTEGER("integer"),
-    /** 不明 */
+    /** Unknown */
     UNKNOWN("unknown");
 
-    /** タイプ名 */
+    /** Type name */
     private String typename;
 
     /**
-     * コンストラクタ
-     * @param tabname		タイプ名
+     * Constructor
+     * @param tabname Type name
      */
     private PROPERTY_TYPE(String type) {
         this.typename = type;
     }
 
     /**
-     * タイプ名を取得する
-     * @return		タイプ名
+     * Get the type name
+     * @return type name
      */
     public String getTypename() {
         return this.typename;
     }
 
     /**
-     * タイプ名からプロパティ値タイプを取得する
-     * @param type			タイプ名
-     * @return			プロパティ値タイプ
+     * Get property value type from type name
+     * @param type type name
+     * @return Property value type
      */
     public static PROPERTY_TYPE parseType(String type) {
         if (type == null) return PROPERTY_TYPE.UNKNOWN;

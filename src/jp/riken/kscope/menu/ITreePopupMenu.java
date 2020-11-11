@@ -22,38 +22,38 @@ import java.util.EventListener;
 
 
 /**
- * ツリーポップアップメニューインターフェイス
+ * Tree pop-up menu interface
  * @author RIKEN
  */
 public interface ITreePopupMenu {
 
     /**
-     * すべて収納アクションリスナを取得する
-     * @return		すべて収納アクションリスナ
+     * Get all storage action listeners
+     * @return All storage action listener
      */
     public ActionListener getActionTreeCollapseAll();
 
     /**
-     * すべて展開アクションリスナを取得する
-     * @return		すべて展開アクションリスナ
+     * Get all deployment action listeners
+     * @return All deployment action listener
      */
     public ActionListener getActionTreeExpandAll();
 
     /**
-     * 選択展開アクションリスナを取得する
-     * @return		選択展開アクションリスナ
+     * Get Selective Deployment Action Listener
+     * @return Selective expansion action listener
      */
     public ActionListener getActionTreeExpandSelect();
 
     /**
-     * ファイルを開くリスナを取得する。
-     * @return		ファイルを開くリスナ
+     * Get the listener to open the file.
+     * @return Open file Listener
      */
     public EventListener getActionOpenFile();
 
     /**
-     * エクスプローラエクスポートアクションを取得する
-     * @return		エクスプローラエクスポートアクション
+     * Get the explorer export action
+     * @return explorer export action
      */
     public ActionListener getActionExportExplore();
 

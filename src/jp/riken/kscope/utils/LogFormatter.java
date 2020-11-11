@@ -21,16 +21,16 @@ import java.util.logging.Formatter;
 import java.util.logging.LogRecord;
 
 /**
- * ログフォーマッター
- * 
+ * Log formatter
+ *
  * @author RIKEN
- * 
+ *
  */
 public class LogFormatter extends Formatter {
 
 	/**
-	 * ログ出力メッセージのフォーマットを設定する。
-	 */
+* Set the format of the log output message.
+*/
 	@Override
 	public String format(LogRecord record) {
 		return String.format("[%tF %tT] %s : %s%n", record.getMillis(),

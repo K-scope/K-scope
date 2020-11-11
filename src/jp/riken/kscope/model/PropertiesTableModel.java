@@ -31,35 +31,35 @@ import jp.riken.kscope.Message;
 import jp.riken.kscope.utils.SwingUtils;
 
 /**
- * プロパティテーブルモデル
+ * Property table model
  * @author RIKEN
  *
  */
 public class PropertiesTableModel extends Observable {
 
-    /** テーブルヘッダーリスト */
-    private String[] HEADER_COLUMNS = {Message.getString("propertiestablemodel.header_columns.name"),   //項目
-                                       Message.getString("settingprojectdialog.column_header.value")};  //値
+    /** Table header list */
+    private String[] HEADER_COLUMNS = {Message.getString("propertiestablemodel.header_columns.name"),   //item
+                                       Message.getString("settingprojectdialog.column_header.value")};  //value
 
-    /** タイトル */
+    /** Title */
     private String title;
 
 
-    /** プロパティテーブルモデル */
+    /** Property table model */
     private DefaultTableModel tableModel;
 
     /**
-     * コンストラクタ
+     * Constructor
      */
     public PropertiesTableModel() {
         super();
 
-        // テーブルモデルの作成
+        // Create a table model
         createTableModel();
     }
 
     /**
-     * モデルの変更を通知する
+     * Notify model changes
      */
     private void notifyModel() {
         this.setChanged();
@@ -68,8 +68,8 @@ public class PropertiesTableModel extends Observable {
     }
 
     /**
-     * テーブルモデルを取得する
-     * @return		テーブルモデル
+     * Get the table model
+     * @return table model
      */
     public DefaultTableModel getTableModel() {
         return tableModel;
@@ -77,42 +77,42 @@ public class PropertiesTableModel extends Observable {
 
 
     /**
-     * テーブルモデルを作成する
+     * Create a table model
      */
     private void createTableModel() {
-        // テーブルモデルの作成
+        // Create a table model
         tableModel = new DefaultTableModel();
         tableModel.setColumnIdentifiers(HEADER_COLUMNS);
     }
 
     /**
-     * ヘッダー列リストを取得する。
-     * @return		ヘッダー列リスト
+     * Get the header column list.
+     * @return Header column list
      */
     public String[] getHeaderColumns() {
         return HEADER_COLUMNS;
     }
 
     /**
-     * テーブル行を追加する
-     * @param item		項目名
-     * @param value		値
+     * Add a table row
+     * @param item Item name
+     * @param value value
      */
     public void addProperties(String item, String value) {
         String [] row = {item, value};
         tableModel.addRow(row);
 
-        // モデルの変更を通知
+        // Notify model changes
         notifyModel();
     }
 
     /**
-     * テーブル行を追加する
-     * @param item		項目名
-     * @param value		値
+     * Add a table row
+     * @param item Item name
+     * @param value value
      */
     public void setProperties(String item[], String value[]) {
-        // テーブルモデルの作成
+        // Create a table model
         createTableModel();
         if (item == null || item.length<= 0) return;
 
@@ -122,54 +122,54 @@ public class PropertiesTableModel extends Observable {
             tableModel.addRow(row);
         }
 
-        // モデルの変更を通知
+        // Notify model changes
         notifyModel();
     }
 
 
     /**
-     * テーブルモデルをクリアする。
+     * Clear the table model.
      */
     public void clearProperties() {
-        // テーブルモデルの作成
+        // Create a table model
         createTableModel();
         this.title = null;
 
-        // モデルの変更を通知
+        // Notify model changes
         notifyModel();
     }
 
     /**
-     * タイトルを取得する
-     * @return	タイトル
+     * Get the title
+     * @return title
      */
     public String getTitle() {
         return title;
     }
 
     /**
-     * タイトルを設定する
-     * @param title		タイトル
+     * Set the title
+     * @param title Title
      */
     public void setTitle(String title) {
         this.title = title;
     }
 
     /**
-     * テーブル情報をファイル出力する。
-     * @param file		出力ファイル
+     * Output table information to a file.
+     * @param file Output file
      */
     public void writeFile(File file) {
         if (this.tableModel == null) return;
         if (isEmpty()) return;
 
         try {
-            // ファイル出力
+            // File output
             PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(file)));
 
-            // テーブルデータ
+            // Table data
             String buf = SwingUtils.toCsv(this.tableModel);
-            // ファイル出力
+            // File output
             pw.print(buf);
 
             pw.close();
@@ -181,8 +181,8 @@ public class PropertiesTableModel extends Observable {
     }
     
     /**
-     * モデルが空か否か
-     * @return	空か否か（ture: 空，false: データあり）
+     * Whether the model is empty
+     * @return Whether it is empty (ture: empty, false: with data)
      */
     public boolean isEmpty() {
     	if (this.tableModel == null) return true;

@@ -19,36 +19,36 @@ package jp.riken.kscope.common;
 import jp.riken.kscope.Message;
 
 /**
- * エクスプローラ（ツリー）パネルの識別文字列
+ * Explorer (tree) panel identification string
  * @author RIKEN
  */
 public enum EXPLORE_PANEL {
-    // パネル一覧
-    /** 構造パネル */
-    LANGUAGE(Message.getString("mainmenu.window.explore.structure")), //構造
-    /** モジュールパネル */
-    MODULE(Message.getString("mainmenu.window.explore.module")), //モジュール
-    /** ソースパネル */
-    SOURCE(Message.getString("mainmenu.window.explore.source")), //ソース
-    /** XMLパネル */
+    // Panel list
+    /** Structural panel */
+    LANGUAGE(Message.getString("mainmenu.window.explore.structure")), //Construction
+    /** Module panel */
+    MODULE(Message.getString("mainmenu.window.explore.module")), //module
+    /** Source panel */
+    SOURCE(Message.getString("mainmenu.window.explore.source")), //Source
+    /** XML panel */
     XML(Message.getString("mainmenu.window.explore.xml")), //XML
-    /** 不明 */
-    UNKNOWN(Message.getString("explore_panel.enum.unknown")); //不明
+    /** Unknown */
+    UNKNOWN(Message.getString("explore_panel.enum.unknown")); //unknown
 
-    /** タブ名 */
+    /** Tab name */
     private String tabname;
 
     /**
-     * コンストラクタ
-     * @param tabname		タブ名
+     * Constructor
+     * @param tabname Tab name
      */
     private EXPLORE_PANEL(String tabname) {
         this.tabname = tabname;
     }
 
     /**
-     * タブ名を取得する
-     * @return		タブ名
+     * Get the tab name
+     * @return tab name
      */
     public String getTabName() {
         return this.tabname;

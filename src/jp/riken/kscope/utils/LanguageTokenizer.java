@@ -24,97 +24,97 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 /**
- * 言語構文分割クラス
- * 
+ * Language syntax split class
+ *
  * @author RIKEN
- * 
+ *
  */
 public class LanguageTokenizer {
 
 	/**
-	 * 読込ソースコードリーダー
-	 */
+* Read source code reader
+*/
 	private Reader reader = null;
 
 	/**
-	 * 分割文字格納バッファ
-	 */
+* Split character storage buffer
+*/
 	private StringBuffer buf = new StringBuffer();
 
 	/**
-	 * 区切り文字リスト
-	 */
+* Delimiter list
+*/
 	private ArrayList<String> m_delimList = new ArrayList<String>();
 
 	/**
-	 * 次の読込フラグ
-	 */
+* Next read flag
+*/
 	private int peekc = NEED_CHAR;
 	private static final int NEED_CHAR = Integer.MAX_VALUE;
 	private static final int SKIP_LF = Integer.MAX_VALUE - 1;
 
-	/** ライン番号 */
+	/** Line number */
 	private int LINENO = 1;
 
 	/**
-	 * EOL(改行)区切りフラグ true:EOL(改行)を区切りとする false:EOL(改行)を区切りとしない。
-	 */
+* EOL (line feed) delimiter flag true: EOL (line feed) is used as a delimiter false: EOL (line feed) is not used as a delimiter.
+*/
 	private boolean eolIsSignificantP = false;
 
-	/** C言語コメント("//")をコメントとする */
+	/** Comment out C language comment ("//") */
 	private boolean slashSlashCommentsP = false;
-	/** C言語コメント("/*")をコメントとする */
+	/** Comment C language comment ("/*") */
 	private boolean slashStarCommentsP = false;
-	/** 小括弧 '(',')'を対の区切り文字とする */
+	/** Use parentheses'(',')' as pair delimiters */
 	private boolean parenthesisQuote = false;
 
 	/**
-	 * ACSII文字の文節設定リスト CT_WHITESPACE,CT_ALPHA,CT_QUOTE,CT_COMMENTがOR値で設定する。
-	 */
+* ACSII character clause setting list CT_WHITESPACE, CT_ALPHA, CT_QUOTE, CT_COMMENT are set by OR value.
+*/
 	private byte ctype[] = new byte[256];
-	/** スペースに置き換える文字 */
+	/** Character to replace with space */
 	private static final byte CT_WHITESPACE = 1;
-	/** 単語とする文字 */
+	/** Characters to be words */
 	private static final byte CT_ALPHA = 4;
-	/** 囲み単語とする文字 */
+	/** Characters to be enclosed words */
 	private static final byte CT_QUOTE = 8;
-	/** コメントとする文字（未使用） */
+	/** Characters to comment (unused) */
 	private static final byte CT_COMMENT = 16;
 
 	/**
-	 * 現在文字の文節設定
-	 */
+* Current character phrase setting
+*/
 	public int ttype = LT_NOTHING;
 
-	/** EOF（読込リーダーの終端） */
+	/** EOF (end of read reader) */
 	public static final int LT_EOF = -1;
 
-	/** EOL（読込行末） */
+	/** EOL (end of read line) */
 	public static final int LT_EOL = '\n';
 
-	/** 単語文字列 */
+	/** word string */
 	public static final int LT_WORD = -3;
 
-	/** 未定 */
+	/** Undecided */
 	private static final int LT_NOTHING = -4;
 
-	/** 囲み単語 */
+	/** Enclosed word */
 	public static final int LT_QUOTE = -9;
 
-	/** 区切り文字 */
+	/** Delimiter */
 	public static final int LT_DELIM = -10;
 
-	/** 括弧区切り */
+	/** Parenthesized */
 	public static final int LT_PARENTHESIS = -11;
 
 	/**
-	 * 文節区切りによる文字列
-	 */
+* Phrase-delimited string
+*/
 	public String sval;
 
 	/**
-	 * コンストラクタ
-	 */
+* Constructor
+*/
 	private LanguageTokenizer() {
 		clearToken();
 		// wordChars('a', 'z');
@@ -127,11 +127,11 @@ public class LanguageTokenizer {
 	}
 
 	/**
-	 * コンストラクタ
-	 * 
-	 * @param r
-	 *            読込ソースリーダー
-	 */
+* Constructor
+*
+* @param r
+* Read source reader
+*/
 	public LanguageTokenizer(Reader r) {
 		this();
 		if (r == null) {
@@ -141,11 +141,11 @@ public class LanguageTokenizer {
 	}
 
 	/**
-	 * コンストラクタ
-	 * 
-	 * @param str
-	 *            読込ソースコード文字列
-	 */
+* Constructor
+*
+* @param str
+* Read source code string
+*/
 	public LanguageTokenizer(String str) {
 		this();
 		if (str == null) {
@@ -155,16 +155,16 @@ public class LanguageTokenizer {
 	}
 
 	/**
-	 * 文節文字をリセットする
-	 */
+* Reset phrase characters
+*/
 	public void resetSyntax() {
 		for (int i = ctype.length; --i >= 0;)
 			ctype[i] = 0;
 	}
 
 	/**
-	 * 文節文字をデフォルト設定にする
-	 */
+* Make phrase characters the default settings
+*/
 	public void clearToken() {
 		for (int i = ctype.length; --i >= 0;)
 			ctype[i] = CT_ALPHA;
@@ -193,11 +193,11 @@ public class LanguageTokenizer {
 	}
 
 	/**
-	 * 単語文字を設定する
-	 * 
-	 * @param low
-	 *            単語文字コード
-	 */
+* Set word letters
+*
+* @param low
+* Word character code
+*/
 	public void wordChar(int low) {
 		if (low < 0)
 			low = 0;
@@ -208,13 +208,13 @@ public class LanguageTokenizer {
 	}
 
 	/**
-	 * スペース文字範囲を設定する
-	 * 
-	 * @param low
-	 *            下限スペース文字コード
-	 * @param hi
-	 *            上限スペース文字コード
-	 */
+* Set the space character range
+*
+* @param low
+* Lower limit space character code
+* @param hi
+* Maximum space character code
+*/
 	public void whitespaceChars(int low, int hi) {
 		if (low < 0)
 			low = 0;
@@ -225,24 +225,24 @@ public class LanguageTokenizer {
 	}
 
 	/**
-	 * スペース文字を設定する
-	 * 
-	 * @param ch
-	 *            スペース文字コード
-	 */
+* Set space character
+*
+* @param ch
+* Space character code
+*/
 	public void whitespaceChar(int ch) {
 		if (ch >= 0 && ch < ctype.length)
 			ctype[ch] |= CT_WHITESPACE;
 	}
 
 	/**
-	 * 文節文字としない文字範囲を設定する
-	 * 
-	 * @param low
-	 *            下限設定なし文字コード
-	 * @param hi
-	 *            上限設定なし文字コード
-	 */
+* Set the character range that is not a clause character
+*
+* @param low
+* Character code without lower limit setting
+* @param hi
+* Character code with no upper limit
+*/
 	public void ordinaryChars(int low, int hi) {
 		if (low < 0)
 			low = 0;
@@ -253,84 +253,84 @@ public class LanguageTokenizer {
 	}
 
 	/**
-	 * 文節文字としない文字を設定する
-	 * 
-	 * @param ch
-	 *            設定なし文字コード
-	 */
+* Set characters that are not clause characters
+*
+* @param ch
+* Character code without setting
+*/
 	public void ordinaryChar(int ch) {
 		if (ch >= 0 && ch < ctype.length)
 			ctype[ch] = 0;
 	}
 
 	/**
-	 * コメント文字を設定する
-	 * 
-	 * @param ch
-	 *            コメント文字
-	 */
+* Set comment characters
+*
+* @param ch
+* Comment character
+*/
 	public void commentChar(int ch) {
 		if (ch >= 0 && ch < ctype.length)
 			ctype[ch] = CT_COMMENT;
 	}
 
 	/**
-	 * 引用符文字を設定する。 通常("), (')を設定する。
-	 * 
-	 * @param ch
-	 *            引用符文字
-	 */
+* Set the quotation mark character. Normally ("), (') is set.
+*
+* @param ch
+* Quote character
+*/
 	public void quoteChar(int ch) {
 		if (ch >= 0 && ch < ctype.length)
 			ctype[ch] = CT_QUOTE;
 	}
 
 	/**
-	 * 引用符文字の設定を解除する。
-	 * 
-	 * @param ch
-	 *            引用符文字
-	 */
+* Cancel the quotation mark character setting.
+*
+* @param ch
+* Quote character
+*/
 	public void unQuoteChar(int ch) {
 		if (ch >= 0 && ch < ctype.length)
 			ctype[ch] &= ~CT_QUOTE;
 	}
 
 	/**
-	 * 改行文字を文節区切りとするか設定する
-	 * 
-	 * @param flag
-	 *            true=改行文字を文節区切りとする
-	 */
+* Set whether to use the line feed character as a phrase delimiter
+*
+* @param flag
+* true = Newline character is used as a phrase delimiter
+*/
 	public void eolIsSignificant(boolean flag) {
 		eolIsSignificantP = flag;
 	}
 
 	/**
-	 * C言語コメント("/*")をコメントとするか設定する
-	 * 
-	 * @param flag
-	 *            true=C言語コメント("/*")をコメントとする
-	 */
+* Set whether to comment C language comment ("/*")
+*
+* @param flag
+* true = Make a C language comment ("/*") a comment
+*/
 	public void slashStarComments(boolean flag) {
 		slashStarCommentsP = flag;
 	}
 
 	/**
-	 * C言語コメント("/*")をコメントとするか設定する
-	 * 
-	 * @param flag
-	 *            true=C言語コメント("/*")をコメントとする
-	 */
+* Set whether to comment C language comment ("/*")
+*
+* @param flag
+* true = Make a C language comment ("/*") a comment
+*/
 	public void slashSlashComments(boolean flag) {
 		slashSlashCommentsP = flag;
 	}
 
 	/**
-	 * Read the next character
-	 * 
-	 * @return 読込文字コード
-	 */
+* Read the next character
+*
+* @return Read character code
+*/
 	private int read() throws IOException {
 		if (reader != null)
 			return reader.read();
@@ -339,12 +339,12 @@ public class LanguageTokenizer {
 	}
 
 	/**
-	 * 次の文節区切り文字を取得する
-	 * 
-	 * @return 文節区切り文字コード
-	 * @throws IOException
-	 *             読込エラー
-	 */
+* Get the next clause delimiter
+*
+* @return Phrase delimiter code
+* @throws IOException
+* Read error
+*/
 	public int nextToken() throws IOException {
 
 		byte ct[] = ctype;
@@ -373,11 +373,11 @@ public class LanguageTokenizer {
 		 */
 		peekc = NEED_CHAR;
 
-		// 読込文字の設定を取得する。
+		// Get the read character settings.
 		int ctype = c < 256 ? ct[c] : CT_ALPHA;
 
-		// CT_WHITESPACEのチェックを行う。
-		// 設定文字を削除(スペース)とする。
+		// Check CT_WHITESPACE.
+		// Delete the setting character (space).
 		boolean existWhite = false;
 		while ((ctype & CT_WHITESPACE) != 0) {
 			existWhite = true;
@@ -404,13 +404,13 @@ public class LanguageTokenizer {
 			ctype = c < 256 ? ct[c] : CT_ALPHA;
 		}
 
-		// WHITESPACEが存在した場合、１つのスペースを挿入する。
+		// If WHITESPACE exists, insert one space.
 		if (existWhite) {
 			appendBuffer(' ');
 		}
 
-		// CT_ALPHAのチェックを行う。
-		// １つの文字列として扱う
+		// Check CT_ALPHA.
+		// Treat as one character string
 		if ((ctype & CT_ALPHA) != 0) {
 			do {
 				appendBuffer(c);
@@ -420,11 +420,11 @@ public class LanguageTokenizer {
 			peekc = c;
 			sval = buf.toString();
 			buf.delete(0, buf.length());
-			// 文字列区切りの終了
+			// End of string delimiter
 			return ttype = LT_WORD;
 		}
 
-		// 小括弧を対の区切文字とする場合
+		// When parentheses are paired delimiters
 		if (parenthesisQuote && c == '(') {
 			appendBuffer(c);
 			int paren = 0;
@@ -432,28 +432,28 @@ public class LanguageTokenizer {
 			while (d >= 0 && d != '\n' && d != '\r') {
 				ctype = d < 256 ? ct[d] : CT_ALPHA;
 				if ((ctype & CT_QUOTE) != 0) {
-					// 引用符に囲まれた文字を取得する。
+					// Get the characters enclosed in quotes.
 					String quote = getQuote(d);
 					appendBuffer(quote);
 				} else if (d == '\\') {
-					// バックスラッシュが存在した場合、次の文字は見ない。
+					// If a backslash is present, do not see the next character.
 					appendBuffer(d);
 					c = read();
 					appendBuffer(c);
 				} else {
 					c = d;
-					// 右括弧のチェックを行う。
+					// Check the right parenthesis.
 					if (d == ')') {
-						// 左括弧個数と右括弧個数が一致したら終了する。
+						// Exit when the number of left parentheses and the number of right parentheses match.
 						if (paren <= 0) {
 							break;
 						}
-						// 括弧カウントをデクリメントする。
+						// Decrement the parenthesis count.
 						paren--;
 					}
-					// 左括弧のチェックを行う。
+					// Check the left parenthesis.
 					if (d == '(') {
-						// 再度左括弧が出現したので、括弧カウントをインクリメントする。
+						// Since the left parenthesis appears again, increment the parenthesis count.
 						paren++;
 					}
 					appendBuffer(c);
@@ -468,9 +468,9 @@ public class LanguageTokenizer {
 			return LT_PARENTHESIS;
 		}
 
-		// CT_QUOTEのチェックを行う。
+		// Check CT_QUOTE.
 		if ((ctype & CT_QUOTE) != 0) {
-			// 引用符に囲まれた文字を取得する。
+			// Get the characters enclosed in quotes.
 			String quote = getQuote(c);
 
 			peekc = NEED_CHAR;
@@ -479,7 +479,7 @@ public class LanguageTokenizer {
 			return LT_QUOTE;
 		}
 
-		// 区切り文字列をチェックする。
+		// Check the delimiter string.
 		String delim = null;
 		if ((delim = isDelimiter(c)) != null) {
 			sval = delim;
@@ -581,24 +581,24 @@ public class LanguageTokenizer {
 	}
 
 	/**
-	 * デリミタの設定を行う。
-	 * 
-	 * @param delim
-	 *            デリミタ
-	 */
+* Set the delimiter.
+*
+* @param delim
+* Delimiter
+*/
 	public void useDelimiter(String delim) {
-		// デリミタの先頭文字はタイプからクリアする。
+		// Clear the first character of the delimiter from the type.
 		char ch = delim.charAt(0);
 		ordinaryChar(ch);
 		m_delimList.add(delim);
 	}
 
 	/**
-	 * デリミタの設定を行う。
-	 * 
-	 * @param delims
-	 *            デリミタ文字リスト
-	 */
+* Set the delimiter.
+*
+* @param delims
+* Delimiter character list
+*/
 	public void useDelimiters(String delims) {
 		for (int i = 0; i < delims.length(); i++) {
 			String delim = delims.substring(i, i + 1);
@@ -607,25 +607,25 @@ public class LanguageTokenizer {
 	}
 
 	/**
-	 * デリミタの設定解除を行う。
-	 * 
-	 * @param delim
-	 *            デリミタ
-	 */
+* Cancel the delimiter setting.
+*
+* @param delim
+* Delimiter
+*/
 	public void unusedDelimiter(String delim) {
-		// デリミタの先頭文字はWORD文字とする。
+		// The first character of the delimiter is the WORD character.
 		char ch = delim.charAt(0);
 		wordChar(ch);
 		m_delimList.remove(delim);
 	}
 
 	/**
-	 * デリミタ文字列と一致しているかチェックする。
-	 * 
-	 * @param c
-	 *            現在読込文字
-	 * @return デリミタ文字列と一致している場合デリミタ文字列を返す。/一致していない場合、nullを返す。
-	 */
+* Check if it matches the delimiter string.
+*
+* @param c
+* Currently read characters
+* @return Returns the delimiter string if it matches the delimiter string. / Returns null if they do not match.
+*/
 	private String isDelimiter(int c) {
 
 		try {
@@ -635,7 +635,7 @@ public class LanguageTokenizer {
 				delim = itr.next();
 				char ch = delim.charAt(0);
 				if (c == ch) {
-					// 先読みするためにマークをする。
+					// Mark to look ahead.
 					reader.mark(delim.length());
 					boolean match = true;
 					for (int i = 1; i < delim.length(); i++) {
@@ -645,7 +645,7 @@ public class LanguageTokenizer {
 						}
 					}
 					if (!match) {
-						// マーク位置に戻す。
+						// Return to the mark position.
 						reader.reset();
 						continue;
 					} else {
@@ -661,11 +661,11 @@ public class LanguageTokenizer {
 	}
 
 	/**
-	 * 小括弧'(',')'を対の区切り文字として設定する。
-	 * 
-	 * @param paren
-	 *            true:小括弧'(',')'を対の区切り文字とする。
-	 */
+* Set parentheses'(',')' as pair delimiters.
+*
+* @param paren
+* true: Use parentheses'(',')' as pair delimiters.
+*/
 	public void setParenthesisQuote(boolean paren) {
 		parenthesisQuote = paren;
 		if (paren) {
@@ -678,33 +678,33 @@ public class LanguageTokenizer {
 	}
 
 	/**
-	 * 引用符文字列を取得する。
-	 * 
-	 * @param c
-	 *            キャラクターコード
-	 * @return 引用符文字列
-	 */
+* Get the quote string.
+*
+* @param c
+* Character code
+* @return quote string
+*/
 	private String getQuote(int c) throws IOException {
 
-		// 読込文字の設定を取得する。
+		// Get the read character settings.
 		byte ct[] = ctype;
 		int ctype = c < 256 ? ct[c] : CT_ALPHA;
 		if ((ctype & CT_QUOTE) == 0)
 			return null;
 
-		// 引用符格納バッファー
+		// Quote storage buffer
 		StringBuffer quote_buf = new StringBuffer();
 		appendBuffer(quote_buf, c);
 
-		// 引用符文字
+		// Quote character
 		int quote_type = c;
 
-		// 次の文字の取得
+		// Get the next character
 		int d = read();
-		// 次に引用符、改行文字まで取得を行う。
+		// Next, get the quotation marks and newline characters.
 		while (d >= 0 && d != quote_type && d != '\n' && d != '\r') {
 			if (d == '\\') {
-				// バックスラッシュが存在した場合、次の文字は見ない。
+				// If a backslash is present, do not see the next character.
 				appendBuffer(quote_buf, c);
 				c = read();
 				d = read();
@@ -721,21 +721,21 @@ public class LanguageTokenizer {
 	}
 
 	/**
-	 * 分割バッファーにコードを追加する。
-	 * 
-	 * @param c
-	 *            追加文字コード
-	 */
+* Add code to the split buffer.
+*
+* @param c
+* Additional character code
+*/
 	private void appendBuffer(int c) {
 		appendBuffer(this.buf, c);
 	}
 
 	/**
-	 * 分割バッファーにコードを追加する。
-	 * 
-	 * @param c
-	 *            追加文字コード
-	 */
+* Add code to the split buffer.
+*
+* @param c
+* Additional character code
+*/
 	private void appendBuffer(StringBuffer add_buf, int c) {
 		if (c <= 0)
 			return;
@@ -746,11 +746,11 @@ public class LanguageTokenizer {
 	}
 
 	/**
-	 * 分割バッファーに文字列を追加する。
-	 * 
-	 * @param str
-	 *            追加文字列
-	 */
+* Add a string to the split buffer.
+*
+* @param str
+* Additional string
+*/
 	private void appendBuffer(String str) {
 		if (str == null || str.isEmpty())
 			return;

@@ -33,65 +33,65 @@ import jp.riken.kscope.common.FRAME_VIEW;
 import jp.riken.kscope.service.AppController;
 
 /**
- * プロファイラテーブルパネルポップアップメニュークラス
+ * Profiler table panel pop-up menu class
  * @author RIKEN
  */
 public class ProfilerPopupMenu extends JPopupMenu implements PopupMenuListener {
 
-    /** シリアル番号 */
+    /** Serial number */
     private static final long serialVersionUID = 1L;
 
-    /** アプリケーションコントローラ */
+    /** Application controller */
     private AppController controller;
 
-    /** 分析:付加情報アクション */
+    /** Analysis: Additional Information Action */
     private ProfilerInformationEditAction actionAnalysisInformation;
-    /** 分析結果該当個所を開くアクション */
+    /** Analysis result Action to open the relevant part */
     private ViewOpenAnalysisLineAction actionOpenAnalysisLine;
-    /** クリップボードコピーアクション */
+    /** Clipboard copy action */
     private EditClipboardCopyAction actionAnalysisCopy;
 
     /**
-     * コンストラクタ
+     * Constructor
      */
     public ProfilerPopupMenu() {
-        // メニューの作成を行う。
+        // Create a menu.
         initialize();
     }
 
 
     /**
-     * コンストラクタ
-     * @param controller		アプリケーションコントローラ
+     * Constructor
+     * @param controller Application controller
      */
     public ProfilerPopupMenu(AppController controller) {
         this.controller = controller;
 
-        // メニューの作成を行う。
+        // Create a menu.
         initialize();
     }
 
     /**
-     * メニューの作成を行う。
+     * Create a menu.
      */
     private void initialize() {
 
-        // メニューの作成
+        // Create menu
 
-        // 分析:コピー
-        JMenuItem menuAnalysisCopy = new JMenuItem(Message.getString("mainmenu.edit.copy")); //コピー
+        // Analysis: Copy
+        JMenuItem menuAnalysisCopy = new JMenuItem(Message.getString("mainmenu.edit.copy")); //copy
         actionAnalysisCopy = new EditClipboardCopyAction(this.controller, FRAME_VIEW.ANALYSIS_VIEW);
         this.add(menuAnalysisCopy);
         menuAnalysisCopy.addActionListener(actionAnalysisCopy);
 
-        // 分析:付加情報
-        JMenuItem menuAnalysisInformation = new JMenuItem(Message.getString("mainmenu.edit.info")); //付加情報
+        // Analysis: Additional information
+        JMenuItem menuAnalysisInformation = new JMenuItem(Message.getString("mainmenu.edit.info")); //Additional information
         actionAnalysisInformation = new ProfilerInformationEditAction(this.controller);
         this.add(menuAnalysisInformation);
         menuAnalysisInformation.addActionListener(actionAnalysisInformation);
 
-        // メニュー非表示
-        // 選択箇所を開く
+        // Hide menu
+        // open selection
         actionOpenAnalysisLine = new ViewOpenAnalysisLineAction(this.controller);
 
         this.addPopupMenuListener(this);
@@ -99,23 +99,23 @@ public class ProfilerPopupMenu extends JPopupMenu implements PopupMenuListener {
 
 
     /**
-     * ポップアップメニューが取り消されたイベント
-     * @param event		イベント情報
+     * Events with the pop-up menu canceled
+     * @param event Event information
      */
     @Override
     public void popupMenuWillBecomeInvisible(PopupMenuEvent event) { }
 
 
     /**
-     * ポップアップメニューが取り消されたイベント
-     * @param event		イベント情報
+     * Events with the pop-up menu canceled
+     * @param event Event information
      */
     @Override
     public void popupMenuCanceled(PopupMenuEvent event) { }
 
     /**
-     * 分析:付加情報アクションを取得する
-     * @return		分析:付加情報アクション
+     * Analysis: Get additional information actions
+     * @return Analysis: Additional Information Action
      */
     public ProfilerInformationEditAction getActionAnalysisInformation() {
         return actionAnalysisInformation;
@@ -123,22 +123,22 @@ public class ProfilerPopupMenu extends JPopupMenu implements PopupMenuListener {
 
 
     /**
-     * 該当個所を開くアクションを取得する
-     * @return 該当個所を開くアクション
+     * Get the action to open the relevant part
+     * @return Action to open the relevant part
      */
     public ViewOpenAnalysisLineAction getActionOpenAnalysisLine() {
         return this.actionOpenAnalysisLine;
     }
 
     /**
-     * ポップアップメニュー可視イベント.<br/>
-     * アクションが実行可能かチェックする
-     * @param event		イベント情報
+     * Pop-up menu visible event. <br/>
+     * Check if the action is executable
+     * @param event Event information
      */
     @Override
     public void popupMenuWillBecomeVisible(PopupMenuEvent event) {
 
-        // アクションが実行可能かチェックする
+        // Check if the action is executable
         JPopupMenu menu = (JPopupMenu) event.getSource();
         int count = menu.getComponentCount();
         for (int i=0; i<count; i++) {

@@ -37,48 +37,48 @@ import jp.riken.kscope.gui.ISourceBargraph;
 import jp.riken.kscope.utils.TextFileReader;
 
 /**
- * ソースコードモデルクラス
+ * Source code model class
  * @author RIKEN
  *
  */
 public class SourceCodeModel extends Observable {
 
-    /** 表示ソースファイル */
+    /** Display source file */
     private SourceFile sourceFile;
 
-    /** 検索キーワード */
+    /** Search keywords */
     private List<Keyword> searchWords;
 
-    /** 強調範囲:有効範囲等 */
+    /** Emphasis range: Effective range, etc. */
     private List<CodeLine> highlightArea = new ArrayList<CodeLine>();
 
-    /** 選択ブロック:構造ツリーの選択ブロック */
+    /** Selection block: Structure tree selection block */
     private List<CodeLine> selectedBlock = new ArrayList<CodeLine>();
 
-    /** ソースコードドキュメント */
+    /** Source code documentation */
     private BatchDocument document;
 
-    /** 強調範囲:有効範囲等の背景色 */
+    /** Emphasis range: Background color such as effective range */
     private Color colorHighlightArea;
-    /** 選択ブロックの背景色 */
+    /** Background color of selected block */
     private Color colorSelectedBlock;
-    /** 検索文字列の文字色 */
+    /** Character color of search string */
     private Color colorSearchFont;
-    /** 検索文字列の背景色 */
+    /** Background color of search string */
     private Color colorSearchBackground;
 
-    /** プロファイラ：コストデータ */
+    /** Profiler: Cost data */
     private List<ISourceBargraph> listBarData;
-	/** プロファイラデータ:最大値 */
+	/** Profiler data: Maximum value */
 	private float maxValue;
-	/** プロファイラデータ:最小値 */
+	/** Profiler data: Minimum value */
 	private float minValue;
-    /** 変数アクセス先メモリ */
+    /** Variable access destination memory */
 	private List<VariableMemory> variableMemories;
 
     /**
-     * コンストラクタ
-     * @param source		表示ソースファイル
+     * Constructor
+     * @param source Display source file
      */
     public SourceCodeModel(SourceFile source) {
         this.sourceFile = source;
@@ -86,8 +86,8 @@ public class SourceCodeModel extends Observable {
 
 
     /**
-     * 表示ソースファイルパス（絶対パス)を取得する
-     * @return		表示ソースファイルパス（絶対パス)
+     * Get the display source file path (absolute path)
+     * @return Display source file path (absolute path)
      */
     public String getFilePath() {
         if (sourceFile == null) return null;
@@ -95,43 +95,43 @@ public class SourceCodeModel extends Observable {
     }
 
     /**
-     * 表示ソースファイルパスを取得する
-     * @return		表示ソースファイル
+     * Get the display source file path
+     * @return Display source file
      */
     public SourceFile getSourceFile() {
         return this.sourceFile;
     }
 
     /**
-     * 表示ソースファイルパスを設定する
-     * @param file		表示ソースファイル
+     * Set the display source file path
+     * @param file Display source file
      */
     public void setSourceFile(SourceFile file) {
         this.sourceFile = file;
     }
 
     /**
-     * 検索キーワードを取得する
-     * @return searchWord		検索キーワード
+     * Get search keywords
+     * @return searchWord Search keyword
      */
     public List<Keyword> getSearchWords() {
         return searchWords;
     }
 
     /**
-     * 検索キーワードを設定する
-     * @param list 	検索キーワード
+     * Set search keywords
+     * @param list Search keywords
      */
     public void setSearchWords(List<Keyword> list) {
         this.searchWords = list;
 
-        // 検索キーワードにハイライト色設定を行う。
+        // Set the highlight color for the search keyword.
         setSearchWordColor();
     }
 
     /**
-     * 検索キーワードを追加する
-     * @param word 	検索キーワード
+     * Add a search keyword
+     * @param word Search keyword
      */
     public void addSearchWords(Keyword word) {
         if (this.searchWords == null) {
@@ -139,12 +139,12 @@ public class SourceCodeModel extends Observable {
         }
         this.searchWords.add(word);
 
-        // 検索キーワードにハイライト色設定を行う。
+        // Set the highlight color for the search keyword.
         setSearchWordColor();
     }
 
     /**
-     * 検索キーワードをクリアする
+     * Clear the search keyword
      */
     public void clearSearchWords() {
         if (this.searchWords == null) return;
@@ -152,31 +152,31 @@ public class SourceCodeModel extends Observable {
     }
 
     /**
-     * 強調範囲を取得する。
-     * @return highlightArea		強調範囲
+     * Get the emphasis range.
+     * @return highlightArea Highlight range
      */
     public List<CodeLine> getHighlightArea() {
         return highlightArea;
     }
 
     /**
-     * 強調範囲を設定する
-     * @param highlightArea 		強調範囲
+     * Set the emphasis range
+     * @param highlightArea Highlight range
      */
     public void setHighlightArea(List<CodeLine> highlightArea) {
         this.highlightArea = highlightArea;
     }
 
     /**
-     * 強調範囲を追加する
-     * @param area	 		強調範囲
+     * Add emphasis
+     * @param area Highlight range
      */
     public void addHighlightArea(CodeLine area) {
         this.highlightArea.add(area);
     }
 
     /**
-     * 強調範囲をクリアする
+     * Clear the emphasis range
      */
     public void clearHighlightArea() {
         this.highlightArea.clear();
@@ -184,8 +184,8 @@ public class SourceCodeModel extends Observable {
 
 
     /**
-     * ファイルを読み込み、表示を行う。
-     * @throws Exception		読込エラー
+     * Read the file and display it.
+     * @throws Exception Read error
      */
     public void readFile() throws Exception {
         readFile(this.sourceFile);
@@ -193,28 +193,28 @@ public class SourceCodeModel extends Observable {
 
 
     /**
-     * ファイルを読み込み、表示を行う。
-     * @param filename		ファイル名
-     * @throws Exception		読込エラー
+     * Read the file and display it.
+     * @param filename File name
+     * @throws Exception Read error
      */
     public void readFile(String filename) throws Exception {
         File file = new File(filename);
         if (!file.exists()) {
-            throw new Exception(filename + Message.getString("sourcecodemodel.exception.notexist")); //が存在しません。
+            throw new Exception(filename + Message.getString("sourcecodemodel.exception.notexist")); // does not exist.
         }
 
         readFile(new SourceFile(file));
     }
 
     /**
-     * ファイルを読み込み、表示を行う。
-     * @param source		ファイルオブジェクト
-     * @throws Exception		読込エラー
+     * Read the file and display it.
+     * @param source File object
+     * @throws Exception Read error
      */
     public void readFile(SourceFile source) throws Exception {
         File file = source.getFile();
         if (!file.exists()) {
-            throw new Exception(file.getName() + Message.getString("sourcecodemodel.exception.notexist")); //が存在しません。
+            throw new Exception(file.getName() + Message.getString("sourcecodemodel.exception.notexist")); // does not exist.
         }
 
         SimpleAttributeSet attr = new SimpleAttributeSet();
@@ -231,39 +231,39 @@ public class SourceCodeModel extends Observable {
     }
 
     /**
-     * ソースコードパインドキュメントを取得する
-     * @return		ソースコードパインドキュメント
+     * Get source code pine documentation
+     * @return Source code Pine documentation
      */
     public BatchDocument getDocument() {
         return document;
     }
 
     /**
-     * 選択ブロックを取得する。
-     * @return selectedBlock		選択ブロック
+     * Get the selected block.
+     * @return selectedBlock Selected block
      */
     public List<CodeLine> getSelectedBlock() {
         return selectedBlock;
     }
 
     /**
-     * 選択ブロックを設定する
-     * @param highlightArea 		選択ブロック
+     * Set selection block
+     * @param highlightArea Selection block
      */
     public void setSelectedBlock(List<CodeLine> highlightArea) {
         this.selectedBlock = highlightArea;
     }
 
     /**
-     * 選択ブロックを追加する
-     * @param line	 		選択ブロック
+     * Add a selection block
+     * @param line selection block
      */
     public void addSelectedBlock(CodeLine line) {
         this.selectedBlock.add(line);
     }
 
     /**
-     * 選択ブロックをクリアする
+     * Clear the selected block
      */
     public void clearSelectedBlock() {
         this.selectedBlock.clear();
@@ -271,77 +271,77 @@ public class SourceCodeModel extends Observable {
 
 
     /**
-     * 強調範囲:有効範囲等の背景色の取得を行う
-     * @return		強調範囲:有効範囲等の背景色
+     * Emphasis range: Acquires the background color such as the effective range
+     * @return Emphasis range: Background color such as effective range
      */
     public Color getColorHighlightArea() {
         return colorHighlightArea;
     }
 
     /**
-     * 強調範囲:有効範囲等の背景色を取得する
-     * @param color		強調範囲:有効範囲等の背景色
+     * Emphasis range: Get the background color such as the effective range
+     * @param color Emphasis range: Background color such as effective range
      */
     public void setColorHighlightArea(Color color) {
         this.colorHighlightArea = color;
     }
 
     /**
-     * 選択ブロックの背景色を取得する
-     * @return		選択ブロックの背景色
+     * Get the background color of the selected block
+     * @return Background color of selected block
      */
     public Color getColorSelectedBlock() {
         return colorSelectedBlock;
     }
 
     /**
-     * 選択ブロックの背景色を設定する
-     * @param color		選択ブロックの背景色
+     * Set the background color of the selected block
+     * @param color Background color of the selected block
      */
     public void setColorSelectedBlock(Color color) {
         this.colorSelectedBlock = color;
     }
 
     /**
-     * 検索文字列の文字色を取得する
-     * @return		検索文字列の文字色
+     * Get the character color of the search string
+     * @return Character color of search string
      */
     public Color getColorSearchFont() {
         return colorSearchFont;
     }
 
     /**
-     * 検索文字列の文字色を設定する
-     * @param colorSearchFont		検索文字列の文字色
+     * Set the character color of the search string
+     * @param colorSearchFont Character color of search string
      */
     public void setColorSearchFont(Color colorSearchFont) {
         this.colorSearchFont = colorSearchFont;
 
-        // 検索キーワードにハイライト色設定を行う。
+        // Set the highlight color for the search keyword.
         setSearchWordColor();
     }
 
     /**
-     * 検索文字列の背景色を取得する
-     * @return		検索文字列の文字色
+     * Get the background color of the search string
+     * @return Character color of search string
      */
     public Color getColorSearchBackground() {
         return colorSearchBackground;
     }
 
     /**
-     * 検索文字列の背景色を設定する
-     * @param colorSearchBackground		検索文字列の文字色
+     * Set the background color of the search string
+     * @param colorSearchBackground Character color of search string
      */
     public void setColorSearchBackground(Color colorSearchBackground) {
         this.colorSearchBackground = colorSearchBackground;
 
-        // 検索キーワードにハイライト色設定を行う。
+        // Set the highlight color for the search keyword.
         setSearchWordColor();
     }
 
     /**
-     * 検索キーワードにハイライト色設定を行う。
+     * Set the highlight color for the search keyword.
      */
     private void setSearchWordColor() {
         if (this.searchWords == null) return;
@@ -357,8 +357,8 @@ public class SourceCodeModel extends Observable {
     }
 
     /**
-     * 検索・トレースキーワードをクリアする
-     * @param  type     クリアキーワードタイプ
+     * Clear search / trace keywords
+     * @param type Clear keyword type
      */
     public void clearSearchWords(KEYWORD_TYPE type) {
         if (this.searchWords == null) return;
@@ -371,7 +371,7 @@ public class SourceCodeModel extends Observable {
     }
 
     /**
-     * モデルの変更を通知する
+     * Notify model changes
      */
     public void notifyModel() {
         this.setChanged();
@@ -381,8 +381,8 @@ public class SourceCodeModel extends Observable {
 
 
     /**
-     * ソースバーグラフデータを取得する
-     * @return ソースバーグラフデータ
+     * Get source bar graph data
+     * @return Source bar graph data
      */
     public List<ISourceBargraph> getListBarData() {
         return listBarData;
@@ -390,10 +390,10 @@ public class SourceCodeModel extends Observable {
 
 
     /**
-     * ソースバーグラフデータを設定する
-     * @param listBarData ソースバーグラフデータ
-     * @param max		全体コストデータの最大値
-     * @param min		全体コストデータの最小値
+     * Set source bar graph data
+     * @param listBarData Source bar graph data
+     * @param max Maximum value of total cost data
+     * @param min Minimum value of total cost data
      */
     public void setListBarData(List<ISourceBargraph> listBarData, float max, float min) {
         this.listBarData = listBarData;
@@ -403,8 +403,8 @@ public class SourceCodeModel extends Observable {
     }
 
     /**
-     * ソースバーグラフデータを追加する
-     * @param list ソースバーグラフデータ
+     * Add source bar graph data
+     * @param list Source bar graph data
      */
     public void addListBarData(List<ISourceBargraph> list) {
         if (list == null) return;
@@ -416,8 +416,8 @@ public class SourceCodeModel extends Observable {
     }
 
     /**
-     * ソースバーグラフデータを追加する
-     * @param list ソースバーグラフデータ
+     * Add source bar graph data
+     * @param list Source bar graph data
      */
     public void addListBarData(ISourceBargraph[] list) {
         if (list == null) return;
@@ -425,8 +425,8 @@ public class SourceCodeModel extends Observable {
     }
 
     /**
-     * 変数アクセス先メモリを設定する.
-     * @param list		変数アクセス先メモリ
+     * Set the variable access destination memory.
+     * @param list Variable access destination memory
      */
 	public void setVariableMemories(List<VariableMemory> list) {
         this.variableMemories = list;
@@ -434,27 +434,27 @@ public class SourceCodeModel extends Observable {
 
 
 	/**
-	 * 変数アクセス先メモリを取得する
-	 * @return 変数アクセス先メモリ
-	 */
+* Get variable access destination memory
+* @return Variable access destination memory
+*/
 	public List<VariableMemory> getVariableMemories() {
 		return variableMemories;
 	}
 
 
 	/**
-	 * プロファイラデータ:最大値を取得する
-	 * @return 		プロファイラデータ:最大値
-	 */
+* Profiler data: Get maximum value
+* @return Profiler data: Maximum
+*/
 	public float getMaxValue() {
 		return maxValue;
 	}
 
 
 	/**
-	 * プロファイラデータ:最小値を取得する
-	 * @return 		プロファイラデータ:最小値
-	 */
+* Profiler data: Get the minimum value
+* @return Profiler data: Minimum
+*/
 	public float getMinValue() {
 		return minValue;
 	}

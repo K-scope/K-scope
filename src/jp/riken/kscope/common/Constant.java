@@ -18,35 +18,35 @@ package jp.riken.kscope.common;
 
 
 /**
- * 定数クラス
+ * Constant class
  * @author RIKEN
  *
  */
 public class Constant {
 
-    /** ダイアログOK, YES戻り値 */
+    /** Dialog OK, YES Return value */
     public static final int OK_DIALOG = 0;
-    /** ダイアログNO戻り値 */
+    /** Dialog NO return value */
     public static final int NO_DIALOG = 1;
-    /** ダイアログCANCEL戻り値 */
+    /** Dialog CANCEL return value */
     public static final int CANCEL_DIALOG = 2;
-    /** ダイアログCANCEL戻り値 */
+    /** Dialog CANCEL return value */
     public static final int CLOSE_DIALOG = -1;
-    /** ダイアログDELETE戻り値 */
+    /** Dialog DELETE return value */
     public static final int DELETE_DIALOG = 3;
-    /** ダイアログ次への戻り値:次のダイアログを表示する */
+    /** Dialog Return value to next: Display the next dialog */
     public static final int NEXT_DIALOG = 4;
 
-    /** スレッドの終了コード:正常終了 */
+    /** Thread exit code: Normal termination */
     public static final int SUCCESS_RESULT = 0;
-    /** スレッドの終了コード:異常終了 */
+    /** Thread exit code: Abnormal termination */
     public static final int ERROR_RESULT = 1;
-    /** スレッドの終了コード:キャンセル終了 */
+    /** Thread exit code: Cancel end */
     public static final int CANCEL_RESULT = 2;
 
-    /** スレッド終了通知プロパティ名 */
+    /** Thread end notification property name */
     public static final String PROPERTYNAME_THREADDONE = "thread_done";
-    /** マウススクロール量 */
+    /** Mouse scroll amount */
     public static final int VERTICALSCROLL_INCREMENT = 25;
 
 }

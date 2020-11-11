@@ -23,7 +23,7 @@ import jp.riken.kscope.data.CodeLine;
 import jp.riken.kscope.profiler.ProfilerDprofData;
 
 /**
- * プロファイラコスト情報の行によるソート（昇順）クラス
+ * Sort by row of profiler cost information (ascending order) class
  *
  * @author RIKEN
  *

@@ -37,38 +37,38 @@ import jp.riken.kscope.properties.ProfilerProperties;
 //import jp.riken.kscope.utils.StringUtils;
 
 /**
- * 詳細プロファイラ測定区間設定ダイアログクラス
+ * Detailed profiler measurement interval setting dialog class
  * @author RIKEN
  */
 public class EprofStatementDialog extends javax.swing.JDialog implements ActionListener {
 
-    /** デフォルトシリアル番号 */
+    /** Default serial number */
     private static final long serialVersionUID = 1L;
-    /** OKボタン */
+    /** OK button */
     private JButton btnOk;
-    /** CANCELボタン */
+    /** CANCEL button */
     private JButton btnCancel;
-    /** グループ名テキストボックス */
+    /** Group name text box */
     private JTextField txtGroupname;
-    /** 詳細番号テキストボックス */
+    /** Detail number text box */
     private JTextField txtNumber;
-    /** プライオリティレベル */
+    /** Priority level */
     private JTextField txtLevel;
-    /** プロファイラプロパティ */
+    /** Profiler Properties */
     private ProfilerProperties properties;
-    /** ダイアログの戻り値 */
+    /** Dialog return value */
     private int result = Constant.CANCEL_DIALOG;
-    /** グループ名ラベル */
+    /** Group name label */
     private JLabel labelName;
-    /** 詳細番号ラベル */
+    /** Detail number label */
     private JLabel labelNumber;
-    /** プライオリティラベル */
+    /** Priority label */
     private JLabel labelLevel;
 
     /**
-     * コンストラクタ
-     * @param owner		親フレーム
-     * @param modal		true=モーダルダイアログを表示する
+     * Constructor
+     * @param owner parent frame
+     * @param modal true = Show modal dialog
      */
     public EprofStatementDialog(Frame owner, boolean modal) {
         super(owner, modal);
@@ -76,7 +76,7 @@ public class EprofStatementDialog extends javax.swing.JDialog implements ActionL
     }
 
     /**
-     * 画面の初期化を行う
+     * Initialize the screen
      */
     private void initGUI() {
 
@@ -85,7 +85,7 @@ public class EprofStatementDialog extends javax.swing.JDialog implements ActionL
             getContentPane().setLayout(thisLayout);
 
             {
-                // ボタンパネル
+                // Button panel
                 {
                     JPanel panelButtons = new JPanel();
                     FlowLayout layoutButtons = new FlowLayout();
@@ -106,12 +106,12 @@ public class EprofStatementDialog extends javax.swing.JDialog implements ActionL
                     {
                         btnCancel = new JButton();
                         btnCancel.setPreferredSize(buttonSize);
-                        btnCancel.setText(Message.getString("dialog.common.button.cancel")); //キャンセル
+                        btnCancel.setText(Message.getString("dialog.common.button.cancel")); //Cancel
                         btnCancel.addActionListener(this);
                         panelButtons.add(btnCancel);
                     }
                 }
-                // プロファイラ
+                // Profiler
                 {
                     JPanel panelContent = new JPanel();
                     GridBagLayout panelContentLayout = new GridBagLayout();
@@ -122,31 +122,31 @@ public class EprofStatementDialog extends javax.swing.JDialog implements ActionL
                     getContentPane().add(panelContent, BorderLayout.CENTER);
                     panelContent.setLayout(panelContentLayout);
                     panelContent.setPreferredSize(new java.awt.Dimension(390, 230));
-                    // グループ名
+                    // group name
                     {
                         labelName = new JLabel();
                         panelContent.add(labelName, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 0, 5), 0, 0));
-                        labelName.setText(Message.getString("eprofstatementdialog.groupname.title")); //グループ名
+                        labelName.setText(Message.getString("eprofstatementdialog.groupname.title")); //group name
                     }
                     {
                         txtGroupname = new JTextField();
                         panelContent.add(txtGroupname, new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 5, 0, 10), 0, 0));
                     }
-                    // 詳細番号
+                    // Detail number
                     {
                         labelNumber = new JLabel();
                         panelContent.add(labelNumber, new GridBagConstraints(0, 1, 1, 1, 0.0, 0.0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 0, 5), 0, 0));
-                        labelNumber.setText(Message.getString("eprofstatementdialog.detailnum.title")); //詳細番号
+                        labelNumber.setText(Message.getString("eprofstatementdialog.detailnum.title")); // Detail number
                     }
                     {
                         txtNumber = new JTextField();
                         panelContent.add(txtNumber, new GridBagConstraints(1, 1, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 5, 0, 10), 0, 0));
                     }
-                    // プライオリティレベル
+                    // Priority level
                     {
                         labelLevel = new JLabel();
                         panelContent.add(labelLevel, new GridBagConstraints(0, 2, 1, 1, 0.0, 0.0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 0, 5), 0, 0));
-                        labelLevel.setText(Message.getString("eprofstatementdialog.priority.title")); //プライオリティレベル
+                        labelLevel.setText(Message.getString("eprofstatementdialog.priority.title")); // Priority level
                     }
                     {
                         txtLevel = new JTextField();
@@ -154,10 +154,10 @@ public class EprofStatementDialog extends javax.swing.JDialog implements ActionL
                     }
                 }
             }
-            // テキストボックスのイネーブルの設定を行う。
+            // Set the text box enable.
             setEnabledText();
 
-            this.setTitle(Message.getString("eprofstatementdialog.dialog.desc")); //測定区間設定
+            this.setTitle(Message.getString("eprofstatementdialog.dialog.desc")); // Measurement interval setting
             this.setSize(320, 160);
 
         } catch (Exception e) {
@@ -166,22 +166,22 @@ public class EprofStatementDialog extends javax.swing.JDialog implements ActionL
     }
 
     /**
-     * テキストボックスのイネーブルの設定を行う。
+     * Set the text box enable.
      */
     private void setEnabledText() {
         if (this.properties == null) return;
 
-        // グループ名
+        // group name
         boolean enabledName = this.properties.existsMacroErofName();
         labelName.setEnabled(enabledName);
         txtGroupname.setEnabled(enabledName);
 
-        // 詳細番号
+        // Detail number
         boolean enabledNumber = this.properties.existsMacroErofNumber();
         labelNumber.setEnabled(enabledNumber);
         txtNumber.setEnabled(enabledNumber);
 
-        // プライオリティレベル
+        // Priority level
         boolean enabledLevel = this.properties.existsMacroErofNumber();
         labelLevel.setEnabled(enabledLevel);
         txtLevel.setEnabled(enabledLevel);
@@ -189,75 +189,75 @@ public class EprofStatementDialog extends javax.swing.JDialog implements ActionL
 
 
     /**
-     * ダイアログを表示する。
-     * @return    ダイアログの閉じた時のボタン種別
+     * Display a dialog.
+     * @return Button type when the dialog is closed
      */
     public int showDialog() {
 
-        // 親フレーム中央に表示する。
+        // Display in the center of the parent frame.
         this.setLocationRelativeTo(this.getOwner());
 
-        // ダイアログ表示
+        // Dialog display
         this.setVisible(true);
 
         return this.result;
     }
 
     /**
-     * ボタンのクリックイベント
-     * @param event			イベント情報
+     * Button click event
+     * @param event Event information
      */
     @Override
     public void actionPerformed(ActionEvent event) {
         // OK
         if (event.getSource() == this.btnOk) {
-            // 測定区間設定チェック
+            // Measurement interval setting check
             if (validateEprof()) {
                 this.result = Constant.OK_DIALOG;
-                // ダイアログを閉じる。
+                // Close the dialog.
                 dispose();
                 return;
             }
         }
-        // キャンセル
+        // Cancel
         else if (event.getSource() == this.btnCancel) {
             this.result = Constant.CANCEL_DIALOG;
-            // ダイアログを閉じる。
+            // Close the dialog.
             dispose();
             return;
         }
     }
 
     /**
-     * 測定区間設定の入力チェック
-     * @return		true=正常
+     * Input check of measurement interval setting
+     * @return true = normal
      */
     private boolean validateEprof() {
         String error = "";
         if (this.txtGroupname.isEnabled()) {
             if (this.txtGroupname.getText() == null || this.txtGroupname.getText().isEmpty()) {
-                error += Message.getString("eprofstatementdialog.groupname.error.message"); //グループ名を入力してください。\n
+                error += Message.getString("eprofstatementdialog.groupname.error.message"); // Please enter the group name. \ n
             }
         }
         if (this.txtNumber.isEnabled()) {
             if (this.txtNumber.getText() == null || this.txtNumber.getText().isEmpty()) {
-                error += Message.getString("eprofstatementdialog.detailnum.error.message"); //詳細番号を入力してください。\n
+                error += Message.getString("eprofstatementdialog.detailnum.error.message"); // Please enter the detailed number. \ n
             }
 //            else if (!StringUtils.isNumeric(this.txtNumber.getText())){
-//                error += "詳細番号は数値で入力してください。\n";
+// error + = "Enter the detail number as a number. \ N";
 //            }
         }
         if (this.txtLevel.isEnabled()) {
             if (this.txtLevel.getText() == null || this.txtLevel.getText().isEmpty()) {
-                error += Message.getString("eprofstatementdialog.priority.error.message"); //プライオリティレベルを入力してください。\n
+                error += Message.getString("eprofstatementdialog.priority.error.message"); // Enter the priority level. \ n
             }
 //            else if (!StringUtils.isNumeric(this.txtLevel.getText())){
-//                error += "プライオリティレベルは数値で入力してください。\n";
+// error + = "Enter the priority level as a number. \ N";
 //            }
         }
         if (error != null && !error.isEmpty()) {
             JOptionPane.showMessageDialog(this, error.trim(), 
-            		Message.getString("dialog.common.error"), //エラー
+            		Message.getString("dialog.common.error"), //error
             		JOptionPane.ERROR_MESSAGE);
             return false;
         }
@@ -266,8 +266,8 @@ public class EprofStatementDialog extends javax.swing.JDialog implements ActionL
     }
 
     /**
-     * グループ名を取得する
-     * @return		グループ名
+     * Get the group name
+     * @return group name
      */
     public String getGroupname() {
         if (!this.txtGroupname.isEditable()) {
@@ -277,8 +277,8 @@ public class EprofStatementDialog extends javax.swing.JDialog implements ActionL
     }
 
     /**
-     * 詳細番号を取得する
-     * @return		詳細番号
+     * Get the detail number
+     * @return Detail number
      */
     public String getNumber() {
         if (!this.txtNumber.isEnabled()) {
@@ -288,8 +288,8 @@ public class EprofStatementDialog extends javax.swing.JDialog implements ActionL
     }
 
     /**
-     * プライオリティレベルを取得する
-     * @return		プライオリティレベル
+     * Get priority level
+     * @return Priority level
      */
     public String getLevel() {
         if (!this.txtLevel.isEnabled()) {
@@ -299,12 +299,12 @@ public class EprofStatementDialog extends javax.swing.JDialog implements ActionL
     }
 
     /**
-     * プロファイラプロパティを設定する
-     * @param properties プロファイラプロパティ
+     * Set profiler properties
+     * @param properties Profiler properties
      */
     public void setProperties(ProfilerProperties properties) {
         this.properties = properties;
-        // テキストボックスのイネーブルの設定を行う。
+        // Set the text box enable.
         setEnabledText();
     }
 }

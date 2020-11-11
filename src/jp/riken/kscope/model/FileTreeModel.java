@@ -37,31 +37,31 @@ import jp.riken.kscope.utils.SwingUtils;
 
 
 /**
- * ファイルツリーモデルクラス
+ * File tree model class
  * @author RIKEN
  *
  */
 public class FileTreeModel extends Observable {
 
-    /** ファイルツリーモデル */
+    /** File tree model */
     private DefaultTreeModel treeModel;
 
-    /** プロジェクトフォルダ */
+    /** Project folder */
     private File projectFolder = null;
 
-    /** 初期ツリータイトル */
+    /** Initial tree title */
     private String initTreeTitle;
 
     /**
-     * ソースファイルを設定する。
-     * @param sourceFiles          ソースファイルリスト
+     * Set the source file.
+     * @param sourceFiles Source file list
      */
     public void setSourceFile(SourceFile[] sourceFiles) {
         if (sourceFiles == null) {
             clearTreeModel();
             return;
         }
-        // ソースファイルリストのソート
+        // Sort the source file list
         java.util.Arrays.sort(sourceFiles,
                 new java.util.Comparator<SourceFile>() {
                     public int compare(SourceFile o1, SourceFile o2) {
@@ -78,7 +78,7 @@ public class FileTreeModel extends Observable {
         if (projectFolder != null) {
             root = new DefaultMutableTreeNode(projectFolder);
             topFile = projectFolder;
-            // ルートフォルダ配下のファイルであるかチェックする。
+            // Check if the file is under the root folder.
             for (int i = 0; i < sourceFiles.length; i++) {
                 File srcFile = null;
                 if (sourceFiles[i] == null || sourceFiles[i].getFile() == null) {
@@ -92,7 +92,7 @@ public class FileTreeModel extends Observable {
                 }
                 if (!srcFile.exists()) continue;
                 if (!FileUtils.isChildsFile(srcFile, projectFolder)) {
-                    // ルートフォルダの子パスではないので、ルートフォルダを最上位のフォルダとする
+                    // Since it is not a child path of the root folder, make the root folder the top level folder
                     root = null;
                     break;
                 }
@@ -100,7 +100,7 @@ public class FileTreeModel extends Observable {
         }
 
         if (root == null) {
-            // ルートフォルダを最上位のフォルダとする
+            // Make the root folder the top level folder
             if (sourceFiles[0] != null) {
                 File srcFile = null;
                 if (sourceFiles[0].getFile().isAbsolute()) {
@@ -115,24 +115,24 @@ public class FileTreeModel extends Observable {
             }
         }
 
-        // ツリーノードを作成する
+        // create a tree node
         createNodes(root, topFile, sourceFiles);
 
-        // ファイルツリーをソートする
+        // Sort the file tree
         root = SwingUtils.sortTreeNode(root);
 
-        // ツリーモデルの作成
+        // Create a tree model
         treeModel = new DefaultTreeModel(root);
 
-        // モデルの変更を通知
+        // Notify model changes
         notifyModel();
     }
 
     /**
-     * ツリーノードを作成する
-     * @param tree			追加親ノード
-     * @param folder			追加フォルダ要素
-     * @param sourceFiles          ソースファイルリスト
+     * Create a tree node
+     * @param tree Additional parent node
+     * @param folder Additional folder element
+     * @param sourceFiles Source file list
      */
     private void createNodes(DefaultMutableTreeNode tree, File folder, SourceFile[] sourceFiles) {
         if (tree == null || folder == null) {
@@ -203,11 +203,11 @@ public class FileTreeModel extends Observable {
     }
 
     /**
-     * ソースファイルの親パスであるかチェックする.<br/>
-     * 同じファイルである場合は、trueを返す
-     * @param parent			親ファイル
-     * @param sourceFiles		ソースファイルリスト
-     * @return		true=親パス
+     * Check if it is the parent path of the source file. <br/>
+     * Returns true if they are the same file
+     * @param parent parent file
+     * @param sourceFiles Source file list
+     * @return true = parent path
      */
     @SuppressWarnings("unused")
     private boolean isParentPath(File parent, SourceFile[] sourceFiles) {
@@ -238,22 +238,22 @@ public class FileTreeModel extends Observable {
 
 
     /**
-     * すべてのソースファイルを取得する。
+     * Get all source files.
      *
-     * @return ソースファイルリスト
+     * @return Source file list
      */
     public SourceFile[] getAllSourceFiles() {
 
         ArrayList<SourceFile> list = new ArrayList<SourceFile>();
 
-        // ルートノード
+        // Root node
         DefaultMutableTreeNode node = (DefaultMutableTreeNode) treeModel.getRoot();
         if (node == null)
             return null;
 
         SourceFile[] child_list = getSourceFiles(node);
         if (child_list != null) {
-            // ソースファイルの追加
+            // Add source file
             list.addAll(Arrays.asList(child_list));
         }
 
@@ -262,10 +262,10 @@ public class FileTreeModel extends Observable {
 
 
     /**
-     * 指定ノード配下の子要素のソースファイルを取得する.<br/>
-     * 子、孫要素もすべて取得する。
-     * @param node           子要素検索ノード
-     * @return ソースファイルリスト
+     * Get the source file of the child element under the specified node. <br/>
+     * Get all child and grandchild elements.
+     * @param node Child element search node
+     * @return Source file list
      */
     private SourceFile[] getSourceFiles(DefaultMutableTreeNode node) {
 
@@ -274,15 +274,15 @@ public class FileTreeModel extends Observable {
 
         ArrayList<SourceFile> list = new ArrayList<SourceFile>();
 
-        // 自身の追加
+        // Add yourself
         Object obj = node.getUserObject();
-        // ソースファイルオブジェクトであるか？
+        // Is it a source file object?
         if (obj instanceof SourceFile) {
-            // ソースファイルの追加
+            // Add source file
             list.add((SourceFile) obj);
         }
 
-        // 子要素の検索
+        // Search for child elements
         int count = node.getChildCount();
         for (int i = 0; i < count; i++) {
             DefaultMutableTreeNode child = (DefaultMutableTreeNode) node
@@ -291,10 +291,10 @@ public class FileTreeModel extends Observable {
             if (child_obj == null)
                 continue;
 
-            // 子要素からソースファイルの取得
+            // Get the source file from the child element
             SourceFile[] child_list = getSourceFiles(child);
             if (child_list != null) {
-                // ソースファイルの追加
+                // Add source file
                 list.addAll(Arrays.asList(child_list));
             }
         }
@@ -306,8 +306,8 @@ public class FileTreeModel extends Observable {
     }
 
     /**
-     * 選択されているソースファイルを削除する。
-     * @param    paths			削除ツリーパス
+     * Delete the selected source file.
+     * @param paths Delete tree paths
      */
     public void deleteSelectedFiles(TreePath[] paths) {
 
@@ -315,18 +315,18 @@ public class FileTreeModel extends Observable {
             return;
         for (int i = 0; i < paths.length; i++) {
             int count = paths[i].getPath().length;
-            // ルート以外
+            // Other than root
             if (count >= 2) {
-                // 子要素のソースファイルリストを取得する。
+                // Get the source file list of child elements.
                 DefaultMutableTreeNode node = (DefaultMutableTreeNode) paths[i].getPath()[count - 1];
                 SourceFile[] del_files = getSourceFiles(node);
 
-                // ツリー上の削除を行う。
+                // Delete on the tree.
                 MutableTreeNode parent = (MutableTreeNode) paths[i].getPath()[count - 2];
                 parent.remove((MutableTreeNode) paths[i].getPath()[count - 1]);
             } else if (count == 1) {
 
-                // ルートの場合、子要素すべて削除
+                // For root, delete all child elements
                 DefaultMutableTreeNode node = (DefaultMutableTreeNode) treeModel.getRoot();
                 node.removeAllChildren();
                 break;
@@ -337,8 +337,8 @@ public class FileTreeModel extends Observable {
 
 
     /**
-     * ファイルツリーモデルを取得する
-     * @return treeModel		ファイルツリーモデル
+     * Get the file tree model
+     * @return treeModel File tree model
      */
     public DefaultTreeModel getTreeModel() {
         if (this.treeModel == null) {
@@ -349,23 +349,23 @@ public class FileTreeModel extends Observable {
     }
 
     /**
-     * ファイルツリーモデルを設定する
-     * @param treeModel 	ファイルツリーモデル
+     * Set up a file tree model
+     * @param treeModel File tree model
      */
     public void setTreeModel(DefaultTreeModel treeModel) {
         this.treeModel = treeModel;
     }
 
     /**
-     * プロジェクトフォルダを設定する
-     * @param folder		プロジェクトフォルダ
+     * Set the project folder
+     * @param folder Project folder
      */
     public void setProjectFolder(File folder) {
         this.projectFolder = folder;
     }
 
     /**
-     * モデルの変更を通知する
+     * Notify model changes
      */
     public void notifyModel() {
         this.setChanged();
@@ -374,50 +374,50 @@ public class FileTreeModel extends Observable {
     }
 
     /**
-     * ファイルツリーモデルをクリアする.
+     * Clear the file tree model.
      */
     public void clearTreeModel() {
         DefaultMutableTreeNode root = new DefaultMutableTreeNode(this.initTreeTitle);
         treeModel = new DefaultTreeModel(root);
 
-        // モデルの変更を通知
+        // Notify model changes
         notifyModel();
     }
 
     /**
-     * 初期ツリータイトルを取得する
-     * @return initTreeTitle		初期ツリータイトル
+     * Get the initial tree title
+     * @return initTreeTitle Initial tree title
      */
     public String getInitTreeTitle() {
         return initTreeTitle;
     }
 
     /**
-     * 初期ツリータイトルを設定する
-     * @param initTreeTitle 	初期ツリータイトル
+     * Set the initial tree title
+     * @param initTreeTitle Initial tree title
      */
     public void setInitTreeTitle(String initTreeTitle) {
         this.initTreeTitle = initTreeTitle;
     }
 
     /**
-     * ツリー情報をファイル出力する。
-     * @param   file   出力ファイル
+     * Output tree information to a file.
+     * @param file Output file
      */
     public void writeFile(File file) {
-        // ルートノード
+        // Root node
         if (this.treeModel == null) return;
         DefaultMutableTreeNode root = (DefaultMutableTreeNode) this.treeModel.getRoot();
         if (root == null) return;
         if (root.getChildCount() <= 0) return;
 
         try {
-            // ファイル出力
+            // File output
             PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(file)));
 
-            // ツリーをCSV文字列にする。
+            // Make the tree a CSV string.
             String buf = SwingUtils.toTreeText(root);
-            // ファイル出力
+            // File output
             pw.print(buf);
 
             pw.close();
@@ -427,15 +427,15 @@ public class FileTreeModel extends Observable {
     }
 
     /**
-     * ソースのルートを取得<br>
-     * ツリーのルートではなく、ソースファイルが全て包含されるフォルダのこと
-     * @return 	root
+     * Get the root of the source <br>
+     * A folder that contains all the source files, not the root of the tree
+     * @return root
      */
     public String getRootFolder() {
     	if (this.treeModel == null) return "";
         DefaultMutableTreeNode root = (DefaultMutableTreeNode) this.treeModel.getRoot();
         if (root == null) return "";
-        // rootから階層を降りていき、初めての分岐の直前か、分岐が無ければ終端の親フォルダ
+        // Go down the hierarchy from root, just before the first branch, or if there is no branch, the parent folder at the end
         return scanSourceRoot(root);
     }
 
@@ -448,10 +448,10 @@ public class FileTreeModel extends Observable {
     }
 
     /**
-     * 子ノードに同一ノードが存在するかチェックする.
-     * @param parent		親ノード
-     * @param child			子ノード
-     * @return				true=同一ノードが存在する.
+     * Check if the same node exists in the child node.
+     * @param parent parent node
+     * @param child child node
+     * @return true = The same node exists.
      */
     private boolean containsChildNode(DefaultMutableTreeNode parent, DefaultMutableTreeNode child) {
     	if (parent == null) return false;

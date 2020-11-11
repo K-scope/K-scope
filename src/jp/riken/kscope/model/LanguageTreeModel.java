@@ -30,21 +30,21 @@ import jp.riken.kscope.language.Program;
 
 
 /**
- * 構造ツリーモデル
+ * Structural tree model
  * @author RIKEN
  *
  */
 public class LanguageTreeModel extends Observable {
 
-    /** ツリーモデル */
+    /** Tree model */
     private FilterTreeModel treeModel;
-    /** 構造ツリーフィルタ */
+    /** Structure tree filter */
     private List<FILTER_TYPE> listFilter;
-    /** データベース */
+    /** Database */
     private Program languageDb;
 
     /**
-     * コンストラクタ
+     * Constructor
      */
     public LanguageTreeModel() {
         clearTreeModel();
@@ -52,7 +52,7 @@ public class LanguageTreeModel extends Observable {
 
 
     /**
-     * モデルの変更を通知する
+     * Notify model changes
      */
     public void notifyModel() {
         SwingUtilities.invokeLater(new Runnable() {
@@ -66,7 +66,7 @@ public class LanguageTreeModel extends Observable {
     }
 
     /**
-     * 構造ツリーをクリアする。
+     * Clear the structure tree.
      */
     public void clearTreeModel() {
         FilterTreeNode rootNode = new FilterTreeNode("Structure tree");
@@ -76,32 +76,32 @@ public class LanguageTreeModel extends Observable {
     }
 
     /**
-     * ルートノードを取得する
-     * @return		ルートノード
+     * Get the root node
+     * @return root node
      */
     public FilterTreeNode getRootNode() {
         return (FilterTreeNode) treeModel.getRoot();
     }
 
     /**
-     * ツリーモデルを取得する
-     * @return		ツリーモデル
+     * Get a tree model
+     * @return Tree model
      */
     public FilterTreeModel getTreeModel() {
         return treeModel;
     }
 
     /**
-     * 構造ツリーフィルタを取得する
-     * @return		構造ツリーフィルタ
+     * Get the structure tree filter
+     * @return Structure tree filter
      */
     public List<FILTER_TYPE> getListFilter() {
         return listFilter;
     }
 
     /**
-     * 構造ツリーフィルタを設定する
-     * @param list		構造ツリーフィルタ
+     * Set the structure tree filter
+     * @param list Structure tree filter
      */
     public void setListFilter(FILTER_TYPE[] list) {
         this.listFilter = new ArrayList<FILTER_TYPE>();
@@ -113,21 +113,21 @@ public class LanguageTreeModel extends Observable {
     }
 
     /**
-     * ツリーモデルのフィルタを実行する.
+     * Perform tree model filtering.
      */
     public void filter() {
         if (treeModel != null) {
-            // フィルタを設定する
+            // Set the filter
             treeModel.setListFilter(this.listFilter);
 
-            // フィルタ実行
+            // Filter execution
             treeModel.find();
         }
     }
 
     /**
-     * 構造情報ツリーが設定済みであるかチェックする.
-     * @return		true=設定済み
+     * Check if the structure information tree is already set.
+     * @return true = configured
      */
     public boolean isSetLanguageTree() {
     	FilterTreeNode root = getRootNode();
@@ -139,17 +139,17 @@ public class LanguageTreeModel extends Observable {
 
 
 	/**
-	 * データベースを取得する
-	 * @return データベース
-	 */
+* Get the database
+* @return database
+*/
 	public Program getLanguageDb() {
 		return this.languageDb;
 	}
 
 	/**
-	 * データベースを設定する.
-	 * @param languageDb データベース
-	 */
+* Set up the database.
+* @param languageDb database
+*/
 	public void setLanguageDb(Program language) {
 		this.languageDb = language;
 	}

@@ -31,48 +31,48 @@ import javax.swing.ImageIcon;
 import jp.riken.kscope.properties.KscopeProperties;
 
 /**
- * リソースユーティリティクラス
- * 
+ * Resource utility class
+ *
  * @author RIKEN
  */
 public class ResourceUtils {
 
-	/** java.net.URLクラスオブジェクト */
+	/** java.net.URL class object */
 	private static final Class<?>[] parameters = new Class[] { java.net.URL.class };
 
-	/** アプリケーションルートクラス */
+	/** Application root class */
 	private static Class<?> rootAppClass;
 
 	// Name of the last file used in getPropertiesFile
 	public static String PROPERTIES_FILE_USED = "";
 	
 	/**
-	 * アプリケーションクラスを設定する。
-	 * 
-	 * @param rootAppClass
-	 *            アプリケーションクラス
-	 */
+* Set the application class.
+*
+* @param rootAppClass
+* Application class
+*/
 	public static void setRootAppClass(Class<?> rootAppClass) {
 		ResourceUtils.rootAppClass = rootAppClass;
 	}
 
 	/**
-	 * アイコンリソースを取得する.<br/>
-	 * クラスローダから取得できない場合は、'./resouces/icons'パスから取得する。
-	 * 
-	 * @param name
-	 *            アイコン名
-	 * @return アイコンオブジェクト
-	 */
+* Get the icon resource. <br/>
+* If it cannot be obtained from the class loader, obtain it from the'./resouces/icons' path.
+*
+* @param name
+* Icon name
+* @return icon object
+*/
 	public static Icon getIcon(String name) {
 		try {
-			// クラスローダ
+			// class loader
 			// java.net.URL url =
 			// ResourceUtils.class.getClassLoader().getResource(name);
 			java.net.URL url = ResourceUtils.class.getClassLoader()
 					.getResource("icons/" + name);
 
-			// 開発環境用（デフォルト）
+			// For development environment (default)
 			if (url == null) {
 				url = new File("./resources/icons/" + name).toURI().toURL();
 			}
@@ -84,12 +84,12 @@ public class ResourceUtils {
 	}
 
 	/**
-	 * リソースファイルを取得する.
-	 * 
-	 * @param name
-	 *            ファイル名
-	 * @return リソース入力ストリーム
-	 */
+* Get the resource file.
+*
+* @param name
+	 *            file name
+* @return Resource input stream
+*/
 	public static InputStream getPropertiesFile(String name) {
 		boolean debug = (System.getenv("DEBUG")!= null);
 		try {
@@ -104,7 +104,7 @@ public class ResourceUtils {
 				return is;
 			}
 
-			// クラスパスからのプロパティフォルダから検索する
+			// Search from the properties folder from the classpath
 			url = rootAppClass.getResource(rootAppClass.getSimpleName()
 					+ ".class");
 			java.net.URI uri = url.toURI();
@@ -143,42 +143,42 @@ public class ResourceUtils {
 	}
 
 	/**
-	 * クラスパスを追加する。
-	 * 
-	 * @param s
-	 *            追加パス名
-	 * @throws IOException
-	 *             不正パスエラー
-	 */
+* Add a classpath.
+*
+* @param s
+* Additional path name
+* @throws IOException
+* Illegal path error
+*/
 	public static void addFile(String s) throws IOException {
 		File f = new File(s);
 		addFile(f);
 	}
 
 	/**
-	 * クラスパスを追加する。
-	 * 
-	 * @param f
-	 *            追加パス
-	 * @throws IOException
-	 *             不正パスエラー
-	 */
+* Add a classpath.
+*
+* @param f
+* Additional path
+* @throws IOException
+* Illegal path error
+*/
 	public static void addFile(File f) throws IOException {
 		addURL(f.toURI().toURL());
 	}
 
 	/**
-	 * クラスパスを追加する.<br/>
-	 * 使用方法 ： addFile("./resources/icons");<br/>
-	 * クラスローダからリソースファイルを取得する場合に、事前にクラスパスを追加しておく。<br/>
-	 * クラスパスを追加するとgetIconの'new File("./resources/icons/" +
-	 * name).toURI().toURL();'はしなくてもよい。<br/>
-	 * 
-	 * @param u
-	 *            追加パスURL
-	 * @throws IOException
-	 *             不正パスエラー
-	 */
+* Add classpath. <br/>
+* Usage: addFile ("./resources/icons"); <br/>
+* Add the classpath in advance when retrieving the resource file from the class loader. <br/>
+* Add the classpath and getIcon's'new File ("./resources/icons/" +
+* name) .toURI (). toURL ();'You do not have to. <br/>
+*
+* @param u
+* Additional path URL
+* @throws IOException
+* Illegal path error
+*/
 	public static void addURL(java.net.URL u) throws IOException {
 		URLClassLoader sysloader = (URLClassLoader) ClassLoader
 				.getSystemClassLoader();
