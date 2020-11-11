@@ -23,16 +23,16 @@ import jp.riken.kscope.xcodeml.xml.*;
 import jp.riken.kscope.xcodeml.xml.gen.*;
 
 /**
- * XML要素ユーティリティクラス
+ * XML element utility class
  * @author RIKEN
  */
 public class XmlNodeUtil {
 
     /**
-     * XMLノードから要素名を取得する.
+     * Get the element name from the XML node.
      *
-     * @param node		XMLノード
-     * @return     要素名
+     * @param node XML node
+     * @return element name
      */
     public static String getElementName(IXmlNode node) {
         String nodeName = node.getClass().getSimpleName();
@@ -40,12 +40,12 @@ public class XmlNodeUtil {
     }
 
     /**
-     * エラーメッセージを作成する
+     * Create an error message
      *
-     * @param errorNode		エラーノード
-     * @param errorCode		エラー番号
-     * @param args			エラー付加情報
-     * @return			エラーメッセージ
+     * @param errorNode Error node
+     * @param errorCode Error number
+     * @param args Error additional information
+     * @return error message
      */
     public static String formatError(IXmlNode errorNode, EnumError errorCode, Object... args) {
         StringBuilder sb = new StringBuilder();
@@ -67,11 +67,11 @@ public class XmlNodeUtil {
     }
 
     /**
-     * Boolean値をbooleanに変換する.<br/>
-     * nullの場合は、falseを返す
+     * Convert Boolean values to boolean. <br/>
+     * Returns false if null
      *
-     * @param value		Boolean値
-     * @return			boolean値
+     * @param value Boolean value
+     * @return boolean value
      */
     public static boolean isBoolean(Boolean value) {
         if (value == null)
@@ -80,9 +80,9 @@ public class XmlNodeUtil {
     }
 
     /**
-     * IDefModelExpr要素から子要素を取得する
-     * @param expr		親要素
-     * @return			子要素
+     * Get child elements from IDefModelExpr element
+     * @param expr Parent element
+     * @return Child element
      */
     public static IXmlNode getXmlNodeChoice(IDefModelExpr expr) {
 
@@ -165,11 +165,11 @@ public class XmlNodeUtil {
     }
 
     /**
-     * ExprModel要素であるかチェックする。
+     * Check if it is an ExprModel element.
      *
      * @param expr
-     *            XML要素
-     * @return ExprModel要素である。
+     * XML element
+     * @return ExprModel element.
      */
     public static boolean isExprModel(IXmlNode expr) {
 
@@ -251,9 +251,9 @@ public class XmlNodeUtil {
     }
 
     /**
-     * VarRef要素から子要素を取得する
-     * @param expr		親要素
-     * @return			子要素
+     * Get child elements from VarRef element
+     * @param expr Parent element
+     * @return Child element
      */
     public static IXmlNode getXmlNodeChoice(VarRef expr) {
 
@@ -276,9 +276,9 @@ public class XmlNodeUtil {
     }
 
     /**
-     * LogNotExpr要素から子要素を取得する
-     * @param visitable		親要素
-     * @return			子要素
+     * Get child elements from LogNotExpr element
+     * @param visitable parent element
+     * @return Child element
      */
     public static IXmlNode getXmlNodeChoice(LogNotExpr visitable) {
 
@@ -290,9 +290,9 @@ public class XmlNodeUtil {
     }
 
     /**
-     * UnaryMinusExpr要素から子要素を取得する
-     * @param visitable		親要素
-     * @return			子要素
+     * Get child elements from UnaryMinusExpr element
+     * @param visitable parent element
+     * @return Child element
      */
     public static IXmlNode getXmlNodeChoice(UnaryMinusExpr visitable) {
 
@@ -304,9 +304,9 @@ public class XmlNodeUtil {
     }
 
     /**
-     * Alloc要素から子要素を取得する
-     * @param visitable		親要素
-     * @return			子要素
+     * Get child elements from Alloc elements
+     * @param visitable parent element
+     * @return Child element
      */
     public static IXmlNode getXmlNodeChoice(Alloc visitable) {
         IXmlNode node = null;
@@ -320,9 +320,9 @@ public class XmlNodeUtil {
     }
 
     /**
-     * Declarations要素から子要素を取得する
-     * @param visitable		親要素
-     * @return			子要素
+     * Get child elements from Declarations element
+     * @param visitable parent element
+     * @return Child element
      */
     public static IXmlNode[] getXmlChildNodes(Declarations visitable) {
         List<IXmlNode> list = visitable.getVarDeclOrExternDeclOrFuseDecl();
@@ -333,9 +333,9 @@ public class XmlNodeUtil {
     }
 
     /**
-     * GlobalDeclarations要素から子要素を取得する
-     * @param visitable		親要素
-     * @return			子要素
+     * Get child elements from GlobalDeclarations element
+     * @param visitable parent element
+     * @return Child element
      */
     public static IXmlNode[] getXmlChildNodes(GlobalDeclarations visitable) {
         List<IXmlNode> list = visitable
@@ -347,9 +347,9 @@ public class XmlNodeUtil {
     }
 
     /**
-     * XcodeProgram要素から子要素を取得する
-     * @param visitable		親要素
-     * @return			子要素
+     * Get child elements from XcodeProgram element
+     * @param visitable parent element
+     * @return Child element
      */
     public static IXmlNode[] getXmlChildNodes(XcodeProgram visitable) {
         java.util.List<IXmlNode> list = new java.util.ArrayList<IXmlNode>();
