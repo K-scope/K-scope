@@ -28,62 +28,62 @@ import jp.riken.kscope.xcodeml.xml.*;
 import jp.riken.kscope.xcodeml.xml.gen.*;
 
 /**
- * exprModel要素(式表現を参照する要素から共通で利用されるモデル)のパースクラス
+ * Perspective class of exprModel element (model commonly used from elements that refer to expression representation)
  *
  */
 public class ExprModelParser {
-    // 演算子文字列
-	/** カンマ */
+    // Operator string
+	/** Comma */
     private final String EXPR_COMMA = ",";
-    /** plusExpr + : 加算 */
+    /** plusExpr +: Addition */
     private final String EXPR_PLUS = "+";
-    /** minusExpr - : 減算 */
+    /** minusExpr-: Subtraction */
     private final String EXPR_MINUS = "-";
-    /** mulExpr * : 乗算 */
+    /** mulExpr *: Multiplication */
     private final String EXPR_MUL = "*";
-    /** divExpr / : 除算 */
+    /** divExpr /: Division */
     private final String EXPR_DIV = "/";
-    /** FpowerExpr ** : べき乗 */
+    /** FpowerExpr **: Exponentiation */
     private final String EXPR_POWER = "**";
-    /** FconcatExpr // : 文字式の連結 */
+    /** FconcatExpr //: Concatenation of character expressions */
     private final String EXPR_CONCAT = "//";
-    /** logEQExpr == .EQ. : 等価 */
+    /** logEQExpr == .EQ .: Equivalent */
     private final String EXPR_LOGEQ = "==";
-    /** logNEQExpr /= .NE. : 非等価 */
+    /** logNEQExpr /= .NE .: Non-equivalent */
     private final String EXPR_LOGNEQ = "/=";
-    /** logGEExpr >= .GE. : 大なり、または同値 */
+    /** logGEExpr> = .GE .: Greater or equivalent */
     private final String EXPR_LOGGE = ">=";
-    /** logGTExpr > .GT. : 大なり */
+    /** logGTExpr> .GT .: Greater */
     private final String EXPR_LOGGT = ">";
-    /** logLEExpr <= .LE. : 小なり、または等価 */
+    /** logLEExpr <= .LE .: less or equivalent */
     private final String EXPR_LOGLE = "<=";
-    /** logLTExpr < .LT. : 小なり */
+    /** logLTExpr <.LT .: less */
     private final String EXPR_LOGLT = "<";
-    /** logAndExpr .AND. : 論理積 */
+    /** logAndExpr .AND .: AND */
     private final String EXPR_LOGAND = ".AND.";
-    /** logOrExpr .OR. : 論理和 */
+    /** logOrExpr .OR .: OR */
     private final String EXPR_LOGOR = ".OR.";
-    /** logEQVExpr .EQV. : 論理等価 */
+    /** logEQVExpr .EQV .: Logical equivalent */
     private final String EXPR_LOGEQV = ".EQV.";
-    /** logNEQVExpr .NEQV. : 論理非等価 */
+    /** logNEQVExpr .NEQV .: Logical unequal */
     private final String EXPR_LOGNEQV = ".NEQV.";
-    /** unaryMinusExpr - : 符号反転 */
+    /** unaryMinusExpr-: Sign inversion */
     private final String EXPR_UNARYMINUS = "-";
-    /** logNotExpr .NOT. : 論理否定 */
+    /** logNotExpr .NOT .: Logical negation */
     private final String EXPR_LOGNOT = ".NOT.";
     /** ( */
     private final String EXPR_PARENLEFT = "(";
     /** ) */
     private final String EXPR_PARENRIGHT = ")";
-    /** FmemberRef % : 構造体メンバ */
+    /** FmemberRef%: Structure member */
     private final String EXPR_TYPEMEMBER = "%";
     /** [ */
     private final String EXPR_COARRAYLEFT = "[";
     /** ] */
     private final String EXPR_COARRAYRIGHT = "[";
-    /** 等号記号 */
+    /** Equal sign */
     private final String EXPR_EQUAL = "=";
-    /** スペース */
+    /** Space */
     private final String EXPR_SPACE = " ";
     /** FarrayConstructor */
     private final String EXPR_ARRAYLEFT = "(/";
@@ -92,34 +92,34 @@ public class ExprModelParser {
     /** : */
     private final String EXPR_ARRAYCOLON = ":";
 
-    // exprModel要素のパースモード
-    /** 変数のみパースパースする。整数、実数、文字列等の変数以外は返さない。 */
+    // Perspective mode of exprModel element
+    /** Perspers only variables. Only variables such as integers, real numbers, and strings are returned. */
     public static final int PARSE_VARIABLE = 0x000001;
-    /** サブルーチン、関数の引数はパースしない。サブルーチン、関数名のみを返す。 */
+    /** Do not parse subroutines and function arguments. Returns only subroutine and function names. */
     public static final int PARSE_FUNCTION = 0x000010;
-    /** 演算子を付加する。 */
+    /** Add operator. */
     public static final int PARSE_OPERATOR = 0x000100;
-    /** 引数はカンマ区切りで引数毎に文字列とする。 */
+    /** Arguments are separated by commas and are character strings for each argument. */
     public static final int PARSE_ARGUMENTS = 0x001000;
-    /** 組込関数はパースしない。 */
+    /** Built-in functions do not parse. */
     public static final int PARSE_NONEINTRINSIC = 0x010000;
-    /** 演算子を付加する。 + 引数はカンマ区切りで引数毎に文字列とする。 */
+    /** Add operator. + Arguments are separated by commas and are character strings for each argument. */
     public static final int PARSE_DETAIL = PARSE_OPERATOR | PARSE_ARGUMENTS;
 
-    /** exprModelのパースモード */
+    /** exprModel perspective mode */
     private int _mode;
 
-    /** パースexprModel要素 */
+    /** Perth exprModel element */
     private IXmlNode _parseNode;
 
     /** typeTable */
     private XcodeMLTypeManager _typeManager;
 
     /**
-     * コンストラクタ
+     * Constructor
      *
-     * @param mode            パースモード
-     * @param typeManager     typeTable
+     * @param mode Perspective mode
+     * @param typeManager typeTable
      */
     public ExprModelParser(int mode, XcodeMLTypeManager typeManager) {
         this._mode = mode;
@@ -127,14 +127,14 @@ public class ExprModelParser {
     }
 
     /**
-     * コンストラクタ
+     * Constructor
      *
      * @param mode
-     *            パースモード
+     * Perspective mode
      * @param typeManager
-     *            typeTable
+     * typeTable
      * @param node
-     *            パースexprModel要素
+     * Perspective exprModel element
      */
     public ExprModelParser(int mode, XcodeMLTypeManager typeManager,
             IXmlNode node) {
@@ -145,17 +145,17 @@ public class ExprModelParser {
 
     /**
      * @param parseNode
-     *            セットする _parseNode
+     * Set _parseNode
      */
     public void setParseNode(IXmlNode parseNode) {
         _parseNode = parseNode;
     }
 
     /**
-     * パース要素から変数リストを取得する。
+     * Get the variable list from the perspective element.
      *
-     * @return 変数リスト
-     * @throws XcodeMLException パースエラー
+     * @return Variable list
+     * @throws XcodeMLException Parsing error
      */
     public String[] getVariableList() throws XcodeMLException {
         if (_parseNode == null)
@@ -165,9 +165,9 @@ public class ExprModelParser {
     }
 
     /**
-     * パースノードを文字列にする。
+     * Make the perspective node a string.
      *
-     * @return 式表現文字列
+     * @return expression expression string
      */
     @Override
     public String toString() {
@@ -197,11 +197,11 @@ public class ExprModelParser {
     }
 
     /**
-     * 変数、演算子リストを文字列にする。
+     * Convert variables and operator lists to strings.
      *
      * @param vars
-     *            変数、演算子リスト
-     * @return 式表現文字列
+     * Variable, operator list
+     * @return expression expression string
      */
     private String toString(String[] vars) {
         StringBuilder expr = new StringBuilder();
@@ -215,12 +215,12 @@ public class ExprModelParser {
     }
 
     /**
-     * Arguments要素から変数リストを取得する。
+     * Get the variable list from the Arguments element.
      *
-     * @param args            Arguments要素
-     * @param grouping        式組立時のグルーピング'(..)'のフラグ
-     * @return 変数リスト
-     * @throws XcodeMLException   パースエラー
+     * @param args Arguments element
+     * @param grouping Grouping'(..)' flag when assembling expressions
+     * @return Variable list
+     * @throws XcodeMLException Parsing error
      */
     public String[] getVariableList(Arguments args, boolean grouping) throws XcodeMLException {
         List<IXmlNode> list = args
@@ -232,18 +232,18 @@ public class ExprModelParser {
         for (IXmlNode node : list) {
             String[] vars = getVariableList(node, grouping);
             if (vars == null) {
-        		// exprmodelparser.variablelist.parse.error=パースエラー:%sをパースできませんでした。
+        		// exprmodelparser.variablelist.parse.error = Parsing error: Could not parse% s.
                 throw new XcodeMLException(
                 		Message.getString("exprmodelparser.variablelist.parse.error", node.getClass().getName()));
             }
 
             if ((this._mode & PARSE_ARGUMENTS) != 0x00) {
-                // 引数はカンマ区切りで引数毎に文字列とする。
+                // Arguments are separated by commas and are character strings for each argument.
                 if (var_list.size() > 0)
                     var_list.add(EXPR_COMMA);
                 var_list.add(toString(vars));
             } else {
-                addOperatorString(var_list, EXPR_COMMA); // カンマ追加
+                addOperatorString(var_list, EXPR_COMMA); // Add comma
                 var_list.addAll(Arrays.asList(vars));
             }
         }
@@ -253,12 +253,12 @@ public class ExprModelParser {
     }
 
     /**
-     * 要素リストから変数リストを取得する。
+     * Get the variable list from the element list.
      *
-     * @param list            要素リスト
-     * @param grouping        式組立時のグルーピング'(..)'のフラグ
-     * @return 変数リスト
-     * @throws XcodeMLException   パースエラー
+     * @param list Element list
+     * @param grouping Grouping'(..)' flag when assembling expressions
+     * @return Variable list
+     * @throws XcodeMLException Parsing error
      */
     public String[] getVariableList(List<IXmlNode> list, boolean grouping) throws XcodeMLException {
         if (list == null)
@@ -266,7 +266,7 @@ public class ExprModelParser {
         ArrayList<String> var_list = new ArrayList<String>();
         for (IXmlNode node : list) {
             String[] vars = getVariableList(node, grouping);
-            addOperatorString(var_list, EXPR_COMMA); // カンマ追加
+            addOperatorString(var_list, EXPR_COMMA); // Add comma
             var_list.addAll(Arrays.asList(vars));
         }
         if (var_list.size() <= 0)
@@ -275,12 +275,12 @@ public class ExprModelParser {
     }
 
     /**
-     * 要素から変数リストを取得する。
+     * Get the variable list from the element.
      *
-     * @param expr            exprModel要素
-     * @param grouping        式組立時のグルーピング'(..)'のフラグ
-     * @return 変数リスト
-     * @throws XcodeMLException   パースエラー
+     * @param expr exprModel element
+     * @param grouping Grouping'(..)' flag when assembling expressions
+     * @return Variable list
+     * @throws XcodeMLException Parsing error
      */
     public String[] getVariableList(IXmlNode expr, boolean grouping) throws XcodeMLException {
         String[] vars = null;
@@ -375,12 +375,12 @@ public class ExprModelParser {
     }
 
     /**
-     * FunctionCall要素から変数リストを取得する
+     * Get the variable list from the FunctionCall element
      *
-     * @param node            FunctionCall要素
-     * @param grouping        式組立時のグルーピング'(..)'のフラグ
-     * @return 変数リスト
-     * @throws XcodeMLException  パースエラー
+     * @param node FunctionCall element
+     * @param grouping Grouping'(..)' flag when assembling expressions
+     * @return Variable list
+     * @throws XcodeMLException Parsing error
      */
     public String[] getVariableList(FunctionCall node, boolean grouping) throws XcodeMLException {
         ArrayList<String> list = new ArrayList<String>();
@@ -388,19 +388,19 @@ public class ExprModelParser {
         Name name = node.getName();
         boolean isIntrinsic = XmlNodeUtil.isBoolean(node.isIsIntrinsic());
 
-        // 組込関数ではない。又は組込関数除去フラグがセットされていない。
+        // Not a built-in function. Or the built-in function removal flag is not set.
         if (!isIntrinsic || ((this._mode & PARSE_NONEINTRINSIC) == 0x00)) {
             list.add(name.getValue());
         }
 
-        // 組込関数の場合は、引数をパースする。
-        // PARSE_FUNCTION = サブルーチン、関数の引数はパースしない。サブルーチン、関数名のみを返す。
+        // For built-in functions, parse the arguments.
+        // PARSE_FUNCTION = Subroutines and function arguments are not parsed. Returns only subroutine and function names.
         if (isIntrinsic || (this._mode & PARSE_FUNCTION) == 0x00) {
-            addOperatorString(list, EXPR_PARENLEFT); // 左括弧
-            // 引数パース
+            addOperatorString(list, EXPR_PARENLEFT); // Left parenthesis
+            // Argument parsing
             String[] args = getVariableList(node.getArguments(), grouping);
             list.addAll(Arrays.asList(args));
-            addOperatorString(list, EXPR_PARENRIGHT); // 右括弧
+            addOperatorString(list, EXPR_PARENRIGHT); // Right parenthesis
         }
 
         if (list.size() <= 0)
@@ -410,12 +410,12 @@ public class ExprModelParser {
     }
 
     /**
-     * INTERFACE依存要素
+     * INTERFACE dependent element
      *
-     * @param node            INTERFACE依存
-     * @param grouping        式組立時のグルーピング'(..)'のフラグ
-     * @return 変数リスト
-     * @throws XcodeMLException  パースエラー
+     * @param node INTERFACE dependent
+     * @param grouping Grouping'(..)' flag when assembling expressions
+     * @return Variable list
+     * @throws XcodeMLException Parsing error
      */
     public String[] getVariableList(UserBinaryExpr node, boolean grouping) throws XcodeMLException {
         ArrayList<String> list = new ArrayList<String>();
@@ -433,11 +433,11 @@ public class ExprModelParser {
                 list.addAll(Arrays.asList(vars));
             }
         }
-        addOperatorString(list, EXPR_SPACE); // スペース
+        addOperatorString(list, EXPR_SPACE); // Space
 
         list.add(name);
 
-        addOperatorString(list, EXPR_SPACE); // スペース
+        addOperatorString(list, EXPR_SPACE); // Space
 
         if (rightExpr != null) {
             String[] vars = getVariableList(rightExpr, grouping);
@@ -452,12 +452,12 @@ public class ExprModelParser {
     }
 
     /**
-     * FcharacterRef(部分文字列参照)要素から変数リストを取得する
+     * Get a list of variables from the FcharacterRef (see substring) element
      *
-     * @param node            FcharacterRef(部分文字列参照)要素
-     * @param grouping        式組立時のグルーピング'(..)'のフラグ
-     * @return 変数リスト
-     * @throws XcodeMLException  パースエラー
+     * @param node FcharacterRef (see substring) element
+     * @param grouping Grouping'(..)' flag when assembling expressions
+     * @return Variable list
+     * @throws XcodeMLException Parsing error
      */
     public String[] getVariableList(FcharacterRef node, boolean grouping) throws XcodeMLException {
         ArrayList<String> list = new ArrayList<String>();
@@ -471,8 +471,8 @@ public class ExprModelParser {
             }
         }
 
-        // 左括弧
-        addOperatorString(list, EXPR_PARENLEFT); // 左括弧 (
+        // Left parenthesis
+        addOperatorString(list, EXPR_PARENLEFT); // Left parenthesis (
 
         // IndexRange
         IndexRange range = node.getIndexRange();
@@ -483,8 +483,8 @@ public class ExprModelParser {
             }
         }
 
-        // 右括弧
-        addOperatorString(list, EXPR_PARENRIGHT); // 右括弧 )
+        // Right parenthesis
+        addOperatorString(list, EXPR_PARENRIGHT); // Right parenthesis)
 
         if (list.size() <= 0)
             return null;
@@ -492,12 +492,12 @@ public class ExprModelParser {
     }
 
     /**
-     * 構造体メンバ(FmemberRef)要素から変数リストを取得する
+     * Get a list of variables from a structure member (FmemberRef) element
      *
-     * @param node            構造体メンバ(FmemberRef)
-     * @param grouping        式組立時のグルーピング'(..)'のフラグ
-     * @return 変数リスト
-     * @throws XcodeMLException  パースエラー
+     * @param node Structure member (FmemberRef)
+     * @param grouping Grouping'(..)' flag when assembling expressions
+     * @return Variable list
+     * @throws XcodeMLException Parsing error
      */
     public String[] getVariableList(FmemberRef node, boolean grouping) throws XcodeMLException {
         ArrayList<String> list = new ArrayList<String>();
@@ -509,7 +509,7 @@ public class ExprModelParser {
             }
         }
 
-        // メンバ参照
+        // member reference
         addOperatorString(list, EXPR_TYPEMEMBER); // %
 
         String member = node.getMember();
@@ -523,12 +523,12 @@ public class ExprModelParser {
     }
 
     /**
-     * FcoArrayRef(coarrayの参照)要素から変数リストを取得する
+     * Get a list of variables from the FcoArrayRef (see coarray) element
      *
-     * @param node            FcoArrayRef(coarrayの参照)
-     * @param grouping        式組立時のグルーピング'(..)'のフラグ
-     * @return 変数リスト
-     * @throws XcodeMLException  パースエラー
+     * @param node FcoArrayRef (see coarray)
+     * @param grouping Grouping'(..)' flag when assembling expressions
+     * @return Variable list
+     * @throws XcodeMLException Parsing error
      */
     public String[] getVariableList(FcoArrayRef node, boolean grouping) throws XcodeMLException {
         ArrayList<String> list = new ArrayList<String>();
@@ -558,12 +558,12 @@ public class ExprModelParser {
     }
 
     /**
-     * ArrayIndex(インデックス値)要素から変数リストを取得する
+     * Get a list of variables from the ArrayIndex element
      *
-     * @param node            ArrayIndex(インデックス値)
-     * @param grouping        式組立時のグルーピング'(..)'のフラグ
-     * @return 変数リスト
-     * @throws XcodeMLException  パースエラー
+     * @param node ArrayIndex
+     * @param grouping Grouping'(..)' flag when assembling expressions
+     * @return Variable list
+     * @throws XcodeMLException Parsing error
      */
     public String[] getVariableList(ArrayIndex node, boolean grouping) throws XcodeMLException {
         IXmlNode expr = XmlNodeUtil.getXmlNodeChoice(node);
@@ -572,12 +572,12 @@ public class ExprModelParser {
     }
 
     /**
-     * VarRef(変数参照)要素から変数リストを取得する
+     * Get a list of variables from the VarRef element
      *
-     * @param node           VarRef(変数参照)要素
-     * @param grouping        式組立時のグルーピング'(..)'のフラグ
-     * @return 変数リスト
-     * @throws XcodeMLException  パースエラー
+     * @param node VarRef (variable reference) element
+     * @param grouping Grouping'(..)' flag when assembling expressions
+     * @return Variable list
+     * @throws XcodeMLException Parsing error
      */
     public String[] getVariableList(VarRef node, boolean grouping) throws XcodeMLException {
         IXmlNode expr = XmlNodeUtil.getXmlNodeChoice(node);
@@ -586,25 +586,25 @@ public class ExprModelParser {
     }
 
     /**
-     * FdoLoop(DO型反復)要素から変数リストを取得する
+     * Get a list of variables from an FdoLoop element
      *
-     * @param node           FdoLoop(DO型反復)要素
-     * @param grouping        式組立時のグルーピング'(..)'のフラグ
-     * @return 変数リスト
-     * @throws XcodeMLException  パースエラー
+     * @param node FdoLoop (DO type iteration) element
+     * @param grouping Grouping'(..)' flag when assembling expressions
+     * @return Variable list
+     * @throws XcodeMLException Parsing error
      */
     public String[] getVariableList(FdoLoop node, boolean grouping) throws XcodeMLException {
         ArrayList<String> list = new ArrayList<String>();
 
-        // 左括弧
-        addOperatorString(list, EXPR_PARENLEFT); // 左括弧 (
+        // Left parenthesis
+        addOperatorString(list, EXPR_PARENLEFT); // Left parenthesis (
 
         List<Value> values = node.getValue();
         for (Value expr : values) {
             String[] vars = getVariableList(expr, grouping);
             if (vars != null) {
                 list.addAll(Arrays.asList(vars));
-                addOperatorString(list, EXPR_COMMA); // カンマ
+                addOperatorString(list, EXPR_COMMA); // Comma
             }
         }
 
@@ -626,8 +626,8 @@ public class ExprModelParser {
             }
         }
 
-        // 右括弧
-        addOperatorString(list, EXPR_PARENRIGHT); // 右括弧 )
+        // Right parenthesis
+        addOperatorString(list, EXPR_PARENRIGHT); // Right parenthesis)
 
         if (list.size() <= 0)
             return null;
@@ -635,11 +635,11 @@ public class ExprModelParser {
     }
 
     /**
-     * Var(変数名)要素から変数リストを取得する
+     * Get the variable list from the Var (variable name) element
      *
-     * @param node            Var(変数名)
-     * @param grouping        式組立時のグルーピング'(..)'のフラグ
-     * @return 変数リスト
+     * @param node Var (variable name)
+     * @param grouping Grouping'(..)' flag when assembling expressions
+     * @return Variable list
      */
     public String[] getVariableList(Var node, boolean grouping) {
         String value = node.getValue();
@@ -649,12 +649,12 @@ public class ExprModelParser {
     }
 
     /**
-     * IndexRange(インデックス範囲)要素から変数リストを取得する
+     * Get a list of variables from the IndexRange element
      *
-     * @param node        IndexRange(インデックス範囲)要素
-     * @param grouping		true=変数リストをグルーピングを行う
-     * @return 変数リスト
-     * @throws XcodeMLException  パースエラー
+     * @param node IndexRange element
+     * @param grouping true = Group variable list
+     * @return Variable list
+     * @throws XcodeMLException Parsing error
      */
     public String[] getVariableList(IndexRange node, boolean grouping) throws XcodeMLException {
         ArrayList<String> list = new ArrayList<String>();
@@ -664,7 +664,7 @@ public class ExprModelParser {
             String[] vars = getVariableList(expr, grouping);
             if (vars != null) {
                 list.addAll(Arrays.asList(vars));
-                addOperatorString(list, EXPR_ARRAYCOLON); // コロン
+                addOperatorString(list, EXPR_ARRAYCOLON); // colon
             }
         }
         UpperBound upper = node.getUpperBound();
@@ -672,7 +672,7 @@ public class ExprModelParser {
             IXmlNode expr = XmlNodeUtil.getXmlNodeChoice(upper);
             String[] vars = getVariableList(expr, grouping);
             if (vars != null) {
-                addOperatorString(list, EXPR_ARRAYCOLON); // コロン
+                addOperatorString(list, EXPR_ARRAYCOLON); // colon
                 list.addAll(Arrays.asList(vars));
             }
         }
@@ -681,7 +681,7 @@ public class ExprModelParser {
             IXmlNode expr = XmlNodeUtil.getXmlNodeChoice(step);
             String[] vars = getVariableList(expr, grouping);
             if (vars != null) {
-                addOperatorString(list, EXPR_ARRAYCOLON); // コロン
+                addOperatorString(list, EXPR_ARRAYCOLON); // colon
                 list.addAll(Arrays.asList(vars));
             }
         }
@@ -693,12 +693,12 @@ public class ExprModelParser {
 
 
     /**
-     * LowerBound(インデックス範囲の下限)要素から変数リストを取得する
+     * Get a list of variables from the LowerBound element
      *
-     * @param node        LowerBound(インデックス範囲の下限)要素
-     * @param grouping		true=変数リストをグルーピングを行う
-     * @return 変数リスト
-     * @throws XcodeMLException  パースエラー
+     * @param node LowerBound element
+     * @param grouping true = Group variable list
+     * @return Variable list
+     * @throws XcodeMLException Parsing error
      */
     public String[] getVariableList(LowerBound node, boolean grouping) throws XcodeMLException {
         ArrayList<String> list = new ArrayList<String>();
@@ -715,12 +715,12 @@ public class ExprModelParser {
     }
 
     /**
-     * UpperBound(インデックス範囲の上限)要素から変数リストを取得する
+     * Get a list of variables from the UpperBound element
      *
-     * @param node        UpperBound(インデックス範囲の上限)要素
-     * @param grouping		true=変数リストをグルーピングを行う
-     * @return 変数リスト
-     * @throws XcodeMLException  パースエラー
+     * @param node UpperBound (upper limit of index range) element
+     * @param grouping true = Group variable list
+     * @return Variable list
+     * @throws XcodeMLException Parsing error
      */
     public String[] getVariableList(UpperBound node, boolean grouping) throws XcodeMLException {
         ArrayList<String> list = new ArrayList<String>();
@@ -737,12 +737,12 @@ public class ExprModelParser {
     }
 
     /**
-     * Step(インデックス範囲のステップ)要素から変数リストを取得する
+     * Get a list of variables from the Step element
      *
-     * @param node        Step(インデックス範囲のステップ)要素
-     * @param grouping		true=変数リストをグルーピングを行う
-     * @return 変数リスト
-     * @throws XcodeMLException  パースエラー
+     * @param node Step element
+     * @param grouping true = Group variable list
+     * @return Variable list
+     * @throws XcodeMLException Parsing error
      */
     public String[] getVariableList(Step node, boolean grouping) throws XcodeMLException {
         ArrayList<String> list = new ArrayList<String>();
@@ -759,12 +759,12 @@ public class ExprModelParser {
     }
 
     /**
-     * Value(式で表わされる任意の値)要素から変数リストを取得する
+     * Get a list of variables from the Value (arbitrary value represented by an expression) element
      *
-     * @param node            Value(式で表わされる任意の値)要素
-     * @param grouping		true=変数リストをグルーピングを行う
-     * @return 変数リスト
-     * @throws XcodeMLException  パースエラー
+     * @param node Value (arbitrary value represented by an expression) element
+     * @param grouping true = Group variable list
+     * @return Variable list
+     * @throws XcodeMLException Parsing error
      */
     public String[] getVariableList(Value node, boolean grouping) throws XcodeMLException {
         ArrayList<String> list = new ArrayList<String>();
@@ -792,12 +792,12 @@ public class ExprModelParser {
     }
 
     /**
-     * FarrayRef(部分配列、または配列要素参照)要素から変数リストを取得する
+     * Get a list of variables from a FarrayRef (see subarray or array element) element
      *
-     * @param node            FarrayRef(部分配列、または配列要素参照)要素
-     * @param grouping        式組立時のグルーピング'(..)'のフラグ
-     * @return 変数リスト
-     * @throws XcodeMLException  パースエラー
+     * @param node FarrayRef (see subarray or array element) element
+     * @param grouping Grouping'(..)' flag when assembling expressions
+     * @return Variable list
+     * @throws XcodeMLException Parsing error
      */
     public String[] getVariableList(FarrayRef node, boolean grouping) throws XcodeMLException {
         ArrayList<String> list = new ArrayList<String>();
@@ -810,21 +810,21 @@ public class ExprModelParser {
 
         List<IXmlNode> values = node
                 .getIndexRangeOrArrayIndexOrFarrayConstructor();
-        // 左括弧
-        addOperatorString(list, EXPR_PARENLEFT); // 左括弧 (
+        // Left parenthesis
+        addOperatorString(list, EXPR_PARENLEFT); // Left parenthesis (
 
         for (IXmlNode expr : values) {
             String[] vars = getVariableList(expr, grouping);
             if (vars != null) {
                 list.addAll(Arrays.asList(vars));
-                addOperatorString(list, EXPR_COMMA); // コロン :
+                addOperatorString(list, EXPR_COMMA); // colon:
             }
         }
         if (list.get(list.size() - 1) == EXPR_COMMA)
             list.remove(list.size() - 1);
 
-        // 右括弧
-        addOperatorString(list, EXPR_PARENRIGHT); // 右括弧 )
+        // Right parenthesis
+        addOperatorString(list, EXPR_PARENRIGHT); // Right parenthesis)
 
         if (list.size() <= 0)
             return null;
@@ -832,23 +832,23 @@ public class ExprModelParser {
     }
 
     /**
-     * FcomplexConstant(COMPLEX型の定数)要素から変数リストを取得する
+     * Get a list of variables from the FcomplexConstant (complex type constant) element
      *
-     * @param node            FcomplexConstant(COMPLEX型の定数)要素
-     * @param grouping        式組立時のグルーピング'(..)'のフラグ
-     * @return 変数リスト
-     * @throws XcodeMLException  パースエラー
+     * @param node FcomplexConstant (COMPLEX type constant) element
+     * @param grouping Grouping'(..)' flag when assembling expressions
+     * @return Variable list
+     * @throws XcodeMLException Parsing error
      */
     public String[] getVariableList(FcomplexConstant node, boolean grouping) throws XcodeMLException {
 
-        // 定数は変数として返さない
+        // Do not return constants as variables
         if ((this._mode & PARSE_VARIABLE) != 0x00) {
             return null;
         }
 
         ArrayList<String> list = new ArrayList<String>();
-        // 左括弧
-        addOperatorString(list, EXPR_PARENLEFT); // 左括弧 (
+        // Left parenthesis
+        addOperatorString(list, EXPR_PARENLEFT); // Left parenthesis (
 
         List<IXmlNode> content = node.getContent();
         if (content == null)
@@ -857,14 +857,14 @@ public class ExprModelParser {
             String[] vars = getVariableList(expr, grouping);
             if (vars != null) {
                 list.addAll(Arrays.asList(vars));
-                addOperatorString(list, EXPR_COMMA); // カンマ
+                addOperatorString(list, EXPR_COMMA); // Comma
             }
         }
         if (list.get(list.size() - 1) == EXPR_COMMA)
             list.remove(list.size() - 1);
 
-        // 右括弧
-        addOperatorString(list, EXPR_PARENRIGHT); // 右括弧 )
+        // Right parenthesis
+        addOperatorString(list, EXPR_PARENRIGHT); // Right parenthesis)
 
         if (list.size() <= 0)
             return null;
@@ -873,20 +873,20 @@ public class ExprModelParser {
     }
 
     /**
-     * UserUnaryExpr要素から変数リストを取得する
+     * Get the variable list from the UserUnaryExpr element
      *
-     * @param node           UserUnaryExpr
-     * @param grouping        式組立時のグルーピング'(..)'のフラグ
-     * @return 変数リスト
-     * @throws XcodeMLException  パースエラー
+     * @param node UserUnaryExpr
+     * @param grouping Grouping'(..)' flag when assembling expressions
+     * @return Variable list
+     * @throws XcodeMLException Parsing error
      */
     public String[] getVariableList(UserUnaryExpr node, boolean grouping) throws XcodeMLException {
         ArrayList<String> list = new ArrayList<String>();
         String name = node.getName();
         list.add(name);
 
-        // 左括弧
-        addOperatorString(list, EXPR_PARENLEFT); // 左括弧 (
+        // Left parenthesis
+        addOperatorString(list, EXPR_PARENLEFT); // Left parenthesis (
 
         IXmlNode expr = XmlNodeUtil.getXmlNodeChoice(node);
         if (expr == null)
@@ -896,21 +896,21 @@ public class ExprModelParser {
             list.addAll(Arrays.asList(vars));
         }
 
-        // 右括弧
-        addOperatorString(list, EXPR_PARENRIGHT); // 右括弧 )
+        // Right parenthesis
+        addOperatorString(list, EXPR_PARENRIGHT); // Right parenthesis)
 
         return (String[]) list.toArray(new String[list.size()]);
     }
 
     /**
-     * FpowerExpr(べき乗)要素から変数リストを取得する
+     * Get a list of variables from the FpowerExpr element
      *
-     * EXPR_POWER = "**"; /// FpowerExpr ** : べき乗
+     * EXPR_POWER = "**"; /// FpowerExpr **: Exponentiation
      *
-     * @param node           FpowerExpr(べき乗)要素
-     * @param grouping        式組立時のグルーピング'(..)'のフラグ
-     * @return 変数リスト
-     * @throws XcodeMLException  パースエラー
+     * @param node FpowerExpr element
+     * @param grouping Grouping'(..)' flag when assembling expressions
+     * @return Variable list
+     * @throws XcodeMLException Parsing error
      */
     public String[] getVariableList(FpowerExpr node, boolean grouping) throws XcodeMLException {
         ArrayList<String> list = new ArrayList<String>();
@@ -932,14 +932,14 @@ public class ExprModelParser {
     }
 
     /**
-     * LogLEExpr(小なり、または等価)要素から変数リストを取得する
+     * Get a list of variables from the LogLEExpr (less or equivalent) element
      *
-     * EXPR_LOGLE = ".LE."; /// logLEExpr <= .LE. : 小なり、または等価)
+     * EXPR_LOGLE = ".LE."; /// logLEExpr <= .LE .: less or equivalent)
      *
-     * @param node           LogLEExpr(小なり、または等価)要素
-     * @param grouping        式組立時のグルーピング'(..)'のフラグ
-     * @return 変数リスト
-     * @throws XcodeMLException  パースエラー
+     * @param node LogLEExpr (less or equivalent) element
+     * @param grouping Grouping'(..)' flag when assembling expressions
+     * @return Variable list
+     * @throws XcodeMLException Parsing error
      */
     public String[] getVariableList(LogLEExpr node, boolean grouping) throws XcodeMLException {
         ArrayList<String> list = new ArrayList<String>();
@@ -961,14 +961,14 @@ public class ExprModelParser {
     }
 
     /**
-     * FintConstant(整数の値を持つ定数)要素から変数リストを取得する
+     * Get a list of variables from the FintConstant (constant with integer value) element
      *
-     * @param node            FintConstant(整数の値を持つ定数)要素
-     * @param grouping        式組立時のグルーピング'(..)'のフラグ
-     * @return 変数リスト
+     * @param node FintConstant (constant with integer value) element
+     * @param grouping Grouping'(..)' flag when assembling expressions
+     * @return Variable list
      */
     public String[] getVariableList(FintConstant node, boolean grouping) {
-        // 整数は変数として返さない
+        // Do not return integers as variables
         if ((this._mode & PARSE_VARIABLE) != 0x00) {
             return null;
         }
@@ -985,14 +985,14 @@ public class ExprModelParser {
     }
 
     /**
-     * FrealConstant(浮動小数点数)要素から変数リストを取得する
+     * Get a list of variables from a FrealConstant element
      *
-     * @param node            FrealConstant(浮動小数点数)要素
-     * @param grouping        式組立時のグルーピング'(..)'のフラグ
-     * @return 変数リスト
+     * @param node FrealConstant (floating point) element
+     * @param grouping Grouping'(..)' flag when assembling expressions
+     * @return Variable list
      */
     public String[] getVariableList(FrealConstant node, boolean grouping) {
-        // 定数は変数として返さない
+        // Do not return constants as variables
         if ((this._mode & PARSE_VARIABLE) != 0x00) {
             return null;
         }
@@ -1011,14 +1011,14 @@ public class ExprModelParser {
     }
 
     /**
-     * FcharacterConstant(文字列)要素から変数リストを取得する
+     * Get a list of variables from the FcharacterConstant element
      *
-     * @param node           FcharacterConstant(文字列)要素
-     * @param grouping        式組立時のグルーピング'(..)'のフラグ
-     * @return 変数リスト
+     * @param node FcharacterConstant element
+     * @param grouping Grouping'(..)' flag when assembling expressions
+     * @return Variable list
      */
     public String[] getVariableList(FcharacterConstant node, boolean grouping) {
-        // 定数は変数として返さない
+        // Do not return constants as variables
         if ((this._mode & PARSE_VARIABLE) != 0x00) {
             return null;
         }
@@ -1040,14 +1040,14 @@ public class ExprModelParser {
     }
 
     /**
-     * FlogicalConstant(論理値)要素から変数リストを取得する
+     * Get a list of variables from the FlogicalConstant element
      *
-     * @param node           FlogicalConstant(論理値)要素
-     * @param grouping        式組立時のグルーピング'(..)'のフラグ
-     * @return 変数リスト
+     * @param node FlogicalConstant (logical value) element
+     * @param grouping Grouping'(..)' flag when assembling expressions
+     * @return Variable list
      */
     public String[] getVariableList(FlogicalConstant node, boolean grouping) {
-        // 定数は変数として返さない
+        // Do not return constants as variables
         if ((this._mode & PARSE_VARIABLE) != 0x00) {
             return null;
         }
@@ -1064,12 +1064,12 @@ public class ExprModelParser {
     }
 
     /**
-     * FarrayConstructor(配列構成子)要素から変数リストを取得する
+     * Get a list of variables from the Farray Constructor element
      *
-     * @param node            FarrayConstructor(配列構成子)要素
-     * @param grouping        式組立時のグルーピング'(..)'のフラグ
-     * @return 変数リスト
-     * @throws XcodeMLException  パースエラー
+     * @param node FarrayConstructor element
+     * @param grouping Grouping'(..)' flag when assembling expressions
+     * @return Variable list
+     * @throws XcodeMLException Parsing error
      */
     public String[] getVariableList(FarrayConstructor node, boolean grouping) throws XcodeMLException {
         ArrayList<String> list = new ArrayList<String>();
@@ -1083,7 +1083,7 @@ public class ExprModelParser {
             String[] vars = getVariableList(expr, grouping);
             if (vars != null) {
                 list.addAll(Arrays.asList(vars));
-                addOperatorString(list, EXPR_COMMA); // カンマ
+                addOperatorString(list, EXPR_COMMA); // Comma
             }
         }
         if (list.get(list.size() - 1) == EXPR_COMMA)
@@ -1096,12 +1096,12 @@ public class ExprModelParser {
     }
 
     /**
-     * FstructConstructor(構造体構成子)要素から変数リストを取得する
+     * Get a list of variables from the Fstruct Constructor element
      *
-     * @param node            FstructConstructor(構造体構成子)要素
-     * @param grouping        式組立時のグルーピング'(..)'のフラグ
-     * @return 変数リスト
-     * @throws XcodeMLException  パースエラー
+     * @param node FstructConstructor element
+     * @param grouping Grouping'(..)' flag when assembling expressions
+     * @return Variable list
+     * @throws XcodeMLException Parsing error
      */
     public String[] getVariableList(FstructConstructor node, boolean grouping) throws XcodeMLException {
         FstructType structTypeElem = (FstructType) _typeManager.findType(node
@@ -1112,8 +1112,8 @@ public class ExprModelParser {
         ArrayList<String> list = new ArrayList<String>();
         list.add(aliasStructTypeName);
 
-        // 左括弧
-        addOperatorString(list, EXPR_PARENLEFT); // 左括弧 (
+        // Left parenthesis
+        addOperatorString(list, EXPR_PARENLEFT); // Left parenthesis (
 
         List<IXmlNode> content = node.getDefModelExpr();
         if (content == null)
@@ -1122,27 +1122,27 @@ public class ExprModelParser {
             String[] vars = getVariableList(expr, grouping);
             if (vars != null) {
                 list.addAll(Arrays.asList(vars));
-                addOperatorString(list, EXPR_COMMA); // カンマ
+                addOperatorString(list, EXPR_COMMA); // Comma
             }
         }
         if (list.get(list.size() - 1) == EXPR_COMMA)
             list.remove(list.size() - 1);
 
-        // 右括弧
-        addOperatorString(list, EXPR_PARENRIGHT); // 右括弧 )
+        // Right parenthesis
+        addOperatorString(list, EXPR_PARENRIGHT); // Right parenthesis)
 
         return (String[]) list.toArray(new String[list.size()]);
     }
 
     /**
-     * UnaryMinusExpr(符号反転)要素から変数リストを取得する
+     * Get the variable list from the UnaryMinusExpr (sign inversion) element
      *
-     * EXPR_UNARYMINUS = "-"; /// unaryMinusExpr - : 符号反転
+     * EXPR_UNARYMINUS = "-"; /// unaryMinusExpr-: Sign inversion
      *
-     * @param node           UnaryMinusExpr(符号反転)要素
-     * @param grouping        式組立時のグルーピング'(..)'のフラグ
-     * @return 変数リスト
-     * @throws XcodeMLException  パースエラー
+     * @param node UnaryMinusExpr (sign inversion) element
+     * @param grouping Grouping'(..)' flag when assembling expressions
+     * @return Variable list
+     * @throws XcodeMLException Parsing error
      */
     public String[] getVariableList(UnaryMinusExpr node, boolean grouping) throws XcodeMLException {
         ArrayList<String> list = new ArrayList<String>();
@@ -1150,7 +1150,7 @@ public class ExprModelParser {
         if (content == null)
             return null;
 
-        addOperatorString(list, EXPR_UNARYMINUS); // '-' : 符号反転
+        addOperatorString(list, EXPR_UNARYMINUS); //'-': Sign inversion
 
         for (IXmlNode expr : content) {
             String[] vars = getVariableList(expr, grouping);
@@ -1165,14 +1165,14 @@ public class ExprModelParser {
     }
 
     /**
-     * LogNotExpr(論理否定)要素から変数リストを取得する
+     * Get a list of variables from the LogNotExpr (logical negation) element
      *
-     * EXPR_LOGNOT = ".NOT."; /// logNotExpr .NOT. : 論理否定
+     * EXPR_LOGNOT = ".NOT."; /// logNotExpr .NOT .: Logical negation
      *
-     * @param node           LogNotExpr(論理否定)要素
-     * @param grouping        式組立時のグルーピング'(..)'のフラグ
-     * @return 変数リスト
-     * @throws XcodeMLException  パースエラー
+     * @param node LogNotExpr (logical negation) element
+     * @param grouping Grouping'(..)' flag when assembling expressions
+     * @return Variable list
+     * @throws XcodeMLException Parsing error
      */
     public String[] getVariableList(LogNotExpr node, boolean grouping) throws XcodeMLException {
         ArrayList<String> list = new ArrayList<String>();
@@ -1180,7 +1180,7 @@ public class ExprModelParser {
         if (content == null)
             return null;
 
-        addOperatorString(list, EXPR_LOGNOT); // '.NOT.' : 論理否定
+        addOperatorString(list, EXPR_LOGNOT); //'.NOT.': Logical negation
         for (IXmlNode expr : content) {
             String[] vars = getVariableList(expr, grouping);
             if (vars != null) {
@@ -1194,12 +1194,12 @@ public class ExprModelParser {
     }
 
     /**
-     * PlusExpr(加算)要素から変数リストを取得する EXPR_PLUS = "+"; /// plusExpr + : 加算
+     * Get the variable list from the PlusExpr (addition) element EXPR_PLUS = "+"; /// plusExpr +: Addition
      *
-     * @param node            PlusExpr(加算)要素
-     * @param grouping        式組立時のグルーピング'(..)'のフラグ
-     * @return 変数リスト
-     * @throws XcodeMLException  パースエラー
+     * @param node PlusExpr (addition) element
+     * @param grouping Grouping'(..)' flag when assembling expressions
+     * @return Variable list
+     * @throws XcodeMLException Parsing error
      */
     public String[] getVariableList(PlusExpr node, boolean grouping) throws XcodeMLException {
         ArrayList<String> list = new ArrayList<String>();
@@ -1221,12 +1221,12 @@ public class ExprModelParser {
     }
 
     /**
-     * MinusExpr(減算)要素から変数リストを取得する EXPR_MINUS = "-"; /// minusExpr - : 減算
+     * Get the variable list from the MinusExpr (subtraction) element EXPR_MINUS = "-"; /// minusExpr-: Subtraction
      *
-     * @param node            MinusExpr(減算)要素
-     * @param grouping        式組立時のグルーピング'(..)'のフラグ
-     * @return 変数リスト
-     * @throws XcodeMLException  パースエラー
+     * @param node MinusExpr (subtraction) element
+     * @param grouping Grouping'(..)' flag when assembling expressions
+     * @return Variable list
+     * @throws XcodeMLException Parsing error
      */
     public String[] getVariableList(MinusExpr node, boolean grouping) throws XcodeMLException {
         ArrayList<String> list = new ArrayList<String>();
@@ -1248,12 +1248,12 @@ public class ExprModelParser {
     }
 
     /**
-     * MulExpr(乗算)要素から変数リストを取得する EXPR_MUL = "*"; /// mulExpr * : 乗算
+     * Get the variable list from the MulExpr (multiplication) element EXPR_MUL = "*"; /// mulExpr *: Multiply
      *
-     * @param node            MulExpr(乗算)要素
-     * @param grouping        式組立時のグルーピング'(..)'のフラグ
-     * @return 変数リスト
-     * @throws XcodeMLException  パースエラー
+     * @param node MulExpr (multiplication) element
+     * @param grouping Grouping'(..)' flag when assembling expressions
+     * @return Variable list
+     * @throws XcodeMLException Parsing error
      */
     public String[] getVariableList(MulExpr node, boolean grouping) throws XcodeMLException {
         ArrayList<String> list = new ArrayList<String>();
@@ -1274,12 +1274,12 @@ public class ExprModelParser {
     }
 
     /**
-     * DivExpr(除算)要素から変数リストを取得する EXPR_DIV = "/"; /// divExpr / : 除算
+     * Get the variable list from the DivExpr element EXPR_DIV = "/"; /// divExpr /: Divide
      *
-     * @param node            DivExpr(除算)要素
-     * @param grouping        式組立時のグルーピング'(..)'のフラグ
-     * @return 変数リスト
-     * @throws XcodeMLException  パースエラー
+     * @param node DivExpr (division) element
+     * @param grouping Grouping'(..)' flag when assembling expressions
+     * @return Variable list
+     * @throws XcodeMLException Parsing error
      */
     public String[] getVariableList(DivExpr node, boolean grouping) throws XcodeMLException {
         ArrayList<String> list = new ArrayList<String>();
@@ -1300,13 +1300,13 @@ public class ExprModelParser {
     }
 
     /**
-     * FconcatExpr(文字式の連結)要素から変数リストを取得する EXPR_CONCAT = "//"; /// FconcatExpr //
-     * : 文字式の連結
+     * Get the variable list from the FconcatExpr (concatenation of character expressions) element EXPR_CONCAT = "//"; /// FconcatExpr //
+     *: Concatenation of character expressions
      *
-     * @param node           FconcatExpr(文字式の連結)要素
-     * @param grouping        式組立時のグルーピング'(..)'のフラグ
-     * @return 変数リスト
-     * @throws XcodeMLException  パースエラー
+     * @param node FconcatExpr (concatenation of character expressions) element
+     * @param grouping Grouping'(..)' flag when assembling expressions
+     * @return Variable list
+     * @throws XcodeMLException Parsing error
      */
     public String[] getVariableList(FconcatExpr node, boolean grouping) throws XcodeMLException {
         ArrayList<String> list = new ArrayList<String>();
@@ -1328,13 +1328,13 @@ public class ExprModelParser {
     }
 
     /**
-     * LogEQExpr(等価)要素から変数リストを取得する EXPR_LOGEQ = ".EQ."; /// logEQExpr == .EQ. :
-     * 等価
+     * Get the variable list from the LogEQExpr (equivalent) element EXPR_LOGEQ = ".EQ."; /// logEQExpr == .EQ.:
+     * Equivalent
      *
-     * @param node            LogEQExpr(等価)要素
-     * @param grouping        式組立時のグルーピング'(..)'のフラグ
-     * @return 変数リスト
-     * @throws XcodeMLException  パースエラー
+     * @param node LogEQExpr (equivalent) element
+     * @param grouping Grouping'(..)' flag when assembling expressions
+     * @return Variable list
+     * @throws XcodeMLException Parsing error
      */
     public String[] getVariableList(LogEQExpr node, boolean grouping) throws XcodeMLException {
         ArrayList<String> list = new ArrayList<String>();
@@ -1356,13 +1356,13 @@ public class ExprModelParser {
     }
 
     /**
-     * LogNEQExpr(非等価)要素から変数リストを取得する EXPR_LOGNEQ = ".NE."; /// logNEQExpr /=
-     * .NE. : 非等価
+     * Get the variable list from the LogNEQExpr (non-equivalent) element EXPR_LOGNEQ = ".NE."; /// logNEQExpr / =
+     * .NE .: Non-equivalent
      *
-     * @param node           LogNEQExpr(非等価)要素
-     * @param grouping        式組立時のグルーピング'(..)'のフラグ
-     * @return 変数リスト
-     * @throws XcodeMLException  パースエラー
+     * @param node LogNEQExpr (non-equivalent) element
+     * @param grouping Grouping'(..)' flag when assembling expressions
+     * @return Variable list
+     * @throws XcodeMLException Parsing error
      */
     public String[] getVariableList(LogNEQExpr node, boolean grouping) throws XcodeMLException {
         ArrayList<String> list = new ArrayList<String>();
@@ -1384,14 +1384,14 @@ public class ExprModelParser {
     }
 
     /**
-     * LogGEExpr(大なり、または同値)要素から変数リストを取得する
+     * Get a list of variables from the LogGEExpr (greater than or equivalent) element
      *
-     * EXPR_LOGGE = ".GE."; /// logGEExpr >= .GE. : 大なり、または同値
+     * EXPR_LOGGE = ".GE."; /// logGEExpr> = .GE .: Greater or equivalent
      *
-     * @param node           LogGEExpr(大なり、または同値)要素
-     * @param grouping        式組立時のグルーピング'(..)'のフラグ
-     * @return 変数リスト
-     * @throws XcodeMLException  パースエラー
+     * @param node LogGEExpr (greater than or equivalent) element
+     * @param grouping Grouping'(..)' flag when assembling expressions
+     * @return Variable list
+     * @throws XcodeMLException Parsing error
      */
     public String[] getVariableList(LogGEExpr node, boolean grouping) throws XcodeMLException {
         ArrayList<String> list = new ArrayList<String>();
@@ -1413,13 +1413,13 @@ public class ExprModelParser {
     }
 
     /**
-     * LogGTExpr(大なり)要素から変数リストを取得する EXPR_LOGGT = ".GT."; /// logGTExpr > .GT. :
-     * 大なり
+     * Get the variable list from the LogGTExpr (greater than) element EXPR_LOGGT = ".GT."; /// logGTExpr> .GT.:
+     * Greater
      *
-     * @param node            LogGTExpr(大なり)要素
-     * @param grouping        式組立時のグルーピング'(..)'のフラグ
-     * @return 変数リスト
-     * @throws XcodeMLException  パースエラー
+     * @param node LogGTExpr (greater than) element
+     * @param grouping Grouping'(..)' flag when assembling expressions
+     * @return Variable list
+     * @throws XcodeMLException Parsing error
      */
     public String[] getVariableList(LogGTExpr node, boolean grouping) throws XcodeMLException {
         ArrayList<String> list = new ArrayList<String>();
@@ -1441,13 +1441,13 @@ public class ExprModelParser {
     }
 
     /**
-     * LogLTExpr(小なり)要素から変数リストを取得する EXPR_LOGLT = ".LT."; /// logLTExpr < .LT. :
-     * 小なり
+     * Get the variable list from the LogLTExpr (less) element EXPR_LOGLT = ".LT."; /// logLTExpr <.LT.:
+     * Small
      *
-     * @param node            LogLTExpr(小なり)要素
-     * @param grouping        式組立時のグルーピング'(..)'のフラグ
-     * @return 変数リスト
-     * @throws XcodeMLException  パースエラー
+     * @param node LogLTExpr (less than) element
+     * @param grouping Grouping'(..)' flag when assembling expressions
+     * @return Variable list
+     * @throws XcodeMLException Parsing error
      */
     public String[] getVariableList(LogLTExpr node, boolean grouping) throws XcodeMLException {
         ArrayList<String> list = new ArrayList<String>();
@@ -1469,13 +1469,13 @@ public class ExprModelParser {
     }
 
     /**
-     * LogAndExpr(論理積)要素から変数リストを取得する EXPR_LOGAND = ".AND."; /// logAndExpr .AND.
-     * : 論理積
+     * Get the variable list from the LogAndExpr element EXPR_LOGAND = ".AND."; /// logAndExpr .AND.
+     * : Logical AND
      *
-     * @param node            LogAndExpr(論理積)要素
-     * @param grouping        式組立時のグルーピング'(..)'のフラグ
-     * @return 変数リスト
-     * @throws XcodeMLException  パースエラー
+     * @param node LogAndExpr (logical product) element
+     * @param grouping Grouping'(..)' flag when assembling expressions
+     * @return Variable list
+     * @throws XcodeMLException Parsing error
      */
     public String[] getVariableList(LogAndExpr node, boolean grouping) throws XcodeMLException {
         ArrayList<String> list = new ArrayList<String>();
@@ -1497,13 +1497,13 @@ public class ExprModelParser {
     }
 
     /**
-     * LogOrExpr(論理和)要素から変数リストを取得する EXPR_LOGOR = ".OR."; /// logOrExpr .OR. :
-     * 論理和
+     * Get the variable list from the LogOrExpr (OR) element EXPR_LOGOR = ".OR."; /// logOrExpr .OR.:
+     * OR
      *
-     * @param node           LogOrExpr(論理和)要素
-     * @param grouping        式組立時のグルーピング'(..)'のフラグ
-     * @return 変数リスト
-     * @throws XcodeMLException  パースエラー
+     * @param node LogOrExpr (OR) element
+     * @param grouping Grouping'(..)' flag when assembling expressions
+     * @return Variable list
+     * @throws XcodeMLException Parsing error
      */
     public String[] getVariableList(LogOrExpr node, boolean grouping) throws XcodeMLException {
         ArrayList<String> list = new ArrayList<String>();
@@ -1525,13 +1525,13 @@ public class ExprModelParser {
     }
 
     /**
-     * LogEQVExpr(論理等価)要素から変数リストを取得する EXPR_LOGEQV = ".EQV."; /// logEQVExpr
-     * .EQV. : 論理等価
+     * Get the variable list from the LogEQVExpr (logical equivalent) element EXPR_LOGEQV = ".EQV."; /// logEQVExpr
+     * .EQV .: Logical equivalent
      *
-     * @param node            LogEQVExpr(論理等価)要素
-     * @param grouping        式組立時のグルーピング'(..)'のフラグ
-     * @return 変数リスト
-     * @throws XcodeMLException  パースエラー
+     * @param node LogEQVExpr (logical equivalent) element
+     * @param grouping Grouping'(..)' flag when assembling expressions
+     * @return Variable list
+     * @throws XcodeMLException Parsing error
      */
     public String[] getVariableList(LogEQVExpr node, boolean grouping) throws XcodeMLException {
         ArrayList<String> list = new ArrayList<String>();
@@ -1552,13 +1552,13 @@ public class ExprModelParser {
     }
 
     /**
-     * LogNEQVExpr(論理非等価)要素から変数リストを取得する EXPR_LOGNEQV = ".NEQV."; /// logNEQVExpr
-     * .NEQV. : 論理非等価
+     * Get the variable list from the LogNEQVExpr (logical non-equivalent) element EXPR_LOGNEQV = ".NEQV."; /// logNEQVExpr
+     * .NEQV .: Logical non-equivalent
      *
-     * @param node            LogNEQVExpr(論理非等価)要素
-     * @param grouping        式組立時のグルーピング'(..)'のフラグ
-     * @return 変数リスト
-     * @throws XcodeMLException  パースエラー
+     * @param node LogNEQVExpr (logical non-equivalent) element
+     * @param grouping Grouping'(..)' flag when assembling expressions
+     * @return Variable list
+     * @throws XcodeMLException Parsing error
      */
     public String[] getVariableList(LogNEQVExpr node, boolean grouping) throws XcodeMLException {
         ArrayList<String> list = new ArrayList<String>();
@@ -1579,12 +1579,12 @@ public class ExprModelParser {
     }
 
     /**
-     * exprModelモデル要素から変数リストを取得する
+     * exprModel Get a list of variables from a model element
      *
-     * @param node           exprModelモデル要素
-     * @param grouping        式組立時のグルーピング'(..)'のフラグ
-     * @return 変数リスト
-     * @throws XcodeMLException  パースエラー
+     * @param node exprModel Model element
+     * @param grouping Grouping'(..)' flag when assembling expressions
+     * @return Variable list
+     * @throws XcodeMLException Parsing error
      */
     public String[] getVariableList(IDefModelExpr node, boolean grouping) throws XcodeMLException {
         if (node == null)
@@ -1596,11 +1596,11 @@ public class ExprModelParser {
     }
 
     /**
-     * 演算子をリストに追加する。 パースモードのPARSE_OPERATORをチェックして演算子の追加を判断する。
+     * Add the operator to the list. Check PARSE_OPERATOR in parsing mode to determine the addition of operators.
      *
-     * @param list            変数リスト
+     * @param list Variable list
      * @param oper
-     *            追加演算子
+     * Additional operators
      */
     private void addOperatorString(List<String> list, String oper) {
         if ((this._mode & PARSE_OPERATOR) != 0x00) {
@@ -1610,25 +1610,25 @@ public class ExprModelParser {
     }
 
     /**
-     * 演算子の左辺、右辺から変数リストをパースする。
+     * Parse the variable list from the left and right sides of the operator.
      *
-     * @param leftExpr            左辺
-     * @param rightExpr            右辺
-     * @param operation            演算子
-     * @param grouping        式組立時のグルーピング'(..)'のフラグ
-     * @return 変数リスト
-     * @throws XcodeMLException  パースエラー
+     * @param leftExpr Left side
+     * @param rightExpr Right side
+     * @param operation operator
+     * @param grouping Grouping'(..)' flag when assembling expressions
+     * @return Variable list
+     * @throws XcodeMLException Parsing error
      */
     private String[] getVariableList(IXmlNode leftExpr, IXmlNode rightExpr,
             String operation, boolean grouping) throws XcodeMLException {
         ArrayList<String> list = new ArrayList<String>();
 
         if (grouping) {
-            // 左括弧
-            addOperatorString(list, EXPR_PARENLEFT); // 左括弧
+            // Left parenthesis
+            addOperatorString(list, EXPR_PARENLEFT); // Left parenthesis
         }
 
-        // 左辺
+        // Left side
         if (leftExpr != null) {
             String[] vars = getVariableList(leftExpr, true);
             if (vars != null) {
@@ -1636,9 +1636,9 @@ public class ExprModelParser {
             }
         }
 
-        addOperatorString(list, operation); // 演算子
+        addOperatorString(list, operation); // operator
 
-        // 右辺
+        // Right side
         if (rightExpr != null) {
             String[] vars = getVariableList(rightExpr, true);
             if (vars != null) {
@@ -1647,29 +1647,29 @@ public class ExprModelParser {
         }
 
         if (grouping) {
-            addOperatorString(list, EXPR_PARENRIGHT); // 右括弧
+            addOperatorString(list, EXPR_PARENRIGHT); // Right parenthesis
         }
         return (String[]) list.toArray(new String[list.size()]);
     }
 
     /**
-     * NamedValue(名前付きの値)要素から属性を取得する
-     * @param node            NamedValue(名前付きの値)要素
-     * @param grouping        式組立時のグルーピング'(..)'のフラグ
-     * @return 属性リスト
-     * @throws XcodeMLException  パースエラー
+     * Get attributes from a NamedValue element
+     * @param node NamedValue element
+     * @param grouping Grouping'(..)' flag when assembling expressions
+     * @return attribute list
+     * @throws XcodeMLException Parsing error
      */
     public String[] getVariableList(NamedValue node, boolean grouping) throws XcodeMLException {
         ArrayList<String> list = new ArrayList<String>();
-        // 名前
+        // name
         String name = node.getName();
         list.add(name);
         if (name == null) return null;
 
-        // '='を追加する
+        // add'='
         list.add("=");
 
-        // 値
+        // value
         String value = node.getValue();
         if (value != null) {
             list.add(value);
@@ -1686,11 +1686,11 @@ public class ExprModelParser {
 
 
     /**
-     * Condition(条件式)要素から属性を取得する
-     * @param node            Condition(条件式)要素
-     * @param grouping        式組立時のグルーピング'(..)'のフラグ
-     * @return 属性リスト
-     * @throws XcodeMLException  パースエラー
+     * Get attributes from Conditional elements
+     * @param node Condition element
+     * @param grouping Grouping'(..)' flag when assembling expressions
+     * @return attribute list
+     * @throws XcodeMLException Parsing error
      */
     public String[] getVariableList(Condition node, boolean grouping) throws XcodeMLException {
 

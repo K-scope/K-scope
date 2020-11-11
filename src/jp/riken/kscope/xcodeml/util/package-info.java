@@ -16,6 +16,6 @@
  */
 
 /**
- * XcodeMLのユーティリティクラスを提供します.
+ * Provides utility classes for XcodeML.
  */
 package jp.riken.kscope.xcodeml.util;
