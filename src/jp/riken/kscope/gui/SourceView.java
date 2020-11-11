@@ -42,24 +42,24 @@ import jp.riken.kscope.properties.VariableMemoryProperties;
 import jp.riken.kscope.utils.FileUtils;
 
 /**
- * ソースコードビュークラス.<br/>
- * ソースコードタブを配置する。
+ * Source code view class. <br/>
+ * Place the source code tab.
  * @author RIKEN
  *
  */
 public class SourceView extends ClosableTabbedPane implements  PropertyChangeListener  {
 
-    /** シリアル番号  */
+    /** Serial number  */
     private static final long serialVersionUID = 1L;
 
-    /** ソースファイルパネルコンテキストメニュー */
+    /** Source File Panel Context Menu */
     private SourcePanelPopupMenu menuSourcePanel;
 
-    /** プロジェクトフォルダ */
+    /** Project folder */
     private File projectFolder;
 
     /**
-     * コンストラクタ
+     * Constructor
      */
     public SourceView() {
         super(FRAME_VIEW.SOURCE_VIEW);
@@ -67,8 +67,8 @@ public class SourceView extends ClosableTabbedPane implements  PropertyChangeLis
     }
 
     /**
-     * 初期化を行う.<br/>
-     * ソースコードタブを配置する。
+     * Initialize. <br/>
+     * Place the source code tab.
      */
     private void initGUI() {
         try {
@@ -82,9 +82,9 @@ public class SourceView extends ClosableTabbedPane implements  PropertyChangeLis
     }
 
     /**
-     * ソースファイルをタブに表示する。
-     * @param filename		ファイル名
-     * @throws Exception		ソースファイル読込エラー
+     * Display the source file in a tab.
+     * @param filename File name
+     * @throws Exception Source file read error
      */
     public void viewSource(String filename) throws Exception {
     	File file = new File(filename);
@@ -94,42 +94,42 @@ public class SourceView extends ClosableTabbedPane implements  PropertyChangeLis
     		}
     		else {
     			String message = filename + " " +
-    					Message.getString("sourceview.errdialog.notfile"); //はファイルではありません。
+    					Message.getString("sourceview.errdialog.notfile"); // is not a file.
     			JOptionPane.showMessageDialog(this.getParent(), message,
-    					Message.getString("dialog.common.error"), //エラー
+    					Message.getString("dialog.common.error"), //error
     					JOptionPane.ERROR_MESSAGE);
     			throw new Exception(message);
     		}
     	}
     	else {
     		String message = filename + " " +
-    				Message.getString("sourceview.errdialog.filenotexist"); //が存在しません。
+    				Message.getString("sourceview.errdialog.filenotexist"); // does not exist.
     		JOptionPane.showMessageDialog(this.getParent(), message,
-    				Message.getString("dialog.common.error"), //エラー
+    				Message.getString("dialog.common.error"), //error
     				JOptionPane.ERROR_MESSAGE);
             throw new Exception(message);
     	}
     }
 
     /**
-     * ソースファイルをタブに表示する。
-     * @param file		ファイル
-     * @throws Exception		ソースファイル読込エラー
+     * Display the source file in a tab.
+     * @param file file
+     * @throws Exception Source file read error
      */
     public void viewSource(File file) throws Exception {
         if (!file.exists()) {
         	String message = file.getPath() + " " +
-        			Message.getString("sourceview.errdialog.filenotexist");//が存在しません。
+        			Message.getString("sourceview.errdialog.filenotexist");// does not exist.
         	JOptionPane.showMessageDialog(this.getParent(), message,
-        			Message.getString("dialog.common.error"), //エラー
+        			Message.getString("dialog.common.error"), //error
         			JOptionPane.ERROR_MESSAGE);
             throw new Exception(message);
         }
         if (!file.isFile()) {
         	String messgage = file.getPath() + " " +
-        			Message.getString("sourceview.errdialog.notfile"); //はファイルではありません。
+        			Message.getString("sourceview.errdialog.notfile"); // is not a file.
         	JOptionPane.showMessageDialog(this, messgage,
-        			Message.getString("dialog.common.error"), //エラー
+        			Message.getString("dialog.common.error"), //error
         			JOptionPane.ERROR_MESSAGE);
         	throw new Exception(messgage);
         }
@@ -137,9 +137,9 @@ public class SourceView extends ClosableTabbedPane implements  PropertyChangeLis
     }
 
     /**
-     * ソースファイルをタブに表示する。
-     * @param source		ソースファイル
-     * @throws Exception		ソースファイル読込エラー
+     * Display the source file in a tab.
+     * @param source source file
+     * @throws Exception Source file read error
      */
     public void viewSource(SourceFile source) throws Exception {
         CodeLine line = new CodeLine(source, source.getPath());
@@ -150,51 +150,51 @@ public class SourceView extends ClosableTabbedPane implements  PropertyChangeLis
 
 
     /**
-     * ソースファイルをタブに表示する。
-     * @param line			コード行情報
-     * @throws Exception 	ソースファイル取得エラー
+     * Display the source file in a tab.
+     * @param line Code line information
+     * @throws Exception Source file acquisition error
      */
     public void viewSource(CodeLine line) throws Exception {
 
         if (line.getSourceFile() == null || line.getSourceFile().getFile() == null) {
         	JOptionPane.showMessageDialog(this.getParent(), Message.getString("sourceview.errdialog.notset", line.getStatement()),
-        			Message.getString("dialog.common.error"), //エラー
+        			Message.getString("dialog.common.error"), //error
         			JOptionPane.ERROR_MESSAGE);
-            throw new Exception(Message.getString("sourceview.exception.missing")); //ソースファイルが取得できませんでした。
+            throw new Exception(Message.getString("sourceview.exception.missing")); // The source file could not be obtained.
         }
 
         SourceFile source = line.getSourceFile();
         File file = source.getFile();
         if (!file.isAbsolute()) {
-            // プロジェクトフォルダの相対パス
+            // Relative path to the project folder
             file = new File(this.projectFolder.getAbsolutePath() + File.separator + file.getPath());
         }
         if (!file.isFile()) {
         	JOptionPane.showMessageDialog(this.getParent(), line.getStrSourceFile() + " " +
-        			Message.getString("sourceview.errdialog.notfile"), //はファイルではありません。
-        			Message.getString("dialog.common.error"), //エラー
+        			Message.getString("sourceview.errdialog.notfile"), // is not a file.
+        			Message.getString("dialog.common.error"), //error
         			JOptionPane.ERROR_MESSAGE);
-        	throw new Exception(file.getPath() + Message.getString("sourceview.errdialog.notfile")); //はファイルではありません。
+        	throw new Exception(file.getPath() + Message.getString("sourceview.errdialog.notfile")); // is not a file.
         }
         if (!file.exists()) {
         	JOptionPane.showMessageDialog(this.getParent(), line.getStrSourceFile() + " " +
-        			Message.getString("sourceview.errdialog.filenotexist"), //が存在しません。
-        			Message.getString("dialog.common.error"), //エラー
+        			Message.getString("sourceview.errdialog.filenotexist"), // does not exist.
+        			Message.getString("dialog.common.error"), //error
         			JOptionPane.ERROR_MESSAGE);
-            throw new Exception(file.getPath() + Message.getString("sourceview.errdialog.filenotexist")); //が存在しません。
+            throw new Exception(file.getPath() + Message.getString("sourceview.errdialog.filenotexist")); // does not exist.
         }
         SourceFile readSource = new SourceFile(file);
 
         SourceCodePanel viewtab = null;
 
-        // 表示ファイルが既に表示済みであるかチェックする。
+        // Check if the display file has already been displayed.
         int index = getSourceTabIndex(file);
         if (index != -1) {
-            // 表示済みであるので、アクティブにする。
+            // Since it has been displayed, activate it.
             this.setSelectedIndex(index);
         }
         else {
-            // 未表示であるので、空白タブの検索
+            // Since it is hidden, search for blank tabs
             int newindex = -1;
             int count = this.getTabCount();
             for (int i=0; i<count; i++) {
@@ -205,28 +205,28 @@ public class SourceView extends ClosableTabbedPane implements  PropertyChangeLis
                 }
             }
 
-            // タブの新規作成
+            // Create a new tab
             if (viewtab == null) {
                 viewtab = new SourceCodePanel();
                 this.addTab("blank:", viewtab);
                 newindex = getTabCount()-1;
             }
 
-            // ファイルの読み込み
+            // Read file
             viewtab.readFile(readSource);
 
-            // タブタイトルの変更
+            // Change tab title
             String name = file.getName();
             setTabTitle(newindex, name);
 
-            // 開いたタブをアクティブにする
+            // Activate the opened tab
             this.setSelectedIndex(newindex);
 
-            // ソースファイルパネルコンテキストメニューを設定する
+            // Set the source file panel context menu
             viewtab.setSourcePanelPopupMenu(menuSourcePanel);
         }
 
-        // 表示ソースファイルをソースファイルツリーでアクティブにする
+        // Activate the display source file in the source file tree
         fireChangedScrollCodePane();
 
         return;
@@ -234,10 +234,10 @@ public class SourceView extends ClosableTabbedPane implements  PropertyChangeLis
 
 
     /**
-     * 指定ファイルの表示されているタブインデックスを取得する.<br/>
-     * 存在しないときは、-1を返す。
-     * @param file		ファイル
-     * @return    タブインデックス（存在しないとき=-1)
+     * Get the displayed tab index of the specified file. <br/>
+     * Returns -1 if it does not exist.
+     * @param file file
+     * @return tab index (if it doesn't exist = -1)
      */
     private int getSourceTabIndex(File file) {
         if (file == null) return -1;
@@ -250,16 +250,16 @@ public class SourceView extends ClosableTabbedPane implements  PropertyChangeLis
             SourceFile tabsource = ((SourceCodePanel)tab).getModel().getSourceFile();
             File tabfile = tabsource.getFile();
             if (!tabfile.isAbsolute()) {
-                // プロジェクトフォルダの相対パス
+                // Relative path to the project folder
                 tabfile = new File(this.projectFolder.getAbsolutePath() + File.separator + tabfile.getPath());
             }
             File destfile = file;
             if (!destfile.isAbsolute()) {
-                // プロジェクトフォルダの相対パス
+                // Relative path to the project folder
                 destfile = new File(this.projectFolder.getAbsolutePath() + File.separator + destfile.getPath());
             }
 
-            // 同一ファイルを表示しているかチェックする。
+            // Check if the same file is displayed.
             if (FileUtils.isEqualsFile(destfile, tabfile)) {
                 return i;
             }
@@ -269,9 +269,9 @@ public class SourceView extends ClosableTabbedPane implements  PropertyChangeLis
 
 
     /**
-     * タブインデックスのタブが空白（ファイル表示なし）タブであるか判断する.
-     * @param index		タブインデックス
-     * @return    true=空白（ファイル表示なし）タブ
+     * Determine if the tab in the tab index is a blank (no file display) tab.
+     * @param index Tab index
+     * @return true = blank (no file display) tab
      */
     private boolean isBlankTab(int index) {
 
@@ -280,16 +280,16 @@ public class SourceView extends ClosableTabbedPane implements  PropertyChangeLis
         String tabpath = ((SourceCodePanel)tab).getFilePath();
 
         if (tabpath == null || tabpath.isEmpty()) {
-            // 空白（ファイル表示なし）タブ
+            // Blank (no file display) tab
             return true;
         }
         return false;
     }
 
     /**
-     * タブインデックスのソースパインを取得する.
-     * @param index		タブインデックス
-     * @return    true=空白（ファイル表示なし）タブ
+     * Get the source pine of the tab index.
+     * @param index Tab index
+     * @return true = blank (no file display) tab
      */
     private SourceCodePanel getTab(int index) {
 
@@ -304,8 +304,8 @@ public class SourceView extends ClosableTabbedPane implements  PropertyChangeLis
 
 
     /**
-     * 現在選択されているテキストパインの取得を行う。
-     * @return		選択テキストパイン
+     * Get the currently selected text pine.
+     * @return Select text pine
      */
     public CodePane getSelectedCodePane() {
         int index = this.getSelectedIndex();
@@ -314,18 +314,18 @@ public class SourceView extends ClosableTabbedPane implements  PropertyChangeLis
     }
 
     /**
-     * アクティブなタブを閉じる
+     * Close active tab
      */
     @Override
     public void closeTabComponent() {
         int index = this.getSelectedIndex();
-        // タブを閉じる
+        // close tab
         closeTab(index);
     }
 
     /**
-     * タブを閉じる
-     * @param index		閉じるタブインデックス
+     * Close tab
+     * @param index Close tab index
      */
     @Override
     protected void closeTab(int index) {
@@ -335,24 +335,24 @@ public class SourceView extends ClosableTabbedPane implements  PropertyChangeLis
 
         //(2012/4/18) changed by tomiyama and teraim
         /*
-        int count = this.getTabCount();
+        int count = this.getTabCount ();
         if (count <= 0) {
-            // ブランクタブを作成する。
-            SourceCodePanel scrollPane = new SourceCodePanel();
-            this.addTab("blank:", scrollPane);
+            // Create a blank tab.
+            SourceCodePanel scrollPane = new SourceCodePanel ();
+            this.addTab ("blank:", scrollPane);
         }
         */
 
     }
 
     /**
-     * 全てのタブをクリアする
+     * Clear all tabs
      */
     public void closeAllTabs() {
         this.removeAll();
 
         //(2012/4/18) changed by tomiyama and teraim
-        // ブランクタブを作成する。
+        // Create a blank tab.
         /*
         SourceCodePanel scrollPane = new SourceCodePanel();
         this.addTab("blank:", scrollPane);
@@ -361,14 +361,14 @@ public class SourceView extends ClosableTabbedPane implements  PropertyChangeLis
 
 
     /**
-     * プロパティ変更イベント
-     * @param event   イベント情報
+     * Property change event
+     * @param event Event information
      */
     @Override
     public void propertyChange(PropertyChangeEvent event) {
 //        System.out.println(event.getPropertyName());
 
-        // ソース表示フォント、フォント色等のソースビュープロパティの変更
+        // Change source view properties such as source display font, font color, etc.
         if (event.getNewValue() instanceof SourceProperties) {
             SourceProperties properties = (SourceProperties)event.getNewValue();
 
@@ -378,7 +378,7 @@ public class SourceView extends ClosableTabbedPane implements  PropertyChangeLis
                 pane.setSourceProperties(properties);
             }
         }
-        // キーワードプロパティの変更
+        // Change keyword properties
         else if (event.getNewValue() instanceof KeywordProperties) {
             KeywordProperties properties = (KeywordProperties)event.getNewValue();
 
@@ -388,7 +388,7 @@ public class SourceView extends ClosableTabbedPane implements  PropertyChangeLis
                 pane.setKeywordProperties(properties);
             }
         }
-        // プロファイラプロパティの変更
+        // Change profiler properties
         else if (event.getNewValue() instanceof ProfilerProperties) {
             ProfilerProperties properties = (ProfilerProperties)event.getNewValue();
             int count = this.getTabCount();
@@ -397,7 +397,7 @@ public class SourceView extends ClosableTabbedPane implements  PropertyChangeLis
                 pane.setProfilerProperties(properties);
             }
         }
-        // 変数アクセス先メモリプロパティの変更
+        // Change variable access destination memory property
         else if (event.getNewValue() instanceof VariableMemoryProperties) {
         	VariableMemoryProperties properties = (VariableMemoryProperties)event.getNewValue();
             int count = this.getTabCount();
@@ -406,12 +406,12 @@ public class SourceView extends ClosableTabbedPane implements  PropertyChangeLis
                 pane.setVariableMemoryProperties(properties);
             }
         }
-        // 要求B/F設定の変更
+        // Change request B / F settings
         else if (event.getNewValue() instanceof RequiredBFProperties) {
             int count = this.getTabCount();
             for (int i=0; i<count; i++) {
             	SourceCodePanel pane = getTab(i);
-            	// 再描画を行うのみ
+            	// Only redraw
                 pane.applyKeyword();
             }
         }
@@ -419,8 +419,8 @@ public class SourceView extends ClosableTabbedPane implements  PropertyChangeLis
     }
 
     /**
-     * 指定ファイルの表示されているタブを閉じる.<br/>
-     * @param filename		ファイル名
+     * Close the tab where the specified file is displayed. <br/>
+     * @param filename File name
      */
     public void closeSourceFile(String filename) {
         if (filename == null || filename.isEmpty()) return;
@@ -429,13 +429,13 @@ public class SourceView extends ClosableTabbedPane implements  PropertyChangeLis
         int index = getSourceTabIndex(new File(filename));
         if (index < 0) return;
 
-        // タブを閉じる
+        // close tab
         closeTab(index);
 
     }
 
     /**
-     * 選択ブロックをクリアする
+     * Clear the selected block
      */
     public void clearSelectedBlock() {
         int count = this.getTabCount();
@@ -446,22 +446,22 @@ public class SourceView extends ClosableTabbedPane implements  PropertyChangeLis
     }
 
     /**
-     * 選択ソース行ブロックを設定する
-     * @param line			選択ソース行ブロック
+     * Set the selected source line block
+     * @param line Selected source line block
      */
     public void setSelectedBlock(CodeLine[] line) {
 
         if (line == null || line.length <= 0) return;
 
-        // 選択範囲のクリア
+        // Clear selection
         int count = this.getTabCount();
         for (int i=0; i<count; i++) {
             SourceCodePanel pane = getTab(i);
-            // 選択範囲のクリア
+            // Clear selection
             pane.clearSelectedBlock();
         }
 
-        // 選択範囲の設定
+        // Setting the selection range
         for (int i=0; i<line.length; i++) {
             if (line[i] == null) continue;
             if (line[i].getStartLine() <= 0) continue;
@@ -469,97 +469,97 @@ public class SourceView extends ClosableTabbedPane implements  PropertyChangeLis
             if (line[i].getSourceFile() == null) continue;
             if (line[i].getSourceFile().getFile() == null) continue;
 
-            // ソースコードと一致するテキストパネルに選択ブロックを設定する
+            // Set a selection block in the text panel that matches the source code
             SourceFile source = line[i].getSourceFile();
             File file = source.getFile();
             if (!file.isAbsolute()) {
-                // プロジェクトフォルダの相対パス
+                // Relative path to the project folder
                 file = new File(this.projectFolder.getAbsolutePath() + File.separator + file.getPath());
             }
-            // ソースファイルと一致するソースパネルの検索
+            // Find the source panel that matches the source file
             int index = getSourceTabIndex(file);
-            if (index == -1) continue;		// 一致するソースパネルなし
+            if (index == -1) continue;		// No matching source panel
             SourceCodePanel pane = getTab(index);
 
-            // 選択ソース行ブロック
+            // Selected source line block
             pane.addSelectedBlock(line[i]);
         }
 
     }
 
     /**
-     * 選択ソース行範囲を設定する.
-     * キャレット位置は変更しない
-     * @param line			選択ソース行範囲
+     * Set the selected source line range.
+     * Do not change the caret position
+     * @param line Selected source line range
      */
     public void setSelectedBlockNoCaret(CodeLine line) {
 
         if (line == null) return;
 
-        // 選択範囲のクリア
+        // Clear selection
         int count = this.getTabCount();
         for (int i=0; i<count; i++) {
             SourceCodePanel pane = getTab(i);
-            // 選択範囲のクリア
+            // Clear selection
             pane.clearSelectedBlock();
         }
 
-        // 選択範囲の設定
+        // Setting the selection range
         if (line.getStartLine() <= 0) return;
         if (line.getEndLine() <= 0) return;
         if (line.getSourceFile() == null) return;
         if (line.getSourceFile().getFile() == null) return;
 
-        // ソースコードと一致するテキストパネルに選択ブロックを設定する
+        // Set a selection block in the text panel that matches the source code
         SourceFile source = line.getSourceFile();
         File file = source.getFile();
         if (!file.isAbsolute()) {
-            // プロジェクトフォルダの相対パス
+            // Relative path to the project folder
             file = new File(this.projectFolder.getAbsolutePath() + File.separator + file.getPath());
         }
-        // ソースファイルと一致するソースパネルの検索
+        // Find the source panel that matches the source file
         int index = getSourceTabIndex(file);
-        if (index == -1) return;		// 一致するソースパネルなし
+        if (index == -1) return;		// No matching source panel
         SourceCodePanel pane = getTab(index);
 
-        // 選択ソース行ブロック
+        // Selected source line block
         pane.addSelectedBlockNoCaret(line);
 
     }
 
     /**
-     * 指定ソース行を設定する.<br/>
-     * 指定行番号の１行をアクティブにする.
+     * Set the specified source line. <br/>
+     * Activate one line with the specified line number.
      *
-     * @param line			ソース行
+     * @param line Source line
      */
     public void setSelectedLine(CodeLine line) {
         if (line == null) return;
 
-        // 選択範囲の設定
+        // Setting the selection range
         if (line.getStartLine() <= 0) return;
         if (line.getEndLine() <= 0) return;
         if (line.getSourceFile() == null) return;
         if (line.getSourceFile().getFile() == null) return;
 
-        // ソースコードと一致するテキストパネルに選択ブロックを設定する
+        // Set a selection block in the text panel that matches the source code
         SourceFile source = line.getSourceFile();
 
-        // ソースファイルと一致するソースパネルの検索
+        // Find the source panel that matches the source file
         int index = getSourceTabIndex(source.getFile());
-        if (index == -1) return;		// 一致するソースパネルなし
+        if (index == -1) return;		// No matching source panel
         SourceCodePanel pane = getTab(index);
         if (pane == null) return;
 
-        // 選択ソース行ブロック
+        // Selected source line block
         pane.setLinePosition(line);
 
     }
 
 
     /**
-     * 開いているファイルの一覧を取得する.
-     * @return    開いているファイル一覧
+     * Get a list of open files.
+     * @return List of open files
      */
     public SourceFile[] getOpenedSourceFile() {
 
@@ -580,16 +580,16 @@ public class SourceView extends ClosableTabbedPane implements  PropertyChangeLis
     }
 
     /**
-     * ソースファイルパネルコンテキストメニューを設定する
-     * @param menuSourcePanel		ソースファイルパネルコンテキストメニュー
+     * Set the source file panel context menu
+     * @param menuSourcePanel Source File Panel Context Menu
      */
     public void setSourcePanelPopupMenu(SourcePanelPopupMenu menuSourcePanel) {
         this.menuSourcePanel = menuSourcePanel;
     }
 
     /**
-     * 選択ソースコード行情報を取得する
-     * @return		選択ソースコード行情報
+     * Get selected source code line information
+     * @return Selected source code line information
      */
     public CodeLine getSelectedCodeLine() {
         int index = this.getSelectedIndex();
@@ -602,8 +602,8 @@ public class SourceView extends ClosableTabbedPane implements  PropertyChangeLis
 
 
     /**
-     * 選択行範囲を取得する
-     * @return		選択範囲行コード情報
+     * Get the selected row range
+     * @return Selection line code information
      */
     public CodeLine getSelectedArea() {
         int index = this.getSelectedIndex();
@@ -613,8 +613,8 @@ public class SourceView extends ClosableTabbedPane implements  PropertyChangeLis
     }
 
     /**
-     * ソースファイルを取得する
-     * @return		ソースファイル
+     * Get the source file
+     * @return source file
      */
     public SourceFile getSelectedSourceFile() {
         int index = this.getSelectedIndex();
@@ -623,12 +623,12 @@ public class SourceView extends ClosableTabbedPane implements  PropertyChangeLis
     }
 
     /**
-     * 検索・トレースキーワードを設定する
-     * @param keywords		検索・トレースキーワード
+     * Set search / trace keywords
+     * @param keywords Search / trace keywords
      */
     public void setSearchWords(Keyword[] keywords) {
         if (keywords == null) {
-            // 検索・トレースキーワードをクリアする
+            // Clear search / trace keywords
             clearSearchWords();
             return;
         }
@@ -642,7 +642,7 @@ public class SourceView extends ClosableTabbedPane implements  PropertyChangeLis
     }
 
     /**
-     * 検索・トレースキーワードをクリアする
+     * Clear search / trace keywords
      */
     public void clearSearchWords() {
         int count = this.getTabCount();
@@ -655,8 +655,8 @@ public class SourceView extends ClosableTabbedPane implements  PropertyChangeLis
 
 
     /**
-     * 検索・トレースキーワードをクリアする
-     * @param  type     クリアキーワードタイプ
+     * Clear search / trace keywords
+     * @param type Clear keyword type
      */
     public void clearSearchWords(KEYWORD_TYPE type) {
         int count = this.getTabCount();
@@ -669,7 +669,7 @@ public class SourceView extends ClosableTabbedPane implements  PropertyChangeLis
 
 
     /**
-     * プロファイラバーグラフをクリアする
+     * Clear the profile bar graph
      */
     public void clearBargraphData() {
         int count = this.getTabCount();
@@ -682,7 +682,7 @@ public class SourceView extends ClosableTabbedPane implements  PropertyChangeLis
 
 
     /**
-     * 現在選択されているテキストをクリップボードにコピーする
+     * Copy the currently selected text to the clipboard
      */
     public void copyClipboard() {
         int index = this.getSelectedIndex();
@@ -692,32 +692,32 @@ public class SourceView extends ClosableTabbedPane implements  PropertyChangeLis
     }
 
     /**
-     * プロジェクトフォルダを設定する
-     * @param folder		プロジェクトフォルダ
+     * Set the project folder
+     * @param folder Project folder
      */
     public void setProjectFolder(File folder) {
         this.projectFolder = folder;
     }
 
     /**
-     * アクティブタブの変更イベント
-     * @param event      イベント発生ソース
+     * Active tab change event
+     * @param event Event occurrence source
      */
     @Override
     public void stateChanged(ChangeEvent event) {
         super.stateChanged(event);
 
-        // 表示ソースファイルをソースファイルツリーでアクティブにする
+        // Activate the display source file in the source file tree
         fireChangedScrollCodePane();
 
     }
 
     /**
-     * アクティブソースファイルの変更によるツリーとの同期を行う。
+     * Synchronize with the tree by changing the active source file.
      */
     private void fireChangedScrollCodePane() {
 
-        // 表示ソースファイル
+        // Display source file
         int index = this.getSelectedIndex();
         if (index < 0) return;
         SourceCodePanel pane = getTab(index);
@@ -725,7 +725,7 @@ public class SourceView extends ClosableTabbedPane implements  PropertyChangeLis
         SourceFile file = pane.getModel().getSourceFile();
         if (file == null) return;
 
-        // 表示ソースファイルをソースファイルツリーでアクティブにする
+        // Activate the display source file in the source file tree
         MainFrame frame = (MainFrame)this.getParentComponent();
         if (frame == null) return;
         if (frame.getPanelExplorerView() == null) return;
@@ -734,8 +734,8 @@ public class SourceView extends ClosableTabbedPane implements  PropertyChangeLis
     }
 
     /**
-     * プロファイル表示フッタの表示切替を行う
-     * @param visible		true=プロファイル表示フッタ表示
+     * Switch the display of the profile display footer
+     * @param visible true = Profile display Footer display
      */
     public void setVisibleBargraph(boolean visible) {
         int count = this.getTabCount();
@@ -749,8 +749,8 @@ public class SourceView extends ClosableTabbedPane implements  PropertyChangeLis
     }
 
     /**
-     * プロファイル表示ルーラの表示切替を行う
-     * @param visible		true=プロファイル表示ルーラ表示
+     * Switch the display of the profile display ruler
+     * @param visible true = Profile display Ruler display
      */
     public void setVisibleRuler(boolean visible) {
         int count = this.getTabCount();
@@ -764,8 +764,8 @@ public class SourceView extends ClosableTabbedPane implements  PropertyChangeLis
     }
 
     /**
-     * 選択モデルを取得する
-     * @return			ソースモデル
+     * Get the selection model
+     * @return Source model
      */
     public SourceCodeModel getSelectedModel() {
 
@@ -776,8 +776,8 @@ public class SourceView extends ClosableTabbedPane implements  PropertyChangeLis
     }
 
     /**
-     * プロファイラバーグラフをソースビューに設定する
-     * @param bargraph		プロファイラバーグラフデータ
+     * Set profile bar graph to source view
+     * @param bargraph Profile bar graph data
      */
     public void setProfilerBargraph(ISourceBargraph[] bargraph) {
         int count = this.getTabCount();
@@ -786,20 +786,20 @@ public class SourceView extends ClosableTabbedPane implements  PropertyChangeLis
             if (tab instanceof SourceCodePanel) {
                 SourceCodeModel model = ((SourceCodePanel)tab).getModel();
                 if (model == null) continue;
-                // 同一のソースファイルのみバーグラフデータを設定する。
+                // Set bar graph data only for the same source file.
                 SourceFile srcfile = model.getSourceFile();
                 if (srcfile == null) continue;
                 List<ISourceBargraph> list = new ArrayList<ISourceBargraph>();
-                // 全体のデータの最大値、最小値
+                // Maximum and minimum values of the entire data
                 float max = Float.MIN_VALUE;
                 float min = Float.MAX_VALUE;
                 if (bargraph != null) {
                     for (ISourceBargraph data : bargraph) {
-                    	// 最大値
+                    	// Maximum value
                     	if (max <= data.getBarValue()) max = data.getBarValue();
-                    	// 最小値
+                    	// minimum value
                     	if (min >= data.getBarValue()) min = data.getBarValue();
-                    	//  ソースファイルが一致しているか？
+                    	// Do the source files match?
                         SourceFile barfile = data.getSourceFile();
                         if (srcfile.equals(barfile)) {
                             list.add(data);

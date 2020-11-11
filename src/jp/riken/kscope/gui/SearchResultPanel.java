@@ -65,84 +65,84 @@ import jp.riken.kscope.utils.ResourceUtils;
 import jp.riken.kscope.utils.SwingUtils;
 
 /**
- * 検索結果パネルクラス
+ * Search result panel class
  * @author RIKEN
  *
  */
 public class SearchResultPanel extends AnalisysPanelBase implements Observer, IAnalisysComponent, ActionListener, MouseListener {
 
-    /** シリアル番号 */
+    /** Serial number */
     private static final long serialVersionUID = 1L;
-    /** 参照一覧ツリー */
+    /** Reference list tree */
     private SearchTree treeSearch;
-    /** クリアボタン */
+    /** Clear button */
     private JButton btnClear;
-    /** エクスポートボタン */
+    /** Export button */
     private JButton btnExport;
-    /** ファイルを開く */
+    /** Open file */
     private JButton btnOpenFile;
-    /** 移動:上ボタン */
+    /** Move: Up button */
     private JButton btnMoveUp;
-    /** 移動:下ボタン */
+    /** Move: Down button */
     private JButton btnMoveDown;
-    /** 検索結果ラベル */
+    /** Search result label */
     private JLabel label;
-    /** すべて展開ボタン */
+    /** Expand all button */
     private JButton btnExpand;
-    /** すべて収納ボタン */
+    /** All storage buttons */
     private JButton btnCollapse;
-    /** 新規構造ツリー */
+    /** New structure tree */
     private JButton btnNewTree;
-    /** リフレッシュボタン */
+    /** Refresh button */
     private JButton btnRefresh;
 
-    /** 検索結果テーブルモデル */
+    /** Search result table model */
     private SearchResultModel model;
-    /** 該当個所を開くアクション */
+    /** Action to open the relevant part */
     private ViewOpenAnalysisLineAction actionOpen;
-    /** 新規構造ツリーを開くアクション */
+    /** Action to open new structure tree */
     private ViewOpenLanguageTreeAction actionOpenLanguageTree;
 
     /**
-     * コンストラクタ
+     * Constructor
      */
     public SearchResultPanel() {
         super();
 
-        // 初期化を行う。
+        // Initialize.
         initialize();
 
     }
 
     /**
-     * コンストラクタ
-     * @param panel		分析情報パネル識別子
+     * Constructor
+     * @param panel Analysis information panel identifier
      */
     public SearchResultPanel(ANALYSIS_PANEL panel) {
         super(panel);
 
-        // 初期化を行う。
+        // Initialize.
         initialize();
 
     }
 
     /**
-     * 初期化を行う。
+     * Initialize.
      */
     private void initialize() {
 
-        // モデルの生成を行う
+        // Generate a model
         model = new SearchResultModel();
-        // オブザーバを設定する。
+        // Set the observer.
         model.addObserver(this);
 
-        // GUI初期化を行う。
+        // Initialize the GUI.
         initGUI();
     }
 
 
     /**
-     * GUI初期化を行う。
+     * Initialize the GUI.
      */
     private void initGUI() {
         try {
@@ -150,7 +150,7 @@ public class SearchResultPanel extends AnalisysPanelBase implements Observer, IA
             this.setLayout(thisLayout);
 //            setPreferredSize(new Dimension(400, 64));
 
-            // 上部の情報ラベル、ボタンの配置パネル
+            // Information label at the top, button placement panel
             {
                 JPanel panelTop = new JPanel();
                 panelTop.setLayout(new BorderLayout());
@@ -158,13 +158,13 @@ public class SearchResultPanel extends AnalisysPanelBase implements Observer, IA
                 panelTop.setBorder(new CompoundBorder(
                                             new LineBorder(Color.BLACK, 1),
                                             BorderFactory.createEmptyBorder(0, 5, 0, 20)));
-                // ボタン配置パネル
+                // Button layout panel
                 {
                     JPanel panelButtons = new JPanel();
                     panelButtons.setLayout(new BoxLayout(panelButtons, BoxLayout.LINE_AXIS));
                     panelTop.add(panelButtons, BorderLayout.EAST);
                     java.awt.Dimension buttonSize = new java.awt.Dimension(24, 24);
-                    // クリアボタン
+                    // Clear button
                     {
                         Icon icon = ResourceUtils.getIcon("removeall.gif");
                         btnClear = new JButton(icon);
@@ -175,7 +175,7 @@ public class SearchResultPanel extends AnalisysPanelBase implements Observer, IA
                         btnClear.setMinimumSize(buttonSize);
                         btnClear.setMaximumSize(buttonSize);
                     }
-                    // リフレッシュボタン
+                    // Refresh button
                     {
                         Icon icon = ResourceUtils.getIcon("refresh.gif");
                         btnRefresh = new JButton(icon);
@@ -257,7 +257,7 @@ public class SearchResultPanel extends AnalisysPanelBase implements Observer, IA
                         panelButtons.add(btnExport);
                     }
                 }
-                // ラベル配置
+                // Label placement
                 {
                     label = new JLabel();
                     panelTop.add(label, BorderLayout.CENTER);
@@ -266,21 +266,21 @@ public class SearchResultPanel extends AnalisysPanelBase implements Observer, IA
             }
             {
                 {
-                    // 検索結果ツリー
+                    // Search result tree
                     treeSearch = new SearchTree();
 
-                    SearchTreeNode rootNode = new SearchTreeNode(Message.getString("mainmenu.window.analysis.search")); //検索結果
+                    SearchTreeNode rootNode = new SearchTreeNode(Message.getString("mainmenu.window.analysis.search")); //search results
                     SearchTreeModel treeModel = new SearchTreeModel(rootNode);
                     treeSearch.setModel(treeModel);
                     treeSearch.setRootVisible(true);
                     treeSearch.setShowsRootHandles(true);
 
-                    // ダブルクリックによるノードの展開を行わない。
+                    // Do not expand nodes by double-clicking.
                     treeSearch.setToggleClickCount(0);
-                    // 一行だけ選択可能
+                    // Only one line can be selected
                     treeSearch.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
 
-                    // スクロールパイン
+                    // Scroll pine
                     JScrollPane scrollTable = new JScrollPane(treeSearch);
                     scrollTable.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
                     scrollTable.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
@@ -292,18 +292,18 @@ public class SearchResultPanel extends AnalisysPanelBase implements Observer, IA
 
             }
 
-            // ツールチップ設定
-            btnClear.setToolTipText(Message.getString("informationdialog.button.clear.tooltip")); //クリア
-            btnOpenFile.setToolTipText(Message.getString("searchresultpanel.tooltip.open")); //検索結果箇所を開く
-            btnExport.setToolTipText(Message.getString("mainmenu.file.export")); //エクスポート
-            btnMoveUp.setToolTipText(Message.getString("searchresultpanel.tooltip.preview")); //前へ
-            btnMoveDown.setToolTipText(Message.getString("searchresultpanel.tooltip.next")); //次へ
-            btnExpand.setToolTipText(Message.getString("treechooserdialog.tooltip.expandall")); //すべて展開
-            btnCollapse.setToolTipText(Message.getString("treechooserdialog.tooltip.collapseall")); //すべて収納
-            btnNewTree.setToolTipText(Message.getString("searchresultpanel.tooltip.new")); //新規構造ツリー
-            btnRefresh.setToolTipText(Message.getString("searchresultpanel.tooltip.update")); //検索結果更新
+            // Tooltip settings
+            btnClear.setToolTipText(Message.getString("informationdialog.button.clear.tooltip")); //clear
+            btnOpenFile.setToolTipText(Message.getString("searchresultpanel.tooltip.open")); // Open the search result part
+            btnExport.setToolTipText(Message.getString("mainmenu.file.export")); //export
+            btnMoveUp.setToolTipText(Message.getString("searchresultpanel.tooltip.preview")); //Forward
+            btnMoveDown.setToolTipText(Message.getString("searchresultpanel.tooltip.next")); //next
+            btnExpand.setToolTipText(Message.getString("treechooserdialog.tooltip.expandall")); // Expand all
+            btnCollapse.setToolTipText(Message.getString("treechooserdialog.tooltip.collapseall")); // All stored
+            btnNewTree.setToolTipText(Message.getString("searchresultpanel.tooltip.new")); // New structure tree
+            btnRefresh.setToolTipText(Message.getString("searchresultpanel.tooltip.update")); // Update search results
 
-            // イベント追加
+            // Add event
             btnMoveUp.addActionListener(this);
             btnMoveDown.addActionListener(this);
             btnExpand.addActionListener(this);
@@ -318,31 +318,31 @@ public class SearchResultPanel extends AnalisysPanelBase implements Observer, IA
     }
 
     /**
-     * 検索結果モデルの変更通知イベント
-     * @param o			通知元
-     * @param arg		通知項目
+     * Search result model change notification event
+     * @param o Notification source
+     * @param arg Notification item
      */
     @Override
     public void update(Observable o, Object arg) {
-        // 検索結果モデルを更新する.
+        // Update the search result model.
         updateModel();
     }
 
     /**
-     * 検索結果モデルを更新する.
+     * Update the search result model.
      */
     private void updateModel() {
-        // 検索結果モデルの設定
+        // Search result model settings
         this.treeSearch.setModel(this.model.getTreeModel());
 
-        // パネルタイトル
+        // Panel title
         this.label.setText(this.model.getTitle());
 
-        // 新規構造ツリーボタンのイネーブル切替
+        // Enable switching of new structure tree button
         boolean enabled = false;
         DefaultMutableTreeNode root = this.model.getRootNode();
         if (root != null && root.getChildCount() > 0) {
-            // 最初の子ノードはProcedureであること。
+            // The first child node must be Procedure.
             DefaultMutableTreeNode child = (DefaultMutableTreeNode) root.getChildAt(0);
             if (child != null
                 && child.getUserObject() != null
@@ -352,11 +352,11 @@ public class SearchResultPanel extends AnalisysPanelBase implements Observer, IA
         }
         Icon icon = null;
         if (enabled) {
-            // イネーブル用ボタンアイコン
+            // Enable button icon
             icon = ResourceUtils.getIcon("new_tree.gif");
         }
         else {
-            // ディスイネーブル用ボタンアイコン
+            // Button icon for disabling
             icon = ResourceUtils.getIcon("new_tree_gray.gif");
         }
         this.btnNewTree.setIcon(icon);
@@ -366,8 +366,8 @@ public class SearchResultPanel extends AnalisysPanelBase implements Observer, IA
 
 
     /**
-     * 検索結果モデルを取得する
-     * @return		検索結果モデル
+     * Get the search result model
+     * @return Search result model
      */
     public SearchResultModel getModel() {
         return model;
@@ -375,19 +375,19 @@ public class SearchResultPanel extends AnalisysPanelBase implements Observer, IA
 
 
     /**
-     * フォーカスリスナを設定する
-     * @param listener		フォーカスリスナ
+     * Set focus listener
+     * @param listener Focus listener
      */
     @Override
     public void addTabFocusListener(TabFocusListener listener) {
         this.addFocusListener(listener);
-        // 子コンポーネントにもフォーカスリスナを設定する
+        // Set focus listener for child components as well
         SwingUtils.addChildFocusListener(this, listener);
     }
 
 
     /**
-     * エクスポートを行う
+     * Export
      */
     @Override
     public void export(File file) {
@@ -397,39 +397,39 @@ public class SearchResultPanel extends AnalisysPanelBase implements Observer, IA
     }
 
     /**
-     * パネルにアクションリスナを設定する.<br/>
-     * メニューバーに作成済みのアクションリスナをパネルボタンに割り当てる。
-     * @param menu		メニューバー
+     * Set an action listener on the panel. <br/>
+     * Assign the created action listener to the menu bar to the panel button.
+     * @param menu Menu bar
      */
     @Override
     public void setActionListener(MainMenu menu) {
-        // 分析情報エクスポートアクション
+        // Analysis information export action
         this.btnExport.addActionListener(menu.getActionExportAnalysis());
-        // 検索結果箇所を開く
+        // Open the search result
         actionOpen = (ViewOpenAnalysisLineAction) menu.getActionOpenAnalysisLine();
-        // 新規構造ツリーアクション
+        // New structure tree action
         this.actionOpenLanguageTree = menu.getActionOpenLanguageTree();
-        // クリア
+        // clear
         this.btnClear.addActionListener(menu.getActionSearchResult(TRACE_DIR.END));
-        // 検索結果更新
+        // Update search results
         this.btnRefresh.addActionListener(menu.getActionSearchResult(TRACE_DIR.REFRESH));
 
     }
 
     /**
-     * 選択行のコード情報を取得する.<br/>
-     * テーブルモデルの1列目にはコード情報オブジェクトが設定されている。
-     * @return		コード情報
+     * Get the code information of the selected line. <br/>
+     * A code information object is set in the first column of the table model.
+     * @return code information
      */
     @Override
 	public CodeLine getSelectedCodeLine() {
 
-        // 選択されたファイルのソースファイルオブジェクトを取得する。
+        // Get the source file object for the selected file.
         DefaultMutableTreeNode node = (DefaultMutableTreeNode) this.treeSearch.getLastSelectedPathComponent();
         if (node == null)  return null;
         if (node.getUserObject() == null) return null;
 
-        // ブロックオブジェクトであるか？
+        // Is it a block object?
         if (node.getUserObject() instanceof IBlock) {
             IBlock block = (IBlock)node.getUserObject();
             return block.getStartCodeLine();
@@ -442,23 +442,23 @@ public class SearchResultPanel extends AnalisysPanelBase implements Observer, IA
     }
 
     /**
-     * モデルのクリアを行う。
+     * Clear the model.
      */
     @Override
     public void clearModel() {
-        // モデルクリア
+        // Model clear
         model.clearSearchResult();
     }
 
     /**
-     * タブのクローズを行う
+     * Close the tab
      */
     @Override
     public void closeTab() { }
 
     /**
-     * ボタンのクリックイベント
-     * @param event		イベント情報
+     * Button click event
+     * @param event Event information
      */
     @Override
     public void actionPerformed(ActionEvent event) {
@@ -470,19 +470,19 @@ public class SearchResultPanel extends AnalisysPanelBase implements Observer, IA
             moveDown();
         }
         else if (event.getSource() == this.btnExpand) {
-            // すべて展開
+            // Expand all
             expandTreeAll();
         }
         else if (event.getSource() == this.btnCollapse) {
-            // すべて収納
+            // store everything
             collapseTreeAll();
         }
         else if (event.getSource() == this.btnOpenFile) {
-            // 該当個所を開く
+            // Open the relevant part
             openAnalysisLine();
         }
         else if (event.getSource() == this.btnNewTree) {
-            // 新規構造ツリー
+            // New structure tree
             DefaultMutableTreeNode node = (DefaultMutableTreeNode)this.treeSearch.getLastSelectedPathComponent();
             if (node == null) return;
             if (node.getUserObject() == null) return;
@@ -492,32 +492,32 @@ public class SearchResultPanel extends AnalisysPanelBase implements Observer, IA
     }
 
     /**
-     * 選択行を上に移動する.<br/>
-     * 未選択の場合は、先頭行を選択する.<br/>
-     * 先頭行の場合は、末尾行を選択する.
+     * Move the selected line up. <br/>
+     * If not selected, select the first line. <br/>
+     * For the first line, select the last line.
      */
     public void moveUp() {
-        // 選択ノード
+        // Selected node
         SearchTreeNode selectnode = (SearchTreeNode)this.treeSearch.getLastSelectedPathComponent();
         SearchTreeNode root = (SearchTreeNode)this.treeSearch.getModel().getRoot();
 
-        // ツリーノードを順方向で列挙
+        // List tree nodes in the forward direction
         SearchTreeNode movenode = null;
         SearchTreeNode prevnode = null;
 
-        // ツリーノードを順方向で列挙
+        // List tree nodes in the forward direction
         Enumeration<?> depth = root.preorderEnumeration();
         while(depth.hasMoreElements()) {
             SearchTreeNode treeNode = (SearchTreeNode)depth.nextElement();
             boolean match = treeNode.isMatch();
-            // ノード検索を行う
+            // Do a node search
             if (treeNode == selectnode) {
                 if (prevnode != null) {
                     movenode = prevnode;
                     break;
                 }
             }
-            // 直前の検索ノード
+            // Last search node
             if (match) {
                 prevnode = treeNode;
             }
@@ -527,49 +527,49 @@ public class SearchResultPanel extends AnalisysPanelBase implements Observer, IA
         }
         if (movenode == null) return;
 
-        // 選択ノードのパスを取得する
+        // Get the path of the selected node
         TreePath path = SwingUtils.getTreePath(movenode);
 
-        // 選択パスを選択状態にする
+        // Select the selected path
         this.treeSearch.setSelectionPath(path);
         this.treeSearch.scrollPathToVisible(path);
 
-        // 該当個所を開く
+        // Open the relevant part
         this.btnOpenFile.doClick();
 
     }
 
 
     /**
-     * 選択行を下に移動する.<br/>
-     * 未選択の場合は、先頭行を選択する.<br/>
-     * 末尾行の場合は、先頭行を選択する.
+     * Move the selected line down. <br/>
+     * If not selected, select the first line. <br/>
+     * For the last line, select the first line.
      */
     public void moveDown() {
 
-        // 選択ノード
+        // Selected node
         SearchTreeNode selectnode = (SearchTreeNode)this.treeSearch.getLastSelectedPathComponent();
         SearchTreeNode root = (SearchTreeNode)this.treeSearch.getModel().getRoot();
 
-        // ツリーノードを順方向で列挙
+        // List tree nodes in the forward direction
         SearchTreeNode movenode = null;
         SearchTreeNode firstnode = null;
         SearchTreeNode currentnode = null;
 
-        // ツリーノードを順方向で列挙
+        // List tree nodes in the forward direction
         Enumeration<?> depth = root.preorderEnumeration();
         while(depth.hasMoreElements()) {
             SearchTreeNode treeNode = (SearchTreeNode)depth.nextElement();
             boolean match = treeNode.isMatch();
-            // 最初の検索ノード
+            // First search node
             if (firstnode == null && match) {
                 firstnode = treeNode;
-                // 現在選択ノードが無いので、最初の検索ノードを選択状態とするので、以降検索の必要無し。
+                // Since there is no selected node at present, the first search node is selected, so there is no need to search after that.
                 if (selectnode == null) {
                     break;
                 }
             }
-            // ノード検索を行う
+            // Do a node search
             if (treeNode == selectnode) {
                 currentnode = treeNode;
                 continue;
@@ -584,42 +584,42 @@ public class SearchResultPanel extends AnalisysPanelBase implements Observer, IA
         }
         if (movenode == null) return;
 
-        // 選択ノードのパスを取得する
+        // Get the path of the selected node
         TreePath path = SwingUtils.getTreePath(movenode);
 
-        // 選択パスを選択状態にする
+        // Select the selected path
         this.treeSearch.setSelectionPath(path);
         this.treeSearch.scrollPathToVisible(path);
 
-        // 該当個所を開く
+        // Open the relevant part
         this.btnOpenFile.doClick();
 
     }
 
     /**
-     * 該当個所を開く
+     * Open the relevant part
      */
     public void openAnalysisLine() {
-        // 選択ツリーパス
+        // Selected tree path
         TreePath path = this.treeSearch.getSelectionPath();
-        // 選択ツリーパスを選択する
+        // Select the selection tree path
         this.actionOpen.openSearchLine(path);
     }
 
 
     /**
-     * 選択ブロックを取得する
-     * @return		選択ブロック
+     * Get the selected block
+     * @return selection block
      */
     @Override
     public IBlock getSelectedBlock() {
 
-        // 選択されたファイルのソースファイルオブジェクトを取得する。
+        // Get the source file object for the selected file.
         DefaultMutableTreeNode node = (DefaultMutableTreeNode) this.treeSearch.getLastSelectedPathComponent();
         if (node == null)  return null;
         if (node.getUserObject() == null) return null;
 
-        // ブロックオブジェクトであるか？
+        // Is it a block object?
         if (node.getUserObject() instanceof IBlock) {
             return (IBlock)node.getUserObject();
         }
@@ -628,18 +628,18 @@ public class SearchResultPanel extends AnalisysPanelBase implements Observer, IA
     }
 
     /**
-     * 選択付加情報を取得する
-     * @return		選択付加情報
+     * Get additional selection information
+     * @return Selectable additional information
      */
     @Override
     public IInformation getSelectedInformation() {
 
-        // 選択されたファイルのソースファイルオブジェクトを取得する。
+        // Get the source file object for the selected file.
         DefaultMutableTreeNode node = (DefaultMutableTreeNode) this.treeSearch.getLastSelectedPathComponent();
         if (node == null)  return null;
         if (node.getUserObject() == null) return null;
 
-        // 付加情報オブジェクトであるか？
+        // Is it an additional information object?
         if (node.getUserObject() instanceof IInformation) {
             return (IInformation)node.getUserObject();
         }
@@ -648,20 +648,20 @@ public class SearchResultPanel extends AnalisysPanelBase implements Observer, IA
     }
 
     /**
-     * ソースビュープロパティを設定する
-     * @param properties		ソースビュープロパティ
+     * Set source view properties
+     * @param properties Source view properties
      */
     @Override
     public void setSourceProperties(SourceProperties properties) {
-        // トレースツリーのマーキング色の設定を行う。
-        // 文字色
+        // Set the marking color of the trace tree.
+        // Letter color
         this.treeSearch.setForecolor(properties.getSearchFontColor());
-        // 背景色
+        // Background color
         this.treeSearch.setBackcolor(properties.getSearchBackgroundColor());
-        // スタイル
+        // Style
         this.treeSearch.setFontstyle(KscopeProperties.SEARCHTREE_FONTSTYLE);
 
-        // ツリーの再描画
+        // Redraw tree
         this.treeSearch.invalidate();
         this.treeSearch.validate();
         this.treeSearch.repaint();
@@ -669,7 +669,7 @@ public class SearchResultPanel extends AnalisysPanelBase implements Observer, IA
     }
 
     /**
-     * 選択タブのツリーをすべて収納する。
+     * Stores the entire tree on the selection tab.
      */
     public void collapseTreeAll() {
         int row = this.treeSearch.getRowCount()-1;
@@ -677,13 +677,13 @@ public class SearchResultPanel extends AnalisysPanelBase implements Observer, IA
             this.treeSearch.collapseRow(row);
             row--;
         }
-        // ルートノードのみ展開
+        // Expand only root node
         this.treeSearch.expandRow(0);
     }
 
 
     /**
-     * 選択タブのツリーをすべて展開する。
+     * Expand the entire tree on the Selection tab.
      */
     public void expandTreeAll() {
         int row = 0;
@@ -695,49 +695,49 @@ public class SearchResultPanel extends AnalisysPanelBase implements Observer, IA
 
 
     /**
-     * マウスクリックイベント
-     * @param event			マウスイベント情報
+     * Mouse click event
+     * @param event Mouse event information
      */
     @Override
     public void mouseClicked(MouseEvent event) {
-        // ダブルクリックチェック
+        // Double click check
         if (SwingUtilities.isLeftMouseButton(event) && event.getClickCount() == 2) {
-            // 該当個所を開く
+            // Open the relevant part
             this.btnOpenFile.doClick();
         }
     }
 
     /**
-     * マウスボタンダウンイベント
-     * @param e		マウスイベント情報
+     * Mouse button down event
+     * @param e Mouse event information
      */
     @Override
     public void mousePressed(MouseEvent e) { }
 
     /**
-     * マウスボタンアップイベント
-     * @param e		マウスイベント情報
+     * Mouse button up event
+     * @param e Mouse event information
      */
     @Override
     public void mouseReleased(MouseEvent e) {}
 
     /**
-     * マウスオーバーイベント
-     * @param e		マウスイベント情報
+     * Mouseover event
+     * @param e Mouse event information
      */
     @Override
     public void mouseEntered(MouseEvent e) {}
 
     /**
-     * マウスアウトイベント
-     * @param e		マウスイベント情報
+     * Mouse out event
+     * @param e Mouse event information
      */
     @Override
     public void mouseExited(MouseEvent e) {}
 
     /**
-     * 検索結果のキーワードリストを取得する
-     * @return		検索キーワードリスト
+     * Get the keyword list of search results
+     * @return Search keyword list
      */
     public Keyword[] getSearchKeywords() {
 
@@ -745,18 +745,18 @@ public class SearchResultPanel extends AnalisysPanelBase implements Observer, IA
         if (model == null) return null;
         SearchTreeNode root = (SearchTreeNode)model.getRoot();
 
-        // キーワードリスト
+        // Keyword list
         List<Keyword> list = new ArrayList<Keyword>();
 
-        // 検索条件
+        // Search criteria
         SearchOption option = model.getSearchOption();
 
-        // ツリーノードを順方向で列挙
+        // List tree nodes in the forward direction
         Enumeration<?> depth = root.preorderEnumeration();
         while(depth.hasMoreElements()) {
             DefaultMutableTreeNode treeNode = (DefaultMutableTreeNode)depth.nextElement();
 
-            // ノード検索を行う
+            // Do a node search
             if (treeNode == null || treeNode.getUserObject() == null) {
                 continue;
             }
@@ -780,23 +780,23 @@ public class SearchResultPanel extends AnalisysPanelBase implements Observer, IA
     }
 
     /**
-     * 選択項目をクリップボードにコピーする.
+     * Copy the selection to the clipboard.
      */
     @Override
     public void copyClipboard() {
 
-        // 選択されたファイルのソースファイルオブジェクトを取得する。
+        // Get the source file object for the selected file.
         DefaultMutableTreeNode node = (DefaultMutableTreeNode) this.treeSearch.getLastSelectedPathComponent();
         if (node == null)  return;
         if (node.getUserObject() == null) return;
         String text = node.getUserObject().toString();
 
-        // クリップボードにコピーする
+        // copy to clipboard
         SwingUtils.copyClipboard(text);
     }
 
     /**
-     * エキスポートする情報があるか否か
+     * Whether there is information to export
      */
 	@Override
 	public boolean isExportable() {

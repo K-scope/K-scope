@@ -19,46 +19,46 @@ package jp.riken.kscope.gui;
 import jp.riken.kscope.common.ANALYSIS_PANEL;
 
 /**
- * 分析情報パネル基底クラス
+ * Analytical Information Panel Basis Class
  * @author RIKEN
  */
 public abstract class AnalisysPanelBase extends javax.swing.JPanel implements ITabComponent {
 
-    /** シリアル番号 */
+    /** Serial number */
     private static final long serialVersionUID = 1L;
 
-    /** 分析情報パネル識別子 */
+    /** Analysis information panel identifier */
     private ANALYSIS_PANEL enumPanel;
 
-    /** 親コンポーネント */
+    /** Parent component */
     private ITabComponent parentCompornent = null;
 
     /**
-     * コンストラクタ
-     * @param panel		分析情報パネル識別子
+     * Constructor
+     * @param panel Analysis information panel identifier
      */
     public AnalisysPanelBase(ANALYSIS_PANEL panel) {
         this.enumPanel = panel;
     }
 
     /**
-     * コンストラクタ
+     * Constructor
      */
     public AnalisysPanelBase() {
         super();
     }
 
     /**
-     * 分析情報パネル識別子を設定する
-     * @return enumPanel		分析情報パネル識別子
+     * Set the analysis information panel identifier
+     * @return enumPanel Analysis Information Panel Identifier
      */
     public ANALYSIS_PANEL getEnumPanel() {
         return this.enumPanel;
     }
 
     /**
-     * 親コンポーネントを取得する.
-     * @return		親コンポーネント
+     * Get the parent component.
+     * @return Parent component
      */
     @Override
     public ITabComponent getParentComponent() {
@@ -66,8 +66,8 @@ public abstract class AnalisysPanelBase extends javax.swing.JPanel implements IT
     }
 
     /**
-     * 親コンポーネントを設定する.
-     * @param component		親コンポーネント
+     * Set the parent component.
+     * @param component Parent component
      */
     @Override
     public void setParentComponent(ITabComponent component) {
@@ -75,11 +75,11 @@ public abstract class AnalisysPanelBase extends javax.swing.JPanel implements IT
     }
 
     /**
-     * タブを閉じる
+     * Close tab
      */
     @Override
     public void closeTabComponent() {
-        // 親のタブパインにてタブを閉じる。
+        // Close the tab with the parent tab pine.
         if (this.parentCompornent != null) {
             this.parentCompornent.closeTabComponent();
         }
@@ -87,7 +87,7 @@ public abstract class AnalisysPanelBase extends javax.swing.JPanel implements IT
 
 
     /**
-     * 自身の分析情報パネルをアクティブにする.
+     * Activate your own analytics panel.
      */
     public void setSelectedPanel() {
     	if (this.parentCompornent instanceof AnalysisView) {

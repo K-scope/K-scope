@@ -56,74 +56,74 @@ import jp.riken.kscope.utils.ResourceUtils;
 import jp.riken.kscope.utils.SwingUtils;
 
 /**
- * 測定区間情報パネルクラス
+ * Measurement section information panel class
  * @author RIKEN
  */
 public class ProfilerMeasurePanel extends AnalisysPanelBase implements Observer, IAnalisysComponent, ActionListener, MouseListener {
 
-    /** シリアル番号 */
+    /** Serial number */
     private static final long serialVersionUID = 1L;
 
-    /** クリアボタン */
+    /** Clear button */
     private JButton btnClear;
-    /** 削除ボタン */
+    /** Delete button */
     private JButton btnRemove;
-    /** エクスポートボタン */
+    /** Export button */
     private JButton btnExport;
-    /** 該当個所を開く */
+    /** Open the relevant part */
     private JButton btnOpenFile;
-    /** 測定区間情報ラベル */
+    /** Measurement section information label */
     private JLabel label;
-    /** スクロールパイン */
+    /** Scroll pine */
     private JScrollPane scrollPane;
-    /** 測定区間情報テーブル */
+    /** Measurement section information table */
     private JTable tableMeasure;
-    /** 測定区間情報テーブルモデル */
+    /** Measurement interval information table model */
     private ProfilerMeasureModel model;
-    /** 該当個所を開くアクション */
+    /** Action to open the relevant part */
     private ViewOpenAnalysisLineAction actionOpenAnalysis;
 
     /**
-     * コンストラクタ
+     * Constructor
      */
     public ProfilerMeasurePanel() {
         super();
 
-        // モデルの生成を行う
+        // Generate a model
         model = new ProfilerMeasureModel();
-        // オブザーバを設定する。
+        // Set the observer.
         model.addObserver(this);
 
-        // GUI初期化を行う。
+        // Initialize the GUI.
         initGUI();
 
     }
 
     /**
-     * コンストラクタ
-     * @param proparties		分析情報パネル識別子
+     * Constructor
+     * @param proparties Analysis Information Panel Identifier
      */
     public ProfilerMeasurePanel(ANALYSIS_PANEL proparties) {
         super(proparties);
 
-        // モデルの生成を行う
+        // Generate a model
         model = new ProfilerMeasureModel();
-        // オブザーバを設定する。
+        // Set the observer.
         model.addObserver(this);
 
-        // GUI初期化を行う。
+        // Initialize the GUI.
         initGUI();
     }
 
     /**
-     * GUI初期化を行う。
+     * Initialize the GUI.
      */
     private void initGUI() {
         try {
             BorderLayout thisLayout = new BorderLayout();
             this.setLayout(thisLayout);
 
-            // 上部の情報ラベル、ボタンの配置パネル
+            // Information label at the top, button placement panel
             {
                 JPanel panelTop = new JPanel();
                 panelTop.setLayout(new BorderLayout());
@@ -131,14 +131,14 @@ public class ProfilerMeasurePanel extends AnalisysPanelBase implements Observer,
                 panelTop.setBorder(new CompoundBorder(
                                             new LineBorder(Color.BLACK, 1),
                                             BorderFactory.createEmptyBorder(0, 5, 0, 20)));
-                // ボタン配置パネル
+                // Button layout panel
                 {
                     JPanel panelButtons = new JPanel();
                     panelButtons.setLayout(new BoxLayout(panelButtons, BoxLayout.LINE_AXIS));
                     panelTop.add(panelButtons, BorderLayout.EAST);
 
                     java.awt.Dimension buttonSize = new java.awt.Dimension(24, 24);
-                    // クリアボタン
+                    // Clear button
                     {
                         Icon icon = ResourceUtils.getIcon("removeall.gif");
                         btnClear = new JButton(icon);
@@ -151,21 +151,21 @@ public class ProfilerMeasurePanel extends AnalisysPanelBase implements Observer,
                         btnClear.addActionListener( new ActionListener() {
                             @Override
                             public void actionPerformed(ActionEvent e) {
-                                // 確認メッセージを表示する。
+                                // Display a confirmation message.
                                 int option = JOptionPane.showConfirmDialog(null,
-                                		  Message.getString("profilermeasurepanel.confirmdialog.clearall.message"), //登録済みのすべての測定区間を削除します。\nよろしいですか？
-                                          Message.getString("profilermeasurepanel.confirmdialog.clearall.title"), //測定区間のクリア
+                                		  Message.getString("profilermeasurepanel.confirmdialog.clearall.message"), // Delete all registered measurement intervals. \ n Are you sure?
+                                          Message.getString("profilermeasurepanel.confirmdialog.clearall.title"), // Clear measurement section
                                           JOptionPane.OK_CANCEL_OPTION,
                                           JOptionPane.WARNING_MESSAGE);
                                 if (option != JOptionPane.OK_OPTION) {
                                     return;
                                 }
-                                // モデルクリア
+                                // Model clear
                                 clearModel();
                             }
                         });
                     }
-                    // 削除ボタン
+                    // Delete button
                     {
                         Icon icon = ResourceUtils.getIcon("remove.gif");
                         btnRemove = new JButton(icon);
@@ -178,16 +178,16 @@ public class ProfilerMeasurePanel extends AnalisysPanelBase implements Observer,
                         btnRemove.addActionListener( new ActionListener() {
                             @Override
                             public void actionPerformed(ActionEvent e) {
-                                // 確認メッセージを表示する。
+                                // Display a confirmation message.
                                 int option = JOptionPane.showConfirmDialog(null,
-                                		  Message.getString("profilermeasurepanel.confirmdialog.clear.message"), //選択測定区間を削除します。\nよろしいですか？
-                                		  Message.getString("profilermeasurepanel.confirmdialog.clear.title"), //測定区間の削除
+                                		  Message.getString("profilermeasurepanel.confirmdialog.clear.message"), // Delete the selected measurement interval. \ n Are you sure?
+                                		  Message.getString("profilermeasurepanel.confirmdialog.clear.title"), // Delete measurement section
                                           JOptionPane.OK_CANCEL_OPTION,
                                           JOptionPane.WARNING_MESSAGE);
                                 if (option != JOptionPane.OK_OPTION) {
                                     return;
                                 }
-                                // 測定区間削除
+                                // Delete measurement section
                                 removeMeasureData();
 
                             }
@@ -215,7 +215,7 @@ public class ProfilerMeasurePanel extends AnalisysPanelBase implements Observer,
                     }
                 }
 
-                // ラベル配置
+                // Label placement
                 {
                     label = new JLabel();
                     panelTop.add(label, BorderLayout.CENTER);
@@ -224,18 +224,18 @@ public class ProfilerMeasurePanel extends AnalisysPanelBase implements Observer,
             }
             {
                 {
-                    // 測定区間情報テーブル
+                    // Measurement interval information table
                     tableMeasure = new JStripeTable();
                     tableMeasure.setModel(this.model.getTableModel());
                     tableMeasure.setAutoCreateColumnsFromModel(false);
                     tableMeasure.setSelectionMode(ListSelectionModel.SINGLE_SELECTION );
                     tableMeasure.setColumnSelectionAllowed(false);
 
-                    // テーブル列幅設定
+                    // Table column width setting
                     DefaultTableColumnModel columnModel = (DefaultTableColumnModel)tableMeasure.getColumnModel();
                     model.setTableColumnWidth(columnModel);
 
-                    // スクロールパイン
+                    // Scroll pine
                     scrollPane = new JScrollPane();
                     scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
                     scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
@@ -246,13 +246,13 @@ public class ProfilerMeasurePanel extends AnalisysPanelBase implements Observer,
                 }
             }
 
-            // ツールチップ設定
-            btnClear.setToolTipText(Message.getString("informationdialog.button.clear.tooltip")); //クリア
-            btnRemove.setToolTipText(Message.getString("profilermeasurepanel.tooltip.delete")); //選択削除
-            btnOpenFile.setToolTipText(Message.getString("profilermeasurepanel.tooltip.open")); //選択箇所を開く
-            btnExport.setToolTipText(Message.getString("mainmenu.file.export")); //エクスポート
+            // Tooltip settings
+            btnClear.setToolTipText(Message.getString("informationdialog.button.clear.tooltip")); //clear
+            btnRemove.setToolTipText(Message.getString("profilermeasurepanel.tooltip.delete")); // Select delete
+            btnOpenFile.setToolTipText(Message.getString("profilermeasurepanel.tooltip.open")); // open the selection
+            btnExport.setToolTipText(Message.getString("mainmenu.file.export")); //export
 
-            // イベントリスナ設定
+            // Event listener settings
             btnOpenFile.addActionListener(this);
             tableMeasure.addMouseListener(this);
 
@@ -262,27 +262,27 @@ public class ProfilerMeasurePanel extends AnalisysPanelBase implements Observer,
     }
 
     /**
-     * 測定区間情報モデルの変更通知イベント
-     * @param o			通知元
-     * @param arg		通知項目
+     * Measurement interval information model change notification event
+     * @param o Notification source
+     * @param arg Notification item
      */
     @Override
     public void update(Observable o, Object arg) {
-        // 測定区間情報モデル
+        // Measurement interval information model
         ProfilerMeasureModel observer = (ProfilerMeasureModel)o;
 
-        // テーブルモデル
+        // Table model
         tableMeasure.setModel(observer.getTableModel());
 
-        // パネルタイトル
+        // Panel title
         this.label.setText(observer.getTitle());
 
     }
 
 
     /**
-     * 測定区間情報モデルを取得する
-     * @return		測定区間情報モデル
+     * Get the measurement interval information model
+     * @return Measurement interval information model
      */
     public ProfilerMeasureModel getModel() {
         return model;
@@ -290,19 +290,19 @@ public class ProfilerMeasurePanel extends AnalisysPanelBase implements Observer,
 
 
     /**
-     * フォーカスリスナを設定する
-     * @param listener		フォーカスリスナ
+     * Set focus listener
+     * @param listener Focus listener
      */
     @Override
     public void addTabFocusListener(TabFocusListener listener) {
         this.addFocusListener(listener);
-        // 子コンポーネントにもフォーカスリスナを設定する
+        // Set focus listener on child components as well
         SwingUtils.addChildFocusListener(this, listener);
     }
 
 
     /**
-     * エクスポートを行う
+     * Export
      */
     @Override
     public void export(File file) {
@@ -312,62 +312,62 @@ public class ProfilerMeasurePanel extends AnalisysPanelBase implements Observer,
     }
 
     /**
-     * パネルにアクションリスナを設定する.<br/>
-     * メニューバーに作成済みのアクションリスナをパネルボタンに割り当てる。
-     * @param menu		メニューバー
+     * Set an action listener on the panel. <br/>
+     * Assign the created action listener to the menu bar to the panel button.
+     * @param menu Menu bar
      */
     @Override
     public void setActionListener(MainMenu menu) {
-        // 分析情報エクスポートアクション
+        // Analysis information export action
         this.btnExport.addActionListener(menu.getActionExportAnalysis());
-        // 該当箇所を開く
+        // Open the relevant part
         this.actionOpenAnalysis = (ViewOpenAnalysisLineAction) menu.getActionOpenAnalysisLine();
     }
 
     /**
-     * モデルのクリアを行う。
+     * Clear the model.
      */
     @Override
     public void clearModel() {
-        // モデルクリア
+        // Model clear
         model.clearModel();
     }
 
     /**
-     * 選択されている測定区間を削除する
+     * Delete the selected measurement interval
      */
     private void removeMeasureData() {
-        //  選択行
+        // Selected line
         ProfilerMeasureInfo.MeasureData data = getSelectedMeasureData();
-        // 測定区間データのクリア
+        // Clear measurement interval data
         this.model.removeMeasureData(data);
     }
 
     /**
-     * タブのクローズを行う
+     * Close the tab
      */
     @Override
     public void closeTab() { }
 
     /**
-     * 選択ソースコード行情報を取得する
-     * @return		選択ソースコード行情報
+     * Get selected source code line information
+     * @return Selected source code line information
      */
     @Override
     public CodeLine getSelectedCodeLine() {
-        //  選択行
+        // Selected line
         ProfilerMeasureInfo.MeasureData data = getSelectedMeasureData();
         if (data == null) return null;
         return data.getMeasureArea();
     }
 
     /**
-     * 選択ブロックを取得する
-     * @return		選択ブロック
+     * Get the selected block
+     * @return selection block
      */
     @Override
     public IBlock getSelectedBlock() {
-        //  選択行
+        // Selected line
          ProfilerMeasureInfo.MeasureData data = getSelectedMeasureData();
          if (data == null) return null;
          IBlock[] blocks = data.getMeasureBlocks();
@@ -376,13 +376,13 @@ public class ProfilerMeasurePanel extends AnalisysPanelBase implements Observer,
     }
 
     /**
-     * 選択行の測定区間データを取得する
-     * @return		選択測定区間データ
+     * Get the measurement interval data of the selected row
+     * @return Selective measurement interval data
      */
     private ProfilerMeasureInfo.MeasureData getSelectedMeasureData() {
         int selection = this.tableMeasure.getSelectedRow();
         if (selection < 0) return null;
-        // テーブル・モデルの行数に変換
+        // Convert to the number of rows in the table model
         int modelRow = this.tableMeasure.convertRowIndexToModel(selection);
         if (modelRow < 0) return null;
         Object cell = this.tableMeasure.getModel().getValueAt(modelRow, 0);
@@ -395,31 +395,31 @@ public class ProfilerMeasurePanel extends AnalisysPanelBase implements Observer,
 
 
     /**
-     * 選択付加情報を取得する
-     * @return		選択付加情報
+     * Get additional selection information
+     * @return Selectable additional information
      */
     @Override
     public IInformation getSelectedInformation() { return null; }
 
     /**
-     * ソースビュープロパティを設定する
-     * @param properties		ソースビュープロパティ
+     * Set source view properties
+     * @param properties Source view properties
      */
     @Override
     public void setSourceProperties(SourceProperties properties) {}
 
     /**
-     * マウスクリックイベント
-     * @param event		マウスイベント情報
+     * Mouse click event
+     * @param event Mouse event information
      */
     @Override
     public void mouseClicked(MouseEvent event) {
 
-        // クリックチェック
+        // Click check
         if (SwingUtilities.isLeftMouseButton(event)) {
-            // ダブルクリック
+            // Double click
             if (event.getClickCount() == 2) {
-                // 該当個所を開く
+                // Open the relevant part
                 this.btnOpenFile.doClick();
             }
         }
@@ -427,40 +427,40 @@ public class ProfilerMeasurePanel extends AnalisysPanelBase implements Observer,
 
 
     /**
-     * マウスボタンダウンイベント
-     * @param e		マウスイベント情報
+     * Mouse button down event
+     * @param e Mouse event information
      */
     @Override
     public void mousePressed(MouseEvent e) { }
 
     /**
-     * マウスボタンアップイベント
-     * @param e		マウスイベント情報
+     * Mouse button up event
+     * @param e Mouse event information
      */
     @Override
     public void mouseReleased(MouseEvent e) {}
 
     /**
-     * マウスオーバーイベント
-     * @param e		マウスイベント情報
+     * Mouseover event
+     * @param e Mouse event information
      */
     @Override
     public void mouseEntered(MouseEvent e) {}
 
     /**
-     * マウスアウトイベント
-     * @param e		マウスイベント情報
+     * Mouse out event
+     * @param e Mouse event information
      */
     @Override
     public void mouseExited(MouseEvent e) {}
 
     /**
-     * ボタンのクリックイベント
-     * @param event			イベント情報
+     * Button click event
+     * @param event Event information
      */
     @Override
     public void actionPerformed(ActionEvent event) {
-        // 該当行を開く
+        // Open the corresponding line
         if (event.getSource() == this.btnOpenFile) {
             ProfilerMeasureInfo.MeasureData data = getSelectedMeasureData();
             if (data == null) return;
@@ -476,7 +476,7 @@ public class ProfilerMeasurePanel extends AnalisysPanelBase implements Observer,
 
 
     /**
-     * 選択項目をクリップボードにコピーする.
+     * Copy the selection to the clipboard.
      */
     @Override
     public void copyClipboard() {
@@ -484,12 +484,12 @@ public class ProfilerMeasurePanel extends AnalisysPanelBase implements Observer,
         String text = SwingUtils.toCsvOfSeletedRows(this.tableMeasure);
         if (text == null) return;
 
-        // クリップボードにコピーする
+        // copy to clipboard
         SwingUtils.copyClipboard(text);
     }
 
     /**
-     * エクスポート可能か否か
+     * Whether it can be exported
      */
 	@Override
 	public boolean isExportable() {
