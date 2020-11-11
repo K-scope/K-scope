@@ -17,104 +17,104 @@
 package jp.riken.kscope.profiler.eprof;
 
 /**
- * イベントカウンタグループ
+ * Event counter group
  * @author RIKEN
  */
 public class EventCounterGroup {
 
-    /** カウンタグループ名 */
+    /** Counter group name */
     private String groupname;
-    /** カウンタ詳細番号 */
+    /** Counter detail number */
     private int detailno;
-    /** 基本情報 */
+    /** Basic information */
     private BaseInfo baseInfo;
-    /** MPI情報 */
+    /** MPI information */
     private MpiInfo mpiInfo;
-    /** ハードウェアモニタ情報 */
+    /** Hardware monitor information */
     private HardwareMonitorInfo hardwareInfo;
 
     /**
-     * コンストラクタ
+     * Constructor
      */
     public EventCounterGroup() {
     }
 
 
     /**
-     * カウンタグループ名
-     * @return		カウンタグループ名
+     * Counter group name
+     * @return Counter group name
      */
     public String getGroupname() {
         return groupname;
     }
 
     /**
-     * カウンタグループ名
-     * @param name		カウンタグループ名
+     * Counter group name
+     * @param name Counter group name
      */
     public void setGroupname(String name) {
         this.groupname = name;
     }
 
     /**
-     * カウンタ詳細番号
-     * @return		カウンタ詳細番号
+     * Counter detail number
+     * @return Counter detail number
      */
     public int getDetailno() {
         return detailno;
     }
 
     /**
-     * カウンタ詳細番号
-     * @param no		カウンタ詳細番号
+     * Counter detail number
+     * @param no Counter detail number
      */
     public void setDetailno(int no) {
         this.detailno = no;
     }
 
     /**
-     * 基本情報
-     * @return		基本情報
+     * Basic information
+     * @return Basic information
      */
     public BaseInfo getBaseInfo() {
         return baseInfo;
     }
 
     /**
-     * 基本情報
-     * @param info		基本情報
+     * Basic information
+     * @param info Basic information
      */
     public void setBaseInfo(BaseInfo info) {
         this.baseInfo = info;
     }
 
     /**
-     * MPI情報
-     * @return		MPI情報
+     * MPI information
+     * @return MPI information
      */
     public MpiInfo getMpiInfo() {
         return mpiInfo;
     }
 
     /**
-     * MPI情報
-     * @param info		MPI情報
+     * MPI information
+     * @param info MPI information
      */
     public void setMpiInfo(MpiInfo info) {
         this.mpiInfo = info;
     }
 
     /**
-     * ハードウェアモニタ情報
-     * @return		ハードウェアモニタ情報
+     * Hardware monitor information
+     * @return Hardware monitor information
      */
     public HardwareMonitorInfo getHardwareInfo() {
         return hardwareInfo;
     }
 
     /**
-     * ハードウェアモニタ情報
-     * @param info		ハードウェアモニタ情報
+     * Hardware monitor information
+     * @param info Hardware monitor information
      */
     public void setHardwareInfo(HardwareMonitorInfo info) {
         this.hardwareInfo = info;

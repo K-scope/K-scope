@@ -23,26 +23,26 @@ import jp.riken.kscope.Message;
 import jp.riken.kscope.service.AppController;
 
 /**
- * 表示ーファイルを閉じるアクション
+ * View-Action to close file
  * @author RIKEN
  */
 public class ViewCloseAction extends ActionBase {
 
-    /** すべてのファイルタブを閉じるフラグ */
+    /** Flag to close all file tabs */
     private boolean closeAll = false;
 
     /**
-     * コンストラクタ
-     * @param controller	アプリケーションコントローラ
+     * Constructor
+     * @param controller Application controller
      */
     public ViewCloseAction(AppController controller) {
         super(controller);
     }
 
     /**
-     * コンストラクタ
-     * @param controller	アプリケーションコントローラ
-     * @param all 			true=すべてのソースファイルタブを閉じる
+     * Constructor
+     * @param controller Application controller
+     * @param all true = Close all source files tab
      */
     public ViewCloseAction(AppController controller, boolean all) {
         super(controller);
@@ -50,24 +50,24 @@ public class ViewCloseAction extends ActionBase {
     }
 
     /**
-     * アクション発生イベント
-     * @param event		イベント情報
+     * Action occurrence event
+     * @param event Event information
      */
     @Override
     public void actionPerformed(ActionEvent event) {
 
-    	// ステータスバー表示メッセージ
+    	// Status bar display message
     	String message = null;
-        // ソースファイルタブのクローズ
+        // Close the source file tab
         if (this.closeAll) {
-            // すべてのソースファイルタブを閉じる
+            // Close all source files tab
             this.controller.getMainframe().getPanelSourceView().closeAllTabs();
-            message = Message.getString("mainmenu.view.close-all-file"); //すべて閉じる
+            message = Message.getString("mainmenu.view.close-all-file"); // close all
         }
         else {
-            // アクティブなソースファイルタブを閉じる
+            // Close the active source file tab
             this.controller.getMainframe().getPanelSourceView().closeTabComponent();
-            message = Message.getString("mainmenu.view.closefile"); //ファイルを閉じる
+            message = Message.getString("mainmenu.view.closefile"); // close the file
         }
         
         Application.status.setMessageMain(message);

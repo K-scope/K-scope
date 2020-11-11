@@ -19,34 +19,34 @@ package jp.riken.kscope.information;
 import java.io.Serializable;
 
 /**
- * 付加情報を表現するための抽象クラス。
+ * An abstract class for expressing additional information.
  *
  * @author RIKEN
  *
  */
 public abstract class InformationBase implements Serializable {
 
-	/** シリアル番号 */
+	/** Serial number */
 	private static final long serialVersionUID = -1857663347004192172L;
 
 	/**
-     * 付加情報テキストの設定。
+     * Additional information text settings.
      *
      * @param cn
-     *      付加情報テキスト
+     * Additional information text
      */
     public abstract void setContent(String cn);
 
     /**
-     * 付加情報テキストの取得。
+     * Get additional information text.
      *
-     * @return 付加情報テキスト
+     * @return Additional information text
      */
     public abstract String getContent();
 
     /**
-     * 付加情報テキストの最初の文を返す。
-     * @return 付加情報の最初の文
+     * Returns the first sentence of the additional information text.
+     * @return First sentence of additional information
      */
     public abstract String getAbstract();
 }

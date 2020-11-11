@@ -22,598 +22,598 @@ import jp.riken.kscope.properties.RequiredBFProperties.MEM_THROUGHPUT_CALC_MODE;
 import jp.riken.kscope.properties.RequiredBFProperties.BF_CALC_TYPE;
 
 /**
- * 要求Byte/FLOP算出結果
+ * Request Byte / FLOP calculation result
  * @author RIKEN
  */
 public class RequiredBFResult {
-	/** 算出ブロック */
+	/** Calculation block */
 	private IBlock block;
-	/** Load変数の算出Byte */
+	/** Calculation of Load variable Byte */
 	private int load;
-	/** Store変数の算出Byte */
+	/** Calculation of Store variable Byte */
 	private int store;
-	/** 演算数(FLOP) = add(F) + mul(F) + intrinsic(F) */
+	/** Number of operations (FLOP) = add (F) + mul (F) + intrinsic (F) */
 	private int op;
-	/** 要求Byte/FLOP =(Load+Store) / FLOP */
+	/** Request Byte / FLOP = (Load + Store) / FLOP */
 	private float requiredBF; 		///<
-	/** 要求FLOP/Byte = FLOP/(Load+Store) */
+	/** Request FLOP / Byte = FLOP / (Load + Store) */
 	private float requiredFB;
-	/** スループット(GB/s) */
+	/** Throughput (GB / s) */
 	private float throughput;
-	/** 実効Byte/FLOP = Throughput(GB/s) / Performance(GFLOPS) */
+	/** Effective Byte / FLOP = Throughput (GB / s) / Performance (GFLOPS) */
 	private float effectiveBF;
-	/** 実効FLOP/Byte = Performance(GFLOPS) / Throughput(GB/s) */
+	/** Effective FLOP / Byte = Performance (GFLOPS) / Throughput (GB / s) */
 	private float effectiveFB;
-	/** ピーク性能比Byte/FLOP(%) = 要求Byte/FLOP / 実効Byte/FLOP */
+	/** Peak performance ratio Byte / FLOP (%) = Requested Byte / FLOP / Effective Byte / FLOP */
 	private float peakBF;
-	/** ピーク性能比FLOP/Byte(%) = 要求FLOP/Byte / 実効Byte/FLOP */
+	/** Peak performance ratio FLOP / Byte (%) = Required FLOP / Byte / Effective Byte / FLOP */
 	private float peakFB;
-	/** アクセス先Memoryの変数の合計 */
+	/** Total variables of access destination Memory */
 	private int memoryCount;
-	/** アクセス先L1の変数の合計 */
+	/** Sum of variables in access destination L1 */
 	private int l1Count;
-	/** アクセス先L2の変数の合計 */
+	/** Sum of variables in access destination L2 */
 	private int l2Count;
-	/** アクセス先Register の変数の合計 */
+	/** Sum of variables in the accessed Register */
 	private int registerCount;
-	/** アクセス先Custom の変数の合計 */
+	/** Sum of variables of access destination Custom */
 	private int customCount;
-	/** 浮動小数点データ型の変数に対する加算(+)の数 */
+	/** Number of additions (+) to variables of floating point data type */
 	private int addCount;
-	/** 浮動小数点データ型の変数に対する減算(-)の数 */
+	/** Number of subtractions (-) for variables of floating point data type */
 	private int subCount;
-	/** 浮動小数点データ型の変数に対する乗算(*)の数 */
+	/** Number of multiplications (*) on variables of floating point data type */
 	private int mulCount;
-	/** 浮動小数点データ型の変数に対する除算(/)の数 */
+	/** Number of divisions (/) on variables of floating point data type */
 	private int divCount;
-	/** 浮動小数点データ型の変数に対する累乗, 組込関数の加算(+) + 乗算(*) */
+	/** Exponentiation of variables of floating point data type, addition of built-in functions (+) + multiplication (*) */
 	private int intrinsicCount;
-	/** 演算性能 */
+	/** Computational performance */
 	private float performance;
-	/** 算出元のMemoryスループット値(GB/s)（ストア有り or ストアなし） */
+	/** Calculation source Memory throughput value (GB / s) (with or without store) */
 	private float memoryMBW;
-	/** 算出元のL1スループット値(GB/s)	（ストア有り or ストアなし） */
+	/** Calculation source L1 throughput value (GB / s) (with or without store) */
 	private float l1MBW;
-	/** 算出元のL2スループット値(GB/s)	（ストア有り or ストアなし） */
+	/** Calculation source L2 throughput value (GB / s) (with or without store) */
 	private float l2MBW;
-	/** 算出元のRegisterスループット値(GB/s)（ストア有り or ストアなし） */
+	/** Calculated source Register throughput value (GB / s) (with or without store) */
 	private float registerMBW;
-	/** 算出元のCustomスループット値(GB/s)（ストア有り or ストアなし） */
+	/** Calculation source Custom throughput value (GB / s) (with or without store) */
 	private float customMBW;
-	/** 算出元のMemory係数 */
+	/** Calculation source Memory coefficient */
 	private float memoryCoef;
-	/** 算出元のL2係数 */
+	/** Calculation source L2 coefficient */
 	private float l1Coef;
-	/** 算出元のL2係数 */
+	/** Calculation source L2 coefficient */
 	private float l2Coef;
-	/** 算出元のRegister係数 */
+	/** Register coefficient of calculation source */
 	private float registerCoef;
-	/** 算出元のCustom係数 */
+	/** Calculation source Custom coefficient */
 	private float customCoef;
-	/** スループットストア設定 */
+	/** Throughput store settings */
     private MEM_THROUGHPUT_CALC_MODE storeMode;
-    /** 算出単位 */
+    /** Calculation unit */
     private BF_CALC_TYPE unitType;
 
 	/**
-	 * 算出ブロックを取得する.
-	 * @return 算出ブロック
-	 */
+* Get the calculation block.
+* @return Calculation block
+*/
 	public IBlock getBlock() {
 		return block;
 	}
 	/**
-	 * 算出ブロックを設定する.
-	 * @param block 算出ブロック
-	 */
+* Set the calculation block.
+* @param block Calculation block
+*/
 	public void setBlock(IBlock block) {
 		this.block = block;
 	}
 
 	/**
-	 * Load変数の算出Byteを取得する.
-	 * @return Load変数の算出Byte
-	 */
+* Get the calculated Byte of the Load variable.
+* @return Load Variable calculation Byte
+*/
 	public int getLoad() {
 		return load;
 	}
 	/**
-	 * Load変数の算出Byteを設定する.
-	 * @param load Load変数の算出Byte
-	 */
+* Set the calculation byte of the Load variable.
+* @param load Load Variable calculation Byte
+*/
 	public void setLoad(int load) {
 		this.load = load;
 	}
 	/**
-	 * Store変数の算出Byteを取得する.
-	 * @return Store変数の算出Byte
-	 */
+* Get the calculation byte of the Store variable.
+* @return Store variable calculation Byte
+*/
 	public int getStore() {
 		return store;
 	}
 	/**
-	 * Store変数の算出Byteを設定する.
-	 * @param store Store変数の算出Byte
-	 */
+* Set the calculation byte of the Store variable.
+* @param store Store Variable calculation Byte
+*/
 	public void setStore(int store) {
 		this.store = store;
 	}
 	/**
-	 * 演算数(FLOP)を取得する.
-	 * 演算数(FLOP) = add(F) + mul(F) + intrinsic(F)
-	 * @return 演算数(FLOP)
-	 */
+* Get the number of operations (FLOP).
+* Number of operations (FLOP) = add (F) + mul (F) + intrinsic (F)
+* @return Number of operations (FLOP)
+*/
 	public int getOperand() {
 		return op;
 	}
 	/**
-	 * 演算数(FLOP)を設定する.
-	 * 演算数(FLOP) = add(F) + mul(F) + intrinsic(F)
-	 * @param op 演算数(FLOP)
-	 */
+* Set the number of operations (FLOP).
+* Number of operations (FLOP) = add (F) + mul (F) + intrinsic (F)
+* @param op Number of operations (FLOP)
+*/
 	public void setOperation(int op) {
 		this.op = op;
 	}
 	/**
-	 * 要求Byte/FLOPを取得する.
-	 * 要求Byte/FLOP =(Load+Store) / FLOP
-	 * @return 要求Byte/FLOP
-	 */
+* Get the request Byte / FLOP.
+* Request Byte / FLOP = (Load + Store) / FLOP
+* @return Request Byte / FLOP
+*/
 	public float getRequiredBF() {
 		return requiredBF;
 	}
 	/**
-	 * 要求Byte/FLOPを設定する.
-	 * 要求Byte/FLOP =(Load+Store) / FLOP
-	 * @param requiredBF 要求Byte/FLOP
-	 */
+* Set the request Byte / FLOP.
+* Request Byte / FLOP = (Load + Store) / FLOP
+* @param required BF Request Byte / FLOP
+*/
 	public void setRequiredBF(float requiredBF) {
 		this.requiredBF = requiredBF;
 	}
 	/**
-	 * 要求FLOP/Byteを取得する.
-	 * 要求FLOP/Byte = FLOP/(Load+Store)
-	 * @return 要求FLOP/Byte
-	 */
+* Get request FLOP / Byte.
+* Request FLOP / Byte = FLOP / (Load + Store)
+* @return Request FLOP / Byte
+*/
 	public float getRequiredFB() {
 		return requiredFB;
 	}
 	/**
-	 * 要求FLOP/Byteを設定する.
-	 * 要求FLOP/Byte = FLOP/(Load+Store)
-	 * @param requiredFB 要求FLOP/Byte
-	 */
+* Set request FLOP / Byte.
+* Request FLOP / Byte = FLOP / (Load + Store)
+* @param requiredFB Request FLOP / Byte
+*/
 	public void setRequiredFB(float requiredFB) {
 		this.requiredFB = requiredFB;
 	}
 	/**
-	 * スループット(GB/s)を取得する.
-	 * @return スループット(GB/s)
-	 */
+* Get throughput (GB / s).
+* @return Throughput (GB / s)
+*/
 	public float getThroughput() {
 		return throughput;
 	}
 	/**
-	 * スループット(GB/s)を設定する.
-	 * @param throughput スループット(GB/s)
-	 */
+* Set the throughput (GB / s).
+* @param throughput Throughput (GB / s)
+*/
 	public void setThroughput(float throughput) {
 		this.throughput = throughput;
 	}
 
 	/**
-	 * 実効Byte/FLOPを取得する.
-	 * 実効Byte/FLOP = Throughput(GB/s) / Performance(GFLOPS)
-	 * @return 実効Byte/FLOP
-	 */
+* Get the effective Byte / FLOP.
+* Effective Byte / FLOP = Throughput (GB / s) / Performance (GFLOPS)
+* @return Effective Byte / FLOP
+*/
 	public float getEffectiveBF() {
 		return effectiveBF;
 	}
 	/**
-	 * 実効Byte/FLOPを設定する.
-	 * 実効Byte/FLOP = Throughput(GB/s) / Performance(GFLOPS)
-	 * @param effectiveBF 実効Byte/FLOP
-	 */
+* Set the effective Byte / FLOP.
+* Effective Byte / FLOP = Throughput (GB / s) / Performance (GFLOPS)
+* @param effectiveBF Effective Byte / FLOP
+*/
 	public void setEffectiveBF(float effectiveBF) {
 		this.effectiveBF = effectiveBF;
 	}
 	/**
-	 * 実効FLOP/Byteを取得する.
-	 * 実効FLOP/Byte = Performance(GFLOPS) / Throughput(GB/s)
-	 * @return effectiveFB
-	 */
+* Get effective FLOP / Byte.
+* Effective FLOP / Byte = Performance (GFLOPS) / Throughput (GB / s)
+* @return effectiveFB
+*/
 	public float getEffectiveFB() {
 		return effectiveFB;
 	}
 	/**
-	 * 実効FLOP/Byteを設定する.
-	 * 実効FLOP/Byte = Performance(GFLOPS) / Throughput(GB/s)
-	 * @param effectiveFB セットする effectiveFB
-	 */
+* Set effective FLOP / Byte.
+* Effective FLOP / Byte = Performance (GFLOPS) / Throughput (GB / s)
+* @param effectiveFB Set effectiveFB
+*/
 	public void setEffectiveFB(float effectiveFB) {
 		this.effectiveFB = effectiveFB;
 	}
 
 	/**
-	 * ピーク性能比Byte/FLOP(%)を取得する.
-	 * ピーク性能比Byte/FLOP(%) = 要求Byte/FLOP / 実効Byte/FLOP
-	 * @return ピーク性能比Byte/FLOP(%)
-	 */
+* Get the peak performance ratio Byte / FLOP (%).
+* Peak performance ratio Byte / FLOP (%) = Requested Byte / FLOP / Effective Byte / FLOP
+* @return Peak performance ratio Byte / FLOP (%)
+*/
 	public float getPeakBF() {
 		return peakBF;
 	}
 	/**
-	 * ピーク性能比Byte/FLOP(%)を設定する.
-	 * ピーク性能比Byte/FLOP(%) = 要求Byte/FLOP / 実効Byte/FLOP
-	 * @param peakBF ピーク性能比Byte/FLOP(%)
-	 */
+* Set the peak performance ratio Byte / FLOP (%).
+* Peak performance ratio Byte / FLOP (%) = Requested Byte / FLOP / Effective Byte / FLOP
+* @param peakBF Peak performance ratio Byte / FLOP (%)
+*/
 	public void setPeakBF(float peak) {
 		this.peakBF = peak;
 	}
 	/**
-	 * ピーク性能比FLOP/Byte(%)を取得する.
-	 * ピーク性能比FLOP/Byte(%) = 要求FLOP/Byte / 実効Byte/FLOP
-	 * @return ピーク性能比FLOP/Byte(%)
-	 */
+* Get the peak performance ratio FLOP / Byte (%).
+* Peak performance ratio FLOP / Byte (%) = Required FLOP / Byte / Effective Byte / FLOP
+* @return Peak performance ratio FLOP / Byte (%)
+*/
 	public float getPeakFB() {
 		return peakFB;
 	}
 	/**
-	 * ピーク性能比FLOP/Byte(%)を設定する.
-	 * ピーク性能比FLOP/Byte(%) = 要求FLOP/Byte / 実効Byte/FLOP
-	 * @param peakFB ピーク性能比FLOP/Byte(%)
-	 */
+* Set the peak performance ratio FLOP / Byte (%).
+* Peak performance ratio FLOP / Byte (%) = Required FLOP / Byte / Effective Byte / FLOP
+* @param peakFB Peak performance ratio FLOP / Byte (%)
+*/
 	public void setPeakFB(float peak) {
 		this.peakFB = peak;
 	}
 	/**
-	 * アクセス先Memoryの変数の合計の取得を取得する.
-	 * @return アクセス先Memoryの変数の合計
-	 */
+* Get the total of the variables of the access destination Memory.
+* @return Total variables of access destination Memory
+*/
 	public int getMemoryCount() {
 		return memoryCount;
 	}
 	/**
-	 * アクセス先Memoryの変数の合計を設定する.
-	 * @param count アクセス先Memoryの変数の合計
-	 */
+* Set the total of the variables of the access destination Memory.
+* @param count Total of variables of access destination Memory
+*/
 	public void setMemoryCount(int count) {
 		this.memoryCount = count;
 	}
 	/**
-	 * アクセス先L1の変数の合計を取得する.
-	 * @return l1Count		アクセス先L1の変数の合計
-	 */
+* Get the total of variables of access destination L1.
+* @ return l1Count Total variables of access destination L1
+*/
 	public int getL1Count() {
 		return l1Count;
 	}
 	/**
-	 * アクセス先L1の変数の合計を設定する.
-	 * @param count アクセス先L1の変数の合計
-	 */
+* Set the total of the variables of the access destination L1.
+* @param count Total of variables in access destination L1
+*/
 	public void setL1Count(int count) {
 		this.l1Count = count;
 	}
 	/**
-	 * アクセス先L2の変数の合計を取得する.
-	 * @return アクセス先L2の変数の合計
-	 */
+* Get the total of variables of access destination L2.
+* @return Total variables of access destination L2
+*/
 	public int getL2Count() {
 		return l2Count;
 	}
 	/**
-	 * アクセス先L2の変数の合計を設定する.
-	 * @param l2Count  アクセス先L2の変数の合計
-	 */
+* Set the total of variables of access destination L2.
+* @param l2Count Total of variables in access destination L2
+*/
 	public void setL2Count(int count) {
 		this.l2Count = count;
 	}
 	/**
-	 * アクセス先Registerの変数の合計を取得する
-	 * @return アクセス先Registerの変数の合計
-	 */
+* Get the total of variables of the accessed Register
+* @return Total variables of access destination Register
+*/
 	public int getRegisterCount() {
 		return registerCount;
 	}
 	/**
-	 * アクセス先Registerの変数の合計を設定する.
-	 * @param count アクセス先Registerの変数の合計
-	 */
+* Set the total of variables of the access destination Register.
+* @param count Total of variables of access destination Register
+*/
 	public void setRegisterCount(int count) {
 		this.registerCount = count;
 	}
 
 	/**
-	 * アクセス先Customの変数の合計を取得する
-	 * @return アクセス先Customの変数の合計
-	 */
+* Get the total of variables of the access destination Custom
+* @return Total variables of access destination Custom
+*/
 	public int getCustomCount() {
 		return customCount;
 	}
 	/**
-	 * アクセス先Customの変数の合計を設定する.
-	 * @param count アクセス先Customの変数の合計
-	 */
+* Set the total of the variables of the access destination Custom.
+* @param count Total of variables of access destination Custom
+*/
 	public void setCustomCount(int count) {
 		this.customCount = count;
 	}
 
 	/**
-	 * 浮動小数点データ型の変数に対する加算(+)の数を取得する.
-	 * @return 浮動小数点データ型の変数に対する加算(+)の数
-	 */
+* Get the number of additions (+) to a variable of floating point data type.
+* @return Number of additions (+) to variables of floating point data type
+*/
 	public int getAddCount() {
 		return addCount;
 	}
 	/**
-	 * 浮動小数点データ型の変数に対する加算(+)の数を設定する.
-	 * @param count 浮動小数点データ型の変数に対する加算(+)の数
-	 */
+* Set the number of additions (+) for variables of floating point data type.
+* @param count Number of additions (+) to variables of floating point data type
+*/
 	public void setAddCount(int count) {
 		this.addCount = count;
 	}
 
 	/**
-	 * 浮動小数点データ型の変数に対する減算(-)の数を取得する.
-	 * @return 浮動小数点データ型の変数に対する減算(-)の数
-	 */
+* Get the number of subtractions (-) for variables of floating point data type.
+* @return Number of subtractions (-) for variables of floating point data type
+*/
 	public int getSubCount() {
 		return subCount;
 	}
 	/**
-	 * 浮動小数点データ型の変数に対する減算(-)の数を設定する.
-	 * @param count 浮動小数点データ型の変数に対する減算(-)の数
-	 */
+* Set the number of subtractions (-) for variables of floating point data type.
+* @param count Number of subtractions (-) for variables of floating point data type
+*/
 	public void setSubCount(int count) {
 		this.subCount = count;
 	}
 
 	/**
-	 * 浮動小数点データ型の変数に対する乗算(*)の数を取得する.
-	 * @return 浮動小数点データ型の変数に対する乗算(*)の数
-	 */
+* Get the number of multiplications (*) for variables of floating point data type.
+* @return Number of multiplications (*) on variables of floating point data type
+*/
 	public int getMulCount() {
 		return mulCount;
 	}
 
 	/**
-	 * 浮動小数点データ型の変数に対する乗算(*)の数を設定する.
-	 * @param count 浮動小数点データ型の変数に対する乗算(*)の数
-	 */
+* Set the number of multiplications (*) for variables of floating point data type.
+* @param count Number of multiplications (*) on variables of floating point data type
+*/
 	public void setMulCount(int count) {
 		this.mulCount = count;
 	}
 
 	/**
-	 * 浮動小数点データ型の変数に対する除算(/)の数を取得する.
-	 * @return 浮動小数点データ型の変数に対する除算(/)の数
-	 */
+* Get the number of divisions (/) for variables of floating point data type.
+* @return Number of divisions (/) on variables of floating point data type
+*/
 	public int getDivCount() {
 		return divCount;
 	}
 	/**
-	 * 浮動小数点データ型の変数に対する除算(/)の数を設定する.
-	 * @param count 浮動小数点データ型の変数に対する除算(/)の数
-	 */
+* Set the number of divisions (/) for variables of floating point data type.
+* @param count Number of divisions (/) on variables of floating point data type
+*/
 	public void setDivCount(int count) {
 		this.divCount = count;
 	}
 
 	/**
-	 * 浮動小数点データ型の変数に対する累乗, 組込関数の加算(+) + 乗算(*)を取得する.
-	 * @return 浮動小数点データ型の変数に対する累乗, 組込関数の加算(+) + 乗算(*)
-	 */
+* Get powers for variables of floating point data type, addition (+) + multiplication (*) of built-in functions.
+* @return Exponentiation of variables of floating point data type, addition of built-in functions (+) + multiplication (*)
+*/
 	public int getIntrinsicCount() {
 		return intrinsicCount;
 	}
 	/**
-	 * 浮動小数点データ型の変数に対する累乗, 組込関数の加算(+) + 乗算(*)を設定する.
-	 * @param count 浮動小数点データ型の変数に対する累乗, 組込関数の加算(+) + 乗算(*)
-	 */
+* Set powers for variables of floating point data type, addition (+) + multiplication (*) of built-in functions.
+* @param count Exponentiation of variables of floating point data type, addition of built-in functions (+) + multiplication (*)
+*/
 	public void setIntrinsicCount(int count) {
 		this.intrinsicCount = count;
 	}
 	/**
-	 * 演算性能を取得する.
-	 * @return 演算性能
-	 */
+* Get computing performance.
+* @return Computation performance
+*/
 	public float getPerformance() {
 		return performance;
 	}
 	/**
-	 * 演算性能を設定する.
-	 * @param performance 演算性能
-	 */
+* Set the calculation performance.
+* @param performance Computational performance
+*/
 	public void setPerformance(float performance) {
 		this.performance = performance;
 	}
 	/**
-	 * スループットストア設定を取得する.
-	 * @return スループットストア設定
-	 */
+* Get the throughput store settings.
+* @return Throughput store settings
+*/
 	public MEM_THROUGHPUT_CALC_MODE getStoreMode() {
 		return storeMode;
 	}
 	/**
-	 * スループットストア設定を設定する.
-	 * @param storeMode スループットストア設定
-	 */
+* Set the throughput store settings.
+* @param storeMode Throughput store settings
+*/
 	public void setMemThroughputCalcMode(MEM_THROUGHPUT_CALC_MODE storeMode) {
 		this.storeMode = storeMode;
 	}
 	/**
-	 * 算出元のMemoryスループット値(GB/s)を取得する.
-	 * @return 算出元のMemoryスループット値(GB/s)
-	 */
+* Get the memory throughput value (GB / s) of the calculation source.
+* @return Memory throughput value (GB / s) from the calculation source
+*/
 	public float getMemoryMBW() {
 		return memoryMBW;
 	}
 	/**
-	 * 算出元のMemoryスループット値(GB/s)を設定する.
-	 * @param value 算出元のMemoryスループット値(GB/s)
-	 */
+* Set the memory throughput value (GB / s) of the calculation source.
+* @param value Memory throughput value (GB / s) from the calculation source
+*/
 	public void setMemoryMBW(float value) {
 		this.memoryMBW = value;
 	}
 
 	/**
-	 * 算出元のL1スループット値(GB/s)を取得する.
-	 * @return 算出元のL1スループット値(GB/s)
-	 */
+* Get the L1 throughput value (GB / s) of the calculation source.
+* @return Calculated source L1 throughput value (GB / s)
+*/
 	public float getL1MBW() {
 		return l1MBW;
 	}
 
 	/**
-	 * 算出元のL1スループット値(GB/s)を設定する.
-	 * @param value 算出元のL1スループット値(GB/s)
-	 */
+* Set the L1 throughput value (GB / s) of the calculation source.
+* @param value Calculated source L1 throughput value (GB / s)
+*/
 	public void setL1MBW(float value) {
 		l1MBW = value;
 	}
 
 	/**
-	 * 算出元のL2スループット値(GB/s)を取得する.
-	 * @return 算出元のL2スループット値(GB/s)
-	 */
+* Get the L2 throughput value (GB / s) of the calculation source.
+* @return Calculated source L2 throughput value (GB / s)
+*/
 	public float getL2MBW() {
 		return l2MBW;
 	}
 
 	/**
-	 * 算出元のL2スループット値(GB/s)を設定する.
-	 * @param value 算出元のL2スループット値(GB/s)
-	 */
+* Set the L2 throughput value (GB / s) of the calculation source.
+* @param value Calculated source L2 throughput value (GB / s)
+*/
 	public void setL2MBW(float value) {
 		l2MBW = value;
 	}
 
 	/**
-	 * 算出元のRegisterスループット値(GB/s)を取得する.
-	 * @return 算出元のRegisterスループット値(GB/s)
-	 */
+* Get the Register throughput value (GB / s) of the calculation source.
+* @return Calculated source Register throughput value (GB / s)
+*/
 	public float getRegisterMBW() {
 		return registerMBW;
 	}
 
 	/**
-	 * 算出元のRegisterスループット値(GB/s)を設定する.
-	 * @param value 算出元のRegisterスループット値(GB/s)
-	 */
+* Set the Register throughput value (GB / s) of the calculation source.
+* @param value Calculated source Register throughput value (GB / s)
+*/
 	public void setRegisterMBW(float value) {
 		this.registerMBW = value;
 	}
 
 	/**
-	 * 算出元のCustomスループット値(GB/s)を取得する.
-	 * @return 算出元のCustomスループット値(GB/s)
-	 */
+* Get the custom throughput value (GB / s) of the calculation source.
+* @return Custom throughput value (GB / s) from the calculation source
+*/
 	public float getCustomMBW() {
 		return customMBW;
 	}
 
 	/**
-	 * 算出元のCustomスループット値(GB/s)を設定する.
-	 * @param value 算出元のCustomスループット値(GB/s)
-	 */
+* Set the custom throughput value (GB / s) of the calculation source.
+* @param value Custom throughput value (GB / s) from which it was calculated
+*/
 	public void setCustomMBW(float value) {
 		this.customMBW = value;
 	}
 	/**
-	 * 算出元のMemory係数を取得する.
-	 * @return 算出元のMemory係数
-	 */
+* Get the Memory coefficient of the calculation source.
+* @return Memory coefficient of calculation source
+*/
 	public float getMemoryCoef() {
 		return memoryCoef;
 	}
 	/**
-	 * 算出元のMemory係数を設定する.
-	 * @param coef 算出元のMemory係数
-	 */
+* Set the Memory coefficient of the calculation source.
+* @param coef Calculation source Memory coefficient
+*/
 	public void setMemoryCoef(float coef) {
 		this.memoryCoef = coef;
 	}
 
 	/**
-	 * 算出元のL1係数を取得する.
-	 * @return 算出元のL1係数
-	 */
+* Get the L1 coefficient of the calculation source.
+* @return L1 coefficient of calculation source
+*/
 	public float getL1Coef() {
 		return l1Coef;
 	}
 
 	/**
-	 * 算出元のL1係数を設定する.
-	 * @param coef 算出元のL1係数
-	 */
+* Set the L1 coefficient of the calculation source.
+* @param coef L1 coefficient of calculation source
+*/
 	public void setL1Coef(float l1Coef) {
 		this.l1Coef = l1Coef;
 	}
 
 	/**
-	 * 算出元のL2係数を取得する.
-	 * @return 算出元のL2係数
-	 */
+* Get the L2 coefficient of the calculation source.
+* @return L2 coefficient of calculation source
+*/
 	public float getL2Coef() {
 		return l2Coef;
 	}
 	/**
-	 * 算出元のL2係数を設定する.
-	 * @param coef 算出元のL2係数
-	 */
+* Set the L2 coefficient of the calculation source.
+* @param coef L2 coefficient of calculation source
+*/
 	public void setL2Coef(float coef) {
 		this.l2Coef = coef;
 	}
 
 	/**
-	 * 算出元のRegister係数を取得する.
-	 * @return 算出元のRegister係数
-	 */
+* Get the Register coefficient of the calculation source.
+* @return Register coefficient of calculation source
+*/
 	public float getRegisterCoef() {
 		return registerCoef;
 	}
 	/**
-	 * 算出元のRegister係数を設定する.
-	 * @param coef 算出元のRegister係数
-	 */
+* Set the Register coefficient of the calculation source.
+* @param coef Register coefficient of calculation source
+*/
 	public void setRegisterCoef(float coef) {
 		this.registerCoef = coef;
 	}
 
 	/**
-	 * 算出元のCustom係数を取得する.
-	 * @return 算出元のCustom係数
-	 */
+* Get the Custom coefficient of the calculation source.
+* @return Custom coefficient of calculation source
+*/
 	public float getCustomCoef() {
 		return customCoef;
 	}
 	/**
-	 * 算出元のCustom係数を設定する.
-	 * @param coef 算出元のCustom係数
-	 */
+* Set the Custom coefficient of the calculation source.
+* @param coef Custom coefficient of calculation source
+*/
 	public void setCustomCoef(float coef) {
 		this.customCoef = coef;
 	}
 	/**
-	 * 算出単位を取得する.
-	 * @return 算出単位
-	 */
+* Get the calculation unit.
+* @return Calculation unit
+*/
 	public BF_CALC_TYPE getUnitType() {
 		return unitType;
 	}
 	/**
-	 * 算出単位を設定する.
-	 * @param unitType 算出単位
-	 */
+* Set the calculation unit.
+* @param unitType Calculation unit
+*/
 	public void setBFCalcType(BF_CALC_TYPE type) {
 		this.unitType = type;
 	}
 
 	/**
-	 * 要求Byte/FLOP, 要求FLOP/Byteを設定済みLoad, Storeから算出します.
-	 * Required = (Load + Store) / FLOP
-	 * @return  計算結果:要求Byte/FLOP
-	 */
+* Calculate request Byte / FLOP and request FLOP / Byte from the configured Load and Store.
+* Required = (Load + Store) / FLOP
+* @return Calculation result: Request Byte / FLOP
+*/
 	public float calcRequiredBF() {
 		float flop = 0.0F;
 		if (this.op > 0) {
@@ -631,11 +631,11 @@ public class RequiredBFResult {
 	}
 
 	/**
-	 * 実効Byte/FLOP,実効FLOP/Byteを算出する.
-	 * 実効Byte/FLOP = スループット / 演算性能
-	 * @param performance   演算性能
-	 * @return 実効Byte/FLOP
-	 */
+* Calculate effective Byte / FLOP and effective FLOP / Byte.
+* Effective Byte / FLOP = Throughput / Computational performance
+* @param performance Computational performance
+* @return Effective Byte / FLOP
+*/
 	public float calcRequiredBF(float performance) {
 		this.performance = performance;
 		if (performance == 0 || this.throughput == 0) {
@@ -649,10 +649,10 @@ public class RequiredBFResult {
 	}
 
 	/**
-	 * ピーク性能比を算出する.
-	 * ピーク性能比 = 実効B/F / 要求B/F
-	 * @return ピーク性能比
-	 */
+* Calculate the peak performance ratio.
+* Peak performance ratio = Effective B / F / Required B / F
+* @return Peak performance ratio
+*/
 	public float calcPeakPerformance() {
 		if (this.requiredBF == 0.0F) {
 			this.peakBF = 0.0F;

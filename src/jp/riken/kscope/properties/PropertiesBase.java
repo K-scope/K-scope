@@ -21,20 +21,20 @@ import java.beans.PropertyChangeSupport;
 import java.util.Properties;
 
 /**
- * プロパティ基底クラス
+ * Property base class
  * @author RIKEN
  *
  */
 public abstract class PropertiesBase extends Properties {
 
-    /** シリアル番号 */
+    /** Serial number */
     private static final long serialVersionUID = 1L;
 
-    /** プロパティの変更通知をサポートするオブジェクト */
+    /** Objects that support property change notifications */
     protected PropertyChangeSupport changes;
 
     /**
-     * コンストラクタ
+     * Constructor
      */
     public PropertiesBase() {
         super();
@@ -42,21 +42,21 @@ public abstract class PropertiesBase extends Properties {
     }
 
     /**
-     * プロパティ変更イベント発生
+     * Property change event occurs
      */
     public abstract void firePropertyChange();
 
     /**
-     * リスナの追加を行います.<br/>
-     * @param listener 追加するリスナ
+     * Add a listener. <br/>
+     * @param listener Add listener
      */
     public void addPropertyChangeListener(PropertyChangeListener listener){
         this.changes.addPropertyChangeListener(listener);
     }
 
     /**
-     * リスナの削除を行います.<br/>
-     * @param listener 削除するリスナ
+     * Delete the listener. <br/>
+     * @param listener Listener to delete
      */
     public void removePropertyChangeListener(PropertyChangeListener listener){
         this.changes.removePropertyChangeListener(listener);
@@ -64,30 +64,30 @@ public abstract class PropertiesBase extends Properties {
 
 
     /**
-     * String型データの取得
-     * @param key - ハッシュテーブルキー
-     * @param defaultValue - デフォルト値
-     * @return -指定されたキー値を持つこのプロパティリストの値
+     * Get String type data
+     * @param key --hash table key
+     * @param defaultValue --default value
+     * @return-Value in this property list with the specified key value
      */
     public String get(final String key, final String defaultValue) {
         return getProperty(key, defaultValue);
     }
 
     /**
-     * boolean型データの取得
-     * @param key - ハッシュテーブルキー
-     * @param defaultValue - デフォルト値
-     * @return -指定されたキー値を持つこのプロパティリストの値
+     * Get boolean data
+     * @param key --hash table key
+     * @param defaultValue --default value
+     * @return-Value in this property list with the specified key value
      */
     public boolean getBoolean(final String key, final boolean defaultValue) {
         return new Boolean(getProperty(key, Boolean.toString(defaultValue)));
     }
 
     /**
-     * int型データの取得
-     * @param key - ハッシュテーブルキー
-     * @param defaultValue - デフォルト値
-     * @return -指定されたキー値を持つこのプロパティリストの値
+     * Acquisition of int type data
+     * @param key --hash table key
+     * @param defaultValue --default value
+     * @return-Value in this property list with the specified key value
      */
     public int getInt(final String key, final int defaultValue) {
         String value = getProperty(key, Integer.toString(defaultValue));
@@ -100,45 +100,45 @@ public abstract class PropertiesBase extends Properties {
 
 
     /**
-     * String型データの設定
-     * @param key -プロパティリストに配置されるキー
-     * @param value key -に対応する値
+     * String type data setting
+     * @param key --Key to be placed in the property list
+     * @param value key-corresponding value
      */
     public void put(final String key, final String value) {
         setProperty(key, value);
     }
 
     /**
-     * boolean型データの設定
-     * @param key -プロパティリストに配置されるキー
-     * @param value key -に対応する値
+     * Setting boolean data
+     * @param key --Key to be placed in the property list
+     * @param value key-corresponding value
      */
     public void putBoolean(final String key, final boolean value) {
         setProperty(key, Boolean.toString(value));
     }
 
     /**
-     * int型データの設定
-     * @param key -プロパティリストに配置されるキー
-     * @param value key -に対応する値
+     * Int type data setting
+     * @param key --Key to be placed in the property list
+     * @param value key-corresponding value
      */
     public void putInt(final String key, final int value) {
         setProperty(key, Integer.toString(value));
     }
     
     /**
-     * Object型データの取得
-     * @param key -プロパティリストに配置されるキー
-     * @return -指定されたキー値を持つこのプロパティリストの値
+     * Get Object type data
+     * @param key --Key to be placed in the property list
+     * @return-Value in this property list with the specified key value
      */
     public Object getObject(final String key) {
         return this.get(key);
     }
 
     /**
-     * Object型データの設定
-     * @param key -プロパティリストに配置されるキー
-     * @param value key -に対応する値
+     * Object type data setting
+     * @param key --Key to be placed in the property list
+     * @param value key-corresponding value
      */
     public void putObject(final String key, final Object value) {
         this.put(key, value);

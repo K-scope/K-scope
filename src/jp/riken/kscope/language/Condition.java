@@ -19,56 +19,56 @@ package jp.riken.kscope.language;
 
 
 /**
-* IF･･･THEN･･･ELSE文など複数の条件式で構成される. <br/>
-* 判断ブロックにおける各条件式ブロックをあらわす.
+* IF ... THEN ... Consists of multiple conditional expressions such as ELSE statements. <br/>
+* Represents each conditional expression block in the judgment block.
 *
 * @author RIKEN
 *
 */
 public class Condition extends Block {
-    /** シリアル番号 */
+    /** Serial number */
     private static final long serialVersionUID = 7720056035437803500L;
     /**
-     * 分岐の条件式。
+     * Conditional expression for branching.
      */
     private Expression expression;
 
     /**
-     * コンストラクタ。
+     * Constructor.
      *
      * @param mama
-     *            親ブロック
+     * Parent block
      * @param exprssn
-     *            条件式
+     * Conditional expression
      */
     Condition(Block mama, Expression exprssn) {
         super(mama);
         this.expression = exprssn;
-        // 親IF文を設定する
+        // Set the parent IF statement
         if (this.expression != null) {
         	this.expression.setParentStatement(this);
         }
     }
 
     /**
-     * 条件式の文字列表現を返す。
+     * Returns a string representation of the conditional expression.
      *
-     * @return 条件式の文字列表現
+     * @return String representation of conditional expression
      */
     public String conditionToString() {
         return getExpression().toString();
     }
 
     /**
-     * 条件式の取得.
+     * Get conditional expression.
      *
-     * @return 条件式
+     * @return conditional expression
      */
     public Expression getExpression() {
         return expression;
     }
     /**
-     * ブロックタイプの取得。
+     * Get block type.
      *
      * @return BlockType.CONDITION
      */
@@ -77,9 +77,9 @@ public class Condition extends Block {
     }
 
     /**
-     * 同一ブロックであるかチェックする.
-     * @param block		ブロック
-	 * @return		true=一致
+     * Check if they are the same block.
+     * @param block block
+* @return true = match
      */
     @Override
 	public boolean equalsBlocks(Block block) {

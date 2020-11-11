@@ -16,6 +16,6 @@
  */
 
 /**
- * 共通データ（低レベルデータ）を提供します.<br/>
+ * Provides common data (low level data). <br/>
  */
 package jp.riken.kscope.data;

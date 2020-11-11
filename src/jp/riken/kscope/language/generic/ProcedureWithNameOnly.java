@@ -24,8 +24,8 @@ import jp.riken.kscope.language.Expression;
 import jp.riken.kscope.language.Procedure;
 
 /**
- * 関数名のみを持つ、総称関数クラス.<br>
- * Fortranのmodule procedureに対応。<br>
+ * Generic function class with only function names. <br>
+ * Supports Fortran module procedure. <br>
  *
  * @author RIKEN
  *
@@ -33,16 +33,16 @@ import jp.riken.kscope.language.Procedure;
 public class ProcedureWithNameOnly
  implements Serializable,
         jp.riken.kscope.language.generic.IProcedureItem {
-	/** シリアル番号 */
+	/** Serial number */
 	private static final long serialVersionUID = 682980844988371714L;
     private String name;
     private Procedure definition;
 
     /**
-     * コンストラクタ。
+     * Constructor.
      *
      * @param nm
-     *         関数名
+     * Function name
      */
     public ProcedureWithNameOnly(String nm) {
         this.name = nm;
@@ -53,17 +53,17 @@ public class ProcedureWithNameOnly
         return "module procedure : " + this.name;
     }
     /**
-     * 候補対象となる関数が自分の情報と適合しているかどうかを<br>
-     * 調べるメソッド。候補対象の関数名 ＆ 候補対象関数の<br>
-     * 引数リストと実引数リストが、適合していれば、trueを返す。<br>
+     * Whether the candidate function matches your information <br>
+     * Method to check. Candidate function name & Candidate function <br>
+     * Returns true if the argument list and the actual argument list match. <br>
      *
      * @param target
-     *            候補対象関数
+     * Candidate function
      * @param actualArguments
-     *            実引数リスト
+     * List of actual arguments
      *
-     * @return true:  適合している
-     *         false: 適合していない
+     * @return true: Conforms
+     * false: Not compatible
      */
     @Override
     public boolean matches(Procedure target, List<Expression> actualArguments) {
@@ -73,15 +73,15 @@ public class ProcedureWithNameOnly
         return true;
     }
     /**
-     * 対象となる実引数が自分の情報と適合しているかどうかを<br>
-     * 調べるメソッド。<br>
-     * 引数リストと実引数リストが、適合していれば、trueを返す。<br>
+     * Whether the target actual argument matches your information <br>
+     * Method to check. <br>
+     * Returns true if the argument list and the actual argument list match. <br>
      *
      * @param actualArguments
-     *            実引数リスト
+     * List of actual arguments
      *
-     * @return true:  適合している
-     *         false: 適合していない
+     * @return true: Conforms
+     * false: Not compatible
      */
     @Override
     public boolean matches(List<Expression> actualArguments) {
@@ -92,24 +92,24 @@ public class ProcedureWithNameOnly
     }
 
     /**
-     * 関数名の取得。
+     * Get the function name.
      *
-     * @return 関数名
+     * @return function name
      */
     public String getName() {
         return this.name;
     }
 
     /**
-     * 対応する手続宣言をセットする。
+     * Set the corresponding procedure declaration.
      * @param proc
      */
     public void setDeclaration(Procedure proc) {
         this.definition = proc;
     }
     /**
-     * 対応する手続宣言を返す。
-     * @return 手続宣言。無ければnullを返す。
+     * Returns the corresponding procedure declaration.
+     * @return Declaration of procedure. If not, it returns null.
      */
     public Procedure getDeclaration() {
         return this.definition;
