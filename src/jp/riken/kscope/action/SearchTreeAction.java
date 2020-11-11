@@ -40,32 +40,32 @@ import jp.riken.kscope.utils.StringUtils;
 import jp.riken.kscope.utils.SwingUtils;
 
 /**
- * ツリー検索アクション
+ * Tree search action
  * @author RIKEN
  */
 public class SearchTreeAction extends ActionBase {
-	/** 検索サービス */
+	/** Search service */
 	private AnalysisSearchService service;
-	/** 検索パネル */
+	/** Search panel */
 	private EXPLORE_PANEL searchPanel;
 
     /**
-     * コンストラクタ
-     * @param controller	アプリケーションコントローラ
+     * Constructor
+     * @param controller Application controller
      */
     public SearchTreeAction(AppController controller) {
         super(controller);
     }
 
     /**
-     * アクションが実行可能であるかチェックする.<br/>
-     * アクションの実行前チェック、メニューのイネーブルの切替を行う。<br/>
-     * @return		true=アクションが実行可能
+     * Check if the action is executable. <br/>
+     * Check before executing the action and switch the menu enable. <br/>
+     * @return true = Action can be executed
      */
     @Override
     public boolean validateAction() {
 
-        // 選択ツリーモデルを取得する
+        // Get the selection tree model
         TreeModel modelTree = this.controller.getMainframe().getPanelExplorerView().getTreeModel();
         if (modelTree == null) {
             return false;
@@ -79,26 +79,26 @@ public class SearchTreeAction extends ActionBase {
     }
 
     /**
-     * アクション発生イベント
-     * @param event		イベント情報
+     * Action occurrence event
+     * @param event Event information
      */
     @Override
     public void actionPerformed(ActionEvent event) {
 
-        // 実行チェック
+        // Execution check
         if (!validateAction()) return;
 
-        // ステータスメッセージ
-        final String message = Message.getString("mainmenu.search.tree"); //ツリー検索
+        // Status message
+        final String message = Message.getString("mainmenu.search.tree"); // Tree search
         Application.status.setMessageMain(message);
 
-        // 選択ツリーモデルを取得する
+        // Get the selection tree model
         TreeModel modelTree = this.controller.getMainframe().getPanelExplorerView().getTreeModel();
         this.searchPanel = this.controller.getMainframe().getPanelExplorerView().getSelectedEnumPanel();
-        // 選択ノード
+        // Selected node
         TreeNode[] selectedNodes = this.controller.getMainframe().getPanelExplorerView().getSelectedNodes();
 
-        // 検索ダイアログを表示する。
+        // Display the search dialog.
         SearchTreeDialog dialog = this.controller.getMainframe().getDialogSearchTree();
         dialog.setReferenceTreeModel(this.searchPanel, modelTree);
         dialog.setSelectedTreeNodes(selectedNodes);
@@ -106,40 +106,40 @@ public class SearchTreeAction extends ActionBase {
         int result = dialog.showDialog();
         if (result != Constant.OK_DIALOG) return;
 
-        // 検索文字列
+        // Search string
         String searchText = dialog.getSearchText();
-        // 検索ノード
+        // Search node
         TreeNode[] nodes = dialog.getSelectedTreeNodes();
-        // オプション
+        // Optional
         boolean regex = dialog.isSearchRegex();
         boolean word = dialog.isSearchWord();
         boolean sensitivecase = dialog.isSearchSensitivecase();
 
-        // 検索ノードの子ノードを削除する
+        // Delete the child node of the search node
         List<DefaultMutableTreeNode> list = new ArrayList<DefaultMutableTreeNode>();
         if (nodes != null) {
             for (TreeNode node : nodes) {
                 if (!(node instanceof DefaultMutableTreeNode)) continue;
                 if (isChildNode(nodes, (DefaultMutableTreeNode)node)) {
-                    // ノードリストのいずれかの子ノードである
+                    // A child node of one of the node lists
                     continue;
                 }
                 if (list.contains(node)) continue;
 
-                // 子ノードではないので追加する
+                // Add because it is not a child node
                 list.add((DefaultMutableTreeNode)node);
             }
         }
 
-        // 検索サービス
+        // Search service
         service = new AnalysisSearchService();
-        // エラー情報モデル
+        // Error information model
         ErrorInfoModel errorModel = this.controller.getErrorInfoModel();
         service.setErrorInfoModel(errorModel);
-        // 検索結果モデル
+        // Search result model
         service.setSearchModel(this.controller.getSearchResultModel());
 
-        // 検索条件
+        // Search criteria
         service.setSearchText(searchText);
         service.setRegex(regex);
         service.setWord(word);
@@ -147,31 +147,31 @@ public class SearchTreeAction extends ActionBase {
         if (list != null && list.size() > 0) {
             service.setSearchNodes(list.toArray(new TreeNode[0]));
         }
-        // 検索元エクスプローラツリーノード
+        // Search source explorer tree node
         service.setExploreTreeNode((DefaultMutableTreeNode)modelTree.getRoot());
 
-        // スレッドタスクサービスの生成を行う。
+        // Create a thread task service.
         FutureService<Integer> future = new FutureService<Integer>(
             /**
-             * スレッド呼出クラス
+             * Thread call class
              */
             new Callable<Integer>() {
                 /**
-                 * スレッド実行を行う
+                 * Perform thread execution
                  */
                 @Override
 				public Integer call() {
                     try {
-                        // 構造ツリー以外はツリー検索を行う.
+                        // Perform a tree search except for the structure tree.
                         if (searchPanel != EXPLORE_PANEL.LANGUAGE) {
-                	        // 検索実行
+                	        // Search execution
                 	        service.searchTree();
                         }
                         else {
-                	        // 検索実行
+                	        // Search execution
                 	        service.searchLanguage();
                         }
-                        // エラーメッセージ
+                        // Error message
                         String errorMessage = service.getErrorMessage();
                         if (!StringUtils.isNullOrEmpty(errorMessage)) {
                         	return Constant.ERROR_RESULT;
@@ -185,24 +185,24 @@ public class SearchTreeAction extends ActionBase {
             }
             ) {
                 /**
-                 * スレッド実行完了.<br/>
-                 * キャンセルされた時の後処理を行う。
+                 * Thread execution completed. <br/>
+                 * Perform post-processing when canceled.
                  */
                 @Override
                 protected void done() {
-                    // キャンセルによる終了であるかチェックする。
+                    // Check if the end is due to cancellation.
                     String errorMessage = service.getErrorMessage();
                     if (!StringUtils.isNullOrEmpty(errorMessage)) {
                     	this.setMessage(errorMessage);
-                    	Application.status.setMessageMain(message + Message.getString("action.common.error.status")); //エラー
+                    	Application.status.setMessageMain(message + Message.getString("action.common.error.status")); //error
                     }
                     else if (this.isCancelled()) {
-                        Application.status.setMessageMain(message + Message.getString("action.common.cancel.status")); //:キャンセル
+                        Application.status.setMessageMain(message + Message.getString("action.common.cancel.status")); //:Cancel
                     }
                     else {
-                        Application.status.setMessageMain(message + Message.getString("action.common.done.status")); //:完了
+                        Application.status.setMessageMain(message + Message.getString("action.common.done.status")); //: Done
                     }
-                    // サービス実行の停止
+                    // Stop service execution
                     if (service != null) {
                         service.cancelRunning();
                     }
@@ -210,31 +210,31 @@ public class SearchTreeAction extends ActionBase {
                 }
         };
 
-        // ステータスメッセージクリア
+        // Clear status message
         Application.status.setMessageStatus(null);
 
-        // スレッドタスクにコントローラをリスナ登録する：スレッド完了時の呼出の為
+        // Register the controller as a listener in the thread task: To call when the thread is completed
         future.addPropertyChangeListener(this.controller);
         this.controller.setThreadFuture(future);
 
-        // プログレスダイアログを表示する
+        // Display the progress dialog
         WindowProgressAction progress = new WindowProgressAction(this.controller);
         progress.showProgressDialog();
 
-        // スレッド起動
+        // Thread start
         new Thread(future).start();
 
-        // 検索結果タブをアクティブにする
+        // Activate the search results tab
         this.controller.setSelectedAnalysisPanel(ANALYSIS_PANEL.SEARCHRESULT);
 
     }
 
 
     /**
-     * 子ノードがノードリストのいずれかの子ノードであるかチェックする
-     * @param nodes			ノードリスト
-     * @param childnode		子ノード
-     * @return				true=子ノードがノードリストのいずれかの子ノードである
+     * Check if the child node is one of the child nodes in the node list
+     * @param nodes node list
+     * @param childnode Child node
+     * @return true = Child node is one of the child nodes in the node list
      */
     private boolean isChildNode(TreeNode[] nodes, DefaultMutableTreeNode childnode) {
 

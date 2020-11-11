@@ -32,63 +32,63 @@ import jp.riken.kscope.data.CodeLine;
 import jp.riken.kscope.service.AppController;
 
 /**
- * エラー箇所を開くアクション
+ * Action to open the error location
  * @author RIKEN
  *
  */
 public class ErrorOpenFileAction extends ActionBase implements MouseListener {
 
     /**
-     * コンストラクタ
-     * @param controller	アプリケーションコントローラ
+     * Constructor
+     * @param controller Application controller
      */
     public ErrorOpenFileAction(AppController controller) {
         super(controller);
     }
 
     /**
-     * アクション発生イベント
-     * @param event		イベント情報
+     * Action occurrence event
+     * @param event Event information
      */
     @Override
     public void actionPerformed(ActionEvent event) {
 
-        // 親Frameの取得を行う。
+        // Get the parent Frame.
         Frame frame = getWindowAncestor( event );
 
-        // エラー箇所を開く
+        // Open the error part
         openErrorFile(frame);
 
     }
 
     /**
-     * エラー箇所を開く
-     * @param	parent     親コンポーネント
+     * Open the error location
+     * @param parent parent component
      */
     private void openErrorFile(Component parent) {
 
         CodeLine line = null;
         try {
-            // エラー箇所のコード情報の取得を行う
+            // Get the code information of the error part
             line = this.controller.getMainframe().getPanelAnalysisView().getSelectedCodeLine();
-            // エラーメッセージ
+            // Error message
             String errorMessage = this.controller.getMainframe().getPanelAnalysisView().getPanelError().getSelectedErrorMessage();
             if (line == null && errorMessage == null) return;
 
             if (line == null || line.getSourceFile() == null || line.getSourceFile().getFile() == null) {
-                // エラーメッセージ
+                // Error message
                 JOptionPane.showMessageDialog(
                         parent,
                         errorMessage,
-                        Message.getString("erroropenfileaction.errorinfo.dialog.title"), //エラー情報
+                        Message.getString("erroropenfileaction.errorinfo.dialog.title"), // Error information
                         JOptionPane.INFORMATION_MESSAGE);
                 return;
             }
 
-            // エラー箇所の情報をセットして開く
+            // Set the information of the error part and open it
             this.controller.openSourceFile(line);
 
-            // 選択コード行を選択状態にする
+            // Select the selection code line
             this.controller.getMainframe().getPanelSourceView().setSelectedLine(line);
 
         } catch (HeadlessException ex) {
@@ -101,44 +101,44 @@ public class ErrorOpenFileAction extends ActionBase implements MouseListener {
 
 
     /**
-     * マウスクリックイベント
-     * @param event			イベント情報
+     * Mouse click event
+     * @param event Event information
      */
     @Override
     public void mouseClicked(MouseEvent event) {
-        // ダブルクリックチェック
+        // Double click check
         if (SwingUtilities.isLeftMouseButton(event) && event.getClickCount() == 2) {
             if (event.getSource() instanceof JTable) {
-                // エラー箇所を開く
+                // Open the error part
                 openErrorFile(this.controller.getMainframe());
             }
         }
     }
 
     /**
-     * マウスボタンダウンイベント
-     * @param e		マウスイベント情報
+     * Mouse button down event
+     * @param e Mouse event information
      */
     @Override
     public void mousePressed(MouseEvent e) { }
 
     /**
-     * マウスボタンアップイベント
-     * @param e		マウスイベント情報
+     * Mouse button up event
+     * @param e Mouse event information
      */
     @Override
     public void mouseReleased(MouseEvent e) {}
 
     /**
-     * マウスオーバーイベント
-     * @param e		マウスイベント情報
+     * Mouseover event
+     * @param e Mouse event information
      */
     @Override
     public void mouseEntered(MouseEvent e) {}
 
     /**
-     * マウスアウトイベント
-     * @param e		マウスイベント情報
+     * Mouse out event
+     * @param e Mouse event information
      */
     @Override
     public void mouseExited(MouseEvent e) {}

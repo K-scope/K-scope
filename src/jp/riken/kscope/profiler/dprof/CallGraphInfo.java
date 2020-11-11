@@ -19,7 +19,7 @@ package jp.riken.kscope.profiler.dprof;
 import java.util.ArrayList;
 
 /**
- * コールグラフ情報を保持する
+ * Hold call graph information
  *
  * @author RIKEN
  */
@@ -28,34 +28,34 @@ public class CallGraphInfo {
     private ArrayList<StackInfo> stackInfo;
 
     /**
-     * 総累積サンプリング数を取得する
-     * @return 総累積サンプリング数
+     * Get the total cumulative number of samples
+     * @return Total cumulative number of samples
      */
     public float getTotalSumSampNum() {
         return totalSumSampNum;
     }
 
     /**
-     * スタック毎のコールグラフ情報のリストを取得する
-     * @return スタック毎のコールグラフ情報のリスト
+     * Get a list of call graph information for each stack
+     * @return List of call graph information for each stack
      */
     public ArrayList<StackInfo> getStackInfo() {
         return stackInfo;
     }
 
     /**
-     * 総累積サンプリング数を設定する
+     * Set the total cumulative number of samples
      * @param totalSumSampNum
-     *            設定する総累積サンプリング数
+     * Total cumulative number of samples to set
      */
     public void setTotalSumSampNum(float totalSumSampNum) {
         this.totalSumSampNum = totalSumSampNum;
     }
 
     /**
-     * スタック毎のコールグラフ情報のリストを設定する
+     * Set a list of call graph information for each stack
      * @param stackInfo
-     *            設定するスタック毎のコールグラフ情報のリスト
+     * List of call graph information for each stack to be set
      */
     public void setStackInfo(ArrayList<StackInfo> stackInfo) {
         this.stackInfo = stackInfo;

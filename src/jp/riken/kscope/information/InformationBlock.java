@@ -27,13 +27,13 @@ import jp.riken.kscope.language.IInformation;
 import jp.riken.kscope.language.Variable;
 
 /**
- * 情報ブロッククラス。<br>
+ * Information block class. <br>
  *
  * @author RIKEN
  *
  */
 public class InformationBlock implements IInformation, IBlock, Serializable {
-    /** シリアル番号 */
+    /** Serial number */
 	private static final long serialVersionUID = -6653837061369941499L;
 
 	private InformationBase information = null;
@@ -41,14 +41,14 @@ public class InformationBlock implements IInformation, IBlock, Serializable {
     private IInformation endBlock = null;
 
     /**
-     * コンストラクタ。
+     * Constructor.
      *
      * @param info
-     *       設定する情報
+     * Information to set
      * @param start
-     *       設定する開始位置
+     * Start position to set
      * @param end
-     *       設定する終了位置
+     * End position to set
      */
     public InformationBlock(InformationBase info,
             IInformation start, IInformation end) {
@@ -58,36 +58,36 @@ public class InformationBlock implements IInformation, IBlock, Serializable {
     }
 
     /**
-     * 開始位置を取得する。
+     * Get the start position.
      *
-     * @return 開始位置
+     * @return start position
      */
     public IInformation getStartBlock() {
         return startBlock;
     }
 
     /**
-     * 開始位置を設定する。
+     * Set the start position.
      *
-     * @param start 設定する開始位置
+     * @param start Start position to set
      */
     public void setStartBlock(IInformation start) {
         this.startBlock = start;
     }
 
     /**
-     * 終了位置を取得する。
+     * Get the end position.
      *
-     * @return 終了位置
+     * @return end position
      */
     public IInformation getEndBlock() {
         return endBlock;
     }
 
     /**
-     * 終了位置を設定する。
+     * Set the end position.
      *
-     * @param end 設定する終了位置
+     * @param end End position to set
      */
     public void setEndBlock(IInformation end) {
         this.endBlock = end;
@@ -95,9 +95,9 @@ public class InformationBlock implements IInformation, IBlock, Serializable {
 
 
     /**
-     * 名前空間（モジュール名.ルーチン名）を取得する。
+     * Get the namespace (module name.routine name).
      *
-     * @return 名前空間（モジュール名.ルーチン名）
+     * @return namespace (module name.routine name)
      */
     public String getNamespace() {
         if (this.startBlock == null || this.endBlock == null) {
@@ -113,7 +113,7 @@ public class InformationBlock implements IInformation, IBlock, Serializable {
 
     @Override
     public TextInfo getInformation() {
-        // 現状の設計では必ずTextInfo
+        // TextInfo is always the current design
     	if (this.information instanceof TextInfo) {
     		return (TextInfo) this.information;
     	}
@@ -145,7 +145,7 @@ public class InformationBlock implements IInformation, IBlock, Serializable {
         this.information.setContent("");
     }
 
-    // IDは不要
+    // No ID required
     @Override
     public String getID() {
         return null;
@@ -172,12 +172,12 @@ public class InformationBlock implements IInformation, IBlock, Serializable {
 
     @Override
     public CodeLine getEndCodeLine() {
-        /****  暫定コード at 2012/03/21 by @hira   ****/
+        /**** Provisional code at 2012/03/21 by @hira ****/
         if (this.endBlock != null && this.endBlock instanceof IBlock) {
             IBlock blk = (IBlock) this.endBlock;
             return blk.getEndCodeLine();
         }
-        /****  暫定コード at 2012/03/21 by @hira   ****/
+        /**** Provisional code at 2012/03/21 by @hira ****/
 
         if (this.startBlock instanceof IBlock) {
             IBlock blk = (IBlock) this.startBlock;
@@ -205,9 +205,9 @@ public class InformationBlock implements IInformation, IBlock, Serializable {
     }
 
     /**
-     * 構造IDを取得する.
-     * 構造IDは不要であるので、nullを返す.
-     * @return 構造ID
+     * Get the structure ID.
+     * Returns null as no structure ID is needed.
+     * @return Structure ID
      */
     @Override
     public String getLayoutID() {
@@ -216,8 +216,8 @@ public class InformationBlock implements IInformation, IBlock, Serializable {
 
 
  	/**
- 	 * 変数リストを取得する.
- 	 */
+ * Get the variable list.
+ */
  	@Override
  	public Set<Variable> getAllVariables() {
  		return null;

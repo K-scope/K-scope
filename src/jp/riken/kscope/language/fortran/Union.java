@@ -22,21 +22,21 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * union型クラス。
+ * union type class.
  *
  * @author RIKEN
  *
  */
 public class Union implements Serializable {
-    /** シリアル番号 */
+    /** Serial number */
     private static final long serialVersionUID = -3660335230300380344L;
     private Set<jp.riken.kscope.language.fortran.Map> maps = new HashSet<jp.riken.kscope.language.fortran.Map>();
 
     /**
-     * map文の追加。
+     * Added map statement.
      *
      * @param map
-     *          map文
+     * map statement
      */
     public void add(jp.riken.kscope.language.fortran.Map map){
         if (map != null) {
@@ -45,9 +45,9 @@ public class Union implements Serializable {
     }
 
     /**
-     * 共用体内のmapセットの取得。
+     * Acquisition of map set in the common body.
      *
-     * @return mapセット
+     * @return map set
      */
     public Set<jp.riken.kscope.language.fortran.Map> getMaps() {
         return maps;

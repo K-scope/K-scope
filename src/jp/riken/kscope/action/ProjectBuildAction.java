@@ -41,41 +41,41 @@ import jp.riken.kscope.service.LanguageService;
 import jp.riken.kscope.xcodeml.XcodeMLParserStax;
 
 /**
- * 構造解析実行アクション.<br/>
- * 構造解析を別スレッドで行う。
+ * Structural analysis execution action. <br/>
+ * Perform structural analysis in a separate thread.
  * @author RIKEN
  */
 public class ProjectBuildAction extends ActionBase {
-    /** データベースの構築、探索を行うクラス */
+    /** Class that builds and searches the database */
     private LanguageService service;
-    /** プロジェクトのクリアアクション */
+    /** Project clear action */
     private ProjectClearLanguageAction clearAction;
 
     /**
-     * コンストラクタ
-     * @param controller	アプリケーションコントローラ
+     * Constructor
+     * @param controller Application controller
      */
     public ProjectBuildAction(AppController controller) {
         super(controller);
     }
 
     /**
-     * アクションが実行可能であるかチェックする.<br/>
-     * アクションの実行前チェック、メニューのイネーブルの切替を行う。<br/>
-     * @return		true=アクションが実行可能
+     * Check if the action is executable. <br/>
+     * Check before executing the action and switch the menu enable. <br/>
+     * @return true = Action can be executed
      */
     @Override
     public boolean validateAction() {
 
-        // 構造解析実行メニューのイネーブル切替
-        // XMLファイルリスト
+        // Enable switching of structural analysis execution menu
+        // XML file list
         List<SourceFile> listXml = this.controller.getProjectModel().getListSelectedFile();
         if (listXml == null || listXml.size() <= 0) {
             return false;
         }
 
         int count = 0;
-        // XMLファイルが存在しているか？
+        // Does the XML file exist?
         for (SourceFile file : listXml) {
             if (file == null) continue;
             if (file.getFile() == null) continue;
@@ -87,43 +87,43 @@ public class ProjectBuildAction extends ActionBase {
         }
         if (count <= 0) return false;
 
-        // スレッドタスクの実行状態をチェックする
+        // Check the execution status of the thread task
         return this.controller.isThreadTaskDone();
     }
 
 
     /**
-     * アクション発生イベント
-     * @param event		イベント情報
+     * Action occurrence event
+     * @param event Event information
      */
     @Override
     public void actionPerformed(ActionEvent event) {
-        // ステータスメッセージ
-        final String message = Message.getString("mainmenu.project.startanalysis"); //構造解析実行
+        // Status message
+        final String message = Message.getString("mainmenu.project.startanalysis"); // Structural analysis execution
         Application.status.setMessageMain(message);
 
-        // 親Frameの取得を行う。
+        // Get the parent Frame.
         Frame frame = getWindowAncestor( event );
 
-        // XMLファイルリスト
+        // XML file list
         List<SourceFile> listXml = this.controller.getProjectModel().getListSelectedFile();
         if (listXml == null || listXml.size() <= 0) {
-            // エラーメッセージ
+            // Error message
             JOptionPane.showMessageDialog(frame,
-                    Message.getString("projectbuildaction.build.errdialog.xmlnotexist.message"), //解析対象XMLファイルがありません。
-                    Message.getString("projectbuildaction.build.errdialog.xmlnotexist.title"), //XMLファイルエラー
+                    Message.getString("projectbuildaction.build.errdialog.xmlnotexist.message"), // There is no XML file to parse.
+                    Message.getString("projectbuildaction.build.errdialog.xmlnotexist.title"), // XML file error
                     JOptionPane.ERROR_MESSAGE);
-            Application.status.setMessageMain(message + Message.getString("action.common.error.status")); //:エラー
+            Application.status.setMessageMain(message + Message.getString("action.common.error.status")); //:error
             return;
         }
-        // エラー情報モデル
+        // Error information model
         ErrorInfoModel errorModel = this.controller.getErrorInfoModel();
         boolean error = false;
         for (SourceFile file : listXml) {
             if (file == null) continue;
             if (file.getFile() == null) continue;
             if (!file.getFile().exists()) {
-                errorModel.addErrorInfo(Message.getString("projectbuildaction.build.errinfo.notexist", file.getFile().getPath())); //が存在しません。
+                errorModel.addErrorInfo(Message.getString("projectbuildaction.build.errinfo.notexist", file.getFile().getPath())); // does not exist.
                 error = true;
             }
         }
@@ -131,51 +131,51 @@ public class ProjectBuildAction extends ActionBase {
             return;
         }
 
-        // フォートランデータベースをクリアする
+        // Clear the Fortran database
         clearAction = new ProjectClearLanguageAction(this.controller);
         clearAction.clearFortranLanguage();
 
-        // フォートランデータベース
+        // Fortran database
         Fortran fortran = this.controller.getFortranLanguage();
-        // XMLパーサの作成
+        // Create XML parser
         XcodeMLParserStax xmlParser = new XcodeMLParserStax();
-        // ソースツリーモデル
+        // Sourcetree model
         FileTreeModel fileModel = this.controller.getSourceTreeModel();
-        // XMLツリーモデル
+        // XML tree model
         FileTreeModel xmlModel = this.controller.getXmlTreeModel();
-        // 構造ツリーモデル
+        // Structural tree model
         LanguageTreeModel languageModel = this.controller.getLanguageTreeModel();
-        // モジュールツリーモデル
+        // Module tree model
         ModuleTreeModel moduleModel = this.controller.getModuleTreeModel();
 
-        // 構造解析サービス
+        // Structural analysis service
         service = new LanguageService(listXml.toArray(new SourceFile[0]), fortran, xmlParser);
-        // 構造ツリーモデルを設定する
+        // Set the structure tree model
         service.setLanguageTreeModel(languageModel);
-        // モジュールツリーモデルを設定する
+        // Set up the module tree model
         service.setModuleTreeModel(moduleModel);
-        // エラー情報モデルを設定する。
+        // Set the error information model.
         service.setErrorInfoModel(errorModel);
-        // ソースツリーモデルを設定する。
+        // Set the source tree model.
         service.setSourceTreeModel(fileModel);
-        // XMLツリーモデルを設定する。
+        // Set up the XML tree model.
         service.setXmlTreeModel(xmlModel);
-        // プロジェクトフォルダを設定する
+        // Set the project folder
         service.setProjectFolder(this.controller.getProjectModel().getProjectFolder());
 
-        // スレッドタスクサービスの生成を行う。
+        // Create a thread task service.
         FutureService<Integer> future = new FutureService<Integer>(
                 /**
-                 * スレッド呼出クラス
+                 * Thread call class
                  */
                 new Callable<Integer>() {
                     /**
-                     * スレッド実行を行う
+                     * Perform thread execution
                      */
                     @Override
 					public Integer call() {
                         try {
-                            // 解析実行
+                            // Analyze execution
                             service.parseSourceFile();
                             return Constant.SUCCESS_RESULT;
                         } catch (Exception e) {
@@ -186,21 +186,21 @@ public class ProjectBuildAction extends ActionBase {
                 }
                 ) {
                     /**
-                     * スレッド実行完了.<br/>
-                     * キャンセルされた時の後処理を行う。
+                     * Thread execution completed. <br/>
+                     * Perform post-processing when canceled.
                      */
                     @Override
                     protected void done() {
-                        // キャンセルによる終了であるかチェックする。
+                        // Check if the end is due to cancellation.
                         if (this.isCancelled()) {
-                            // フォートランデータベースをクリアする
+                            // Clear the Fortran database
                             clearAction.clearFortranLanguage();
-                            Application.status.setMessageMain(message + Message.getString("action.common.cancel.status")); //:キャンセル
+                            Application.status.setMessageMain(message + Message.getString("action.common.cancel.status")); //:Cancel
                         }
                         else {
-                            Application.status.setMessageMain(message + Message.getString("action.common.done.status")); //:完了
+                            Application.status.setMessageMain(message + Message.getString("action.common.done.status")); //: Done
                         }
-                        // サービス実行の停止
+                        // Stop service execution
                         if (service != null) {
                             service.cancelRunning();
                         }
@@ -209,20 +209,20 @@ public class ProjectBuildAction extends ActionBase {
                     }
 
         };
-        // ステータスメッセージクリア
+        // Clear status message
         Application.status.setMessageStatus(null);
 
-        // スレッドタスクにコントローラをリスナ登録する：スレッド完了時の呼出の為
+        // Register the controller as a listener in the thread task: To call when the thread is completed
         future.addPropertyChangeListener(this.controller);
         this.controller.setThreadFuture(future);
 
-        // プログレスダイアログを表示する
+        // Display the progress dialog
         WindowProgressAction progress = new WindowProgressAction(this.controller);
         progress.showProgressDialog();
 
-        // スレッド起動
+        // Thread start
         new Thread(future).start();
-        // 構造ツリーをアクティブにする
+        // Activate the structure tree
         this.controller.getMainframe().getPanelExplorerView().setSelectedPanel(EXPLORE_PANEL.LANGUAGE);
     }
 

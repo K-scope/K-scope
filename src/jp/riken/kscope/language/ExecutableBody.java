@@ -23,26 +23,26 @@ import java.util.List;
 import jp.riken.kscope.data.CodeLine;
 
 /**
- * 手続きの実行文領域を表現するクラス。 ソースコードの対象領域と行情報に基づく対応付けは実施しない。
+ * A class that represents the execution statement area of a procedure. No association is made between the target area of the source code and the line information.
  *
  * @author RIKEN
  *
  */
 public class ExecutableBody extends Block {
-    /** シリアル番号 */
+    /** Serial number */
     private static final long serialVersionUID = 1540246071061765356L;
-    /** 親プロシージャ */
+    /** Parent procedure */
     private Procedure parent = null;
-    /** データベースの現在カーソルブロック */
-    private transient Block currentBlock; // パース時に使用する作業用メンバ変数
+    /** Database current cursor block */
+    private transient Block currentBlock; // Working member variables used when parsing
 
     // ++++++++++++++++++++++++++++++++++++++++++++
 
     /**
-     * コンストラクタ。
+     * Constructor.
      *
      * @param prnt
-     *           親プログラムユニット
+     * Parent program unit
      */
     public ExecutableBody(Procedure prnt) {
         this();
@@ -50,7 +50,7 @@ public class ExecutableBody extends Block {
     }
 
     /**
-     * コンストラクタ。
+     * Constructor.
      */
     protected ExecutableBody() {
         super();
@@ -59,7 +59,7 @@ public class ExecutableBody extends Block {
         currentBlock = this;
     }
     /**
-     * ブロックタイプの取得。
+     * Get block type.
      *
      * @return BlockType.BODY
      */
@@ -89,9 +89,9 @@ public class ExecutableBody extends Block {
     // ++++++++++++++++++++++++++++++++++++++++++++
 
     /**
-     * カレントブロックを返す。
+     * Returns the current block.
      *
-     * @return ブロック
+     * @return block
      */
     public Block getCurrentBlock() {
         return this.currentBlock;
@@ -105,9 +105,9 @@ public class ExecutableBody extends Block {
     }
 
     /**
-     * 親プログラムユニットの取得。<br>
+     * Acquisition of parent program unit. <br>
      *
-     * @return 親プログラムユニット
+     * @return Parent program unit
      */
     public Procedure getParent() {
         return parent;
@@ -136,14 +136,14 @@ public class ExecutableBody extends Block {
 
     // ---------------Selection----------------//
     /**
-     * 分岐処理の開始を設定する。
+     * Set the start of branch processing.
      *
      * @param lineInfo
-     *            コード行情報
+     * Code line information
      * @param label
-     *            行ラベル。無い場合はStatement.NO_LABELをセットする。
+     *            Row label. If not, set Statement.NO_LABEL.
      * @param type
-     *            分岐処理の型
+     * Branch processing type
      */
     protected void start_selection(CodeLine lineInfo, String label,
             jp.riken.kscope.language.Selection.SelectionType type) {
@@ -152,22 +152,22 @@ public class ExecutableBody extends Block {
     }
 
     /**
-     * 分岐処理の終了を設定する。
+     * Set the end of branch processing.
      *
      * @param lineInfo
-     *            コード行情報
+     * Code line information
      * @param label
-     *            行ラベル。ない場合はStatement.NO_LABELをセットする。
+     *            Row label. If not, set Statement.NO_LABEL.
      */
     protected void end_selection(CodeLine lineInfo, String label) {
         end_block(lineInfo, label);
     }
 
     /**
-     * 分岐処理の追加ブロックの設定。else if文やelse文に相当する。
+     * Setting additional blocks for branch processing. Corresponds to else if statement and else statement.
      *
      * @param cond
-     *            条件式
+     * Conditional expression
      */
     protected void start_condition(Expression cond, CodeLine lineInfo,
             String label) {
@@ -216,10 +216,10 @@ public class ExecutableBody extends Block {
     // ++++++++++++++++++++++++++++++++++++++++++++
 
     /**
-     * CALL文, FUNCTION文の開始行を設定する。
+     * Set the start line of CALL statement and FUNCTION statement.
      *
      * @param lineInfo
-     *            コード行情報
+     * Code line information
      */
     protected void start_procedure_usage(CodeLine lineInfo) {
         ProcedureUsage new_block = new ProcedureUsage(currentBlock);
@@ -227,12 +227,12 @@ public class ExecutableBody extends Block {
     }
 
     /**
-     * CALL文, FUNCTION文の開始行を設定する。
+     * Set the start line of CALL statement and FUNCTION statement.
      *
      * @param lineInfo
-     *            コード行情報
+     * Code line information
      * @param label
-     *            行ラベル
+     *            Row label
      */
     protected void start_procedure_usage(CodeLine lineInfo, String label) {
         ProcedureUsage new_block = new ProcedureUsage(currentBlock);
@@ -240,16 +240,16 @@ public class ExecutableBody extends Block {
     }
 
     /**
-     * CALL文, FUNCTION文の開始行を設定する。
+     * Set the start line of CALL statement and FUNCTION statement.
      *
      * @param lineInfo
-     *            コード行情報
+     * Code line information
      * @param label
-     *            行ラベル
+     *            Row label
      * @param subroutineName
-     *            CALLサブルーチン名
+     * CALL subroutine name
      * @param arguments
-     *            引数リスト
+     * Argument list
      */
     protected void start_procedure_usage(CodeLine lineInfo, String label,
             String subroutineName, List<Expression> arguments) {
@@ -259,12 +259,12 @@ public class ExecutableBody extends Block {
     }
 
     /**
-     * 開始ブロックを設定する。
+     * Set the start block.
      *
      * @param lineInfo
-     *            開始コード行情報
+     * Start code line information
      * @param blk
-     *            開始ブロック
+     * Start block
      */
     protected void start_block(CodeLine lineInfo, Block blk) {
         blk.set_block_start(lineInfo);
@@ -277,14 +277,14 @@ public class ExecutableBody extends Block {
     }
 
     /**
-     * 開始ブロックを設定する。（ラベル付き）
+     * Set the start block. (With label)
      *
      * @param lineInfo
-     *            開始コード行情報
+     * Start code line information
      * @param label
-     *            行ラベル
+     *            Row label
      * @param blk
-     *            開始ブロック
+     * Start block
      */
     protected void start_block(CodeLine lineInfo, String label, Block blk) {
         start_block(lineInfo, blk);
@@ -292,32 +292,32 @@ public class ExecutableBody extends Block {
     }
 
     /**
-     * CALL文, FUNCTION文の終了行を設定する。
+     * Set the end line of CALL statement and FUNCTION statement.
      *
      * @param lineInfo
-     *            コード行情報
+     * Code line information
      */
     protected void end_procedure_usage(CodeLine lineInfo) {
         end_block(lineInfo);
     }
 
     /**
-     * CALL文, FUNCTION文の終了行を設定する。（ラベル付き）
+     * Set the end line of CALL statement and FUNCTION statement. (With label)
      *
      * @param lineInfo
-     *            コード行情報
+     * Code line information
      * @param label
-     *            行ラベル
+     *            Row label
      */
     protected void end_procedure_usage(CodeLine lineInfo, String label) {
         end_block(lineInfo, label);
     }
 
     /**
-     * 終了コード行情報を設定する。
+     * Set the exit code line information.
      *
      * @param lineInfo
-     *            終了コード行情報
+     * Exit code line information
      */
     protected void end_block(CodeLine lineInfo) {
         if (currentBlock == null)
@@ -328,12 +328,12 @@ public class ExecutableBody extends Block {
     }
 
     /**
-     * 終了ブロックを設定する。（ラベル付き）
+     * Set the end block. (With label)
      *
      * @param lineInfo
-     *            終了コード行情報
+     * Exit code line information
      * @param label
-     *            行ラベル
+     *            Row label
      */
     protected void end_block(CodeLine lineInfo, String label) {
         currentBlock.set_block_end(lineInfo);
@@ -344,10 +344,10 @@ public class ExecutableBody extends Block {
 
 
     /**
-     * DO文の開始行を設定する。
+     * Set the start line of the DO statement.
      *
      * @param lineInfo
-     *            コード行情報
+     * Code line information
      */
     protected void start_repetition(CodeLine lineInfo) {
         Repetition new_block = new Repetition(currentBlock);
@@ -355,22 +355,22 @@ public class ExecutableBody extends Block {
     }
 
     /**
-     * DO文の終了行を設定する。
+     * Set the end line of the DO statement.
      *
      * @param lineInfo
-     *            コード行情報
+     * Code line information
      */
     protected void end_repetition(CodeLine lineInfo) {
         end_block(lineInfo);
     }
 
     /**
-     * DO文の開始行を設定する。（ラベル付き）
+     * Set the start line of the DO statement. (With label)
      *
      * @param lineInfo
-     *            コード行情報
+     * Code line information
      * @param label
-     *            行ラベル
+     *            Row label
      */
     protected void start_repetition(CodeLine lineInfo, String label) {
         Repetition new_block = new Repetition(currentBlock);
@@ -378,24 +378,24 @@ public class ExecutableBody extends Block {
     }
 
     /**
-     * DO文の終了行を設定する。（ラベル付き）
+     * Set the end line of the DO statement. (With label)
      *
      * @param lineInfo
-     *            コード行情報
+     * Code line information
      * @param label
-     *            行ラベル
+     *            Row label
      */
     protected void end_repetition(CodeLine lineInfo, String label) {
         end_block(lineInfo, label);
     }
 
     /**
-     * CONTINUE文を設定する。
+     * Set the CONTINUE statement.
      *
      * @param lineInfo
-     *            コード行情報
+     * Code line information
      * @param label
-     *            行ラベル
+     *            Row label
      */
     protected void set_continue(CodeLine lineInfo, String label) {
         if (currentBlock.get_start().is_labeled()) {
@@ -407,10 +407,10 @@ public class ExecutableBody extends Block {
     }
 
     /**
-     * Substitution文の開始行を設定する。
+     * Set the start line of the Substitution statement.
      *
      * @param lineInfo
-     *            コード行情報
+     * Code line information
      */
     protected void startSubstitution(CodeLine lineInfo) {
         Substitution new_block = new Substitution(currentBlock);
@@ -422,10 +422,10 @@ public class ExecutableBody extends Block {
     }
 
     /**
-     * Return文を設定する。
+     * Set the Return statement.
      *
      * @param lineInfo
-     *            コード行情報
+     * Code line information
      */
     protected void setReturn(CodeLine lineInfo) {
         Return new_block = new Return(currentBlock);
@@ -434,7 +434,7 @@ public class ExecutableBody extends Block {
     }
 
     /**
-     * IDを取得する。
+     * Get an ID.
      *
      * @return ID
      */
@@ -453,9 +453,9 @@ public class ExecutableBody extends Block {
     }
 
     /**
-     * 名前空間（モジュール名.ルーチン名）を取得する。
+     * Get the namespace (module name.routine name).
      *
-     * @return 名前空間（モジュール名.ルーチン名）
+     * @return namespace (module name.routine name)
      */
     @Override
     public String getNamespace() {
@@ -467,9 +467,9 @@ public class ExecutableBody extends Block {
     }
 
     /**
-     * 構造IDを取得する。
+     * Get the structure ID.
      *
-     * @return 構造ID
+     * @return Structure ID
      */
     @Override
     public String getLayoutID() {

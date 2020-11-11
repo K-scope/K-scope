@@ -16,6 +16,6 @@
  */
 
 /**
- * フォートランソースファイルパーサを提供します
+ * Provides a Fortran source file parser
  */
 package jp.riken.kscope.parser;

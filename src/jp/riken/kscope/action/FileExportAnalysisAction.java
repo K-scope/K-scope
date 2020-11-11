@@ -31,28 +31,28 @@ import jp.riken.kscope.service.AppController;
 import jp.riken.kscope.utils.SwingUtils;
 
 /**
- * 分析情報エクスポートアクションクラス
+ * Analysis information export action class
  * @author RIKEN
  *
  */
 public class FileExportAnalysisAction extends ActionBase {
 
     /**
-     * コンストラクタ
-     * @param controller	アプリケーションコントローラ
+     * Constructor
+     * @param controller Application controller
      */
     public FileExportAnalysisAction(AppController controller) {
         super(controller);
     }
 
     /**
-     * アクションが実行可能であるかチェックする.<br/>
-     * アクションの実行前チェック、メニューのイネーブルの切替を行う。<br/>
-     * @return		true=アクションが実行可能
+     * Check if the action is executable. <br/>
+     * Check before executing the action and switch the menu enable. <br/>
+     * @return true = Action can be executed
      */
     @Override
     public boolean validateAction() {
-        // プロジェクトが作成済みであること
+        // The project has been created
         ProjectModel model = this.controller.getProjectModel();
         if (model == null) return false;
         if (model.getProjectTitle() == null) return false;
@@ -62,50 +62,50 @@ public class FileExportAnalysisAction extends ActionBase {
     }
 
     /**
-     * アクション発生イベント
-     * @param event		イベント情報
+     * Action occurrence event
+     * @param event Event information
      */
     @Override
     public void actionPerformed(ActionEvent event) {
     	
-    	// ステータスメッセージ
-    	final String message = Message.getString("fileexportanalysisaction.exportanalysisinfo.status"); //分析情報のエクスポート
+    	// Status message
+    	final String message = Message.getString("fileexportanalysisaction.exportanalysisinfo.status"); // Export analysis information
     	Application.status.setMessageMain(message);
 
-        // 親Frameの取得を行う。
+        // Get the parent Frame.
         Frame frame = getWindowAncestor( event );
 
-        // 選択分析情報のタブの取得
+        // Get tab of selection analysis information
         IAnalisysComponent tab = this.controller.getMainframe().getPanelAnalysisView().getSelectedPanel();
         ANALYSIS_PANEL enumPanel = tab.getEnumPanel();
         String defname = enumPanel.getFilename();
         
         if (!tab.isExportable()) {
         	JOptionPane.showMessageDialog(frame,
-        			Message.getString("fileexportanalysisaction.exportanalysisinfo.dialog.message"), //出力する分析情報がありません。処理を終了します。
+        			Message.getString("fileexportanalysisaction.exportanalysisinfo.dialog.message"), // There is no analysis information to output. The process ends.
         			message, JOptionPane.CLOSED_OPTION);
         	Application.status.setMessageMain(message + 
-        			Message.getString("action.common.stop.status")); // 中断
+        			Message.getString("action.common.stop.status")); // Suspended
         	return;
         }
 
-        // プロジェクトフォルダ
+        // Project folder
         File projectfolder = this.controller.getProjectModel().getProjectFolder();
         String folder = projectfolder != null ? projectfolder.getAbsolutePath() : null;
         
 
-        // ファイル保存ダイアログを表示する。
+        // Display the file save dialog.
         File file = SwingUtils.showSaveFileDialog(frame, message, folder, defname);
         if (file == null) {
         	Application.status.setMessageMain(message + 
-        			Message.getString("action.common.cancel.status")); //キャンセル
+        			Message.getString("action.common.cancel.status")); //Cancel
         	return;
         }
 
-        // 分析情報のエクスポートを行う
+        // Export analysis information
         tab.export(file);
     	Application.status.setMessageMain(message + 
-    			Message.getString("action.common.done.status")); //完了
+    			Message.getString("action.common.done.status")); // Done
     }
 
 

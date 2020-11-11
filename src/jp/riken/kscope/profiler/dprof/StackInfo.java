@@ -17,83 +17,83 @@
 package jp.riken.kscope.profiler.dprof;
 
 /**
- * コールグラフ情報のスタック情報を保持する
+ * Holds stack information for call graph information
  *
  * @author RIKEN
  */
 public class StackInfo {
-    /** ネストレベル */
+    /** Nest level */
     private int nestLevel;
-    /** サンプリング数 */
+    /** Number of samples */
     private float sampNum;
-    /** 累積サンプリング数 */
+    /** Cumulative sampling number */
     private float sumSampNum;
-    /** シンボル名 */
+    /** Symbol name */
     private String symbolName;
 
     /**
-     * ネストレベルを取得する
-     * @return ネストレベル
+     * Get the nesting level
+     * @return Nested level
      */
     public int getNestLevel() {
         return nestLevel;
     }
 
     /**
-     * サンプリング数を取得する
-     * @return サンプリング数
+     * Get the number of samples
+     * @return Number of samples
      */
     public float getSampNum() {
         return sampNum;
     }
 
     /**
-     * 累積サンプリング数を取得する
-     * @return 累積サンプリング数
+     * Get the cumulative number of samples
+     * @return Cumulative sampling number
      */
     public float getSumSampNum() {
         return sumSampNum;
     }
 
     /**
-     * シンボル名を取得する
-     * @return シンボル名
+     * Get the symbol name
+     * @return Symbol name
      */
     public String getSymbolName() {
         return symbolName;
     }
 
     /**
-     * ネストレベルを設定する
+     * Set the nesting level
      * @param nestLevel
-     *            設定するネストレベル
+     * Nest level to set
      */
     public void setNestLevel(int nestLevel) {
         this.nestLevel = nestLevel;
     }
 
     /**
-     * サンプリング数を設定する
+     * Set the number of samplings
      * @param sampNum
-     *            設定するサンプリング数
+     * Number of samplings to set
      */
     public void setSampNum(float sampNum) {
         this.sampNum = sampNum;
     }
 
     /**
-     * 累積サンプリング数を設定する
+     * Set the cumulative number of samplings
      * @param sumSampNum
-     *            設定する累積サンプリング数
+     * Cumulative sampling number to set
      */
     public void setSumSampNum(float sumSampNum) {
         this.sumSampNum = sumSampNum;
     }
 
     /**
-     * シンボル名を設定する
+     * Set the symbol name
      * @param symbolName
-     *            設定するシンボル名
+     * Symbol name to set
      */
     public void setSymbolName(String symbolName) {
         this.symbolName = symbolName;

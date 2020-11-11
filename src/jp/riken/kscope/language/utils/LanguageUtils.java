@@ -33,23 +33,23 @@ import jp.riken.kscope.language.ProcedureUsage;
 import jp.riken.kscope.language.ProgramUnit;
 
 /**
- * データベースユーティリティクラス.
- * データベースからブロックの検索、取得等を行う
+ * Database utility class.
+ * Search and retrieve blocks from the database
  * @author RIKEN
  */
 public class LanguageUtils {
-    /** フォートランデータベース */
+    /** Fortran database */
     private Fortran fortranDb;
 
     /**
-     * コンストラクタ
+     * Constructor
      */
 	public LanguageUtils() {
 	}
 
     /**
-     * コンストラクタ
-     * @param db		データベース
+     * Constructor
+     * @param db database
      */
 	public LanguageUtils(Fortran db) {
 		this.fortranDb = db;
@@ -57,11 +57,11 @@ public class LanguageUtils {
 
 
     /**
-     * コード行情報から、それが属するプログラム単位を探索し返す。
+     * Searches back the program unit to which it belongs from the code line information.
      *
      * @param line
-     *            コード行情報
-     * @return プログラム単位。無ければnullを返す。
+     * Code line information
+     * @return Program unit. If not, it returns null.
      */
     public ProgramUnit getCurrentProgramUnit(CodeLine line) {
     	if (line == null) return null;
@@ -69,10 +69,10 @@ public class LanguageUtils {
 
         SourceFile file = line.getSourceFile();
         int lineNo = line.getStartLine();
-        // fileにあるプログラム単位のリストを取得
+        // Get the list of program units in file
         List<ProgramUnit> pus = this.fortranDb.getProgramUnits(file);
         if (pus == null) return null;
-        // lineNoを含むプログラム単位を習得
+        // Learn program units including lineNo
         ProgramUnit punit = null;
         for (ProgramUnit pu : pus) {
             int sPos = pu.getStartPos();
@@ -101,10 +101,10 @@ public class LanguageUtils {
     }
 
 	/**
-	 * 行番号のブロックリストを検索する
-	 * @param line			行番号
-	 * @return		行番号のブロックリスト
-	 */
+* Search the block list of line numbers
+* @param line line number
+* @return Block list of line numbers
+*/
     public IBlock[] getCodeLineBlocks(CodeLine line) {
     	if (line == null) return null;
     	CodeLine[] lines = {line};
@@ -113,10 +113,10 @@ public class LanguageUtils {
 
 
 	/**
-	 * 行番号のブロックリストを検索する
-	 * @param lines			行番号リスト
-	 * @return		行番号のブロックリスト
-	 */
+* Search the block list of line numbers
+* @param lines Line number list
+* @return Block list of line numbers
+*/
     public IBlock[] getCodeLineBlocks(CodeLine[] lines) {
     	if (lines == null) return null;
 
@@ -136,15 +136,15 @@ public class LanguageUtils {
 
 
     /**
-     * データベース構造階層を取得する.
-     * 階層リストは子から親のリストである.
-     * @param block		データベース構成ブロック
-     * @return			データベース構造階層リスト
+     * Get the database structure hierarchy.
+     * A hierarchical list is a list of children to parents.
+     * @param block Database configuration block
+     * @return Database structure hierarchical list
      */
     public List<Object> getLanguagePath(Object block) {
     	if (block == null) return null;
 
-    	// 選択ノードの階層を取得する
+    	// Get the hierarchy of selected nodes
     	List<Object> parents = new ArrayList<Object>();
     	Object child = block;
     	while (child != null) {
@@ -158,18 +158,18 @@ public class LanguageUtils {
     					parents.add(child);
     				}
     			}
-    			// 呼出元CALL文リスト
+    			// Caller CALL statement list
     	    	Set<ProcedureUsage> calls = ((Procedure)child).getCallMember();
     	    	if (calls != null && calls.size() > 0) {
     	    		ProcedureUsage[] array = calls.toArray(new ProcedureUsage[0]);
-    	    		// 親の階層の深いものを選択する。
+    	    		// Select the one with the deep parent hierarchy.
     	    		List<Object> listMax = null;
     	    		for (ProcedureUsage useage : array) {
     	    			List<Object> listPath = getLanguagePath(useage);
     	    			if (listPath == null || listPath.size() <= 0) continue;
-    	    			// 再帰呼出となっていないかチェックする.
+    	    			// Check if it is a recursive call.
     	    			if (isRecursive(parents, listPath)) continue;
-    	    			// program文に達しているか
+    	    			// Have you reached the program statement?
     	    			if (listPath.get(listPath.size()-1) instanceof Procedure) {
     	    				if (((Procedure)listPath.get(listPath.size()-1)).isProgram()) {
     	    					listMax = listPath;
@@ -205,10 +205,10 @@ public class LanguageUtils {
     }
 
     /**
-     * 再帰呼出となっていないかチェックする.
-     * @param parents		元リスト
-     * @param childrens		追加リスト
-     * @return		true=再帰呼出
+     * Check if it is a recursive call.
+     * @param parents Original list
+     * @param childrens additional list
+     * @return true = Recursive call
      */
     private boolean isRecursive(List<Object> parents, List<Object> childrens) {
     	if (parents == null || parents.size() <= 0) return false;

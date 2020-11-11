@@ -36,19 +36,19 @@ import jp.riken.kscope.utils.StringUtils;
 import jp.riken.kscope.utils.SwingUtils;
 
 /**
- * ソースファイルを開くアクションクラス
+ * Action class to open source file
  * @author RIKEN
  *
  */
 public class FileOpenSourceFileAction extends ActionBase {
 
-    /** ソースファイル取得先ビュー */
+    /** Source file source view */
     private FRAME_VIEW view;
 
     /**
-     * コンストラクタ
-     * @param controller	アプリケーションコントローラ
-     * @param view 			ソースファイル取得先ビュー
+     * Constructor
+     * @param controller Application controller
+     * @param view Source file source view
      */
     public FileOpenSourceFileAction(AppController controller, FRAME_VIEW view) {
         super(controller);
@@ -56,9 +56,9 @@ public class FileOpenSourceFileAction extends ActionBase {
     }
 
     /**
-     * アクションが実行可能であるかチェックする.<br/>
-     * アクションの実行前チェック、メニューのイネーブルの切替を行う。<br/>
-     * @return		true=アクションが実行可能
+     * Check if the action is executable. <br/>
+     * Check before executing the action and switch the menu enable. <br/>
+     * @return true = Action can be executed
      */
     @Override
     public boolean validateAction() {
@@ -75,8 +75,8 @@ public class FileOpenSourceFileAction extends ActionBase {
 
 
     /**
-     * 現在選択されているコード行を取得する
-     * @return    選択コード行
+     * Get the currently selected line of code
+     * @return line of selection code
      */
     private CodeLine getSelectedCodeLine() {
 
@@ -95,22 +95,22 @@ public class FileOpenSourceFileAction extends ActionBase {
 
 
     /**
-     * ソースファイルを開くイベント
-     * @param event		イベント情報
+     * Event to open source file
+     * @param event Event information
      */
     @Override
     public void actionPerformed(ActionEvent event) {
 
-        // ステータスメッセージ
-        final String message = Message.getString("mainmenu.file.program"); //外部ツールで開く
+        // Status message
+        final String message = Message.getString("mainmenu.file.program"); // Open with an external tool
         Application.status.setMessageMain(message);
 
-        // 実行チェック
+        // Execution check
         CodeLine line = getSelectedCodeLine();
         if (line == null) {
-            this.controller.getErrorInfoModel().addErrorInfo(Message.getString("fileopensourcefileaction.openfile.notarget.errinfo")); //ファイルが選択されていません。
+            this.controller.getErrorInfoModel().addErrorInfo(Message.getString("fileopensourcefileaction.openfile.notarget.errinfo")); // No file is selected.
             Application.status.setMessageMain(message +
-            		Message.getString("action.common.error.status")); //:エラー
+            		Message.getString("action.common.error.status")); //:error
             return;
         }
         SourceFile source = line.getSourceFile();
@@ -118,9 +118,9 @@ public class FileOpenSourceFileAction extends ActionBase {
         if (source == null || source.getFile() == null) {
             this.controller.getErrorInfoModel().addErrorInfo(
                     line,
-                    Message.getString("fileopensourcefileaction.openfile.filenotget.errinfo")); //ファイルを取得できませんでした。
+                    Message.getString("fileopensourcefileaction.openfile.filenotget.errinfo")); // Could not get the file.
             Application.status.setMessageMain(message + ":" +
-            		Message.getString("action.common.error.status")); //:エラー
+            		Message.getString("action.common.error.status")); //:error
             return;
         }
         File file = source.getFile();
@@ -130,9 +130,9 @@ public class FileOpenSourceFileAction extends ActionBase {
         if (!file.exists()) {
             this.controller.getErrorInfoModel().addErrorInfo(
                     line,
-                    Message.getString("fileopensourcefileaction.openfile.notexist.errinfo")); //ファイルが存在しません。
+                    Message.getString("fileopensourcefileaction.openfile.notexist.errinfo")); // The file does not exist.
             Application.status.setMessageMain(message + ":" +
-            		Message.getString("action.common.error.status")); //:エラー
+            		Message.getString("action.common.error.status")); //:error
             return;
         }
 
@@ -141,47 +141,47 @@ public class FileOpenSourceFileAction extends ActionBase {
         if (program == null) {
             this.controller.getErrorInfoModel().addErrorInfo(
                     line,
-                    Message.getString("fileopensourcefileaction.openfile.noprogram.errinfo")); //外部ツールが設定されていません。
+                    Message.getString("fileopensourcefileaction.openfile.noprogram.errinfo")); // No external tools have been set.
             Application.status.setMessageMain(message +
-            		Message.getString("action.common.error.status")); //:エラー
+            		Message.getString("action.common.error.status")); //:error
             return;
         }
 
         String option = program.getOption();
         String filename = file.getAbsolutePath();
-        // 起動引数
+        // Start argument
         String[] args = getProgramArguments(option, filename, startline);
         if (args != null && args.length > 0) {
-            // 起動引数が設定されていれば、ソースファイルは起動引数に含まれる。
+            // If the startup argument is set, the source file will be included in the startup argument.
             filename = null;
         }
         String programname = program.getExename();
         if (program.isRelation()) {
             programname = null;
         }
-        // 外部プログラムの実行
+        // Executing an external program
         String errMsg = SwingUtils.processOpenProgram(filename, programname, args);
         if (errMsg != null && !errMsg.isEmpty()) {
             JOptionPane.showMessageDialog(
                     this.controller.getMainframe(),
                     errMsg,
-                    Message.getString("dialog.common.error"), //エラー
+                    Message.getString("dialog.common.error"), //error
                     JOptionPane.ERROR_MESSAGE);
             Application.status.setMessageMain(message +
-            		Message.getString("action.common.error.status")); //:エラー
+            		Message.getString("action.common.error.status")); //:error
             return;
         }
         Application.status.setMessageMain(message +
-        		Message.getString("action.common.done.status")); //完了
+        		Message.getString("action.common.done.status")); // Done
         return;
     }
 
     /**
-     * 起動引数を取得する
-     * @param option		起動引数
-     * @param filename		起動ソースファイル名
-     * @param startline		行番号
-     * @return		起動引数
+     * Get startup arguments
+     * @param option Startup argument
+     * @param filename Startup source file name
+     * @param startline line number
+     * @return Start argument
      */
     private String[] getProgramArguments(String option, String filename, int startline) {
         if (option == null || option.isEmpty()) return null;

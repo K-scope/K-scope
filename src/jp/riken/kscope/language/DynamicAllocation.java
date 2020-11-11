@@ -27,24 +27,24 @@ import java.util.Set;
 import jp.riken.kscope.information.InformationBlocks;
 
 /**
- * 動的にメモリ領域を割り当てる処理に対応したクラス。
+ * A class that supports the process of dynamically allocating memory areas.
  *
  * @author RIKEN
  *
  */
 public class DynamicAllocation extends jp.riken.kscope.language.Block {
-    /** シリアル番号 */
+    /** Serial number */
     private static final long serialVersionUID = -2152445474995339483L;
     private Map<Variable, VariableDimension> targets;
     private Variable error;
 
     /**
-     * コンストラクタ。
+     * Constructor.
      *
      * @param parent
-     *           親ブロック
+     * Parent block
      * @param trgt
-     *           割り当て対象となる変数
+     * Variables to be assigned
      */
     public DynamicAllocation(Block parent, Map<Variable, VariableDimension> trgt) {
         super(parent);
@@ -52,33 +52,33 @@ public class DynamicAllocation extends jp.riken.kscope.language.Block {
     }
 
     /**
-     * コンストラクタ。
+     * Constructor.
      */
     public DynamicAllocation() {
         super();
     }
 
     /**
-     * エラー変数をセット。
+     * Set error variables.
      *
      * @param err
-     *            エラー変数
+     * Error variable
      */
     public void setError(Variable err) {
         error = err;
     }
 
     /**
-     * エラー変数を取得する
+     * Get error variables
      *
-     * @return error エラー変数
+     * @return error Error variable
      */
     public Variable getError() {
         return error;
     }
 
     /**
-     * ブロックタイプの取得。
+     * Get block type.
      *
      * @return BlockType.DYNAMIC_ALLOCATION
      */
@@ -87,28 +87,28 @@ public class DynamicAllocation extends jp.riken.kscope.language.Block {
     }
 
     /**
-     * 割り当て対象変数の取得。
+     * Get the variable to be allocated.
      *
-     * @return 割り当て対象変数
+     * @return Allotted variable
      */
     public Map<Variable, VariableDimension> getTarget() {
         return targets;
     }
 
     /**
-     * 割り当て対象変数をセットする。
+     * Set the variable to be assigned.
      *
      * @param trgt
-     *            ターゲット
+     * Target
      */
     public void setTarget(Map<Variable, VariableDimension> trgt) {
         targets = trgt;
     }
 
     /**
-     * 付加情報ブロックコレクションを生成する。
+     * Generate an additional information block collection.
      *
-     * @return 付加情報ブロックコレクション
+     * @return Additional information block collection
      */
     @Override
     public InformationBlocks createInformationBlocks() {
@@ -126,10 +126,10 @@ public class DynamicAllocation extends jp.riken.kscope.language.Block {
     }
 
     /**
-     * idにマッチした情報ブロックを検索する。
+     * Search for information blocks that match id.
      * @param id
-     *          ID
-     * @return 見つかった情報ブロック。見つからなかった場合はnullが返ります。
+     * ID
+     * @return The information block found. If not found, null is returned.
      */
      @Override
     public IInformation findInformationBlockBy(String id) {
@@ -153,9 +153,9 @@ public class DynamicAllocation extends jp.riken.kscope.language.Block {
 
 
      /**
-      * 同一ブロックであるかチェックする.
-      * @param block		ブロック
- 	 * @return		true=一致
+      * Check if they are the same block.
+      * @param block block
+ * @return true = match
       */
      @Override
  	public boolean equalsBlocks(Block block) {
@@ -192,9 +192,9 @@ public class DynamicAllocation extends jp.riken.kscope.language.Block {
      }
 
      /**
-      * 同一ブロックを検索する
-      * @param block			IInformationブロック
-      * @return		同一ブロック
+      * Search for the same block
+      * @param block IInformation block
+      * @return Same block
       */
      @Override
      public IInformation[] searchInformationBlocks(IInformation block) {

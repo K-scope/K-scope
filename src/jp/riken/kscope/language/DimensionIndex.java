@@ -20,24 +20,24 @@ package jp.riken.kscope.language;
 import java.io.Serializable;
 
 /**
- * 変数の配列添え字を表現するクラス。
- * 
+ * A class that represents an array of variables.
+ *
  * @author RIKEN
- * 
+ *
  */
 public class DimensionIndex implements Serializable {
-    /** シリアル番号 */
+    /** Serial number */
     private static final long serialVersionUID = -4025983357574098164L;
     private Expression start;
     private Expression end;
 
     /**
-     * コンストラクタ
-     * 
+     * Constructor
+     *
      * @param st
-     *            開始インデックス
+     * Starting index
      * @param en
-     *            終了インデックス
+     * End index
      */
     public DimensionIndex(Expression st, Expression en) {
         this.start = st;
@@ -46,38 +46,38 @@ public class DimensionIndex implements Serializable {
     // ++++++++++++++++++++++++++++++++++++++++++++
 
     /**
-     * 添字の開始をセットする。
-     * 
+     * Set the start of the subscript.
+     *
      * @param iStart
-     *            添字の開始
+     * Start of subscript
      */
     public void set_start(Expression iStart) {
         start = iStart;
     }
 
     /**
-     * 添字の終了をセットする。
-     * 
+     * Set the end of the subscript.
+     *
      * @param iEnd
-     *            添字の終了
+     * End of subscript
      */
     public void set_end(Expression iEnd) {
         end = iEnd;
     }
 
     /**
-     * 添字の開始を返す。
-     * 
-     * @return 添字の開始
+     * Returns the start of the subscript.
+     *
+     * @return Start of subscript
      */
     public Expression get_start() {
         return (start);
     }
 
     /**
-     * 添字の終了を返す。
-     * 
-     * @return 添字の終了
+     * Returns the end of the subscript.
+     *
+     * @return End of subscript
      */
     public Expression get_end() {
         return (end);

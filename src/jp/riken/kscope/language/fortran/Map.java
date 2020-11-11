@@ -23,79 +23,79 @@ import java.util.List;
 import jp.riken.kscope.language.VariableDefinition;
 
 /**
- * map型クラス。
+ * Map type class.
  *
  * @author RIKEN
  *
  */
 public class Map implements Serializable {
-    /** シリアル番号 */
+    /** Serial number */
     private static final long serialVersionUID = -6468256404696838753L;
     /**
-     * structure型とほぼ同じなため、structureを包含して使う。
+     * Since it is almost the same as the structure type, it is used by including the structure.
      */
     private Structure core = new Structure();
 
     /**
-     * 変数定義文の追加。
+     * Addition of variable definition statement.
      *
      * @param definition
-     *          変数定義文
+     * Variable definition statement
      */
     public void add(VariableDefinition definition) {
         core.add(definition);
     }
 
     /**
-     * 指定の型の変数定義文の追加。
+     * Add variable definition statement of the specified type.
      *
      * @param typ
-     *          変数の型
+     * Variable type
      * @param nm
-     *          変数名
+     *          Variable name
      */
     public void add(VariableType typ, String nm) {
         core.add(typ, nm);
     }
 
     /**
-     * type文の追加。
+     * Added type statement.
      *
      * @param type
-     *          構造体
+     *          Structure
      * @param variableName
-     *          変数名
+     *          Variable name
      */
     public void add(Type type, String variableName) {
         core.add(type, variableName);
     }
 
     /**
-     * structure文の追加。
+     * Addition of structure statement.
      *
      * @param structure
-     *          構造体
+     *          Structure
      * @param variableName
-     *          変数名
+     *          Variable name
      */
     public void add(Structure structure, String variableName) {
         core.add(structure, variableName);
     }
 
     /**
-     * union文の追加。
+     * Added union statement.
      *
      * @param union
-     *          共用体
+     * Union type
      */
     public void add(Union union) {
         core.add(union);
     }
 
     /**
-     * 構造体内の変数定義文リストの取得。
+     * Get a list of variable definition statements in the structure.
      *
-     * @return 変数定義文リスト
+     * @return Variable definition statement list
      */
     public List<VariableDefinition> getDefinitions() {
         return core.getDefinitions();

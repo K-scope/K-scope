@@ -18,27 +18,27 @@
 package jp.riken.kscope.language;
 
 /**
- * モジュールプログラム単位を表現するクラス。
+ * Module A class that represents a program unit.
  *
  * @author RIKEN
  *
  */
 public class Module extends ProgramUnit {
-	/** シリアル番号 */
+	/** Serial number */
 	private static final long serialVersionUID = -9149612813518825146L;
 
     /**
-     * コンストラクタ。
+     * Constructor.
      *
      * @param m_name
-     *            モジュール名
+     *            Module name
      */
     public Module(String m_name) {
         super("module", m_name);
     }
 
     /**
-     * ブロックタイプの取得。
+     * Get block type.
      *
      * @return BlockType.MODULE
      */
@@ -53,9 +53,9 @@ public class Module extends ProgramUnit {
     }
 
     /**
-     * モジュールに属するプログラム単位の配列を返す。
+     * Returns an array of program units belonging to the module.
      *
-     * @return プログラム単位の配列。無ければ空の配列を返す。
+     * @return An array of program units. If not, it returns an empty array.
      */
     public Procedure[] get_procedures() {
         Procedure[] subs = new Procedure[super.get_num_of_child()];
@@ -70,7 +70,7 @@ public class Module extends ProgramUnit {
     }
 
     /**
-     * IDを取得する。
+     * Get an ID.
      *
      * @return ID
      */

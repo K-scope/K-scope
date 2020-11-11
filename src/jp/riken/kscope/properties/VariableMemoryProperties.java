@@ -28,29 +28,29 @@ import jp.riken.kscope.language.Variable;
 
 
 /**
- * ソースコードの変数アクセス先メモリ設定クラス
+ * Source code variable access destination memory setting class
  * @author RIKEN
  */
 public class VariableMemoryProperties extends PropertiesBase {
 
-    /** シリアル番号 */
+    /** Serial number */
     private static final long serialVersionUID = 1L;
 
-    /** 変数(ハイライト)設定リスト */
+    /** Variable (highlight) setting list */
     private List<VariableMemory> listVariable = new ArrayList<VariableMemory>();
-    /** 要求Byte/FLOP設定プロパティ */
+    /** Request Byte / FLOP configuration property */
     RequiredBFProperties requiredBFProperties;
 
     /**
-     * コンストラクタ
-     * @param properties  要求Byte/FLOP設定プロパティ
+     * Constructor
+     * @param properties Request Byte / FLOP configuration properties
      */
     public VariableMemoryProperties(RequiredBFProperties properties) {
     	this.requiredBFProperties = properties;
     }
 
     /**
-     * プロパティ変更イベントを通知する。
+     * Notify property change event.
      */
     @Override
     public void firePropertyChange() {
@@ -58,16 +58,16 @@ public class VariableMemoryProperties extends PropertiesBase {
     }
 
     /**
-     * 変数(ハイライト)設定リストを取得する。
-     * @return		変数ハイライト設定リスト
+     * Get the variable (highlight) setting list.
+     * @return Variable highlight setting list
      */
     public List<VariableMemory> getListVariableMemory() {
         return this.listVariable;
     }
 
     /**
-     * 変数(ハイライト)数を取得する。
-     * @return		変数(ハイライト)数
+     * Get the number of variables (highlights).
+     * @return Number of variables (highlights)
      */
     public int getVariableCount() {
         if (listVariable == null || listVariable.size() <= 0) {return 0;}
@@ -75,9 +75,9 @@ public class VariableMemoryProperties extends PropertiesBase {
     }
 
     /**
-     * 変数(ハイライト)を取得する。
-     * @param	index		インデックス
-     * @return		変数(ハイライト)
+     * Get variables (highlights).
+     * @param index index
+     * @return variable (highlight)
      */
     public Keyword getVariableMemory(int index) {
         if (listVariable == null || listVariable.size() <= 0) {return null;}
@@ -87,9 +87,9 @@ public class VariableMemoryProperties extends PropertiesBase {
     }
 
     /**
-     * 変数(ハイライト)を設定する。
-     * @param	index		インデックス
-     * @param	variable		変数(ハイライト)
+     * Set variables (highlights).
+     * @param index index
+     * @param variable Variable (highlight)
      */
     public void setVariableMemory(int index, VariableMemory variable) {
         if (listVariable == null || listVariable.size() <= 0) {return;}
@@ -98,8 +98,8 @@ public class VariableMemoryProperties extends PropertiesBase {
     }
 
     /**
-     * 変数(ハイライト)を追加する。
-     * @param	variable		変数(ハイライト)
+     * Add variables (highlights).
+     * @param variable Variable (highlight)
      */
     public void addVariableMemory(VariableMemory variable) {
         if (listVariable == null) {
@@ -109,8 +109,8 @@ public class VariableMemoryProperties extends PropertiesBase {
     }
 
     /**
-     * 変数(ハイライト)を削除する。
-     * @param	variable		変数(ハイライト)
+     * Delete variables (highlights).
+     * @param variable Variable (highlight)
      */
     public void removeVariableMemory(VariableMemory variable) {
         if (listVariable == null) return;
@@ -118,8 +118,8 @@ public class VariableMemoryProperties extends PropertiesBase {
     }
 
     /**
-     * 変数(ハイライト)を削除する。
-     * @param	index		インデックス
+     * Delete variables (highlights).
+     * @param index index
      */
     public void removeVariableMemory(int index) {
         if (listVariable == null) return;
@@ -127,8 +127,8 @@ public class VariableMemoryProperties extends PropertiesBase {
     }
 
     /**
-     * 変数(ハイライト)を削除する。
-     * @param	variable		変数(ハイライト)
+     * Delete variables (highlights).
+     * @param variable Variable (highlight)
      */
     public void removeVariable(Variable variable) {
         if (listVariable == null) return;
@@ -143,15 +143,15 @@ public class VariableMemoryProperties extends PropertiesBase {
     }
 
     /**
-     * 変数(ハイライト)リストをクリアする。
+     * Clear the variable (highlight) list.
      */
     public void clearVariableMemory() {
     	listVariable = new ArrayList<VariableMemory>();
     }
 
     /**
-     * 変数(ハイライト)設定の取得を行う.
-     * @param variable		変数
+     * Get variable (highlight) settings.
+     * @param variable variable
      */
 	public VariableMemory getVariableMemory(Variable variable) {
 		if (variable == null) return null;
@@ -166,8 +166,8 @@ public class VariableMemoryProperties extends PropertiesBase {
 	}
 
     /**
-     * 変数(ハイライト)設定が追加済みであるかチェックする.
-     * @param variable		変数
+     * Check if variable (highlight) settings have been added.
+     * @param variable variable
      */
 	public boolean containsVariableMemory(Variable variable) {
 		if (variable == null) return false;
@@ -176,8 +176,8 @@ public class VariableMemoryProperties extends PropertiesBase {
 	}
 
     /**
-     * 変数の追加を行う.
-     * @param variable		変数
+     * Add variables.
+     * @param variable variable
      */
 	public void addVariable(Variable variable) {
 		if (variable == null) return;
@@ -187,19 +187,19 @@ public class VariableMemoryProperties extends PropertiesBase {
 			varmem.setRequiredBF(mem);
 		}
 		else {
-			// 変数メモリデータの生成
+			// Generate variable memory data
 			VariableMemory varmem = createVariableMemory(variable);
 			addVariableMemory(varmem);
 		}
 	}
 
 	/**
-	 * 変数メモリデータオブジェクトを生成する.
-	 * @param variable		変数
-	 * @return		変数メモリデータオブジェクト
-	 */
+* Create a variable memory data object.
+* @param variable variable
+* @return variable memory data object
+*/
 	private VariableMemory createVariableMemory(Variable variable) {
-		// 変数メモリデータの生成
+		// Generate variable memory data
 		RequiredBF mem = getMemoryband(variable);
 		VariableMemory varmem = new VariableMemory(variable, mem);
 
@@ -208,12 +208,12 @@ public class VariableMemoryProperties extends PropertiesBase {
 
 
 	/**
-	 * アクセス先メモリを取得する.
-	 * @param variable		変数
-	 * @return		アクセス先メモリ
-	 */
+* Get access memory.
+* @param variable variable
+* @return Access memory
+*/
 	private RequiredBF getMemoryband(Variable variable) {
-		// 変数メモリデータの生成
+		// Generate variable memory data
 		ACCESSMEMORY_TYPE memorytype = variable.getMemoryType();
 		if (memorytype == null) {
 			memorytype = ACCESSMEMORY_TYPE.getDefaultType();
@@ -226,11 +226,11 @@ public class VariableMemoryProperties extends PropertiesBase {
 	}
 
 	/**
-	 * 設定済みリストから同一定義の変数を取得する.
-	 * 同一定義、同一添字の変数リストを取得する.
-	 * @param variable		検索変数
-	 * @return			同一定義変数リスト
-	 */
+* Get variables with the same definition from the configured list.
+* Get a list of variables with the same definition and the same subscript.
+* @param variable Search variable
+* @return Same definition variable list
+*/
 	public List<Variable> getEqualsVariableDefinition(Variable variable) {
 		if (variable == null) return null;
 		if (variable.getDefinition() == null) return null;
@@ -248,9 +248,9 @@ public class VariableMemoryProperties extends PropertiesBase {
 	}
 
 	/**
-	 * 設定済みリストから変数リストを取得する.
-	 * @return			変数リスト
-	 */
+* Get the variable list from the configured list.
+* @return Variable list
+*/
 	public List<Variable> getListVariable() {
 		if (this.listVariable == null || this.listVariable.size() <= 0) return null;
 		List<Variable> list = new ArrayList<Variable>();

@@ -27,49 +27,49 @@ import jp.riken.kscope.service.AppController;
 import jp.riken.kscope.service.LanguageService;
 
 /**
- * フォートランノードプロパティアクションクラス
+ * Fortran node property action class
  * @author RIKEN
  */
 public class LanguagePropertiesAction extends ActionBase {
 
     /**
-     * コンストラクタ
-     * @param controller	アプリケーションコントローラ
+     * Constructor
+     * @param controller Application controller
      */
     public LanguagePropertiesAction(AppController controller) {
         super(controller);
     }
 
     /**
-     * アクション発生イベント
-     * @param event		イベント情報
+     * Action occurrence event
+     * @param event Event information
      */
     @Override
     public void actionPerformed(ActionEvent event) {
 
-        // プロパティの設定を行う。
+        // Set the property.
         setProperties();
 
-        // プロパティタブをアクティブにする
+        // Activate the Properties tab
         this.controller.getMainframe().getPanelAnalysisView().setSelectedPanel(ANALYSIS_PANEL.PROPARTIES);
     }
 
     /**
-     * プロパティの設定を行う。
+     * Set properties.
      */
     public void setProperties() {
 
-        // 選択ファイルの取得を行う
+        // Get the selected file
         DefaultMutableTreeNode node = this.controller.getMainframe().getPanelExplorerView().getSelectedNode();
         if (node == null) return;
 
-        // ノードのプロパティ設定モデルの取得する
+        // Get the node property setting model
         PropertiesTableModel model = this.controller.getPropertiesTableModel();
 
-        // フォートランデータベース
+        // Fortran database
         Fortran fortran = this.controller.getFortranLanguage();
 
-        // ノードのプロパティの取得を行う
+        // Get the properties of the node
         LanguageService service = new LanguageService(fortran);
         service.setErrorInfoModel(this.controller.getErrorInfoModel());
         service.setProperties(node.getUserObject(), model);

@@ -19,8 +19,8 @@ package jp.riken.kscope.language;
 
 /**
 *
-* データ型を示すインターフェース.<br>
-* 各言語に対応したVariableType(enum型)がこのインターフェースを実装して使用する。
+* Interface showing data type. <br>
+* VariableType (enum type) corresponding to each language implements and uses this interface.
 *
 * @author RIKEN
 *
@@ -28,50 +28,50 @@ package jp.riken.kscope.language;
 public interface IVariableType {
 
     /**
-     * 型名の取得。
+     * Get the type name.
      *
-     * @return 型名
+     * @return type name
      */
     String getName();
 
     /**
-     * 型名からVariableTypeを検索する.
+     * Search for VariableType by type name.
      *
      * @param name
-     *          型名
+     * Model name
      *
-     * @return 型名に対応したVariableType
+     * @return VariableType corresponding to the type name
      *
      */
     IVariableType findTypeBy(String name);
 
 
     /**
-     * 型が適合しているかどうか。<br>
+     * Whether the type is compatible. <br>
      *
-     * 多重定義されている関数群の中から対応する関数を探索する際に、<br>
-     * 仮引数と実引数の型チェックをする必要がある。<br>
-     * 「適合している」とは、この型チェックで、同一の型と判定される
-     * 事を意味している。
+     * When searching for the corresponding function from the overloaded function group, <br>
+     * It is necessary to check the type of formal and actual arguments. <br>
+     * "Matching" is judged to be the same type by this type check
+     * Means a thing.
      *
      * @param value
-     *          型
+     * Type
      *
-     * @return true : 適合している<br>
-     *         false: 適合していない
+     * @return true: Conforms <br>
+     * false: Not compatible
      *
      */
     boolean matches(IVariableType value);
 
 	/**
-	 * 実数変数であるかチェックする.
-	 * @return		true=実数
-	 */
+* Check if it is a real variable.
+* @return true = real number
+*/
 	boolean isRealType();
 
 	/**
-	 * 整数変数であるかチェックする.
-	 * @return		true=整数
-	 */
+* Check if it is an integer variable.
+* @return true = integer
+*/
 	boolean isIntegerType();
 }

@@ -18,115 +18,115 @@
 package jp.riken.kscope.data;
 
 /**
- * 検索条件クラス
+ * Search condition class
  * @author RIKEN
  */
 public class SearchOption {
 
-    /** 検索文字列 */
+    /** Search string */
     private String searchText;
-    /** 大文字・小文字の区別(true=大文字・小文字の区別を行う) */
+    /** Case sensitive (true = case sensitive) */
     private boolean sensitivecase;
-    /** 正規表現 */
+    /** Regular expressions */
     private boolean regex;
-    /** 単語検索 */
+    /** Word search */
     private boolean word;
-    /**  変数検索(=トレース) */
+    /** Variable search (= trace) */
     private boolean variable;
-    /** 検索ノードのオブジェクトクラス */
+    /** Search node object class */
     private Class<?> searchClass;
 
     /**
-     * 検索文字列を取得する.
-     * @return		検索文字列
+     * Get the search string.
+     * @return Search string
      */
     public String getSearchText() {
         return searchText;
     }
 
     /**
-     * 検索文字列を設定する
-     * @param text		検索文字列
+     * Set the search string
+     * @param text Search string
      */
     public void setSearchText(String text) {
         this.searchText = text;
     }
 
     /**
-     * 大文字・小文字の区別を取得する.
-     * @return		true=大文字・小文字の区別する
+     * Get case sensitive.
+     * @return true = case sensitive
      */
     public boolean isSensitivecase() {
         return sensitivecase;
     }
 
     /**
-     * 大文字・小文字の区別を設定する
-     * @param sensitivecase		true=大文字・小文字の区別する
+     * Set case sensitivity
+     * @param sensitivecase true = case sensitive
      */
     public void setSensitivecase(boolean sensitivecase) {
         this.sensitivecase = sensitivecase;
     }
 
     /**
-     * 正規表現を取得する
-     * @return		true=正規表現検索
+     * Get a regular expression
+     * @return true = regular expression search
      */
     public boolean isRegex() {
         return regex;
     }
 
     /**
-     * 正規表現を設定する
-     * @param regex		true=正規表現検索
+     * Set regular expression
+     * @param regex true = regular expression search
      */
     public void setRegex(boolean regex) {
         this.regex = regex;
     }
 
     /**
-     * 単語検索を取得する.
-     * @return		true=単語検索
+     * Get a word search.
+     * @return true = word search
      */
     public boolean isWord() {
         return word;
     }
 
     /**
-     * 単語検索を設定する.
-     * @param word		単語検索
+     * Set up word search.
+     * @param word word search
      */
     public void setWord(boolean word) {
         this.word = word;
     }
 
     /**
-     * 変数検索(=トレース)であるかチェックする
-     * @return		変数検索(=トレース)
+     * Check if variable search (= trace)
+     * @return Variable search (= trace)
      */
     public boolean isVariable() {
         return this.variable;
     }
 
     /**
-     * 変数検索(=トレース)を設定する.
-     * @param variable		変数検索(=トレース)
+     * Set variable search (= trace).
+     * @param variable Variable search (= trace)
      */
     public void setVariable(boolean variable) {
         this.variable = variable;
     }
 
     /**
-     * 検索ノードのオブジェクトクラスを取得する
-     * @return 検索ノードのオブジェクトクラス
+     * Get the object class of the search node
+     * @return Search node object class
      */
     public Class<?> getSearchClass() {
         return searchClass;
     }
 
     /**
-     * 検索ノードのオブジェクトクラスを設定する
-     * @param searchClass 		検索ノードのオブジェクトクラス
+     * Set the object class of the search node
+     * @param searchClass Object class of search node
      */
     public void setSearchClass(Class<?> searchClass) {
         this.searchClass = searchClass;

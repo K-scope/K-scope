@@ -35,19 +35,19 @@ import jp.riken.kscope.service.ProjectService;
 import jp.riken.kscope.utils.SwingUtils;
 
 /**
- * XMLファイル追加アクションクラス
+ * XML file addition action class
  * @author RIKEN
  *
  */
 public class ProjectAddFileAction extends ActionBase {
 
-    /** アクションエクスプローラパネル */
+    /** Action Explorer Panel */
     private EXPLORE_PANEL panelExplore;
 
     /**
-     * コンストラクタ
-     * @param controller	アプリケーションコントローラ
-     * @param panel			アクションエクスプローラパネル
+     * Constructor
+     * @param controller Application controller
+     * @param panel Action explorer panel
      */
     public ProjectAddFileAction(AppController controller, EXPLORE_PANEL panel) {
         super(controller);
@@ -55,9 +55,9 @@ public class ProjectAddFileAction extends ActionBase {
     }
 
     /**
-     * アクションが実行可能であるかチェックする.<br/>
-     * アクションの実行前チェック、メニューのイネーブルの切替を行う。<br/>
-     * @return		true=アクションが実行可能
+     * Check if the action is executable. <br/>
+     * Check before executing the action and switch the menu enable. <br/>
+     * @return true = Action can be executed
      */
     @Override
     public boolean validateAction() {
@@ -72,17 +72,17 @@ public class ProjectAddFileAction extends ActionBase {
             return true;
         }
 
-        // メニューのイネーブル切替
+        // Menu enable switching
         boolean enable = false;
         if (panelExplore == null || panelExplore == EXPLORE_PANEL.UNKNOWN) {
-            // メインフレームからのアクション
+            // Action from mainframe
             EXPLORE_PANEL activePanel = this.controller.getMainframe().getPanelExplorerView().getSelectedEnumPanel();
             if (project.getFileType() == FILE_TYPE.XCODEML_XML) {
-                // XMLツリーパネルが表示されている場合のみイネーブルとする。
+                // Enable only if the XML tree panel is displayed.
                 enable = (activePanel == EXPLORE_PANEL.XML);
             }
 //            if (project.getFileType() == FILE_TYPE.FORTRANLANG) {
-//                // ソースツリーパネルが表示されている場合のみイネーブルとする。
+// // Enable only when the source tree panel is displayed.
 //                enable = (activePanel == EXPLORE_PANEL.SOURCE);
 //            }
         }
@@ -90,25 +90,25 @@ public class ProjectAddFileAction extends ActionBase {
     }
 
     /**
-     * アクション発生イベント
-     * @param event		イベント情報
+     * Action occurrence event
+     * @param event Event information
      */
     @Override
     public void actionPerformed(ActionEvent event) {
-    	// プロジェクト情報
+    	// Project information
         ProjectModel project = this.controller.getProjectModel();
 
-        // ステータスメッセージ
+        // Status message
     	String message = null;
     	if (project.getFileType() == FILE_TYPE.XCODEML_XML) {
-    		message = Message.getString("mainmenu.project.addxmlfile"); //XMLファイルの追加
+    		message = Message.getString("mainmenu.project.addxmlfile"); // Add XML file
         }
         else if (project.getFileType() == FILE_TYPE.FORTRANLANG) {
-        	message = Message.getString("projectaddfileaction.addfile.fortran.status"); //Fortranファイルの追加
+        	message = Message.getString("projectaddfileaction.addfile.fortran.status"); // Add Fortran file
         }
     	Application.status.setMessageMain(message);
 
-        // 親Frameの取得を行う。
+        // Get the parent Frame.
         Frame frame = getWindowAncestor( event );
 
         String projectFolder = null;
@@ -119,44 +119,44 @@ public class ProjectAddFileAction extends ActionBase {
             projectFolder = System.getProperty("user.dir");
         }
 
-        // ファイル選択ダイアログのタイトル
+        // Title of the file selection dialog
         String title = null;
         SwingUtils.ExtFileFilter filter = null;
         if (project.getFileType() == FILE_TYPE.XCODEML_XML) {
-            title = Message.getString("projectaddfileaction.selectfiledialog.xml.title"); //"XMLファイルの選択"
-            // XMLファイルフィルタ
-            // FILE_TYPEからフィルタ作成に変更 at 2013/05/14 by @hira
-            // String description = Message.getString("projectaddfileaction.selectfiledialog.xml.filterdescription"); //XcodeMLファイル(*.xml)
+            title = Message.getString("projectaddfileaction.selectfiledialog.xml.title"); // "Select XML file"
+            // XML file filter
+            // Changed from FILE_TYPE to filter creation at 2013/05/14 by @hira
+            // String description = Message.getString ("projectaddfileaction.selectfiledialog.xml.filterdescription"); // XcodeML file (* .xml)
             // String[] exts = {"xml"};
             // filter = new SwingUtils().new ExtFileFilter(description, exts);
             filter = new SwingUtils().new ExtFileFilter(FILE_TYPE.getXcodemlFilter());
         }
         else if (project.getFileType() == FILE_TYPE.FORTRANLANG) {
-            title = Message.getString("projectaddfileaction.selectfiledialog.fortran.title"); //Fortranファイルの選択
-            // ソースファイルフィルタ
-            // FILE_TYPEからフィルタ作成に変更 at 2013/05/14 by @hira
-            // String description = Message.getString("projectaddfileaction.selectfiledialog.fortran.filterdescription"); //ソースファイル(*.f,*.f90)
+            title = Message.getString("projectaddfileaction.selectfiledialog.fortran.title"); // Fortran file selection
+            // Source file filter
+            // Changed from FILE_TYPE to filter creation at 2013/05/14 by @hira
+            // String description = Message.getString ("projectaddfileaction.selectfiledialog.fortran.filterdescription"); // Source file (* .f, * .f90)
             // String[] exts = {"f", "f90"};
             // filter = new SwingUtils().new ExtFileFilter(description, exts);
             filter = new SwingUtils().new ExtFileFilter(FILE_TYPE.getFortranFilter());
         }
 
-        // ファイル選択ダイアログを表示する。
+        // Display the file selection dialog.
         File[] selected = SwingUtils.showOpenFileDialog(frame, title, projectFolder, filter, true);
         if (selected == null || selected.length <= 0) {
         	Application.status.setMessageMain(message +
-        			Message.getString("action.common.cancel.status")); //キャンセル
+        			Message.getString("action.common.cancel.status")); //Cancel
         	return;
         }
 
-        // 選択ファイルを追加する
+        // add a selection file
         List<File> list = java.util.Arrays.asList(selected);
 
-        // プロジェクトにフォルダ追加
+        // Add folder to project
         ProjectService service = new ProjectService(project);
         service.addProjectSelectedFile(list);
 
-        // XMLツリーに選択XMLファイルを表示する。
+        // Display the selected XML file in the XML tree.
         List<SourceFile> listSource = project.getListSelectedFile();
         List<SourceFile> xmlfiles = new ArrayList<SourceFile>();
         List<SourceFile> srcfiles = new ArrayList<SourceFile>();
@@ -173,12 +173,12 @@ public class ProjectAddFileAction extends ActionBase {
         FileTreeModel treeModel = null;
         List<SourceFile> setfiles = null;
         if (project.getFileType() == FILE_TYPE.XCODEML_XML) {
-            // XMLツリーに選択XMLファイルを表示する。
+            // Display the selected XML file in the XML tree.
             treeModel = this.controller.getXmlTreeModel();
             setfiles = xmlfiles;
         }
         else if (project.getFileType() == FILE_TYPE.FORTRANLANG) {
-            // Fortranファイルの追加
+            // Add Fortran file
             treeModel = this.controller.getSourceTreeModel();
             setfiles = srcfiles;
         }
@@ -192,7 +192,7 @@ public class ProjectAddFileAction extends ActionBase {
         }
 
         Application.status.setMessageMain(message +
-    			Message.getString("action.common.done.status")); //完了
+    			Message.getString("action.common.done.status")); // Done
 
         return;
     }

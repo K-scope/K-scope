@@ -25,57 +25,57 @@ import java.util.Set;
 import jp.riken.kscope.information.InformationBlocks;
 
 /**
- * 変数に初期値をセットするクラス。FortranにおけるData文を表す。
+ * A class that sets an initial value for a variable. Represents a Data statement in Fortran.
  *
  * @author RIKEN
  *
  */
 public class Data extends jp.riken.kscope.language.Block {
-    /** シリアル番号 */
+    /** Serial number */
     private static final long serialVersionUID = -3729371399836405032L;
     private List<Variable> variables = new ArrayList<Variable>();
     private List<Expression> values = new ArrayList<Expression>();
 
     /**
-     * コンストラクタ。
+     * Constructor.
      *
      * @param parent
-     *          親ブロック
+     * Parent block
      */
     public Data(Block parent) {
         super(parent);
     }
 
     /**
-     * コンストラクタ。
+     * Constructor.
      */
     public Data() {
         super();
     }
 
     /**
-     * ブロックタイプの取得。
+     * Get block type.
      *
-     * @return BlockType.DATA
+     * @ return BlockType.DATA
      */
     public BlockType getBlockType() {
         return BlockType.DATA;
     }
 
     /**
-     * 変数のリストをセットする
+     * Set a list of variables
      *
      * @param vars
-     *            変数のリスト
+     * List of variables
      */
     public void setVariables(List<Variable> vars) {
         this.variables = vars;
     }
 
     /**
-     * 変数のリストを取得する。
+     * Get a list of variables.
      *
-     * @return variables 変数のリスト
+     * @return variables List of variables
      */
     public List<Variable> getVariables() {
         return variables;
@@ -83,19 +83,19 @@ public class Data extends jp.riken.kscope.language.Block {
 
 
     /**
-     * 値のリストをセットする
+     * Set a list of values
      *
      * @param vals
-     *            値のリスト
+     * List of values
      */
     public void setValues(List<Expression> vals) {
         this.values = vals;
     }
 
     /**
-     * 値のリストを取得する。
+     * Get a list of values.
      *
-     * @return values 値のリスト
+     * @return values List of values
      */
     public List<Expression> getValues() {
         return values;
@@ -103,9 +103,9 @@ public class Data extends jp.riken.kscope.language.Block {
 
 
     /**
-     * 付加情報ブロックコレクションを生成する。
+     * Generate an additional information block collection.
      *
-     * @return 付加情報ブロックコレクション
+     * @return Additional information block collection
      */
     @Override
     public InformationBlocks createInformationBlocks() {
@@ -125,10 +125,10 @@ public class Data extends jp.riken.kscope.language.Block {
     }
 
     /**
-     * idにマッチした情報ブロックを検索する。
+     * Search for information blocks that match id.
      * @param id
-     *          ID
-     * @return 見つかった情報ブロック。見つからなかった場合はnullが返ります。
+     * ID
+     * @return The information block found. If not found, null is returned.
      */
      @Override
     public IInformation findInformationBlockBy(String id) {
@@ -155,9 +155,9 @@ public class Data extends jp.riken.kscope.language.Block {
     }
 
      /**
-      * 同一ブロックであるかチェックする.
-      * @param block		ブロック
- 	 * @return		true=一致
+      * Check if they are the same block.
+      * @param block block
+ * @return true = match
       */
      @Override
  	public boolean equalsBlocks(Block block) {
@@ -211,10 +211,10 @@ public class Data extends jp.riken.kscope.language.Block {
      }
 
  	/**
- 	 * 同一ブロックを検索する
- 	 * @param block			IInformationブロック
- 	 * @return		同一ブロック
- 	 */
+ * Search for the same block
+ * @param block IInformation block
+ * @return Same block
+ */
      @Override
  	public IInformation[] searchInformationBlocks(IInformation block) {
  		List<IInformation> list = new ArrayList<IInformation>();
@@ -248,8 +248,8 @@ public class Data extends jp.riken.kscope.language.Block {
  	}
 
  	/**
- 	 * 変数リストを取得する.
- 	 */
+ * Get the variable list.
+ */
  	@Override
  	public Set<Variable> getAllVariables() {
  		return null;

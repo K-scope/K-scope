@@ -32,34 +32,34 @@ import jp.riken.kscope.service.ProfilerService;
 import jp.riken.kscope.utils.SwingUtils;
 
 /**
- * プロファイラデータ読込アクションクラス
+ * Profiler data read action class
  * @author RIKEN
  *
  */
 public class ProfilerOpenFileAction extends ActionBase {
 
     /**
-     * コンストラクタ
-     * @param controller	アプリケーションコントローラ
+     * Constructor
+     * @param controller Application controller
      */
     public ProfilerOpenFileAction(AppController controller) {
         super(controller);
     }
 
     /**
-     * アクション発生イベント
-     * @param event		イベント情報
+     * Action occurrence event
+     * @param event Event information
      */
     @Override
     public void actionPerformed(ActionEvent event) {
-        // ステータスメッセージ
-        final String message = Message.getString("mainmenu.profiler.read"); //"プロファイラデータ読込"
+        // Status message
+        final String message = Message.getString("mainmenu.profiler.read"); // "Read profiler data"
         Application.status.setMessageMain(message);
 
-        // メインフレーム
+        // main frame
         Frame frame = this.controller.getMainframe();
 
-        // プロジェクト情報
+        // Project information
         ProjectModel project = this.controller.getProjectModel();
         String projectFolder = null;
         if (project.getProjectFolder() != null) {
@@ -69,64 +69,64 @@ public class ProfilerOpenFileAction extends ActionBase {
             projectFolder = System.getProperty("user.dir");
         }
 
-        // プロファイラデータフィルタ
-        String description = Message.getString("profileropenfileaction.selectdialog.filterdescription"); //"プロファイラデータ(*.*)"
+        // Profiler data filter
+        String description = Message.getString("profileropenfileaction.selectdialog.filterdescription"); // "Profiler data (*. *)"
         SwingUtils.ExtFileFilter filter = new SwingUtils().new ExtFileFilter(description, null);
 
-        // ファイル選択ダイアログを表示する。
+        // Display the file selection dialog.
         File[] selected = SwingUtils.showOpenFileDialog(frame, 
-        		Message.getString("profileropenfileaction.selectdialog.title"), //"プロファイラデータの選択"
+        		Message.getString("profileropenfileaction.selectdialog.title"), // "Select profiler data"
         		projectFolder, filter, true);
         if (selected == null || selected.length <= 0) {
         	Application.status.setMessageMain(message +
-        			Message.getString("action.common.cancel.status")); //キャンセル
+        			Message.getString("action.common.cancel.status")); //Cancel
         	return;
         }
 
-        // プロファイラサービス
+        // Profiler service
         ProfilerService service = new ProfilerService();
         service.setErrorInfoModel(this.controller.getErrorInfoModel());
-        // プロファイラモデル
+        // Profiler model
         ProfilerTableBaseModel[] models = this.controller.getMainframe().getPanelAnalysisView().getProfilerModels();
         service.setProfilerModels(models);
-        // ツリー上のソースファイル
+        // Source files on the tree
         SourceFile[] files = this.controller.getMainframe().getPanelExplorerView().getPanelSourceTree().getAllSourceFiles();
         service.setSourceFiles(files);
-        // プロファイラ情報
+        // Profiler information
         service.setProfilerInfo(this.controller.getProfilerInfo());
-        // データベース
+        // database
         service.setFortranLanguage(this.controller.getFortranLanguage());
-        // プロファイラプロパティ
+        // Profiler properties
         service.setPropertiesProfiler(this.controller.getPropertiesProfiler());
-        // プロファイラファイルから読込
+        // Read from profiler file
         service.loadProfilerDataFile(selected[0]);
 
-        // 読込データの分析タブをアクティブにする。
+        // Activate the Read Data Analysis tab.
         String fileType = service.getFileType();
         String paEventName = service.getPaEventName();
         setSelectedPanel(fileType, paEventName);
 
     	Application.status.setMessageMain(message +
-    			Message.getString("action.common.done.status")); //完了
+    			Message.getString("action.common.done.status")); // Done
 
         return;
     }
 
     /**
-     * 読込データのタブをアクティブ(開く)にする。
-     * @param fileType  読込ファイルタイプ
-     * @param paEventName PAイベント指定値(EPRFのみ)
+     * Activate (open) the read data tab.
+     * @param fileType Read file type
+     * @param paEventName PA event specification value (EPRF only)
      */
     private void setSelectedPanel(String fileType, String paEventName) {
 
         ANALYSIS_PANEL panel = null;
         if ("DPRF".equalsIgnoreCase(fileType)) {
-            // コスト情報パネル、コールグラフパネルすべて開く
+            // Open all cost information panel and call graph panel
             this.controller.getMainframe().getPanelAnalysisView().setSelectedPanel(ANALYSIS_PANEL.COST_PROCEDURE);
             this.controller.getMainframe().getPanelAnalysisView().setSelectedPanel(ANALYSIS_PANEL.COST_LOOP);
             this.controller.getMainframe().getPanelAnalysisView().setSelectedPanel(ANALYSIS_PANEL.COST_LINE);
             this.controller.getMainframe().getPanelAnalysisView().setSelectedPanel(ANALYSIS_PANEL.CALLGRAPH);
-            // アクティブパネルはコスト情報:手続とする
+            // Active panel is cost information: procedure
             panel = ANALYSIS_PANEL.COST_PROCEDURE;
         }
         else if ("EPRF".equalsIgnoreCase(fileType)) {

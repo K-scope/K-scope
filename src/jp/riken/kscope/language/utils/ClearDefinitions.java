@@ -27,92 +27,92 @@ import jp.riken.kscope.language.fortran.VariableType.PrimitiveDataType;
 import jp.riken.kscope.language.generic.*;
 
 /**
- * データベースリセットクラス.
- * サブルーチン、関数、変数の定義参照をクリアする.
+ * Database reset class.
+ * Clear definition references for subroutines, functions, and variables.
  * @author RIKEN
  */
 public class ClearDefinitions implements ILanguageEntry {
-	/** 探索履歴リスト */
+	/** Search history list */
 	private List<Object> listVisit;
-	/** Fortranデータベース */
+	/** Fortran database */
 	private Fortran language;
-	/** クリア対象モジュールマップ <旧モジュール, 新モジュール> */
+	/** Module map to be cleared <old module, new module> */
 	private java.util.Map<Module, Module> mapClearModule;
 
 	/**
-	 * コンストラクタ
-	 * @param    Fortranデータベース
-	 */
+* Constructor
+* @param Fortran database
+*/
 	public ClearDefinitions(Fortran language) {
 		this.language = language;
 		this.listVisit = new ArrayList<Object>();
 	}
 
 	/**
-	 * Fortranデータベースを取得する.
-	 * @return		Fortranデータベース
-	 */
+* Get the Fortran database.
+* @return Fortran database
+*/
 	public Fortran getLanguage() {
 		return language;
 	}
 
 	/**
-	 * Fortranデータベースを設定する.
-	 * @param language		Fortranデータベース
-	 */
+* Set up a Fortran database.
+* @param language Fortran database
+*/
 	public void setLanguage(Fortran language) {
 		this.language = language;
 	}
 
 	/**
-	 * 探索リストを設定する.
-	 * @param list	探索リスト
-	 */
+* Set the search list.
+* @param list Search list
+*/
 	public List<Object> getListVisit() {
 		return this.listVisit;
 	}
 
 	/**
-	 * 探索リストを設定する.
-	 * @param list	探索リスト
-	 */
+* Set the search list.
+* @param list Search list
+*/
 	public void setListVisit(List<Object> list) {
 		this.listVisit = list;
 	}
 
 	/**
-	 * VariableDefinitionマップをクリアする.
-	 */
+* Clear the Variable Definition map.
+*/
 	@Override
 	public void entry(Module entry) {
-		// VariableDefinitionマップをクリアする.
+		// Clear the VariableDefinition map.
 		entry((ProgramUnit)entry);
 	}
 
 	/**
-	 * ProcedureUsageクラスリストをクリアする.
-	 */
+* Clear the ProcedureUsage class list.
+*/
 	@Override
 	public void entry(Procedure entry) {
 		if (entry == null) return;
 		if (entry.getCallMember() == null) return;
 		if (entry.getCallMember().size() <= 0) return;
 		if (this.containsClearProcedure(entry)) {
-			// ProcedureUsageクラスリストをクリアする.
+			// Clear the ProcedureUsage class list.
 			entry.setCallMember(null);
 		}
 		else if (!this.containsLanguageProcedure(entry)) {
-			// ProcedureUsageクラスリストをクリアする.
+			// Clear the ProcedureUsage class list.
 			entry.setCallMember(null);
 		}
-		// VariableDefinitionマップをクリアする.
+		// Clear the VariableDefinition map.
 		entry((ProgramUnit)entry);
 	}
 
 	/**
-	 * VariableDefinitionマップをクリアする.
-	 * @param entry		ProgramUnit
-	 */
+* Clear the Variable Definition map.
+* @param entry ProgramUnit
+*/
 	public void entry(ProgramUnit entry) {
 		if (entry == null) return;
 		java.util.Map<String, VariableDefinition> map = entry.getVariableMap();
@@ -130,8 +130,8 @@ public class ClearDefinitions implements ILanguageEntry {
 	}
 
 	/**
-	 * 変数定義をクリアする.
-	 */
+* Clear the variable definition.
+*/
 	@Override
 	public void entry(Variable entry) {
 		if (entry == null) return;
@@ -147,26 +147,26 @@ public class ClearDefinitions implements ILanguageEntry {
 	}
 
 	/**
-	 * CALL文Procedure定義をクリアする.
-	 */
+* Clear the CALL statement Procedure definition.
+*/
 	@Override
 	public void entry(ProcedureUsage entry) {
 		if (entry == null) return;
 		if (entry.getCallDefinition() == null) return;
 		Procedure callDefinition = entry.getCallDefinition();
 		if (this.containsClearProcedure(callDefinition)) {
-			// CALL文Procedure定義をクリアする.
+			// Clear the CALL statement Procedure definition.
 			entry.setCallDefinition(null);
 		}
 		else if (!this.containsLanguageProcedure(callDefinition)) {
-			// CALL文Procedure定義をクリアする.
+			// Clear the CALL statement Procedure definition.
 			entry.setCallDefinition(null);
 		}
 	}
 
 	/**
-	 * 変数を参照しているプログラムをクリアする.
-	 */
+* Clear the program that references the variable.
+*/
 	@Override
 	public void entry(VariableDefinition entry) {
 		if (entry == null) return;
@@ -186,8 +186,8 @@ public class ClearDefinitions implements ILanguageEntry {
 	}
 
 	/**
-	 * 構造体定義をクリアする.
-	 */
+* Clear the structure definition.
+*/
 	@Override
 	public void entry(VariableType entry) {
 		if (entry == null) return;
@@ -299,18 +299,18 @@ public class ClearDefinitions implements ILanguageEntry {
 	public void entry(Union entry) { }
 
 	/**
-	 * クリア対象モジュールを設定する
-	 * @param list		クリア対象モジュールマップ <旧モジュール, 新モジュール>
-	 */
+* Set the module to be cleared
+* @param list Module map to be cleared <old module, new module>
+*/
 	public void setListClearModule(java.util.Map<Module, Module> mapModule) {
 		this.mapClearModule = mapModule;
 	}
 
 	/**
-	 * モジュールがクリア対象モジュールであるかチェックする.
-	 * @param module		クリアチェックモジュール
-	 * @return		true=クリアモジュール
-	 */
+* Check if the module is the module to be cleared.
+* @param module Clear check module
+* @return true = clear module
+*/
 	private boolean containsClearModule(Module module) {
 		if (this.mapClearModule == null) return false;
 		if (module == null) return false;
@@ -318,10 +318,10 @@ public class ClearDefinitions implements ILanguageEntry {
 	}
 
 	/**
-	 * クリア対象のモジュールに含まれるProcedureであるかチェックする.
-	 * @param definition		Procedure
-	 * @return		true=クリアモジュールのProcedure
-	 */
+* Check if the procedure is included in the module to be cleared.
+* @param definition Procedure
+* @return true = Clear module procedure
+*/
 	private boolean containsClearProcedure(Procedure definition) {
 		Module module = getParentModule(definition);
 		if (module == null) return false;
@@ -329,10 +329,10 @@ public class ClearDefinitions implements ILanguageEntry {
 	}
 
 	/**
-	 * クリア対象のモジュールに含まれるVariableDefinitionであるかチェックする.
-	 * @param definition		VariableDefinition
-	 * @return		true=クリアモジュールのVariableDefinition
-	 */
+* Check if it is a Variable Definition included in the module to be cleared.
+* @param definition VariableDefinition
+* @return true = Clear module VariableDefinition
+*/
 	private boolean containsClearVariableDefinition(VariableDefinition definition) {
 		Module module = getParentModule(definition);
 		if (module == null) return false;
@@ -340,10 +340,10 @@ public class ClearDefinitions implements ILanguageEntry {
 	}
 
 	/**
-	 * クリア対象のモジュールに含まれるProgramUnitであるかチェックする.
-	 * @param definition		ProgramUnit
-	 * @return		true=クリアモジュールのProgramUnit
-	 */
+* Check if it is a Program Unit included in the module to be cleared.
+* @param definition ProgramUnit
+* @return true = Clear module ProgramUnit
+*/
 	private boolean containsClearProgramUnit(ProgramUnit definition) {
 		if (definition == null) return false;
 		if (definition instanceof Procedure) {
@@ -356,10 +356,10 @@ public class ClearDefinitions implements ILanguageEntry {
 	}
 
 	/**
-	 * クリア対象のモジュールに含まれるBlockであるかチェックする.
-	 * @param definition		Block
-	 * @return		true=クリアモジュールのBlock
-	 */
+* Check if the block is included in the module to be cleared.
+* @param definition Block
+* @return true = Clear module Block
+*/
 	private boolean containsClearBlock(IBlock definition) {
 		if (definition == null) return false;
 		if (definition instanceof Procedure) {
@@ -375,10 +375,10 @@ public class ClearDefinitions implements ILanguageEntry {
 	}
 
 	/**
-	 * モジュールがデータベースのモジュールであるかチェックする.
-	 * @param module		クリアチェックモジュール
-	 * @return		true=データベースモジュール
-	 */
+* Check if the module is a database module.
+* @param module Clear check module
+* @return true = database module
+*/
 	private boolean containsLanguageModule(Module module) {
 		if (module == null) return false;
 		Module langModule = this.language.module(module.get_name());
@@ -386,10 +386,10 @@ public class ClearDefinitions implements ILanguageEntry {
 	}
 
 	/**
-	 * データベースのモジュールに含まれるProcedureであるかチェックする.
-	 * @param definition		Procedure
-	 * @return		true=クリアモジュールのProcedure
-	 */
+* Check if the procedure is included in the database module.
+* @param definition Procedure
+* @return true = Clear module procedure
+*/
 	private boolean containsLanguageProcedure(Procedure definition) {
 		Module module = getParentModule(definition);
 		if (module == null) return false;
@@ -397,10 +397,10 @@ public class ClearDefinitions implements ILanguageEntry {
 	}
 
 	/**
-	 * データベースのモジュールに含まれるVariableDefinitionであるかチェックする.
-	 * @param definition		VariableDefinition
-	 * @return		true=クリアモジュールのVariableDefinition
-	 */
+* Check if it is a Variable Definition included in the database module.
+* @param definition VariableDefinition
+* @return true = Clear module VariableDefinition
+*/
 	private boolean containsLanguageVariableDefinition(VariableDefinition definition) {
 		Module module = getParentModule(definition);
 		if (module == null) return false;
@@ -408,10 +408,10 @@ public class ClearDefinitions implements ILanguageEntry {
 	}
 
 	/**
-	 * データベースのモジュールに含まれるProgramUnitであるかチェックする.
-	 * @param definition		ProgramUnit
-	 * @return		true=クリアモジュールのProgramUnit
-	 */
+* Check if it is a Program Unit included in the database module.
+* @param definition ProgramUnit
+* @return true = Clear module ProgramUnit
+*/
 	private boolean containsLanguageProgramUnit(ProgramUnit definition) {
 		if (definition == null) return false;
 		if (definition instanceof Procedure) {
@@ -424,10 +424,10 @@ public class ClearDefinitions implements ILanguageEntry {
 	}
 
 	/**
-	 * データベースのモジュールに含まれるBlockであるかチェックする.
-	 * @param definition		Block
-	 * @return		true=クリアモジュールのBlock
-	 */
+* Check if it is a Block included in the database module.
+* @param definition Block
+* @return true = Clear module Block
+*/
 	private boolean containsLanguageBlock(IBlock definition) {
 		if (definition == null) return false;
 		if (definition instanceof Procedure) {
@@ -443,10 +443,10 @@ public class ClearDefinitions implements ILanguageEntry {
 	}
 
 	/**
-	 * Procedureの親モジュールを取得する
-	 * @param definition		Procedure
-	 * @return		モジュール
-	 */
+* Get the parent module of Procedure
+* @param definition Procedure
+* @return module
+*/
 	private Module getParentModule(Procedure definition) {
 		if (definition == null) return null;
 		ProgramUnit block = definition.get_mother();
@@ -467,10 +467,10 @@ public class ClearDefinitions implements ILanguageEntry {
 
 
 	/**
-	 * VariableDefinitionの親モジュールを取得する
-	 * @param definition		VariableDefinition
-	 * @return		モジュール
-	 */
+* Get the parent module of VariableDefinition
+* @param definition VariableDefinition
+* @return module
+*/
 	private Module getParentModule(VariableDefinition definition) {
 		if (definition == null) return null;
 		ProgramUnit block = definition.getMother();

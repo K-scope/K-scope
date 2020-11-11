@@ -22,61 +22,61 @@ import java.nio.ByteBuffer;
 import jp.riken.kscope.profiler.utils.ProfilerReaderUtil;
 
 /**
- * プロファイラ読込基底クラス
+ * Profiler read base class
  * @author RIKEN
  */
 public abstract class BaseReader {
 
     /**
-     * バイトバッファからint(4バイト)値を取得する
-     * @param byteBuf		バイトバッファ
-     * @return		int(4バイト)値
+     * Get an int (4 bytes) value from the byte buffer
+     * @param byteBuf Byte buffer
+     * @return int (4 bytes) value
      */
     protected int getInt(ByteBuffer byteBuf) {
         return ProfilerReaderUtil.convertInt(getByteArray(byteBuf, ProfilerReaderUtil.SIZEOF_INT), getEndian());
     }
 
     /**
-     * バイトバッファからshort(2バイト)値を取得する
-     * @param byteBuf		バイトバッファ
-     * @return		short(2バイト)値
+     * Get the short (2 bytes) value from the byte buffer
+     * @param byteBuf Byte buffer
+     * @return short (2 bytes) value
      */
     protected short getShort(ByteBuffer byteBuf) {
         return ProfilerReaderUtil.convertShort(getByteArray(byteBuf, ProfilerReaderUtil.SIZEOF_SHORT), getEndian());
     }
 
     /**
-     * バイトバッファからlong(8バイト)値を取得する
-     * @param byteBuf		バイトバッファ
-     * @return		long(8バイト)値
+     * Get long (8 bytes) value from byte buffer
+     * @param byteBuf Byte buffer
+     * @return long (8 bytes) value
      */
     protected long getLong(ByteBuffer byteBuf) {
         return ProfilerReaderUtil.convertLong(getByteArray(byteBuf, ProfilerReaderUtil.SIZEOF_LONG), getEndian());
     }
 
     /**
-     * バイトバッファからfloat(4バイト)値を取得する
-     * @param byteBuf		バイトバッファ
-     * @return		float(4バイト)値
+     * Get float (4 bytes) value from byte buffer
+     * @param byteBuf Byte buffer
+     * @return float (4 bytes) value
      */
     protected float getFloat(ByteBuffer byteBuf) {
         return ProfilerReaderUtil.convertFloat(getByteArray(byteBuf, ProfilerReaderUtil.SIZEOF_FLOAT), getEndian());
     }
 
     /**
-     * バイトバッファからdouble(8バイト)値を取得する
-     * @param byteBuf		バイトバッファ
-     * @return		double(8バイト)値
+     * Get double (8 bytes) value from byte buffer
+     * @param byteBuf Byte buffer
+     * @return double (8 bytes) value
      */
     protected double getDouble(ByteBuffer byteBuf) {
         return ProfilerReaderUtil.convertDouble(getByteArray(byteBuf, ProfilerReaderUtil.SIZEOF_DOUBLE), getEndian());
     }
 
     /**
-     * バイトバッファから文字列を取得する
-     * @param byteBuf		バイトバッファ
-     * @param length		文字列長
-     * @return		文字列
+     * Get a string from the byte buffer
+     * @param byteBuf Byte buffer
+     * @param length String length
+     * @return string
      */
     protected String getString(ByteBuffer byteBuf, int length) {
         return ProfilerReaderUtil.convertString(getByteArray(byteBuf, length), length, getEndian());
@@ -89,8 +89,8 @@ public abstract class BaseReader {
     }
 
     /**
-     * エンディアンを取得する
-     * @return  エンディアン
+     * Get endian
+     * @return endian
      */
     public abstract int getEndian();
 

@@ -27,34 +27,34 @@ import jp.riken.kscope.language.Expression;
 import jp.riken.kscope.language.Procedure;
 
 /**
- * 総称関数群に対応したクラス.<br>
- * Fortranのinterface文に対応。<br>
+ * Class corresponding to the generic function group. <br>
+ * Supports Fortran interface statement. <br>
  *
  * @author RIKEN
  *
  */
 public class Procedures extends Block {
-	/** シリアル番号 */
+	/** Serial number */
 	private static final long serialVersionUID = 1784597524248458672L;
-	/** 総称手続の名前 */
+	/** Name of generic procedure */
     private String name;
-    /** 関数名の総称定義 */
-    // modify by @hira at 2013/02/01 挿入順を維持するLinkedHashSetに変更
+    /** Generic definition of function name */
+    // modify by @hira at 2013/02/01 Change to LinkedHashSet that maintains the insertion order
     // private Set<IProcedureItem> procedures = new HashSet<IProcedureItem>();
     private Set<IProcedureItem> procedures = new LinkedHashSet<IProcedureItem>();
 
 
     /**
-     * コンストラクタ。<br>
+     * Constructor. <br>
      */
     public Procedures() {
         super();
     }
     /**
-     * コンストラクタ。<br>
+     * Constructor. <br>
      *
      * @param nm
-     *         名前
+     *         name
      */
     public Procedures(String nm) {
         super();
@@ -62,7 +62,7 @@ public class Procedures extends Block {
     }
 
     /**
-     * ブロックタイプの取得。
+     * Get block type.
      *
      * @return BlockType.PROCEDURES
      */
@@ -78,14 +78,14 @@ public class Procedures extends Block {
         return "interface" + nm;
     }
     /**
-     * 実引数リストを元に、候補対象となる実関数群から実関数を探しだす。<br>
+     * Find the real function from the candidate real function group based on the real argument list. <br>
      *
      * @param actualProcedures
-     *            候補対象となる実関数群
+     * Candidate real function group
      * @param actualArguments
-     *            実引数リスト
+     * List of actual arguments
      *
-     * @return 見つかった実関数。見つからなかった場合はnullを返す。
+     * @return The real function found. If not found, returns null.
      */
     public Procedure findActualProcedureFrom(Set<Procedure> actualProcedures,
                                              List<Expression> actualArguments) {
@@ -109,37 +109,37 @@ public class Procedures extends Block {
     }
 
     /**
-     * 名前の取得。<br>
+     * Get the name. <br>
      *
-     * @return 名前
+     * @return name
      */
     public String getName() {
         return this.name;
     }
 
     /**
-     * 総称関数群の取得。<br>
+     * Acquisition of generic functions. <br>
      *
-     * @return 総称関数群.ない場合は空のセットを返す。
+     * @return Generic function group. If not, returns an empty set.
      */
     public Set<IProcedureItem> getProcedures() {
         return this.procedures;
     }
 
     /**
-     * 総称関数の追加。<br>
+     * Addition of generic function. <br>
      *
      * @param procedure
-     *            追加する総称関数
+     * Generic function to add
      */
     public void add(IProcedureItem procedure) {
         if (procedure == null) { return; }
         this.procedures.add(procedure);
     }
     /**
-     * 与えられた実引数リストを基に、対応する手続き仕様の名前を返す。
-     * @param arguments 実引数リスト
-     * @return 手続き引用仕様の名前。無ければ総称名を返す。
+     * Returns the name of the corresponding procedural specification based on the given argument list.
+     * @param arguments Actual argument list
+     * @return The name of the procedure citation specification. If not, the generic name is returned.
      */
     public String getActualCallName(List<Expression> arguments) {
         if (arguments == null) {return this.name; }

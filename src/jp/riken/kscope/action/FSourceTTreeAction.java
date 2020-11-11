@@ -37,32 +37,32 @@ import jp.riken.kscope.language.VariableDefinition;
 import jp.riken.kscope.service.AppController;
 
 /**
- * Filtered-ASTへの逆引き機能
+ * Reverse lookup function to Filtered-AST
  * @author ohichi
  **/
 public class FSourceTTreeAction extends ActionBase implements MouseListener {
 
-	/**ファイルオープンアクション**/
+	/** File open action **/
 	ViewOpenExploreBlockAction action;
 
 	/**
-	 * コンストラクタ
-	 * @param controller	アプリケーションコントローラ
-	 */
+* Constructor
+* @param controller Application controller
+*/
 	public FSourceTTreeAction(AppController controller) {
 		super(controller);
 		action = new ViewOpenExploreBlockAction(this.controller);
 	}
 
 	/**
-	 * アクションが実行可能であるかチェックする.<br/>
-	 * アクションの実行前チェック、メニューのイネーブルの切替を行う。<br/>
-	 * @return		true=アクションが実行可能
-	 */
+* Check if the action is executable. <br/>
+* Check before executing the action and switch the menu enable. <br/>
+* @return true = Action can be executed
+*/
 	@Override
 	public boolean validateAction() {
 
-		// 選択ツリーモデルを取得する
+		// Get the selection tree model
 		TreeModel modelTree = this.controller.getMainframe().getPanelExplorerView().getTreeModel();
 		if (modelTree == null) {
 			return false;
@@ -71,12 +71,12 @@ public class FSourceTTreeAction extends ActionBase implements MouseListener {
 	}
 
 	/**
-	 * アクション発生イベント
-	 * @param event		イベント情報
-	 */
+* Action occurrence event
+* @param event Event information
+*/
 	@Override
 	public void actionPerformed(ActionEvent event) {
-		// ステータスメッセージ
+		// Status message
 		final String message = Message.getString("mainmenu.edit.click");
 		Application.status.setMessageMain(message);
 
@@ -84,26 +84,26 @@ public class FSourceTTreeAction extends ActionBase implements MouseListener {
 	}
 
 	/**
-	 * 選択行を取得し対応ノードを探す
-	 */   
+* Get the selected row and search for the corresponding node
+*/   
 	private void getSelectedLine(){
-		// 実行チェック
+		// Execution check
 		if (!validateAction()) return;
 		CodeLine line = this.controller.getMainframe().getPanelSourceView().getSelectedCodeLine(); 
 		EXPLORE_PANEL view = this.controller.getMainframe().getPanelExplorerView().getSelectedPanel().getEnumPanel();   
 
 		if (view == EXPLORE_PANEL.LANGUAGE) {
-			// 選択ツリーモデルを取得する
+			// Get the selection tree model
 			TreeModel modelTree = this.controller.getMainframe().getPanelExplorerView().getTreeModel();
-			//ルートノードの取得
+			// Get the root node
 			DefaultMutableTreeNode root = (DefaultMutableTreeNode)modelTree.getRoot();
 			if(root != null){
 				searchLanguageNode(line,root);
 			}        	
 		}else if(view == EXPLORE_PANEL.MODULE){
-			// 選択ツリーモデルを取得する
+			// Get the selection tree model
 			TreeModel modelTree = this.controller.getMainframe().getPanelExplorerView().getTreeModel();
-			//ルートノードの取得
+			// Get the root node
 			DefaultMutableTreeNode root = (DefaultMutableTreeNode)modelTree.getRoot();
 			if(root != null){
 				searchModuleNode(line,root);
@@ -112,22 +112,22 @@ public class FSourceTTreeAction extends ActionBase implements MouseListener {
 	}
 
 	/**
-	 * プログラム構造タブのノード探索
-	 * @param select	選択コードライン情報
-	 * @param node		探索ノード
-	 * @return true=対応ノードの発見
-	 */
+* Node search on the Program Structure tab
+* @param select selection code line information
+* @param node Search node
+* @return true = Finding a corresponding node
+*/
 	private boolean searchLanguageNode(CodeLine select, DefaultMutableTreeNode node){
 		int i,n;
 		int start_l = select.getStartLine();
 		String f_name = select.getSourceFile().getFile().getName();
 
 		if(node.getUserObject() instanceof Block){
-			//探索ノードのコード情報取得
+			// Get code information for search node
 			CodeLine line = ((Block)node.getUserObject()).get_start().getLineInfo();
-			//ファイル名の比較
+			// File name comparison
 			if(line.getSourceFile().getFile().getName().compareTo(f_name) == 0){
-				//行番号が同じ場合
+				// If the line numbers are the same
 				if(line.getStartLine() <= start_l && start_l <= line.getEndLine()){
 					n = node.getChildCount();
 					for(i=0;i<n;i++)
@@ -148,23 +148,23 @@ public class FSourceTTreeAction extends ActionBase implements MouseListener {
 	}
 
 	/**
-	 * モジュールタブのノード探索
-	 * @param select	選択コードライン情報
-	 * @param node		探索ノード
-	 * @return true=対応ノードの発見
-	 */
+* Node search on the module tab
+* @param select selection code line information
+* @param node Search node
+* @return true = Finding a corresponding node
+*/
 	private boolean searchModuleNode(CodeLine select, DefaultMutableTreeNode node){
 		int i,n;
 		int start_l = select.getStartLine();
 		String f_name = select.getSourceFile().getFile().getName();
 
 		if(node.getUserObject() instanceof UseState){
-			//探索ノードのコード情報取得
+			// Get code information for search node
 			CodeLine line = ((UseState)node.getUserObject()).get_start().getLineInfo();
-			//ファイル名の比較
+			// File name comparison
 			if(line.getSourceFile() != null)
 				if(line.getSourceFile().getFile().getName().compareTo(f_name) == 0){
-					//行番号が同じ場合
+					// If the line numbers are the same
 					if(line.getStartLine() == start_l){
 						viewSelectedBlock(node);
 						return true;
@@ -172,7 +172,7 @@ public class FSourceTTreeAction extends ActionBase implements MouseListener {
 				}
 		}else if(node.getUserObject() instanceof ProgramUnit){
 			CodeLine line = ((ProgramUnit)node.getUserObject()).getStartCodeLine();
-			if(line != null && line.getSourceFile() != null){ //NO_Moduleを除く
+			if(line != null && line.getSourceFile() != null){ // Excluding NO_Module
 				if(line.getSourceFile().getFile().getName().compareTo(f_name) == 0){
 					if(line.getStartLine() == start_l || line.getEndLine() == start_l){
 						viewSelectedBlock(node);
@@ -198,14 +198,14 @@ public class FSourceTTreeAction extends ActionBase implements MouseListener {
 	}
 
 	/**
-	 * 対象ノードを選択状態にする
-	 * @param node		選択ノード
-	 */   
+* Select the target node
+* @param node Selected node
+*/   
 	private void viewSelectedBlock(DefaultMutableTreeNode node) {
 		DefaultMutableTreeNode b_node = this.controller.getMainframe().getPanelExplorerView().getSelectedNode();
 
 		if(node.getUserObject() instanceof ProcedureUsage){
-			//連続して二度同じノードを選択した場合
+			// If you select the same node twice in a row
 			if(b_node == node && node.getChildCount() == 1){
 				node = ((DefaultMutableTreeNode)node.getChildAt(0));
 			}
@@ -216,11 +216,11 @@ public class FSourceTTreeAction extends ActionBase implements MouseListener {
 	}
 
 	/**
-	 * 対象ノードを選択状態にする（変数宣言の場合）
-	 * @param select_l	１つ目の変数のコードライン情報
-	 * @param node		選択ノード
-	 * @param line_l	選択行番号
-	 */    
+* Select the target node (in the case of variable declaration)
+* @param select_l Codeline information for the first variable
+* @param node Selected node
+* @param line_l Selected line number
+*/    
 	private void selectDef(CodeLine select_l, DefaultMutableTreeNode parent, int line_n){
 		int n = parent.getChildCount();
 		DefaultMutableTreeNode node;
@@ -229,7 +229,7 @@ public class FSourceTTreeAction extends ActionBase implements MouseListener {
 		CodeLine[] line_c = {select_l};
 		this.controller.setSelectedBlock(line_c);
 
-		//対応するノードをリストに追加する
+		// Add the corresponding node to the list
 		for(int i=0; i<n; i++){
 			node = (DefaultMutableTreeNode)parent.getChildAt(i);
 			if(node.getUserObject() instanceof VariableDefinition){
@@ -242,12 +242,12 @@ public class FSourceTTreeAction extends ActionBase implements MouseListener {
 	}
 
 	/**
-	 * マウスクリックイベント
-	 * @param event			イベント情報
-	 */
+* Mouse click event
+* @param event Event information
+*/
 	@Override
 	public void mouseClicked(MouseEvent event) {
-		// ダブルクリックチェック
+		// Double click check
 		if (SwingUtilities.isLeftMouseButton(event) && event.getClickCount() == 2) {
 			getSelectedLine();
 		}

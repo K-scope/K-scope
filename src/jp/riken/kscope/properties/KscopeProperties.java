@@ -44,73 +44,73 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 /**
- * K-scopeプロパティクラス アプリケーションプロパティを"properties.xml"から読み込む。 アプリケーションプロパティ値の取得を行う。
+ * K-scope property class Read application properties from "properties.xml". Get the application property value.
  * @author RIKEN
  */
 public class KscopeProperties {
 	public static final String APPLICATION_NAME = Message.getString("application.name"); //K-scope
-    	/** アプリケーション英名 */
+    	/** Application English name */
     public static final String APPLICATION_NAMEEN = Message.getString("application.name"); //K-scope
-   	/** アプリケーション日本語名 */
+   	/** Application Japanese name */
     public static final String APPLICATION_NAMEJP = Message.getString("application.name"); //K-scope
 
-    	/*** アプリケーションバージョン
-     * version : 0.2.0        2013/03/22 release
-     * version : 0.2.1        2013/04/12 release
-     * version : 0.2.2        2013/05/01 release
-     * version : 0.2.3        2013/05/31 release
-     * version : 0.2.4        2013/10/30 release
-     * version : 0.2.5        2013/12/27 release
-     * version : 0.2.6        2014/11/10 release
-     * version : 0.2.7        2015/XX/XX release
+    	/*** Application version
+     * version: 0.2.0 2013/03/22 release
+     * version: 0.2.1 2013/04/12 release
+     * version: 0.2.2 2013/05/01 release
+     * version: 0.2.3 2013/05/31 release
+     * version: 0.2.4 2013/10/30 release
+     * version: 0.2.5 2013/12/27 release
+     * version: 0.2.6 2014/11/10 release
+     * version: 0.2.7 2015 / XX / XX release
      */
     public static final String APPLICATION_VERSION = "0.2.7";
 
-    	/** データベースファイル */
+    	/** Database file */
     public static final String DATABASE_FILE = "db.ksx";
-    	/** アプリケーションプロパティファイル*/
+    	/** Application property file */
     public static final String PROPERTIES_FILE_DEFAULT = "properties.xml";
-    	/** アプリケーションプロパティファイル */
+    	/** Application property file */
     public static String PROPERTIES_FILE = null;
 
-    	/** アプリケーションプロパティフォルダ：システム初期設定 */
+    	/** Application Properties Folder: System Preferences */
     public static final String PROPERTIES_FOLDER = "properties";
-    	/** プロジェクトファイル */
+    	/** Project file */
     public static final String PROJECT_FILE = "kscope_project.ksx";
-    /** 設定フォルダ */
+    /** Settings folder */
     public static final String SETTINGS_FOLDER = "kscope_settings";
 
-    	/** アプリケーションプロパティテーブル */
+    	/** Application property table */
     private static HashMap<String, Object> m_properties = new HashMap<String, Object>();
-    /** Fortran重要コメントキー */
+    /** Fortran important comment key */
     private static final String PROPERTY_FORTRAN_COMMENT = "fortran_valid_comment";
-    /** C言語重要コメントキー */
+    /** C language important comment key */
     private static final String PROPERTY_CLANG_COMMENT = "clang_valid_comment";
 
-    	/** デフォルト拡張子設定 */
-    /** Fortran:固定形式(72桁) */
+    	/** Default extension setting */
+    /** Fortran: Fixed format (72 digits) */
     private static final String PROPERTY_EXT_FORTRAN_FIXED_72 = "ext_fortran_fixed_72";
-    /** Fortran:固定形式(拡張桁数) */
+    /** Fortran: Fixed format (extended number of digits) */
     private static final String PROPERTY_EXT_FORTRAN_FIXED_EXT = "ext_fortran_fixed_ext";
-    /** Fortran:自由形式 */
+    /** Fortran: Free format */
     private static final String PROPERTY_EXT_FORTRAN_FREE = "ext_fortran_free";
-    /** C言語 */
+    /** C language */
     private static final String PROPERTY_EXT_CLANG = "ext_clang";
     /** XcdoeML */
     private static final String PROPERTY_EXT_XCODEML = "ext_xcodeml";
-    /** 最終アクセスフォルダ */
+    /** Last access folder */
     private static String m_lastAccessFolder = null;
-           /** コンソールキューイング数 */
+           /** Number of console queuing */
     public static int CONSOLE_QUEUESIZE = 200;
-    /** 選択背景色 */
+    /** Selected background color */
     public static Color SELECTION_BACKGROUND = new Color(100, 149, 237);
 
-    /** 単語区切り位置 */
+    /** Word break position */
     public static final String DELIMITER_CHARS = " ;:{}()[]+-/%<=>!&|^~*,";
-    /** 分析:検索,トレースツリーの検索文字列色 */
+    /** Analyze: Search, Trace Tree Search String Color */
     public static final int SEARCHTREE_FONTSTYLE = Font.PLAIN;
 
-    /** 構造ツリーデフォルトフィルタリスト */
+    /** Structure tree default filter list */
     public static final FILTER_TYPE[] LANGUGE_DEFAULTFILTERS = {
                                         FILTER_TYPE.PROCEDURE,
                                         FILTER_TYPE.PROCEDUREUSAGE,
@@ -122,37 +122,37 @@ public class KscopeProperties {
     }
 
     /**
-    	 * * アプリケーションプロパティファイルを読み込む. <br/>
-     	* アプリケーションプロパティファイルから設定値を取得し、アプリケーションプロパティテーブルに設定する. <br/>
-     	* アプリケーションプロパティファイルはクラスディレクトリに置いてあるリソースファイルとする. <br/>
+    * * Load the application properties file. <br/>
+     * Get the setting value from the application property file and set it in the application property table. <br/>
+     * The application property file is a resource file located in the class directory. <br/>
    */
     public static void loadXml() {
         try {
-            // リソースファイルの読込（ロケールで設定ファイルを切り替える）
+            // Read resource file (switch configuration file depending on locale)
             InputStream is = null;
             is = ResourceUtils.getPropertiesFile(PROPERTIES_FILE);
             if (is == null) {
             	JOptionPane.showMessageDialog(null,
-            			Message.getString("kscopeproperties.errdialog.cannnotopenpropertyfile"), //プロパティファイルを開くことができませんでした。
-            			Message.getString("dialog.common.error"), //エラー
+            			Message.getString("kscopeproperties.errdialog.cannnotopenpropertyfile"), // Could not open the properties file.
+            			Message.getString("dialog.common.error"), //error
             			JOptionPane.ERROR_MESSAGE);
             }
 
-            // XMLパース
+            // XML perspective
             DocumentBuilderFactory dbfactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder builder = dbfactory.newDocumentBuilder();
             Document doc = builder.parse(is);
 
-            // 言語別拡張子のパース
+            // Perspective of language extension
             parseExtFortranFixed72(doc);
             parseExtFortranFixedExt(doc);
             parseExtFortranFree(doc);
             parseExtCLang(doc);
             parseExtXcodeml(doc);
 
-            // Fortran重要コメントのパース
+            // Fortran important comment parsing
             parseFortranComment(doc);
-            // C言語重要コメントのパース
+            // C ++ important comment parsing
             parseClangComment(doc);
 
         } catch (IOException e) {
@@ -168,10 +168,10 @@ public class KscopeProperties {
     }
 
     /**
-     * Fortran:固定形式(72桁)拡張子を取得する。
+     * Fortran: Get a fixed format (72 digits) extension.
      *
      * @param doc
-     *            アプリケーションプロパティファイルXMLドキュメント
+     * Application property file XML document
      */
     private static void parseExtFortranFixed72(Document doc) {
         try {
@@ -183,7 +183,7 @@ public class KscopeProperties {
             NodeList nodes = (NodeList) result;
             if (nodes == null || nodes.getLength() <= 0) return;
 
-            // アプリケーションプロパティテーブルに追加する。
+            // Add to the application property table.
             m_properties.put(PROPERTY_EXT_FORTRAN_FIXED_72, nodes.item(0).getNodeValue());
 
         } catch (XPathExpressionException e) {
@@ -194,10 +194,10 @@ public class KscopeProperties {
     }
 
     /**
-     * Fortran:固定形式(拡張桁数)拡張子を取得する。
+     * Fortran: Get a fixed format (extended number of digits) extension.
      *
      * @param doc
-     *            アプリケーションプロパティファイルXMLドキュメント
+     * Application property file XML document
      */
     private static void parseExtFortranFixedExt(Document doc) {
         try {
@@ -209,7 +209,7 @@ public class KscopeProperties {
             NodeList nodes = (NodeList) result;
             if (nodes == null || nodes.getLength() <= 0) return;
 
-            // アプリケーションプロパティテーブルに追加する。
+            // Add to the application property table.
             m_properties.put(PROPERTY_EXT_FORTRAN_FIXED_EXT, nodes.item(0).getNodeValue());
 
         } catch (XPathExpressionException e) {
@@ -220,10 +220,10 @@ public class KscopeProperties {
     }
 
     /**
-     * Fortran:自由形式拡張子を取得する。
+     * Fortran: Get the free-form extension.
      *
      * @param doc
-     *            アプリケーションプロパティファイルXMLドキュメント
+     * Application property file XML document
      */
     private static void parseExtFortranFree(Document doc) {
         try {
@@ -235,7 +235,7 @@ public class KscopeProperties {
             NodeList nodes = (NodeList) result;
             if (nodes == null || nodes.getLength() <= 0) return;
 
-            // アプリケーションプロパティテーブルに追加する。
+            // Add to the application property table.
             m_properties.put(PROPERTY_EXT_FORTRAN_FREE, nodes.item(0).getNodeValue());
 
         } catch (XPathExpressionException e) {
@@ -246,10 +246,10 @@ public class KscopeProperties {
     }
 
     /**
-     * C言語形式拡張子を取得する。
+     * Get the C language format extension.
      *
      * @param doc
-     *            アプリケーションプロパティファイルXMLドキュメント
+     * Application property file XML document
      */
     private static void parseExtCLang(Document doc) {
         try {
@@ -261,7 +261,7 @@ public class KscopeProperties {
             NodeList nodes = (NodeList) result;
             if (nodes == null || nodes.getLength() <= 0) return;
 
-            // アプリケーションプロパティテーブルに追加する。
+            // Add to the application property table.
             m_properties.put(PROPERTY_EXT_CLANG, nodes.item(0).getNodeValue());
 
         } catch (XPathExpressionException e) {
@@ -272,10 +272,10 @@ public class KscopeProperties {
     }
 
     /**
-     * XcodeML拡張子を取得する。
+     * Get the XcodeML extension.
      *
      * @param doc
-     *            アプリケーションプロパティファイルXMLドキュメント
+     * Application property file XML document
      */
     private static void parseExtXcodeml(Document doc) {
         try {
@@ -288,7 +288,7 @@ public class KscopeProperties {
             if (nodes == null || nodes.getLength() <= 0)
                 return;
 
-            // アプリケーションプロパティテーブルに追加する。
+            // Add to the application property table.
             m_properties.put(PROPERTY_EXT_XCODEML, nodes.item(0).getNodeValue());
 
         } catch (XPathExpressionException e) {
@@ -299,10 +299,10 @@ public class KscopeProperties {
     }
 
     /**
-     * Fortran重要コメントをアプリケーションプロパティファイルから取得する。
+     * Fortran Get important comments from the application properties file.
      *
      * @param doc
-     *            アプリケーションプロパティファイルXMLドキュメント
+     * Application property file XML document
      */
     private static void parseFortranComment(Document doc) {
         try {
@@ -318,7 +318,7 @@ public class KscopeProperties {
                 list[i] = nodes.item(i).getNodeValue();
             }
 
-            // アプリケーションプロパティテーブルに追加する。
+            // Add to the application property table.
             m_properties.put(PROPERTY_FORTRAN_COMMENT, list);
 
         } catch (XPathExpressionException e) {
@@ -329,10 +329,10 @@ public class KscopeProperties {
     }
 
     /**
-     * C言語重要コメントをアプリケーションプロパティファイルから取得する。
+     * Get C language important comments from the application properties file.
      *
      * @param doc
-     *            アプリケーションプロパティファイルXMLドキュメント
+     * Application property file XML document
      */
     private static void parseClangComment(Document doc) {
         try {
@@ -348,7 +348,7 @@ public class KscopeProperties {
                 list[i] = nodes.item(i).getNodeValue();
             }
 
-            // アプリケーションプロパティテーブルに追加する。
+            // Add to the application property table.
             m_properties.put(PROPERTY_CLANG_COMMENT, list);
 
         } catch (XPathExpressionException e) {
@@ -360,27 +360,27 @@ public class KscopeProperties {
     }
 
     /**
-     * Fortran重要コメントを取得する。
+     * Fortran Get important comments.
      *
-     * @return Fortran重要コメント
+     * @return Fortran Important Comments
      */
     public static String[] getFortranValidComment() {
         return (String[]) m_properties.get(PROPERTY_FORTRAN_COMMENT);
     }
 
     /**
-     * C言語重要コメントを取得する。
+     * C language Get important comments.
      *
-     * @return C言語
+     * @return C language
      */
     public static String[] getClangValidComment() {
         return (String[]) m_properties.get(PROPERTY_CLANG_COMMENT);
     }
 
     /**
-     * Fortran:固定形式(72桁)拡張子を取得する。を取得する。
+     * Fortran: Get a fixed format (72 digits) extension. To get.
      *
-     * @return Fortran:固定形式(72桁)拡張子
+     * @return Fortran: Fixed format (72 digits) extension
      */
     public static String[] getExtFortranFixed72() {
         String exts = (String) m_properties.get(PROPERTY_EXT_FORTRAN_FIXED_72);
@@ -389,9 +389,9 @@ public class KscopeProperties {
     }
 
     /**
-     * Fortran:固定形式(拡張桁数)拡張子を取得する。
+     * Fortran: Get a fixed format (extended number of digits) extension.
      *
-     * @return Fortran:固定形式(拡張桁数)拡張子
+     * @return Fortran: Fixed format (extended number of digits) extension
      */
     public static String[] getExtFortranFixedExt() {
         String exts = (String) m_properties.get(PROPERTY_EXT_FORTRAN_FIXED_EXT);
@@ -400,9 +400,9 @@ public class KscopeProperties {
     }
 
     /**
-     * Fortran:自由形式拡張子を取得する。
+     * Fortran: Get the free-form extension.
      *
-     * @return Fortran:自由形式拡張子
+     * @return Fortran: Free format extension
      */
     public static String[] getExtFortranFree() {
         String exts = (String) m_properties.get(PROPERTY_EXT_FORTRAN_FREE);
@@ -411,9 +411,9 @@ public class KscopeProperties {
     }
 
     /**
-     * C言語形式拡張子を取得する。
+     * Get the C language format extension.
      *
-     * @return C言語形式拡張子
+     * @return C language format extension
      */
     public static String[] getExtCLang() {
         String exts = (String) m_properties.get(PROPERTY_EXT_CLANG);
@@ -422,9 +422,9 @@ public class KscopeProperties {
     }
 
     /**
-     * XcdoeML拡張子を取得する。
+     * Get the XcdoeML extension.
      *
-     * @return XcdoeML拡張子
+     * @return XcdoeML extension
      */
     public static String[] getExtXcodeml() {
         String exts = (String) m_properties.get(PROPERTY_EXT_XCODEML);
@@ -433,9 +433,9 @@ public class KscopeProperties {
     }
 
     /**
-     * 最終アクセスフォルダを取得する。
+     * Get the last access folder.
      *
-     * @return 最終アクセスフォルダ
+     * @return Last access folder
      */
     public static String getLastAccessFolder() {
         if (m_lastAccessFolder == null) {
@@ -445,19 +445,19 @@ public class KscopeProperties {
     }
 
     /**
-     * 最終アクセスフォルダを設定する。
+     * Set the last access folder.
      *
      * @param folder
-     *            最終アクセスフォルダ
+     * Last access folder
      */
     public static void setLastAccessFolder(String folder) {
         m_lastAccessFolder = folder;
     }
 
     /**
-     * MacOSであるかチェックする.<br/>
-     * システムプロパティからOS名を取得する。
-     * @return    true=MacOSである。
+     * Check if it's MacOS. <br/>
+     * Get the OS name from the system properties.
+     * @return true = MacOS.
      */
     public static boolean isMac() {
         String lcOSName = System.getProperty("os.name");
@@ -467,9 +467,9 @@ public class KscopeProperties {
     }
 
     /**
-     * Windowsであるかチェックする.<br/>
-     * システムプロパティからOS名を取得する。
-     * @return    true=Windowsである。
+     * Check if it is Windows. <br/>
+     * Get the OS name from the system properties.
+     * @return true = Windows.
      */
     public static boolean isWindows() {
         String lcOSName = System.getProperty("os.name");
@@ -479,9 +479,9 @@ public class KscopeProperties {
     }
 
     /**
-     * Linuxであるかチェックする.<br/>
-     * システムプロパティからOS名を取得する。
-     * @return    true=Linuxである。
+     * Check if it is Linux. <br/>
+     * Get the OS name from the system properties.
+     * @return true = Linux.
      */
     public static boolean isLinux() {
         String lcOSName = System.getProperty("os.name");
@@ -492,9 +492,9 @@ public class KscopeProperties {
 
 
     /**
-     * Javaバージョンが1.8以上であるかチェックする.<br/>
-             * システムプロパティからjava.versionを取得する。
-     * @return    true=Javaバージョンが1.7以上である。
+     * Check if Java version is 1.8 or above. <br/>
+             * Get java.version from system properties.
+     * @return true = Java version is 1.7 or higher.
      */
     public static boolean isJava18Later() {
     	String version = System.getProperty("java.specification.version");
@@ -503,8 +503,8 @@ public class KscopeProperties {
     }
     
     /*
-     * AppleScriptが使用可能かチェックする
-     * @retrun true=AppleScriptが使用可能である。
+     * Check if AppleScript is available
+     * @retrun true = AppleScript is available.
      */
     public static boolean isApplescript() {
         ScriptEngine scriptEngine = new ScriptEngineManager().getEngineByName("AppleScript");

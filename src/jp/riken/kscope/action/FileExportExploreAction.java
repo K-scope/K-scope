@@ -38,15 +38,15 @@ import jp.riken.kscope.service.LanguageService;
 import jp.riken.kscope.utils.SwingUtils;
 
 /**
- * エクスポートアクションクラス
+ * Export action class
  * @author RIKEN
  *
  */
 public class FileExportExploreAction extends ActionBase {
 
     /**
-     * コンストラクタ
-     * @param controller	アプリケーションコントローラ
+     * Constructor
+     * @param controller Application controller
      */
     public FileExportExploreAction(AppController controller) {
         super(controller);
@@ -54,13 +54,13 @@ public class FileExportExploreAction extends ActionBase {
 
 
     /**
-     * アクションが実行可能であるかチェックする.<br/>
-     * アクションの実行前チェック、メニューのイネーブルの切替を行う。<br/>
-     * @return		true=アクションが実行可能
+     * Check if the action is executable. <br/>
+     * Check before executing the action and switch the menu enable. <br/>
+     * @return true = Action can be executed
      */
     @Override
     public boolean validateAction() {
-        // プロジェクトが作成済みであること
+        // The project has been created
         ProjectModel model = this.controller.getProjectModel();
         if (model == null) return false;
         if (model.getProjectTitle() == null) return false;
@@ -70,36 +70,36 @@ public class FileExportExploreAction extends ActionBase {
     }
 
     /**
-     * アクション発生イベント
-     * @param event		イベント情報
+     * Action occurrence event
+     * @param event Event information
      */
     @Override
     public void actionPerformed(ActionEvent event) {
     	
-    	final String message = Message.getString("fileexportexploreaction.exportexploer.status"); //ツリー情報のエクスポート
+    	final String message = Message.getString("fileexportexploreaction.exportexploer.status"); // Export tree information
     	Application.status.setMessageMain(message);
 
-        // 親Frameの取得を行う。
+        // Get the parent Frame.
         Frame frame = getWindowAncestor( event );
 
-        // 選択分析情報のタブの取得
+        // Get tab of selection analysis information
         ITreeComponent tab = this.controller.getMainframe().getPanelExplorerView().getSelectedPanel();
 
-        // プロジェクトフォルダ
+        // Project folder
         File projectfolder = this.controller.getProjectModel().getProjectFolder();
         String folder = projectfolder != null ? projectfolder.getAbsolutePath() : null;
 
-        // フォートランデータベース
+        // Fortran database
         Fortran fortran = this.controller.getFortranLanguage();
 
-        // 出力プロシージャリスト
+        // Output procedure list
         List<String> procedure_names = new ArrayList<String>();
         String filename = null;
         if (tab.getEnumPanel() == EXPLORE_PANEL.LANGUAGE || tab.getEnumPanel() == EXPLORE_PANEL.MODULE) {
-            // 構造ツリー、モジュールツリーの場合は、フォートランデータベースから出力する。
+            // For structure tree and module tree, output from Fortran database.
             IBlock[] blocks = tab.getSelectedBlocks();
 
-            // 出力プロシージャチェック
+            // Output procedure check
             if (blocks != null) {
                 for (IBlock block : blocks) {
                     if (block instanceof Procedure && ((Procedure) block).get_name() != null) {
@@ -108,20 +108,20 @@ public class FileExportExploreAction extends ActionBase {
                 }
             }
 
-            // 出力プロシージャが存在しないので、ルートから検索する
+            // Since the output procedure does not exist, search from the root
             if (procedure_names.size() <= 0) {
                 if (fortran.getMainName() != null) {
                     procedure_names.add(fortran.getMainName());
                 }
             }
             if (procedure_names.size() <= 0) {
-                // エラーメッセージ
+                // Error message
                 JOptionPane.showMessageDialog(null,
-                        Message.getString("fileexportexploreaction.exportexploer.dialog.message"), //出力プロシージャが存在しません。
+                        Message.getString("fileexportexploreaction.exportexploer.dialog.message"), // The output procedure does not exist.
                         message, 
                         JOptionPane.ERROR_MESSAGE);
                 Application.status.setMessageMain(message +
-                		Message.getString("action.common.error.status")); //:エラー
+                		Message.getString("action.common.error.status")); //:error
                 return;
             }
             filename = procedure_names.get(0) + ".txt";
@@ -133,36 +133,36 @@ public class FileExportExploreAction extends ActionBase {
             filename = "xmltree.txt";
         }
 
-        // ファイル保存ダイアログを表示する。
+        // Display the file save dialog.
         File file = SwingUtils.showSaveFileDialog(frame, message, folder, filename);
         if (file == null) {
         	Application.status.setMessageMain(message + 
-        			Message.getString("action.common.cancel.status")); // キャンセル
+        			Message.getString("action.common.cancel.status")); // Cancel
         	return; 
         }
 
         if (tab.getEnumPanel() == EXPLORE_PANEL.LANGUAGE) {
-            // 構造ツリー、モジュールツリーの場合は、フォートランデータベースから出力する。
+            // For structure tree and module tree, output from Fortran database.
             IBlock[] blocks = tab.getSelectedBlocks();
 
-            // エラー情報モデル
+            // Error information model
             ErrorInfoModel errorModel = this.controller.getErrorInfoModel();
 
-            // 構造解析サービス
+            // Structural analysis service
             LanguageService service = new LanguageService(fortran);
-            // エラー情報モデルを設定する。
+            // Set the error information model.
             service.setErrorInfoModel(errorModel);
 
-            // ファイル出力する
+            // Output file
             service.exportLanguage(file, blocks);
         }
         else {
-            // ツリー情報のエクスポートを行う
+            // Export tree information
             tab.export(file);
         }
 
         Application.status.setMessageMain(message + 
-        		Message.getString("action.common.done.status")); //完了 
+        		Message.getString("action.common.done.status")); // Done
     }
 
 }

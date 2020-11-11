@@ -20,66 +20,66 @@ package jp.riken.kscope.language;
 import java.io.Serializable;
 
 /**
- * Blockの型を表すenum。
+ * An enum that represents the type of Block.
  *
  * @author RIKEN
  *
  */
 public enum BlockType implements Serializable {
-    /** 動的にメモリ領域を割り当てる。 */
+    /** Dynamically allocate memory area. */
     DYNAMIC_ALLOCATION,
-    /** 動的に割り当てられたメモリ領域を解放する。 */
+    /** Free up dynamically allocated memory area. */
     DYNAMIC_DEALLOCATION,
-    /** 動的にpointer参照を破棄（pointer変数にnullを設定）する。 */
+    /** Dynamically discard pointer reference (set pointer variable to null). */
     DYNAMIC_NULLIFICATION,
-    /** 繰り返し処理を抜ける。 */
+    /** Exit iterative processing. */
     BREAK,
-    /** 繰り返し処理の最後に飛ぶ。 */
+    /** Jump to the end of the iteration. */
     CONTINUE,
-    /** プロブラムを終了する。 */
+    /** Exit the program. */
     TERMINATION,
-    /** 何もしない。　 */
+    /** do nothing. */
     DO_NOTHING,
-    /** 一時停止する。　 */
+    /** Pause. */
     PAUSE,
-    /** 移動する。　 */
+    /** Moving. */
     GOTO,
-    /** ディレクティブ　 */
+    /** Directive */
     DIRECTIVE,
-    /** 初期値を与える */
+    /** Give initial value */
     DATA,
-    /** プログラム単位内での記憶領域共有を与える */
+    /** Give storage sharing within a program unit */
     EQUIVALENCE,
-    /** プログラム単位間での記憶領域共有を与える */
+    /** Give storage sharing between program units */
     COMMON,
-    /** 総称型のリスト */
+    /** List of generic types */
     PROCEDURES,
-    /** 分岐 */
+    /** Branch */
     SELECTION,
-    /** 条件ブロック */
+    /** Conditional block */
     CONDITION,
-    /** 実行文 */
+    /** Execution statement */
     BODY,
-    /** モジュール */
+    /** module */
     MODULE,
-    /** 手続き */
+    /** Procedure */
     PROCEDURE,
-    /** 手続呼出 */
+    /** Call procedure */
     PROCEDUREUSAGE,
-    /** 反復 */
+    /** Iterate */
     REPETITION,
-    /** リターン */
+    /** Return */
     RETURN,
-    /** 代入文 */
+    /** Assignment statement */
     SUBSTITUTION,
-    /** ユーザー定義 */
+    /** User-defined */
     USERDEFINITION,
-    /** 変数宣言 */
+    /** Variable declaration */
     VARIABLEDEFINITION,
-    /** USE文 */
+    /** USE statement */
     USE,
-    /** 構造体 */
+    /** Structure */
     TYPE,
-    /** 不明 */
+    /** Unknown */
     UNKNOWN;
 }

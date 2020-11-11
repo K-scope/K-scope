@@ -26,35 +26,35 @@ import jp.riken.kscope.exception.ParseException;
 import jp.riken.kscope.utils.LanguageTokenizer;
 
 /**
- * セミコロンで区切られた複数行を分割するクラス
+ * A class that splits multiple lines separated by semicolons
  *
  * @author hira
  *
  */
 public class MultiLineParser {
-    /** ソースファイル */
+    /** source file */
     private SourceFile m_file;
 
     /**
-     * コンストラクタ
+     * Constructor
      *
      * @param file
-     *            ソースファイル
+     *            source file
      */
     public MultiLineParser(SourceFile file) {
         m_file = file;
     }
 
     /**
-     * 複数文を構文解析を行う。
+     * Parse multiple sentences.
      *
      * @param line
-     *            コード行
+     * Line of code
      * @param lineno
-     *            ファイル行番号
-     * @return  コード行リスト
+     * File line number
+     * @return Code line list
      * @throws ParseException
-     *             パース例外
+     * Perth exception
      */
     public CodeLine[] parser(StringBuilder line, int lineno)
             throws ParseException {
@@ -69,14 +69,14 @@ public class MultiLineParser {
         try {
 
             ArrayList<CodeLine> codeList = new ArrayList<CodeLine>();
-            // セミコロン (;) で行を分割する。
+            // Split the line with a semicolon (;).
             String src_code = line.toString();
             src_code = src_code.trim();
             StringBuilder bufCode = new StringBuilder();
 
             LanguageTokenizer token = new LanguageTokenizer(src_code);
 
-            // セミコロン (;)毎に分割する
+            // Split by semicolon (;)
             token.useDelimiter(";");
             token.eolIsSignificant(true);
             int ttype;
@@ -92,7 +92,7 @@ public class MultiLineParser {
                     break;
                 case LanguageTokenizer.LT_DELIM:
                     if (token.sval == ";") {
-                        // コードラインオブジェクトを生成して、リストに追加する。
+                        // Create a codeline object and add it to the list.
                         String buf = bufCode.toString();
                         buf = buf.trim();
                         String fn = null;
@@ -102,7 +102,7 @@ public class MultiLineParser {
                         CodeLine code = new CodeLine(m_file, buf, lineno, fn);
                         codeList.add(code);
 
-                        // コードバッファをクリアする。
+                        // Clear the code buffer.
                         bufCode = new StringBuilder();
                     }
                     break;
@@ -112,7 +112,7 @@ public class MultiLineParser {
                 }
             }
             if (bufCode.length() > 0) {
-                // コードラインオブジェクトを生成して、リストに追加する。
+                // Create a codeline object and add it to the list.
                 String buf = bufCode.toString().trim();
                 String fn = null;
                 if (m_file != null) {

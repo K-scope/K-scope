@@ -29,35 +29,35 @@ import jp.riken.kscope.gui.ISourceBargraph;
 
 
 /**
- * プロファイラ情報クラス
+ * Profiler information class
  * @author RIKEN
  */
 public class ProfilerInfo {
-    /** プロファイラ:コスト情報(手続) */
+    /** Profiler: Cost Information (Procedure) */
     private Map<String, List<ProfilerDprofData>> costProcedure;
-    /** プロファイラ:コスト情報(ループ) */
+    /** Profiler: Cost Information (Loop) */
     private Map<String, List<ProfilerDprofData>> costLoop;
-    /** プロファイラ:コスト情報(ライン) */
+    /** Profiler: Cost Information (Line) */
     private Map<String, List<ProfilerDprofData>> costLine;
-    /** プロファイラ:コールグラフ情報 */
+    /** Profiler: Call Graph Information */
     private Map<String, List<ProfilerDprofData>> callgraph;
-    /** プロファイラ:イベントカウンタ情報 */
+    /** Profiler: Event counter information */
     private Map<String, List<ProfilerEprofData>> eventCounter;
-    /** 詳細プロファイラ測定区間情報 */
+    /** Detailed profiler measurement section information */
     private ProfilerMeasureInfo measureInfo;
 
     /**
-     * プロファイラ:コスト情報(手続)
-     * @param key		プロファイラキー文字列
-     * @return プロファイラ:コスト情報(手続)
+     * Profiler: Cost information (procedure)
+     * @param key Profiler key string
+     * @return Profiler: Cost Information (Procedure)
      */
     public ProfilerDprofData[] getCostProcedure(String key) {
         return getMapProfilerDprofData(this.costProcedure, key);
     }
     /**
-     * プロファイラ:コスト情報(手続)
-     * @param key  プロファイラキー文字列
-     * @param data プロファイラ:コスト情報(手続)
+     * Profiler: Cost information (procedure)
+     * @param key Profiler key string
+     * @param data Profiler: Cost information (procedure)
      */
     public void putCostProcedure(String key, ProfilerDprofData[] data) {
         if (this.costProcedure == null) {
@@ -66,17 +66,17 @@ public class ProfilerInfo {
         putMapProfilerDprofData(this.costProcedure, key, data);
     }
     /**
-     * プロファイラ:コスト情報(ループ)
-     * @param key		プロファイラキー文字列
-     * @return プロファイラ:コスト情報(ループ)
+     * Profiler: Cost information (loop)
+     * @param key Profiler key string
+     * @return Profiler: Cost Information (Loop)
      */
     public ProfilerDprofData[] getCostLoop(String key) {
         return getMapProfilerDprofData(this.costLoop, key);
     }
     /**
-     * プロファイラ:コスト情報(ループ)
-     * @param key  プロファイラキー文字列
-     * @param data プロファイラ:コスト情報(ループ)
+     * Profiler: Cost information (loop)
+     * @param key Profiler key string
+     * @param data Profiler: Cost information (loop)
      */
     public void putCostLoop(String key, ProfilerDprofData[] data) {
         if (this.costLoop == null) {
@@ -85,17 +85,17 @@ public class ProfilerInfo {
         putMapProfilerDprofData(this.costLoop, key, data);
     }
     /**
-     * プロファイラ:コスト情報(ライン)
-     * @param key		プロファイラキー文字列
-     * @return プロファイラ:コスト情報(ライン)
+     * Profiler: Cost information (line)
+     * @param key Profiler key string
+     * @return Profiler: Cost Information (Line)
      */
     public ProfilerDprofData[] getCostLine(String key) {
         return getMapProfilerDprofData(this.costLine, key);
     }
     /**
-     * プロファイラ:コスト情報(ライン)
-     * @param key  プロファイラキー文字列
-     * @param data プロファイラ:コスト情報(ライン)
+     * Profiler: Cost information (line)
+     * @param key Profiler key string
+     * @param data Profiler: Cost information (line)
      */
     public void putCostLine(String key, ProfilerDprofData[] data) {
         if (this.costLine == null) {
@@ -104,17 +104,17 @@ public class ProfilerInfo {
         putMapProfilerDprofData(this.costLine, key, data);
     }
     /**
-     * プロファイラ:コールグラフ情報
-     * @param key  プロファイラキー文字列
-     * @return プロファイラ:コールグラフ情報
+     * Profiler: Call graph information
+     * @param key Profiler key string
+     * @return Profiler: Call graph information
      */
     public ProfilerDprofData[] getCallgraph(String key) {
         return getMapProfilerDprofData(this.callgraph, key);
     }
     /**
-     * プロファイラ:コールグラフ情報
-     * @param key  プロファイラキー文字列
-     * @param data プロファイラ:コールグラフ情報
+     * Profiler: Call graph information
+     * @param key Profiler key string
+     * @param data Profiler: Call graph information
      */
     public void putCallgraph(String key, ProfilerDprofData[] data) {
         if (this.callgraph == null) {
@@ -123,17 +123,17 @@ public class ProfilerInfo {
         putMapProfilerDprofData(this.callgraph, key, data);
     }
     /**
-     * プロファイラ:イベントカウンタ情報
-     * @param key  プロファイラキー文字列
-     * @return プロファイラ:イベントカウンタ情報
+     * Profiler: Event counter information
+     * @param key Profiler key string
+     * @return Profiler: Event counter information
      */
     public ProfilerEprofData[] getEventCounter(String key) {
         return getMapProfilerEprofData(this.eventCounter, key);
     }
     /**
-     * プロファイラ:イベントカウンタ情報
-     * @param key  プロファイラキー文字列
-     * @param data プロファイラ:イベントカウンタ情報
+     * Profiler: Event counter information
+     * @param key Profiler key string
+     * @param data Profiler: Event counter information
      */
     public void putEventCounter(String key, ProfilerEprofData[] data) {
         if (this.eventCounter == null) {
@@ -143,10 +143,10 @@ public class ProfilerInfo {
     }
 
     /**
-     * MapからProfilerDprofData[]を取得する
-     * @param map		プロファイラMapデータ
-     * @param key		キー文字列
-     * @return			ProfilerDprofData[]
+     * Get ProfilerDprofData [] from Map
+     * @param map Profiler Map data
+     * @param key key string
+     * @return ProfilerDprofData []
      */
     private ProfilerDprofData[] getMapProfilerDprofData(Map<String, List<ProfilerDprofData>> map, String key) {
         if (map == null) return null;
@@ -156,11 +156,11 @@ public class ProfilerInfo {
     }
 
     /**
-     * MapにProfilerDprofData[]を追加する
-     * @param map		プロファイラMapデータ
-     * @param key		キー文字列
-     * @param data		追加プロファイルデータ
-     * @return    追加プロファイルデータ
+     * Add ProfilerDprofData [] to Map
+     * @param map Profiler Map data
+     * @param key key string
+     * @param data Additional profile data
+     * @return Additional profile data
      */
     private List<ProfilerDprofData> putMapProfilerDprofData(
                         Map<String, List<ProfilerDprofData>> map,
@@ -176,10 +176,10 @@ public class ProfilerInfo {
     }
 
     /**
-     * MapからProfilerEprofData[]を取得する
-     * @param map		プロファイラMapデータ
-     * @param key		キー文字列
-     * @return			ProfilerEprofData[]
+     * Get ProfilerEprofData [] from Map
+     * @param map Profiler Map data
+     * @param key key string
+     * @return ProfilerEprofData []
      */
     private ProfilerEprofData[] getMapProfilerEprofData(Map<String, List<ProfilerEprofData>> map, String key) {
         if (map == null) return null;
@@ -190,11 +190,11 @@ public class ProfilerInfo {
 
 
     /**
-     * MapにProfilerEprofData[]を追加する
-     * @param map		プロファイラMapデータ
-     * @param key		キー文字列
-     * @param data		追加プロファイルデータ
-     * @return    追加プロファイルデータ
+     * Add ProfilerEprofData [] to Map
+     * @param map Profiler Map data
+     * @param key key string
+     * @param data Additional profile data
+     * @return Additional profile data
      */
     private List<ProfilerEprofData> putMapProfilerEprofData(
                         Map<String, List<ProfilerEprofData>> map,
@@ -210,7 +210,7 @@ public class ProfilerInfo {
     }
 
     /**
-     * プロファイラデータをクリアする.
+     * Clear profiler data.
      */
     public void clearProfilerData() {
         if (this.costProcedure != null) {
@@ -231,8 +231,8 @@ public class ProfilerInfo {
     }
 
     /**
-     * すべてのプロファイルバーグラフデータを取得する
-     * @return	プロファイルバーグラフデータ
+     * Get all profile bar graph data
+     * @return Profile bar graph data
      */
     public ISourceBargraph[] getBargraphData() {
 
@@ -265,9 +265,9 @@ public class ProfilerInfo {
 
 
     /**
-     * プロファイラ情報タイプのプロファイルバーグラフデータを取得する
-     * @param  type   プロファイラ情報タイプ
-     * @return	プロファイルバーグラフデータ
+     * Get profiler information type profile bar graph data
+     * @param type Profiler information type
+     * @return Profile bar graph data
      */
     public ISourceBargraph[] getBargraphData(PROFILERINFO_TYPE type) {
         if (type == null) return null;
@@ -310,15 +310,15 @@ public class ProfilerInfo {
         return list.toArray(new ISourceBargraph[0]);
     }
     /**
-     * 詳細プロファイラ測定区間情報を取得する
-     * @return 		詳細プロファイラ測定区間情報
+     * Get detailed profiler measurement interval information
+     * @return Detailed profiler measurement section information
      */
     public ProfilerMeasureInfo getMeasureInfo() {
         return this.measureInfo;
     }
     /**
-     * 詳細プロファイラ測定区間情報を設定する
-     * @param info 詳細プロファイラ測定区間情報
+     * Set detailed profiler measurement interval information
+     * @param info Detailed profiler measurement section information
      */
     public void setMeasureInfo(ProfilerMeasureInfo info) {
         this.measureInfo = info;

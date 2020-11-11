@@ -22,44 +22,44 @@ import jp.riken.kscope.service.AppController;
 import jp.riken.kscope.service.FutureService;
 
 /**
- * 実行中スレッドキャンセルアクション
+ * Running thread cancel action
  * @author RIKEN
  */
 public class ThreadCancelAction extends ActionBase {
 
     /**
-     * コンストラクタ
-     * @param controller	アプリケーションコントローラ
+     * Constructor
+     * @param controller Application controller
      */
     public ThreadCancelAction(AppController controller) {
         super(controller);
     }
 
     /**
-     * アクションが実行可能であるかチェックする.<br/>
-     * アクションの実行前チェック、メニューのイネーブルの切替を行う。<br/>
-     * @return		true=アクションが実行可能
+     * Check if the action is executable. <br/>
+     * Check before executing the action and switch the menu enable. <br/>
+     * @return true = Action can be executed
      */
     @Override
     public boolean validateAction() {
-        // スレッドタスクの実行状態をチェックする(true=スレッドが終了していない)
+        // Check the execution status of the thread task (true = thread has not ended)
         return !this.controller.isThreadTaskDone();
     }
 
     /**
-     * アクション発生イベント
-     * @param event		イベント情報
+     * Action occurrence event
+     * @param event Event information
      */
     @Override
     public void actionPerformed(ActionEvent event) {
 
-        // 実行中のスレッドのタスク情報の取得
+        // Get task information for running threads
         FutureService<Integer> future = this.controller.getThreadFuture();
         if (future == null) return;
         if (future.isDone()) return;
         if (future.isCancelled()) return;
 
-        // 実行中のスレッドをキャンセルする
+        // Cancel the running thread
         if (future != null) {
             future.cancel(true);
         }

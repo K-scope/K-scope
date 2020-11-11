@@ -18,7 +18,7 @@ package jp.riken.kscope.profiler.dprof;
 
 /**
  *
- * スレッド情報を保持する
+ * Hold thread information
  *
  * @author RIKEN
  */
@@ -34,127 +34,127 @@ public class ThreadInfo {
     private double[] paInfo;
 
     /**
-     * スレッド番号を取得する
-     * @return スレッド番号
+     * Get the thread number
+     * @return thread number
      */
     public int getThreadNo() {
         return threadNo;
     }
     /**
-     * 経過時間を取得する
-     * @return 経過時間
+     * Get the elapsed time
+     * @return elapsed time
      */
     public float getElapsTime() {
         return elapsTime;
     }
     /**
-     * ユーザ時間を取得する
-     * @return ユーザ時間
+     * Get user time
+     * @return user time
      */
     public float getUserTime() {
         return userTime;
     }
     /**
-     * システム時間を取得する
-     * @return システム時間
+     * Get system time
+     * @return system time
      */
     public float getSystemTime() {
         return systemTime;
     }
     /**
-     * サンプリング総数を取得する
-     * @return サンプリング総数
+     * Get the total number of samplings
+     * @return Total sampling
      */
     public float getTotalSampNum() {
         return totalSampNum;
     }
     /**
-     * バリア同期待ち数を取得する
-     * @return バリア同期待ち数
+     * Get the number of barrier synchronization waits
+     * @return Number of barrier synchronization waits
      */
     public float getBarrierSyncWaitNum() {
         return barrierSyncWaitNum;
     }
     /**
-     * MPIライブラリコスト数を取得する
-     * @return MPIライブラリコスト数
+     * Get the number of MPI library costs
+     * @return MPI library cost number
      */
     public float getMpiLibCostNum() {
         return mpiLibCostNum;
     }
     /**
-     * MPI関数経過時間を取得する
-     * @return MPI関数経過時間
+     * Get MPI function elapsed time
+     * @return MPI function elapsed time
      */
     public float getMpiFuncElapsTime() {
         return mpiFuncElapsTime;
     }
     /**
-     * PA情報を取得する
-     * @return PA情報
+     * Get PA information
+     * @return PA information
      */
     public double[] getPaInfo() {
         return paInfo;
     }
     /**
-     * スレッド番号を設定する
-     * @param threadNo 設定するスレッド番号
+     * Set the thread number
+     * @param threadNo Thread number to set
      */
     public void setThreadNo(int threadNo) {
         this.threadNo = threadNo;
     }
     /**
-     * 経過時間を設定する
-     * @param elapsTime 設定する経過時間
+     * Set the elapsed time
+     * @param elapsTime Elapsed time to set
      */
     public void setElapsTime(float elapsTime) {
         this.elapsTime = elapsTime;
     }
     /**
-     * ユーザ時間を設定する
-     * @param userTime 設定するユーザ時間
+     * Set user time
+     * @param userTime User time to set
      */
     public void setUserTime(float userTime) {
         this.userTime = userTime;
     }
     /**
-     * システム時間を設定する
-     * @param systemTime 設定するシステム時間
+     * Set system time
+     * @param systemTime System time to set
      */
     public void setSystemTime(float systemTime) {
         this.systemTime = systemTime;
     }
     /**
-     * サンプリング総数を設定する
-     * @param totalSampNum 設定するサンプリング総数
+     * Set the total number of samplings
+     * @param totalSampNum Total sampling to set
      */
     public void setTotalSampNum(float totalSampNum) {
         this.totalSampNum = totalSampNum;
     }
     /**
-     * バリア同期待ち数を設定する
-     * @param barrierWaitSyncNum 設定するバリア同期待ち数
+     * Set the number of barrier synchronization waits
+     * @param barrierWaitSyncNum Number of barrier synchronization waits to set
      */
     public void setBarrierWaitSyncNum(float barrierWaitSyncNum) {
         this.barrierSyncWaitNum = barrierWaitSyncNum;
     }
     /**
-     * MPIライブラリコスト数を設定する
-     * @param mpiLibCostNum 設定するMPIライブラリコスト数
+     * Set the number of MPI library costs
+     * @param mpiLibCostNum Number of MPI library costs to set
      */
     public void setMpiLibCostNum(float mpiLibCostNum) {
         this.mpiLibCostNum = mpiLibCostNum;
     }
     /**
-     * MPI関数経過時間を設定する
-     * @param mpiFuncElapsTime 設定するMPI関数経過時間
+     * MPI function Set elapsed time
+     * @param mpiFuncElapsTime MPI function elapsed time to set
      */
     public void setMpiFuncElapsTime(float mpiFuncElapsTime) {
         this.mpiFuncElapsTime = mpiFuncElapsTime;
     }
     /**
-     * PA情報を設定する
-     * @param paInfo 設定するPA情報
+     * Set PA information
+     * @param paInfo PA information to set
      */
     public void setPaInfo(double[] paInfo) {
         this.paInfo = paInfo;

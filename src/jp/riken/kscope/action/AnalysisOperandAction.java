@@ -32,18 +32,18 @@ import jp.riken.kscope.service.AnalysisOperandService;
 import jp.riken.kscope.service.AppController;
 
 /**
- * 演算カウントアクション
+ * Computation count action
  * @author RIKEN
  */
 public class AnalysisOperandAction extends ActionBase {
 
-    /** 付加情報取得先ビュー */
+    /** Additional information acquisition destination view */
     private FRAME_VIEW view;
 
     /**
-     * コンストラクタ
-     * @param controller	アプリケーションコントローラ
-     * @param view 			付加情報取得先ビュー
+     * Constructor
+     * @param controller Application controller
+     * @param view Additional information acquisition destination view
      */
     public AnalysisOperandAction(AppController controller, FRAME_VIEW view) {
         super(controller);
@@ -51,14 +51,14 @@ public class AnalysisOperandAction extends ActionBase {
     }
 
     /**
-     * アクションが実行可能であるかチェックする.<br/>
-     * アクションの実行前チェック、メニューのイネーブルの切替を行う。<br/>
-     * @return		true=アクションが実行可能
+     * Check if the action is executable. <br/>
+     * Check before executing the action and switch the menu enable. <br/>
+     * @return true = Action can be executed
      */
     @Override
     public boolean validateAction() {
 
-        // 選択ブロックを取得する
+        // Get the selected block
         IBlock[] blocks = getSelectedBlocks();
         if (blocks == null) return false;
 
@@ -66,37 +66,37 @@ public class AnalysisOperandAction extends ActionBase {
     }
 
     /**
-     * アクション発生イベント
-     * @param event		イベント情報
+     * Action occurrence event
+     * @param event Event information
      */
     @Override
     public void actionPerformed(ActionEvent event) {
 
-        // 実行チェック
+        // Execution check
         if (!validateAction()) return;
 
-        // ステータスメッセージ
-        final String message = Message.getString("mainmenu.analysis.operation"); //演算カウント
+        // Status message
+        final String message = Message.getString("mainmenu.analysis.operation"); // Calculation count
         Application.status.setMessageMain(message);
 
-        // 選択ブロックを取得する
+        // Get the selected block
         IBlock[] blocks = getSelectedBlocks();
         if (blocks == null) return;
 
-        // 演算カウントを取得する
+        // Get the operation count
         analysisOperand(blocks);
 
     }
 
     /**
-     * 選択ブロックを取得する
-     * @return		選択ブロック
+     * Get the selected block
+     * @return selection block
      */
     private IBlock[] getSelectedBlocks() {
 
         IBlock[] blocks = null;
         if (this.view == FRAME_VIEW.EXPLORE_VIEW) {
-            // 選択ブロックを取得する
+            // Get the selected block
             blocks = this.controller.getMainframe().getPanelExplorerView().getSelectedBlocks();
         }
         else if (this.view == FRAME_VIEW.ANALYSIS_VIEW) {
@@ -110,33 +110,33 @@ public class AnalysisOperandAction extends ActionBase {
     }
 
     /**
-     * 演算カウントを取得する
-     * @param blocks		選択ブロック
+     * Get the operation count
+     * @param blocks selection blocks
      */
     public void analysisOperand(IBlock[] blocks) {
 
-        // フォートランデータベース
+        // Fortran database
         Fortran fortran = this.controller.getFortranLanguage();
-        // 演算カウントテーブルモデルを取得する
+        // Get the arithmetic count table model
         OperandTableModel modelOperand = this.controller.getOperandTableModel();
-        // 組込み関数演算カウントプロパティを取得する
+        // Get the built-in function operation count property
         OperationProperties propertiesOperand = this.controller.getPropertiesOperation();
-        // エラー情報モデル
+        // Error information model
         ErrorInfoModel errorModel = this.controller.getErrorInfoModel();
 
-        // 演算カウントクリア
+        // Clear operation count
         modelOperand.clearOperand();
 
-        // 分析サービス
+        // Analysis service
         AnalysisOperandService service = new AnalysisOperandService(fortran);
         service.setErrorInfoModel(errorModel);
         service.setModelOperand(modelOperand);
         service.setPropertiesOperand(propertiesOperand);
 
-        // 演算カウントを取得する
+        // Get the operation count
         service.analysisOperand(blocks);
 
-        // 演算カウントタブをアクティブにする
+        // Activate the calculation count tab
         this.controller.setSelectedAnalysisPanel(ANALYSIS_PANEL.OPERAND);
     }
 }
