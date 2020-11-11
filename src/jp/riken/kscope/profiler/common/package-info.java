@@ -15,7 +15,5 @@
  * limitations under the License.
  */
 
-/**
- * Provides profiler common data class. <br/>
- */
+/** Provides profiler common data class. <br> */
 package jp.riken.kscope.profiler.common;

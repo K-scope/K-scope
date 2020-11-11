@@ -17,66 +17,64 @@
 package jp.riken.kscope.utils;
 
 import java.io.File;
-
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 
 /**
  * AppleScript execution class
+ *
  * @author RIKEN
  */
 public class AppleScriptEngine {
 
-    /**
-     * Execute AppleScript in the folder selection dialog display.
-     *
-     * @param title Title
-     * @param currentDirectoryPath Default path
-     * @return Selected folder
-     */
-    public static File showFolderDialog(
-            String title,
-            String currentDirectoryPath) {
-        try {
-            final String script = createChooseFolderScript(title, currentDirectoryPath);
-            ScriptEngine scriptEngine = new ScriptEngineManager().getEngineByName("AppleScript");
-            final String result = (String) scriptEngine.eval(script);
-            if (result == null || result.length() <= 0) {
-                return null;
-            }
-            return new File(result);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            return null;
-        }
+  /**
+   * Execute AppleScript in the folder selection dialog display.
+   *
+   * @param title Title
+   * @param currentDirectoryPath Default path
+   * @return Selected folder
+   */
+  public static File showFolderDialog(String title, String currentDirectoryPath) {
+    try {
+      final String script = createChooseFolderScript(title, currentDirectoryPath);
+      ScriptEngine scriptEngine = new ScriptEngineManager().getEngineByName("AppleScript");
+      final String result = (String) scriptEngine.eval(script);
+      if (result == null || result.length() <= 0) {
+        return null;
+      }
+      return new File(result);
+    } catch (Exception ex) {
+      ex.printStackTrace();
+      return null;
     }
+  }
 
-    /**
-     * Create an AppleScript to display the folder selection dialog.
-     *
-     * @param title Dialog description
-     * @param path Default path
-     * @return AppleScript
-     */
-    private static String createChooseFolderScript(String title, String path) {
-        StringBuffer buf = new StringBuffer();
-        // try
-        buf.append("try\n");
-        // set theFolder to choose folder with prompt "title" default location "path"
-        buf.append("set theFolder to choose folder with prompt \"");
-        buf.append(title);
-        buf.append("\"");
-        buf.append(" default location ");
-        buf.append("\"");
-        buf.append(path);
-        buf.append("\"");
-        buf.append("\n");
-        buf.append("set thePath to theFolder as string\n");
-        buf.append("set pPath to POSIX path of theFolder as string\n");
-        buf.append("return pPath\n");
-        buf.append("on error\n");
-        buf.append("return \"\"\n");
-        buf.append("end try\n");
-        return buf.toString();
-    }
+  /**
+   * Create an AppleScript to display the folder selection dialog.
+   *
+   * @param title Dialog description
+   * @param path Default path
+   * @return AppleScript
+   */
+  private static String createChooseFolderScript(String title, String path) {
+    StringBuffer buf = new StringBuffer();
+    // try
+    buf.append("try\n");
+    // set theFolder to choose folder with prompt "title" default location "path"
+    buf.append("set theFolder to choose folder with prompt \"");
+    buf.append(title);
+    buf.append("\"");
+    buf.append(" default location ");
+    buf.append("\"");
+    buf.append(path);
+    buf.append("\"");
+    buf.append("\n");
+    buf.append("set thePath to theFolder as string\n");
+    buf.append("set pPath to POSIX path of theFolder as string\n");
+    buf.append("return pPath\n");
+    buf.append("on error\n");
+    buf.append("return \"\"\n");
+    buf.append("end try\n");
+    return buf.toString();
+  }
 }

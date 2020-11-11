@@ -26,16 +26,12 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
-
 import jp.riken.kscope.xcodeml.xml.*;
 
 /**
- * <p>
  * Java class for anonymous complex type.
  *
- * <p>
- * The following schema fragment specifies the expected content contained within
- * this class.
+ * <p>The following schema fragment specifies the expected content contained within this class.
  *
  * <pre>
  * &lt;complexType>
@@ -50,79 +46,71 @@ import jp.riken.kscope.xcodeml.xml.*;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- *
- *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "", propOrder = { "varRefOrFdoLoop" })
+@XmlType(
+    name = "",
+    propOrder = {"varRefOrFdoLoop"})
 @XmlRootElement(name = "varList")
 public class VarList implements IXmlNode {
 
-    @XmlElements({ @XmlElement(name = "varRef", type = VarRef.class),
-            @XmlElement(name = "FdoLoop", type = FdoLoop.class) })
-    protected List<IXmlNode> varRefOrFdoLoop;
-    @XmlAttribute
-    protected String name;
+  @XmlElements({
+    @XmlElement(name = "varRef", type = VarRef.class),
+    @XmlElement(name = "FdoLoop", type = FdoLoop.class)
+  })
+  protected List<IXmlNode> varRefOrFdoLoop;
 
-    /**
-     * Gets the value of the varRefOrFdoLoop property.
-     *
-     * <p>
-     * This accessor method returns a reference to the live list, not a
-     * snapshot. Therefore any modification you make to the returned list will
-     * be present inside the JAXB object. This is why there is not a
-     * <CODE>set</CODE> method for the varRefOrFdoLoop property.
-     *
-     * <p>
-     * For example, to add a new item, do as follows:
-     *
-     * <pre>
-     * getVarRefOrFdoLoop().add(newItem);
-     * </pre>
-     *
-     *
-     * <p>
-     * Objects of the following type(s) are allowed in the list {@link VarRef }
-     * {@link FdoLoop }
-     *
-     * @return      IXmlNode List
-     *
-     */
-    public List<IXmlNode> getVarRefOrFdoLoop() {
-        if (varRefOrFdoLoop == null) {
-            varRefOrFdoLoop = new ArrayList<IXmlNode>();
-        }
-        return this.varRefOrFdoLoop;
-    }
+  @XmlAttribute protected String name;
 
-    /**
-     * Gets the value of the name property.
-     *
-     * @return possible object is {@link String }
-     *
-     */
-    public String getName() {
-        return name;
+  /**
+   * Gets the value of the varRefOrFdoLoop property.
+   *
+   * <p>This accessor method returns a reference to the live list, not a snapshot. Therefore any
+   * modification you make to the returned list will be present inside the JAXB object. This is why
+   * there is not a <CODE>set</CODE> method for the varRefOrFdoLoop property.
+   *
+   * <p>For example, to add a new item, do as follows:
+   *
+   * <pre>
+   * getVarRefOrFdoLoop().add(newItem);
+   * </pre>
+   *
+   * <p>Objects of the following type(s) are allowed in the list {@link VarRef } {@link FdoLoop }
+   *
+   * @return IXmlNode List
+   */
+  public List<IXmlNode> getVarRefOrFdoLoop() {
+    if (varRefOrFdoLoop == null) {
+      varRefOrFdoLoop = new ArrayList<IXmlNode>();
     }
+    return this.varRefOrFdoLoop;
+  }
 
-    /**
-     * Sets the value of the name property.
-     *
-     * @param value
-     *            allowed object is {@link String }
-     *
-     */
-    public void setName(String value) {
-        this.name = value;
-    }
+  /**
+   * Gets the value of the name property.
+   *
+   * @return possible object is {@link String }
+   */
+  public String getName() {
+    return name;
+  }
 
-    @Override
-    public boolean enter(jp.riken.kscope.xcodeml.xml.IXmlVisitor visitor) {
-        return (visitor.enter(this));
-    }
+  /**
+   * Sets the value of the name property.
+   *
+   * @param value allowed object is {@link String }
+   */
+  public void setName(String value) {
+    this.name = value;
+  }
 
-    @Override
-    public void leave(jp.riken.kscope.xcodeml.xml.IXmlVisitor visitor) {
-        visitor.leave(this);
-    }
+  @Override
+  public boolean enter(jp.riken.kscope.xcodeml.xml.IXmlVisitor visitor) {
+    return (visitor.enter(this));
+  }
+
+  @Override
+  public void leave(jp.riken.kscope.xcodeml.xml.IXmlVisitor visitor) {
+    visitor.leave(this);
+  }
 }

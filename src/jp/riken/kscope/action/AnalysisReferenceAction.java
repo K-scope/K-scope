@@ -17,9 +17,7 @@
 package jp.riken.kscope.action;
 
 import java.awt.event.ActionEvent;
-
 import javax.swing.tree.DefaultMutableTreeNode;
-
 import jp.riken.kscope.Application;
 import jp.riken.kscope.Message;
 import jp.riken.kscope.common.ANALYSIS_PANEL;
@@ -34,160 +32,162 @@ import jp.riken.kscope.service.AppController;
 
 /**
  * Declaration / Definition / Reference List Action
+ *
  * @author RIKEN
  */
 public class AnalysisReferenceAction extends ActionBase {
 
-    /** Declaration / definition / reference list Variable acquisition destination view */
-    private FRAME_VIEW view;
+  /** Declaration / definition / reference list Variable acquisition destination view */
+  private FRAME_VIEW view;
 
-    /**
-     * Constructor
-     * @param controller Application controller
-     * @param view Declaration / definition / reference list Variable acquisition destination view
-     */
-    public AnalysisReferenceAction(AppController controller, FRAME_VIEW view) {
-        super(controller);
-        this.view = view;
+  /**
+   * Constructor
+   *
+   * @param controller Application controller
+   * @param view Declaration / definition / reference list Variable acquisition destination view
+   */
+  public AnalysisReferenceAction(AppController controller, FRAME_VIEW view) {
+    super(controller);
+    this.view = view;
+  }
+
+  /**
+   * Check if the action is executable. <br>
+   * Check before executing the action and switch the menu enable. <br>
+   *
+   * @return true = Action can be executed
+   */
+  @Override
+  public boolean validateAction() {
+
+    if (this.view != FRAME_VIEW.SOURCE_VIEW) {
+      // Get the selected node
+      VariableDefinition variable = getSelectedVariable();
+      return (variable != null);
+
+    } else {
+      // Get the selected line of source code
+      CodeLine line = this.controller.getMainframe().getPanelSourceView().getSelectedCodeLine();
+      if (line == null) return false;
+      return (line.getStatement() != null && !line.getStatement().isEmpty());
+    }
+  }
+
+  /**
+   * Action occurrence event
+   *
+   * @param event Event information
+   */
+  @Override
+  public void actionPerformed(ActionEvent event) {
+    // Action check
+    if (!validateAction()) {
+      return;
     }
 
-    /**
-     * Check if the action is executable. <br/>
-     * Check before executing the action and switch the menu enable. <br/>
-     * @return true = Action can be executed
-     */
-    @Override
-    public boolean validateAction() {
+    // Status message
+    final String message =
+        Message.getString("mainmenu.analysis.dec-def-ref"); // Declaration / Definition / Reference
+    Application.status.setMessageMain(message);
 
-        if (this.view != FRAME_VIEW.SOURCE_VIEW) {
-            // Get the selected node
-            VariableDefinition variable = getSelectedVariable();
-            return (variable != null);
+    if (this.view != FRAME_VIEW.SOURCE_VIEW) {
+      // Select variable
+      VariableDefinition variable = getSelectedVariable();
+      if (variable == null) return;
+      // Get the reference list
+      analysisReference(variable);
+    } else {
+      // Get the selected line of source code
+      CodeLine line = this.controller.getMainframe().getPanelSourceView().getSelectedCodeLine();
+      if (line == null) return;
 
-        }
-        else {
-            // Get the selected line of source code
-            CodeLine line = this.controller.getMainframe().getPanelSourceView().getSelectedCodeLine();
-            if (line == null) return false;
-            return (line.getStatement() != null && !line.getStatement().isEmpty());
-        }
+      // Get the reference list
+      analysisReference(line);
     }
+  }
 
-    /**
-     * Action occurrence event
-     * @param event Event information
-     */
-    @Override
-    public void actionPerformed(ActionEvent event) {
-        // Action check
-        if (!validateAction()) {
-            return;
-        }
+  /**
+   * Get declaration / definition / reference list variables
+   *
+   * @return Declaration / definition / reference list variable
+   */
+  private VariableDefinition getSelectedVariable() {
 
-        // Status message
-        final String message = Message.getString("mainmenu.analysis.dec-def-ref"); // Declaration / Definition / Reference
-        Application.status.setMessageMain(message);
+    VariableDefinition variable = null;
+    if (this.view == FRAME_VIEW.EXPLORE_VIEW) {
+      // Get the selected node
+      DefaultMutableTreeNode node =
+          this.controller.getMainframe().getPanelExplorerView().getSelectedNode();
+      if (node == null || node.getUserObject() == null) return null;
 
-        if (this.view != FRAME_VIEW.SOURCE_VIEW) {
-            // Select variable
-            VariableDefinition variable = getSelectedVariable();
-            if (variable == null) return;
-            // Get the reference list
-            analysisReference(variable);
-        }
-        else {
-            // Get the selected line of source code
-            CodeLine line = this.controller.getMainframe().getPanelSourceView().getSelectedCodeLine();
-            if (line == null) return;
-
-            // Get the reference list
-            analysisReference(line);
-
-        }
+      // Selected node
+      Object obj = node.getUserObject();
+      if (obj instanceof VariableDefinition) {
+        variable = (VariableDefinition) obj;
+      }
+    } else if (this.view == FRAME_VIEW.ANALYSIS_VIEW) {
+      variable = this.controller.getVariableTableModel().getSelectedVariable();
     }
+    return variable;
+  }
 
-    /**
-     * Get declaration / definition / reference list variables
-     * @return Declaration / definition / reference list variable
-     */
-    private VariableDefinition getSelectedVariable() {
+  /**
+   * Create a declaration / definition / reference list
+   *
+   * @param variable Generated variable
+   */
+  public void analysisReference(VariableDefinition variable) {
+    if (variable == null) return;
 
-        VariableDefinition variable = null;
-        if (this.view == FRAME_VIEW.EXPLORE_VIEW) {
-            // Get the selected node
-            DefaultMutableTreeNode node = this.controller.getMainframe().getPanelExplorerView().getSelectedNode();
-            if (node == null || node.getUserObject() == null) return null;
+    // Fortran database
+    Fortran fortran = this.controller.getFortranLanguage();
+    // Get the reference list model
+    ReferenceModel modelReference = this.controller.getReferenceModel();
+    // Error information model
+    ErrorInfoModel errorModel = this.controller.getErrorInfoModel();
 
-            // Selected node
-            Object obj = node.getUserObject();
-            if (obj instanceof VariableDefinition) {
-                variable = (VariableDefinition) obj;
-            }
-        }
-        else if (this.view == FRAME_VIEW.ANALYSIS_VIEW) {
-            variable = this.controller.getVariableTableModel().getSelectedVariable();
-        }
-        return variable;
-    }
+    // Clear reference list
+    modelReference.clearTreeModel();
 
+    // Analysis service
+    AnalysisReferenceService service = new AnalysisReferenceService(fortran);
+    service.setErrorInfoModel(errorModel);
+    service.setModelReference(modelReference);
 
-    /**
-     * Create a declaration / definition / reference list
-     * @param variable Generated variable
-     */
-    public void analysisReference(VariableDefinition variable) {
-        if (variable == null) return;
+    // Get the reference list
+    service.analysisReference(variable);
 
-        // Fortran database
-        Fortran fortran = this.controller.getFortranLanguage();
-        // Get the reference list model
-        ReferenceModel modelReference = this.controller.getReferenceModel();
-        // Error information model
-        ErrorInfoModel errorModel = this.controller.getErrorInfoModel();
+    // Activate the Reference List tab
+    this.controller.setSelectedAnalysisPanel(ANALYSIS_PANEL.REFERENCE);
+  }
 
-        // Clear reference list
-        modelReference.clearTreeModel();
+  /**
+   * Create a declaration / definition / reference list
+   *
+   * @param line Selected line information
+   */
+  public void analysisReference(CodeLine line) {
+    if (line == null) return;
 
-        // Analysis service
-        AnalysisReferenceService service = new AnalysisReferenceService(fortran);
-        service.setErrorInfoModel(errorModel);
-        service.setModelReference(modelReference);
+    // Fortran database
+    Fortran fortran = this.controller.getFortranLanguage();
+    // Get the reference list model
+    ReferenceModel modelReference = this.controller.getReferenceModel();
+    // Error information model
+    ErrorInfoModel errorModel = this.controller.getErrorInfoModel();
 
-        // Get the reference list
-        service.analysisReference(variable);
+    // Clear reference list
+    modelReference.clearTreeModel();
 
-        // Activate the Reference List tab
-        this.controller.setSelectedAnalysisPanel(ANALYSIS_PANEL.REFERENCE);
+    // Analysis service
+    AnalysisReferenceService service = new AnalysisReferenceService(fortran);
+    service.setErrorInfoModel(errorModel);
+    service.setModelReference(modelReference);
 
-    }
+    // Get the reference list
+    service.analysisReference(line);
 
-    /**
-     * Create a declaration / definition / reference list
-     * @param line Selected line information
-     */
-    public void analysisReference(CodeLine line) {
-        if (line == null) return;
-
-        // Fortran database
-        Fortran fortran = this.controller.getFortranLanguage();
-        // Get the reference list model
-        ReferenceModel modelReference = this.controller.getReferenceModel();
-        // Error information model
-        ErrorInfoModel errorModel = this.controller.getErrorInfoModel();
-
-        // Clear reference list
-        modelReference.clearTreeModel();
-
-        // Analysis service
-        AnalysisReferenceService service = new AnalysisReferenceService(fortran);
-        service.setErrorInfoModel(errorModel);
-        service.setModelReference(modelReference);
-
-        // Get the reference list
-        service.analysisReference(line);
-
-        // Activate the Reference List tab
-        this.controller.setSelectedAnalysisPanel(ANALYSIS_PANEL.REFERENCE);
-
-    }
+    // Activate the Reference List tab
+    this.controller.setSelectedAnalysisPanel(ANALYSIS_PANEL.REFERENCE);
+  }
 }

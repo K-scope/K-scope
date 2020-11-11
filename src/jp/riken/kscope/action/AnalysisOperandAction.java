@@ -17,8 +17,6 @@
 package jp.riken.kscope.action;
 
 import java.awt.event.ActionEvent;
-
-
 import jp.riken.kscope.Application;
 import jp.riken.kscope.Message;
 import jp.riken.kscope.common.ANALYSIS_PANEL;
@@ -33,110 +31,114 @@ import jp.riken.kscope.service.AppController;
 
 /**
  * Computation count action
+ *
  * @author RIKEN
  */
 public class AnalysisOperandAction extends ActionBase {
 
-    /** Additional information acquisition destination view */
-    private FRAME_VIEW view;
+  /** Additional information acquisition destination view */
+  private FRAME_VIEW view;
 
-    /**
-     * Constructor
-     * @param controller Application controller
-     * @param view Additional information acquisition destination view
-     */
-    public AnalysisOperandAction(AppController controller, FRAME_VIEW view) {
-        super(controller);
-        this.view = view;
+  /**
+   * Constructor
+   *
+   * @param controller Application controller
+   * @param view Additional information acquisition destination view
+   */
+  public AnalysisOperandAction(AppController controller, FRAME_VIEW view) {
+    super(controller);
+    this.view = view;
+  }
+
+  /**
+   * Check if the action is executable. <br>
+   * Check before executing the action and switch the menu enable. <br>
+   *
+   * @return true = Action can be executed
+   */
+  @Override
+  public boolean validateAction() {
+
+    // Get the selected block
+    IBlock[] blocks = getSelectedBlocks();
+    if (blocks == null) return false;
+
+    return true;
+  }
+
+  /**
+   * Action occurrence event
+   *
+   * @param event Event information
+   */
+  @Override
+  public void actionPerformed(ActionEvent event) {
+
+    // Execution check
+    if (!validateAction()) return;
+
+    // Status message
+    final String message = Message.getString("mainmenu.analysis.operation"); // Calculation count
+    Application.status.setMessageMain(message);
+
+    // Get the selected block
+    IBlock[] blocks = getSelectedBlocks();
+    if (blocks == null) return;
+
+    // Get the operation count
+    analysisOperand(blocks);
+  }
+
+  /**
+   * Get the selected block
+   *
+   * @return selection block
+   */
+  private IBlock[] getSelectedBlocks() {
+
+    IBlock[] blocks = null;
+    if (this.view == FRAME_VIEW.EXPLORE_VIEW) {
+      // Get the selected block
+      blocks = this.controller.getMainframe().getPanelExplorerView().getSelectedBlocks();
+    } else if (this.view == FRAME_VIEW.ANALYSIS_VIEW) {
+      IBlock block = this.controller.getMainframe().getPanelAnalysisView().getSelectedBlock();
+      if (block != null) {
+        blocks = new IBlock[1];
+        blocks[0] = block;
+      }
     }
+    return blocks;
+  }
 
-    /**
-     * Check if the action is executable. <br/>
-     * Check before executing the action and switch the menu enable. <br/>
-     * @return true = Action can be executed
-     */
-    @Override
-    public boolean validateAction() {
+  /**
+   * Get the operation count
+   *
+   * @param blocks selection blocks
+   */
+  public void analysisOperand(IBlock[] blocks) {
 
-        // Get the selected block
-        IBlock[] blocks = getSelectedBlocks();
-        if (blocks == null) return false;
+    // Fortran database
+    Fortran fortran = this.controller.getFortranLanguage();
+    // Get the arithmetic count table model
+    OperandTableModel modelOperand = this.controller.getOperandTableModel();
+    // Get the built-in function operation count property
+    OperationProperties propertiesOperand = this.controller.getPropertiesOperation();
+    // Error information model
+    ErrorInfoModel errorModel = this.controller.getErrorInfoModel();
 
-        return true;
-    }
+    // Clear operation count
+    modelOperand.clearOperand();
 
-    /**
-     * Action occurrence event
-     * @param event Event information
-     */
-    @Override
-    public void actionPerformed(ActionEvent event) {
+    // Analysis service
+    AnalysisOperandService service = new AnalysisOperandService(fortran);
+    service.setErrorInfoModel(errorModel);
+    service.setModelOperand(modelOperand);
+    service.setPropertiesOperand(propertiesOperand);
 
-        // Execution check
-        if (!validateAction()) return;
+    // Get the operation count
+    service.analysisOperand(blocks);
 
-        // Status message
-        final String message = Message.getString("mainmenu.analysis.operation"); // Calculation count
-        Application.status.setMessageMain(message);
-
-        // Get the selected block
-        IBlock[] blocks = getSelectedBlocks();
-        if (blocks == null) return;
-
-        // Get the operation count
-        analysisOperand(blocks);
-
-    }
-
-    /**
-     * Get the selected block
-     * @return selection block
-     */
-    private IBlock[] getSelectedBlocks() {
-
-        IBlock[] blocks = null;
-        if (this.view == FRAME_VIEW.EXPLORE_VIEW) {
-            // Get the selected block
-            blocks = this.controller.getMainframe().getPanelExplorerView().getSelectedBlocks();
-        }
-        else if (this.view == FRAME_VIEW.ANALYSIS_VIEW) {
-            IBlock block = this.controller.getMainframe().getPanelAnalysisView().getSelectedBlock();
-            if (block != null) {
-                blocks = new IBlock[1];
-                blocks[0] = block;
-            }
-        }
-        return blocks;
-    }
-
-    /**
-     * Get the operation count
-     * @param blocks selection blocks
-     */
-    public void analysisOperand(IBlock[] blocks) {
-
-        // Fortran database
-        Fortran fortran = this.controller.getFortranLanguage();
-        // Get the arithmetic count table model
-        OperandTableModel modelOperand = this.controller.getOperandTableModel();
-        // Get the built-in function operation count property
-        OperationProperties propertiesOperand = this.controller.getPropertiesOperation();
-        // Error information model
-        ErrorInfoModel errorModel = this.controller.getErrorInfoModel();
-
-        // Clear operation count
-        modelOperand.clearOperand();
-
-        // Analysis service
-        AnalysisOperandService service = new AnalysisOperandService(fortran);
-        service.setErrorInfoModel(errorModel);
-        service.setModelOperand(modelOperand);
-        service.setPropertiesOperand(propertiesOperand);
-
-        // Get the operation count
-        service.analysisOperand(blocks);
-
-        // Activate the calculation count tab
-        this.controller.setSelectedAnalysisPanel(ANALYSIS_PANEL.OPERAND);
-    }
+    // Activate the calculation count tab
+    this.controller.setSelectedAnalysisPanel(ANALYSIS_PANEL.OPERAND);
+  }
 }

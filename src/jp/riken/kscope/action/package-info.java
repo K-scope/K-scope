@@ -15,7 +15,5 @@
  * limitations under the License.
  */
 
-/**
- * Provides action classes such as main menu and pop-up menu. <br/>
- */
+/** Provides action classes such as main menu and pop-up menu. <br> */
 package jp.riken.kscope.action;

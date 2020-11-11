@@ -24,17 +24,14 @@ import java.util.logging.LogRecord;
  * Log formatter
  *
  * @author RIKEN
- *
  */
 public class LogFormatter extends Formatter {
 
-	/**
-* Set the format of the log output message.
-*/
-	@Override
-	public String format(LogRecord record) {
-		return String.format("[%tF %tT] %s : %s%n", record.getMillis(),
-				record.getMillis(), record.getLevel().getName(),
-				record.getMessage());
-	}
+  /** Set the format of the log output message. */
+  @Override
+  public String format(LogRecord record) {
+    return String.format(
+        "[%tF %tT] %s : %s%n",
+        record.getMillis(), record.getMillis(), record.getLevel().getName(), record.getMessage());
+  }
 }

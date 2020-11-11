@@ -23,12 +23,9 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 /**
- * <p>
  * Java class for anonymous complex type.
  *
- * <p>
- * The following schema fragment specifies the expected content contained within
- * this class.
+ * <p>The following schema fragment specifies the expected content contained within this class.
  *
  * <pre>
  * &lt;complexType>
@@ -38,21 +35,19 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- *
- *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "")
 @XmlRootElement(name = "divExpr")
 public class DivExpr extends DefModelBinaryOperation {
 
-    @Override
-    public boolean enter(jp.riken.kscope.xcodeml.xml.IXmlVisitor visitor) {
-        return (visitor.enter(this));
-    }
+  @Override
+  public boolean enter(jp.riken.kscope.xcodeml.xml.IXmlVisitor visitor) {
+    return (visitor.enter(this));
+  }
 
-    @Override
-    public void leave(jp.riken.kscope.xcodeml.xml.IXmlVisitor visitor) {
-        visitor.leave(this);
-    }
+  @Override
+  public void leave(jp.riken.kscope.xcodeml.xml.IXmlVisitor visitor) {
+    visitor.leave(this);
+  }
 }

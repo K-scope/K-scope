@@ -25,16 +25,12 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
-
 import jp.riken.kscope.xcodeml.xml.*;
 
 /**
- * <p>
  * Java class for anonymous complex type.
  *
- * <p>
- * The following schema fragment specifies the expected content contained within
- * this class.
+ * <p>The following schema fragment specifies the expected content contained within this class.
  *
  * <pre>
  * &lt;complexType>
@@ -58,71 +54,64 @@ import jp.riken.kscope.xcodeml.xml.*;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- *
- *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "", propOrder = { "varDeclOrExternDeclOrFuseDecl" })
+@XmlType(
+    name = "",
+    propOrder = {"varDeclOrExternDeclOrFuseDecl"})
 @XmlRootElement(name = "declarations")
 public class Declarations implements IXmlNode {
 
-    @XmlElements({
-            @XmlElement(name = "FnamelistDecl", type = FnamelistDecl.class),
-            @XmlElement(name = "FuseOnlyDecl", type = FuseOnlyDecl.class),
-            @XmlElement(name = "FinterfaceDecl", type = FinterfaceDecl.class),
-            @XmlElement(name = "FcommonDecl", type = FcommonDecl.class),
-            @XmlElement(name = "externDecl", type = ExternDecl.class),
-            @XmlElement(name = "FdataDecl", type = FdataDecl.class),
-            @XmlElement(name = "varDecl", type = VarDecl.class),
-            @XmlElement(name = "FuseDecl", type = FuseDecl.class),
-            @XmlElement(name = "FequivalenceDecl", type = FequivalenceDecl.class),
-            @XmlElement(name = "FpragmaStatement", type = FpragmaStatement.class),
-            @XmlElement(name = "FentryDecl", type = FentryDecl.class),
-            @XmlElement(name = "FstructDecl", type = FstructDecl.class) })
-    protected List<IXmlNode> varDeclOrExternDeclOrFuseDecl;
+  @XmlElements({
+    @XmlElement(name = "FnamelistDecl", type = FnamelistDecl.class),
+    @XmlElement(name = "FuseOnlyDecl", type = FuseOnlyDecl.class),
+    @XmlElement(name = "FinterfaceDecl", type = FinterfaceDecl.class),
+    @XmlElement(name = "FcommonDecl", type = FcommonDecl.class),
+    @XmlElement(name = "externDecl", type = ExternDecl.class),
+    @XmlElement(name = "FdataDecl", type = FdataDecl.class),
+    @XmlElement(name = "varDecl", type = VarDecl.class),
+    @XmlElement(name = "FuseDecl", type = FuseDecl.class),
+    @XmlElement(name = "FequivalenceDecl", type = FequivalenceDecl.class),
+    @XmlElement(name = "FpragmaStatement", type = FpragmaStatement.class),
+    @XmlElement(name = "FentryDecl", type = FentryDecl.class),
+    @XmlElement(name = "FstructDecl", type = FstructDecl.class)
+  })
+  protected List<IXmlNode> varDeclOrExternDeclOrFuseDecl;
 
-    /**
-     * Gets the value of the varDeclOrExternDeclOrFuseDecl property.
-     *
-     * <p>
-     * This accessor method returns a reference to the live list, not a
-     * snapshot. Therefore any modification you make to the returned list will
-     * be present inside the JAXB object. This is why there is not a
-     * <CODE>set</CODE> method for the varDeclOrExternDeclOrFuseDecl property.
-     *
-     * <p>
-     * For example, to add a new item, do as follows:
-     *
-     * <pre>
-     * getVarDeclOrExternDeclOrFuseDecl().add(newItem);
-     * </pre>
-     *
-     *
-     * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link FnamelistDecl } {@link FuseOnlyDecl } {@link FinterfaceDecl }
-     * {@link FcommonDecl } {@link ExternDecl } {@link FdataDecl } {@link VarDecl }
-     * {@link FuseDecl } {@link FequivalenceDecl } {@link FpragmaStatement }
-     * {@link FentryDecl } {@link FstructDecl }
-     *
-     *
-     * @return      IXmlNode List
-     *
-     */
-    public List<IXmlNode> getVarDeclOrExternDeclOrFuseDecl() {
-        if (varDeclOrExternDeclOrFuseDecl == null) {
-            varDeclOrExternDeclOrFuseDecl = new ArrayList<IXmlNode>();
-        }
-        return this.varDeclOrExternDeclOrFuseDecl;
+  /**
+   * Gets the value of the varDeclOrExternDeclOrFuseDecl property.
+   *
+   * <p>This accessor method returns a reference to the live list, not a snapshot. Therefore any
+   * modification you make to the returned list will be present inside the JAXB object. This is why
+   * there is not a <CODE>set</CODE> method for the varDeclOrExternDeclOrFuseDecl property.
+   *
+   * <p>For example, to add a new item, do as follows:
+   *
+   * <pre>
+   * getVarDeclOrExternDeclOrFuseDecl().add(newItem);
+   * </pre>
+   *
+   * <p>Objects of the following type(s) are allowed in the list {@link FnamelistDecl } {@link
+   * FuseOnlyDecl } {@link FinterfaceDecl } {@link FcommonDecl } {@link ExternDecl } {@link
+   * FdataDecl } {@link VarDecl } {@link FuseDecl } {@link FequivalenceDecl } {@link
+   * FpragmaStatement } {@link FentryDecl } {@link FstructDecl }
+   *
+   * @return IXmlNode List
+   */
+  public List<IXmlNode> getVarDeclOrExternDeclOrFuseDecl() {
+    if (varDeclOrExternDeclOrFuseDecl == null) {
+      varDeclOrExternDeclOrFuseDecl = new ArrayList<IXmlNode>();
     }
+    return this.varDeclOrExternDeclOrFuseDecl;
+  }
 
-    @Override
-    public boolean enter(jp.riken.kscope.xcodeml.xml.IXmlVisitor visitor) {
-        return (visitor.enter(this));
-    }
+  @Override
+  public boolean enter(jp.riken.kscope.xcodeml.xml.IXmlVisitor visitor) {
+    return (visitor.enter(this));
+  }
 
-    @Override
-    public void leave(jp.riken.kscope.xcodeml.xml.IXmlVisitor visitor) {
-        visitor.leave(this);
-    }
+  @Override
+  public void leave(jp.riken.kscope.xcodeml.xml.IXmlVisitor visitor) {
+    visitor.leave(this);
+  }
 }

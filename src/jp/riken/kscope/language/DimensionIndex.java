@@ -23,63 +23,59 @@ import java.io.Serializable;
  * A class that represents an array of variables.
  *
  * @author RIKEN
- *
  */
 public class DimensionIndex implements Serializable {
-    /** Serial number */
-    private static final long serialVersionUID = -4025983357574098164L;
-    private Expression start;
-    private Expression end;
+  /** Serial number */
+  private static final long serialVersionUID = -4025983357574098164L;
 
-    /**
-     * Constructor
-     *
-     * @param st
-     * Starting index
-     * @param en
-     * End index
-     */
-    public DimensionIndex(Expression st, Expression en) {
-        this.start = st;
-        this.end = en;
-    }
-    // ++++++++++++++++++++++++++++++++++++++++++++
+  private Expression start;
+  private Expression end;
 
-    /**
-     * Set the start of the subscript.
-     *
-     * @param iStart
-     * Start of subscript
-     */
-    public void set_start(Expression iStart) {
-        start = iStart;
-    }
+  /**
+   * Constructor
+   *
+   * @param st Starting index
+   * @param en End index
+   */
+  public DimensionIndex(Expression st, Expression en) {
+    this.start = st;
+    this.end = en;
+  }
+  // ++++++++++++++++++++++++++++++++++++++++++++
 
-    /**
-     * Set the end of the subscript.
-     *
-     * @param iEnd
-     * End of subscript
-     */
-    public void set_end(Expression iEnd) {
-        end = iEnd;
-    }
+  /**
+   * Set the start of the subscript.
+   *
+   * @param iStart Start of subscript
+   */
+  public void set_start(Expression iStart) {
+    start = iStart;
+  }
 
-    /**
-     * Returns the start of the subscript.
-     *
-     * @return Start of subscript
-     */
-    public Expression get_start() {
-        return (start);
-    }
+  /**
+   * Set the end of the subscript.
+   *
+   * @param iEnd End of subscript
+   */
+  public void set_end(Expression iEnd) {
+    end = iEnd;
+  }
 
-    /**
-     * Returns the end of the subscript.
-     *
-     * @return End of subscript
-     */
-    public Expression get_end() {
-        return (end);
-    }
+  /**
+   * Returns the start of the subscript.
+   *
+   * @return Start of subscript
+   */
+  public Expression get_start() {
+    return (start);
+  }
+
+  /**
+   * Returns the end of the subscript.
+   *
+   * @return End of subscript
+   */
+  public Expression get_end() {
+    return (end);
+  }
 }

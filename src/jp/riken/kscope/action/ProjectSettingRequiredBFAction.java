@@ -18,58 +18,58 @@ package jp.riken.kscope.action;
 
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
-
 import jp.riken.kscope.Application;
 import jp.riken.kscope.Message;
 import jp.riken.kscope.common.Constant;
-//import jp.riken.kscope.dialog.SettingKeywordDialog;
+// import jp.riken.kscope.dialog.SettingKeywordDialog;
 import jp.riken.kscope.dialog.SettingRequiredBFDialog;
-//import jp.riken.kscope.properties.KeywordProperties;
+// import jp.riken.kscope.properties.KeywordProperties;
 import jp.riken.kscope.properties.RequiredBFProperties;
 import jp.riken.kscope.service.AppController;
 
-
 /**
  * Request Byte / FLOP setting action class
+ *
  * @author RIKEN
  */
-public class ProjectSettingRequiredBFAction  extends ActionBase {
+public class ProjectSettingRequiredBFAction extends ActionBase {
 
-    /**
-     * Constructor
-     * @param controller Application controller
-     */
-    public ProjectSettingRequiredBFAction(AppController controller) {
-        super(controller);
+  /**
+   * Constructor
+   *
+   * @param controller Application controller
+   */
+  public ProjectSettingRequiredBFAction(AppController controller) {
+    super(controller);
+  }
+
+  /**
+   * Action occurrence event
+   *
+   * @param event Event information
+   */
+  @Override
+  public void actionPerformed(ActionEvent event) {
+    // Status message
+    final String message =
+        Message.getString("projectsettingmemoryaction.setup.status"); // Request Byte / FLOP setting
+    Application.status.setMessageMain(message);
+
+    // Get the parent Frame.
+    Frame frame = getWindowAncestor(event);
+
+    // Display the request Byte / FLOP setting dialog.
+    RequiredBFProperties properities = this.controller.getPropertiesMemory();
+
+    SettingRequiredBFDialog dialog = new SettingRequiredBFDialog(frame, true, properities);
+    int result = dialog.showDialog();
+    if (result != Constant.OK_DIALOG) {
+      Application.status.setMessageMain(
+          message + Message.getString("action.common.cancel.status")); // Cancel
+      return;
     }
-
-    /**
-     * Action occurrence event
-     * @param event Event information
-     */
-    @Override
-    public void actionPerformed(ActionEvent event) {
-        // Status message
-        final String message = Message.getString("projectsettingmemoryaction.setup.status"); // Request Byte / FLOP setting
-        Application.status.setMessageMain(message);
-
-        // Get the parent Frame.
-        Frame frame = getWindowAncestor( event );
-
-        // Display the request Byte / FLOP setting dialog.
-        RequiredBFProperties properities = this.controller.getPropertiesMemory();
-
-        SettingRequiredBFDialog dialog = new SettingRequiredBFDialog(frame, true, properities);
-        int result = dialog.showDialog();
-        if (result != Constant.OK_DIALOG) {
-        	Application.status.setMessageMain(message +
-        			Message.getString("action.common.cancel.status")); //Cancel
-        	return;
-        }
-        Application.status.setMessageMain(message +
-    			Message.getString("action.common.done.status")); // Done
-        return;
-    }
-
-
+    Application.status.setMessageMain(
+        message + Message.getString("action.common.done.status")); // Done
+    return;
+  }
 }

@@ -15,7 +15,5 @@
  * limitations under the License.
  */
 
-/**
- * This is the data model of the screen configuration panel.
- */
+/** This is the data model of the screen configuration panel. */
 package jp.riken.kscope.model;

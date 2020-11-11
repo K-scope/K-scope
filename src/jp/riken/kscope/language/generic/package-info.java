@@ -15,7 +15,5 @@
  * limitations under the License.
  */
 
-/**
- * Provides a class for expressing generic function definitions and arguments. <br/>
- */
+/** Provides a class for expressing generic function definitions and arguments. <br> */
 package jp.riken.kscope.language.generic;

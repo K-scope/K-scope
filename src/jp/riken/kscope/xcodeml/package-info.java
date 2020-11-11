@@ -15,7 +15,5 @@
  * limitations under the License.
  */
 
-/**
- * Provides XML parsing of XcodeML and registration class to database.
- */
+/** Provides XML parsing of XcodeML and registration class to database. */
 package jp.riken.kscope.xcodeml;

@@ -15,7 +15,5 @@
  * limitations under the License.
  */
 
-/**
- * Provides common data (low level data). <br/>
- */
+/** Provides common data (low level data). <br> */
 package jp.riken.kscope.data;

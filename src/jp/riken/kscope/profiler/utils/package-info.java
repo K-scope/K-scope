@@ -15,7 +15,5 @@
  * limitations under the License.
  */
 
-/**
- * Provides profiler utility classes. <br/>
- */
+/** Provides profiler utility classes. <br> */
 package jp.riken.kscope.profiler.utils;

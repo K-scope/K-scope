@@ -23,16 +23,12 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
-
 import jp.riken.kscope.xcodeml.xml.*;
 
 /**
- * <p>
  * Java class for anonymous complex type.
  *
- * <p>
- * The following schema fragment specifies the expected content contained within
- * this class.
+ * <p>The following schema fragment specifies the expected content contained within this class.
  *
  * <pre>
  * &lt;complexType>
@@ -45,53 +41,47 @@ import jp.riken.kscope.xcodeml.xml.*;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- *
- *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "", propOrder = { "value" })
+@XmlType(
+    name = "",
+    propOrder = {"value"})
 @XmlRootElement(name = "valueList")
 public class ValueList implements IXmlNode {
 
-    protected List<Value> value;
+  protected List<Value> value;
 
-    /**
-     * Gets the value of the value property.
-     *
-     * <p>
-     * This accessor method returns a reference to the live list, not a
-     * snapshot. Therefore any modification you make to the returned list will
-     * be present inside the JAXB object. This is why there is not a
-     * <CODE>set</CODE> method for the value property.
-     *
-     * <p>
-     * For example, to add a new item, do as follows:
-     *
-     * <pre>
-     * getValue().add(newItem);
-     * </pre>
-     *
-     *
-     * <p>
-     * Objects of the following type(s) are allowed in the list {@link Value }
-     *
-     * @return      Value List
-     *
-     */
-    public List<Value> getValue() {
-        if (value == null) {
-            value = new ArrayList<Value>();
-        }
-        return this.value;
+  /**
+   * Gets the value of the value property.
+   *
+   * <p>This accessor method returns a reference to the live list, not a snapshot. Therefore any
+   * modification you make to the returned list will be present inside the JAXB object. This is why
+   * there is not a <CODE>set</CODE> method for the value property.
+   *
+   * <p>For example, to add a new item, do as follows:
+   *
+   * <pre>
+   * getValue().add(newItem);
+   * </pre>
+   *
+   * <p>Objects of the following type(s) are allowed in the list {@link Value }
+   *
+   * @return Value List
+   */
+  public List<Value> getValue() {
+    if (value == null) {
+      value = new ArrayList<Value>();
     }
+    return this.value;
+  }
 
-    @Override
-    public boolean enter(jp.riken.kscope.xcodeml.xml.IXmlVisitor visitor) {
-        return (visitor.enter(this));
-    }
+  @Override
+  public boolean enter(jp.riken.kscope.xcodeml.xml.IXmlVisitor visitor) {
+    return (visitor.enter(this));
+  }
 
-    @Override
-    public void leave(jp.riken.kscope.xcodeml.xml.IXmlVisitor visitor) {
-        visitor.leave(this);
-    }
+  @Override
+  public void leave(jp.riken.kscope.xcodeml.xml.IXmlVisitor visitor) {
+    visitor.leave(this);
+  }
 }

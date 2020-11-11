@@ -17,9 +17,7 @@
 package jp.riken.kscope.action;
 
 import java.awt.event.ActionEvent;
-
 import javax.swing.JCheckBoxMenuItem;
-
 import jp.riken.kscope.common.EXPLORE_PANEL;
 import jp.riken.kscope.common.FILTER_TYPE;
 import jp.riken.kscope.properties.KscopeProperties;
@@ -27,74 +25,80 @@ import jp.riken.kscope.service.AppController;
 
 /**
  * Structure tree filter action class
+ *
  * @author RIKEN
  */
 public class ViewLangugeFilterAction extends ActionBase {
 
-    /** Filter type */
-    private FILTER_TYPE filter;
+  /** Filter type */
+  private FILTER_TYPE filter;
 
-    /**
-     * Constructor
-     * @param controller Application controller
-     * @param filter Filter type
-     */
-    public ViewLangugeFilterAction(AppController controller, FILTER_TYPE filter) {
-        super(controller);
-        this.filter = filter;
+  /**
+   * Constructor
+   *
+   * @param controller Application controller
+   * @param filter Filter type
+   */
+  public ViewLangugeFilterAction(AppController controller, FILTER_TYPE filter) {
+    super(controller);
+    this.filter = filter;
+  }
+
+  /**
+   * Action occurrence event
+   *
+   * @param event Event information
+   */
+  @Override
+  public void actionPerformed(ActionEvent event) {
+
+    boolean checked = false;
+    if (event.getSource() instanceof JCheckBoxMenuItem) {
+      // Checkbox menu
+      JCheckBoxMenuItem item = (JCheckBoxMenuItem) event.getSource();
+      checked = item.isSelected();
     }
 
-
-    /**
-     * Action occurrence event
-     * @param event Event information
-     */
-    @Override
-    public void actionPerformed(ActionEvent event) {
-
-        boolean checked = false;
-        if (event.getSource() instanceof JCheckBoxMenuItem) {
-            // Checkbox menu
-            JCheckBoxMenuItem item = (JCheckBoxMenuItem)event.getSource();
-            checked = item.isSelected();
-        }
-
-        // Structural tree model
-        if (this.filter != FILTER_TYPE.DEFAULT) {
-            if (checked) {
-                // add to
-                this.controller.addListLanguageFilter(this.filter);
-            }
-            else {
-                // Delete
-                this.controller.removeListLanguageFilter(this.filter);
-            }
-        }
-        else {
-            // Structure tree filter default settings
-            FILTER_TYPE[] filters = KscopeProperties.LANGUGE_DEFAULTFILTERS;
-            this.controller.setListLanguageFilter(filters);
-        }
-
-        // Activate the Structure Tree Panel.
-        if (this.controller.getMainframe().getPanelExplorerView().getSelectedEnumPanel() != EXPLORE_PANEL.LANGUAGE) {
-            this.controller.getMainframe().getPanelExplorerView().setSelectedPanel(EXPLORE_PANEL.LANGUAGE);
-        }
+    // Structural tree model
+    if (this.filter != FILTER_TYPE.DEFAULT) {
+      if (checked) {
+        // add to
+        this.controller.addListLanguageFilter(this.filter);
+      } else {
+        // Delete
+        this.controller.removeListLanguageFilter(this.filter);
+      }
+    } else {
+      // Structure tree filter default settings
+      FILTER_TYPE[] filters = KscopeProperties.LANGUGE_DEFAULTFILTERS;
+      this.controller.setListLanguageFilter(filters);
     }
 
-    /**
-     * Get the structure tree filter type
-     * @return Structure tree filter type
-     */
-    public FILTER_TYPE getFilter() {
-        return filter;
+    // Activate the Structure Tree Panel.
+    if (this.controller.getMainframe().getPanelExplorerView().getSelectedEnumPanel()
+        != EXPLORE_PANEL.LANGUAGE) {
+      this.controller
+          .getMainframe()
+          .getPanelExplorerView()
+          .setSelectedPanel(EXPLORE_PANEL.LANGUAGE);
     }
+  }
 
-    /**
-     * Set the structure tree filter type.
-     * @param filter Structure tree filter type
-     */
-    public void setFilter(FILTER_TYPE filter) {
-        this.filter = filter;
-    }
+  /**
+   * Get the structure tree filter type
+   *
+   * @return Structure tree filter type
+   */
+  public FILTER_TYPE getFilter() {
+    return filter;
+  }
+
+  /**
+   * Set the structure tree filter type.
+   *
+   * @param filter Structure tree filter type
+   */
+  public void setFilter(FILTER_TYPE filter) {
+    this.filter = filter;
+  }
 }

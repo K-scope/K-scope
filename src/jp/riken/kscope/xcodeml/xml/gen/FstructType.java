@@ -23,16 +23,12 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
-
 import jp.riken.kscope.xcodeml.xml.*;
 
 /**
- * <p>
  * Java class for anonymous complex type.
  *
- * <p>
- * The following schema fragment specifies the expected content contained within
- * this class.
+ * <p>The following schema fragment specifies the expected content contained within this class.
  *
  * <pre>
  * &lt;complexType>
@@ -47,160 +43,146 @@ import jp.riken.kscope.xcodeml.xml.*;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- *
- *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "", propOrder = { "symbols" })
+@XmlType(
+    name = "",
+    propOrder = {"symbols"})
 @XmlRootElement(name = "FstructType")
 public class FstructType implements IXmlTypeTableChoice, IXmlNode {
 
-    @XmlElement(required = true)
-    protected Symbols symbols;
-    @XmlAttribute(name = "is_public")
-    protected Boolean isPublic;
-    @XmlAttribute(name = "is_private")
-    protected Boolean isPrivate;
-    @XmlAttribute(name = "is_sequence")
-    protected Boolean isSequence;
-    @XmlAttribute(name = "is_internal_private")
-    protected Boolean isInternalPrivate;
-    @XmlAttribute
-    protected String type;
+  @XmlElement(required = true)
+  protected Symbols symbols;
 
-    /**
-     * Gets the value of the symbols property.
-     *
-     * @return possible object is {@link Symbols }
-     *
-     */
-    public Symbols getSymbols() {
-        return symbols;
-    }
+  @XmlAttribute(name = "is_public")
+  protected Boolean isPublic;
 
-    /**
-     * Sets the value of the symbols property.
-     *
-     * @param value
-     *            allowed object is {@link Symbols }
-     *
-     */
-    public void setSymbols(Symbols value) {
-        this.symbols = value;
-    }
+  @XmlAttribute(name = "is_private")
+  protected Boolean isPrivate;
 
-    /**
-     * Gets the value of the isPublic property.
-     *
-     * @return possible object is {@link Boolean }
-     *
-     */
-    public Boolean isIsPublic() {
-        return isPublic;
-    }
+  @XmlAttribute(name = "is_sequence")
+  protected Boolean isSequence;
 
-    /**
-     * Sets the value of the isPublic property.
-     *
-     * @param value
-     *            allowed object is {@link Boolean }
-     *
-     */
-    public void setIsPublic(Boolean value) {
-        this.isPublic = value;
-    }
+  @XmlAttribute(name = "is_internal_private")
+  protected Boolean isInternalPrivate;
 
-    /**
-     * Gets the value of the isPrivate property.
-     *
-     * @return possible object is {@link Boolean }
-     *
-     */
-    public Boolean isIsPrivate() {
-        return isPrivate;
-    }
+  @XmlAttribute protected String type;
 
-    /**
-     * Sets the value of the isPrivate property.
-     *
-     * @param value
-     *            allowed object is {@link Boolean }
-     *
-     */
-    public void setIsPrivate(Boolean value) {
-        this.isPrivate = value;
-    }
+  /**
+   * Gets the value of the symbols property.
+   *
+   * @return possible object is {@link Symbols }
+   */
+  public Symbols getSymbols() {
+    return symbols;
+  }
 
-    /**
-     * Gets the value of the isSequence property.
-     *
-     * @return possible object is {@link Boolean }
-     *
-     */
-    public Boolean isIsSequence() {
-        return isSequence;
-    }
+  /**
+   * Sets the value of the symbols property.
+   *
+   * @param value allowed object is {@link Symbols }
+   */
+  public void setSymbols(Symbols value) {
+    this.symbols = value;
+  }
 
-    /**
-     * Sets the value of the isSequence property.
-     *
-     * @param value
-     *            allowed object is {@link Boolean }
-     *
-     */
-    public void setIsSequence(Boolean value) {
-        this.isSequence = value;
-    }
+  /**
+   * Gets the value of the isPublic property.
+   *
+   * @return possible object is {@link Boolean }
+   */
+  public Boolean isIsPublic() {
+    return isPublic;
+  }
 
-    /**
-     * Gets the value of the isInternalPrivate property.
-     *
-     * @return possible object is {@link Boolean }
-     *
-     */
-    public Boolean isIsInternalPrivate() {
-        return isInternalPrivate;
-    }
+  /**
+   * Sets the value of the isPublic property.
+   *
+   * @param value allowed object is {@link Boolean }
+   */
+  public void setIsPublic(Boolean value) {
+    this.isPublic = value;
+  }
 
-    /**
-     * Sets the value of the isInternalPrivate property.
-     *
-     * @param value
-     *            allowed object is {@link Boolean }
-     *
-     */
-    public void setIsInternalPrivate(Boolean value) {
-        this.isInternalPrivate = value;
-    }
+  /**
+   * Gets the value of the isPrivate property.
+   *
+   * @return possible object is {@link Boolean }
+   */
+  public Boolean isIsPrivate() {
+    return isPrivate;
+  }
 
-    /**
-     * Gets the value of the type property.
-     *
-     * @return possible object is {@link String }
-     *
-     */
-    public String getType() {
-        return type;
-    }
+  /**
+   * Sets the value of the isPrivate property.
+   *
+   * @param value allowed object is {@link Boolean }
+   */
+  public void setIsPrivate(Boolean value) {
+    this.isPrivate = value;
+  }
 
-    /**
-     * Sets the value of the type property.
-     *
-     * @param value
-     *            allowed object is {@link String }
-     *
-     */
-    public void setType(String value) {
-        this.type = value;
-    }
+  /**
+   * Gets the value of the isSequence property.
+   *
+   * @return possible object is {@link Boolean }
+   */
+  public Boolean isIsSequence() {
+    return isSequence;
+  }
 
-    @Override
-    public boolean enter(jp.riken.kscope.xcodeml.xml.IXmlVisitor visitor) {
-        return (visitor.enter(this));
-    }
+  /**
+   * Sets the value of the isSequence property.
+   *
+   * @param value allowed object is {@link Boolean }
+   */
+  public void setIsSequence(Boolean value) {
+    this.isSequence = value;
+  }
 
-    @Override
-    public void leave(jp.riken.kscope.xcodeml.xml.IXmlVisitor visitor) {
-        visitor.leave(this);
-    }
+  /**
+   * Gets the value of the isInternalPrivate property.
+   *
+   * @return possible object is {@link Boolean }
+   */
+  public Boolean isIsInternalPrivate() {
+    return isInternalPrivate;
+  }
+
+  /**
+   * Sets the value of the isInternalPrivate property.
+   *
+   * @param value allowed object is {@link Boolean }
+   */
+  public void setIsInternalPrivate(Boolean value) {
+    this.isInternalPrivate = value;
+  }
+
+  /**
+   * Gets the value of the type property.
+   *
+   * @return possible object is {@link String }
+   */
+  public String getType() {
+    return type;
+  }
+
+  /**
+   * Sets the value of the type property.
+   *
+   * @param value allowed object is {@link String }
+   */
+  public void setType(String value) {
+    this.type = value;
+  }
+
+  @Override
+  public boolean enter(jp.riken.kscope.xcodeml.xml.IXmlVisitor visitor) {
+    return (visitor.enter(this));
+  }
+
+  @Override
+  public void leave(jp.riken.kscope.xcodeml.xml.IXmlVisitor visitor) {
+    visitor.leave(this);
+  }
 }

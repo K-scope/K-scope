@@ -15,7 +15,5 @@
  * limitations under the License.
  */
 
-/**
- * Provides utility classes for XcodeML.
- */
+/** Provides utility classes for XcodeML. */
 package jp.riken.kscope.xcodeml.util;

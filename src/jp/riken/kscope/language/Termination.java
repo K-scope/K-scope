@@ -21,81 +21,76 @@ package jp.riken.kscope.language;
  * The class corresponding to the control statement that terminates the program.
  *
  * @author RIKEN
- *
  */
 public class Termination extends jp.riken.kscope.language.Block {
-	/** Serial number */
-	private static final long serialVersionUID = 8627136191576027545L;
-    private String argument;
+  /** Serial number */
+  private static final long serialVersionUID = 8627136191576027545L;
 
-    /**
-     * Constructor.
-     *
-     * @param parent
-     * Parent block
-     */
-    public Termination(Block parent) {
-        super(parent);
-    }
+  private String argument;
 
-    /**
-     * Constructor.
-     *
-     * @param parent
-     * Parent block
-     * @param argmnt
-     * Arguments (end message, etc.)
-     */
-    public Termination(Block parent, String argmnt) {
-        super(parent);
-        argument = argmnt;
-    }
+  /**
+   * Constructor.
+   *
+   * @param parent Parent block
+   */
+  public Termination(Block parent) {
+    super(parent);
+  }
 
-    /**
-     * Constructor.
-     */
-    public Termination() {
-        super();
-    }
+  /**
+   * Constructor.
+   *
+   * @param parent Parent block
+   * @param argmnt Arguments (end message, etc.)
+   */
+  public Termination(Block parent, String argmnt) {
+    super(parent);
+    argument = argmnt;
+  }
 
-    /**
-     * Get block type.
-     *
-     * @return BlockType.TERMINATION
-     */
-    public BlockType getBlockType() {
-        return BlockType.TERMINATION;
-    }
+  /** Constructor. */
+  public Termination() {
+    super();
+  }
 
-    /**
-     * A set of arguments.
-     *
-     * @param str
-     * Argument
-     */
-    public void setArgument(String str) {
-        this.argument = str;
-    }
+  /**
+   * Get block type.
+   *
+   * @return BlockType.TERMINATION
+   */
+  public BlockType getBlockType() {
+    return BlockType.TERMINATION;
+  }
 
-    /**
-     * Get arguments (end message, etc.).
-     *
-     * @return argument (end message, etc.)
-     */
-    public String getArgument() {
-        return argument;
-    }
+  /**
+   * A set of arguments.
+   *
+   * @param str Argument
+   */
+  public void setArgument(String str) {
+    this.argument = str;
+  }
 
-    @Override
-    public String toString() {
-        return this.toStringBase();
+  /**
+   * Get arguments (end message, etc.).
+   *
+   * @return argument (end message, etc.)
+   */
+  public String getArgument() {
+    return argument;
+  }
+
+  @Override
+  public String toString() {
+    return this.toStringBase();
+  }
+
+  @Override
+  protected String toStringBase() {
+    if (this.argument == null) {
+      return "stop";
+    } else {
+      return "stop " + this.argument;
     }
-    @Override
-    protected String toStringBase() {
-        if (this.argument == null) {
-            return "stop";
-        } else {
-            return "stop " + this.argument;
-        }
-    }
+  }
 }

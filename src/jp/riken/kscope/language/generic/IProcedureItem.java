@@ -18,7 +18,6 @@
 package jp.riken.kscope.language.generic;
 
 import java.util.List;
-
 import jp.riken.kscope.language.Expression;
 import jp.riken.kscope.language.Procedure;
 
@@ -26,35 +25,31 @@ import jp.riken.kscope.language.Procedure;
  * Class corresponding to the generic definition of function names.
  *
  * @author RIKEN
- *
  */
 public interface IProcedureItem {
 
-    /**
-     * Whether the candidate function matches your information <br>
-     * Method to check.
-     *
-     * @param target
-     * Candidate function
-     * @param actualArguments
-     * List of actual arguments
-     *
-     * @return true: Conforms
-     * false: Not compatible
-     */
-    boolean matches(Procedure target, List<Expression> actualArguments);
-    
-    /**
-     * Returns the individual name of the procedure citation specification.
-     * @return Individual name of procedure citation specification
-     */
-    String getName();
+  /**
+   * Whether the candidate function matches your information <br>
+   * Method to check.
+   *
+   * @param target Candidate function
+   * @param actualArguments List of actual arguments
+   * @return true: Conforms false: Not compatible
+   */
+  boolean matches(Procedure target, List<Expression> actualArguments);
 
-    /**
-     * A method to check whether the target argument list matches your information.
-     * @param arguments Actual argument list
-     * @return true: Conforms
-     * false: Not compatible
-     */
-    boolean matches(List<Expression> arguments);
+  /**
+   * Returns the individual name of the procedure citation specification.
+   *
+   * @return Individual name of procedure citation specification
+   */
+  String getName();
+
+  /**
+   * A method to check whether the target argument list matches your information.
+   *
+   * @param arguments Actual argument list
+   * @return true: Conforms false: Not compatible
+   */
+  boolean matches(List<Expression> arguments);
 }

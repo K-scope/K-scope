@@ -21,40 +21,35 @@ package jp.riken.kscope.language;
  * A class that represents the end of the procedure.
  *
  * @author RIKEN
- *
  */
 public class Return extends Block {
-	/** Serial number */
-	private static final long serialVersionUID = 2144326483810706905L;
-    /**
-     *
-     * Constructor.
-     */
-    Return() {
-        super();
-    }
+  /** Serial number */
+  private static final long serialVersionUID = 2144326483810706905L;
+  /** Constructor. */
+  Return() {
+    super();
+  }
 
-    /**
-     *
-     * Constructor.
-     */
-    Return(Block mama) {
-        super(mama);
-    }
-    /**
-     * Get block type.
-     *
-     * @return BlockType.RETURN
-     */
-    public BlockType getBlockType() {
-        return BlockType.RETURN;
-    }
-    @Override
-    public String toString() {
-        return this.toStringBase();
-    }
-    @Override
-    protected String toStringBase() {
-        return "return";
-    }
+  /** Constructor. */
+  Return(Block mama) {
+    super(mama);
+  }
+  /**
+   * Get block type.
+   *
+   * @return BlockType.RETURN
+   */
+  public BlockType getBlockType() {
+    return BlockType.RETURN;
+  }
+
+  @Override
+  public String toString() {
+    return this.toStringBase();
+  }
+
+  @Override
+  protected String toStringBase() {
+    return "return";
+  }
 }

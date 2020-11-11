@@ -25,16 +25,12 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
-
 import jp.riken.kscope.xcodeml.xml.*;
 
 /**
- * <p>
  * Java class for anonymous complex type.
  *
- * <p>
- * The following schema fragment specifies the expected content contained within
- * this class.
+ * <p>The following schema fragment specifies the expected content contained within this class.
  *
  * <pre>
  * &lt;complexType>
@@ -49,100 +45,87 @@ import jp.riken.kscope.xcodeml.xml.*;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- *
- *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "", propOrder = { "varRef", "arrayIndex" })
+@XmlType(
+    name = "",
+    propOrder = {"varRef", "arrayIndex"})
 @XmlRootElement(name = "FcoArrayRef")
 public class FcoArrayRef implements IXmlNode {
 
-    @XmlElement(required = true)
-    protected VarRef varRef;
-    protected List<ArrayIndex> arrayIndex;
-    @XmlAttribute
-    protected String type;
+  @XmlElement(required = true)
+  protected VarRef varRef;
 
-    /**
-     * Gets the value of the varRef property.
-     *
-     * @return possible object is {@link VarRef }
-     *
-     */
-    public VarRef getVarRef() {
-        return varRef;
-    }
+  protected List<ArrayIndex> arrayIndex;
+  @XmlAttribute protected String type;
 
-    /**
-     * Sets the value of the varRef property.
-     *
-     * @param value
-     *            allowed object is {@link VarRef }
-     *
-     */
-    public void setVarRef(VarRef value) {
-        this.varRef = value;
-    }
+  /**
+   * Gets the value of the varRef property.
+   *
+   * @return possible object is {@link VarRef }
+   */
+  public VarRef getVarRef() {
+    return varRef;
+  }
 
-    /**
-     * Gets the value of the arrayIndex property.
-     *
-     * <p>
-     * This accessor method returns a reference to the live list, not a
-     * snapshot. Therefore any modification you make to the returned list will
-     * be present inside the JAXB object. This is why there is not a
-     * <CODE>set</CODE> method for the arrayIndex property.
-     *
-     * <p>
-     * For example, to add a new item, do as follows:
-     *
-     * <pre>
-     * getArrayIndex().add(newItem);
-     * </pre>
-     *
-     *
-     * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link ArrayIndex }
-     *
-     * @return      ArrayIndex List
-     *
-     */
-    public List<ArrayIndex> getArrayIndex() {
-        if (arrayIndex == null) {
-            arrayIndex = new ArrayList<ArrayIndex>();
-        }
-        return this.arrayIndex;
-    }
+  /**
+   * Sets the value of the varRef property.
+   *
+   * @param value allowed object is {@link VarRef }
+   */
+  public void setVarRef(VarRef value) {
+    this.varRef = value;
+  }
 
-    /**
-     * Gets the value of the type property.
-     *
-     * @return possible object is {@link String }
-     *
-     */
-    public String getType() {
-        return type;
+  /**
+   * Gets the value of the arrayIndex property.
+   *
+   * <p>This accessor method returns a reference to the live list, not a snapshot. Therefore any
+   * modification you make to the returned list will be present inside the JAXB object. This is why
+   * there is not a <CODE>set</CODE> method for the arrayIndex property.
+   *
+   * <p>For example, to add a new item, do as follows:
+   *
+   * <pre>
+   * getArrayIndex().add(newItem);
+   * </pre>
+   *
+   * <p>Objects of the following type(s) are allowed in the list {@link ArrayIndex }
+   *
+   * @return ArrayIndex List
+   */
+  public List<ArrayIndex> getArrayIndex() {
+    if (arrayIndex == null) {
+      arrayIndex = new ArrayList<ArrayIndex>();
     }
+    return this.arrayIndex;
+  }
 
-    /**
-     * Sets the value of the type property.
-     *
-     * @param value
-     *            allowed object is {@link String }
-     *
-     */
-    public void setType(String value) {
-        this.type = value;
-    }
+  /**
+   * Gets the value of the type property.
+   *
+   * @return possible object is {@link String }
+   */
+  public String getType() {
+    return type;
+  }
 
-    @Override
-    public boolean enter(jp.riken.kscope.xcodeml.xml.IXmlVisitor visitor) {
-        return (visitor.enter(this));
-    }
+  /**
+   * Sets the value of the type property.
+   *
+   * @param value allowed object is {@link String }
+   */
+  public void setType(String value) {
+    this.type = value;
+  }
 
-    @Override
-    public void leave(jp.riken.kscope.xcodeml.xml.IXmlVisitor visitor) {
-        visitor.leave(this);
-    }
+  @Override
+  public boolean enter(jp.riken.kscope.xcodeml.xml.IXmlVisitor visitor) {
+    return (visitor.enter(this));
+  }
+
+  @Override
+  public void leave(jp.riken.kscope.xcodeml.xml.IXmlVisitor visitor) {
+    visitor.leave(this);
+  }
 }

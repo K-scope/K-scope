@@ -23,16 +23,12 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
-
 import jp.riken.kscope.xcodeml.xml.*;
 
 /**
- * <p>
  * Java class for anonymous complex type.
  *
- * <p>
- * The following schema fragment specifies the expected content contained within
- * this class.
+ * <p>The following schema fragment specifies the expected content contained within this class.
  *
  * <pre>
  * &lt;complexType>
@@ -45,54 +41,47 @@ import jp.riken.kscope.xcodeml.xml.*;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- *
- *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "", propOrder = { "namedValue" })
+@XmlType(
+    name = "",
+    propOrder = {"namedValue"})
 @XmlRootElement(name = "namedValueList")
 public class NamedValueList implements IXmlNode {
 
-    protected List<NamedValue> namedValue;
+  protected List<NamedValue> namedValue;
 
-    /**
-     * Gets the value of the namedValue property.
-     *
-     * <p>
-     * This accessor method returns a reference to the live list, not a
-     * snapshot. Therefore any modification you make to the returned list will
-     * be present inside the JAXB object. This is why there is not a
-     * <CODE>set</CODE> method for the namedValue property.
-     *
-     * <p>
-     * For example, to add a new item, do as follows:
-     *
-     * <pre>
-     * getNamedValue().add(newItem);
-     * </pre>
-     *
-     *
-     * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link NamedValue }
-     *
-     * @return      NamedValue List
-     *
-     */
-    public List<NamedValue> getNamedValue() {
-        if (namedValue == null) {
-            namedValue = new ArrayList<NamedValue>();
-        }
-        return this.namedValue;
+  /**
+   * Gets the value of the namedValue property.
+   *
+   * <p>This accessor method returns a reference to the live list, not a snapshot. Therefore any
+   * modification you make to the returned list will be present inside the JAXB object. This is why
+   * there is not a <CODE>set</CODE> method for the namedValue property.
+   *
+   * <p>For example, to add a new item, do as follows:
+   *
+   * <pre>
+   * getNamedValue().add(newItem);
+   * </pre>
+   *
+   * <p>Objects of the following type(s) are allowed in the list {@link NamedValue }
+   *
+   * @return NamedValue List
+   */
+  public List<NamedValue> getNamedValue() {
+    if (namedValue == null) {
+      namedValue = new ArrayList<NamedValue>();
     }
+    return this.namedValue;
+  }
 
-    @Override
-    public boolean enter(jp.riken.kscope.xcodeml.xml.IXmlVisitor visitor) {
-        return (visitor.enter(this));
-    }
+  @Override
+  public boolean enter(jp.riken.kscope.xcodeml.xml.IXmlVisitor visitor) {
+    return (visitor.enter(this));
+  }
 
-    @Override
-    public void leave(jp.riken.kscope.xcodeml.xml.IXmlVisitor visitor) {
-        visitor.leave(this);
-    }
+  @Override
+  public void leave(jp.riken.kscope.xcodeml.xml.IXmlVisitor visitor) {
+    visitor.leave(this);
+  }
 }

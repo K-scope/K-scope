@@ -22,16 +22,12 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
-
 import jp.riken.kscope.xcodeml.xml.*;
 
 /**
- * <p>
  * Java class for anonymous complex type.
  *
- * <p>
- * The following schema fragment specifies the expected content contained within
- * this class.
+ * <p>The following schema fragment specifies the expected content contained within this class.
  *
  * <pre>
  * &lt;complexType>
@@ -47,134 +43,121 @@ import jp.riken.kscope.xcodeml.xml.*;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- *
- *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "", propOrder = { "lowerBound", "upperBound", "step" })
+@XmlType(
+    name = "",
+    propOrder = {"lowerBound", "upperBound", "step"})
 @XmlRootElement(name = "indexRange")
 public class IndexRange implements IXmlNode {
 
-    protected LowerBound lowerBound;
-    protected UpperBound upperBound;
-    protected Step step;
-    @XmlAttribute(name = "is_assumed_shape")
-    protected Boolean isAssumedShape;
-    @XmlAttribute(name = "is_assumed_size")
-    protected Boolean isAssumedSize;
+  protected LowerBound lowerBound;
+  protected UpperBound upperBound;
+  protected Step step;
 
-    /**
-     * Gets the value of the lowerBound property.
-     *
-     * @return possible object is {@link LowerBound }
-     *
-     */
-    public LowerBound getLowerBound() {
-        return lowerBound;
-    }
+  @XmlAttribute(name = "is_assumed_shape")
+  protected Boolean isAssumedShape;
 
-    /**
-     * Sets the value of the lowerBound property.
-     *
-     * @param value
-     *            allowed object is {@link LowerBound }
-     *
-     */
-    public void setLowerBound(LowerBound value) {
-        this.lowerBound = value;
-    }
+  @XmlAttribute(name = "is_assumed_size")
+  protected Boolean isAssumedSize;
 
-    /**
-     * Gets the value of the upperBound property.
-     *
-     * @return possible object is {@link UpperBound }
-     *
-     */
-    public UpperBound getUpperBound() {
-        return upperBound;
-    }
+  /**
+   * Gets the value of the lowerBound property.
+   *
+   * @return possible object is {@link LowerBound }
+   */
+  public LowerBound getLowerBound() {
+    return lowerBound;
+  }
 
-    /**
-     * Sets the value of the upperBound property.
-     *
-     * @param value
-     *            allowed object is {@link UpperBound }
-     *
-     */
-    public void setUpperBound(UpperBound value) {
-        this.upperBound = value;
-    }
+  /**
+   * Sets the value of the lowerBound property.
+   *
+   * @param value allowed object is {@link LowerBound }
+   */
+  public void setLowerBound(LowerBound value) {
+    this.lowerBound = value;
+  }
 
-    /**
-     * Gets the value of the step property.
-     *
-     * @return possible object is {@link Step }
-     *
-     */
-    public Step getStep() {
-        return step;
-    }
+  /**
+   * Gets the value of the upperBound property.
+   *
+   * @return possible object is {@link UpperBound }
+   */
+  public UpperBound getUpperBound() {
+    return upperBound;
+  }
 
-    /**
-     * Sets the value of the step property.
-     *
-     * @param value
-     *            allowed object is {@link Step }
-     *
-     */
-    public void setStep(Step value) {
-        this.step = value;
-    }
+  /**
+   * Sets the value of the upperBound property.
+   *
+   * @param value allowed object is {@link UpperBound }
+   */
+  public void setUpperBound(UpperBound value) {
+    this.upperBound = value;
+  }
 
-    /**
-     * Gets the value of the isAssumedShape property.
-     *
-     * @return possible object is {@link Boolean }
-     *
-     */
-    public Boolean isIsAssumedShape() {
-        return isAssumedShape;
-    }
+  /**
+   * Gets the value of the step property.
+   *
+   * @return possible object is {@link Step }
+   */
+  public Step getStep() {
+    return step;
+  }
 
-    /**
-     * Sets the value of the isAssumedShape property.
-     *
-     * @param value
-     *            allowed object is {@link Boolean }
-     *
-     */
-    public void setIsAssumedShape(Boolean value) {
-        this.isAssumedShape = value;
-    }
+  /**
+   * Sets the value of the step property.
+   *
+   * @param value allowed object is {@link Step }
+   */
+  public void setStep(Step value) {
+    this.step = value;
+  }
 
-    /**
-     * Gets the value of the isAssumedSize property.
-     *
-     * @return possible object is {@link Boolean }
-     *
-     */
-    public Boolean isIsAssumedSize() {
-        return isAssumedSize;
-    }
+  /**
+   * Gets the value of the isAssumedShape property.
+   *
+   * @return possible object is {@link Boolean }
+   */
+  public Boolean isIsAssumedShape() {
+    return isAssumedShape;
+  }
 
-    /**
-     * Sets the value of the isAssumedSize property.
-     *
-     * @param value
-     *            allowed object is {@link Boolean }
-     *
-     */
-    public void setIsAssumedSize(Boolean value) {
-        this.isAssumedSize = value;
-    }
+  /**
+   * Sets the value of the isAssumedShape property.
+   *
+   * @param value allowed object is {@link Boolean }
+   */
+  public void setIsAssumedShape(Boolean value) {
+    this.isAssumedShape = value;
+  }
 
-    @Override
-    public boolean enter(jp.riken.kscope.xcodeml.xml.IXmlVisitor visitor) {
-        return (visitor.enter(this));
-    }
+  /**
+   * Gets the value of the isAssumedSize property.
+   *
+   * @return possible object is {@link Boolean }
+   */
+  public Boolean isIsAssumedSize() {
+    return isAssumedSize;
+  }
 
-    @Override
-    public void leave(jp.riken.kscope.xcodeml.xml.IXmlVisitor visitor) {
-        visitor.leave(this);
-    }
+  /**
+   * Sets the value of the isAssumedSize property.
+   *
+   * @param value allowed object is {@link Boolean }
+   */
+  public void setIsAssumedSize(Boolean value) {
+    this.isAssumedSize = value;
+  }
+
+  @Override
+  public boolean enter(jp.riken.kscope.xcodeml.xml.IXmlVisitor visitor) {
+    return (visitor.enter(this));
+  }
+
+  @Override
+  public void leave(jp.riken.kscope.xcodeml.xml.IXmlVisitor visitor) {
+    visitor.leave(this);
+  }
 }

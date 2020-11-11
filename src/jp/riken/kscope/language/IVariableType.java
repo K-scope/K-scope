@@ -18,60 +18,51 @@
 package jp.riken.kscope.language;
 
 /**
-*
-* Interface showing data type. <br>
-* VariableType (enum type) corresponding to each language implements and uses this interface.
-*
-* @author RIKEN
-*
-*/
+ * Interface showing data type. <br>
+ * VariableType (enum type) corresponding to each language implements and uses this interface.
+ *
+ * @author RIKEN
+ */
 public interface IVariableType {
 
-    /**
-     * Get the type name.
-     *
-     * @return type name
-     */
-    String getName();
+  /**
+   * Get the type name.
+   *
+   * @return type name
+   */
+  String getName();
 
-    /**
-     * Search for VariableType by type name.
-     *
-     * @param name
-     * Model name
-     *
-     * @return VariableType corresponding to the type name
-     *
-     */
-    IVariableType findTypeBy(String name);
+  /**
+   * Search for VariableType by type name.
+   *
+   * @param name Model name
+   * @return VariableType corresponding to the type name
+   */
+  IVariableType findTypeBy(String name);
 
+  /**
+   * Whether the type is compatible. <br>
+   * When searching for the corresponding function from the overloaded function group, <br>
+   * It is necessary to check the type of formal and actual arguments. <br>
+   * "Matching" is judged to be the same type by this type check Means a thing.
+   *
+   * @param value Type
+   * @return true: Conforms <br>
+   *     false: Not compatible
+   */
+  boolean matches(IVariableType value);
 
-    /**
-     * Whether the type is compatible. <br>
-     *
-     * When searching for the corresponding function from the overloaded function group, <br>
-     * It is necessary to check the type of formal and actual arguments. <br>
-     * "Matching" is judged to be the same type by this type check
-     * Means a thing.
-     *
-     * @param value
-     * Type
-     *
-     * @return true: Conforms <br>
-     * false: Not compatible
-     *
-     */
-    boolean matches(IVariableType value);
+  /**
+   * Check if it is a real variable.
+   *
+   * @return true = real number
+   */
+  boolean isRealType();
 
-	/**
-* Check if it is a real variable.
-* @return true = real number
-*/
-	boolean isRealType();
-
-	/**
-* Check if it is an integer variable.
-* @return true = integer
-*/
-	boolean isIntegerType();
+  /**
+   * Check if it is an integer variable.
+   *
+   * @return true = integer
+   */
+  boolean isIntegerType();
 }

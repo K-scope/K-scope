@@ -18,7 +18,6 @@ package jp.riken.kscope.action;
 
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
-
 import jp.riken.kscope.Application;
 import jp.riken.kscope.Message;
 import jp.riken.kscope.common.Constant;
@@ -28,44 +27,47 @@ import jp.riken.kscope.service.AppController;
 
 /**
  * Keyword setting action class
+ *
  * @author RIKEN
  */
 public class ProjectSettingKeywordAction extends ActionBase {
 
-    /**
-     * Constructor
-     * @param controller Application controller
-     */
-    public ProjectSettingKeywordAction(AppController controller) {
-        super(controller);
+  /**
+   * Constructor
+   *
+   * @param controller Application controller
+   */
+  public ProjectSettingKeywordAction(AppController controller) {
+    super(controller);
+  }
+
+  /**
+   * Action occurrence event
+   *
+   * @param event Event information
+   */
+  @Override
+  public void actionPerformed(ActionEvent event) {
+    // Status message
+    final String message =
+        Message.getString("projectsettingkeywordaction.setup.status"); // Keyword setting
+    Application.status.setMessageMain(message);
+
+    // Get the parent Frame.
+    Frame frame = getWindowAncestor(event);
+
+    // Display the keyword setting dialog.
+    KeywordProperties properities = this.controller.getPropertiesKeyword();
+
+    SettingKeywordDialog dialog = new SettingKeywordDialog(frame, true, properities);
+    int result = dialog.showDialog();
+    if (result != Constant.OK_DIALOG) {
+      Application.status.setMessageMain(
+          message + Message.getString("action.common.cancel.status")); // Cancel
+      return;
     }
-
-    /**
-     * Action occurrence event
-     * @param event Event information
-     */
-    @Override
-    public void actionPerformed(ActionEvent event) {
-        // Status message
-        final String message = Message.getString("projectsettingkeywordaction.setup.status"); // Keyword setting
-        Application.status.setMessageMain(message);
-
-        // Get the parent Frame.
-        Frame frame = getWindowAncestor( event );
-
-        // Display the keyword setting dialog.
-        KeywordProperties properities = this.controller.getPropertiesKeyword();
-
-        SettingKeywordDialog dialog = new SettingKeywordDialog(frame, true, properities);
-        int result = dialog.showDialog();
-        if (result != Constant.OK_DIALOG) {
-        	Application.status.setMessageMain(message +
-        			Message.getString("action.common.cancel.status")); //Cancel
-        	return;
-        }
-        Application.status.setMessageMain(message +
-    			Message.getString("action.common.done.status")); // Done
-        return;
-    }
-
+    Application.status.setMessageMain(
+        message + Message.getString("action.common.done.status")); // Done
+    return;
+  }
 }

@@ -19,122 +19,127 @@ package jp.riken.kscope.profiler;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import jp.riken.kscope.common.PROFILERINFO_TYPE;
 import jp.riken.kscope.data.CodeLine;
 import jp.riken.kscope.language.IBlock;
 
 /**
  * Profiler data base class
+ *
  * @author RIKEN
  */
 public abstract class ProfilerBaseData {
 
-    /** Code line information */
-    private CodeLine code;
-    /** Block information */
-    private List<IBlock[]> areas;
-    /** Profiler information type identifier */
-    private PROFILERINFO_TYPE infoType;
+  /** Code line information */
+  private CodeLine code;
+  /** Block information */
+  private List<IBlock[]> areas;
+  /** Profiler information type identifier */
+  private PROFILERINFO_TYPE infoType;
 
-    /**
-     * Constructor
-     */
-    public ProfilerBaseData() {
-        this.code = null;
-        this.areas = null;
-    }
+  /** Constructor */
+  public ProfilerBaseData() {
+    this.code = null;
+    this.areas = null;
+  }
 
+  /**
+   * Get code line information
+   *
+   * @return code line information
+   */
+  public CodeLine getCodeLine() {
+    return code;
+  }
 
-    /**
-     * Get code line information
-     * @return code line information
-     */
-    public CodeLine getCodeLine() {
-        return code;
-    }
+  /**
+   * Set code line information
+   *
+   * @param code Code line information
+   */
+  public void setCodeLine(CodeLine code) {
+    this.code = code;
+  }
 
-    /**
-     * Set code line information
-     * @param code Code line information
-     */
-    public void setCodeLine(CodeLine code) {
-        this.code = code;
-    }
+  /**
+   * Get block information
+   *
+   * @return block information
+   */
+  public List<IBlock[]> getAreas() {
+    return this.areas;
+  }
 
-    /**
-     * Get block information
-     * @return block information
-     */
-    public List<IBlock[]> getAreas() {
-        return this.areas;
-    }
+  /**
+   * Set block information
+   *
+   * @param areas Block information
+   */
+  public void setAreas(List<IBlock[]> areas) {
+    this.areas = new ArrayList<IBlock[]>();
+    this.areas.addAll(areas);
+  }
 
-    /**
-     * Set block information
-     * @param areas Block information
-     */
-    public void setAreas(List<IBlock[]> areas) {
-        this.areas = new ArrayList<IBlock[]>();
-        this.areas.addAll(areas);
-    }
+  /**
+   * Get block information
+   *
+   * @return block information
+   */
+  public IBlock[] getBlocks() {
+    if (this.areas == null || this.areas.size() <= 0) return null;
+    IBlock[] blocks = this.areas.get(0);
+    return blocks;
+  }
 
-    /**
-     * Get block information
-     * @return block information
-     */
-    public IBlock[] getBlocks() {
-        if (this.areas == null || this.areas.size() <= 0) return null;
-        IBlock[] blocks = this.areas.get(0);
-        return blocks;
-    }
+  /**
+   * Set block information
+   *
+   * @param blocks Block information
+   */
+  public void setBlocks(IBlock[] blocks) {
+    if (blocks == null) return;
+    this.areas = new ArrayList<IBlock[]>();
+    this.areas.add(blocks);
+  }
 
-    /**
-     * Set block information
-     * @param blocks Block information
-     */
-    public void setBlocks(IBlock[] blocks) {
-        if (blocks == null) return;
-        this.areas = new ArrayList<IBlock[]>();
-        this.areas.add(blocks);
-    }
+  /**
+   * Get block information
+   *
+   * @return block information
+   */
+  public IBlock getBlock() {
+    if (this.areas == null || this.areas.size() <= 0) return null;
+    IBlock[] blocks = this.areas.get(0);
+    return blocks[0];
+  }
 
-    /**
-     * Get block information
-     * @return block information
-     */
-    public IBlock getBlock() {
-        if (this.areas == null || this.areas.size() <= 0) return null;
-        IBlock[] blocks = this.areas.get(0);
-        return blocks[0];
-    }
+  /**
+   * Set block information
+   *
+   * @param block Block information
+   */
+  public void setBlock(IBlock block) {
+    if (block == null) return;
+    this.areas = new ArrayList<IBlock[]>();
+    IBlock[] blocks = new IBlock[] {block};
+    this.areas.add(blocks);
+  }
 
-    /**
-     * Set block information
-     * @param block Block information
-     */
-    public void setBlock(IBlock block) {
-        if (block == null) return;
-        this.areas = new ArrayList<IBlock[]>();
-        IBlock[] blocks = new IBlock[]{block};
-        this.areas.add(blocks);
-    }
+  /**
+   * Get cost information type identifier
+   *
+   * @param type Cost information type identifier
+   */
+  public void setInfoType(PROFILERINFO_TYPE type) {
+    this.infoType = type;
+  }
 
-    /**
-     * Get cost information type identifier
-     * @param type Cost information type identifier
-     */
-    public void setInfoType(PROFILERINFO_TYPE type) {
-        this.infoType = type;
-    }
-
-    /**
-     * Set cost information type identifier
-     * @return Cost information type identifier
-     */
-    public PROFILERINFO_TYPE getInfoType() {
-        return this.infoType;
-    }
-
-
+  /**
+   * Set cost information type identifier
+   *
+   * @return Cost information type identifier
+   */
+  public PROFILERINFO_TYPE getInfoType() {
+    return this.infoType;
+  }
 }

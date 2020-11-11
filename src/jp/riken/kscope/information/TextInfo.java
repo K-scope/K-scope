@@ -21,62 +21,55 @@ package jp.riken.kscope.information;
  * Additional information class.
  *
  * @author RIKEN
- *
  */
 public class TextInfo extends InformationBase {
 
-    /** Serial number */
-	private static final long serialVersionUID = -4345153798646974378L;
-	/** Additional information */
-	private String content;
+  /** Serial number */
+  private static final long serialVersionUID = -4345153798646974378L;
+  /** Additional information */
+  private String content;
 
-    /**
-     * Default constructor.
-     */
-    public TextInfo() {
-    }
+  /** Default constructor. */
+  public TextInfo() {}
 
-    /**
-     * Constructor.
-     *
-     * @param text
-     * Additional information text
-     */
-    public TextInfo(String text) {
-        this.content = text;
-    }
+  /**
+   * Constructor.
+   *
+   * @param text Additional information text
+   */
+  public TextInfo(String text) {
+    this.content = text;
+  }
 
-    /**
-     * Additional information text settings.
-     *
-     * @param text
-     * Additional information text
-     */
-    @Override
-    public void setContent(String text) {
-        content = text;
-    }
+  /**
+   * Additional information text settings.
+   *
+   * @param text Additional information text
+   */
+  @Override
+  public void setContent(String text) {
+    content = text;
+  }
 
-    /**
-     * Get additional information text.
-     *
-     * @return Additional information text
-     */
-    @Override
-    public String getContent() {
-        return content;
-    }
+  /**
+   * Get additional information text.
+   *
+   * @return Additional information text
+   */
+  @Override
+  public String getContent() {
+    return content;
+  }
 
-    @Override
-    public String toString() {
-        return content;
-    }
+  @Override
+  public String toString() {
+    return content;
+  }
 
-    @Override
-    public String getAbstract() {
-        String br = System.getProperty("line.separator");
-        String[] lines = this.content.split(br);
-        return lines[0];
-    }
-
+  @Override
+  public String getAbstract() {
+    String br = System.getProperty("line.separator");
+    String[] lines = this.content.split(br);
+    return lines[0];
+  }
 }

@@ -23,7 +23,6 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.Observable;
 import java.util.Observer;
-
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.Icon;
@@ -36,7 +35,6 @@ import javax.swing.border.CompoundBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.table.DefaultTableColumnModel;
 import javax.swing.table.TableColumn;
-
 import jp.riken.kscope.Message;
 import jp.riken.kscope.common.ANALYSIS_PANEL;
 import jp.riken.kscope.component.JStripeTable;
@@ -51,301 +49,290 @@ import jp.riken.kscope.utils.SwingUtils;
 
 /**
  * Property panel class
- * @author RIKEN
  *
+ * @author RIKEN
  */
-public class PropertiesTablePanel extends AnalisysPanelBase implements Observer, IAnalisysComponent {
+public class PropertiesTablePanel extends AnalisysPanelBase
+    implements Observer, IAnalisysComponent {
 
-    /** Serial number */
-    private static final long serialVersionUID = 1L;
-    /** Property table */
-    private JTable tableProperties;
-    /** Clear button */
-    private JButton btnClear;
-    /** Export button */
-    private JButton btnExport;
-    /** Property label */
-    private JLabel label;
+  /** Serial number */
+  private static final long serialVersionUID = 1L;
+  /** Property table */
+  private JTable tableProperties;
+  /** Clear button */
+  private JButton btnClear;
+  /** Export button */
+  private JButton btnExport;
+  /** Property label */
+  private JLabel label;
 
-    /** Property table model */
-    private PropertiesTableModel model;
+  /** Property table model */
+  private PropertiesTableModel model;
 
-    /**
-     * Constructor
-     */
-    public PropertiesTablePanel() {
-        super();
+  /** Constructor */
+  public PropertiesTablePanel() {
+    super();
 
-        // Generate a model
-        model = new PropertiesTableModel();
-        // Set the observer.
-        model.addObserver(this);
+    // Generate a model
+    model = new PropertiesTableModel();
+    // Set the observer.
+    model.addObserver(this);
 
-        // Initialize the GUI.
-        initGUI();
+    // Initialize the GUI.
+    initGUI();
+  }
 
-    }
+  /**
+   * Constructor
+   *
+   * @param proparties Analysis Information Panel Identifier
+   */
+  public PropertiesTablePanel(ANALYSIS_PANEL proparties) {
+    super(proparties);
 
-    /**
-     * Constructor
-     * @param proparties Analysis Information Panel Identifier
-     */
-    public PropertiesTablePanel(ANALYSIS_PANEL proparties) {
-        super(proparties);
+    // Generate a model
+    model = new PropertiesTableModel();
+    // Set the observer.
+    model.addObserver(this);
 
-        // Generate a model
-        model = new PropertiesTableModel();
-        // Set the observer.
-        model.addObserver(this);
+    // Initialize the GUI.
+    initGUI();
+  }
 
-        // Initialize the GUI.
-        initGUI();
-    }
+  /** Initialize the GUI. */
+  private void initGUI() {
+    try {
+      BorderLayout thisLayout = new BorderLayout();
+      this.setLayout(thisLayout);
+      //            setPreferredSize(new Dimension(400, 64));
 
-    /**
-     * Initialize the GUI.
-     */
-    private void initGUI() {
-        try {
-            BorderLayout thisLayout = new BorderLayout();
-            this.setLayout(thisLayout);
-//            setPreferredSize(new Dimension(400, 64));
+      // Information label at the top, button placement panel
+      {
+        JPanel panelTop = new JPanel();
+        panelTop.setLayout(new BorderLayout());
+        this.add(panelTop, BorderLayout.NORTH);
+        panelTop.setBorder(
+            new CompoundBorder(
+                new LineBorder(Color.BLACK, 1), BorderFactory.createEmptyBorder(0, 5, 0, 20)));
+        // Button layout panel
+        {
+          JPanel panelButtons = new JPanel();
+          panelButtons.setLayout(new BoxLayout(panelButtons, BoxLayout.LINE_AXIS));
+          panelTop.add(panelButtons, BorderLayout.EAST);
 
-            // Information label at the top, button placement panel
-            {
-                JPanel panelTop = new JPanel();
-                panelTop.setLayout(new BorderLayout());
-                this.add(panelTop, BorderLayout.NORTH);
-                panelTop.setBorder(new CompoundBorder(
-                                            new LineBorder(Color.BLACK, 1),
-                                            BorderFactory.createEmptyBorder(0, 5, 0, 20)));
-                // Button layout panel
-                {
-                    JPanel panelButtons = new JPanel();
-                    panelButtons.setLayout(new BoxLayout(panelButtons, BoxLayout.LINE_AXIS));
-                    panelTop.add(panelButtons, BorderLayout.EAST);
-
-                    java.awt.Dimension buttonSize = new java.awt.Dimension(24, 24);
-                    // Clear button
-                    {
-                        Icon icon = ResourceUtils.getIcon("removeall.gif");
-                        btnClear = new JButton(icon);
-                        panelButtons.add(btnClear);
-                        btnClear.setPreferredSize(buttonSize);
-                        btnClear.setMinimumSize(buttonSize);
-                        btnClear.setMaximumSize(buttonSize);
-                        btnClear.setContentAreaFilled(false);
-                        btnClear.setBorderPainted(false);
-                        btnClear.addActionListener( new ActionListener() {
-                            @Override
-                            public void actionPerformed(ActionEvent e) {
-                                // Model clear
-                                clearModel();
-                            }
-                        });
-                    }
-                    {
-                        Icon icon = ResourceUtils.getIcon("save.gif");
-                        btnExport = new JButton(icon);
-                        btnExport.setContentAreaFilled(false);
-                        btnExport.setBorderPainted(false);
-                        btnExport.setPreferredSize(buttonSize);
-                        btnExport.setMinimumSize(buttonSize);
-                        btnExport.setMaximumSize(buttonSize);
-                        panelButtons.add(btnExport);
-                    }
-                }
-
-                // Label placement
-                {
-                    label = new JLabel();
-                    panelTop.add(label, BorderLayout.CENTER);
-                    //label.setText("");
-                }
-            }
-            {
-                {
-                    // Property table
-                    tableProperties = new JStripeTable();
-                    tableProperties.setModel(model.getTableModel());
-                    tableProperties.setAutoCreateColumnsFromModel(false);
-
-                    // Table column model
-                    DefaultTableColumnModel columnModel = (DefaultTableColumnModel)tableProperties.getColumnModel();
-                    TableColumn column = null;
-                    // Item column
-                    column = columnModel.getColumn(0);
-                    column.setPreferredWidth(160);
-                    column.setMinWidth(160);
-                    // Value column
-                    column = columnModel.getColumn(1);
-                    column.setPreferredWidth(520);
-                    column.setMinWidth(520);
-
-                    /*
-                    // Get header
-                    JTableHeader header = tableProperties.getTableHeader ();
-                    TableColumnModel columnHeaderModel = header.getColumnModel ();
-                    // Header left justified
-                    DefaultTableCellRenderer headerRenderer = (DefaultTableCellRenderer) header.getDefaultRenderer ();
-                    headerRenderer.setHorizontalAlignment (SwingConstants.LEFT);
-*/
-
-                    // Scroll pine
-                    JScrollPane scrollTable = new JScrollPane();
-                    scrollTable.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-                    scrollTable.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-                    scrollTable.setViewportView(tableProperties);
-                    scrollTable.getViewport().setBackground(Color.WHITE);
-
-                    add(scrollTable);
-                }
-
-            }
-
-            // Tooltip settings
-            btnClear.setToolTipText(Message.getString("informationdialog.button.clear.tooltip")); //clear
-            btnExport.setToolTipText(Message.getString("mainmenu.file.export")); //export
-
-        } catch (Exception e) {
-            e.printStackTrace();
+          java.awt.Dimension buttonSize = new java.awt.Dimension(24, 24);
+          // Clear button
+          {
+            Icon icon = ResourceUtils.getIcon("removeall.gif");
+            btnClear = new JButton(icon);
+            panelButtons.add(btnClear);
+            btnClear.setPreferredSize(buttonSize);
+            btnClear.setMinimumSize(buttonSize);
+            btnClear.setMaximumSize(buttonSize);
+            btnClear.setContentAreaFilled(false);
+            btnClear.setBorderPainted(false);
+            btnClear.addActionListener(
+                new ActionListener() {
+                  @Override
+                  public void actionPerformed(ActionEvent e) {
+                    // Model clear
+                    clearModel();
+                  }
+                });
+          }
+          {
+            Icon icon = ResourceUtils.getIcon("save.gif");
+            btnExport = new JButton(icon);
+            btnExport.setContentAreaFilled(false);
+            btnExport.setBorderPainted(false);
+            btnExport.setPreferredSize(buttonSize);
+            btnExport.setMinimumSize(buttonSize);
+            btnExport.setMaximumSize(buttonSize);
+            panelButtons.add(btnExport);
+          }
         }
-    }
 
-    /**
-     * Property model change notification event
-     * @param o Notification source
-     * @param arg Notification item
-     */
-    @Override
-    public void update(Observable o, Object arg) {
-        // Table model
-        PropertiesTableModel observer = (PropertiesTableModel)o;
-        tableProperties.setModel(observer.getTableModel());
-
-        // Panel title
-        this.label.setText(observer.getTitle());
-
-    }
-
-    /**
-     * Get the property table model
-     * @return property table model
-     */
-    public PropertiesTableModel getModel() {
-        return model;
-    }
-
-
-    /**
-     * Set focus listener
-     * @param listener Focus listener
-     */
-    @Override
-    public void addTabFocusListener(TabFocusListener listener) {
-        this.addFocusListener(listener);
-        // Set focus listener for child components as well
-        if (this.tableProperties != null) {
-            this.tableProperties.addFocusListener(listener);
-            this.btnClear.addFocusListener(listener);
-            this.btnExport.addFocusListener(listener);
+        // Label placement
+        {
+          label = new JLabel();
+          panelTop.add(label, BorderLayout.CENTER);
+          // label.setText("");
         }
+      }
+      {
+        {
+          // Property table
+          tableProperties = new JStripeTable();
+          tableProperties.setModel(model.getTableModel());
+          tableProperties.setAutoCreateColumnsFromModel(false);
+
+          // Table column model
+          DefaultTableColumnModel columnModel =
+              (DefaultTableColumnModel) tableProperties.getColumnModel();
+          TableColumn column = null;
+          // Item column
+          column = columnModel.getColumn(0);
+          column.setPreferredWidth(160);
+          column.setMinWidth(160);
+          // Value column
+          column = columnModel.getColumn(1);
+          column.setPreferredWidth(520);
+          column.setMinWidth(520);
+
+          /*
+                              // Get header
+                              JTableHeader header = tableProperties.getTableHeader ();
+                              TableColumnModel columnHeaderModel = header.getColumnModel ();
+                              // Header left justified
+                              DefaultTableCellRenderer headerRenderer = (DefaultTableCellRenderer) header.getDefaultRenderer ();
+                              headerRenderer.setHorizontalAlignment (SwingConstants.LEFT);
+          */
+
+          // Scroll pine
+          JScrollPane scrollTable = new JScrollPane();
+          scrollTable.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+          scrollTable.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+          scrollTable.setViewportView(tableProperties);
+          scrollTable.getViewport().setBackground(Color.WHITE);
+
+          add(scrollTable);
+        }
+      }
+
+      // Tooltip settings
+      btnClear.setToolTipText(Message.getString("informationdialog.button.clear.tooltip")); // clear
+      btnExport.setToolTipText(Message.getString("mainmenu.file.export")); // export
+
+    } catch (Exception e) {
+      e.printStackTrace();
     }
+  }
 
+  /**
+   * Property model change notification event
+   *
+   * @param o Notification source
+   * @param arg Notification item
+   */
+  @Override
+  public void update(Observable o, Object arg) {
+    // Table model
+    PropertiesTableModel observer = (PropertiesTableModel) o;
+    tableProperties.setModel(observer.getTableModel());
 
-    /**
-     * Export
-     */
-    @Override
-    public void export(File file) {
-        if (this.model == null) return;
+    // Panel title
+    this.label.setText(observer.getTitle());
+  }
 
-        model.writeFile(file);
+  /**
+   * Get the property table model
+   *
+   * @return property table model
+   */
+  public PropertiesTableModel getModel() {
+    return model;
+  }
+
+  /**
+   * Set focus listener
+   *
+   * @param listener Focus listener
+   */
+  @Override
+  public void addTabFocusListener(TabFocusListener listener) {
+    this.addFocusListener(listener);
+    // Set focus listener for child components as well
+    if (this.tableProperties != null) {
+      this.tableProperties.addFocusListener(listener);
+      this.btnClear.addFocusListener(listener);
+      this.btnExport.addFocusListener(listener);
     }
+  }
 
-    /**
-     * Set an action listener on the panel. <br/>
-     * Assign the created action listener to the menu bar to the panel button.
-     * @param menu Menu bar
-     */
-    @Override
-    public void setActionListener(MainMenu menu) {
-        // Analysis information export action
-        this.btnExport.addActionListener(menu.getActionExportAnalysis());
+  /** Export */
+  @Override
+  public void export(File file) {
+    if (this.model == null) return;
 
-    }
+    model.writeFile(file);
+  }
 
-    /**
-     * Clear the model.
-     */
-    @Override
-    public void clearModel() {
-        // Model clear
-        model.clearProperties();
-    }
+  /**
+   * Set an action listener on the panel. <br>
+   * Assign the created action listener to the menu bar to the panel button.
+   *
+   * @param menu Menu bar
+   */
+  @Override
+  public void setActionListener(MainMenu menu) {
+    // Analysis information export action
+    this.btnExport.addActionListener(menu.getActionExportAnalysis());
+  }
 
-    /**
-     * Close the tab
-     */
-    @Override
-    public void closeTab() { }
+  /** Clear the model. */
+  @Override
+  public void clearModel() {
+    // Model clear
+    model.clearProperties();
+  }
 
-    /**
-     * Get selected source code line information
-     * @return Selected source code line information
-     */
-    @Override
-    public CodeLine getSelectedCodeLine() {
-        return null;
-    }
+  /** Close the tab */
+  @Override
+  public void closeTab() {}
 
-    /**
-     * Get the selected block
-     * @return selection block
-     */
-    @Override
-    public IBlock getSelectedBlock() {
-        return null;
-    }
+  /**
+   * Get selected source code line information
+   *
+   * @return Selected source code line information
+   */
+  @Override
+  public CodeLine getSelectedCodeLine() {
+    return null;
+  }
 
+  /**
+   * Get the selected block
+   *
+   * @return selection block
+   */
+  @Override
+  public IBlock getSelectedBlock() {
+    return null;
+  }
 
-    /**
-     * Get additional selection information
-     * @return Selectable additional information
-     */
-    @Override
-    public IInformation getSelectedInformation() {
-        return null;
-    }
+  /**
+   * Get additional selection information
+   *
+   * @return Selectable additional information
+   */
+  @Override
+  public IInformation getSelectedInformation() {
+    return null;
+  }
 
-    /**
-     * Set source view properties
-     * @param properties Source view properties
-     */
-    @Override
-    public void setSourceProperties(SourceProperties properties) {}
+  /**
+   * Set source view properties
+   *
+   * @param properties Source view properties
+   */
+  @Override
+  public void setSourceProperties(SourceProperties properties) {}
 
-    /**
-     * Copy the selection to the clipboard.
-     */
-    @Override
-    public void copyClipboard() {
-        if (this.tableProperties == null) return;
-        String text = SwingUtils.toCsvOfSeletedRows(this.tableProperties);
-        if (text == null) return;
+  /** Copy the selection to the clipboard. */
+  @Override
+  public void copyClipboard() {
+    if (this.tableProperties == null) return;
+    String text = SwingUtils.toCsvOfSeletedRows(this.tableProperties);
+    if (text == null) return;
 
-        // copy to clipboard
-        SwingUtils.copyClipboard(text);
-    }
+    // copy to clipboard
+    SwingUtils.copyClipboard(text);
+  }
 
-    /**
-     * Whether there is information to export
-     */
-	@Override
-	public boolean isExportable() {
-		if (this.model == null) return false;
-		return (!this.model.isEmpty());
-	}
+  /** Whether there is information to export */
+  @Override
+  public boolean isExportable() {
+    if (this.model == null) return false;
+    return (!this.model.isEmpty());
+  }
 }
-
-

@@ -17,42 +17,43 @@
 package jp.riken.kscope.action;
 
 import java.awt.event.ActionEvent;
-
 import jp.riken.kscope.data.SourceFile;
 import jp.riken.kscope.service.AppController;
 
 /**
  * Display the source panel.
+ *
  * @author RIKEN
  */
 public class WindowSourceAction extends ActionBase {
 
-    /** Source file to display */
-    private SourceFile source;
+  /** Source file to display */
+  private SourceFile source;
 
-    /**
-     * Constructor
-     * @param controller Application controller
-     * @param source Display source file
-     */
-    public WindowSourceAction(AppController controller, SourceFile source) {
-        super(controller);
-        this.source = source;
+  /**
+   * Constructor
+   *
+   * @param controller Application controller
+   * @param source Display source file
+   */
+  public WindowSourceAction(AppController controller, SourceFile source) {
+    super(controller);
+    this.source = source;
+  }
+
+  /**
+   * Action occurrence event
+   *
+   * @param event Event information
+   */
+  @Override
+  public void actionPerformed(ActionEvent event) {
+
+    try {
+      // Display the specified source file.
+      this.controller.getMainframe().getPanelSourceView().viewSource(this.source);
+    } catch (Exception ex) {
+      ex.printStackTrace();
     }
-
-    /**
-     * Action occurrence event
-     * @param event Event information
-     */
-    @Override
-    public void actionPerformed(ActionEvent event) {
-
-        try {
-            // Display the specified source file.
-            this.controller.getMainframe().getPanelSourceView().viewSource(this.source);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-    }
-
+  }
 }

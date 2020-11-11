@@ -15,7 +15,5 @@
  * limitations under the License.
  */
 
-/**
- * Provides exception handling. <br/>
- */
+/** Provides exception handling. <br> */
 package jp.riken.kscope.exception;

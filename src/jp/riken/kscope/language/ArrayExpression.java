@@ -19,24 +19,22 @@ package jp.riken.kscope.language;
 
 /**
  * A class that represents an array expression
- * @author RIKEN
  *
+ * @author RIKEN
  */
 public class ArrayExpression extends Substitution {
-    /** Serial number */
-    private static final long serialVersionUID = -8525500860227966833L;
-    /**
-     * Constructor.
-     */
-    public ArrayExpression() {
-        super();
-    }
-    /**
-     * Constructor.
-     * @param mama Parent block
-     */
-    public ArrayExpression(Block mama) {
-        super(mama);
-    }
-
+  /** Serial number */
+  private static final long serialVersionUID = -8525500860227966833L;
+  /** Constructor. */
+  public ArrayExpression() {
+    super();
+  }
+  /**
+   * Constructor.
+   *
+   * @param mama Parent block
+   */
+  public ArrayExpression(Block mama) {
+    super(mama);
+  }
 }

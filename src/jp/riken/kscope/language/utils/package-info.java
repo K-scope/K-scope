@@ -15,7 +15,5 @@
  * limitations under the License.
  */
 
-/**
- * Provides database utility classes. <br/>
- */
+/** Provides database utility classes. <br> */
 package jp.riken.kscope.language.utils;

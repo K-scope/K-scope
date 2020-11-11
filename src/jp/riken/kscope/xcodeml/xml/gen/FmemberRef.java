@@ -23,16 +23,12 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
-
 import jp.riken.kscope.xcodeml.xml.*;
 
 /**
- * <p>
  * Java class for anonymous complex type.
  *
- * <p>
- * The following schema fragment specifies the expected content contained within
- * this class.
+ * <p>The following schema fragment specifies the expected content contained within this class.
  *
  * <pre>
  * &lt;complexType>
@@ -47,91 +43,81 @@ import jp.riken.kscope.xcodeml.xml.*;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- *
- *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "", propOrder = { "varRef" })
+@XmlType(
+    name = "",
+    propOrder = {"varRef"})
 @XmlRootElement(name = "FmemberRef")
 public class FmemberRef implements IXmlNode {
 
-    @XmlElement(required = true)
-    protected VarRef varRef;
-    @XmlAttribute
-    protected String type;
-    @XmlAttribute
-    protected String member;
+  @XmlElement(required = true)
+  protected VarRef varRef;
 
-    /**
-     * Gets the value of the varRef property.
-     *
-     * @return possible object is {@link VarRef }
-     *
-     */
-    public VarRef getVarRef() {
-        return varRef;
-    }
+  @XmlAttribute protected String type;
+  @XmlAttribute protected String member;
 
-    /**
-     * Sets the value of the varRef property.
-     *
-     * @param value
-     *            allowed object is {@link VarRef }
-     *
-     */
-    public void setVarRef(VarRef value) {
-        this.varRef = value;
-    }
+  /**
+   * Gets the value of the varRef property.
+   *
+   * @return possible object is {@link VarRef }
+   */
+  public VarRef getVarRef() {
+    return varRef;
+  }
 
-    /**
-     * Gets the value of the type property.
-     *
-     * @return possible object is {@link String }
-     *
-     */
-    public String getType() {
-        return type;
-    }
+  /**
+   * Sets the value of the varRef property.
+   *
+   * @param value allowed object is {@link VarRef }
+   */
+  public void setVarRef(VarRef value) {
+    this.varRef = value;
+  }
 
-    /**
-     * Sets the value of the type property.
-     *
-     * @param value
-     *            allowed object is {@link String }
-     *
-     */
-    public void setType(String value) {
-        this.type = value;
-    }
+  /**
+   * Gets the value of the type property.
+   *
+   * @return possible object is {@link String }
+   */
+  public String getType() {
+    return type;
+  }
 
-    /**
-     * Gets the value of the member property.
-     *
-     * @return possible object is {@link String }
-     *
-     */
-    public String getMember() {
-        return member;
-    }
+  /**
+   * Sets the value of the type property.
+   *
+   * @param value allowed object is {@link String }
+   */
+  public void setType(String value) {
+    this.type = value;
+  }
 
-    /**
-     * Sets the value of the member property.
-     *
-     * @param value
-     *            allowed object is {@link String }
-     *
-     */
-    public void setMember(String value) {
-        this.member = value;
-    }
+  /**
+   * Gets the value of the member property.
+   *
+   * @return possible object is {@link String }
+   */
+  public String getMember() {
+    return member;
+  }
 
-    @Override
-    public boolean enter(jp.riken.kscope.xcodeml.xml.IXmlVisitor visitor) {
-        return (visitor.enter(this));
-    }
+  /**
+   * Sets the value of the member property.
+   *
+   * @param value allowed object is {@link String }
+   */
+  public void setMember(String value) {
+    this.member = value;
+  }
 
-    @Override
-    public void leave(jp.riken.kscope.xcodeml.xml.IXmlVisitor visitor) {
-        visitor.leave(this);
-    }
+  @Override
+  public boolean enter(jp.riken.kscope.xcodeml.xml.IXmlVisitor visitor) {
+    return (visitor.enter(this));
+  }
+
+  @Override
+  public void leave(jp.riken.kscope.xcodeml.xml.IXmlVisitor visitor) {
+    visitor.leave(this);
+  }
 }

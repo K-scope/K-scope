@@ -25,16 +25,12 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
-
 import jp.riken.kscope.xcodeml.xml.*;
 
 /**
- * <p>
  * Java class for anonymous complex type.
  *
- * <p>
- * The following schema fragment specifies the expected content contained within
- * this class.
+ * <p>The following schema fragment specifies the expected content contained within this class.
  *
  * <pre>
  * &lt;complexType>
@@ -83,105 +79,95 @@ import jp.riken.kscope.xcodeml.xml.*;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- *
- *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "", propOrder = { "fifStatementOrFdoStatementOrFdoWhileStatement" })
+@XmlType(
+    name = "",
+    propOrder = {"fifStatementOrFdoStatementOrFdoWhileStatement"})
 @XmlRootElement(name = "body")
 public class Body implements IXmlNode {
 
-    @XmlElements({
-            @XmlElement(name = "FstopStatement", type = FstopStatement.class),
-            @XmlElement(name = "FdoStatement", type = FdoStatement.class),
-            @XmlElement(name = "FnullifyStatement", type = FnullifyStatement.class),
-            @XmlElement(name = "FcaseLabel", type = FcaseLabel.class),
-            @XmlElement(name = "FifStatement", type = FifStatement.class),
-            @XmlElement(name = "FallocateStatement", type = FallocateStatement.class),
-            @XmlElement(name = "FwriteStatement", type = FwriteStatement.class),
-            @XmlElement(name = "FwhereStatement", type = FwhereStatement.class),
-            @XmlElement(name = "FassignStatement", type = FassignStatement.class),
-            @XmlElement(name = "FcycleStatement", type = FcycleStatement.class),
-            @XmlElement(name = "FrewindStatement", type = FrewindStatement.class),
-            @XmlElement(name = "FopenStatement", type = FopenStatement.class),
-            @XmlElement(name = "FcloseStatement", type = FcloseStatement.class),
-            @XmlElement(name = "continueStatement", type = ContinueStatement.class),
-            @XmlElement(name = "FselectCaseStatement", type = FselectCaseStatement.class),
-            @XmlElement(name = "FexitStatement", type = FexitStatement.class),
-            @XmlElement(name = "statementLabel", type = StatementLabel.class),
-            @XmlElement(name = "FreadStatement", type = FreadStatement.class),
-            @XmlElement(name = "FprintStatement", type = FprintStatement.class),
-            @XmlElement(name = "FendFileStatement", type = FendFileStatement.class),
-            @XmlElement(name = "FentryDecl", type = FentryDecl.class),
-            @XmlElement(name = "FdoWhileStatement", type = FdoWhileStatement.class),
-            @XmlElement(name = "FpauseStatement", type = FpauseStatement.class),
-            @XmlElement(name = "gotoStatement", type = GotoStatement.class),
-            @XmlElement(name = "FformatDecl", type = FformatDecl.class),
-            @XmlElement(name = "FdeallocateStatement", type = FdeallocateStatement.class),
-            @XmlElement(name = "FcontainsStatement", type = FcontainsStatement.class),
-            @XmlElement(name = "FbackspaceStatement", type = FbackspaceStatement.class),
-            @XmlElement(name = "FreturnStatement", type = FreturnStatement.class),
-            @XmlElement(name = "text", type = Text.class),
-            @XmlElement(name = "FdataDecl", type = FdataDecl.class),
-            @XmlElement(name = "exprStatement", type = ExprStatement.class),
-            @XmlElement(name = "FinquireStatement", type = FinquireStatement.class),
-            @XmlElement(name = "FpragmaStatement", type = FpragmaStatement.class),
-            @XmlElement(name = "FpointerAssignStatement", type = FpointerAssignStatement.class) })
-    protected List<IXmlNode> fifStatementOrFdoStatementOrFdoWhileStatement;
+  @XmlElements({
+    @XmlElement(name = "FstopStatement", type = FstopStatement.class),
+    @XmlElement(name = "FdoStatement", type = FdoStatement.class),
+    @XmlElement(name = "FnullifyStatement", type = FnullifyStatement.class),
+    @XmlElement(name = "FcaseLabel", type = FcaseLabel.class),
+    @XmlElement(name = "FifStatement", type = FifStatement.class),
+    @XmlElement(name = "FallocateStatement", type = FallocateStatement.class),
+    @XmlElement(name = "FwriteStatement", type = FwriteStatement.class),
+    @XmlElement(name = "FwhereStatement", type = FwhereStatement.class),
+    @XmlElement(name = "FassignStatement", type = FassignStatement.class),
+    @XmlElement(name = "FcycleStatement", type = FcycleStatement.class),
+    @XmlElement(name = "FrewindStatement", type = FrewindStatement.class),
+    @XmlElement(name = "FopenStatement", type = FopenStatement.class),
+    @XmlElement(name = "FcloseStatement", type = FcloseStatement.class),
+    @XmlElement(name = "continueStatement", type = ContinueStatement.class),
+    @XmlElement(name = "FselectCaseStatement", type = FselectCaseStatement.class),
+    @XmlElement(name = "FexitStatement", type = FexitStatement.class),
+    @XmlElement(name = "statementLabel", type = StatementLabel.class),
+    @XmlElement(name = "FreadStatement", type = FreadStatement.class),
+    @XmlElement(name = "FprintStatement", type = FprintStatement.class),
+    @XmlElement(name = "FendFileStatement", type = FendFileStatement.class),
+    @XmlElement(name = "FentryDecl", type = FentryDecl.class),
+    @XmlElement(name = "FdoWhileStatement", type = FdoWhileStatement.class),
+    @XmlElement(name = "FpauseStatement", type = FpauseStatement.class),
+    @XmlElement(name = "gotoStatement", type = GotoStatement.class),
+    @XmlElement(name = "FformatDecl", type = FformatDecl.class),
+    @XmlElement(name = "FdeallocateStatement", type = FdeallocateStatement.class),
+    @XmlElement(name = "FcontainsStatement", type = FcontainsStatement.class),
+    @XmlElement(name = "FbackspaceStatement", type = FbackspaceStatement.class),
+    @XmlElement(name = "FreturnStatement", type = FreturnStatement.class),
+    @XmlElement(name = "text", type = Text.class),
+    @XmlElement(name = "FdataDecl", type = FdataDecl.class),
+    @XmlElement(name = "exprStatement", type = ExprStatement.class),
+    @XmlElement(name = "FinquireStatement", type = FinquireStatement.class),
+    @XmlElement(name = "FpragmaStatement", type = FpragmaStatement.class),
+    @XmlElement(name = "FpointerAssignStatement", type = FpointerAssignStatement.class)
+  })
+  protected List<IXmlNode> fifStatementOrFdoStatementOrFdoWhileStatement;
 
-    /**
-     * Gets the value of the fifStatementOrFdoStatementOrFdoWhileStatement
-     * property.
-     *
-     * <p>
-     * This accessor method returns a reference to the live list, not a
-     * snapshot. Therefore any modification you make to the returned list will
-     * be present inside the JAXB object. This is why there is not a
-     * <CODE>set</CODE> method for the
-     * fifStatementOrFdoStatementOrFdoWhileStatement property.
-     *
-     * <p>
-     * For example, to add a new item, do as follows:
-     *
-     * <pre>
-     * getFifStatementOrFdoStatementOrFdoWhileStatement().add(newItem);
-     * </pre>
-     *
-     *
-     * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link FstopStatement } {@link FdoStatement } {@link FnullifyStatement }
-     * {@link FcaseLabel } {@link FifStatement } {@link FallocateStatement }
-     * {@link FwriteStatement } {@link FwhereStatement } {@link FassignStatement }
-     * {@link FcycleStatement } {@link FrewindStatement } {@link FopenStatement }
-     * {@link FcloseStatement } {@link ContinueStatement }
-     * {@link FselectCaseStatement } {@link FexitStatement }
-     * {@link StatementLabel } {@link FreadStatement } {@link FprintStatement }
-     * {@link FendFileStatement } {@link FentryDecl } {@link FdoWhileStatement }
-     * {@link FpauseStatement } {@link GotoStatement } {@link FformatDecl }
-     * {@link FdeallocateStatement } {@link FcontainsStatement }
-     * {@link FbackspaceStatement } {@link FreturnStatement } {@link Text }
-     * {@link FdataDecl } {@link ExprStatement } {@link FinquireStatement }
-     * {@link FpragmaStatement } {@link FpointerAssignStatement }
-     *
-     *
-     * @return      IXmlNode List
-     *
-     */
-    public List<IXmlNode> getFifStatementOrFdoStatementOrFdoWhileStatement() {
-        if (fifStatementOrFdoStatementOrFdoWhileStatement == null) {
-            fifStatementOrFdoStatementOrFdoWhileStatement = new ArrayList<IXmlNode>();
-        }
-        return this.fifStatementOrFdoStatementOrFdoWhileStatement;
+  /**
+   * Gets the value of the fifStatementOrFdoStatementOrFdoWhileStatement property.
+   *
+   * <p>This accessor method returns a reference to the live list, not a snapshot. Therefore any
+   * modification you make to the returned list will be present inside the JAXB object. This is why
+   * there is not a <CODE>set</CODE> method for the fifStatementOrFdoStatementOrFdoWhileStatement
+   * property.
+   *
+   * <p>For example, to add a new item, do as follows:
+   *
+   * <pre>
+   * getFifStatementOrFdoStatementOrFdoWhileStatement().add(newItem);
+   * </pre>
+   *
+   * <p>Objects of the following type(s) are allowed in the list {@link FstopStatement } {@link
+   * FdoStatement } {@link FnullifyStatement } {@link FcaseLabel } {@link FifStatement } {@link
+   * FallocateStatement } {@link FwriteStatement } {@link FwhereStatement } {@link FassignStatement
+   * } {@link FcycleStatement } {@link FrewindStatement } {@link FopenStatement } {@link
+   * FcloseStatement } {@link ContinueStatement } {@link FselectCaseStatement } {@link
+   * FexitStatement } {@link StatementLabel } {@link FreadStatement } {@link FprintStatement }
+   * {@link FendFileStatement } {@link FentryDecl } {@link FdoWhileStatement } {@link
+   * FpauseStatement } {@link GotoStatement } {@link FformatDecl } {@link FdeallocateStatement }
+   * {@link FcontainsStatement } {@link FbackspaceStatement } {@link FreturnStatement } {@link Text
+   * } {@link FdataDecl } {@link ExprStatement } {@link FinquireStatement } {@link FpragmaStatement
+   * } {@link FpointerAssignStatement }
+   *
+   * @return IXmlNode List
+   */
+  public List<IXmlNode> getFifStatementOrFdoStatementOrFdoWhileStatement() {
+    if (fifStatementOrFdoStatementOrFdoWhileStatement == null) {
+      fifStatementOrFdoStatementOrFdoWhileStatement = new ArrayList<IXmlNode>();
     }
+    return this.fifStatementOrFdoStatementOrFdoWhileStatement;
+  }
 
-    @Override
-    public boolean enter(jp.riken.kscope.xcodeml.xml.IXmlVisitor visitor) {
-        return (visitor.enter(this));
-    }
+  @Override
+  public boolean enter(jp.riken.kscope.xcodeml.xml.IXmlVisitor visitor) {
+    return (visitor.enter(this));
+  }
 
-    @Override
-    public void leave(jp.riken.kscope.xcodeml.xml.IXmlVisitor visitor) {
-        visitor.leave(this);
-    }
+  @Override
+  public void leave(jp.riken.kscope.xcodeml.xml.IXmlVisitor visitor) {
+    visitor.leave(this);
+  }
 }

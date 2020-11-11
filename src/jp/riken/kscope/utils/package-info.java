@@ -15,8 +15,5 @@
  * limitations under the License.
  */
 
-/**
- * Application, GUI utility class.
- */
+/** Application, GUI utility class. */
 package jp.riken.kscope.utils;
-

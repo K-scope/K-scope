@@ -15,7 +15,5 @@
  * limitations under the License.
  */
 
-/**
- * Provides a class for expressing the syntax of a program. <br/>
- */
+/** Provides a class for expressing the syntax of a program. <br> */
 package jp.riken.kscope.language;

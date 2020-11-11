@@ -17,38 +17,37 @@
 package jp.riken.kscope.action;
 
 import java.awt.event.ActionEvent;
-
 import jp.riken.kscope.Application;
 import jp.riken.kscope.Message;
 import jp.riken.kscope.service.AppController;
 
 /**
  * Expand all tree action event
- * @author RIKEN
  *
+ * @author RIKEN
  */
 public class TreeExpandAllAction extends ActionBase {
 
+  /**
+   * Constructor
+   *
+   * @param controller Application controller
+   */
+  public TreeExpandAllAction(AppController controller) {
+    super(controller);
+  }
 
-    /**
-     * Constructor
-     * @param controller Application controller
-     */
-    public TreeExpandAllAction(AppController controller) {
-        super(controller);
-    }
-
-    /**
-     * Action occurrence event
-     * @param event Event information
-     */
-    @Override
-    public void actionPerformed(ActionEvent event) {
-    	// Status bar
-        Application.status.setMessageMain(
-        		Message.getString("mainmenu.view.collapse-expand.expand-all")); // Expand all
-        // Expand all tree views
-        this.controller.getMainframe().getPanelExplorerView().expandTreeAll();
-    }
-
+  /**
+   * Action occurrence event
+   *
+   * @param event Event information
+   */
+  @Override
+  public void actionPerformed(ActionEvent event) {
+    // Status bar
+    Application.status.setMessageMain(
+        Message.getString("mainmenu.view.collapse-expand.expand-all")); // Expand all
+    // Expand all tree views
+    this.controller.getMainframe().getPanelExplorerView().expandTreeAll();
+  }
 }

@@ -23,16 +23,12 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
-
 import jp.riken.kscope.xcodeml.xml.*;
 
 /**
- * <p>
  * Java class for anonymous complex type.
  *
- * <p>
- * The following schema fragment specifies the expected content contained within
- * this class.
+ * <p>The following schema fragment specifies the expected content contained within this class.
  *
  * <pre>
  * &lt;complexType>
@@ -46,161 +42,146 @@ import jp.riken.kscope.xcodeml.xml.*;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- *
- *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "", propOrder = { "var", "farrayRef", "fcharacterRef",
-        "fmemberRef", "fcoArrayRef" })
+@XmlType(
+    name = "",
+    propOrder = {"var", "farrayRef", "fcharacterRef", "fmemberRef", "fcoArrayRef"})
 @XmlRootElement(name = "varRef")
 public class VarRef implements IXmlNode {
 
-    @XmlElement(name = "Var")
-    protected Var var;
-    @XmlElement(name = "FarrayRef")
-    protected FarrayRef farrayRef;
-    @XmlElement(name = "FcharacterRef")
-    protected FcharacterRef fcharacterRef;
-    @XmlElement(name = "FmemberRef")
-    protected FmemberRef fmemberRef;
-    @XmlElement(name = "FcoArrayRef")
-    protected FcoArrayRef fcoArrayRef;
-    @XmlAttribute
-    protected String type;
+  @XmlElement(name = "Var")
+  protected Var var;
 
-    /**
-     * Gets the value of the var property.
-     *
-     * @return possible object is {@link Var }
-     *
-     */
-    public Var getVar() {
-        return var;
-    }
+  @XmlElement(name = "FarrayRef")
+  protected FarrayRef farrayRef;
 
-    /**
-     * Sets the value of the var property.
-     *
-     * @param value
-     *            allowed object is {@link Var }
-     *
-     */
-    public void setVar(Var value) {
-        this.var = value;
-    }
+  @XmlElement(name = "FcharacterRef")
+  protected FcharacterRef fcharacterRef;
 
-    /**
-     * Gets the value of the farrayRef property.
-     *
-     * @return possible object is {@link FarrayRef }
-     *
-     */
-    public FarrayRef getFarrayRef() {
-        return farrayRef;
-    }
+  @XmlElement(name = "FmemberRef")
+  protected FmemberRef fmemberRef;
 
-    /**
-     * Sets the value of the farrayRef property.
-     *
-     * @param value
-     *            allowed object is {@link FarrayRef }
-     *
-     */
-    public void setFarrayRef(FarrayRef value) {
-        this.farrayRef = value;
-    }
+  @XmlElement(name = "FcoArrayRef")
+  protected FcoArrayRef fcoArrayRef;
 
-    /**
-     * Gets the value of the fcharacterRef property.
-     *
-     * @return possible object is {@link FcharacterRef }
-     *
-     */
-    public FcharacterRef getFcharacterRef() {
-        return fcharacterRef;
-    }
+  @XmlAttribute protected String type;
 
-    /**
-     * Sets the value of the fcharacterRef property.
-     *
-     * @param value
-     *            allowed object is {@link FcharacterRef }
-     *
-     */
-    public void setFcharacterRef(FcharacterRef value) {
-        this.fcharacterRef = value;
-    }
+  /**
+   * Gets the value of the var property.
+   *
+   * @return possible object is {@link Var }
+   */
+  public Var getVar() {
+    return var;
+  }
 
-    /**
-     * Gets the value of the fmemberRef property.
-     *
-     * @return possible object is {@link FmemberRef }
-     *
-     */
-    public FmemberRef getFmemberRef() {
-        return fmemberRef;
-    }
+  /**
+   * Sets the value of the var property.
+   *
+   * @param value allowed object is {@link Var }
+   */
+  public void setVar(Var value) {
+    this.var = value;
+  }
 
-    /**
-     * Sets the value of the fmemberRef property.
-     *
-     * @param value
-     *            allowed object is {@link FmemberRef }
-     *
-     */
-    public void setFmemberRef(FmemberRef value) {
-        this.fmemberRef = value;
-    }
+  /**
+   * Gets the value of the farrayRef property.
+   *
+   * @return possible object is {@link FarrayRef }
+   */
+  public FarrayRef getFarrayRef() {
+    return farrayRef;
+  }
 
-    /**
-     * Gets the value of the fcoArrayRef property.
-     *
-     * @return possible object is {@link FcoArrayRef }
-     *
-     */
-    public FcoArrayRef getFcoArrayRef() {
-        return fcoArrayRef;
-    }
+  /**
+   * Sets the value of the farrayRef property.
+   *
+   * @param value allowed object is {@link FarrayRef }
+   */
+  public void setFarrayRef(FarrayRef value) {
+    this.farrayRef = value;
+  }
 
-    /**
-     * Sets the value of the fcoArrayRef property.
-     *
-     * @param value
-     *            allowed object is {@link FcoArrayRef }
-     *
-     */
-    public void setFcoArrayRef(FcoArrayRef value) {
-        this.fcoArrayRef = value;
-    }
+  /**
+   * Gets the value of the fcharacterRef property.
+   *
+   * @return possible object is {@link FcharacterRef }
+   */
+  public FcharacterRef getFcharacterRef() {
+    return fcharacterRef;
+  }
 
-    /**
-     * Gets the value of the type property.
-     *
-     * @return possible object is {@link String }
-     *
-     */
-    public String getType() {
-        return type;
-    }
+  /**
+   * Sets the value of the fcharacterRef property.
+   *
+   * @param value allowed object is {@link FcharacterRef }
+   */
+  public void setFcharacterRef(FcharacterRef value) {
+    this.fcharacterRef = value;
+  }
 
-    /**
-     * Sets the value of the type property.
-     *
-     * @param value
-     *            allowed object is {@link String }
-     *
-     */
-    public void setType(String value) {
-        this.type = value;
-    }
+  /**
+   * Gets the value of the fmemberRef property.
+   *
+   * @return possible object is {@link FmemberRef }
+   */
+  public FmemberRef getFmemberRef() {
+    return fmemberRef;
+  }
 
-    @Override
-    public boolean enter(jp.riken.kscope.xcodeml.xml.IXmlVisitor visitor) {
-        return (visitor.enter(this));
-    }
+  /**
+   * Sets the value of the fmemberRef property.
+   *
+   * @param value allowed object is {@link FmemberRef }
+   */
+  public void setFmemberRef(FmemberRef value) {
+    this.fmemberRef = value;
+  }
 
-    @Override
-    public void leave(jp.riken.kscope.xcodeml.xml.IXmlVisitor visitor) {
-        visitor.leave(this);
-    }
+  /**
+   * Gets the value of the fcoArrayRef property.
+   *
+   * @return possible object is {@link FcoArrayRef }
+   */
+  public FcoArrayRef getFcoArrayRef() {
+    return fcoArrayRef;
+  }
+
+  /**
+   * Sets the value of the fcoArrayRef property.
+   *
+   * @param value allowed object is {@link FcoArrayRef }
+   */
+  public void setFcoArrayRef(FcoArrayRef value) {
+    this.fcoArrayRef = value;
+  }
+
+  /**
+   * Gets the value of the type property.
+   *
+   * @return possible object is {@link String }
+   */
+  public String getType() {
+    return type;
+  }
+
+  /**
+   * Sets the value of the type property.
+   *
+   * @param value allowed object is {@link String }
+   */
+  public void setType(String value) {
+    this.type = value;
+  }
+
+  @Override
+  public boolean enter(jp.riken.kscope.xcodeml.xml.IXmlVisitor visitor) {
+    return (visitor.enter(this));
+  }
+
+  @Override
+  public void leave(jp.riken.kscope.xcodeml.xml.IXmlVisitor visitor) {
+    visitor.leave(this);
+  }
 }

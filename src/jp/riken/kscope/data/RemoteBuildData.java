@@ -17,53 +17,48 @@
 
 package jp.riken.kscope.data;
 
-
 /**
  * Remote Build property data
- * 
- * @author Peter Bryzgalov
  *
+ * @author Peter Bryzgalov
  */
 public class RemoteBuildData {
 
-	private String key;
-	private String value;
-	private String commandline_option;
-	private int order;
-	private String description;
+  private String key;
+  private String value;
+  private String commandline_option;
+  private int order;
+  private String description;
 
-	
-	public void setProperty(String k,String v, String co, int order, String description) {
-		this.key = k;
-		this.value = v;
-		this.commandline_option = co;
-		this.order = order;
-		this.description = description;
-	}
-	
-	public void setValue(String new_value) {
-		this.value = new_value;
-	}
-	
-	public String getKey() {
-		return this.key;
-	}
-	
-	public String getValue() {
-		return this.value;
-	}
-	
-	public String getCommandlineOption() {
-		return this.commandline_option;
-	}
-	
-	
-	public int getOrder() {
-		return this.order;
-	}
-	
-	public String getDescription() {
-		return this.description;
-	}
-	
+  public void setProperty(String k, String v, String co, int order, String description) {
+    this.key = k;
+    this.value = v;
+    this.commandline_option = co;
+    this.order = order;
+    this.description = description;
+  }
+
+  public void setValue(String new_value) {
+    this.value = new_value;
+  }
+
+  public String getKey() {
+    return this.key;
+  }
+
+  public String getValue() {
+    return this.value;
+  }
+
+  public String getCommandlineOption() {
+    return this.commandline_option;
+  }
+
+  public int getOrder() {
+    return this.order;
+  }
+
+  public String getDescription() {
+    return this.description;
+  }
 }

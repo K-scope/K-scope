@@ -18,7 +18,6 @@
 package jp.riken.kscope.language.generic;
 
 import java.io.Serializable;
-
 import jp.riken.kscope.language.IVariableAttribute;
 import jp.riken.kscope.language.IVariableType;
 
@@ -26,96 +25,92 @@ import jp.riken.kscope.language.IVariableType;
  * Class corresponding to the formal argument of the generic function.
  *
  * @author RIKEN
- *
  */
 public class Argument implements Serializable {
-	/** Serial number */
-	private static final long serialVersionUID = -5912521170672226755L;
-    private IVariableType type;
-    private IVariableAttribute attribute;
-    private String name;
+  /** Serial number */
+  private static final long serialVersionUID = -5912521170672226755L;
 
-    /**
-     * Constructor.
-     * @param nm name
-     */
-    public Argument(String nm) {
-        this.name = nm;
+  private IVariableType type;
+  private IVariableAttribute attribute;
+  private String name;
+
+  /**
+   * Constructor.
+   *
+   * @param nm name
+   */
+  public Argument(String nm) {
+    this.name = nm;
+  }
+
+  /**
+   * Constructor.
+   *
+   * @param typ Formal argument type
+   * @param attrbt Formal argument attributes
+   */
+  public Argument(IVariableType typ, IVariableAttribute attrbt) {
+    type = typ;
+    attribute = attrbt;
+  }
+
+  /**
+   * Set the formal argument type.
+   *
+   * @param tp Formal argument type
+   */
+  public void setType(IVariableType tp) {
+    this.type = tp;
+  }
+
+  /**
+   * Set the formal argument attribute.
+   *
+   * @param att Formal argument attributes
+   */
+  public void setVariableAttributes(IVariableAttribute att) {
+    this.attribute = att;
+  }
+
+  /**
+   * Get the type of formal argument.
+   *
+   * @return Formal argument type
+   */
+  public IVariableType getType() {
+    return type;
+  }
+
+  /**
+   * Get the attribute of the formal argument.
+   *
+   * @return Formal argument attributes
+   */
+  public IVariableAttribute getAttribute() {
+    return attribute;
+  }
+
+  /**
+   * Are the argument types and attributes matched?
+   *
+   * @param typ Target argument type
+   * @param attrbt Target attributes
+   * @return true: Conforms. <br>
+   *     false: Not compatible.
+   */
+  public boolean matches(IVariableType typ, IVariableAttribute attrbt) {
+    if (typ == null || attrbt == null || this.type == null || this.attribute == null) {
+      return false;
     }
+    return (this.type.matches(typ) && this.attribute.matches(attrbt));
+  }
 
-
-    /**
-     * Constructor.
-     *
-     * @param typ
-     * Formal argument type
-     * @param attrbt
-     * Formal argument attributes
-     */
-    public Argument(IVariableType typ, IVariableAttribute attrbt) {
-        type = typ;
-        attribute = attrbt;
-    }
-
-    /**
-     * Set the formal argument type.
-     * @param tp Formal argument type
-     */
-    public void setType(IVariableType tp) {
-        this.type = tp;
-    }
-
-    /**
-     * Set the formal argument attribute.
-     * @param att Formal argument attributes
-     */
-    public void setVariableAttributes(IVariableAttribute att) {
-        this.attribute = att;
-    }
-
-    /**
-     * Get the type of formal argument.
-     *
-     * @return Formal argument type
-     */
-    public IVariableType getType() {
-        return type;
-    }
-
-    /**
-     * Get the attribute of the formal argument.
-     *
-     * @return Formal argument attributes
-     */
-    public IVariableAttribute getAttribute() {
-        return attribute;
-    }
-
-    /**
-     * Are the argument types and attributes matched?
-     *
-     * @param typ
-     * Target argument type
-     * @param attrbt
-     * Target attributes
-     *
-     * @return true: Conforms. <br>
-     * false: Not compatible.
-     */
-    public boolean matches(IVariableType typ, IVariableAttribute attrbt) {
-        if (typ == null || attrbt == null
-         || this.type == null || this.attribute == null) {
-            return false;
-        }
-        return (this.type.matches(typ) && this.attribute.matches(attrbt));
-    }
-
-
-    /**
-     * Get the argument name.
-     * @return Argument name
-     */
-    public String getName() {
-        return this.name;
-    }
+  /**
+   * Get the argument name.
+   *
+   * @return Argument name
+   */
+  public String getName() {
+    return this.name;
+  }
 }

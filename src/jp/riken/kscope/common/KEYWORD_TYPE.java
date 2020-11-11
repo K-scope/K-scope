@@ -20,41 +20,41 @@ import jp.riken.kscope.Message;
 
 /**
  * Keyword type
+ *
  * @author RIKEN
  */
 public enum KEYWORD_TYPE {
-    // Keyword type
-    /** Reserved words, keywords */
-    KEYWORD(Message.getString("keyword_type.enum.reserved")), // Reserved words, keywords
-    /** Text search */
-    SEARCH(Message.getString("keyword_type.enum.textsearch")), // Text search
-    /** Trace */
-    TRACE(Message.getString("mainmenu.window.analysis.trace")), //trace
-    /** Variable access destination memory */
-    VARIABLE(Message.getString("keyword_type.enum.variablememory")), // Variable access destination memory
-    /** Unknown */
-    UNKNOWN(Message.getString("explore_panel.enum.unknown")); //unknown
+  // Keyword type
+  /** Reserved words, keywords */
+  KEYWORD(Message.getString("keyword_type.enum.reserved")), // Reserved words, keywords
+  /** Text search */
+  SEARCH(Message.getString("keyword_type.enum.textsearch")), // Text search
+  /** Trace */
+  TRACE(Message.getString("mainmenu.window.analysis.trace")), // trace
+  /** Variable access destination memory */
+  VARIABLE(
+      Message.getString("keyword_type.enum.variablememory")), // Variable access destination memory
+  /** Unknown */
+  UNKNOWN(Message.getString("explore_panel.enum.unknown")); // unknown
 
-    /** Type name */
-    private String name;
+  /** Type name */
+  private String name;
 
-    /**
-     * Constructor
-     * @param name Type name
-     */
-    private KEYWORD_TYPE(String name) {
-        this.name = name;
-    }
+  /**
+   * Constructor
+   *
+   * @param name Type name
+   */
+  private KEYWORD_TYPE(String name) {
+    this.name = name;
+  }
 
-    /**
-     * Get the type name
-     * @return type name
-     */
-    public String getName() {
-        return this.name;
-    }
-
+  /**
+   * Get the type name
+   *
+   * @return type name
+   */
+  public String getName() {
+    return this.name;
+  }
 }
-
-
-

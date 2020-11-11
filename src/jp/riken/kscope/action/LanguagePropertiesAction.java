@@ -17,9 +17,7 @@
 package jp.riken.kscope.action;
 
 import java.awt.event.ActionEvent;
-
 import javax.swing.tree.DefaultMutableTreeNode;
-
 import jp.riken.kscope.common.ANALYSIS_PANEL;
 import jp.riken.kscope.language.Fortran;
 import jp.riken.kscope.model.PropertiesTableModel;
@@ -28,53 +26,55 @@ import jp.riken.kscope.service.LanguageService;
 
 /**
  * Fortran node property action class
+ *
  * @author RIKEN
  */
 public class LanguagePropertiesAction extends ActionBase {
 
-    /**
-     * Constructor
-     * @param controller Application controller
-     */
-    public LanguagePropertiesAction(AppController controller) {
-        super(controller);
-    }
+  /**
+   * Constructor
+   *
+   * @param controller Application controller
+   */
+  public LanguagePropertiesAction(AppController controller) {
+    super(controller);
+  }
 
-    /**
-     * Action occurrence event
-     * @param event Event information
-     */
-    @Override
-    public void actionPerformed(ActionEvent event) {
+  /**
+   * Action occurrence event
+   *
+   * @param event Event information
+   */
+  @Override
+  public void actionPerformed(ActionEvent event) {
 
-        // Set the property.
-        setProperties();
+    // Set the property.
+    setProperties();
 
-        // Activate the Properties tab
-        this.controller.getMainframe().getPanelAnalysisView().setSelectedPanel(ANALYSIS_PANEL.PROPARTIES);
-    }
+    // Activate the Properties tab
+    this.controller
+        .getMainframe()
+        .getPanelAnalysisView()
+        .setSelectedPanel(ANALYSIS_PANEL.PROPARTIES);
+  }
 
-    /**
-     * Set properties.
-     */
-    public void setProperties() {
+  /** Set properties. */
+  public void setProperties() {
 
-        // Get the selected file
-        DefaultMutableTreeNode node = this.controller.getMainframe().getPanelExplorerView().getSelectedNode();
-        if (node == null) return;
+    // Get the selected file
+    DefaultMutableTreeNode node =
+        this.controller.getMainframe().getPanelExplorerView().getSelectedNode();
+    if (node == null) return;
 
-        // Get the node property setting model
-        PropertiesTableModel model = this.controller.getPropertiesTableModel();
+    // Get the node property setting model
+    PropertiesTableModel model = this.controller.getPropertiesTableModel();
 
-        // Fortran database
-        Fortran fortran = this.controller.getFortranLanguage();
+    // Fortran database
+    Fortran fortran = this.controller.getFortranLanguage();
 
-        // Get the properties of the node
-        LanguageService service = new LanguageService(fortran);
-        service.setErrorInfoModel(this.controller.getErrorInfoModel());
-        service.setProperties(node.getUserObject(), model);
-
-    }
+    // Get the properties of the node
+    LanguageService service = new LanguageService(fortran);
+    service.setErrorInfoModel(this.controller.getErrorInfoModel());
+    service.setProperties(node.getUserObject(), model);
+  }
 }
-
-

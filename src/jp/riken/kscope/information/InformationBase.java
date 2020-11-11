@@ -22,31 +22,30 @@ import java.io.Serializable;
  * An abstract class for expressing additional information.
  *
  * @author RIKEN
- *
  */
 public abstract class InformationBase implements Serializable {
 
-	/** Serial number */
-	private static final long serialVersionUID = -1857663347004192172L;
+  /** Serial number */
+  private static final long serialVersionUID = -1857663347004192172L;
 
-	/**
-     * Additional information text settings.
-     *
-     * @param cn
-     * Additional information text
-     */
-    public abstract void setContent(String cn);
+  /**
+   * Additional information text settings.
+   *
+   * @param cn Additional information text
+   */
+  public abstract void setContent(String cn);
 
-    /**
-     * Get additional information text.
-     *
-     * @return Additional information text
-     */
-    public abstract String getContent();
+  /**
+   * Get additional information text.
+   *
+   * @return Additional information text
+   */
+  public abstract String getContent();
 
-    /**
-     * Returns the first sentence of the additional information text.
-     * @return First sentence of additional information
-     */
-    public abstract String getAbstract();
+  /**
+   * Returns the first sentence of the additional information text.
+   *
+   * @return First sentence of additional information
+   */
+  public abstract String getAbstract();
 }

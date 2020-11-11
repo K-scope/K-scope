@@ -20,44 +20,41 @@ import jp.riken.kscope.language.Fortran;
 
 /**
  * Base class for analytics services
+ *
  * @author RIKEN
  */
 public class AnalysisBaseService extends BaseService {
 
-    /** Fortran database */
-    protected Fortran fortranDb = null;
+  /** Fortran database */
+  protected Fortran fortranDb = null;
 
-    /**
-     * Constructor
-     */
-    public AnalysisBaseService() {
-    }
+  /** Constructor */
+  public AnalysisBaseService() {}
 
-    /**
-     * Constructor
-     * @param fortran Fortran database
-     */
-    public AnalysisBaseService(Fortran fortran) {
-        this.setFortranDb(fortran);
-    }
+  /**
+   * Constructor
+   *
+   * @param fortran Fortran database
+   */
+  public AnalysisBaseService(Fortran fortran) {
+    this.setFortranDb(fortran);
+  }
 
-    /**
-     * Get the Fortran database.
-     * @return fortranDb Fortran database
-     */
-    public Fortran getFortranDb() {
-        return fortranDb;
-    }
+  /**
+   * Get the Fortran database.
+   *
+   * @return fortranDb Fortran database
+   */
+  public Fortran getFortranDb() {
+    return fortranDb;
+  }
 
-    /**
-     * Set up the Fortran database.
-     * @param fortranDb Fortran database
-     */
-    public void setFortranDb(Fortran fortranDb) {
-        this.fortranDb = fortranDb;
-    }
-
-
+  /**
+   * Set up the Fortran database.
+   *
+   * @param fortranDb Fortran database
+   */
+  public void setFortranDb(Fortran fortranDb) {
+    this.fortranDb = fortranDb;
+  }
 }
-
-

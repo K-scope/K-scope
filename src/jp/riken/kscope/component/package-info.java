@@ -15,7 +15,5 @@
  * limitations under the License.
  */
 
-/**
- * Provides common components. <br/>
- */
+/** Provides common components. <br> */
 package jp.riken.kscope.component;

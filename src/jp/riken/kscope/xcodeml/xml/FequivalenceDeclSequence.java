@@ -21,73 +21,80 @@ import jp.riken.kscope.xcodeml.xml.gen.VarRef;
 
 /**
  * FequivalenceDecl element (EQUIVALENCE statement) class
- * @author RIKEN
  *
+ * @author RIKEN
  */
 public class FequivalenceDeclSequence implements IXmlNode {
-    /** Combined entity */
-    protected VarRef varRef;
-    /** Combined entity arrangement */
-    protected VarList varList;
+  /** Combined entity */
+  protected VarRef varRef;
+  /** Combined entity arrangement */
+  protected VarList varList;
 
-    /**
-     * Constructor
-     * @param varRef Join entity
-     * @param varList Join entity list
-     */
-    public FequivalenceDeclSequence(VarRef varRef, VarList varList) {
-        this.varRef = varRef;
-        this.varList = varList;
-    }
+  /**
+   * Constructor
+   *
+   * @param varRef Join entity
+   * @param varList Join entity list
+   */
+  public FequivalenceDeclSequence(VarRef varRef, VarList varList) {
+    this.varRef = varRef;
+    this.varList = varList;
+  }
 
-    /**
-     * Get the combined entity
-     * @return Combined entity
-     */
-    public VarRef getVarRef() {
-        return varRef;
-    }
+  /**
+   * Get the combined entity
+   *
+   * @return Combined entity
+   */
+  public VarRef getVarRef() {
+    return varRef;
+  }
 
-    /**
-     * Set the combined entity
-     * @param varRef Join entity
-     */
-    public void setVarRef(VarRef varRef) {
-        this.varRef = varRef;
-    }
+  /**
+   * Set the combined entity
+   *
+   * @param varRef Join entity
+   */
+  public void setVarRef(VarRef varRef) {
+    this.varRef = varRef;
+  }
 
-    /**
-     * Get the combined entity list
-     * @return Combined entity list
-     */
-    public VarList getVarList() {
-        return varList;
-    }
+  /**
+   * Get the combined entity list
+   *
+   * @return Combined entity list
+   */
+  public VarList getVarList() {
+    return varList;
+  }
 
-    /**
-     * Set the join entity list
-     * @param varList Join entity list
-     */
-    public void setVarList(VarList varList) {
-        this.varList = varList;
-    }
+  /**
+   * Set the join entity list
+   *
+   * @param varList Join entity list
+   */
+  public void setVarList(VarList varList) {
+    this.varList = varList;
+  }
 
-    /**
-     * Start searching for FequivalenceDecl element (EQUIVALENCE statement)
-     * @param visitor Xcode ML node search
-     * @return Success or failure
-     */
-    @Override
-    public boolean enter(IXmlVisitor visitor) {
-        return (visitor.enter(this));
-    }
+  /**
+   * Start searching for FequivalenceDecl element (EQUIVALENCE statement)
+   *
+   * @param visitor Xcode ML node search
+   * @return Success or failure
+   */
+  @Override
+  public boolean enter(IXmlVisitor visitor) {
+    return (visitor.enter(this));
+  }
 
-    /**
-     * End the search for the FequivalenceDecl element (EQUIVALENCE statement)
-     * @param visitor Xcode ML node search
-     */
-    @Override
-    public void leave(IXmlVisitor visitor) {
-        visitor.leave(this);
-    }
+  /**
+   * End the search for the FequivalenceDecl element (EQUIVALENCE statement)
+   *
+   * @param visitor Xcode ML node search
+   */
+  @Override
+  public void leave(IXmlVisitor visitor) {
+    visitor.leave(this);
+  }
 }

@@ -18,7 +18,6 @@ package jp.riken.kscope.action;
 
 import java.awt.event.ActionEvent;
 import java.io.File;
-
 import jp.riken.kscope.common.ANALYSIS_PANEL;
 import jp.riken.kscope.model.PropertiesTableModel;
 import jp.riken.kscope.service.AppController;
@@ -26,48 +25,50 @@ import jp.riken.kscope.service.FileService;
 
 /**
  * File property action class
+ *
  * @author RIKEN
  */
 public class FilePropertiesAction extends ActionBase {
 
-    /**
-     * Constructor
-     * @param controller Application controller
-     */
-    public FilePropertiesAction(AppController controller) {
-        super(controller);
-    }
+  /**
+   * Constructor
+   *
+   * @param controller Application controller
+   */
+  public FilePropertiesAction(AppController controller) {
+    super(controller);
+  }
 
-    /**
-     * Action occurrence event
-     * @param event Event information
-     */
-    @Override
-    public void actionPerformed(ActionEvent event) {
+  /**
+   * Action occurrence event
+   *
+   * @param event Event information
+   */
+  @Override
+  public void actionPerformed(ActionEvent event) {
 
-        // Set the property.
-        setProperties();
+    // Set the property.
+    setProperties();
 
-        // Activate the Properties tab
-        this.controller.getMainframe().getPanelAnalysisView().setSelectedPanel(ANALYSIS_PANEL.PROPARTIES);
-    }
+    // Activate the Properties tab
+    this.controller
+        .getMainframe()
+        .getPanelAnalysisView()
+        .setSelectedPanel(ANALYSIS_PANEL.PROPARTIES);
+  }
 
-    /**
-     * Set properties.
-     */
-    public void setProperties() {
+  /** Set properties. */
+  public void setProperties() {
 
-        // Get the selected file
-        File[] files = this.controller.getMainframe().getPanelExplorerView().getSelectedNodeFiles();
-        if (files == null || files.length <= 0) return;
+    // Get the selected file
+    File[] files = this.controller.getMainframe().getPanelExplorerView().getSelectedNodeFiles();
+    if (files == null || files.length <= 0) return;
 
-        // Get the file property setting model
-        PropertiesTableModel model = this.controller.getPropertiesTableModel();
+    // Get the file property setting model
+    PropertiesTableModel model = this.controller.getPropertiesTableModel();
 
-        // Get file properties
-        FileService service = new FileService();
-        service.setFileProperties(files[0], model);
-
-    }
-
+    // Get file properties
+    FileService service = new FileService();
+    service.setFileProperties(files[0], model);
+  }
 }

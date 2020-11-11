@@ -20,55 +20,51 @@ import java.util.List;
 
 /**
  * MPI information
+ *
  * @author RIKEN
  */
 public class MpiInfo {
-    /** Number of MPI functions int */
-    private int mpiCount;
-    /** MPI function list */
-    private List<MpiFunction> mpiFunctionList;
+  /** Number of MPI functions int */
+  private int mpiCount;
+  /** MPI function list */
+  private List<MpiFunction> mpiFunctionList;
 
-    /**
-     * Constructor
-     */
-    public MpiInfo() {
+  /** Constructor */
+  public MpiInfo() {}
 
-    }
+  /**
+   * Number of MPI functions
+   *
+   * @return Number of MPI functions
+   */
+  public int getMpiCount() {
+    return mpiCount;
+  }
 
+  /**
+   * Number of MPI functions
+   *
+   * @param count Number of MPI functions
+   */
+  public void setMpiCount(int count) {
+    this.mpiCount = count;
+  }
 
-    /**
-     * Number of MPI functions
-     * @return Number of MPI functions
-     */
-    public int getMpiCount() {
-        return mpiCount;
-    }
+  /**
+   * MPI function list
+   *
+   * @return MPI function list
+   */
+  public List<MpiFunction> getMpiFunctionList() {
+    return mpiFunctionList;
+  }
 
-    /**
-     * Number of MPI functions
-     * @param count Number of MPI functions
-     */
-    public void setMpiCount(int count) {
-        this.mpiCount = count;
-    }
-
-
-    /**
-     * MPI function list
-     * @return MPI function list
-     */
-    public List<MpiFunction> getMpiFunctionList() {
-        return mpiFunctionList;
-    }
-
-
-    /**
-     * MPI function list
-     * @param list MPI function list
-     */
-    public void setMpiFunctionList(List<MpiFunction> list) {
-        this.mpiFunctionList = list;
-    }
-
+  /**
+   * MPI function list
+   *
+   * @param list MPI function list
+   */
+  public void setMpiFunctionList(List<MpiFunction> list) {
+    this.mpiFunctionList = list;
+  }
 }
-

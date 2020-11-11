@@ -18,21 +18,23 @@ package jp.riken.kscope.xcodeml.xml;
 
 /**
  * XML element class
+ *
  * @author RIKEN
  */
 public interface IXmlNode {
 
-    /**
-     * Start element search
-     * @param visitor Xcode ML node search
-     * @return Success or failure
-     */
-    boolean enter(IXmlVisitor visitor);
+  /**
+   * Start element search
+   *
+   * @param visitor Xcode ML node search
+   * @return Success or failure
+   */
+  boolean enter(IXmlVisitor visitor);
 
-    /**
-     * End element search
-     * @param visitor Xcode ML node search
-     */
-    void leave(IXmlVisitor visitor);
-
+  /**
+   * End element search
+   *
+   * @param visitor Xcode ML node search
+   */
+  void leave(IXmlVisitor visitor);
 }

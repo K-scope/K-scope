@@ -15,7 +15,5 @@
  * limitations under the License.
  */
 
-/**
- * Provides dialog components. <br/>
- */
+/** Provides dialog components. <br> */
 package jp.riken.kscope.dialog;

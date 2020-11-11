@@ -18,67 +18,73 @@ package jp.riken.kscope.xcodeml.xml;
 
 /**
  * Symbol list class
- * @author RIKEN
  *
+ * @author RIKEN
  */
 public class XmlSymbol {
-    /** Symbol name */
-    private String _symbolName;
-    /** Type ID */
-    private EnumType _typeId;
-    /** Derived name */
-    private String _derivedName;
+  /** Symbol name */
+  private String _symbolName;
+  /** Type ID */
+  private EnumType _typeId;
+  /** Derived name */
+  private String _derivedName;
 
-    /**
-     * Constructor
-     * @param symbolName Symbol name
-     */
-    public XmlSymbol(String symbolName) {
-        this(symbolName, EnumType.VOID, null);
-    }
+  /**
+   * Constructor
+   *
+   * @param symbolName Symbol name
+   */
+  public XmlSymbol(String symbolName) {
+    this(symbolName, EnumType.VOID, null);
+  }
 
-    /**
-     * Constructor
-     * @param symbolName Symbol name
-     * @param typeId Type ID
-     */
-    public XmlSymbol(String symbolName, EnumType typeId) {
-        this(symbolName, typeId, null);
-    }
+  /**
+   * Constructor
+   *
+   * @param symbolName Symbol name
+   * @param typeId Type ID
+   */
+  public XmlSymbol(String symbolName, EnumType typeId) {
+    this(symbolName, typeId, null);
+  }
 
-    /**
-     * Constructor
-     * @param symbolName Symbol name
-     * @param typeId Type ID
-     * @param derivedName Derived name
-     */
-    public XmlSymbol(String symbolName, EnumType typeId, String derivedName) {
-        _symbolName = symbolName;
-        _typeId = typeId;
-        _derivedName = derivedName;
-    }
+  /**
+   * Constructor
+   *
+   * @param symbolName Symbol name
+   * @param typeId Type ID
+   * @param derivedName Derived name
+   */
+  public XmlSymbol(String symbolName, EnumType typeId, String derivedName) {
+    _symbolName = symbolName;
+    _typeId = typeId;
+    _derivedName = derivedName;
+  }
 
-    /**
-     * Get type ID
-     * @return Type ID
-     */
-    public EnumType getTypeId() {
-        return _typeId;
-    }
+  /**
+   * Get type ID
+   *
+   * @return Type ID
+   */
+  public EnumType getTypeId() {
+    return _typeId;
+  }
 
-    /**
-     * Get the symbol name
-     * @return Symbol name
-     */
-    public String getSymbolName() {
-        return _symbolName;
-    }
+  /**
+   * Get the symbol name
+   *
+   * @return Symbol name
+   */
+  public String getSymbolName() {
+    return _symbolName;
+  }
 
-    /**
-     * Get the derived name
-     * @return Derived name
-     */
-    public String getDerivedName() {
-        return _derivedName;
-    }
+  /**
+   * Get the derived name
+   *
+   * @return Derived name
+   */
+  public String getDerivedName() {
+    return _derivedName;
+  }
 }

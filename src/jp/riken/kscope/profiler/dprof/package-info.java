@@ -15,7 +15,5 @@
  * limitations under the License.
  */
 
-/**
- * Provides profiler DPROF data class. <br/>
- */
+/** Provides profiler DPROF data class. <br> */
 package jp.riken.kscope.profiler.dprof;

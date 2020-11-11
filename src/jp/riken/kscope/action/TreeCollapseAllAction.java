@@ -17,38 +17,37 @@
 package jp.riken.kscope.action;
 
 import java.awt.event.ActionEvent;
-
 import jp.riken.kscope.Application;
 import jp.riken.kscope.Message;
 import jp.riken.kscope.service.AppController;
 
 /**
  * All tree storage action event
- * @author RIKEN
  *
+ * @author RIKEN
  */
 public class TreeCollapseAllAction extends ActionBase {
 
+  /**
+   * Constructor
+   *
+   * @param controller Application controller
+   */
+  public TreeCollapseAllAction(AppController controller) {
+    super(controller);
+  }
 
-    /**
-     * Constructor
-     * @param controller Application controller
-     */
-    public TreeCollapseAllAction(AppController controller) {
-        super(controller);
-    }
-
-    /**
-     * Action occurrence event
-     * @param event Event information
-     */
-    @Override
-    public void actionPerformed(ActionEvent event) {
-    	// Status bar
-    	Application.status.setMessageMain(
-    			Message.getString("mainmenu.view.collapse-expand.collapse-all")); // Store all trees
-        // Store all tree views
-        this.controller.getMainframe().getPanelExplorerView().collapseTreeAll();
-    }
-
+  /**
+   * Action occurrence event
+   *
+   * @param event Event information
+   */
+  @Override
+  public void actionPerformed(ActionEvent event) {
+    // Status bar
+    Application.status.setMessageMain(
+        Message.getString("mainmenu.view.collapse-expand.collapse-all")); // Store all trees
+    // Store all tree views
+    this.controller.getMainframe().getPanelExplorerView().collapseTreeAll();
+  }
 }

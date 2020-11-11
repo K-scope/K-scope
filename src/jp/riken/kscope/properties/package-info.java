@@ -15,7 +15,5 @@
  * limitations under the License.
  */
 
-/**
- * Provides properties such as keywords and source views.
- */
+/** Provides properties such as keywords and source views. */
 package jp.riken.kscope.properties;

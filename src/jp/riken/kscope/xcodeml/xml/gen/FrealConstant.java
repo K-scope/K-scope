@@ -23,16 +23,12 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.XmlValue;
-
 import jp.riken.kscope.xcodeml.xml.*;
 
 /**
- * <p>
  * Java class for anonymous complex type.
  *
- * <p>
- * The following schema fragment specifies the expected content contained within
- * this class.
+ * <p>The following schema fragment specifies the expected content contained within this class.
  *
  * <pre>
  * &lt;complexType>
@@ -44,91 +40,79 @@ import jp.riken.kscope.xcodeml.xml.*;
  *   &lt;/simpleContent>
  * &lt;/complexType>
  * </pre>
- *
- *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "", propOrder = { "value" })
+@XmlType(
+    name = "",
+    propOrder = {"value"})
 @XmlRootElement(name = "FrealConstant")
 public class FrealConstant implements IXmlNode {
 
-    @XmlValue
-    protected String value;
-    @XmlAttribute
-    protected String type;
-    @XmlAttribute
-    protected String kind;
+  @XmlValue protected String value;
+  @XmlAttribute protected String type;
+  @XmlAttribute protected String kind;
 
-    /**
-     * Gets the value of the value property.
-     *
-     * @return possible object is {@link String }
-     *
-     */
-    public String getValue() {
-        return value;
-    }
+  /**
+   * Gets the value of the value property.
+   *
+   * @return possible object is {@link String }
+   */
+  public String getValue() {
+    return value;
+  }
 
-    /**
-     * Sets the value of the value property.
-     *
-     * @param value
-     *            allowed object is {@link String }
-     *
-     */
-    public void setValue(String value) {
-        this.value = value;
-    }
+  /**
+   * Sets the value of the value property.
+   *
+   * @param value allowed object is {@link String }
+   */
+  public void setValue(String value) {
+    this.value = value;
+  }
 
-    /**
-     * Gets the value of the type property.
-     *
-     * @return possible object is {@link String }
-     *
-     */
-    public String getType() {
-        return type;
-    }
+  /**
+   * Gets the value of the type property.
+   *
+   * @return possible object is {@link String }
+   */
+  public String getType() {
+    return type;
+  }
 
-    /**
-     * Sets the value of the type property.
-     *
-     * @param value
-     *            allowed object is {@link String }
-     *
-     */
-    public void setType(String value) {
-        this.type = value;
-    }
+  /**
+   * Sets the value of the type property.
+   *
+   * @param value allowed object is {@link String }
+   */
+  public void setType(String value) {
+    this.type = value;
+  }
 
-    /**
-     * Gets the value of the kind property.
-     *
-     * @return possible object is {@link String }
-     *
-     */
-    public String getKind() {
-        return kind;
-    }
+  /**
+   * Gets the value of the kind property.
+   *
+   * @return possible object is {@link String }
+   */
+  public String getKind() {
+    return kind;
+  }
 
-    /**
-     * Sets the value of the kind property.
-     *
-     * @param value
-     *            allowed object is {@link String }
-     *
-     */
-    public void setKind(String value) {
-        this.kind = value;
-    }
+  /**
+   * Sets the value of the kind property.
+   *
+   * @param value allowed object is {@link String }
+   */
+  public void setKind(String value) {
+    this.kind = value;
+  }
 
-    @Override
-    public boolean enter(jp.riken.kscope.xcodeml.xml.IXmlVisitor visitor) {
-        return (visitor.enter(this));
-    }
+  @Override
+  public boolean enter(jp.riken.kscope.xcodeml.xml.IXmlVisitor visitor) {
+    return (visitor.enter(this));
+  }
 
-    @Override
-    public void leave(jp.riken.kscope.xcodeml.xml.IXmlVisitor visitor) {
-        visitor.leave(this);
-    }
+  @Override
+  public void leave(jp.riken.kscope.xcodeml.xml.IXmlVisitor visitor) {
+    visitor.leave(this);
+  }
 }

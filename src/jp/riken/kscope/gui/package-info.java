@@ -15,7 +15,5 @@
  * limitations under the License.
  */
 
-/**
- * Screen component package
- */
+/** Screen component package */
 package jp.riken.kscope.gui;

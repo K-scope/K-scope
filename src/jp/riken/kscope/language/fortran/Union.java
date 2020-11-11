@@ -25,31 +25,31 @@ import java.util.Set;
  * union type class.
  *
  * @author RIKEN
- *
  */
 public class Union implements Serializable {
-    /** Serial number */
-    private static final long serialVersionUID = -3660335230300380344L;
-    private Set<jp.riken.kscope.language.fortran.Map> maps = new HashSet<jp.riken.kscope.language.fortran.Map>();
+  /** Serial number */
+  private static final long serialVersionUID = -3660335230300380344L;
 
-    /**
-     * Added map statement.
-     *
-     * @param map
-     * map statement
-     */
-    public void add(jp.riken.kscope.language.fortran.Map map){
-        if (map != null) {
-            maps.add(map);
-        }
-    }
+  private Set<jp.riken.kscope.language.fortran.Map> maps =
+      new HashSet<jp.riken.kscope.language.fortran.Map>();
 
-    /**
-     * Acquisition of map set in the common body.
-     *
-     * @return map set
-     */
-    public Set<jp.riken.kscope.language.fortran.Map> getMaps() {
-        return maps;
+  /**
+   * Added map statement.
+   *
+   * @param map map statement
+   */
+  public void add(jp.riken.kscope.language.fortran.Map map) {
+    if (map != null) {
+      maps.add(map);
     }
+  }
+
+  /**
+   * Acquisition of map set in the common body.
+   *
+   * @return map set
+   */
+  public Set<jp.riken.kscope.language.fortran.Map> getMaps() {
+    return maps;
+  }
 }

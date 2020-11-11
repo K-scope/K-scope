@@ -20,51 +20,51 @@ import java.util.List;
 
 /**
  * Hardware monitor information
+ *
  * @author RIKEN
  */
 public class HardwareMonitorInfo {
-    /** Number of measurement threads */
-    private int threadCount;
-    /** Hardware monitor information (PA information) table list */
-    private List<HardwarePaTable> paInfo;
+  /** Number of measurement threads */
+  private int threadCount;
+  /** Hardware monitor information (PA information) table list */
+  private List<HardwarePaTable> paInfo;
 
-    /**
-     * Constructor
-     */
-    public HardwareMonitorInfo() {
-    }
+  /** Constructor */
+  public HardwareMonitorInfo() {}
 
-    /**
-     * Number of measurement threads
-     * @return Number of measurement threads
-     */
-    public int getThreadCount() {
-        return threadCount;
-    }
+  /**
+   * Number of measurement threads
+   *
+   * @return Number of measurement threads
+   */
+  public int getThreadCount() {
+    return threadCount;
+  }
 
-    /**
-     * Number of measurement threads
-     * @param count Number of measurement threads
-     */
-    public void setThreadCount(int count) {
-        this.threadCount = count;
-    }
+  /**
+   * Number of measurement threads
+   *
+   * @param count Number of measurement threads
+   */
+  public void setThreadCount(int count) {
+    this.threadCount = count;
+  }
 
-    /**
-     * Hardware monitor information (PA information) table list
-     * @return Hardware monitor information (PA information) table list
-     */
-    public List<HardwarePaTable> getPaInfo() {
-        return paInfo;
-    }
+  /**
+   * Hardware monitor information (PA information) table list
+   *
+   * @return Hardware monitor information (PA information) table list
+   */
+  public List<HardwarePaTable> getPaInfo() {
+    return paInfo;
+  }
 
-    /**
-     * Hardware monitor information (PA information) table list
-     * @param list Hardware monitor information (PA information) table list
-     */
-    public void setPaInfo(List<HardwarePaTable> list) {
-        this.paInfo = list;
-    }
-
-
+  /**
+   * Hardware monitor information (PA information) table list
+   *
+   * @param list Hardware monitor information (PA information) table list
+   */
+  public void setPaInfo(List<HardwarePaTable> list) {
+    this.paInfo = list;
+  }
 }

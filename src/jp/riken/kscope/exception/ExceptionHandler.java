@@ -20,23 +20,25 @@ import jp.riken.kscope.utils.Logger;
 
 /**
  * Exception handling handler
+ *
  * @author RIKEN
  */
 public class ExceptionHandler {
 
-    /**
-     * Log exception message
-     * @param e exception
-     * @throws ApplicationException Application error
-     */
-    public static void handleException(Exception e) throws ApplicationException {
+  /**
+   * Log exception message
+   *
+   * @param e exception
+   * @throws ApplicationException Application error
+   */
+  public static void handleException(Exception e) throws ApplicationException {
 
-        e.printStackTrace();
+    e.printStackTrace();
 
-        // Log output
-        Logger.error(e);
+    // Log output
+    Logger.error(e);
 
-        // Wrap with application exception and throw
-        throw new ApplicationException(e);
-    }
+    // Wrap with application exception and throw
+    throw new ApplicationException(e);
+  }
 }

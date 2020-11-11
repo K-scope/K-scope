@@ -20,39 +20,38 @@ import jp.riken.kscope.Message;
 
 /**
  * Mainframe view screen identification enumeration class
+ *
  * @author RIKEN
  */
 public enum FRAME_VIEW {
-    // View list
-    /** main frame */
-    MAIN_FRAME(Message.getString("frame_view.enum.main")), //main frame
-    /** Explorer view */
-    EXPLORE_VIEW(Message.getString("mainmenu.window.explore")), // Explorer view
-    /** Source view */
-    SOURCE_VIEW(Message.getString("mainmenu.window.source")), // Source view
-    /** Analysis view */
-    ANALYSIS_VIEW(Message.getString("mainmenu.window.analysis")); // Analysis view
+  // View list
+  /** main frame */
+  MAIN_FRAME(Message.getString("frame_view.enum.main")), // main frame
+  /** Explorer view */
+  EXPLORE_VIEW(Message.getString("mainmenu.window.explore")), // Explorer view
+  /** Source view */
+  SOURCE_VIEW(Message.getString("mainmenu.window.source")), // Source view
+  /** Analysis view */
+  ANALYSIS_VIEW(Message.getString("mainmenu.window.analysis")); // Analysis view
 
-    /** View name */
-    private String viewname;
+  /** View name */
+  private String viewname;
 
-    /**
-     * Constructor
-     * @param tabname View name
-     */
-    private FRAME_VIEW(String viewname) {
-        this.viewname = viewname;
-    }
+  /**
+   * Constructor
+   *
+   * @param tabname View name
+   */
+  private FRAME_VIEW(String viewname) {
+    this.viewname = viewname;
+  }
 
-    /**
-     * Get the view name
-     * @return View name
-     */
-    public String getViewName() {
-        return this.viewname;
-    }
-
+  /**
+   * Get the view name
+   *
+   * @return View name
+   */
+  public String getViewName() {
+    return this.viewname;
+  }
 }
-
-
-

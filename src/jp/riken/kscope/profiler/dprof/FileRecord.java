@@ -21,48 +21,47 @@ import java.util.List;
 
 /**
  * File information record
+ *
  * @author RIKEN
  */
 public class FileRecord {
-	
-	/** File information list */
-    private List<FileInfo> fileInfoList;
-	
-    /**
-     * Constructor
-     */
-    public FileRecord() {
-    	this.fileInfoList = new ArrayList<FileInfo>();
-    }
-    
-    /**
-     * Add file information
-     * @param info File information
-     * @return true = success
-     */
-    public boolean addFileInfo(FileInfo info) {
-    	return this.fileInfoList.add(info);
-    }
-    
-    /**
-     * Get the number of file information
-     * @return Number of file information
-     */
-    public int getFileInfoCount() {
-    	if (fileInfoList == null) return 0;
-    	return this.fileInfoList.size();
-    }
-    
-    
-    /**
-     * Get file information
-     * @param index File index
-     * @return File information
-     */
-    public FileInfo getFileInfo(int index) {
-    	if (fileInfoList == null) return null;
-    	return this.fileInfoList.get(index);
-    }
+
+  /** File information list */
+  private List<FileInfo> fileInfoList;
+
+  /** Constructor */
+  public FileRecord() {
+    this.fileInfoList = new ArrayList<FileInfo>();
+  }
+
+  /**
+   * Add file information
+   *
+   * @param info File information
+   * @return true = success
+   */
+  public boolean addFileInfo(FileInfo info) {
+    return this.fileInfoList.add(info);
+  }
+
+  /**
+   * Get the number of file information
+   *
+   * @return Number of file information
+   */
+  public int getFileInfoCount() {
+    if (fileInfoList == null) return 0;
+    return this.fileInfoList.size();
+  }
+
+  /**
+   * Get file information
+   *
+   * @param index File index
+   * @return File information
+   */
+  public FileInfo getFileInfo(int index) {
+    if (fileInfoList == null) return null;
+    return this.fileInfoList.get(index);
+  }
 }
-
-

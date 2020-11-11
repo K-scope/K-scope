@@ -19,55 +19,56 @@ package jp.riken.kscope.common;
 
 /**
  * Property value type
+ *
  * @author RIKEN
  */
 public enum PROPERTY_TYPE {
-    // Property value type
-	/** Font settings */
-    FONT("font"),
-    /** Color setting */
-    COLOR("color"),
-    /** Integer value setting */
-    INTEGER("integer"),
-    /** Unknown */
-    UNKNOWN("unknown");
+  // Property value type
+  /** Font settings */
+  FONT("font"),
+  /** Color setting */
+  COLOR("color"),
+  /** Integer value setting */
+  INTEGER("integer"),
+  /** Unknown */
+  UNKNOWN("unknown");
 
-    /** Type name */
-    private String typename;
+  /** Type name */
+  private String typename;
 
-    /**
-     * Constructor
-     * @param tabname Type name
-     */
-    private PROPERTY_TYPE(String type) {
-        this.typename = type;
+  /**
+   * Constructor
+   *
+   * @param tabname Type name
+   */
+  private PROPERTY_TYPE(String type) {
+    this.typename = type;
+  }
+
+  /**
+   * Get the type name
+   *
+   * @return type name
+   */
+  public String getTypename() {
+    return this.typename;
+  }
+
+  /**
+   * Get property value type from type name
+   *
+   * @param type type name
+   * @return Property value type
+   */
+  public static PROPERTY_TYPE parseType(String type) {
+    if (type == null) return PROPERTY_TYPE.UNKNOWN;
+
+    PROPERTY_TYPE types[] = PROPERTY_TYPE.values();
+    for (int i = 0; i < types.length; i++) {
+      if (types[i].getTypename().equalsIgnoreCase(type)) {
+        return types[i];
+      }
     }
-
-    /**
-     * Get the type name
-     * @return type name
-     */
-    public String getTypename() {
-        return this.typename;
-    }
-
-    /**
-     * Get property value type from type name
-     * @param type type name
-     * @return Property value type
-     */
-    public static PROPERTY_TYPE parseType(String type) {
-        if (type == null) return PROPERTY_TYPE.UNKNOWN;
-
-        PROPERTY_TYPE types[] = PROPERTY_TYPE.values();
-        for (int i=0; i<types.length; i++) {
-            if (types[i].getTypename().equalsIgnoreCase(type)) {
-                return types[i];
-            }
-        }
-        return PROPERTY_TYPE.UNKNOWN;
-    }
+    return PROPERTY_TYPE.UNKNOWN;
+  }
 }
-
-
-

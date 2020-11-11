@@ -15,7 +15,5 @@
  * limitations under the License.
  */
 
-/**
- * Provides a Fortran source file parser
- */
+/** Provides a Fortran source file parser */
 package jp.riken.kscope.parser;

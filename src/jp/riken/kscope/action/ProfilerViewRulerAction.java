@@ -20,37 +20,38 @@ import java.awt.event.ActionEvent;
 import javax.swing.JCheckBoxMenuItem;
 import jp.riken.kscope.service.AppController;
 
-
 /**
  * Profiler source cost ruler display switching action class
+ *
  * @author RIKEN
  */
 public class ProfilerViewRulerAction extends ActionBase {
 
-    /**
-     * Constructor
-     * @param controller Application controller
-     */
-    public ProfilerViewRulerAction(AppController controller) {
-        super(controller);
-    }
+  /**
+   * Constructor
+   *
+   * @param controller Application controller
+   */
+  public ProfilerViewRulerAction(AppController controller) {
+    super(controller);
+  }
 
-    /**
-     * Action occurrence event
-     * @param event Event information
-     */
-    @Override
-    public void actionPerformed(ActionEvent event) {
-        if (!(event.getSource() instanceof JCheckBoxMenuItem)) return;
+  /**
+   * Action occurrence event
+   *
+   * @param event Event information
+   */
+  @Override
+  public void actionPerformed(ActionEvent event) {
+    if (!(event.getSource() instanceof JCheckBoxMenuItem)) return;
 
-        boolean checked = false;
-        // Checkbox menu
-        JCheckBoxMenuItem item = (JCheckBoxMenuItem)event.getSource();
-        checked = item.isSelected();
-        this.controller.getPropertiesProfiler().setVisibleRuler(checked);
+    boolean checked = false;
+    // Checkbox menu
+    JCheckBoxMenuItem item = (JCheckBoxMenuItem) event.getSource();
+    checked = item.isSelected();
+    this.controller.getPropertiesProfiler().setVisibleRuler(checked);
 
-        // Fire a change event
-        this.controller.getPropertiesProfiler().firePropertyChange();
-    }
+    // Fire a change event
+    this.controller.getPropertiesProfiler().firePropertyChange();
+  }
 }
-

@@ -21,81 +21,76 @@ package jp.riken.kscope.language;
  * The class corresponding to the control statement that suspends the program.
  *
  * @author RIKEN
- *
  */
 public class Pause extends jp.riken.kscope.language.Block {
-	/** Serial number */
-	private static final long serialVersionUID = -2492364246002232811L;
-    private String argument;
+  /** Serial number */
+  private static final long serialVersionUID = -2492364246002232811L;
 
-    /**
-     * Constructor.
-     *
-     * @param parent
-     * Parent block
-     */
-    public Pause(Block parent) {
-        super(parent);
-    }
+  private String argument;
 
-    /**
-     * Constructor.
-     *
-     * @param parent
-     * Parent block
-     * @param argmnt
-     * Arguments (messages, etc.)
-     */
-    public Pause(Block parent, String argmnt) {
-        super(parent);
-        argument = argmnt;
-    }
+  /**
+   * Constructor.
+   *
+   * @param parent Parent block
+   */
+  public Pause(Block parent) {
+    super(parent);
+  }
 
-    /**
-     * Constructor.
-     */
-    public Pause() {
-        super();
-    }
+  /**
+   * Constructor.
+   *
+   * @param parent Parent block
+   * @param argmnt Arguments (messages, etc.)
+   */
+  public Pause(Block parent, String argmnt) {
+    super(parent);
+    argument = argmnt;
+  }
 
-    /**
-     * Get block type.
-     *
-     * @return BlockType.PAUSE
-     */
-    public BlockType getBlockType() {
-        return BlockType.PAUSE;
-    }
+  /** Constructor. */
+  public Pause() {
+    super();
+  }
 
-    /**
-     * A set of arguments.
-     *
-     * @param str
-     * Argument
-     */
-    public void setArgument(String str) {
-        this.argument = str;
-    }
+  /**
+   * Get block type.
+   *
+   * @return BlockType.PAUSE
+   */
+  public BlockType getBlockType() {
+    return BlockType.PAUSE;
+  }
 
-    /**
-     * Get arguments (messages, etc.).
-     *
-     * @return argument (message etc.)
-     */
-    public String getArgument() {
-        return argument;
-    }
+  /**
+   * A set of arguments.
+   *
+   * @param str Argument
+   */
+  public void setArgument(String str) {
+    this.argument = str;
+  }
 
-    @Override
-    public String toString() {
-        return this.toStringBase();
+  /**
+   * Get arguments (messages, etc.).
+   *
+   * @return argument (message etc.)
+   */
+  public String getArgument() {
+    return argument;
+  }
+
+  @Override
+  public String toString() {
+    return this.toStringBase();
+  }
+
+  @Override
+  protected String toStringBase() {
+    if (this.argument == null) {
+      return "pause";
+    } else {
+      return "pause " + this.argument;
     }
-    @Override
-    protected String toStringBase() {
-        if (this.argument == null) {
-            return "pause";
-        } else {
-            return "pause " + this.argument;
-        }
-    }
+  }
 }

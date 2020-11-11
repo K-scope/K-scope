@@ -15,7 +15,5 @@
  * limitations under the License.
  */
 
-/**
- * Provides additional information class
- */
+/** Provides additional information class */
 package jp.riken.kscope.information;

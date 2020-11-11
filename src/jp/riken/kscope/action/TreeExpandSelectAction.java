@@ -17,37 +17,37 @@
 package jp.riken.kscope.action;
 
 import java.awt.event.ActionEvent;
-
 import jp.riken.kscope.Application;
 import jp.riken.kscope.Message;
 import jp.riken.kscope.service.AppController;
 
 /**
  * Expand all under the selected node of the tree Action event
- * @author RIKEN
  *
+ * @author RIKEN
  */
 public class TreeExpandSelectAction extends ActionBase {
 
-    /**
-     * Constructor
-     * @param controller Application controller
-     */
-    public TreeExpandSelectAction(AppController controller) {
-        super(controller);
-    }
+  /**
+   * Constructor
+   *
+   * @param controller Application controller
+   */
+  public TreeExpandSelectAction(AppController controller) {
+    super(controller);
+  }
 
-    /**
-     * Action occurrence event
-     * @param event Event information
-     */
-    @Override
-    public void actionPerformed(ActionEvent event) {
-    	// Status bar
-    	Application.status.setMessageMain(
-    			Message.getString("mainmenu.view.collapse-expand.selective")); // Selective expansion
-        // Expand all under the selected node of the tree
-        this.controller.getMainframe().getPanelExplorerView().expandTreeSelect();
-    }
-
+  /**
+   * Action occurrence event
+   *
+   * @param event Event information
+   */
+  @Override
+  public void actionPerformed(ActionEvent event) {
+    // Status bar
+    Application.status.setMessageMain(
+        Message.getString("mainmenu.view.collapse-expand.selective")); // Selective expansion
+    // Expand all under the selected node of the tree
+    this.controller.getMainframe().getPanelExplorerView().expandTreeSelect();
+  }
 }

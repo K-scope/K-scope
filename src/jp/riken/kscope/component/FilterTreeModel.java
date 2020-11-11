@@ -17,94 +17,91 @@
 package jp.riken.kscope.component;
 
 import java.util.List;
-
 import javax.swing.tree.DefaultTreeModel;
-
 import jp.riken.kscope.common.FILTER_TYPE;
-
 
 /**
  * Filter tree model class
- * @author RIKEN
  *
+ * @author RIKEN
  */
 public class FilterTreeModel extends DefaultTreeModel {
 
-    /** Serial number */
-    private static final long serialVersionUID = 1L;
+  /** Serial number */
+  private static final long serialVersionUID = 1L;
 
-    /** Node filter class */
-    private List<FILTER_TYPE> listFilter;
+  /** Node filter class */
+  private List<FILTER_TYPE> listFilter;
 
-    /**
-     * Constructor
-     * @param node Root node
-     */
-    public FilterTreeModel(FilterTreeNode node) {
-        super(node);
+  /**
+   * Constructor
+   *
+   * @param node Root node
+   */
+  public FilterTreeModel(FilterTreeNode node) {
+    super(node);
+  }
+
+  /** Run node filter */
+  public void find() {
+    if (this.root != null) {
+      FilterTreeNode node = (FilterTreeNode) root;
+      // Set filter
+      node.setListFilter(this.listFilter);
+
+      // Node search
+      node.find();
+
+      // Tree change event
+      Object[] path = {root};
+      fireTreeStructureChanged(this, path, null, null);
     }
+  }
 
-    /**
-     * Run node filter
-     */
-    public void find() {
-        if (this.root != null) {
-            FilterTreeNode node = (FilterTreeNode) root;
-            // Set filter
-            node.setListFilter(this.listFilter);
-
-            // Node search
-            node.find();
-
-            // Tree change event
-            Object[] path = { root };
-            fireTreeStructureChanged(this, path, null, null);
-        }
+  /**
+   * Get the number of child nodes of the parent node
+   *
+   * @param parent parent node
+   * @return Number of child nodes
+   */
+  @Override
+  public int getChildCount(Object parent) {
+    if (parent instanceof FilterTreeNode) {
+      return (((FilterTreeNode) parent).getChildCount());
     }
+    return 0;
+  }
 
-    /**
-     * Get the number of child nodes of the parent node
-     * @param parent parent node
-     * @return Number of child nodes
-     */
-    @Override
-    public int getChildCount(Object parent) {
-        if (parent instanceof FilterTreeNode) {
-            return (((FilterTreeNode) parent).getChildCount());
-        }
-        return 0;
+  /**
+   * Get the child node of the parent node
+   *
+   * @param parent parent node
+   * @param index Child node index
+   * @return child node
+   */
+  @Override
+  public Object getChild(Object parent, int index) {
+    if (parent instanceof FilterTreeNode) {
+      return (((FilterTreeNode) parent).getChildAt(index));
     }
+    return null;
+  }
 
-    /**
-     * Get the child node of the parent node
-     * @param parent parent node
-     * @param index Child node index
-     * @return child node
-     */
-    @Override
-    public Object getChild(Object parent, int index) {
-        if (parent instanceof FilterTreeNode) {
-            return (((FilterTreeNode) parent).getChildAt(index));
-        }
-        return null;
-    }
+  /**
+   * Get node filter
+   *
+   * @return node filter
+   */
+  public List<FILTER_TYPE> getListFilter() {
+    return listFilter;
+  }
 
-
-    /**
-     * Get node filter
-     * @return node filter
-     */
-    public List<FILTER_TYPE> getListFilter() {
-        return listFilter;
-    }
-
-    /**
-     * Set node filter
-     * @param list node filter
-     */
-    public void setListFilter(List<FILTER_TYPE> list) {
-        this.listFilter = list;
-    }
+  /**
+   * Set node filter
+   *
+   * @param list node filter
+   */
+  public void setListFilter(List<FILTER_TYPE> list) {
+    this.listFilter = list;
+  }
 }
-
-

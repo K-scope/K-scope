@@ -17,53 +17,54 @@
 package jp.riken.kscope.action;
 
 import java.awt.event.ActionEvent;
-
 import jp.riken.kscope.service.AppController;
 import jp.riken.kscope.service.FutureService;
 
 /**
  * Running thread cancel action
+ *
  * @author RIKEN
  */
 public class ThreadCancelAction extends ActionBase {
 
-    /**
-     * Constructor
-     * @param controller Application controller
-     */
-    public ThreadCancelAction(AppController controller) {
-        super(controller);
+  /**
+   * Constructor
+   *
+   * @param controller Application controller
+   */
+  public ThreadCancelAction(AppController controller) {
+    super(controller);
+  }
+
+  /**
+   * Check if the action is executable. <br>
+   * Check before executing the action and switch the menu enable. <br>
+   *
+   * @return true = Action can be executed
+   */
+  @Override
+  public boolean validateAction() {
+    // Check the execution status of the thread task (true = thread has not ended)
+    return !this.controller.isThreadTaskDone();
+  }
+
+  /**
+   * Action occurrence event
+   *
+   * @param event Event information
+   */
+  @Override
+  public void actionPerformed(ActionEvent event) {
+
+    // Get task information for running threads
+    FutureService<Integer> future = this.controller.getThreadFuture();
+    if (future == null) return;
+    if (future.isDone()) return;
+    if (future.isCancelled()) return;
+
+    // Cancel the running thread
+    if (future != null) {
+      future.cancel(true);
     }
-
-    /**
-     * Check if the action is executable. <br/>
-     * Check before executing the action and switch the menu enable. <br/>
-     * @return true = Action can be executed
-     */
-    @Override
-    public boolean validateAction() {
-        // Check the execution status of the thread task (true = thread has not ended)
-        return !this.controller.isThreadTaskDone();
-    }
-
-    /**
-     * Action occurrence event
-     * @param event Event information
-     */
-    @Override
-    public void actionPerformed(ActionEvent event) {
-
-        // Get task information for running threads
-        FutureService<Integer> future = this.controller.getThreadFuture();
-        if (future == null) return;
-        if (future.isDone()) return;
-        if (future.isCancelled()) return;
-
-        // Cancel the running thread
-        if (future != null) {
-            future.cancel(true);
-        }
-
-    }
-
+  }
 }

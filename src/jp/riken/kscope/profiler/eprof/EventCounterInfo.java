@@ -20,51 +20,51 @@ import java.util.List;
 
 /**
  * Event counter information
+ *
  * @author RIKEN
  */
 public class EventCounterInfo {
-    /** Number of event counters */
-    private int eventcount;
-    /** Counter group list */
-    private List<EventCounterGroup> eventGroupList;
+  /** Number of event counters */
+  private int eventcount;
+  /** Counter group list */
+  private List<EventCounterGroup> eventGroupList;
 
-    /**
-     * Constructor
-     */
-    public EventCounterInfo() {
-    }
-    
-    
-    /**
-     * Number of event counters
-     * @return Number of event counters
-     */
-	public int getEventcount() {
-		return eventcount;
-	}
-	
-	/**
-* Number of event counters
-* @param count Number of event counters
-*/
-	public void setEventcount(int count) {
-		this.eventcount = count;
-	}
-	
-	/**
-* Counter group list
-* @return Counter group list
-*/
-	public List<EventCounterGroup> getEventGroupList() {
-		return eventGroupList;
-	}
-	
-	/**
-* Counter group list
-* @param list Counter group list
-*/
-	public void setEventGroupList(List<EventCounterGroup> list) {
-		this.eventGroupList = list;
-	}
-    
+  /** Constructor */
+  public EventCounterInfo() {}
+
+  /**
+   * Number of event counters
+   *
+   * @return Number of event counters
+   */
+  public int getEventcount() {
+    return eventcount;
+  }
+
+  /**
+   * Number of event counters
+   *
+   * @param count Number of event counters
+   */
+  public void setEventcount(int count) {
+    this.eventcount = count;
+  }
+
+  /**
+   * Counter group list
+   *
+   * @return Counter group list
+   */
+  public List<EventCounterGroup> getEventGroupList() {
+    return eventGroupList;
+  }
+
+  /**
+   * Counter group list
+   *
+   * @param list Counter group list
+   */
+  public void setEventGroupList(List<EventCounterGroup> list) {
+    this.eventGroupList = list;
+  }
 }

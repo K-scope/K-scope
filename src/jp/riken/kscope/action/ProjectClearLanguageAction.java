@@ -17,9 +17,7 @@
 package jp.riken.kscope.action;
 
 import java.awt.event.ActionEvent;
-
 import javax.swing.JOptionPane;
-
 import jp.riken.kscope.Application;
 import jp.riken.kscope.Message;
 import jp.riken.kscope.common.ANALYSIS_PANEL;
@@ -27,71 +25,78 @@ import jp.riken.kscope.service.AppController;
 
 /**
  * Structural analysis clear action
+ *
  * @author RIKEN
  */
 public class ProjectClearLanguageAction extends ActionBase {
 
-    /**
-     * Constructor
-     * @param controller Application controller
-     */
-    public ProjectClearLanguageAction(AppController controller) {
-        super(controller);
+  /**
+   * Constructor
+   *
+   * @param controller Application controller
+   */
+  public ProjectClearLanguageAction(AppController controller) {
+    super(controller);
+  }
+
+  /** Constructor */
+  public ProjectClearLanguageAction() {
+    super();
+  }
+
+  /**
+   * Action occurrence event
+   *
+   * @param event Event information
+   */
+  @Override
+  public void actionPerformed(ActionEvent event) {
+    // Status message
+    final String message =
+        Message.getString("mainmenu.project.clearanalysis"); // Clear structural analysis
+    Application.status.setMessageMain(message);
+
+    // Display a confirmation message.
+    int option =
+        JOptionPane.showConfirmDialog(
+            this.controller.getMainframe(),
+            Message.getString(
+                "projectclearlanguageaction.clear.confirmdialog.message"), // Clear the analysis
+                                                                           // result and analysis
+                                                                           // result, is that okay?
+            Message.getString(
+                "projectclearlanguageaction.clear.confirmdialog.title"), // Clear structural
+                                                                         // information
+            JOptionPane.OK_CANCEL_OPTION,
+            JOptionPane.WARNING_MESSAGE);
+    if (option != JOptionPane.OK_OPTION) {
+      Application.status.setMessageMain(
+          message + Message.getString("action.common.cancel.status")); // Cancel
+      return;
     }
 
-    /**
-     * Constructor
-     */
-    public ProjectClearLanguageAction() {
-        super();
-    }
+    // Clear the Fortran database.
+    clearFortranLanguage();
+    Application.status.setMessageMain(
+        message + Message.getString("action.common.done.status")); // Done
+  }
 
-    /**
-     * Action occurrence event
-     * @param event Event information
-     */
-    @Override
-    public void actionPerformed(ActionEvent event) {
-        // Status message
-        final String message = Message.getString("mainmenu.project.clearanalysis"); // Clear structural analysis
-        Application.status.setMessageMain(message);
+  /** Clear the Fortran database. */
+  public void clearFortranLanguage() {
 
-        // Display a confirmation message.
-        int option = JOptionPane.showConfirmDialog(this.controller.getMainframe(),
-                  Message.getString("projectclearlanguageaction.clear.confirmdialog.message"), // Clear the analysis result and analysis result, is that okay?
-                  Message.getString("projectclearlanguageaction.clear.confirmdialog.title"), // Clear structural information
-                  JOptionPane.OK_CANCEL_OPTION,
-                  JOptionPane.WARNING_MESSAGE);
-        if (option != JOptionPane.OK_OPTION) {
-        	Application.status.setMessageMain(message +
-        			Message.getString("action.common.cancel.status")); //Cancel
-            return;
-        }
+    // clear
+    // Fortran database
+    this.controller.clearFortranLanguage();
 
-        // Clear the Fortran database.
-        clearFortranLanguage();
-    	Application.status.setMessageMain(message +
-    			Message.getString("action.common.done.status")); // Done
-    }
+    // Tree model
+    this.controller.getMainframe().getPanelExplorerView().clearTreeModel();
 
-    /**
-     * Clear the Fortran database.
-     */
-    public void clearFortranLanguage() {
+    // Clear analysis information
+    this.controller.getMainframe().getPanelAnalysisView().clearModels();
+    // Close the console tab
+    this.controller.getMainframe().getPanelAnalysisView().closeTab(ANALYSIS_PANEL.CONSOLE);
 
-        // clear
-        // Fortran database
-        this.controller.clearFortranLanguage();
-
-        // Tree model
-        this.controller.getMainframe().getPanelExplorerView().clearTreeModel();
-
-        // Clear analysis information
-        this.controller.getMainframe().getPanelAnalysisView().clearModels();
-        // Close the console tab
-        this.controller.getMainframe().getPanelAnalysisView().closeTab(ANALYSIS_PANEL.CONSOLE);
-
-        // Clear Source View
-        this.controller.getMainframe().getPanelSourceView().closeAllTabs();
-    }
+    // Clear Source View
+    this.controller.getMainframe().getPanelSourceView().closeAllTabs();
+  }
 }

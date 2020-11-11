@@ -22,16 +22,12 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
-
 import jp.riken.kscope.xcodeml.xml.*;
 
 /**
- * <p>
  * Java class for anonymous complex type.
  *
- * <p>
- * The following schema fragment specifies the expected content contained within
- * this class.
+ * <p>The following schema fragment specifies the expected content contained within this class.
  *
  * <pre>
  * &lt;complexType>
@@ -42,68 +38,61 @@ import jp.riken.kscope.xcodeml.xml.*;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- *
- *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "")
 @XmlRootElement(name = "rename")
 public class Rename implements IXmlNode {
 
-    @XmlAttribute(name = "use_name")
-    protected String useName;
-    @XmlAttribute(name = "local_name")
-    protected String localName;
+  @XmlAttribute(name = "use_name")
+  protected String useName;
 
-    /**
-     * Gets the value of the useName property.
-     *
-     * @return possible object is {@link String }
-     *
-     */
-    public String getUseName() {
-        return useName;
-    }
+  @XmlAttribute(name = "local_name")
+  protected String localName;
 
-    /**
-     * Sets the value of the useName property.
-     *
-     * @param value
-     *            allowed object is {@link String }
-     *
-     */
-    public void setUseName(String value) {
-        this.useName = value;
-    }
+  /**
+   * Gets the value of the useName property.
+   *
+   * @return possible object is {@link String }
+   */
+  public String getUseName() {
+    return useName;
+  }
 
-    /**
-     * Gets the value of the localName property.
-     *
-     * @return possible object is {@link String }
-     *
-     */
-    public String getLocalName() {
-        return localName;
-    }
+  /**
+   * Sets the value of the useName property.
+   *
+   * @param value allowed object is {@link String }
+   */
+  public void setUseName(String value) {
+    this.useName = value;
+  }
 
-    /**
-     * Sets the value of the localName property.
-     *
-     * @param value
-     *            allowed object is {@link String }
-     *
-     */
-    public void setLocalName(String value) {
-        this.localName = value;
-    }
+  /**
+   * Gets the value of the localName property.
+   *
+   * @return possible object is {@link String }
+   */
+  public String getLocalName() {
+    return localName;
+  }
 
-    @Override
-    public boolean enter(jp.riken.kscope.xcodeml.xml.IXmlVisitor visitor) {
-        return (visitor.enter(this));
-    }
+  /**
+   * Sets the value of the localName property.
+   *
+   * @param value allowed object is {@link String }
+   */
+  public void setLocalName(String value) {
+    this.localName = value;
+  }
 
-    @Override
-    public void leave(jp.riken.kscope.xcodeml.xml.IXmlVisitor visitor) {
-        visitor.leave(this);
-    }
+  @Override
+  public boolean enter(jp.riken.kscope.xcodeml.xml.IXmlVisitor visitor) {
+    return (visitor.enter(this));
+  }
+
+  @Override
+  public void leave(jp.riken.kscope.xcodeml.xml.IXmlVisitor visitor) {
+    visitor.leave(this);
+  }
 }

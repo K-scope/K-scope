@@ -19,85 +19,73 @@ package jp.riken.kscope.language.fortran;
 
 import java.io.Serializable;
 import java.util.List;
-
 import jp.riken.kscope.language.VariableDefinition;
 
 /**
  * Map type class.
  *
  * @author RIKEN
- *
  */
 public class Map implements Serializable {
-    /** Serial number */
-    private static final long serialVersionUID = -6468256404696838753L;
-    /**
-     * Since it is almost the same as the structure type, it is used by including the structure.
-     */
-    private Structure core = new Structure();
+  /** Serial number */
+  private static final long serialVersionUID = -6468256404696838753L;
+  /** Since it is almost the same as the structure type, it is used by including the structure. */
+  private Structure core = new Structure();
 
-    /**
-     * Addition of variable definition statement.
-     *
-     * @param definition
-     * Variable definition statement
-     */
-    public void add(VariableDefinition definition) {
-        core.add(definition);
-    }
+  /**
+   * Addition of variable definition statement.
+   *
+   * @param definition Variable definition statement
+   */
+  public void add(VariableDefinition definition) {
+    core.add(definition);
+  }
 
-    /**
-     * Add variable definition statement of the specified type.
-     *
-     * @param typ
-     * Variable type
-     * @param nm
-     *          Variable name
-     */
-    public void add(VariableType typ, String nm) {
-        core.add(typ, nm);
-    }
+  /**
+   * Add variable definition statement of the specified type.
+   *
+   * @param typ Variable type
+   * @param nm Variable name
+   */
+  public void add(VariableType typ, String nm) {
+    core.add(typ, nm);
+  }
 
-    /**
-     * Added type statement.
-     *
-     * @param type
-     *          Structure
-     * @param variableName
-     *          Variable name
-     */
-    public void add(Type type, String variableName) {
-        core.add(type, variableName);
-    }
+  /**
+   * Added type statement.
+   *
+   * @param type Structure
+   * @param variableName Variable name
+   */
+  public void add(Type type, String variableName) {
+    core.add(type, variableName);
+  }
 
-    /**
-     * Addition of structure statement.
-     *
-     * @param structure
-     *          Structure
-     * @param variableName
-     *          Variable name
-     */
-    public void add(Structure structure, String variableName) {
-        core.add(structure, variableName);
-    }
+  /**
+   * Addition of structure statement.
+   *
+   * @param structure Structure
+   * @param variableName Variable name
+   */
+  public void add(Structure structure, String variableName) {
+    core.add(structure, variableName);
+  }
 
-    /**
-     * Added union statement.
-     *
-     * @param union
-     * Union type
-     */
-    public void add(Union union) {
-        core.add(union);
-    }
+  /**
+   * Added union statement.
+   *
+   * @param union Union type
+   */
+  public void add(Union union) {
+    core.add(union);
+  }
 
-    /**
-     * Get a list of variable definition statements in the structure.
-     *
-     * @return Variable definition statement list
-     */
-    public List<VariableDefinition> getDefinitions() {
-        return core.getDefinitions();
-    }
+  /**
+   * Get a list of variable definition statements in the structure.
+   *
+   * @return Variable definition statement list
+   */
+  public List<VariableDefinition> getDefinitions() {
+    return core.getDefinitions();
+  }
 }

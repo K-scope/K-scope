@@ -25,16 +25,12 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
-
 import jp.riken.kscope.xcodeml.xml.*;
 
 /**
- * <p>
  * Java class for anonymous complex type.
  *
- * <p>
- * The following schema fragment specifies the expected content contained within
- * this class.
+ * <p>The following schema fragment specifies the expected content contained within this class.
  *
  * <pre>
  * &lt;complexType>
@@ -52,126 +48,115 @@ import jp.riken.kscope.xcodeml.xml.*;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- *
- *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "", propOrder = { "var", "fmemberRef",
-        "indexRangeOrArrayIndex", "coShape" })
+@XmlType(
+    name = "",
+    propOrder = {"var", "fmemberRef", "indexRangeOrArrayIndex", "coShape"})
 @XmlRootElement(name = "alloc")
 public class Alloc implements IXmlNode {
 
-    @XmlElement(name = "Var")
-    protected Var var;
-    @XmlElement(name = "FmemberRef")
-    protected FmemberRef fmemberRef;
-    @XmlElements({ @XmlElement(name = "indexRange", type = IndexRange.class),
-            @XmlElement(name = "arrayIndex", type = ArrayIndex.class) })
-    protected List<IXmlNode> indexRangeOrArrayIndex;
-    @XmlElement(required = true)
-    protected CoShape coShape;
+  @XmlElement(name = "Var")
+  protected Var var;
 
-    /**
-     * Gets the value of the var property.
-     *
-     * @return possible object is {@link Var }
-     *
-     */
-    public Var getVar() {
-        return var;
-    }
+  @XmlElement(name = "FmemberRef")
+  protected FmemberRef fmemberRef;
 
-    /**
-     * Sets the value of the var property.
-     *
-     * @param value
-     *            allowed object is {@link Var }
-     *
-     */
-    public void setVar(Var value) {
-        this.var = value;
-    }
+  @XmlElements({
+    @XmlElement(name = "indexRange", type = IndexRange.class),
+    @XmlElement(name = "arrayIndex", type = ArrayIndex.class)
+  })
+  protected List<IXmlNode> indexRangeOrArrayIndex;
 
-    /**
-     * Gets the value of the fmemberRef property.
-     *
-     * @return possible object is {@link FmemberRef }
-     *
-     */
-    public FmemberRef getFmemberRef() {
-        return fmemberRef;
-    }
+  @XmlElement(required = true)
+  protected CoShape coShape;
 
-    /**
-     * Sets the value of the fmemberRef property.
-     *
-     * @param value
-     *            allowed object is {@link FmemberRef }
-     *
-     */
-    public void setFmemberRef(FmemberRef value) {
-        this.fmemberRef = value;
-    }
+  /**
+   * Gets the value of the var property.
+   *
+   * @return possible object is {@link Var }
+   */
+  public Var getVar() {
+    return var;
+  }
 
-    /**
-     * Gets the value of the indexRangeOrArrayIndex property.
-     *
-     * <p>
-     * This accessor method returns a reference to the live list, not a
-     * snapshot. Therefore any modification you make to the returned list will
-     * be present inside the JAXB object. This is why there is not a
-     * <CODE>set</CODE> method for the indexRangeOrArrayIndex property.
-     *
-     * <p>
-     * For example, to add a new item, do as follows:
-     *
-     * <pre>
-     * getIndexRangeOrArrayIndex().add(newItem);
-     * </pre>
-     *
-     *
-     * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link IndexRange } {@link ArrayIndex }
-     *
-     * @return      IXmlNode List
-     *
-     */
-    public List<IXmlNode> getIndexRangeOrArrayIndex() {
-        if (indexRangeOrArrayIndex == null) {
-            indexRangeOrArrayIndex = new ArrayList<IXmlNode>();
-        }
-        return this.indexRangeOrArrayIndex;
-    }
+  /**
+   * Sets the value of the var property.
+   *
+   * @param value allowed object is {@link Var }
+   */
+  public void setVar(Var value) {
+    this.var = value;
+  }
 
-    /**
-     * Gets the value of the coShape property.
-     *
-     * @return possible object is {@link CoShape }
-     *
-     */
-    public CoShape getCoShape() {
-        return coShape;
-    }
+  /**
+   * Gets the value of the fmemberRef property.
+   *
+   * @return possible object is {@link FmemberRef }
+   */
+  public FmemberRef getFmemberRef() {
+    return fmemberRef;
+  }
 
-    /**
-     * Sets the value of the coShape property.
-     *
-     * @param value
-     *            allowed object is {@link CoShape }
-     *
-     */
-    public void setCoShape(CoShape value) {
-        this.coShape = value;
-    }
+  /**
+   * Sets the value of the fmemberRef property.
+   *
+   * @param value allowed object is {@link FmemberRef }
+   */
+  public void setFmemberRef(FmemberRef value) {
+    this.fmemberRef = value;
+  }
 
-    @Override
-    public boolean enter(jp.riken.kscope.xcodeml.xml.IXmlVisitor visitor) {
-        return (visitor.enter(this));
+  /**
+   * Gets the value of the indexRangeOrArrayIndex property.
+   *
+   * <p>This accessor method returns a reference to the live list, not a snapshot. Therefore any
+   * modification you make to the returned list will be present inside the JAXB object. This is why
+   * there is not a <CODE>set</CODE> method for the indexRangeOrArrayIndex property.
+   *
+   * <p>For example, to add a new item, do as follows:
+   *
+   * <pre>
+   * getIndexRangeOrArrayIndex().add(newItem);
+   * </pre>
+   *
+   * <p>Objects of the following type(s) are allowed in the list {@link IndexRange } {@link
+   * ArrayIndex }
+   *
+   * @return IXmlNode List
+   */
+  public List<IXmlNode> getIndexRangeOrArrayIndex() {
+    if (indexRangeOrArrayIndex == null) {
+      indexRangeOrArrayIndex = new ArrayList<IXmlNode>();
     }
+    return this.indexRangeOrArrayIndex;
+  }
 
-    @Override
-    public void leave(jp.riken.kscope.xcodeml.xml.IXmlVisitor visitor) {
-        visitor.leave(this);
-    }
+  /**
+   * Gets the value of the coShape property.
+   *
+   * @return possible object is {@link CoShape }
+   */
+  public CoShape getCoShape() {
+    return coShape;
+  }
+
+  /**
+   * Sets the value of the coShape property.
+   *
+   * @param value allowed object is {@link CoShape }
+   */
+  public void setCoShape(CoShape value) {
+    this.coShape = value;
+  }
+
+  @Override
+  public boolean enter(jp.riken.kscope.xcodeml.xml.IXmlVisitor visitor) {
+    return (visitor.enter(this));
+  }
+
+  @Override
+  public void leave(jp.riken.kscope.xcodeml.xml.IXmlVisitor visitor) {
+    visitor.leave(this);
+  }
 }

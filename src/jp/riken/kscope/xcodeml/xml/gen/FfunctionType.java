@@ -22,16 +22,12 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
-
 import jp.riken.kscope.xcodeml.xml.*;
 
 /**
- * <p>
  * Java class for anonymous complex type.
  *
- * <p>
- * The following schema fragment specifies the expected content contained within
- * this class.
+ * <p>The following schema fragment specifies the expected content contained within this class.
  *
  * <pre>
  * &lt;complexType>
@@ -48,274 +44,249 @@ import jp.riken.kscope.xcodeml.xml.*;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- *
- *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "", propOrder = { "params" })
+@XmlType(
+    name = "",
+    propOrder = {"params"})
 @XmlRootElement(name = "FfunctionType")
 public class FfunctionType implements IXmlTypeTableChoice, IXmlNode {
 
-    protected Params params;
-    @XmlAttribute
-    protected String type;
-    @XmlAttribute(name = "result_name")
-    protected String resultName;
-    @XmlAttribute(name = "is_recursive")
-    protected Boolean isRecursive;
-    @XmlAttribute(name = "is_program")
-    protected Boolean isProgram;
-    @XmlAttribute(name = "is_internal")
-    protected Boolean isInternal;
-    @XmlAttribute(name = "is_intrinsic")
-    protected Boolean isIntrinsic;
-    @XmlAttribute(name = "is_external")
-    protected Boolean isExternal;
-    @XmlAttribute(name = "is_public")
-    protected Boolean isPublic;
-    @XmlAttribute(name = "is_private")
-    protected Boolean isPrivate;
-    @XmlAttribute(name = "return_type")
-    protected String returnType;
+  protected Params params;
+  @XmlAttribute protected String type;
 
-    /**
-     * Gets the value of the params property.
-     *
-     * @return possible object is {@link Params }
-     *
-     */
-    public Params getParams() {
-        return params;
-    }
+  @XmlAttribute(name = "result_name")
+  protected String resultName;
 
-    /**
-     * Sets the value of the params property.
-     *
-     * @param value
-     *            allowed object is {@link Params }
-     *
-     */
-    public void setParams(Params value) {
-        this.params = value;
-    }
+  @XmlAttribute(name = "is_recursive")
+  protected Boolean isRecursive;
 
-    /**
-     * Gets the value of the type property.
-     *
-     * @return possible object is {@link String }
-     *
-     */
-    public String getType() {
-        return type;
-    }
+  @XmlAttribute(name = "is_program")
+  protected Boolean isProgram;
 
-    /**
-     * Sets the value of the type property.
-     *
-     * @param value
-     *            allowed object is {@link String }
-     *
-     */
-    public void setType(String value) {
-        this.type = value;
-    }
+  @XmlAttribute(name = "is_internal")
+  protected Boolean isInternal;
 
-    /**
-     * Gets the value of the resultName property.
-     *
-     * @return possible object is {@link String }
-     *
-     */
-    public String getResultName() {
-        return resultName;
-    }
+  @XmlAttribute(name = "is_intrinsic")
+  protected Boolean isIntrinsic;
 
-    /**
-     * Sets the value of the resultName property.
-     *
-     * @param value
-     *            allowed object is {@link String }
-     *
-     */
-    public void setResultName(String value) {
-        this.resultName = value;
-    }
+  @XmlAttribute(name = "is_external")
+  protected Boolean isExternal;
 
-    /**
-     * Gets the value of the isRecursive property.
-     *
-     * @return possible object is {@link Boolean }
-     *
-     */
-    public Boolean isIsRecursive() {
-        return isRecursive;
-    }
+  @XmlAttribute(name = "is_public")
+  protected Boolean isPublic;
 
-    /**
-     * Sets the value of the isRecursive property.
-     *
-     * @param value
-     *            allowed object is {@link Boolean }
-     *
-     */
-    public void setIsRecursive(Boolean value) {
-        this.isRecursive = value;
-    }
+  @XmlAttribute(name = "is_private")
+  protected Boolean isPrivate;
 
-    /**
-     * Gets the value of the isProgram property.
-     *
-     * @return possible object is {@link Boolean }
-     *
-     */
-    public Boolean isIsProgram() {
-        return isProgram;
-    }
+  @XmlAttribute(name = "return_type")
+  protected String returnType;
 
-    /**
-     * Sets the value of the isProgram property.
-     *
-     * @param value
-     *            allowed object is {@link Boolean }
-     *
-     */
-    public void setIsProgram(Boolean value) {
-        this.isProgram = value;
-    }
+  /**
+   * Gets the value of the params property.
+   *
+   * @return possible object is {@link Params }
+   */
+  public Params getParams() {
+    return params;
+  }
 
-    /**
-     * Gets the value of the isInternal property.
-     *
-     * @return possible object is {@link Boolean }
-     *
-     */
-    public Boolean isIsInternal() {
-        return isInternal;
-    }
+  /**
+   * Sets the value of the params property.
+   *
+   * @param value allowed object is {@link Params }
+   */
+  public void setParams(Params value) {
+    this.params = value;
+  }
 
-    /**
-     * Sets the value of the isInternal property.
-     *
-     * @param value
-     *            allowed object is {@link Boolean }
-     *
-     */
-    public void setIsInternal(Boolean value) {
-        this.isInternal = value;
-    }
+  /**
+   * Gets the value of the type property.
+   *
+   * @return possible object is {@link String }
+   */
+  public String getType() {
+    return type;
+  }
 
-    /**
-     * Gets the value of the isIntrinsic property.
-     *
-     * @return possible object is {@link Boolean }
-     *
-     */
-    public Boolean isIsIntrinsic() {
-        return isIntrinsic;
-    }
+  /**
+   * Sets the value of the type property.
+   *
+   * @param value allowed object is {@link String }
+   */
+  public void setType(String value) {
+    this.type = value;
+  }
 
-    /**
-     * Sets the value of the isIntrinsic property.
-     *
-     * @param value
-     *            allowed object is {@link Boolean }
-     *
-     */
-    public void setIsIntrinsic(Boolean value) {
-        this.isIntrinsic = value;
-    }
+  /**
+   * Gets the value of the resultName property.
+   *
+   * @return possible object is {@link String }
+   */
+  public String getResultName() {
+    return resultName;
+  }
 
-    /**
-     * Gets the value of the isExternal property.
-     *
-     * @return possible object is {@link Boolean }
-     *
-     */
-    public Boolean isIsExternal() {
-        return isExternal;
-    }
+  /**
+   * Sets the value of the resultName property.
+   *
+   * @param value allowed object is {@link String }
+   */
+  public void setResultName(String value) {
+    this.resultName = value;
+  }
 
-    /**
-     * Sets the value of the isExternal property.
-     *
-     * @param value
-     *            allowed object is {@link Boolean }
-     *
-     */
-    public void setIsExternal(Boolean value) {
-        this.isExternal = value;
-    }
+  /**
+   * Gets the value of the isRecursive property.
+   *
+   * @return possible object is {@link Boolean }
+   */
+  public Boolean isIsRecursive() {
+    return isRecursive;
+  }
 
-    /**
-     * Gets the value of the isPublic property.
-     *
-     * @return possible object is {@link Boolean }
-     *
-     */
-    public Boolean isIsPublic() {
-        return isPublic;
-    }
+  /**
+   * Sets the value of the isRecursive property.
+   *
+   * @param value allowed object is {@link Boolean }
+   */
+  public void setIsRecursive(Boolean value) {
+    this.isRecursive = value;
+  }
 
-    /**
-     * Sets the value of the isPublic property.
-     *
-     * @param value
-     *            allowed object is {@link Boolean }
-     *
-     */
-    public void setIsPublic(Boolean value) {
-        this.isPublic = value;
-    }
+  /**
+   * Gets the value of the isProgram property.
+   *
+   * @return possible object is {@link Boolean }
+   */
+  public Boolean isIsProgram() {
+    return isProgram;
+  }
 
-    /**
-     * Gets the value of the isPrivate property.
-     *
-     * @return possible object is {@link Boolean }
-     *
-     */
-    public Boolean isIsPrivate() {
-        return isPrivate;
-    }
+  /**
+   * Sets the value of the isProgram property.
+   *
+   * @param value allowed object is {@link Boolean }
+   */
+  public void setIsProgram(Boolean value) {
+    this.isProgram = value;
+  }
 
-    /**
-     * Sets the value of the isPrivate property.
-     *
-     * @param value
-     *            allowed object is {@link Boolean }
-     *
-     */
-    public void setIsPrivate(Boolean value) {
-        this.isPrivate = value;
-    }
+  /**
+   * Gets the value of the isInternal property.
+   *
+   * @return possible object is {@link Boolean }
+   */
+  public Boolean isIsInternal() {
+    return isInternal;
+  }
 
-    /**
-     * Gets the value of the returnType property.
-     *
-     * @return possible object is {@link String }
-     *
-     */
-    public String getReturnType() {
-        return returnType;
-    }
+  /**
+   * Sets the value of the isInternal property.
+   *
+   * @param value allowed object is {@link Boolean }
+   */
+  public void setIsInternal(Boolean value) {
+    this.isInternal = value;
+  }
 
-    /**
-     * Sets the value of the returnType property.
-     *
-     * @param value
-     *            allowed object is {@link String }
-     *
-     */
-    public void setReturnType(String value) {
-        this.returnType = value;
-    }
+  /**
+   * Gets the value of the isIntrinsic property.
+   *
+   * @return possible object is {@link Boolean }
+   */
+  public Boolean isIsIntrinsic() {
+    return isIntrinsic;
+  }
 
-    @Override
-    public boolean enter(jp.riken.kscope.xcodeml.xml.IXmlVisitor visitor) {
-        return (visitor.enter(this));
-    }
+  /**
+   * Sets the value of the isIntrinsic property.
+   *
+   * @param value allowed object is {@link Boolean }
+   */
+  public void setIsIntrinsic(Boolean value) {
+    this.isIntrinsic = value;
+  }
 
-    @Override
-    public void leave(jp.riken.kscope.xcodeml.xml.IXmlVisitor visitor) {
-        visitor.leave(this);
-    }
+  /**
+   * Gets the value of the isExternal property.
+   *
+   * @return possible object is {@link Boolean }
+   */
+  public Boolean isIsExternal() {
+    return isExternal;
+  }
+
+  /**
+   * Sets the value of the isExternal property.
+   *
+   * @param value allowed object is {@link Boolean }
+   */
+  public void setIsExternal(Boolean value) {
+    this.isExternal = value;
+  }
+
+  /**
+   * Gets the value of the isPublic property.
+   *
+   * @return possible object is {@link Boolean }
+   */
+  public Boolean isIsPublic() {
+    return isPublic;
+  }
+
+  /**
+   * Sets the value of the isPublic property.
+   *
+   * @param value allowed object is {@link Boolean }
+   */
+  public void setIsPublic(Boolean value) {
+    this.isPublic = value;
+  }
+
+  /**
+   * Gets the value of the isPrivate property.
+   *
+   * @return possible object is {@link Boolean }
+   */
+  public Boolean isIsPrivate() {
+    return isPrivate;
+  }
+
+  /**
+   * Sets the value of the isPrivate property.
+   *
+   * @param value allowed object is {@link Boolean }
+   */
+  public void setIsPrivate(Boolean value) {
+    this.isPrivate = value;
+  }
+
+  /**
+   * Gets the value of the returnType property.
+   *
+   * @return possible object is {@link String }
+   */
+  public String getReturnType() {
+    return returnType;
+  }
+
+  /**
+   * Sets the value of the returnType property.
+   *
+   * @param value allowed object is {@link String }
+   */
+  public void setReturnType(String value) {
+    this.returnType = value;
+  }
+
+  @Override
+  public boolean enter(jp.riken.kscope.xcodeml.xml.IXmlVisitor visitor) {
+    return (visitor.enter(this));
+  }
+
+  @Override
+  public void leave(jp.riken.kscope.xcodeml.xml.IXmlVisitor visitor) {
+    visitor.leave(this);
+  }
 }

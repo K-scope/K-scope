@@ -20,71 +20,67 @@ import java.awt.Component;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 import javax.swing.JFrame;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.SwingUtilities;
-
 import jp.riken.kscope.service.AppController;
 
 /**
  * Base action class
- * @author RIKEN
  *
+ * @author RIKEN
  */
 public abstract class ActionBase implements ActionListener {
 
-    /** Application controller */
-    protected AppController controller;
+  /** Application controller */
+  protected AppController controller;
 
-    /**
-     * Constructor
-     */
-    public ActionBase() {
-        super();
+  /** Constructor */
+  public ActionBase() {
+    super();
+  }
+
+  /**
+   * Constructor
+   *
+   * @param controller Application controller
+   */
+  public ActionBase(AppController controller) {
+    super();
+    this.controller = controller;
+  }
+
+  /**
+   * Get the top JFrame.
+   *
+   * @param event Event information
+   * @return mainframe
+   */
+  public Frame getWindowAncestor(ActionEvent event) {
+
+    Component source = (Component) event.getSource();
+    while (source instanceof JMenuItem) {
+      //        if ( source instanceof JMenuItem ) {
+      JMenuItem mi = (JMenuItem) source;
+      if (mi.getParent() instanceof JPopupMenu) {
+        JPopupMenu pm = (JPopupMenu) mi.getParent();
+        source = pm.getInvoker();
+      } else {
+        break;
+      }
     }
+    JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(source);
+    return frame;
+  }
 
-    /**
-     * Constructor
-     * @param controller Application controller
-     */
-    public ActionBase(AppController controller) {
-        super();
-        this.controller = controller;
-    }
-
-    /**
-     * Get the top JFrame.
-     * @param event Event information
-     * @return mainframe
-     */
-    public Frame getWindowAncestor(ActionEvent event) {
-
-        Component source = (Component)event.getSource();
-        while (source instanceof JMenuItem) {
-//        if ( source instanceof JMenuItem ) {
-            JMenuItem mi = (JMenuItem)source;
-            if ( mi.getParent() instanceof JPopupMenu ) {
-                JPopupMenu pm = (JPopupMenu)mi.getParent();
-                source = pm.getInvoker();
-            }
-            else {
-                break;
-            }
-        }
-        JFrame frame = (JFrame)SwingUtilities.getWindowAncestor( source );
-        return frame;
-    }
-
-    /**
-     * Check if the action is executable. <br/>
-     * Check before executing the action and switch the menu enable. <br/>
-     * @return true = Action can be executed
-     */
-    public boolean validateAction() {
-        return true;
-    }
+  /**
+   * Check if the action is executable. <br>
+   * Check before executing the action and switch the menu enable. <br>
+   *
+   * @return true = Action can be executed
+   */
+  public boolean validateAction() {
+    return true;
+  }
 }
-
-

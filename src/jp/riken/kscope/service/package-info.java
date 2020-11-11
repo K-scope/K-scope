@@ -15,7 +15,5 @@
  * limitations under the License.
  */
 
-/**
- * Provides services such as Fortran database construction and analysis.
- */
+/** Provides services such as Fortran database construction and analysis. */
 package jp.riken.kscope.service;

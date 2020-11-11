@@ -23,63 +23,62 @@ import java.io.Serializable;
  * An enum that represents the type of Block.
  *
  * @author RIKEN
- *
  */
 public enum BlockType implements Serializable {
-    /** Dynamically allocate memory area. */
-    DYNAMIC_ALLOCATION,
-    /** Free up dynamically allocated memory area. */
-    DYNAMIC_DEALLOCATION,
-    /** Dynamically discard pointer reference (set pointer variable to null). */
-    DYNAMIC_NULLIFICATION,
-    /** Exit iterative processing. */
-    BREAK,
-    /** Jump to the end of the iteration. */
-    CONTINUE,
-    /** Exit the program. */
-    TERMINATION,
-    /** do nothing. */
-    DO_NOTHING,
-    /** Pause. */
-    PAUSE,
-    /** Moving. */
-    GOTO,
-    /** Directive */
-    DIRECTIVE,
-    /** Give initial value */
-    DATA,
-    /** Give storage sharing within a program unit */
-    EQUIVALENCE,
-    /** Give storage sharing between program units */
-    COMMON,
-    /** List of generic types */
-    PROCEDURES,
-    /** Branch */
-    SELECTION,
-    /** Conditional block */
-    CONDITION,
-    /** Execution statement */
-    BODY,
-    /** module */
-    MODULE,
-    /** Procedure */
-    PROCEDURE,
-    /** Call procedure */
-    PROCEDUREUSAGE,
-    /** Iterate */
-    REPETITION,
-    /** Return */
-    RETURN,
-    /** Assignment statement */
-    SUBSTITUTION,
-    /** User-defined */
-    USERDEFINITION,
-    /** Variable declaration */
-    VARIABLEDEFINITION,
-    /** USE statement */
-    USE,
-    /** Structure */
-    TYPE,
-    /** Unknown */
-    UNKNOWN;
+  /** Dynamically allocate memory area. */
+  DYNAMIC_ALLOCATION,
+  /** Free up dynamically allocated memory area. */
+  DYNAMIC_DEALLOCATION,
+  /** Dynamically discard pointer reference (set pointer variable to null). */
+  DYNAMIC_NULLIFICATION,
+  /** Exit iterative processing. */
+  BREAK,
+  /** Jump to the end of the iteration. */
+  CONTINUE,
+  /** Exit the program. */
+  TERMINATION,
+  /** do nothing. */
+  DO_NOTHING,
+  /** Pause. */
+  PAUSE,
+  /** Moving. */
+  GOTO,
+  /** Directive */
+  DIRECTIVE,
+  /** Give initial value */
+  DATA,
+  /** Give storage sharing within a program unit */
+  EQUIVALENCE,
+  /** Give storage sharing between program units */
+  COMMON,
+  /** List of generic types */
+  PROCEDURES,
+  /** Branch */
+  SELECTION,
+  /** Conditional block */
+  CONDITION,
+  /** Execution statement */
+  BODY,
+  /** module */
+  MODULE,
+  /** Procedure */
+  PROCEDURE,
+  /** Call procedure */
+  PROCEDUREUSAGE,
+  /** Iterate */
+  REPETITION,
+  /** Return */
+  RETURN,
+  /** Assignment statement */
+  SUBSTITUTION,
+  /** User-defined */
+  USERDEFINITION,
+  /** Variable declaration */
+  VARIABLEDEFINITION,
+  /** USE statement */
+  USE,
+  /** Structure */
+  TYPE,
+  /** Unknown */
+  UNKNOWN;
 }

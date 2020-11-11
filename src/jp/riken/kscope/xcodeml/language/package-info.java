@@ -15,7 +15,5 @@
  * limitations under the License.
  */
 
-/**
- * Provides a database class parser.
- */
+/** Provides a database class parser. */
 package jp.riken.kscope.xcodeml.language;

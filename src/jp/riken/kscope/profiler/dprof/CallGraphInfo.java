@@ -24,41 +24,42 @@ import java.util.ArrayList;
  * @author RIKEN
  */
 public class CallGraphInfo {
-    private float totalSumSampNum;
-    private ArrayList<StackInfo> stackInfo;
+  private float totalSumSampNum;
+  private ArrayList<StackInfo> stackInfo;
 
-    /**
-     * Get the total cumulative number of samples
-     * @return Total cumulative number of samples
-     */
-    public float getTotalSumSampNum() {
-        return totalSumSampNum;
-    }
+  /**
+   * Get the total cumulative number of samples
+   *
+   * @return Total cumulative number of samples
+   */
+  public float getTotalSumSampNum() {
+    return totalSumSampNum;
+  }
 
-    /**
-     * Get a list of call graph information for each stack
-     * @return List of call graph information for each stack
-     */
-    public ArrayList<StackInfo> getStackInfo() {
-        return stackInfo;
-    }
+  /**
+   * Get a list of call graph information for each stack
+   *
+   * @return List of call graph information for each stack
+   */
+  public ArrayList<StackInfo> getStackInfo() {
+    return stackInfo;
+  }
 
-    /**
-     * Set the total cumulative number of samples
-     * @param totalSumSampNum
-     * Total cumulative number of samples to set
-     */
-    public void setTotalSumSampNum(float totalSumSampNum) {
-        this.totalSumSampNum = totalSumSampNum;
-    }
+  /**
+   * Set the total cumulative number of samples
+   *
+   * @param totalSumSampNum Total cumulative number of samples to set
+   */
+  public void setTotalSumSampNum(float totalSumSampNum) {
+    this.totalSumSampNum = totalSumSampNum;
+  }
 
-    /**
-     * Set a list of call graph information for each stack
-     * @param stackInfo
-     * List of call graph information for each stack to be set
-     */
-    public void setStackInfo(ArrayList<StackInfo> stackInfo) {
-        this.stackInfo = stackInfo;
-    }
-
+  /**
+   * Set a list of call graph information for each stack
+   *
+   * @param stackInfo List of call graph information for each stack to be set
+   */
+  public void setStackInfo(ArrayList<StackInfo> stackInfo) {
+    this.stackInfo = stackInfo;
+  }
 }

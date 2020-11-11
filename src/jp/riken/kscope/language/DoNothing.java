@@ -21,43 +21,40 @@ package jp.riken.kscope.language;
  * A control statement class that does nothing.
  *
  * @author RIKEN
- *
  */
 public class DoNothing extends jp.riken.kscope.language.Block {
-    /** Serial number */
-    private static final long serialVersionUID = 7666146678194125791L;
-    /**
-     * Constructor.
-     *
-     * @param parent
-     * Parent block
-     */
-    public DoNothing(Block parent) {
-        super(parent);
-    }
+  /** Serial number */
+  private static final long serialVersionUID = 7666146678194125791L;
+  /**
+   * Constructor.
+   *
+   * @param parent Parent block
+   */
+  public DoNothing(Block parent) {
+    super(parent);
+  }
 
-    /**
-     * Constructor.
-     */
-    public DoNothing() {
-        super();
-    }
+  /** Constructor. */
+  public DoNothing() {
+    super();
+  }
 
-    /**
-     * Get block type.
-     *
-     * @return BlockType.DO_NOTHING
-     */
-    public BlockType getBlockType() {
-        return BlockType.DO_NOTHING;
-    }
+  /**
+   * Get block type.
+   *
+   * @return BlockType.DO_NOTHING
+   */
+  public BlockType getBlockType() {
+    return BlockType.DO_NOTHING;
+  }
 
-    @Override
-    public String toString() {
-        return this.toStringBase();
-    }
-    @Override
-    protected String toStringBase() {
-        return "continue";
-    }
+  @Override
+  public String toString() {
+    return this.toStringBase();
+  }
+
+  @Override
+  protected String toStringBase() {
+    return "continue";
+  }
 }

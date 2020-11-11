@@ -25,16 +25,12 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
-
 import jp.riken.kscope.xcodeml.xml.*;
 
 /**
- * <p>
  * Java class for anonymous complex type.
  *
- * <p>
- * The following schema fragment specifies the expected content contained within
- * this class.
+ * <p>The following schema fragment specifies the expected content contained within this class.
  *
  * <pre>
  * &lt;complexType>
@@ -49,58 +45,53 @@ import jp.riken.kscope.xcodeml.xml.*;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- *
- *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "", propOrder = { "fbasicTypeOrFfunctionTypeOrFstructType" })
+@XmlType(
+    name = "",
+    propOrder = {"fbasicTypeOrFfunctionTypeOrFstructType"})
 @XmlRootElement(name = "typeTable")
 public class TypeTable implements IXmlNode {
 
-    @XmlElements({ @XmlElement(name = "FbasicType", type = FbasicType.class),
-            @XmlElement(name = "FstructType", type = FstructType.class),
-            @XmlElement(name = "FfunctionType", type = FfunctionType.class) })
-    protected List<IXmlNode> fbasicTypeOrFfunctionTypeOrFstructType;
+  @XmlElements({
+    @XmlElement(name = "FbasicType", type = FbasicType.class),
+    @XmlElement(name = "FstructType", type = FstructType.class),
+    @XmlElement(name = "FfunctionType", type = FfunctionType.class)
+  })
+  protected List<IXmlNode> fbasicTypeOrFfunctionTypeOrFstructType;
 
-    /**
-     * Gets the value of the fbasicTypeOrFfunctionTypeOrFstructType property.
-     *
-     * <p>
-     * This accessor method returns a reference to the live list, not a
-     * snapshot. Therefore any modification you make to the returned list will
-     * be present inside the JAXB object. This is why there is not a
-     * <CODE>set</CODE> method for the fbasicTypeOrFfunctionTypeOrFstructType
-     * property.
-     *
-     * <p>
-     * For example, to add a new item, do as follows:
-     *
-     * <pre>
-     * getFbasicTypeOrFfunctionTypeOrFstructType().add(newItem);
-     * </pre>
-     *
-     *
-     * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link FbasicType } {@link FstructType } {@link FfunctionType }
-     *
-     * @return      IXmlNode List
-     *
-     */
-    public List<IXmlNode> getFbasicTypeOrFfunctionTypeOrFstructType() {
-        if (fbasicTypeOrFfunctionTypeOrFstructType == null) {
-            fbasicTypeOrFfunctionTypeOrFstructType = new ArrayList<IXmlNode>();
-        }
-        return this.fbasicTypeOrFfunctionTypeOrFstructType;
+  /**
+   * Gets the value of the fbasicTypeOrFfunctionTypeOrFstructType property.
+   *
+   * <p>This accessor method returns a reference to the live list, not a snapshot. Therefore any
+   * modification you make to the returned list will be present inside the JAXB object. This is why
+   * there is not a <CODE>set</CODE> method for the fbasicTypeOrFfunctionTypeOrFstructType property.
+   *
+   * <p>For example, to add a new item, do as follows:
+   *
+   * <pre>
+   * getFbasicTypeOrFfunctionTypeOrFstructType().add(newItem);
+   * </pre>
+   *
+   * <p>Objects of the following type(s) are allowed in the list {@link FbasicType } {@link
+   * FstructType } {@link FfunctionType }
+   *
+   * @return IXmlNode List
+   */
+  public List<IXmlNode> getFbasicTypeOrFfunctionTypeOrFstructType() {
+    if (fbasicTypeOrFfunctionTypeOrFstructType == null) {
+      fbasicTypeOrFfunctionTypeOrFstructType = new ArrayList<IXmlNode>();
     }
+    return this.fbasicTypeOrFfunctionTypeOrFstructType;
+  }
 
-    @Override
-    public boolean enter(jp.riken.kscope.xcodeml.xml.IXmlVisitor visitor) {
-        return (visitor.enter(this));
-    }
+  @Override
+  public boolean enter(jp.riken.kscope.xcodeml.xml.IXmlVisitor visitor) {
+    return (visitor.enter(this));
+  }
 
-    @Override
-    public void leave(jp.riken.kscope.xcodeml.xml.IXmlVisitor visitor) {
-        visitor.leave(this);
-    }
+  @Override
+  public void leave(jp.riken.kscope.xcodeml.xml.IXmlVisitor visitor) {
+    visitor.leave(this);
+  }
 }

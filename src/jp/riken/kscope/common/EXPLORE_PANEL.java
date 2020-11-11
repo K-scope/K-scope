@@ -20,41 +20,40 @@ import jp.riken.kscope.Message;
 
 /**
  * Explorer (tree) panel identification string
+ *
  * @author RIKEN
  */
 public enum EXPLORE_PANEL {
-    // Panel list
-    /** Structural panel */
-    LANGUAGE(Message.getString("mainmenu.window.explore.structure")), //Construction
-    /** Module panel */
-    MODULE(Message.getString("mainmenu.window.explore.module")), //module
-    /** Source panel */
-    SOURCE(Message.getString("mainmenu.window.explore.source")), //Source
-    /** XML panel */
-    XML(Message.getString("mainmenu.window.explore.xml")), //XML
-    /** Unknown */
-    UNKNOWN(Message.getString("explore_panel.enum.unknown")); //unknown
+  // Panel list
+  /** Structural panel */
+  LANGUAGE(Message.getString("mainmenu.window.explore.structure")), // Construction
+  /** Module panel */
+  MODULE(Message.getString("mainmenu.window.explore.module")), // module
+  /** Source panel */
+  SOURCE(Message.getString("mainmenu.window.explore.source")), // Source
+  /** XML panel */
+  XML(Message.getString("mainmenu.window.explore.xml")), // XML
+  /** Unknown */
+  UNKNOWN(Message.getString("explore_panel.enum.unknown")); // unknown
 
-    /** Tab name */
-    private String tabname;
+  /** Tab name */
+  private String tabname;
 
-    /**
-     * Constructor
-     * @param tabname Tab name
-     */
-    private EXPLORE_PANEL(String tabname) {
-        this.tabname = tabname;
-    }
+  /**
+   * Constructor
+   *
+   * @param tabname Tab name
+   */
+  private EXPLORE_PANEL(String tabname) {
+    this.tabname = tabname;
+  }
 
-    /**
-     * Get the tab name
-     * @return tab name
-     */
-    public String getTabName() {
-        return this.tabname;
-    }
-
+  /**
+   * Get the tab name
+   *
+   * @return tab name
+   */
+  public String getTabName() {
+    return this.tabname;
+  }
 }
-
-
-

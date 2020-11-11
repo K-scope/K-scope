@@ -17,35 +17,36 @@
 package jp.riken.kscope.action;
 
 import java.awt.event.ActionEvent;
-
 import jp.riken.kscope.Application;
 import jp.riken.kscope.Message;
 import jp.riken.kscope.service.AppController;
 
 /**
  * Clear action class for profiler information
+ *
  * @author RIKEN
  */
 public class ProfilerClearAction extends ActionBase {
 
-    /**
-     * Constructor
-     * @param controller Application controller
-     */
-    public ProfilerClearAction(AppController controller) {
-        super(controller);
-    }
+  /**
+   * Constructor
+   *
+   * @param controller Application controller
+   */
+  public ProfilerClearAction(AppController controller) {
+    super(controller);
+  }
 
-    /**
-     * Action occurrence event
-     * @param event Event information
-     */
-    @Override
-    public void actionPerformed(ActionEvent event) {
-    	// Status bar
-    	Application.status.setMessageMain(
-    			Message.getString("mainmenu.profiler.clear")); // Clear profiler
-        this.controller.clearProfilerInfo();
-    }
-
+  /**
+   * Action occurrence event
+   *
+   * @param event Event information
+   */
+  @Override
+  public void actionPerformed(ActionEvent event) {
+    // Status bar
+    Application.status.setMessageMain(
+        Message.getString("mainmenu.profiler.clear")); // Clear profiler
+    this.controller.clearProfilerInfo();
+  }
 }

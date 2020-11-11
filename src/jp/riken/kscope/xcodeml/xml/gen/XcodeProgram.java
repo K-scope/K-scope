@@ -23,16 +23,12 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
-
 import jp.riken.kscope.xcodeml.xml.*;
 
 /**
- * <p>
  * Java class for anonymous complex type.
  *
- * <p>
- * The following schema fragment specifies the expected content contained within
- * this class.
+ * <p>The following schema fragment specifies the expected content contained within this class.
  *
  * <pre>
  * &lt;complexType>
@@ -48,207 +44,182 @@ import jp.riken.kscope.xcodeml.xml.*;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- *
- *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "", propOrder = { "typeTable", "globalSymbols",
-        "globalDeclarations" })
+@XmlType(
+    name = "",
+    propOrder = {"typeTable", "globalSymbols", "globalDeclarations"})
 @XmlRootElement(name = "XcodeProgram")
 public class XcodeProgram implements IXmlNode {
 
-    @XmlElement(required = true)
-    protected TypeTable typeTable;
-    @XmlElement(required = true)
-    protected GlobalSymbols globalSymbols;
-    @XmlElement(required = true)
-    protected GlobalDeclarations globalDeclarations;
-    @XmlAttribute(name = "compiler-info")
-    protected String compilerInfo;
-    @XmlAttribute
-    protected String version;
-    @XmlAttribute
-    protected String time;
-    @XmlAttribute
-    protected String language;
-    @XmlAttribute
-    protected String source;
+  @XmlElement(required = true)
+  protected TypeTable typeTable;
 
-    /**
-     * Gets the value of the typeTable property.
-     *
-     * @return possible object is {@link TypeTable }
-     *
-     */
-    public TypeTable getTypeTable() {
-        return typeTable;
-    }
+  @XmlElement(required = true)
+  protected GlobalSymbols globalSymbols;
 
-    /**
-     * Sets the value of the typeTable property.
-     *
-     * @param value
-     *            allowed object is {@link TypeTable }
-     *
-     */
-    public void setTypeTable(TypeTable value) {
-        this.typeTable = value;
-    }
+  @XmlElement(required = true)
+  protected GlobalDeclarations globalDeclarations;
 
-    /**
-     * Gets the value of the globalSymbols property.
-     *
-     * @return possible object is {@link GlobalSymbols }
-     *
-     */
-    public GlobalSymbols getGlobalSymbols() {
-        return globalSymbols;
-    }
+  @XmlAttribute(name = "compiler-info")
+  protected String compilerInfo;
 
-    /**
-     * Sets the value of the globalSymbols property.
-     *
-     * @param value
-     *            allowed object is {@link GlobalSymbols }
-     *
-     */
-    public void setGlobalSymbols(GlobalSymbols value) {
-        this.globalSymbols = value;
-    }
+  @XmlAttribute protected String version;
+  @XmlAttribute protected String time;
+  @XmlAttribute protected String language;
+  @XmlAttribute protected String source;
 
-    /**
-     * Gets the value of the globalDeclarations property.
-     *
-     * @return possible object is {@link GlobalDeclarations }
-     *
-     */
-    public GlobalDeclarations getGlobalDeclarations() {
-        return globalDeclarations;
-    }
+  /**
+   * Gets the value of the typeTable property.
+   *
+   * @return possible object is {@link TypeTable }
+   */
+  public TypeTable getTypeTable() {
+    return typeTable;
+  }
 
-    /**
-     * Sets the value of the globalDeclarations property.
-     *
-     * @param value
-     *            allowed object is {@link GlobalDeclarations }
-     *
-     */
-    public void setGlobalDeclarations(GlobalDeclarations value) {
-        this.globalDeclarations = value;
-    }
+  /**
+   * Sets the value of the typeTable property.
+   *
+   * @param value allowed object is {@link TypeTable }
+   */
+  public void setTypeTable(TypeTable value) {
+    this.typeTable = value;
+  }
 
-    /**
-     * Gets the value of the compilerInfo property.
-     *
-     * @return possible object is {@link String }
-     *
-     */
-    public String getCompilerInfo() {
-        return compilerInfo;
-    }
+  /**
+   * Gets the value of the globalSymbols property.
+   *
+   * @return possible object is {@link GlobalSymbols }
+   */
+  public GlobalSymbols getGlobalSymbols() {
+    return globalSymbols;
+  }
 
-    /**
-     * Sets the value of the compilerInfo property.
-     *
-     * @param value
-     *            allowed object is {@link String }
-     *
-     */
-    public void setCompilerInfo(String value) {
-        this.compilerInfo = value;
-    }
+  /**
+   * Sets the value of the globalSymbols property.
+   *
+   * @param value allowed object is {@link GlobalSymbols }
+   */
+  public void setGlobalSymbols(GlobalSymbols value) {
+    this.globalSymbols = value;
+  }
 
-    /**
-     * Gets the value of the version property.
-     *
-     * @return possible object is {@link String }
-     *
-     */
-    public String getVersion() {
-        return version;
-    }
+  /**
+   * Gets the value of the globalDeclarations property.
+   *
+   * @return possible object is {@link GlobalDeclarations }
+   */
+  public GlobalDeclarations getGlobalDeclarations() {
+    return globalDeclarations;
+  }
 
-    /**
-     * Sets the value of the version property.
-     *
-     * @param value
-     *            allowed object is {@link String }
-     *
-     */
-    public void setVersion(String value) {
-        this.version = value;
-    }
+  /**
+   * Sets the value of the globalDeclarations property.
+   *
+   * @param value allowed object is {@link GlobalDeclarations }
+   */
+  public void setGlobalDeclarations(GlobalDeclarations value) {
+    this.globalDeclarations = value;
+  }
 
-    /**
-     * Gets the value of the time property.
-     *
-     * @return possible object is {@link String }
-     *
-     */
-    public String getTime() {
-        return time;
-    }
+  /**
+   * Gets the value of the compilerInfo property.
+   *
+   * @return possible object is {@link String }
+   */
+  public String getCompilerInfo() {
+    return compilerInfo;
+  }
 
-    /**
-     * Sets the value of the time property.
-     *
-     * @param value
-     *            allowed object is {@link String }
-     *
-     */
-    public void setTime(String value) {
-        this.time = value;
-    }
+  /**
+   * Sets the value of the compilerInfo property.
+   *
+   * @param value allowed object is {@link String }
+   */
+  public void setCompilerInfo(String value) {
+    this.compilerInfo = value;
+  }
 
-    /**
-     * Gets the value of the language property.
-     *
-     * @return possible object is {@link String }
-     *
-     */
-    public String getLanguage() {
-        return language;
-    }
+  /**
+   * Gets the value of the version property.
+   *
+   * @return possible object is {@link String }
+   */
+  public String getVersion() {
+    return version;
+  }
 
-    /**
-     * Sets the value of the language property.
-     *
-     * @param value
-     *            allowed object is {@link String }
-     *
-     */
-    public void setLanguage(String value) {
-        this.language = value;
-    }
+  /**
+   * Sets the value of the version property.
+   *
+   * @param value allowed object is {@link String }
+   */
+  public void setVersion(String value) {
+    this.version = value;
+  }
 
-    /**
-     * Gets the value of the source property.
-     *
-     * @return possible object is {@link String }
-     *
-     */
-    public String getSource() {
-        return source;
-    }
+  /**
+   * Gets the value of the time property.
+   *
+   * @return possible object is {@link String }
+   */
+  public String getTime() {
+    return time;
+  }
 
-    /**
-     * Sets the value of the source property.
-     *
-     * @param value
-     *            allowed object is {@link String }
-     *
-     */
-    public void setSource(String value) {
-        this.source = value;
-    }
+  /**
+   * Sets the value of the time property.
+   *
+   * @param value allowed object is {@link String }
+   */
+  public void setTime(String value) {
+    this.time = value;
+  }
 
-    @Override
-    public boolean enter(jp.riken.kscope.xcodeml.xml.IXmlVisitor visitor) {
-        return (visitor.enter(this));
-    }
+  /**
+   * Gets the value of the language property.
+   *
+   * @return possible object is {@link String }
+   */
+  public String getLanguage() {
+    return language;
+  }
 
-    @Override
-    public void leave(jp.riken.kscope.xcodeml.xml.IXmlVisitor visitor) {
-        visitor.leave(this);
-    }
+  /**
+   * Sets the value of the language property.
+   *
+   * @param value allowed object is {@link String }
+   */
+  public void setLanguage(String value) {
+    this.language = value;
+  }
+
+  /**
+   * Gets the value of the source property.
+   *
+   * @return possible object is {@link String }
+   */
+  public String getSource() {
+    return source;
+  }
+
+  /**
+   * Sets the value of the source property.
+   *
+   * @param value allowed object is {@link String }
+   */
+  public void setSource(String value) {
+    this.source = value;
+  }
+
+  @Override
+  public boolean enter(jp.riken.kscope.xcodeml.xml.IXmlVisitor visitor) {
+    return (visitor.enter(this));
+  }
+
+  @Override
+  public void leave(jp.riken.kscope.xcodeml.xml.IXmlVisitor visitor) {
+    visitor.leave(this);
+  }
 }

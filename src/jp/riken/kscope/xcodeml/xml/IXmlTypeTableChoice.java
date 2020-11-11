@@ -18,50 +18,58 @@ package jp.riken.kscope.xcodeml.xml;
 
 /**
  * Data type interface class
+ *
  * @author RIKEN
  */
 public interface IXmlTypeTableChoice {
 
-    /**
-     * Get the data type name
-     * @return data type name
-     */
-    String getType();
+  /**
+   * Get the data type name
+   *
+   * @return data type name
+   */
+  String getType();
 
-    /**
-     * Set the data type name
-     * @param type data type name
-     */
-    void setType(String type);
+  /**
+   * Set the data type name
+   *
+   * @param type data type name
+   */
+  void setType(String type);
 
-    /**
-     * Check public attribute
-     * @return public attribute
-     */
-    Boolean isIsPublic();
+  /**
+   * Check public attribute
+   *
+   * @return public attribute
+   */
+  Boolean isIsPublic();
 
-    /**
-     * Set public attribute
-     * @param isPublic public attribute
-     */
-    void setIsPublic(Boolean isPublic);
+  /**
+   * Set public attribute
+   *
+   * @param isPublic public attribute
+   */
+  void setIsPublic(Boolean isPublic);
 
-    /**
-     * Check private attribute
-     * @return private attribute
-     */
-    Boolean isIsPrivate();
+  /**
+   * Check private attribute
+   *
+   * @return private attribute
+   */
+  Boolean isIsPrivate();
 
-    /**
-     * Set private attribute
-     * @param isPrivate private attribute
-     */
-    void setIsPrivate(Boolean isPrivate);
+  /**
+   * Set private attribute
+   *
+   * @param isPrivate private attribute
+   */
+  void setIsPrivate(Boolean isPrivate);
 
-    /**
-     * Set the data type to a string
-     * @return Data type string
-     */
-    @Override
-    String toString();
+  /**
+   * Set the data type to a string
+   *
+   * @return Data type string
+   */
+  @Override
+  String toString();
 }

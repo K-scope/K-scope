@@ -23,16 +23,12 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
-
 import jp.riken.kscope.xcodeml.xml.*;
 
 /**
- * <p>
  * Java class for anonymous complex type.
  *
- * <p>
- * The following schema fragment specifies the expected content contained within
- * this class.
+ * <p>The following schema fragment specifies the expected content contained within this class.
  *
  * <pre>
  * &lt;complexType>
@@ -47,90 +43,81 @@ import jp.riken.kscope.xcodeml.xml.*;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- *
- *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "", propOrder = { "varRef", "indexRange" })
+@XmlType(
+    name = "",
+    propOrder = {"varRef", "indexRange"})
 @XmlRootElement(name = "FcharacterRef")
 public class FcharacterRef implements IXmlNode {
 
-    @XmlElement(required = true)
-    protected VarRef varRef;
-    protected IndexRange indexRange;
-    @XmlAttribute
-    protected String type;
+  @XmlElement(required = true)
+  protected VarRef varRef;
 
-    /**
-     * Gets the value of the varRef property.
-     *
-     * @return possible object is {@link VarRef }
-     *
-     */
-    public VarRef getVarRef() {
-        return varRef;
-    }
+  protected IndexRange indexRange;
+  @XmlAttribute protected String type;
 
-    /**
-     * Sets the value of the varRef property.
-     *
-     * @param value
-     *            allowed object is {@link VarRef }
-     *
-     */
-    public void setVarRef(VarRef value) {
-        this.varRef = value;
-    }
+  /**
+   * Gets the value of the varRef property.
+   *
+   * @return possible object is {@link VarRef }
+   */
+  public VarRef getVarRef() {
+    return varRef;
+  }
 
-    /**
-     * Gets the value of the indexRange property.
-     *
-     * @return possible object is {@link IndexRange }
-     *
-     */
-    public IndexRange getIndexRange() {
-        return indexRange;
-    }
+  /**
+   * Sets the value of the varRef property.
+   *
+   * @param value allowed object is {@link VarRef }
+   */
+  public void setVarRef(VarRef value) {
+    this.varRef = value;
+  }
 
-    /**
-     * Sets the value of the indexRange property.
-     *
-     * @param value
-     *            allowed object is {@link IndexRange }
-     *
-     */
-    public void setIndexRange(IndexRange value) {
-        this.indexRange = value;
-    }
+  /**
+   * Gets the value of the indexRange property.
+   *
+   * @return possible object is {@link IndexRange }
+   */
+  public IndexRange getIndexRange() {
+    return indexRange;
+  }
 
-    /**
-     * Gets the value of the type property.
-     *
-     * @return possible object is {@link String }
-     *
-     */
-    public String getType() {
-        return type;
-    }
+  /**
+   * Sets the value of the indexRange property.
+   *
+   * @param value allowed object is {@link IndexRange }
+   */
+  public void setIndexRange(IndexRange value) {
+    this.indexRange = value;
+  }
 
-    /**
-     * Sets the value of the type property.
-     *
-     * @param value
-     *            allowed object is {@link String }
-     *
-     */
-    public void setType(String value) {
-        this.type = value;
-    }
+  /**
+   * Gets the value of the type property.
+   *
+   * @return possible object is {@link String }
+   */
+  public String getType() {
+    return type;
+  }
 
-    @Override
-    public boolean enter(jp.riken.kscope.xcodeml.xml.IXmlVisitor visitor) {
-        return (visitor.enter(this));
-    }
+  /**
+   * Sets the value of the type property.
+   *
+   * @param value allowed object is {@link String }
+   */
+  public void setType(String value) {
+    this.type = value;
+  }
 
-    @Override
-    public void leave(jp.riken.kscope.xcodeml.xml.IXmlVisitor visitor) {
-        visitor.leave(this);
-    }
+  @Override
+  public boolean enter(jp.riken.kscope.xcodeml.xml.IXmlVisitor visitor) {
+    return (visitor.enter(this));
+  }
+
+  @Override
+  public void leave(jp.riken.kscope.xcodeml.xml.IXmlVisitor visitor) {
+    visitor.leave(this);
+  }
 }

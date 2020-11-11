@@ -22,12 +22,10 @@ import javax.xml.bind.annotation.XmlEnumValue;
 import javax.xml.bind.annotation.XmlType;
 
 /**
- * <p>
  * Java class for defChoiceSclass.
  *
- * <p>
- * The following schema fragment specifies the expected content contained within
- * this class.
+ * <p>The following schema fragment specifies the expected content contained within this class.
+ *
  * <p>
  *
  * <pre>
@@ -44,59 +42,68 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/restriction>
  * &lt;/simpleType>
  * </pre>
- *
  */
 @XmlType(name = "defChoiceSclass")
 @XmlEnum
 public enum DefChoiceSclass {
-    /** flocal */
-    @XmlEnumValue("flocal") FLOCAL("flocal"),
-    /** fsave */
-    @XmlEnumValue("fsave") FSAVE("fsave"),
-    /** fcommon */
-    @XmlEnumValue("fcommon") FCOMMON("fcommon"),
-    /** fparam */
-    @XmlEnumValue("fparam") FPARAM("fparam"),
-    /** ffunc */
-    @XmlEnumValue("ffunc") FFUNC("ffunc"),
-    /** ftype_name */
-    @XmlEnumValue("ftype_name") FTYPE_NAME("ftype_name"),
-    /** fcommon_name */
-    @XmlEnumValue("fcommon_name") FCOMMON_NAME("fcommon_name"),
-    /** fnamelist_name */
-    @XmlEnumValue("fnamelist_name") FNAMELIST_NAME("fnamelist_name");
+  /** flocal */
+  @XmlEnumValue("flocal")
+  FLOCAL("flocal"),
+  /** fsave */
+  @XmlEnumValue("fsave")
+  FSAVE("fsave"),
+  /** fcommon */
+  @XmlEnumValue("fcommon")
+  FCOMMON("fcommon"),
+  /** fparam */
+  @XmlEnumValue("fparam")
+  FPARAM("fparam"),
+  /** ffunc */
+  @XmlEnumValue("ffunc")
+  FFUNC("ffunc"),
+  /** ftype_name */
+  @XmlEnumValue("ftype_name")
+  FTYPE_NAME("ftype_name"),
+  /** fcommon_name */
+  @XmlEnumValue("fcommon_name")
+  FCOMMON_NAME("fcommon_name"),
+  /** fnamelist_name */
+  @XmlEnumValue("fnamelist_name")
+  FNAMELIST_NAME("fnamelist_name");
 
-    /** Identification name */
-    private final String value;
+  /** Identification name */
+  private final String value;
 
-    /**
-     * Constructor
-     * @param v Distinguished name
-     */
-    DefChoiceSclass(String v) {
-        value = v;
+  /**
+   * Constructor
+   *
+   * @param v Distinguished name
+   */
+  DefChoiceSclass(String v) {
+    value = v;
+  }
+
+  /**
+   * Get the distinguished name
+   *
+   * @return Distinguished name
+   */
+  public String value() {
+    return value;
+  }
+
+  /**
+   * Get the DefChoiceSclass class from the distinguished name
+   *
+   * @param v Distinguished name
+   * @return DefChoiceSclass
+   */
+  public static DefChoiceSclass fromValue(String v) {
+    for (DefChoiceSclass c : DefChoiceSclass.values()) {
+      if (c.value.equals(v)) {
+        return c;
+      }
     }
-
-    /**
-     * Get the distinguished name
-     * @return Distinguished name
-     */
-    public String value() {
-        return value;
-    }
-
-    /**
-     * Get the DefChoiceSclass class from the distinguished name
-     * @param v Distinguished name
-     * @return DefChoiceSclass
-     */
-    public static DefChoiceSclass fromValue(String v) {
-        for (DefChoiceSclass c : DefChoiceSclass.values()) {
-            if (c.value.equals(v)) {
-                return c;
-            }
-        }
-        throw new IllegalArgumentException(v);
-    }
-
+    throw new IllegalArgumentException(v);
+  }
 }

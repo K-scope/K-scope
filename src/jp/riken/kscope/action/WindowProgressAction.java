@@ -17,79 +17,74 @@
 package jp.riken.kscope.action;
 
 import java.awt.event.ActionEvent;
-
 import jp.riken.kscope.dialog.ProgressDialog;
 import jp.riken.kscope.service.AppController;
 
 /**
  * Progress dialog display action class
+ *
  * @author RIKEN
  */
 public class WindowProgressAction extends ActionBase {
 
-    /**
-     * Constructor
-     * @param controller Application controller
-     */
-    public WindowProgressAction(AppController controller) {
-        super(controller);
+  /**
+   * Constructor
+   *
+   * @param controller Application controller
+   */
+  public WindowProgressAction(AppController controller) {
+    super(controller);
+  }
+
+  /**
+   * Check if the action is executable. <br>
+   * Check before executing the action and switch the menu enable. <br>
+   *
+   * @return true = Action can be executed
+   */
+  @Override
+  public boolean validateAction() {
+    // Check the execution status of the thread task (true = thread has not ended)
+    return !this.controller.isThreadTaskDone();
+  }
+
+  /**
+   * Action occurrence event
+   *
+   * @param event Event information
+   */
+  @Override
+  public void actionPerformed(ActionEvent event) {
+    // When displaying the progress dialog from the menu, display only while the thread is running.
+    if (this.controller.isThreadTaskDone()) {
+      // No thread execution
+      return;
     }
 
-    /**
-     * Check if the action is executable. <br/>
-     * Check before executing the action and switch the menu enable. <br/>
-     * @return true = Action can be executed
-     */
-    @Override
-    public boolean validateAction() {
-        // Check the execution status of the thread task (true = thread has not ended)
-        return !this.controller.isThreadTaskDone();
-    }
+    // Display the progress dialog.
+    showProgressDialog();
+  }
 
-    /**
-     * Action occurrence event
-     * @param event Event information
-     */
-    @Override
-    public void actionPerformed(ActionEvent event) {
-        // When displaying the progress dialog from the menu, display only while the thread is running.
-        if (this.controller.isThreadTaskDone()) {
-            // No thread execution
-            return;
-        }
+  /** Display the progress dialog. */
+  public void showProgressDialog() {
 
-        // Display the progress dialog.
-        showProgressDialog();
-    }
+    // Display the progress dialog.
+    ProgressDialog dialog = this.controller.getMainframe().getDialogProgress();
 
-    /**
-     * Display the progress dialog.
-     */
-    public void showProgressDialog() {
+    // Set up a thread task
+    dialog.setThreadService(this.controller.getThreadFuture());
 
-        // Display the progress dialog.
-        ProgressDialog dialog = this.controller.getMainframe().getDialogProgress();
+    // Dialog display
+    dialog.showDialog();
+  }
 
-        // Set up a thread task
-        dialog.setThreadService(this.controller.getThreadFuture());
+  /** Close the progress dialog. */
+  public void closeProgressDialog() {
 
-        // Dialog display
-        dialog.showDialog();
-    }
+    // Display the progress dialog.
+    ProgressDialog dialog = this.controller.getMainframe().getDialogProgress();
 
-    /**
-     * Close the progress dialog.
-     */
-    public void closeProgressDialog() {
-
-        // Display the progress dialog.
-        ProgressDialog dialog = this.controller.getMainframe().getDialogProgress();
-
-        // Close the dialog
-        dialog.dispose();
-
-    }
-
+    // Close the dialog
+    dialog.dispose();
+  }
 }
-
-

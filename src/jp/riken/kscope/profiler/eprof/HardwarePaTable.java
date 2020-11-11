@@ -18,50 +18,50 @@ package jp.riken.kscope.profiler.eprof;
 
 /**
  * Hardware monitor information (PA information) table
+ *
  * @author RIKEN
  */
 public class HardwarePaTable {
-    /** Thread number */
-    private int threadno;
-    /** Hardware monitor information (PA information) table */
-    private double[] paTable;
+  /** Thread number */
+  private int threadno;
+  /** Hardware monitor information (PA information) table */
+  private double[] paTable;
 
-    /**
-     * Constructor
-     */
-    public HardwarePaTable() {
-    }
+  /** Constructor */
+  public HardwarePaTable() {}
 
-    /**
-     * Thread number
-     * @return thread number
-     */
-    public int getThreadno() {
-        return threadno;
-    }
+  /**
+   * Thread number
+   *
+   * @return thread number
+   */
+  public int getThreadno() {
+    return threadno;
+  }
 
-    /**
-     * Thread number
-     * @param no thread number
-     */
-    public void setThreadno(int no) {
-        this.threadno = no;
-    }
-    /**
-     * Hardware monitor information (PA information) table
-     * @return Hardware monitor information (PA information) table
-     */
-    public double[] getPaTable() {
-        return paTable;
-    }
+  /**
+   * Thread number
+   *
+   * @param no thread number
+   */
+  public void setThreadno(int no) {
+    this.threadno = no;
+  }
+  /**
+   * Hardware monitor information (PA information) table
+   *
+   * @return Hardware monitor information (PA information) table
+   */
+  public double[] getPaTable() {
+    return paTable;
+  }
 
-    /**
-     * Hardware monitor information (PA information) table
-     * @param table Hardware monitor information (PA information) table
-     */
-    public void setPaTable(double[] table) {
-        this.paTable = table;
-    }
-
-
+  /**
+   * Hardware monitor information (PA information) table
+   *
+   * @param table Hardware monitor information (PA information) table
+   */
+  public void setPaTable(double[] table) {
+    this.paTable = table;
+  }
 }

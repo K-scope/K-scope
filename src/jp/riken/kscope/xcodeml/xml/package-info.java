@@ -15,7 +15,5 @@
  * limitations under the License.
  */
 
-/**
- * Provides XML elements for XcodeML.
- */
+/** Provides XML elements for XcodeML. */
 package jp.riken.kscope.xcodeml.xml;

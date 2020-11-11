@@ -21,9 +21,7 @@ import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.util.concurrent.Callable;
-
 import javax.swing.JOptionPane;
-
 import jp.riken.kscope.Application;
 import jp.riken.kscope.Message;
 import jp.riken.kscope.common.Constant;
@@ -38,202 +36,214 @@ import jp.riken.kscope.service.ProjectService;
 
 /**
  * Save project action
+ *
  * @author RIKEN
  */
 public class FileProjectSaveAction extends ActionBase {
-	private static boolean debug = (System.getenv("DEBUG")!= null);
-	private static boolean debug_l2 = false;
+  private static boolean debug = (System.getenv("DEBUG") != null);
+  private static boolean debug_l2 = false;
 
-    /** Class that builds and searches the database */
-    private LanguageService service;
+  /** Class that builds and searches the database */
+  private LanguageService service;
 
-    /**
-     * Constructor
-     * @param controller Application controller
-     */
-    public FileProjectSaveAction(AppController controller) {
-        super(controller);
-        if (debug) debug_l2 = (System.getenv("DEBUG").equalsIgnoreCase("high"));
+  /**
+   * Constructor
+   *
+   * @param controller Application controller
+   */
+  public FileProjectSaveAction(AppController controller) {
+    super(controller);
+    if (debug) debug_l2 = (System.getenv("DEBUG").equalsIgnoreCase("high"));
+  }
+
+  /**
+   * Check if the action is executable. <br>
+   * Check before executing the action and switch the menu enable. <br>
+   *
+   * @return true = Action can be executed
+   */
+  @Override
+  public boolean validateAction() {
+    // The project has been created
+    ProjectModel model = this.controller.getProjectModel();
+    if (model == null) return false;
+    if (model.getProjectTitle() == null) return false;
+    if (model.getProjectFolder() == null || !model.getProjectFolder().exists()) return false;
+
+    // Check the execution status of the thread task
+    return this.controller.isThreadTaskDone();
+  }
+
+  /**
+   * Action occurrence event
+   *
+   * @param event Event information
+   */
+  @Override
+  public void actionPerformed(ActionEvent event) {
+    String message = Message.getString("mainmenu.file.saveproject"); // Save project
+    Application.status.setMessageMain(message);
+
+    // Action check
+    if (!validateAction()) {
+      Application.status.setMessageMain(
+          message + Message.getString("action.common.unavailable.status")); // : Impossible
+      return;
     }
 
-    /**
-     * Check if the action is executable. <br/>
-     * Check before executing the action and switch the menu enable. <br/>
-     * @return true = Action can be executed
-     */
-    @Override
-    public boolean validateAction() {
-        // The project has been created
-        ProjectModel model = this.controller.getProjectModel();
-        if (model == null) return false;
-        if (model.getProjectTitle() == null) return false;
-        if (model.getProjectFolder() == null || !model.getProjectFolder().exists()) return false;
+    // Get the parent Frame.
+    Frame frame = getWindowAncestor(event);
 
-        // Check the execution status of the thread task
-        return this.controller.isThreadTaskDone();
+    // Display a confirmation message.
+    int option =
+        JOptionPane.showConfirmDialog(
+            frame,
+            Message.getString(
+                "fileprojectsaveaction.save.confirm.dialog.message"), // Do you want to save the
+                                                                      // project?
+            message, // Save project
+            JOptionPane.OK_CANCEL_OPTION,
+            JOptionPane.WARNING_MESSAGE);
+
+    if (option != JOptionPane.OK_OPTION) {
+      Application.status.setMessageMain(
+          message + Message.getString("action.common.cancel.status")); // :Cancel
+      return;
     }
 
-    /**
-     * Action occurrence event
-     * @param event Event information
-     */
-    @Override
-    public void actionPerformed(ActionEvent event) {
-        String message = Message.getString("mainmenu.file.saveproject"); // Save project
-        Application.status.setMessageMain(message);
+    saveProject(frame);
+  }
 
-        // Action check
-        if (!validateAction()) {
-            Application.status.setMessageMain(message + Message.getString("action.common.unavailable.status")); //: Impossible
-            return;
-        }
+  /**
+   * @param message
+   * @param frame
+   * @throws HeadlessException
+   */
+  public void saveProject(Frame frame) throws HeadlessException {
+    // Project service
+    ProjectService service = new ProjectService(this.controller.getProjectModel());
+    // Keyword properties
+    service.setPropertiesKeyword(this.controller.getPropertiesKeyword());
+    // External tool properties
+    service.setPropertiesExtension(this.controller.getPropertiesExtension());
+    // Arithmetic count property
+    service.setPropertiesOperand(this.controller.getPropertiesOperation());
+    // Source view settings properties
+    service.setPropertiesSource(this.controller.getPropertiesSource());
+    // Profiler configuration properties
+    service.setPropertiesProfiler(this.controller.getPropertiesProfiler());
+    // Project settings properties
+    service.setPropertiesProject(this.controller.getPropertiesProject());
+    // Request Byte / FLOP configuration property
+    service.setPropertiesMemory(this.controller.getPropertiesMemory());
+    //
+    service.setRBproperties(this.controller.getRBproperties());
+    // Error model
+    service.setErrorInfoModel(this.controller.getErrorInfoModel());
 
-        // Get the parent Frame.
-        Frame frame = getWindowAncestor( event );
+    try {
+      // Save project
+      File projectFolder = this.controller.getProjectModel().getProjectFolder();
+      service.saveProject(projectFolder);
 
-        // Display a confirmation message.
-        int option = JOptionPane.showConfirmDialog(frame,
-                     Message.getString("fileprojectsaveaction.save.confirm.dialog.message"), // Do you want to save the project?
-                     message, // Save project
-                     JOptionPane.OK_CANCEL_OPTION,
-                     JOptionPane.WARNING_MESSAGE);
+      // Serialize the Language class
+      // settings folder
+      File settingsFolder =
+          new File(
+              projectFolder.getAbsoluteFile() + File.separator + KscopeProperties.SETTINGS_FOLDER);
+      writeLanguage(settingsFolder);
 
-        if (option != JOptionPane.OK_OPTION) {
-            Application.status.setMessageMain(message + Message.getString("action.common.cancel.status")); //:Cancel
-            return;
-        }
+    } catch (Exception e) {
+      e.printStackTrace();
+      String message = Message.getString("mainmenu.file.saveproject"); // Save project
+      // Error message
+      JOptionPane.showMessageDialog(
+          frame,
+          Message.getString(
+              "fileprojectsaveaction.save.failed.dialog.message"), // Failed to save the project.
+          message + Message.getString("dialog.common.error"), // error
+          JOptionPane.ERROR_MESSAGE);
 
-        saveProject(frame);
+      // Status message
+      Application.status.setMessageMain(
+          message + Message.getString("action.common.error.status")); // :error
     }
+  }
 
-	/**
-	 * @param message
-	 * @param frame
-	 * @throws HeadlessException
-	 */
-	public void saveProject(Frame frame)	throws HeadlessException {
-	// Project service
-        ProjectService service = new ProjectService(this.controller.getProjectModel());
-        // Keyword properties
-        service.setPropertiesKeyword(this.controller.getPropertiesKeyword());
-        // External tool properties
-        service.setPropertiesExtension(this.controller.getPropertiesExtension());
-        // Arithmetic count property
-        service.setPropertiesOperand(this.controller.getPropertiesOperation());
-        // Source view settings properties
-        service.setPropertiesSource(this.controller.getPropertiesSource());
-        // Profiler configuration properties
-        service.setPropertiesProfiler(this.controller.getPropertiesProfiler());
-        // Project settings properties
-        service.setPropertiesProject(this.controller.getPropertiesProject());
-        // Request Byte / FLOP configuration property
-        service.setPropertiesMemory(this.controller.getPropertiesMemory());
-        //
-        service.setRBproperties(this.controller.getRBproperties());
-        // Error model
-        service.setErrorInfoModel(this.controller.getErrorInfoModel());
+  /**
+   * Serialize the Language class
+   *
+   * @param folder Language class serialized folder
+   */
+  public void writeLanguage(final File folder) {
+    // Status message
+    final String message = Message.getString("mainmenu.file.saveproject"); // Save project
 
-        try {
-            // Save project
-            File projectFolder = this.controller.getProjectModel().getProjectFolder();
-            service.saveProject(projectFolder);
+    // Fortran database
+    Fortran fortran = this.controller.getFortranLanguage();
+    // Error information model
+    ErrorInfoModel errorModel = this.controller.getErrorInfoModel();
 
-            // Serialize the Language class
-            // settings folder
-            File settingsFolder = new File(projectFolder.getAbsoluteFile() + File.separator + KscopeProperties.SETTINGS_FOLDER);
-            writeLanguage(settingsFolder);
+    // Structural analysis service
+    service = new LanguageService(fortran);
+    // Set the error information model.
+    service.setErrorInfoModel(errorModel);
 
-        } catch (Exception e) {
-            e.printStackTrace();
-            String message = Message.getString("mainmenu.file.saveproject"); // Save project
-            // Error message
-            JOptionPane.showMessageDialog(frame,
-                    Message.getString("fileprojectsaveaction.save.failed.dialog.message"), // Failed to save the project.
-                    message + Message.getString("dialog.common.error"), //error
-                    JOptionPane.ERROR_MESSAGE);
-
-            // Status message
-            Application.status.setMessageMain(message + Message.getString("action.common.error.status")); //:error
-        }
-    }
-
-    /**
-     * Serialize the Language class
-     * @param folder Language class serialized folder
-     */
-    public void writeLanguage(final File folder) {
-        // Status message
-        final String message = Message.getString("mainmenu.file.saveproject"); // Save project
-
-        // Fortran database
-        Fortran fortran = this.controller.getFortranLanguage();
-        // Error information model
-        ErrorInfoModel errorModel = this.controller.getErrorInfoModel();
-
-        // Structural analysis service
-        service = new LanguageService(fortran);
-        // Set the error information model.
-        service.setErrorInfoModel(errorModel);
-
-        // Create a thread task service.
-        FutureService<Integer> future = new FutureService<Integer>(
-                /**
-                 * Thread call class
-                 */
-                new Callable<Integer>() {
-                    /**
-                     * Perform thread execution
-                     */
-                    @Override
-                    public Integer call() {
-                        try {
-                            // Serialize execution
-                            service.writeLanguage(folder);
-                            return Constant.SUCCESS_RESULT;
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                            return Constant.ERROR_RESULT;
-                        }
-                    }
+    // Create a thread task service.
+    FutureService<Integer> future =
+        new FutureService<Integer>(
+            /** Thread call class */
+            new Callable<Integer>() {
+              /** Perform thread execution */
+              @Override
+              public Integer call() {
+                try {
+                  // Serialize execution
+                  service.writeLanguage(folder);
+                  return Constant.SUCCESS_RESULT;
+                } catch (Exception e) {
+                  e.printStackTrace();
+                  return Constant.ERROR_RESULT;
                 }
-                ) {
-                    /**
-                     * Thread execution completed. <br/>
-                     * Perform post-processing when canceled.
-                     */
-                    @Override
-                    protected void done() {
-                        // Check if the end is due to cancellation.
-                        if (this.isCancelled()) {
-                            Application.status.setMessageMain(message + Message.getString("action.common.cancel.status")); //:Cancel
-                        }
-                        else {
-                            Application.status.setMessageMain(message + Message.getString("action.common.done.status")); //: Done
-                        }
+              }
+            }) {
+          /**
+           * Thread execution completed. <br>
+           * Perform post-processing when canceled.
+           */
+          @Override
+          protected void done() {
+            // Check if the end is due to cancellation.
+            if (this.isCancelled()) {
+              Application.status.setMessageMain(
+                  message + Message.getString("action.common.cancel.status")); // :Cancel
+            } else {
+              Application.status.setMessageMain(
+                  message + Message.getString("action.common.done.status")); // : Done
+            }
 
-                        // Stop service execution
-                        if (service != null) {
-                            service.cancelRunning();
-                        }
+            // Stop service execution
+            if (service != null) {
+              service.cancelRunning();
+            }
 
-                        super.done();
-                    }
-
+            super.done();
+          }
         };
-        // Clear status message
-        Application.status.setMessageStatus(null);
+    // Clear status message
+    Application.status.setMessageStatus(null);
 
-        // Register the controller as a listener in the thread task: To call when the thread is completed
-        future.addPropertyChangeListener(this.controller);
-        this.controller.setThreadFuture(future);
+    // Register the controller as a listener in the thread task: To call when the thread is
+    // completed
+    future.addPropertyChangeListener(this.controller);
+    this.controller.setThreadFuture(future);
 
-        // Display the progress dialog
-        WindowProgressAction progress = new WindowProgressAction(this.controller);
-        progress.showProgressDialog();
-        Application.status.setProgressStart(true);
+    // Display the progress dialog
+    WindowProgressAction progress = new WindowProgressAction(this.controller);
+    progress.showProgressDialog();
+    Application.status.setProgressStart(true);
 
-        // Thread start
-        new Thread(future).start();
-    }
-
+    // Thread start
+    new Thread(future).start();
+  }
 }

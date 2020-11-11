@@ -17,76 +17,75 @@
 
 package jp.riken.kscope.language;
 
-
 import jp.riken.kscope.information.TextInfo;
 
 /**
  * Interface for acquiring and setting additional information
+ *
  * @author RIKEN
  */
 public interface IInformation {
-    /**
-     * Set additional information. <br/>
-     * @param info Additional information
-     */
-    void setInformation(TextInfo info);
+  /**
+   * Set additional information. <br>
+   *
+   * @param info Additional information
+   */
+  void setInformation(TextInfo info);
 
-    /**
-     * Get additional information.
-     * @return Additional information
-     */
-    TextInfo getInformation();
+  /**
+   * Get additional information.
+   *
+   * @return Additional information
+   */
+  TextInfo getInformation();
 
-    /**
-     * Get the namespace (module name.routine name).
-     *
-     * @return namespace (module name.routine name)
-     */
-    String getNamespace();
+  /**
+   * Get the namespace (module name.routine name).
+   *
+   * @return namespace (module name.routine name)
+   */
+  String getNamespace();
 
-    /**
-     * Get the start position.
-     *
-     * @return start position
-     */
-    int getStartPos();
-    /**
-     * Set the start position.
-     *
-     * @param pos
-     * Starting position
-     */
-    void setStartPos(int pos);
+  /**
+   * Get the start position.
+   *
+   * @return start position
+   */
+  int getStartPos();
+  /**
+   * Set the start position.
+   *
+   * @param pos Starting position
+   */
+  void setStartPos(int pos);
 
-    /**
-     * Get the end position.
-     *
-     * @return end position
-     */
-    int getEndPos();
-    /**
-     * Set the end position.
-     *
-     * @param pos
-     * End position
-     */
-    void setEndPos(int pos);
+  /**
+   * Get the end position.
+   *
+   * @return end position
+   */
+  int getEndPos();
+  /**
+   * Set the end position.
+   *
+   * @param pos End position
+   */
+  void setEndPos(int pos);
 
-    /**
-     * Delete all additional information.
-     */
-    void clearInformation();
+  /** Delete all additional information. */
+  void clearInformation();
 
-    /**
-     * Get an ID.
-     * @return ID
-     */
-    String getID();
+  /**
+   * Get an ID.
+   *
+   * @return ID
+   */
+  String getID();
 
-    /**
-     * Get the structure ID.
-     * @return Structure ID
-     */
-    String getLayoutID();
-
- }
+  /**
+   * Get the structure ID.
+   *
+   * @return Structure ID
+   */
+  String getLayoutID();
+}

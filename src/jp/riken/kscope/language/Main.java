@@ -21,18 +21,16 @@ package jp.riken.kscope.language;
  * A class that represents the main program unit.
  *
  * @author RIKEN
- *
  */
 public class Main extends Procedure {
-	/** Serial number */
-	private static final long serialVersionUID = 990753709114089611L;
-    /**
-     * Constructor.
-     *
-     * @param name
-     * Main name
-     */
-    public Main(String name) {
-        super("main", name);
-    }
+  /** Serial number */
+  private static final long serialVersionUID = 990753709114089611L;
+  /**
+   * Constructor.
+   *
+   * @param name Main name
+   */
+  public Main(String name) {
+    super("main", name);
+  }
 }

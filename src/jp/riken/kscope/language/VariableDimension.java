@@ -23,79 +23,78 @@ import java.io.Serializable;
  * A class that represents an array subscript of a variable declaration.
  *
  * @author RIKEN
- *
  */
 public class VariableDimension implements Serializable {
-	/** Serial number */
-	private static final long serialVersionUID = 1309109368271186155L;
-    private DimensionIndex[] indices = null;
+  /** Serial number */
+  private static final long serialVersionUID = 1309109368271186155L;
 
-    /**
-     * Constructor.
-     *
-     * @param inds
-     * Subscript array
-     */
-    public VariableDimension(DimensionIndex[] inds) {
-        this.indices = inds;
+  private DimensionIndex[] indices = null;
+
+  /**
+   * Constructor.
+   *
+   * @param inds Subscript array
+   */
+  public VariableDimension(DimensionIndex[] inds) {
+    this.indices = inds;
+  }
+
+  // ++++++++++++++++++++++++++++++++++++++++++++
+
+  protected DimensionIndex getIndex(int i) {
+    return this.indices[i];
+  }
+
+  public DimensionIndex[] getIndex() {
+    return this.indices;
+  }
+
+  protected void set_index_size(int size) {
+    indices = new DimensionIndex[size];
+  }
+
+  // ++++++++++++++++++++++++++++++++++++++++++++
+
+  protected void set_index_start(int i, Expression index_start) {
+    indices[i].set_start(index_start);
+  }
+
+  // ++++++++++++++++++++++++++++++++++++++++++++
+
+  protected void set_index_end(int i, Expression index_end) {
+    indices[i].set_end(index_end);
+  }
+
+  // ++++++++++++++++++++++++++++++++++++++++++++
+
+  protected int get_index_size() {
+    return (indices.length);
+  }
+
+  // ++++++++++++++++++++++++++++++++++++++++++++
+
+  protected Expression get_index_start(int i) {
+    return (indices[i].get_start());
+  }
+
+  // ++++++++++++++++++++++++++++++++++++++++++++
+
+  protected Expression get_index_end(int i) {
+    return (indices[i].get_end());
+  }
+
+  @Override
+  public String toString() {
+    StringBuilder st = new StringBuilder();
+    st.append("(");
+    for (int i = 0; i < indices.length; i++) {
+      st.append(this.get_index_start(i).toString());
+      st.append(":");
+      st.append(this.get_index_end(i).toString());
+      st.append(",");
     }
+    st.replace(st.length() - 1, st.length(), ")");
 
-    // ++++++++++++++++++++++++++++++++++++++++++++
-
-    protected DimensionIndex getIndex(int i) {
-        return this.indices[i];
-    }
-
-    public DimensionIndex[] getIndex() {
-        return this.indices;
-    }
-    protected void set_index_size(int size) {
-        indices = new DimensionIndex[size];
-    }
-
-    // ++++++++++++++++++++++++++++++++++++++++++++
-
-    protected void set_index_start(int i, Expression index_start) {
-        indices[i].set_start(index_start);
-    }
-
-    // ++++++++++++++++++++++++++++++++++++++++++++
-
-    protected void set_index_end(int i, Expression index_end) {
-        indices[i].set_end(index_end);
-    }
-
-    // ++++++++++++++++++++++++++++++++++++++++++++
-
-    protected int get_index_size() {
-        return (indices.length);
-    }
-
-    // ++++++++++++++++++++++++++++++++++++++++++++
-
-    protected Expression get_index_start(int i) {
-        return (indices[i].get_start());
-    }
-
-    // ++++++++++++++++++++++++++++++++++++++++++++
-
-    protected Expression get_index_end(int i) {
-        return (indices[i].get_end());
-    }
-
-    @Override
-    public String toString() {
-        StringBuilder st = new StringBuilder();
-        st.append("(");
-        for (int i = 0; i < indices.length; i++) {
-            st.append(this.get_index_start(i).toString());
-            st.append(":");
-            st.append(this.get_index_end(i).toString());
-            st.append(",");
-        }
-        st.replace(st.length() - 1, st.length()
-
-        , ")");
-        return st.toString();
-    }
+    return st.toString();
+  }
 }

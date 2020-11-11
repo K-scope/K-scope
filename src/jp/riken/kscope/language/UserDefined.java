@@ -21,35 +21,29 @@ package jp.riken.kscope.language;
  * A class that represents a user-defined processing block.
  *
  * @author RIKEN
- *
  */
 public class UserDefined extends Block {
-	/** Serial number */
-	private static final long serialVersionUID = -8357311499299755127L;
-    /**
-     *
-     * Constructor.
-     */
-    UserDefined() {
-        super();
-    }
+  /** Serial number */
+  private static final long serialVersionUID = -8357311499299755127L;
+  /** Constructor. */
+  UserDefined() {
+    super();
+  }
 
-    /**
-     *
-     * Constructor.
-     *
-     * @param mama
-     * Parent block
-     */
-    UserDefined(Block mama) {
-        super(mama);
-    }
-    /**
-     * Get block type.
-     *
-     * @return BlockType.USERDEFINITION
-     */
-    public BlockType getBlockType() {
-        return BlockType.USERDEFINITION;
-    }
+  /**
+   * Constructor.
+   *
+   * @param mama Parent block
+   */
+  UserDefined(Block mama) {
+    super(mama);
+  }
+  /**
+   * Get block type.
+   *
+   * @return BlockType.USERDEFINITION
+   */
+  public BlockType getBlockType() {
+    return BlockType.USERDEFINITION;
+  }
 }

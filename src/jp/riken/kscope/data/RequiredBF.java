@@ -18,195 +18,208 @@
 package jp.riken.kscope.data;
 
 import java.awt.Color;
-
 import jp.riken.kscope.common.ACCESSMEMORY_TYPE;
-
 
 /**
  * Request Byte / FLOP data class
+ *
  * @author RIKEN
  */
 public class RequiredBF {
 
-    /** Access type */
-    private ACCESSMEMORY_TYPE type;
-    /** Access name */
-    private String name;
-    /** Access background color */
-    private Color backColor;
-    /** Throughput: With store */
-    private float mem_throughput_store;
-    /** Throughput: No store */
-    private float mem_throughput_nostore;
-    /** Coefficient */
-    private float coef;
-    /** Request B / F calculation flag */
-    private boolean reqbf;
-    /** rate-determining */
-    private boolean limits;
-    /** Enabled / disabled flag */
-    private boolean enabled;
+  /** Access type */
+  private ACCESSMEMORY_TYPE type;
+  /** Access name */
+  private String name;
+  /** Access background color */
+  private Color backColor;
+  /** Throughput: With store */
+  private float mem_throughput_store;
+  /** Throughput: No store */
+  private float mem_throughput_nostore;
+  /** Coefficient */
+  private float coef;
+  /** Request B / F calculation flag */
+  private boolean reqbf;
+  /** rate-determining */
+  private boolean limits;
+  /** Enabled / disabled flag */
+  private boolean enabled;
 
-    /**
-     * Constructor
-     * @param type Access destination type
-     */
-    public RequiredBF(ACCESSMEMORY_TYPE type) {
-        this.setType(type);
-    }
+  /**
+   * Constructor
+   *
+   * @param type Access destination type
+   */
+  public RequiredBF(ACCESSMEMORY_TYPE type) {
+    this.setType(type);
+  }
 
-    /**
-     * Get the access destination background color.
-     * @return Access destination background color
-     */
-    public Color getBackColor() {
-        return backColor;
-    }
+  /**
+   * Get the access destination background color.
+   *
+   * @return Access destination background color
+   */
+  public Color getBackColor() {
+    return backColor;
+  }
 
-    /**
-     * Set the access destination background color
-     * @param color Access destination background color
-     */
-    public void setBackColor(Color color) {
-        this.backColor = color;
-    }
+  /**
+   * Set the access destination background color
+   *
+   * @param color Access destination background color
+   */
+  public void setBackColor(Color color) {
+    this.backColor = color;
+  }
 
-    /**
-     * Memory Throughput: Get with store.
-     * @return Memory Throughput: With store
-     */
-	public float getMemThroughputStore() {
-		return mem_throughput_store;
-	}
+  /**
+   * Memory Throughput: Get with store.
+   *
+   * @return Memory Throughput: With store
+   */
+  public float getMemThroughputStore() {
+    return mem_throughput_store;
+  }
 
-	/**
-* Memory Throughput: Set with store
-* @param mem_throughput_store Memory Throughput: With store
-*/
-	public void setMemThroughputStore(float mem_throughput_store) {
-		this.mem_throughput_store = mem_throughput_store;
-	}
+  /**
+   * Memory Throughput: Set with store
+   *
+   * @param mem_throughput_store Memory Throughput: With store
+   */
+  public void setMemThroughputStore(float mem_throughput_store) {
+    this.mem_throughput_store = mem_throughput_store;
+  }
 
-	/**
-* Memory Throughput: Get no store.
-* @return Memory Throughput: No store
-*/
-	public float getMemThroughputNostore() {
-		return mem_throughput_nostore;
-	}
+  /**
+   * Memory Throughput: Get no store.
+   *
+   * @return Memory Throughput: No store
+   */
+  public float getMemThroughputNostore() {
+    return mem_throughput_nostore;
+  }
 
-	/**
-* Memory Throughput: Set to no store.
-* @param mem_throughput_nostore Memory Throughput: No store
-*/
-	public void setMemThroughputNostore(float mem_throughput_nostore) {
-		this.mem_throughput_nostore = mem_throughput_nostore;
-	}
+  /**
+   * Memory Throughput: Set to no store.
+   *
+   * @param mem_throughput_nostore Memory Throughput: No store
+   */
+  public void setMemThroughputNostore(float mem_throughput_nostore) {
+    this.mem_throughput_nostore = mem_throughput_nostore;
+  }
 
-	/**
-* Get the coefficient.
-* @return coefficient
-*/
-	public float getCoef() {
-		return coef;
-	}
+  /**
+   * Get the coefficient.
+   *
+   * @return coefficient
+   */
+  public float getCoef() {
+    return coef;
+  }
 
-	/**
-* Set the coefficient.
-* @param coef coefficient
-*/
-	public void setCoef(float coef) {
-		this.coef = coef;
-	}
+  /**
+   * Set the coefficient.
+   *
+   * @param coef coefficient
+   */
+  public void setCoef(float coef) {
+    this.coef = coef;
+  }
 
-	/**
-* Get the request B / F calculation flag.
-* @return Request B / F calculation flag
-*/
-	public boolean isRequiredBF() {
-		return reqbf;
-	}
+  /**
+   * Get the request B / F calculation flag.
+   *
+   * @return Request B / F calculation flag
+   */
+  public boolean isRequiredBF() {
+    return reqbf;
+  }
 
-	/**
-* Set the request B / F calculation flag.
-* @param bf Request B / F calculation flag
-*/
-	public void setRequiredBF(boolean bf) {
-		this.reqbf = bf;
-	}
+  /**
+   * Set the request B / F calculation flag.
+   *
+   * @param bf Request B / F calculation flag
+   */
+  public void setRequiredBF(boolean bf) {
+    this.reqbf = bf;
+  }
 
-	/**
-* Get the rate-determining flag.
-* @return rate-determining flag
-*/
-	public boolean isLimiting() {
-		return limits;
-	}
+  /**
+   * Get the rate-determining flag.
+   *
+   * @return rate-determining flag
+   */
+  public boolean isLimiting() {
+    return limits;
+  }
 
-	/**
-* Set the rate-determining flag.
-* @param limits rate-determining flag
-*/
-	public void setLimiting(boolean limits) {
-		this.limits = limits;
-	}
+  /**
+   * Set the rate-determining flag.
+   *
+   * @param limits rate-determining flag
+   */
+  public void setLimiting(boolean limits) {
+    this.limits = limits;
+  }
 
-	/**
-* Get access type
-* @return Access type
-*/
-	public ACCESSMEMORY_TYPE getType() {
-		return type;
-	}
+  /**
+   * Get access type
+   *
+   * @return Access type
+   */
+  public ACCESSMEMORY_TYPE getType() {
+    return type;
+  }
 
-	/**
-* Set the access destination type
-* @param type Access destination type
-*/
-	public void setType(ACCESSMEMORY_TYPE type) {
-		this.type = type;
-	}
+  /**
+   * Set the access destination type
+   *
+   * @param type Access destination type
+   */
+  public void setType(ACCESSMEMORY_TYPE type) {
+    this.type = type;
+  }
 
-	/**
-* Get the enable / disable flag.
-* @return Enable / disable flag
-*/
-	public boolean isEnabled() {
-		return enabled;
-	}
+  /**
+   * Get the enable / disable flag.
+   *
+   * @return Enable / disable flag
+   */
+  public boolean isEnabled() {
+    return enabled;
+  }
 
-	/**
-* Set the enable / disable flag.
-* @param enabled Enable / disable flag
-*/
-	public void setEnabled(boolean enabled) {
-		this.enabled = enabled;
-	}
+  /**
+   * Set the enable / disable flag.
+   *
+   * @param enabled Enable / disable flag
+   */
+  public void setEnabled(boolean enabled) {
+    this.enabled = enabled;
+  }
 
-	/**
-* Set the access destination name
-* @return Access name
-*/
-	public void setName(String name) {
-		this.name = name;
-	}
+  /**
+   * Set the access destination name
+   *
+   * @return Access name
+   */
+  public void setName(String name) {
+    this.name = name;
+  }
 
-	/**
-* Get the access destination name
-* @return Access name
-*/
-	public String getName() {
-		return this.name;
-	}
+  /**
+   * Get the access destination name
+   *
+   * @return Access name
+   */
+  public String getName() {
+    return this.name;
+  }
 
-	/**
-* Access name
-*/
-	@Override
-	public String toString() {
-		return getName();
-	}
-
+  /** Access name */
+  @Override
+  public String toString() {
+    return getName();
+  }
 }
-
-

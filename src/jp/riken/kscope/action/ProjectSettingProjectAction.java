@@ -18,64 +18,62 @@ package jp.riken.kscope.action;
 
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
-
 import jp.riken.kscope.Application;
 import jp.riken.kscope.Message;
 import jp.riken.kscope.common.Constant;
-import jp.riken.kscope.data.ProjectPropertyValue;
 import jp.riken.kscope.dialog.SettingProjectDialog;
 import jp.riken.kscope.properties.ProjectProperties;
-//import jp.riken.kscope.properties.RemoteBuildProperties;
+// import jp.riken.kscope.properties.RemoteBuildProperties;
 import jp.riken.kscope.service.AppController;
 
 public class ProjectSettingProjectAction extends ActionBase {
 
-	private static boolean debug = (System.getenv("DEBUG")!= null);
-	private static boolean debug_l2 = false;
-	
-	/**
-* Constructor
-     * @param controller Application controller
-*/
-	public ProjectSettingProjectAction(AppController controller) {
-		super(controller);
-		if (debug) {
-			debug_l2 = (System.getenv("DEBUG").equalsIgnoreCase("high"));
-		}
-	}
-	
-	@Override
-	public void actionPerformed(ActionEvent event) {
-		final String message = Message.getString("projectsettingprojectaction.setup.status"); // Project settings
-		Application.status.setMessageMain(message);
-		
-		Frame frame = getWindowAncestor(event);
-		
-		// Last access folder
-        String currentFolder = this.controller.getLastAccessFolder();
-		
-		// Display the project setting dialog.
-        ProjectProperties properties = this.controller.getPropertiesProject();
-        
-		SettingProjectDialog dialog = new SettingProjectDialog(frame, true, properties);
-		dialog.setLastAccessFolder(currentFolder);
-		int result = dialog.showDialog();
-		if (result != Constant.OK_DIALOG) {
-        	Application.status.setMessageMain(message + 
-        			Message.getString("action.common.cancel.status")); //Cancel
-        	return;
-        }
-		properties = dialog.getProjectProperties();
-		if (debug) {
-			System.out.println("Project Properties has been changed. "+ properties.toString()); 
-		}
-		String title = properties.getPropertyValue(ProjectProperties.PRJ_TITLE).getValue();
-		this.controller.getProjectModel().setProjectTitle(title);
+  private static boolean debug = (System.getenv("DEBUG") != null);
+  private static boolean debug_l2 = false;
 
-        Application.status.setMessageMain(message +
-    			Message.getString("action.common.done.status")); // Done
-        return;
+  /**
+   * Constructor
+   *
+   * @param controller Application controller
+   */
+  public ProjectSettingProjectAction(AppController controller) {
+    super(controller);
+    if (debug) {
+      debug_l2 = (System.getenv("DEBUG").equalsIgnoreCase("high"));
+    }
+  }
 
-	}
+  @Override
+  public void actionPerformed(ActionEvent event) {
+    final String message =
+        Message.getString("projectsettingprojectaction.setup.status"); // Project settings
+    Application.status.setMessageMain(message);
 
+    Frame frame = getWindowAncestor(event);
+
+    // Last access folder
+    String currentFolder = this.controller.getLastAccessFolder();
+
+    // Display the project setting dialog.
+    ProjectProperties properties = this.controller.getPropertiesProject();
+
+    SettingProjectDialog dialog = new SettingProjectDialog(frame, true, properties);
+    dialog.setLastAccessFolder(currentFolder);
+    int result = dialog.showDialog();
+    if (result != Constant.OK_DIALOG) {
+      Application.status.setMessageMain(
+          message + Message.getString("action.common.cancel.status")); // Cancel
+      return;
+    }
+    properties = dialog.getProjectProperties();
+    if (debug) {
+      System.out.println("Project Properties has been changed. " + properties.toString());
+    }
+    String title = properties.getPropertyValue(ProjectProperties.PRJ_TITLE).getValue();
+    this.controller.getProjectModel().setProjectTitle(title);
+
+    Application.status.setMessageMain(
+        message + Message.getString("action.common.done.status")); // Done
+    return;
+  }
 }

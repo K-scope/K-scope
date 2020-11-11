@@ -23,16 +23,12 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
-
 import jp.riken.kscope.xcodeml.xml.*;
 
 /**
- * <p>
  * Java class for anonymous complex type.
  *
- * <p>
- * The following schema fragment specifies the expected content contained within
- * this class.
+ * <p>The following schema fragment specifies the expected content contained within this class.
  *
  * <pre>
  * &lt;complexType>
@@ -49,206 +45,182 @@ import jp.riken.kscope.xcodeml.xml.*;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- *
- *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "", propOrder = { "condition", "then", "_else" })
+@XmlType(
+    name = "",
+    propOrder = {"condition", "then", "_else"})
 @XmlRootElement(name = "FifStatement")
 public class FifStatement implements IDefBaseStatement, IXmlNode {
 
-    @XmlElement(required = true)
-    protected Condition condition;
-    @XmlElement(required = true)
-    protected Then then;
-    @XmlElement(name = "else")
-    protected Else _else;
-    @XmlAttribute
-    protected String lineno;
-    @XmlAttribute
-    protected String endlineno;
-    @XmlAttribute
-    protected String rawlineno;
-    @XmlAttribute
-    protected String file;
-    @XmlAttribute(name = "construct_name")
-    protected String constructName;
+  @XmlElement(required = true)
+  protected Condition condition;
 
-    /**
-     * Gets the value of the condition property.
-     *
-     * @return possible object is {@link Condition }
-     *
-     */
-    public Condition getCondition() {
-        return condition;
-    }
+  @XmlElement(required = true)
+  protected Then then;
 
-    /**
-     * Sets the value of the condition property.
-     *
-     * @param value
-     *            allowed object is {@link Condition }
-     *
-     */
-    public void setCondition(Condition value) {
-        this.condition = value;
-    }
+  @XmlElement(name = "else")
+  protected Else _else;
 
-    /**
-     * Gets the value of the then property.
-     *
-     * @return possible object is {@link Then }
-     *
-     */
-    public Then getThen() {
-        return then;
-    }
+  @XmlAttribute protected String lineno;
+  @XmlAttribute protected String endlineno;
+  @XmlAttribute protected String rawlineno;
+  @XmlAttribute protected String file;
 
-    /**
-     * Sets the value of the then property.
-     *
-     * @param value
-     *            allowed object is {@link Then }
-     *
-     */
-    public void setThen(Then value) {
-        this.then = value;
-    }
+  @XmlAttribute(name = "construct_name")
+  protected String constructName;
 
-    /**
-     * Gets the value of the else property.
-     *
-     * @return possible object is {@link Else }
-     *
-     */
-    public Else getElse() {
-        return _else;
-    }
+  /**
+   * Gets the value of the condition property.
+   *
+   * @return possible object is {@link Condition }
+   */
+  public Condition getCondition() {
+    return condition;
+  }
 
-    /**
-     * Sets the value of the else property.
-     *
-     * @param value
-     *            allowed object is {@link Else }
-     *
-     */
-    public void setElse(Else value) {
-        this._else = value;
-    }
+  /**
+   * Sets the value of the condition property.
+   *
+   * @param value allowed object is {@link Condition }
+   */
+  public void setCondition(Condition value) {
+    this.condition = value;
+  }
 
-    /**
-     * Gets the value of the lineno property.
-     *
-     * @return possible object is {@link String }
-     *
-     */
-    public String getLineno() {
-        return lineno;
-    }
+  /**
+   * Gets the value of the then property.
+   *
+   * @return possible object is {@link Then }
+   */
+  public Then getThen() {
+    return then;
+  }
 
-    /**
-     * Sets the value of the lineno property.
-     *
-     * @param value
-     *            allowed object is {@link String }
-     *
-     */
-    public void setLineno(String value) {
-        this.lineno = value;
-    }
+  /**
+   * Sets the value of the then property.
+   *
+   * @param value allowed object is {@link Then }
+   */
+  public void setThen(Then value) {
+    this.then = value;
+  }
 
-    /**
-     * Gets the value of the endlineno property.
-     *
-     * @return possible object is {@link String }
-     *
-     */
-    public String getEndlineno() {
-        return endlineno;
-    }
+  /**
+   * Gets the value of the else property.
+   *
+   * @return possible object is {@link Else }
+   */
+  public Else getElse() {
+    return _else;
+  }
 
-    /**
-     * Sets the value of the endlineno property.
-     *
-     * @param value
-     *            allowed object is {@link String }
-     *
-     */
-    public void setEndlineno(String value) {
-        this.endlineno = value;
-    }
+  /**
+   * Sets the value of the else property.
+   *
+   * @param value allowed object is {@link Else }
+   */
+  public void setElse(Else value) {
+    this._else = value;
+  }
 
-    /**
-     * Gets the value of the rawlineno property.
-     *
-     * @return possible object is {@link String }
-     *
-     */
-    public String getRawlineno() {
-        return rawlineno;
-    }
+  /**
+   * Gets the value of the lineno property.
+   *
+   * @return possible object is {@link String }
+   */
+  public String getLineno() {
+    return lineno;
+  }
 
-    /**
-     * Sets the value of the rawlineno property.
-     *
-     * @param value
-     *            allowed object is {@link String }
-     *
-     */
-    public void setRawlineno(String value) {
-        this.rawlineno = value;
-    }
+  /**
+   * Sets the value of the lineno property.
+   *
+   * @param value allowed object is {@link String }
+   */
+  public void setLineno(String value) {
+    this.lineno = value;
+  }
 
-    /**
-     * Gets the value of the file property.
-     *
-     * @return possible object is {@link String }
-     *
-     */
-    public String getFile() {
-        return file;
-    }
+  /**
+   * Gets the value of the endlineno property.
+   *
+   * @return possible object is {@link String }
+   */
+  public String getEndlineno() {
+    return endlineno;
+  }
 
-    /**
-     * Sets the value of the file property.
-     *
-     * @param value
-     *            allowed object is {@link String }
-     *
-     */
-    public void setFile(String value) {
-        this.file = value;
-    }
+  /**
+   * Sets the value of the endlineno property.
+   *
+   * @param value allowed object is {@link String }
+   */
+  public void setEndlineno(String value) {
+    this.endlineno = value;
+  }
 
-    /**
-     * Gets the value of the constructName property.
-     *
-     * @return possible object is {@link String }
-     *
-     */
-    public String getConstructName() {
-        return constructName;
-    }
+  /**
+   * Gets the value of the rawlineno property.
+   *
+   * @return possible object is {@link String }
+   */
+  public String getRawlineno() {
+    return rawlineno;
+  }
 
-    /**
-     * Sets the value of the constructName property.
-     *
-     * @param value
-     *            allowed object is {@link String }
-     *
-     */
-    public void setConstructName(String value) {
-        this.constructName = value;
-    }
+  /**
+   * Sets the value of the rawlineno property.
+   *
+   * @param value allowed object is {@link String }
+   */
+  public void setRawlineno(String value) {
+    this.rawlineno = value;
+  }
 
-    @Override
-    public boolean enter(jp.riken.kscope.xcodeml.xml.IXmlVisitor visitor) {
-        return (visitor.enter(this));
-    }
+  /**
+   * Gets the value of the file property.
+   *
+   * @return possible object is {@link String }
+   */
+  public String getFile() {
+    return file;
+  }
 
-    @Override
-    public void leave(jp.riken.kscope.xcodeml.xml.IXmlVisitor visitor) {
-        visitor.leave(this);
-    }
+  /**
+   * Sets the value of the file property.
+   *
+   * @param value allowed object is {@link String }
+   */
+  public void setFile(String value) {
+    this.file = value;
+  }
+
+  /**
+   * Gets the value of the constructName property.
+   *
+   * @return possible object is {@link String }
+   */
+  public String getConstructName() {
+    return constructName;
+  }
+
+  /**
+   * Sets the value of the constructName property.
+   *
+   * @param value allowed object is {@link String }
+   */
+  public void setConstructName(String value) {
+    this.constructName = value;
+  }
+
+  @Override
+  public boolean enter(jp.riken.kscope.xcodeml.xml.IXmlVisitor visitor) {
+    return (visitor.enter(this));
+  }
+
+  @Override
+  public void leave(jp.riken.kscope.xcodeml.xml.IXmlVisitor visitor) {
+    visitor.leave(this);
+  }
 }

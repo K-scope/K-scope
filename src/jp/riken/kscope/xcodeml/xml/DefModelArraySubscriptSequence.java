@@ -21,47 +21,51 @@ import java.util.List;
 
 /**
  * Array element class
+ *
  * @author RIKEN
  */
 public class DefModelArraySubscriptSequence implements IXmlNode {
 
-    /** Array element list */
-    protected List<IXmlNode> indexRangeOrArrayIndex;
+  /** Array element list */
+  protected List<IXmlNode> indexRangeOrArrayIndex;
 
-    /**
-     * Constructor
-     * @param index Array element list
-     */
-    public DefModelArraySubscriptSequence(List<IXmlNode> index) {
-        this.indexRangeOrArrayIndex = index;
-    }
+  /**
+   * Constructor
+   *
+   * @param index Array element list
+   */
+  public DefModelArraySubscriptSequence(List<IXmlNode> index) {
+    this.indexRangeOrArrayIndex = index;
+  }
 
-    /**
-     * Get a list of array elements
-     * @return Array element list
-     */
-    public IXmlNode[] getIndexRangeOrArrayIndex() {
-        IXmlNode[] array = new IXmlNode[indexRangeOrArrayIndex.size()];
-        return ((IXmlNode[]) indexRangeOrArrayIndex.toArray(array));
-    }
+  /**
+   * Get a list of array elements
+   *
+   * @return Array element list
+   */
+  public IXmlNode[] getIndexRangeOrArrayIndex() {
+    IXmlNode[] array = new IXmlNode[indexRangeOrArrayIndex.size()];
+    return ((IXmlNode[]) indexRangeOrArrayIndex.toArray(array));
+  }
 
-    /**
-     * Start parsing array elements
-     * @param visitor Parser Visitor
-     * @return Success or failure
-     */
-    @Override
-    public boolean enter(IXmlVisitor visitor) {
-        return (visitor.enter(this));
-    }
+  /**
+   * Start parsing array elements
+   *
+   * @param visitor Parser Visitor
+   * @return Success or failure
+   */
+  @Override
+  public boolean enter(IXmlVisitor visitor) {
+    return (visitor.enter(this));
+  }
 
-    /**
-     * Exit parsing of array elements
-     * @param visitor Parser Visitor
-     */
-    @Override
-    public void leave(IXmlVisitor visitor) {
-        visitor.leave(this);
-    }
-
+  /**
+   * Exit parsing of array elements
+   *
+   * @param visitor Parser Visitor
+   */
+  @Override
+  public void leave(IXmlVisitor visitor) {
+    visitor.leave(this);
+  }
 }

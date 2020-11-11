@@ -17,7 +17,6 @@
 package jp.riken.kscope.action;
 
 import java.awt.event.ActionEvent;
-
 import jp.riken.kscope.Application;
 import jp.riken.kscope.Message;
 import jp.riken.kscope.common.ANALYSIS_PANEL;
@@ -29,74 +28,75 @@ import jp.riken.kscope.service.AppController;
 
 /**
  * Search action (move previous, move next, clear) action
+ *
  * @author RIKEN
  */
 public class SearchResultAction extends ActionBase {
 
-    // Search direction
-    private TRACE_DIR searchDir;
+  // Search direction
+  private TRACE_DIR searchDir;
 
-    /**
-     * Constructor
-     * @param controller Application controller
-     * @param dir Search direction
-     */
-    public SearchResultAction(AppController controller, TRACE_DIR dir) {
-        super(controller);
-        this.searchDir = dir;
+  /**
+   * Constructor
+   *
+   * @param controller Application controller
+   * @param dir Search direction
+   */
+  public SearchResultAction(AppController controller, TRACE_DIR dir) {
+    super(controller);
+    this.searchDir = dir;
+  }
+
+  /**
+   * Check if the action is executable. <br>
+   * Check before executing the action and switch the menu enable. <br>
+   *
+   * @return true = Action can be executed
+   */
+  @Override
+  public boolean validateAction() {
+    SearchResultModel model = this.controller.getSearchResultModel();
+    String text = model.getSearchText();
+    return (text != null && !text.isEmpty());
+  }
+
+  /**
+   * Action occurrence event
+   *
+   * @param event Event information
+   */
+  @Override
+  public void actionPerformed(ActionEvent event) {
+
+    // Status bar
+    final String message = Application.status.getMessageMain().split(":")[0];
+    String actionMsg = null;
+
+    if (!validateAction()) return;
+
+    // Search result model
+    SearchResultPanel panel =
+        this.controller.getMainframe().getPanelAnalysisView().getPanelSearchResult();
+    if (this.searchDir == TRACE_DIR.UP) {
+      panel.moveUp();
+      actionMsg = Message.getString("searchresultaction.backward.status"); // Forward
+    } else if (this.searchDir == TRACE_DIR.DOWN) {
+      panel.moveDown();
+      actionMsg = Message.getString("searchresultaction.forward.status"); // next
+    } else if (this.searchDir == TRACE_DIR.END) {
+      panel.clearModel();
+
+      // Reset the search string highlight in Source view
+      this.controller.getMainframe().getPanelSourceView().clearSearchWords(KEYWORD_TYPE.SEARCH);
+      actionMsg = Message.getString("searchresultaction.clear.status"); // clear
+    } else if (this.searchDir == TRACE_DIR.REFRESH) {
+      // Reset the search string highlight in Source view
+      this.controller.setSearchKeywords();
+      actionMsg = Message.getString("searchresultaction.refresh.status"); // update
     }
 
-    /**
-     * Check if the action is executable. <br/>
-     * Check before executing the action and switch the menu enable. <br/>
-     * @return true = Action can be executed
-     */
-    @Override
-    public boolean validateAction() {
-        SearchResultModel model = this.controller.getSearchResultModel();
-        String text = model.getSearchText();
-        return (text != null && !text.isEmpty());
-    }
-
-    /**
-     * Action occurrence event
-     * @param event Event information
-     */
-    @Override
-    public void actionPerformed(ActionEvent event) {
-    	
-    	//Status bar
-    	final String message = Application.status.getMessageMain().split(":")[0];
-    	String actionMsg = null;
-
-        if (!validateAction()) return;
-
-        // Search result model
-        SearchResultPanel panel = this.controller.getMainframe().getPanelAnalysisView().getPanelSearchResult();
-        if (this.searchDir == TRACE_DIR.UP) {
-            panel.moveUp();
-            actionMsg = Message.getString("searchresultaction.backward.status"); //Forward
-        }
-        else if (this.searchDir == TRACE_DIR.DOWN) {
-            panel.moveDown();
-            actionMsg = Message.getString("searchresultaction.forward.status"); //next
-        }
-        else if (this.searchDir == TRACE_DIR.END) {
-            panel.clearModel();
-
-            // Reset the search string highlight in Source view
-            this.controller.getMainframe().getPanelSourceView().clearSearchWords(KEYWORD_TYPE.SEARCH);
-            actionMsg = Message.getString("searchresultaction.clear.status"); //clear
-        }
-        else if (this.searchDir == TRACE_DIR.REFRESH) {
-            // Reset the search string highlight in Source view
-            this.controller.setSearchKeywords();
-            actionMsg = Message.getString("searchresultaction.refresh.status"); //update
-        }
-
-        // Activate the search results tab
-        this.controller.setSelectedAnalysisPanel(ANALYSIS_PANEL.SEARCHRESULT);
-        Application.status.setMessageMain(message + ":" + actionMsg);
-    }
-
+    // Activate the search results tab
+    this.controller.setSelectedAnalysisPanel(ANALYSIS_PANEL.SEARCHRESULT);
+    Application.status.setMessageMain(message + ":" + actionMsg);
+  }
 }

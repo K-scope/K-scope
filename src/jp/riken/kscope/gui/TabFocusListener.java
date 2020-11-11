@@ -21,41 +21,43 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 
 /**
- * Focus listener. <br/>
+ * Focus listener. <br>
  * Get the component that is currently in focus.
- * @author RIKEN
  *
+ * @author RIKEN
  */
 public class TabFocusListener implements FocusListener {
 
-    /** Final focus component */
-    private ITabComponent lastTabComponent = null;
+  /** Final focus component */
+  private ITabComponent lastTabComponent = null;
 
-    /**
-     * Focus acquisition event
-     * @param event Event information
-     */
-    @Override
-    public void focusGained(FocusEvent event) {
-        Component forcus = event.getComponent();
-        if (forcus instanceof ITabComponent) {
-            this.lastTabComponent = (ITabComponent)forcus;
-        }
+  /**
+   * Focus acquisition event
+   *
+   * @param event Event information
+   */
+  @Override
+  public void focusGained(FocusEvent event) {
+    Component forcus = event.getComponent();
+    if (forcus instanceof ITabComponent) {
+      this.lastTabComponent = (ITabComponent) forcus;
     }
+  }
 
-    /**
-     * Loss of focus event
-     * @param event Event information
-     */
-    @Override
-    public void focusLost(FocusEvent event) {}
+  /**
+   * Loss of focus event
+   *
+   * @param event Event information
+   */
+  @Override
+  public void focusLost(FocusEvent event) {}
 
-    /**
-     * Get the final focus component.
-     * @return Final focus component
-     */
-    public ITabComponent getLastTabComponent() {
-        return this.lastTabComponent;
-    }
-
+  /**
+   * Get the final focus component.
+   *
+   * @return Final focus component
+   */
+  public ITabComponent getLastTabComponent() {
+    return this.lastTabComponent;
+  }
 }

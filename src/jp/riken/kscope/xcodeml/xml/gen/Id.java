@@ -22,16 +22,12 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
-
 import jp.riken.kscope.xcodeml.xml.*;
 
 /**
- * <p>
  * Java class for anonymous complex type.
  *
- * <p>
- * The following schema fragment specifies the expected content contained within
- * this class.
+ * <p>The following schema fragment specifies the expected content contained within this class.
  *
  * <pre>
  * &lt;complexType>
@@ -46,90 +42,79 @@ import jp.riken.kscope.xcodeml.xml.*;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- *
- *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "", propOrder = { "name" })
+@XmlType(
+    name = "",
+    propOrder = {"name"})
 @XmlRootElement(name = "id")
 public class Id implements IXmlNode {
 
-    protected Name name;
-    @XmlAttribute
-    protected DefChoiceSclass sclass;
-    @XmlAttribute
-    protected String type;
+  protected Name name;
+  @XmlAttribute protected DefChoiceSclass sclass;
+  @XmlAttribute protected String type;
 
-    /**
-     * Gets the value of the name property.
-     *
-     * @return possible object is {@link Name }
-     *
-     */
-    public Name getName() {
-        return name;
-    }
+  /**
+   * Gets the value of the name property.
+   *
+   * @return possible object is {@link Name }
+   */
+  public Name getName() {
+    return name;
+  }
 
-    /**
-     * Sets the value of the name property.
-     *
-     * @param value
-     *            allowed object is {@link Name }
-     *
-     */
-    public void setName(Name value) {
-        this.name = value;
-    }
+  /**
+   * Sets the value of the name property.
+   *
+   * @param value allowed object is {@link Name }
+   */
+  public void setName(Name value) {
+    this.name = value;
+  }
 
-    /**
-     * Gets the value of the sclass property.
-     *
-     * @return possible object is {@link DefChoiceSclass }
-     *
-     */
-    public DefChoiceSclass getSclass() {
-        return sclass;
-    }
+  /**
+   * Gets the value of the sclass property.
+   *
+   * @return possible object is {@link DefChoiceSclass }
+   */
+  public DefChoiceSclass getSclass() {
+    return sclass;
+  }
 
-    /**
-     * Sets the value of the sclass property.
-     *
-     * @param value
-     *            allowed object is {@link DefChoiceSclass }
-     *
-     */
-    public void setSclass(DefChoiceSclass value) {
-        this.sclass = value;
-    }
+  /**
+   * Sets the value of the sclass property.
+   *
+   * @param value allowed object is {@link DefChoiceSclass }
+   */
+  public void setSclass(DefChoiceSclass value) {
+    this.sclass = value;
+  }
 
-    /**
-     * Gets the value of the type property.
-     *
-     * @return possible object is {@link String }
-     *
-     */
-    public String getType() {
-        return type;
-    }
+  /**
+   * Gets the value of the type property.
+   *
+   * @return possible object is {@link String }
+   */
+  public String getType() {
+    return type;
+  }
 
-    /**
-     * Sets the value of the type property.
-     *
-     * @param value
-     *            allowed object is {@link String }
-     *
-     */
-    public void setType(String value) {
-        this.type = value;
-    }
+  /**
+   * Sets the value of the type property.
+   *
+   * @param value allowed object is {@link String }
+   */
+  public void setType(String value) {
+    this.type = value;
+  }
 
-    @Override
-    public boolean enter(jp.riken.kscope.xcodeml.xml.IXmlVisitor visitor) {
-        return (visitor.enter(this));
-    }
+  @Override
+  public boolean enter(jp.riken.kscope.xcodeml.xml.IXmlVisitor visitor) {
+    return (visitor.enter(this));
+  }
 
-    @Override
-    public void leave(jp.riken.kscope.xcodeml.xml.IXmlVisitor visitor) {
-        visitor.leave(this);
-    }
+  @Override
+  public void leave(jp.riken.kscope.xcodeml.xml.IXmlVisitor visitor) {
+    visitor.leave(this);
+  }
 }

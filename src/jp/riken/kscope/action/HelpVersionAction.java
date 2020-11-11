@@ -17,41 +17,38 @@
 package jp.riken.kscope.action;
 
 import java.awt.event.ActionEvent;
-
 import jp.riken.kscope.dialog.AboutDialog;
 import jp.riken.kscope.service.AppController;
 
 /**
  * Display the version information dialog
- * @author RIKEN
  *
+ * @author RIKEN
  */
 public class HelpVersionAction extends ActionBase {
 
-    /**
-     * Constructor
-     * @param controller Application controller
-     */
-    public HelpVersionAction(AppController controller) {
-        super(controller);
-    }
+  /**
+   * Constructor
+   *
+   * @param controller Application controller
+   */
+  public HelpVersionAction(AppController controller) {
+    super(controller);
+  }
 
+  /**
+   * Action occurrence event
+   *
+   * @param event Event information
+   */
+  @Override
+  public void actionPerformed(ActionEvent event) {
+    showAboutDialog();
+  }
 
-    /**
-     * Action occurrence event
-     * @param event Event information
-     */
-    @Override
-    public void actionPerformed(ActionEvent event) {
-        showAboutDialog();
-    }
-
-    /**
-     * Display the version information dialog
-     */
-    public void showAboutDialog() {
-        AboutDialog dialog = new AboutDialog(this.controller.getMainframe(), true);
-        dialog.showDialog();
-    }
-
+  /** Display the version information dialog */
+  public void showAboutDialog() {
+    AboutDialog dialog = new AboutDialog(this.controller.getMainframe(), true);
+    dialog.showDialog();
+  }
 }

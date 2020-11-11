@@ -20,26 +20,25 @@ package jp.riken.kscope.profiler.dprof;
  * Hold file information
  *
  * @author RIKEN
- *
  */
 public class FileInfo {
-    private String fileName;
+  private String fileName;
 
-    /**
-     * Get the file name
-     * @return filename
-     */
-    public String getFileName() {
-        return fileName;
-    }
+  /**
+   * Get the file name
+   *
+   * @return filename
+   */
+  public String getFileName() {
+    return fileName;
+  }
 
-    /**
-     * Set the file name
-     * @param fileName
-     * File name to set
-     */
-    public void setFileName(String fileName) {
-        this.fileName = fileName;
-    }
-
+  /**
+   * Set the file name
+   *
+   * @param fileName File name to set
+   */
+  public void setFileName(String fileName) {
+    this.fileName = fileName;
+  }
 }

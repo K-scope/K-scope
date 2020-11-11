@@ -18,9 +18,7 @@ package jp.riken.kscope.action;
 
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
-
 import javax.swing.JOptionPane;
-
 import jp.riken.kscope.Application;
 import jp.riken.kscope.Message;
 import jp.riken.kscope.gui.ConsolePanel;
@@ -30,115 +28,128 @@ import jp.riken.kscope.service.AppController;
 
 /**
  * Project close action
+ *
  * @author RIKEN
  */
 public class FileProjectCloseAction extends ActionBase {
 
-    /**
-     * Constructor
-     * @param controller Application controller
-     */
-    public FileProjectCloseAction(AppController controller) {
-        super(controller);
-    }
+  /**
+   * Constructor
+   *
+   * @param controller Application controller
+   */
+  public FileProjectCloseAction(AppController controller) {
+    super(controller);
+  }
 
-    /**
-     * Check if the action is executable. <br/>
-     * Check before executing the action and switch the menu enable. <br/>
-     * @return true = Action can be executed
-     */
-    @Override
-    public boolean validateAction() {
-        // The project has been created
-        ProjectModel model = this.controller.getProjectModel();
-        if (model == null) return false;
-        if (model.getProjectTitle() == null) return false;
-        if (model.getProjectFolder() == null || !model.getProjectFolder().exists()) return false;
+  /**
+   * Check if the action is executable. <br>
+   * Check before executing the action and switch the menu enable. <br>
+   *
+   * @return true = Action can be executed
+   */
+  @Override
+  public boolean validateAction() {
+    // The project has been created
+    ProjectModel model = this.controller.getProjectModel();
+    if (model == null) return false;
+    if (model.getProjectTitle() == null) return false;
+    if (model.getProjectFolder() == null || !model.getProjectFolder().exists()) return false;
 
-        // Check the execution status of the thread task
-        return this.controller.isThreadTaskDone();
-    }
+    // Check the execution status of the thread task
+    return this.controller.isThreadTaskDone();
+  }
 
-    /**
-     * Action occurrence event
-     * @param event Event information
-     */
-    @Override
-    public void actionPerformed(ActionEvent event) {
-        final String message = Message.getString("mainmenu.file.closeproject"); // close the project
+  /**
+   * Action occurrence event
+   *
+   * @param event Event information
+   */
+  @Override
+  public void actionPerformed(ActionEvent event) {
+    final String message = Message.getString("mainmenu.file.closeproject"); // close the project
+    // Status message
+    Application.status.setMessageMain(message);
+
+    // Get the parent Frame.
+    Frame frame = getWindowAncestor(event);
+
+    try {
+
+      // Display a confirmation message.
+      int option =
+          JOptionPane.showConfirmDialog(
+              frame,
+              Message.getString(
+                  "fileprojectaloseaction.closeproject.dialog.message"), // Do you want to close the
+                                                                         // project?
+              message, // close the project
+              JOptionPane.OK_CANCEL_OPTION,
+              JOptionPane.WARNING_MESSAGE);
+      if (option != JOptionPane.OK_OPTION) {
         // Status message
-        Application.status.setMessageMain(message);
+        Application.status.setMessageMain(
+            message + Message.getString("action.common.cancel.status")); // :Cancel
+        return;
+      }
 
-        // Get the parent Frame.
-        Frame frame = getWindowAncestor( event );
+      closeProject();
 
-        try {
+    } catch (Exception ex) {
+      ex.printStackTrace();
 
-            // Display a confirmation message.
-            int option = JOptionPane.showConfirmDialog(frame,
-                    Message.getString("fileprojectaloseaction.closeproject.dialog.message"), // Do you want to close the project?
-                    message, // close the project
-                    JOptionPane.OK_CANCEL_OPTION,
-                    JOptionPane.WARNING_MESSAGE);
-            if (option != JOptionPane.OK_OPTION) {
-                // Status message
-                Application.status.setMessageMain(message + Message.getString("action.common.cancel.status")); //:Cancel
-                return;
-            }
+      // Error display on the error location panel
+      this.controller.getErrorInfoModel().addErrorInfo(ex);
 
-            closeProject();
+      // Error message
+      JOptionPane.showMessageDialog(
+          frame,
+          Message.getString(
+              "fileprojectaloseaction.clearerror.dialog.message"), // Project clear error
+          message + Message.getString("action.common.error.status"), // :error
+          JOptionPane.ERROR_MESSAGE);
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-
-            // Error display on the error location panel
-            this.controller.getErrorInfoModel().addErrorInfo(ex);
-
-            // Error message
-            JOptionPane.showMessageDialog(frame,
-                    Message.getString("fileprojectaloseaction.clearerror.dialog.message"), // Project clear error
-                    message + Message.getString("action.common.error.status"), //:error
-                    JOptionPane.ERROR_MESSAGE);
-
-            // Status message
-            Application.status.setMessageMain(message + Message.getString("action.common.error.status")); //:error
-        }
+      // Status message
+      Application.status.setMessageMain(
+          message + Message.getString("action.common.error.status")); // :error
     }
+  }
 
-	/**
-	 * @param message
-	 * @throws Exception
-	 */
-	public void closeProject() throws Exception {
-		// clear the console
-		ConsolePanel console = this.controller.getMainframe().getPanelAnalysisView().getPanelConsole();
-		console.clearConsole();
+  /**
+   * @param message
+   * @throws Exception
+   */
+  public void closeProject() throws Exception {
+    // clear the console
+    ConsolePanel console = this.controller.getMainframe().getPanelAnalysisView().getPanelConsole();
+    console.clearConsole();
 
-		// clear the project
-		clearProject();
+    // clear the project
+    clearProject();
 
-		final String message = Message.getString("mainmenu.file.closeproject"); // close the project
-		// Status message
-		Application.status.setMessageMain(message + Message.getString("action.common.done.status")); //: Done
-	}
+    final String message = Message.getString("mainmenu.file.closeproject"); // close the project
+    // Status message
+    Application.status.setMessageMain(
+        message + Message.getString("action.common.done.status")); // : Done
+  }
 
-    /**
-     * Clear the project
-     * @throws Exception Project clear error
-     */
-    public void clearProject() throws Exception {
+  /**
+   * Clear the project
+   *
+   * @throws Exception Project clear error
+   */
+  public void clearProject() throws Exception {
 
-        // Clear analysis information
-        ProjectClearLanguageAction action = new ProjectClearLanguageAction(this.controller);
-        action.clearFortranLanguage();
+    // Clear analysis information
+    ProjectClearLanguageAction action = new ProjectClearLanguageAction(this.controller);
+    action.clearFortranLanguage();
 
-        // clear the XML tree
-        FileTreeModel treeModel = this.controller.getXmlTreeModel();
-        treeModel.setProjectFolder(null);
-        treeModel.clearTreeModel();
+    // clear the XML tree
+    FileTreeModel treeModel = this.controller.getXmlTreeModel();
+    treeModel.setProjectFolder(null);
+    treeModel.clearTreeModel();
 
-        // Clear the project
-        this.controller.clearProject();
-
-    }
+    // Clear the project
+    this.controller.clearProject();
+  }
 }

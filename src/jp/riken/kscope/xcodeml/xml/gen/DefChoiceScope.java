@@ -22,12 +22,10 @@ import javax.xml.bind.annotation.XmlEnumValue;
 import javax.xml.bind.annotation.XmlType;
 
 /**
- * <p>
  * Java class for defChoiceScope.
  *
- * <p>
- * The following schema fragment specifies the expected content contained within
- * this class.
+ * <p>The following schema fragment specifies the expected content contained within this class.
+ *
  * <p>
  *
  * <pre>
@@ -39,50 +37,54 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/restriction>
  * &lt;/simpleType>
  * </pre>
- *
  */
 @XmlType(name = "defChoiceScope")
 @XmlEnum
 public enum DefChoiceScope {
 
-    /** local */
-    @XmlEnumValue("local") LOCAL("local"),
-    /** global */
-    @XmlEnumValue("global") GLOBAL("global"),
-    /** param */
-    @XmlEnumValue("param") PARAM("param");
+  /** local */
+  @XmlEnumValue("local")
+  LOCAL("local"),
+  /** global */
+  @XmlEnumValue("global")
+  GLOBAL("global"),
+  /** param */
+  @XmlEnumValue("param")
+  PARAM("param");
 
-    /** Identification name */
-    private final String value;
+  /** Identification name */
+  private final String value;
 
-    /**
-     * Constructor
-     * @param v Distinguished name
-     */
-    DefChoiceScope(String v) {
-        value = v;
+  /**
+   * Constructor
+   *
+   * @param v Distinguished name
+   */
+  DefChoiceScope(String v) {
+    value = v;
+  }
+
+  /**
+   * Get the distinguished name
+   *
+   * @return Distinguished name
+   */
+  public String value() {
+    return value;
+  }
+
+  /**
+   * Get the DefChoiceScope class from the distinguished name
+   *
+   * @param v Distinguished name
+   * @return DefChoiceSclass
+   */
+  public static DefChoiceScope fromValue(String v) {
+    for (DefChoiceScope c : DefChoiceScope.values()) {
+      if (c.value.equals(v)) {
+        return c;
+      }
     }
-
-    /**
-     * Get the distinguished name
-     * @return Distinguished name
-     */
-    public String value() {
-        return value;
-    }
-
-    /**
-     * Get the DefChoiceScope class from the distinguished name
-     * @param v Distinguished name
-     * @return DefChoiceSclass
-     */
-    public static DefChoiceScope fromValue(String v) {
-        for (DefChoiceScope c : DefChoiceScope.values()) {
-            if (c.value.equals(v)) {
-                return c;
-            }
-        }
-        throw new IllegalArgumentException(v);
-    }
-
+    throw new IllegalArgumentException(v);
+  }
 }

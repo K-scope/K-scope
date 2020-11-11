@@ -26,16 +26,12 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
-
 import jp.riken.kscope.xcodeml.xml.*;
 
 /**
- * <p>
  * Java class for anonymous complex type.
  *
- * <p>
- * The following schema fragment specifies the expected content contained within
- * this class.
+ * <p>The following schema fragment specifies the expected content contained within this class.
  *
  * <pre>
  * &lt;complexType>
@@ -55,108 +51,96 @@ import jp.riken.kscope.xcodeml.xml.*;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- *
- *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "", propOrder = { "varRef",
-        "indexRangeOrArrayIndexOrFarrayConstructor" })
+@XmlType(
+    name = "",
+    propOrder = {"varRef", "indexRangeOrArrayIndexOrFarrayConstructor"})
 @XmlRootElement(name = "FarrayRef")
 public class FarrayRef implements IXmlNode {
 
-    @XmlElement(required = true)
-    protected VarRef varRef;
-    @XmlElements({
-            @XmlElement(name = "FarrayRef", type = FarrayRef.class),
-            @XmlElement(name = "indexRange", type = IndexRange.class),
-            @XmlElement(name = "FarrayConstructor", type = FarrayConstructor.class),
-            @XmlElement(name = "arrayIndex", type = ArrayIndex.class) })
-    protected List<IXmlNode> indexRangeOrArrayIndexOrFarrayConstructor;
-    @XmlAttribute
-    protected String type;
+  @XmlElement(required = true)
+  protected VarRef varRef;
 
-    /**
-     * Gets the value of the varRef property.
-     *
-     * @return possible object is {@link VarRef }
-     *
-     */
-    public VarRef getVarRef() {
-        return varRef;
-    }
+  @XmlElements({
+    @XmlElement(name = "FarrayRef", type = FarrayRef.class),
+    @XmlElement(name = "indexRange", type = IndexRange.class),
+    @XmlElement(name = "FarrayConstructor", type = FarrayConstructor.class),
+    @XmlElement(name = "arrayIndex", type = ArrayIndex.class)
+  })
+  protected List<IXmlNode> indexRangeOrArrayIndexOrFarrayConstructor;
 
-    /**
-     * Sets the value of the varRef property.
-     *
-     * @param value
-     *            allowed object is {@link VarRef }
-     *
-     */
-    public void setVarRef(VarRef value) {
-        this.varRef = value;
-    }
+  @XmlAttribute protected String type;
 
-    /**
-     * Gets the value of the indexRangeOrArrayIndexOrFarrayConstructor property.
-     *
-     * <p>
-     * This accessor method returns a reference to the live list, not a
-     * snapshot. Therefore any modification you make to the returned list will
-     * be present inside the JAXB object. This is why there is not a
-     * <CODE>set</CODE> method for the indexRangeOrArrayIndexOrFarrayConstructor
-     * property.
-     *
-     * <p>
-     * For example, to add a new item, do as follows:
-     *
-     * <pre>
-     * getIndexRangeOrArrayIndexOrFarrayConstructor().add(newItem);
-     * </pre>
-     *
-     *
-     * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link FarrayRef } {@link IndexRange } {@link FarrayConstructor }
-     * {@link ArrayIndex }
-     *
-     * @return      IXmlNode List
-     *
-     */
-    public List<IXmlNode> getIndexRangeOrArrayIndexOrFarrayConstructor() {
-        if (indexRangeOrArrayIndexOrFarrayConstructor == null) {
-            indexRangeOrArrayIndexOrFarrayConstructor = new ArrayList<IXmlNode>();
-        }
-        return this.indexRangeOrArrayIndexOrFarrayConstructor;
-    }
+  /**
+   * Gets the value of the varRef property.
+   *
+   * @return possible object is {@link VarRef }
+   */
+  public VarRef getVarRef() {
+    return varRef;
+  }
 
-    /**
-     * Gets the value of the type property.
-     *
-     * @return possible object is {@link String }
-     *
-     */
-    public String getType() {
-        return type;
-    }
+  /**
+   * Sets the value of the varRef property.
+   *
+   * @param value allowed object is {@link VarRef }
+   */
+  public void setVarRef(VarRef value) {
+    this.varRef = value;
+  }
 
-    /**
-     * Sets the value of the type property.
-     *
-     * @param value
-     *            allowed object is {@link String }
-     *
-     */
-    public void setType(String value) {
-        this.type = value;
+  /**
+   * Gets the value of the indexRangeOrArrayIndexOrFarrayConstructor property.
+   *
+   * <p>This accessor method returns a reference to the live list, not a snapshot. Therefore any
+   * modification you make to the returned list will be present inside the JAXB object. This is why
+   * there is not a <CODE>set</CODE> method for the indexRangeOrArrayIndexOrFarrayConstructor
+   * property.
+   *
+   * <p>For example, to add a new item, do as follows:
+   *
+   * <pre>
+   * getIndexRangeOrArrayIndexOrFarrayConstructor().add(newItem);
+   * </pre>
+   *
+   * <p>Objects of the following type(s) are allowed in the list {@link FarrayRef } {@link
+   * IndexRange } {@link FarrayConstructor } {@link ArrayIndex }
+   *
+   * @return IXmlNode List
+   */
+  public List<IXmlNode> getIndexRangeOrArrayIndexOrFarrayConstructor() {
+    if (indexRangeOrArrayIndexOrFarrayConstructor == null) {
+      indexRangeOrArrayIndexOrFarrayConstructor = new ArrayList<IXmlNode>();
     }
+    return this.indexRangeOrArrayIndexOrFarrayConstructor;
+  }
 
-    @Override
-    public boolean enter(jp.riken.kscope.xcodeml.xml.IXmlVisitor visitor) {
-        return (visitor.enter(this));
-    }
+  /**
+   * Gets the value of the type property.
+   *
+   * @return possible object is {@link String }
+   */
+  public String getType() {
+    return type;
+  }
 
-    @Override
-    public void leave(jp.riken.kscope.xcodeml.xml.IXmlVisitor visitor) {
-        visitor.leave(this);
-    }
+  /**
+   * Sets the value of the type property.
+   *
+   * @param value allowed object is {@link String }
+   */
+  public void setType(String value) {
+    this.type = value;
+  }
+
+  @Override
+  public boolean enter(jp.riken.kscope.xcodeml.xml.IXmlVisitor visitor) {
+    return (visitor.enter(this));
+  }
+
+  @Override
+  public void leave(jp.riken.kscope.xcodeml.xml.IXmlVisitor visitor) {
+    visitor.leave(this);
+  }
 }

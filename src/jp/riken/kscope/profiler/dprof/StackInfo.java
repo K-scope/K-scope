@@ -22,81 +22,84 @@ package jp.riken.kscope.profiler.dprof;
  * @author RIKEN
  */
 public class StackInfo {
-    /** Nest level */
-    private int nestLevel;
-    /** Number of samples */
-    private float sampNum;
-    /** Cumulative sampling number */
-    private float sumSampNum;
-    /** Symbol name */
-    private String symbolName;
+  /** Nest level */
+  private int nestLevel;
+  /** Number of samples */
+  private float sampNum;
+  /** Cumulative sampling number */
+  private float sumSampNum;
+  /** Symbol name */
+  private String symbolName;
 
-    /**
-     * Get the nesting level
-     * @return Nested level
-     */
-    public int getNestLevel() {
-        return nestLevel;
-    }
+  /**
+   * Get the nesting level
+   *
+   * @return Nested level
+   */
+  public int getNestLevel() {
+    return nestLevel;
+  }
 
-    /**
-     * Get the number of samples
-     * @return Number of samples
-     */
-    public float getSampNum() {
-        return sampNum;
-    }
+  /**
+   * Get the number of samples
+   *
+   * @return Number of samples
+   */
+  public float getSampNum() {
+    return sampNum;
+  }
 
-    /**
-     * Get the cumulative number of samples
-     * @return Cumulative sampling number
-     */
-    public float getSumSampNum() {
-        return sumSampNum;
-    }
+  /**
+   * Get the cumulative number of samples
+   *
+   * @return Cumulative sampling number
+   */
+  public float getSumSampNum() {
+    return sumSampNum;
+  }
 
-    /**
-     * Get the symbol name
-     * @return Symbol name
-     */
-    public String getSymbolName() {
-        return symbolName;
-    }
+  /**
+   * Get the symbol name
+   *
+   * @return Symbol name
+   */
+  public String getSymbolName() {
+    return symbolName;
+  }
 
-    /**
-     * Set the nesting level
-     * @param nestLevel
-     * Nest level to set
-     */
-    public void setNestLevel(int nestLevel) {
-        this.nestLevel = nestLevel;
-    }
+  /**
+   * Set the nesting level
+   *
+   * @param nestLevel Nest level to set
+   */
+  public void setNestLevel(int nestLevel) {
+    this.nestLevel = nestLevel;
+  }
 
-    /**
-     * Set the number of samplings
-     * @param sampNum
-     * Number of samplings to set
-     */
-    public void setSampNum(float sampNum) {
-        this.sampNum = sampNum;
-    }
+  /**
+   * Set the number of samplings
+   *
+   * @param sampNum Number of samplings to set
+   */
+  public void setSampNum(float sampNum) {
+    this.sampNum = sampNum;
+  }
 
-    /**
-     * Set the cumulative number of samplings
-     * @param sumSampNum
-     * Cumulative sampling number to set
-     */
-    public void setSumSampNum(float sumSampNum) {
-        this.sumSampNum = sumSampNum;
-    }
+  /**
+   * Set the cumulative number of samplings
+   *
+   * @param sumSampNum Cumulative sampling number to set
+   */
+  public void setSumSampNum(float sumSampNum) {
+    this.sumSampNum = sumSampNum;
+  }
 
-    /**
-     * Set the symbol name
-     * @param symbolName
-     * Symbol name to set
-     */
-    public void setSymbolName(String symbolName) {
-        this.symbolName = symbolName;
-    }
-
+  /**
+   * Set the symbol name
+   *
+   * @param symbolName Symbol name to set
+   */
+  public void setSymbolName(String symbolName) {
+    this.symbolName = symbolName;
+  }
 }

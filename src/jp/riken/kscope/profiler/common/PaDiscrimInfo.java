@@ -22,92 +22,92 @@ package jp.riken.kscope.profiler.common;
  * @author RIKEN
  */
 public class PaDiscrimInfo {
-    private short cpu;
-    private short event_nbr;
-    private short pa_ver;
-    private short reserve;
+  private short cpu;
+  private short event_nbr;
+  private short pa_ver;
+  private short reserve;
 
-    /**
-     * Get CPU type
-     * @return CPU type
-     * <br>
-     * <br>
-     * CPU type <br>
-     * 0x0000 Itanium Madison (PQ V1) <br>
-     * 0x0001 Itanium Montesito (Dual core) (PQ V2) <br>
-     * 0x0002 AMD Opteron (Quad core) (PG V3) <br>
-     * 0x0003 SPARC64 VII Jupiter (PW V3) <br>
-     * 0x0004 Opteron (PG V3 collection-> analysis unified with 0x0002) <br>
-     * 0x0005 Xeon Core 2 (PG V3 Woodcrest, Harpertown) <br>
-     * 0x0006 Xeon Coer i7 (PG V3 Nehalem) <br>
-      * 0x0007 SPARC64 VIII Venus (PETA) <br>
-      * 0x0008 SPARC64 IX fx (PETA) <br>
-      * 0x0009 Xeon CORE (TM) PROCESSOR 2XXX SERIES (PCC Sandy Brige) <br>
-      *
-     */
-    public short getCpu() {
-        return cpu;
-    }
+  /**
+   * Get CPU type
+   *
+   * @return CPU type <br>
+   *     <br>
+   *     CPU type <br>
+   *     0x0000 Itanium Madison (PQ V1) <br>
+   *     0x0001 Itanium Montesito (Dual core) (PQ V2) <br>
+   *     0x0002 AMD Opteron (Quad core) (PG V3) <br>
+   *     0x0003 SPARC64 VII Jupiter (PW V3) <br>
+   *     0x0004 Opteron (PG V3 collection-> analysis unified with 0x0002) <br>
+   *     0x0005 Xeon Core 2 (PG V3 Woodcrest, Harpertown) <br>
+   *     0x0006 Xeon Coer i7 (PG V3 Nehalem) <br>
+   *     0x0007 SPARC64 VIII Venus (PETA) <br>
+   *     0x0008 SPARC64 IX fx (PETA) <br>
+   *     0x0009 Xeon CORE (TM) PROCESSOR 2XXX SERIES (PCC Sandy Brige) <br>
+   */
+  public short getCpu() {
+    return cpu;
+  }
 
-    /**
-     * Get the number of events
-     * @return Number of events
-     */
-    public short getEvent_nbr() {
-        return event_nbr;
-    }
+  /**
+   * Get the number of events
+   *
+   * @return Number of events
+   */
+  public short getEvent_nbr() {
+    return event_nbr;
+  }
 
-    /**
-     * Get PA version
-     * @return PA version (serial number)
-     */
-    public short getPa_ver() {
-        return pa_ver;
-    }
+  /**
+   * Get PA version
+   *
+   * @return PA version (serial number)
+   */
+  public short getPa_ver() {
+    return pa_ver;
+  }
 
-    /**
-     * Get reserve
-     * @return reserve
-     */
-    public short getReserve() {
-        return reserve;
-    }
+  /**
+   * Get reserve
+   *
+   * @return reserve
+   */
+  public short getReserve() {
+    return reserve;
+  }
 
-    /**
-     * Set CPU type
-     * @param cpu
-     * CPU type to set
-     *
-     */
-    public void setCpu(short cpu) {
-        this.cpu = cpu;
-    }
+  /**
+   * Set CPU type
+   *
+   * @param cpu CPU type to set
+   */
+  public void setCpu(short cpu) {
+    this.cpu = cpu;
+  }
 
-    /**
-     * Set the number of events
-     * @param event_nbr
-     * Number of events to set
-     */
-    public void setEvent_nbr(short event_nbr) {
-        this.event_nbr = event_nbr;
-    }
+  /**
+   * Set the number of events
+   *
+   * @param event_nbr Number of events to set
+   */
+  public void setEvent_nbr(short event_nbr) {
+    this.event_nbr = event_nbr;
+  }
 
-    /**
-     * Set PA version
-     * @param pa_ver
-     * PA version to set (serial number)
-     */
-    public void setPa_ver(short pa_ver) {
-        this.pa_ver = pa_ver;
-    }
+  /**
+   * Set PA version
+   *
+   * @param pa_ver PA version to set (serial number)
+   */
+  public void setPa_ver(short pa_ver) {
+    this.pa_ver = pa_ver;
+  }
 
-    /**
-     * Set reserve
-     * @param reserve
-     * Reserve to set
-     */
-    public void setReserve(short reserve) {
-        this.reserve = reserve;
-    }
-
+  /**
+   * Set reserve
+   *
+   * @param reserve Reserve to set
+   */
+  public void setReserve(short reserve) {
+    this.reserve = reserve;
+  }
 }

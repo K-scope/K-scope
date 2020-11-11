@@ -17,50 +17,55 @@
 package jp.riken.kscope.gui;
 
 import java.awt.Color;
-
 import jp.riken.kscope.data.CodeLine;
 import jp.riken.kscope.data.SourceFile;
 
 /**
  * Source view bar graph interface class
+ *
  * @author RIKEN
  */
 public interface ISourceBargraph {
 
-    /**
-     * Get the value of the bar graph.
-     * Max = 1.0 ~ Min = 0.0
-     * @return Bar graph value
-     */
-    public float getBarValue();
+  /**
+   * Get the value of the bar graph. Max = 1.0 ~ Min = 0.0
+   *
+   * @return Bar graph value
+   */
+  public float getBarValue();
 
-    /**
-     * Get the character string to be displayed next to the bar graph
-     * @return Display string
-     */
-    public String getBarText();
+  /**
+   * Get the character string to be displayed next to the bar graph
+   *
+   * @return Display string
+   */
+  public String getBarText();
 
-    /**
-     * Get the target row information of the bar graph
-     * @return Target line information
-     */
-    public CodeLine getCodeLine();
+  /**
+   * Get the target row information of the bar graph
+   *
+   * @return Target line information
+   */
+  public CodeLine getCodeLine();
 
-    /**
-     * Get the target source file for the bar graph
-     * @return Target source file
-     */
-    public SourceFile getSourceFile();
+  /**
+   * Get the target source file for the bar graph
+   *
+   * @return Target source file
+   */
+  public SourceFile getSourceFile();
 
-    /**
-     * Get the display color of the bar graph
-     * @return Bar graph display color
-     */
-    public Color getBarColor();
+  /**
+   * Get the display color of the bar graph
+   *
+   * @return Bar graph display color
+   */
+  public Color getBarColor();
 
-    /**
-     * Get the bar graph type name
-     * @return Bar graph type name
-     */
-    public String getTypeName();
+  /**
+   * Get the bar graph type name
+   *
+   * @return Bar graph type name
+   */
+  public String getTypeName();
 }

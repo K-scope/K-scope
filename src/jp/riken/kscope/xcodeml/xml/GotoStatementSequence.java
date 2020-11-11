@@ -16,82 +16,86 @@
  */
 package jp.riken.kscope.xcodeml.xml;
 
-import jp.riken.kscope.xcodeml.xml.IXmlVisitor;
 import jp.riken.kscope.xcodeml.xml.gen.Params;
 import jp.riken.kscope.xcodeml.xml.gen.Value;
 
 /**
  * GotoStatement element (GOTO statement) class
- * @author RIKEN
  *
+ * @author RIKEN
  */
 public class GotoStatementSequence implements IXmlNode {
 
-    /** Sentence number sequence of calculated GOTO statement */
-    protected Params params;
-    /** Formula GOTO statement formula */
-    protected Value value;
+  /** Sentence number sequence of calculated GOTO statement */
+  protected Params params;
+  /** Formula GOTO statement formula */
+  protected Value value;
 
-    /**
-     * Constructor
-     * @param params Sentence number sequence of calculated GOTO statement
-     * @param value Computational GOTO statement expression
-     */
-    public GotoStatementSequence(Params params, Value value) {
-        this.params = params;
-        this.value = value;
-    }
+  /**
+   * Constructor
+   *
+   * @param params Sentence number sequence of calculated GOTO statement
+   * @param value Computational GOTO statement expression
+   */
+  public GotoStatementSequence(Params params, Value value) {
+    this.params = params;
+    this.value = value;
+  }
 
-    /**
-     * Get the sentence number sequence of the calculated GOTO statement
-     * @return Statement number sequence of calculated GOTO statement
-     */
-    public Params getParams() {
-        return params;
-    }
+  /**
+   * Get the sentence number sequence of the calculated GOTO statement
+   *
+   * @return Statement number sequence of calculated GOTO statement
+   */
+  public Params getParams() {
+    return params;
+  }
 
-    /**
-     * Set the sentence number sequence of the calculated GOTO statement
-     * @param params Sentence number sequence of calculated GOTO statement
-     */
-    public void setParams(Params params) {
-        this.params = params;
-    }
+  /**
+   * Set the sentence number sequence of the calculated GOTO statement
+   *
+   * @param params Sentence number sequence of calculated GOTO statement
+   */
+  public void setParams(Params params) {
+    this.params = params;
+  }
 
-    /**
-     * Get the formula of the calculated GOTO statement
-     * @return Computational GOTO statement formula
-     */
-    public Value getValue() {
-        return value;
-    }
+  /**
+   * Get the formula of the calculated GOTO statement
+   *
+   * @return Computational GOTO statement formula
+   */
+  public Value getValue() {
+    return value;
+  }
 
-    /**
-     * Set the formula of the calculated GOTO statement
-     * @param value Computational GOTO statement expression
-     */
-    public void setValue(Value value) {
-        this.value = value;
-    }
+  /**
+   * Set the formula of the calculated GOTO statement
+   *
+   * @param value Computational GOTO statement expression
+   */
+  public void setValue(Value value) {
+    this.value = value;
+  }
 
+  /**
+   * Start searching for GotoStatement element (GOTO statement)
+   *
+   * @param visitor Xcode ML node search
+   * @return Success or failure
+   */
+  @Override
+  public boolean enter(IXmlVisitor visitor) {
+    return (visitor.enter(this));
+  }
 
-    /**
-     * Start searching for GotoStatement element (GOTO statement)
-     * @param visitor Xcode ML node search
-     * @return Success or failure
-     */
-    @Override
-    public boolean enter(IXmlVisitor visitor) {
-        return (visitor.enter(this));
-    }
-
-    /**
-     * End the search for the GotoStatement element (GOTO statement)
-     * @param visitor Xcode ML node search
-     */
-    @Override
-    public void leave(IXmlVisitor visitor) {
-        visitor.leave(this);
-    }
-
+  /**
+   * End the search for the GotoStatement element (GOTO statement)
+   *
+   * @param visitor Xcode ML node search
+   */
+  @Override
+  public void leave(IXmlVisitor visitor) {
+    visitor.leave(this);
+  }
 }

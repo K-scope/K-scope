@@ -17,48 +17,45 @@
 package jp.riken.kscope.action;
 
 import java.awt.event.ActionEvent;
-
 import jp.riken.kscope.common.FRAME_VIEW;
 import jp.riken.kscope.service.AppController;
 
-
 /**
  * Clipboard copy action class
- * @author RIKEN
  *
+ * @author RIKEN
  */
 public class EditClipboardCopyAction extends ActionBase {
 
-    /** Clipboard copy destination view */
-    private FRAME_VIEW view;
+  /** Clipboard copy destination view */
+  private FRAME_VIEW view;
 
-    /**
-     * Constructor
-     * @param controller Application controller
-     * @param view Clipboard copy view
-     */
-    public EditClipboardCopyAction(AppController controller, FRAME_VIEW view) {
-        super(controller);
-        this.view = view;
+  /**
+   * Constructor
+   *
+   * @param controller Application controller
+   * @param view Clipboard copy view
+   */
+  public EditClipboardCopyAction(AppController controller, FRAME_VIEW view) {
+    super(controller);
+    this.view = view;
+  }
+
+  /**
+   * Clipboard copy event
+   *
+   * @param event Event information
+   */
+  @Override
+  public void actionPerformed(ActionEvent event) {
+
+    if (view == FRAME_VIEW.SOURCE_VIEW) {
+      // Copy from Source View to Clipboard
+      this.controller.getMainframe().getPanelSourceView().copyClipboard();
+    } else if (view == FRAME_VIEW.ANALYSIS_VIEW) {
+      // Copy from analysis view to clipboard
+      this.controller.getMainframe().getPanelAnalysisView().copyClipboard();
     }
-
-    /**
-     * Clipboard copy event
-     * @param event Event information
-     */
-    @Override
-    public void actionPerformed(ActionEvent event) {
-
-        if (view == FRAME_VIEW.SOURCE_VIEW) {
-            // Copy from Source View to Clipboard
-            this.controller.getMainframe().getPanelSourceView().copyClipboard();
-        }
-        else if (view == FRAME_VIEW.ANALYSIS_VIEW) {
-            // Copy from analysis view to clipboard
-            this.controller.getMainframe().getPanelAnalysisView().copyClipboard();
-        }
-        return;
-    }
-
+    return;
+  }
 }
-

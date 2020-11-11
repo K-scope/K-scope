@@ -21,8 +21,6 @@ import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
-
-
 import jp.riken.kscope.action.EditInformationEditAction;
 import jp.riken.kscope.action.FileExportExploreAction;
 import jp.riken.kscope.common.FRAME_VIEW;
@@ -30,90 +28,89 @@ import jp.riken.kscope.service.AppController;
 
 /**
  * Variable characteristic list pop-up menu class
+ *
  * @author RIKEN
  */
 public class ReplacePopupMenu extends JPopupMenu implements PopupMenuListener {
 
-    /** Serial number */
-    private static final long serialVersionUID = 1L;
+  /** Serial number */
+  private static final long serialVersionUID = 1L;
 
-    /** Application controller */
-    private AppController controller;
+  /** Application controller */
+  private AppController controller;
 
-    /** Export action */
-    @SuppressWarnings("unused")
-    private FileExportExploreAction actionExportExplore;
-    /** Analysis: Additional Information Action */
-    private EditInformationEditAction actionAnalysisInformation;
+  /** Export action */
+  @SuppressWarnings("unused")
+  private FileExportExploreAction actionExportExplore;
+  /** Analysis: Additional Information Action */
+  private EditInformationEditAction actionAnalysisInformation;
 
-    /**
-     * Constructor
-     */
-    public ReplacePopupMenu() {
-        // Create a menu.
-        initialize();
-    }
+  /** Constructor */
+  public ReplacePopupMenu() {
+    // Create a menu.
+    initialize();
+  }
 
+  /**
+   * Constructor
+   *
+   * @param controller Application controller
+   */
+  public ReplacePopupMenu(AppController controller) {
+    this.controller = controller;
 
-    /**
-     * Constructor
-     * @param controller Application controller
-     */
-    public ReplacePopupMenu(AppController controller) {
-        this.controller = controller;
+    // Create a menu.
+    initialize();
+  }
 
-        // Create a menu.
-        initialize();
-    }
+  /** Create a menu. */
+  private void initialize() {
 
-    /**
-     * Create a menu.
-     */
-    private void initialize() {
+    // Create menu
 
-        // Create menu
+    // Analysis: Additional information
+    JMenuItem menuAnalysisInformation = new JMenuItem("付加情報");
+    actionAnalysisInformation =
+        new EditInformationEditAction(this.controller, FRAME_VIEW.ANALYSIS_VIEW);
+    this.add(menuAnalysisInformation);
+    menuAnalysisInformation.addActionListener(actionAnalysisInformation);
 
-        // Analysis: Additional information
-        JMenuItem menuAnalysisInformation = new JMenuItem("付加情報");
-        actionAnalysisInformation = new EditInformationEditAction(this.controller, FRAME_VIEW.ANALYSIS_VIEW);
-        this.add(menuAnalysisInformation);
-        menuAnalysisInformation.addActionListener(actionAnalysisInformation);
+    // Export (Hide pop-up: Create action only)
+    actionExportExplore = new FileExportExploreAction(this.controller);
 
-        // Export (Hide pop-up: Create action only)
-        actionExportExplore = new FileExportExploreAction(this.controller);
+    this.addPopupMenuListener(this);
+  }
 
-        this.addPopupMenuListener(this);
-    }
+  /**
+   * Pop-up menu visible event
+   *
+   * @param event Event information
+   */
+  @Override
+  public void popupMenuWillBecomeVisible(PopupMenuEvent event) {}
 
-    /**
-     * Pop-up menu visible event
-     * @param event Event information
-     */
-    @Override
-    public void popupMenuWillBecomeVisible(PopupMenuEvent event) {
+  /**
+   * Events with the pop-up menu canceled
+   *
+   * @param event Event information
+   */
+  @Override
+  public void popupMenuWillBecomeInvisible(PopupMenuEvent event) {}
 
-    }
+  /**
+   * Events with the pop-up menu canceled
+   *
+   * @param event Event information
+   */
+  @Override
+  public void popupMenuCanceled(PopupMenuEvent event) {}
 
-    /**
-     * Events with the pop-up menu canceled
-     * @param event Event information
-     */
-    @Override
-    public void popupMenuWillBecomeInvisible(PopupMenuEvent event) { }
-
-
-    /**
-     * Events with the pop-up menu canceled
-     * @param event Event information
-     */
-    @Override
-    public void popupMenuCanceled(PopupMenuEvent event) { }
-
-    /**
-     * Analysis: Get additional information actions
-     * @return Analysis: Additional Information Action
-     */
-    public EditInformationEditAction getActionAnalysisInformation() {
-        return actionAnalysisInformation;
-    }
+  /**
+   * Analysis: Get additional information actions
+   *
+   * @return Analysis: Additional Information Action
+   */
+  public EditInformationEditAction getActionAnalysisInformation() {
+    return actionAnalysisInformation;
+  }
 }

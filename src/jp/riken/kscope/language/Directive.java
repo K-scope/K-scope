@@ -21,68 +21,62 @@ package jp.riken.kscope.language;
  * A class that supports Directive.
  *
  * @author RIKEN
- *
  */
 public class Directive extends jp.riken.kscope.language.Block {
-    /** Serial number */
-    private static final long serialVersionUID = -1028405799509858653L;
-    private String argument;
+  /** Serial number */
+  private static final long serialVersionUID = -1028405799509858653L;
 
-    /**
-     * Constructor.
-     *
-     * @param parent
-     * Parent block
-     */
-    public Directive(Block parent) {
-        super(parent);
-    }
+  private String argument;
 
-    /**
-     * Constructor.
-     *
-     * @param parent
-     * Parent block
-     * @param argmnt
-     * Arguments (messages, etc.)
-     */
-    public Directive(Block parent, String argmnt) {
-        super(parent);
-        argument = argmnt;
-    }
+  /**
+   * Constructor.
+   *
+   * @param parent Parent block
+   */
+  public Directive(Block parent) {
+    super(parent);
+  }
 
-    /**
-     * Constructor.
-     */
-    public Directive() {
-        super();
-    }
+  /**
+   * Constructor.
+   *
+   * @param parent Parent block
+   * @param argmnt Arguments (messages, etc.)
+   */
+  public Directive(Block parent, String argmnt) {
+    super(parent);
+    argument = argmnt;
+  }
 
-    /**
-     * Get block type.
-     *
-     * @return BlockType.DIRECTIVE
-     */
-    public BlockType getBlockType() {
-        return BlockType.DIRECTIVE;
-    }
+  /** Constructor. */
+  public Directive() {
+    super();
+  }
 
-    /**
-     * A set of text.
-     *
-     * @param str
-     * Argument
-     */
-    public void setArgument(String str) {
-        this.argument = str;
-    }
+  /**
+   * Get block type.
+   *
+   * @return BlockType.DIRECTIVE
+   */
+  public BlockType getBlockType() {
+    return BlockType.DIRECTIVE;
+  }
 
-    /**
-     * Get arguments (messages, etc.).
-     *
-     * @return argument (message etc.)
-     */
-    public String getArgument() {
-        return argument;
-    }
+  /**
+   * A set of text.
+   *
+   * @param str Argument
+   */
+  public void setArgument(String str) {
+    this.argument = str;
+  }
+
+  /**
+   * Get arguments (messages, etc.).
+   *
+   * @return argument (message etc.)
+   */
+  public String getArgument() {
+    return argument;
+  }
 }

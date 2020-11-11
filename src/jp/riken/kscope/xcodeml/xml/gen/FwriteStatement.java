@@ -23,16 +23,12 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
-
 import jp.riken.kscope.xcodeml.xml.*;
 
 /**
- * <p>
  * Java class for anonymous complex type.
  *
- * <p>
- * The following schema fragment specifies the expected content contained within
- * this class.
+ * <p>The following schema fragment specifies the expected content contained within this class.
  *
  * <pre>
  * &lt;complexType>
@@ -47,160 +43,140 @@ import jp.riken.kscope.xcodeml.xml.*;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- *
- *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "", propOrder = { "namedValueList", "valueList" })
+@XmlType(
+    name = "",
+    propOrder = {"namedValueList", "valueList"})
 @XmlRootElement(name = "FwriteStatement")
 public class FwriteStatement implements IDefBaseStatement, IXmlNode {
 
-    @XmlElement(required = true)
-    protected NamedValueList namedValueList;
-    @XmlElement(required = true)
-    protected ValueList valueList;
-    @XmlAttribute
-    protected String lineno;
-    @XmlAttribute
-    protected String endlineno;
-    @XmlAttribute
-    protected String rawlineno;
-    @XmlAttribute
-    protected String file;
+  @XmlElement(required = true)
+  protected NamedValueList namedValueList;
 
-    /**
-     * Gets the value of the namedValueList property.
-     *
-     * @return possible object is {@link NamedValueList }
-     *
-     */
-    public NamedValueList getNamedValueList() {
-        return namedValueList;
-    }
+  @XmlElement(required = true)
+  protected ValueList valueList;
 
-    /**
-     * Sets the value of the namedValueList property.
-     *
-     * @param value
-     *            allowed object is {@link NamedValueList }
-     *
-     */
-    public void setNamedValueList(NamedValueList value) {
-        this.namedValueList = value;
-    }
+  @XmlAttribute protected String lineno;
+  @XmlAttribute protected String endlineno;
+  @XmlAttribute protected String rawlineno;
+  @XmlAttribute protected String file;
 
-    /**
-     * Gets the value of the valueList property.
-     *
-     * @return possible object is {@link ValueList }
-     *
-     */
-    public ValueList getValueList() {
-        return valueList;
-    }
+  /**
+   * Gets the value of the namedValueList property.
+   *
+   * @return possible object is {@link NamedValueList }
+   */
+  public NamedValueList getNamedValueList() {
+    return namedValueList;
+  }
 
-    /**
-     * Sets the value of the valueList property.
-     *
-     * @param value
-     *            allowed object is {@link ValueList }
-     *
-     */
-    public void setValueList(ValueList value) {
-        this.valueList = value;
-    }
+  /**
+   * Sets the value of the namedValueList property.
+   *
+   * @param value allowed object is {@link NamedValueList }
+   */
+  public void setNamedValueList(NamedValueList value) {
+    this.namedValueList = value;
+  }
 
-    /**
-     * Gets the value of the lineno property.
-     *
-     * @return possible object is {@link String }
-     *
-     */
-    public String getLineno() {
-        return lineno;
-    }
+  /**
+   * Gets the value of the valueList property.
+   *
+   * @return possible object is {@link ValueList }
+   */
+  public ValueList getValueList() {
+    return valueList;
+  }
 
-    /**
-     * Sets the value of the lineno property.
-     *
-     * @param value
-     *            allowed object is {@link String }
-     *
-     */
-    public void setLineno(String value) {
-        this.lineno = value;
-    }
+  /**
+   * Sets the value of the valueList property.
+   *
+   * @param value allowed object is {@link ValueList }
+   */
+  public void setValueList(ValueList value) {
+    this.valueList = value;
+  }
 
-    /**
-     * Gets the value of the endlineno property.
-     *
-     * @return possible object is {@link String }
-     *
-     */
-    public String getEndlineno() {
-        return endlineno;
-    }
+  /**
+   * Gets the value of the lineno property.
+   *
+   * @return possible object is {@link String }
+   */
+  public String getLineno() {
+    return lineno;
+  }
 
-    /**
-     * Sets the value of the endlineno property.
-     *
-     * @param value
-     *            allowed object is {@link String }
-     *
-     */
-    public void setEndlineno(String value) {
-        this.endlineno = value;
-    }
+  /**
+   * Sets the value of the lineno property.
+   *
+   * @param value allowed object is {@link String }
+   */
+  public void setLineno(String value) {
+    this.lineno = value;
+  }
 
-    /**
-     * Gets the value of the rawlineno property.
-     *
-     * @return possible object is {@link String }
-     *
-     */
-    public String getRawlineno() {
-        return rawlineno;
-    }
+  /**
+   * Gets the value of the endlineno property.
+   *
+   * @return possible object is {@link String }
+   */
+  public String getEndlineno() {
+    return endlineno;
+  }
 
-    /**
-     * Sets the value of the rawlineno property.
-     *
-     * @param value
-     *            allowed object is {@link String }
-     *
-     */
-    public void setRawlineno(String value) {
-        this.rawlineno = value;
-    }
+  /**
+   * Sets the value of the endlineno property.
+   *
+   * @param value allowed object is {@link String }
+   */
+  public void setEndlineno(String value) {
+    this.endlineno = value;
+  }
 
-    /**
-     * Gets the value of the file property.
-     *
-     * @return possible object is {@link String }
-     *
-     */
-    public String getFile() {
-        return file;
-    }
+  /**
+   * Gets the value of the rawlineno property.
+   *
+   * @return possible object is {@link String }
+   */
+  public String getRawlineno() {
+    return rawlineno;
+  }
 
-    /**
-     * Sets the value of the file property.
-     *
-     * @param value
-     *            allowed object is {@link String }
-     *
-     */
-    public void setFile(String value) {
-        this.file = value;
-    }
+  /**
+   * Sets the value of the rawlineno property.
+   *
+   * @param value allowed object is {@link String }
+   */
+  public void setRawlineno(String value) {
+    this.rawlineno = value;
+  }
 
-    @Override
-    public boolean enter(jp.riken.kscope.xcodeml.xml.IXmlVisitor visitor) {
-        return (visitor.enter(this));
-    }
+  /**
+   * Gets the value of the file property.
+   *
+   * @return possible object is {@link String }
+   */
+  public String getFile() {
+    return file;
+  }
 
-    @Override
-    public void leave(jp.riken.kscope.xcodeml.xml.IXmlVisitor visitor) {
-        visitor.leave(this);
-    }
+  /**
+   * Sets the value of the file property.
+   *
+   * @param value allowed object is {@link String }
+   */
+  public void setFile(String value) {
+    this.file = value;
+  }
+
+  @Override
+  public boolean enter(jp.riken.kscope.xcodeml.xml.IXmlVisitor visitor) {
+    return (visitor.enter(this));
+  }
+
+  @Override
+  public void leave(jp.riken.kscope.xcodeml.xml.IXmlVisitor visitor) {
+    visitor.leave(this);
+  }
 }

@@ -22,53 +22,56 @@ import java.util.List;
 
 /**
  * Symbol information list class
+ *
  * @author RIKEN
  */
 public class SymbolList {
-    /** Symbol information list */
-    private List<SymbolInfo> list;
+  /** Symbol information list */
+  private List<SymbolInfo> list;
 
-    /**
-     * Constructor
-     */
-    public SymbolList() {
-        list = new ArrayList<SymbolInfo>();
-    }
+  /** Constructor */
+  public SymbolList() {
+    list = new ArrayList<SymbolInfo>();
+  }
 
-    /**
-     * Add symbol information
-     * @param symbol Symbol information
-     * @return true = success
-     */
-    public boolean addSymbolInfo(SymbolInfo symbol) {
-        return this.list.add(symbol);
-    }
+  /**
+   * Add symbol information
+   *
+   * @param symbol Symbol information
+   * @return true = success
+   */
+  public boolean addSymbolInfo(SymbolInfo symbol) {
+    return this.list.add(symbol);
+  }
 
-    /**
-     * Get the symbol information list
-     * @return Symbol information list
-     */
-    public List<SymbolInfo> getSymbolList() {
-        return this.list;
-    }
+  /**
+   * Get the symbol information list
+   *
+   * @return Symbol information list
+   */
+  public List<SymbolInfo> getSymbolList() {
+    return this.list;
+  }
 
-    /**
-     * Get symbol information
-     * @param symbolid Symbol index
-     * @return Symbol information
-     */
-    public SymbolInfo getSymbolInfo(int symbolid) {
-        if (list == null) return null;
-        if (list.size() <= symbolid) return null;
-        return list.get(symbolid);
-    }
+  /**
+   * Get symbol information
+   *
+   * @param symbolid Symbol index
+   * @return Symbol information
+   */
+  public SymbolInfo getSymbolInfo(int symbolid) {
+    if (list == null) return null;
+    if (list.size() <= symbolid) return null;
+    return list.get(symbolid);
+  }
 
-    /**
-     * Get the number of symbols
-     * @return Number of symbols
-     */
-    public int getSymbolInfoCount() {
-        if (list == null) return 0;
-        return list.size();
-    }
+  /**
+   * Get the number of symbols
+   *
+   * @return Number of symbols
+   */
+  public int getSymbolInfoCount() {
+    if (list == null) return 0;
+    return list.size();
+  }
 }

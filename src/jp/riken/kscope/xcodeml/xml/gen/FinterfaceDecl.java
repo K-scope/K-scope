@@ -26,16 +26,12 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
-
 import jp.riken.kscope.xcodeml.xml.*;
 
 /**
- * <p>
  * Java class for anonymous complex type.
  *
- * <p>
- * The following schema fragment specifies the expected content contained within
- * this class.
+ * <p>The following schema fragment specifies the expected content contained within this class.
  *
  * <pre>
  * &lt;complexType>
@@ -52,219 +48,190 @@ import jp.riken.kscope.xcodeml.xml.*;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- *
- *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "", propOrder = { "ffunctionDeclOrFmoduleProcedureDecl" })
+@XmlType(
+    name = "",
+    propOrder = {"ffunctionDeclOrFmoduleProcedureDecl"})
 @XmlRootElement(name = "FinterfaceDecl")
 public class FinterfaceDecl implements IDefBaseStatement, IXmlNode {
 
-    @XmlElements({
-            @XmlElement(name = "FmoduleProcedureDecl", type = FmoduleProcedureDecl.class),
-            @XmlElement(name = "FfunctionDecl", type = FfunctionDecl.class) })
-    protected List<IXmlNode> ffunctionDeclOrFmoduleProcedureDecl;
-    @XmlAttribute
-    protected String lineno;
-    @XmlAttribute
-    protected String endlineno;
-    @XmlAttribute
-    protected String rawlineno;
-    @XmlAttribute
-    protected String file;
-    @XmlAttribute
-    protected String name;
-    @XmlAttribute(name = "is_operator")
-    protected Boolean isOperator;
-    @XmlAttribute(name = "is_assignment")
-    protected Boolean isAssignment;
+  @XmlElements({
+    @XmlElement(name = "FmoduleProcedureDecl", type = FmoduleProcedureDecl.class),
+    @XmlElement(name = "FfunctionDecl", type = FfunctionDecl.class)
+  })
+  protected List<IXmlNode> ffunctionDeclOrFmoduleProcedureDecl;
 
-    /**
-     * Gets the value of the ffunctionDeclOrFmoduleProcedureDecl property.
-     *
-     * <p>
-     * This accessor method returns a reference to the live list, not a
-     * snapshot. Therefore any modification you make to the returned list will
-     * be present inside the JAXB object. This is why there is not a
-     * <CODE>set</CODE> method for the ffunctionDeclOrFmoduleProcedureDecl
-     * property.
-     *
-     * <p>
-     * For example, to add a new item, do as follows:
-     *
-     * <pre>
-     * getFfunctionDeclOrFmoduleProcedureDecl().add(newItem);
-     * </pre>
-     *
-     *
-     * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link FmoduleProcedureDecl } {@link FfunctionDecl }
-     *
-     * @return      IXmlNode List
-     *
-     */
-    public List<IXmlNode> getFfunctionDeclOrFmoduleProcedureDecl() {
-        if (ffunctionDeclOrFmoduleProcedureDecl == null) {
-            ffunctionDeclOrFmoduleProcedureDecl = new ArrayList<IXmlNode>();
-        }
-        return this.ffunctionDeclOrFmoduleProcedureDecl;
-    }
+  @XmlAttribute protected String lineno;
+  @XmlAttribute protected String endlineno;
+  @XmlAttribute protected String rawlineno;
+  @XmlAttribute protected String file;
+  @XmlAttribute protected String name;
 
-    /**
-     * Gets the value of the lineno property.
-     *
-     * @return possible object is {@link String }
-     *
-     */
-    public String getLineno() {
-        return lineno;
-    }
+  @XmlAttribute(name = "is_operator")
+  protected Boolean isOperator;
 
-    /**
-     * Sets the value of the lineno property.
-     *
-     * @param value
-     *            allowed object is {@link String }
-     *
-     */
-    public void setLineno(String value) {
-        this.lineno = value;
-    }
+  @XmlAttribute(name = "is_assignment")
+  protected Boolean isAssignment;
 
-    /**
-     * Gets the value of the endlineno property.
-     *
-     * @return possible object is {@link String }
-     *
-     */
-    public String getEndlineno() {
-        return endlineno;
+  /**
+   * Gets the value of the ffunctionDeclOrFmoduleProcedureDecl property.
+   *
+   * <p>This accessor method returns a reference to the live list, not a snapshot. Therefore any
+   * modification you make to the returned list will be present inside the JAXB object. This is why
+   * there is not a <CODE>set</CODE> method for the ffunctionDeclOrFmoduleProcedureDecl property.
+   *
+   * <p>For example, to add a new item, do as follows:
+   *
+   * <pre>
+   * getFfunctionDeclOrFmoduleProcedureDecl().add(newItem);
+   * </pre>
+   *
+   * <p>Objects of the following type(s) are allowed in the list {@link FmoduleProcedureDecl }
+   * {@link FfunctionDecl }
+   *
+   * @return IXmlNode List
+   */
+  public List<IXmlNode> getFfunctionDeclOrFmoduleProcedureDecl() {
+    if (ffunctionDeclOrFmoduleProcedureDecl == null) {
+      ffunctionDeclOrFmoduleProcedureDecl = new ArrayList<IXmlNode>();
     }
+    return this.ffunctionDeclOrFmoduleProcedureDecl;
+  }
 
-    /**
-     * Sets the value of the endlineno property.
-     *
-     * @param value
-     *            allowed object is {@link String }
-     *
-     */
-    public void setEndlineno(String value) {
-        this.endlineno = value;
-    }
+  /**
+   * Gets the value of the lineno property.
+   *
+   * @return possible object is {@link String }
+   */
+  public String getLineno() {
+    return lineno;
+  }
 
-    /**
-     * Gets the value of the rawlineno property.
-     *
-     * @return possible object is {@link String }
-     *
-     */
-    public String getRawlineno() {
-        return rawlineno;
-    }
+  /**
+   * Sets the value of the lineno property.
+   *
+   * @param value allowed object is {@link String }
+   */
+  public void setLineno(String value) {
+    this.lineno = value;
+  }
 
-    /**
-     * Sets the value of the rawlineno property.
-     *
-     * @param value
-     *            allowed object is {@link String }
-     *
-     */
-    public void setRawlineno(String value) {
-        this.rawlineno = value;
-    }
+  /**
+   * Gets the value of the endlineno property.
+   *
+   * @return possible object is {@link String }
+   */
+  public String getEndlineno() {
+    return endlineno;
+  }
 
-    /**
-     * Gets the value of the file property.
-     *
-     * @return possible object is {@link String }
-     *
-     */
-    public String getFile() {
-        return file;
-    }
+  /**
+   * Sets the value of the endlineno property.
+   *
+   * @param value allowed object is {@link String }
+   */
+  public void setEndlineno(String value) {
+    this.endlineno = value;
+  }
 
-    /**
-     * Sets the value of the file property.
-     *
-     * @param value
-     *            allowed object is {@link String }
-     *
-     */
-    public void setFile(String value) {
-        this.file = value;
-    }
+  /**
+   * Gets the value of the rawlineno property.
+   *
+   * @return possible object is {@link String }
+   */
+  public String getRawlineno() {
+    return rawlineno;
+  }
 
-    /**
-     * Gets the value of the name property.
-     *
-     * @return possible object is {@link String }
-     *
-     */
-    public String getName() {
-        return name;
-    }
+  /**
+   * Sets the value of the rawlineno property.
+   *
+   * @param value allowed object is {@link String }
+   */
+  public void setRawlineno(String value) {
+    this.rawlineno = value;
+  }
 
-    /**
-     * Sets the value of the name property.
-     *
-     * @param value
-     *            allowed object is {@link String }
-     *
-     */
-    public void setName(String value) {
-        this.name = value;
-    }
+  /**
+   * Gets the value of the file property.
+   *
+   * @return possible object is {@link String }
+   */
+  public String getFile() {
+    return file;
+  }
 
-    /**
-     * Gets the value of the isOperator property.
-     *
-     * @return possible object is {@link Boolean }
-     *
-     */
-    public Boolean isIsOperator() {
-        return isOperator;
-    }
+  /**
+   * Sets the value of the file property.
+   *
+   * @param value allowed object is {@link String }
+   */
+  public void setFile(String value) {
+    this.file = value;
+  }
 
-    /**
-     * Sets the value of the isOperator property.
-     *
-     * @param value
-     *            allowed object is {@link Boolean }
-     *
-     */
-    public void setIsOperator(Boolean value) {
-        this.isOperator = value;
-    }
+  /**
+   * Gets the value of the name property.
+   *
+   * @return possible object is {@link String }
+   */
+  public String getName() {
+    return name;
+  }
 
-    /**
-     * Gets the value of the isAssignment property.
-     *
-     * @return possible object is {@link Boolean }
-     *
-     */
-    public Boolean isIsAssignment() {
-        return isAssignment;
-    }
+  /**
+   * Sets the value of the name property.
+   *
+   * @param value allowed object is {@link String }
+   */
+  public void setName(String value) {
+    this.name = value;
+  }
 
-    /**
-     * Sets the value of the isAssignment property.
-     *
-     * @param value
-     *            allowed object is {@link Boolean }
-     *
-     */
-    public void setIsAssignment(Boolean value) {
-        this.isAssignment = value;
-    }
+  /**
+   * Gets the value of the isOperator property.
+   *
+   * @return possible object is {@link Boolean }
+   */
+  public Boolean isIsOperator() {
+    return isOperator;
+  }
 
-    @Override
-    public boolean enter(jp.riken.kscope.xcodeml.xml.IXmlVisitor visitor) {
-        return (visitor.enter(this));
-    }
+  /**
+   * Sets the value of the isOperator property.
+   *
+   * @param value allowed object is {@link Boolean }
+   */
+  public void setIsOperator(Boolean value) {
+    this.isOperator = value;
+  }
 
-    @Override
-    public void leave(jp.riken.kscope.xcodeml.xml.IXmlVisitor visitor) {
-        visitor.leave(this);
-    }
+  /**
+   * Gets the value of the isAssignment property.
+   *
+   * @return possible object is {@link Boolean }
+   */
+  public Boolean isIsAssignment() {
+    return isAssignment;
+  }
+
+  /**
+   * Sets the value of the isAssignment property.
+   *
+   * @param value allowed object is {@link Boolean }
+   */
+  public void setIsAssignment(Boolean value) {
+    this.isAssignment = value;
+  }
+
+  @Override
+  public boolean enter(jp.riken.kscope.xcodeml.xml.IXmlVisitor visitor) {
+    return (visitor.enter(this));
+  }
+
+  @Override
+  public void leave(jp.riken.kscope.xcodeml.xml.IXmlVisitor visitor) {
+    visitor.leave(this);
+  }
 }

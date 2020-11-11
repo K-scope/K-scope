@@ -20,60 +20,52 @@ import jp.riken.kscope.utils.Logger;
 
 /**
  * XcodeML XML file parsing error
+ *
  * @author RIKEN
  */
 public class XcodeMLException extends Exception {
 
-    /** Serial number */
-    private static final long serialVersionUID = 1L;
+  /** Serial number */
+  private static final long serialVersionUID = 1L;
 
-    /**
-     * Creates XcodeMLException.
-     */
-    public XcodeMLException() {
-    }
+  /** Creates XcodeMLException. */
+  public XcodeMLException() {}
 
-    /**
-     * Creates XcodeMLException.
-     *
-     * @param msg
-     *            the detail message.
-     */
-    public XcodeMLException(String msg) {
-        super(msg);
-    }
+  /**
+   * Creates XcodeMLException.
+   *
+   * @param msg the detail message.
+   */
+  public XcodeMLException(String msg) {
+    super(msg);
+  }
 
-    /**
-     * Creates XcodeMLException.
-     *
-     * @param cause
-     *            the cause.
-     */
-    public XcodeMLException(Throwable cause) {
-        super(cause);
-    }
+  /**
+   * Creates XcodeMLException.
+   *
+   * @param cause the cause.
+   */
+  public XcodeMLException(Throwable cause) {
+    super(cause);
+  }
 
-    /**
-     * Creates XcodeMLException.
-     *
-     * @param msg
-     *            the detail message.
-     * @param cause
-     *            the cause.
-     */
-    public XcodeMLException(String msg, Throwable cause) {
-        super(msg, cause);
-    }
+  /**
+   * Creates XcodeMLException.
+   *
+   * @param msg the detail message.
+   * @param cause the cause.
+   */
+  public XcodeMLException(String msg, Throwable cause) {
+    super(msg, cause);
+  }
 
-    /**
-     * Output the stack trace of the error occurrence. Outputs standard error and log.
-     */
-    @Override
-    public void printStackTrace() {
-        // Log output
-        Logger.error(this);
+  /** Output the stack trace of the error occurrence. Outputs standard error and log. */
+  @Override
+  public void printStackTrace() {
+    // Log output
+    Logger.error(this);
 
-        // Standard output
-        super.printStackTrace();
-    }
+    // Standard output
+    super.printStackTrace();
+  }
 }

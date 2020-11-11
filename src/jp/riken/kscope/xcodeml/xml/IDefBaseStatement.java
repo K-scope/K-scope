@@ -18,55 +18,63 @@ package jp.riken.kscope.xcodeml.xml;
 
 /**
  * Statement interface class
- * @author RIKEN
  *
+ * @author RIKEN
  */
 public interface IDefBaseStatement {
-    /**
-     * Get the starting line number
-     * @return Start line number
-     */
-    public String getLineno();
+  /**
+   * Get the starting line number
+   *
+   * @return Start line number
+   */
+  public String getLineno();
 
-    /**
-     * Set the start line number
-     * @param value Start line number
-     */
-    public void setLineno(String value);
+  /**
+   * Set the start line number
+   *
+   * @param value Start line number
+   */
+  public void setLineno(String value);
 
-    /**
-     * Get the end line number
-     * @return End line number
-     */
-    public String getEndlineno();
+  /**
+   * Get the end line number
+   *
+   * @return End line number
+   */
+  public String getEndlineno();
 
-    /**
-     * Set the end line number
-     * @param value End line number
-     */
-    public void setEndlineno(String value);
+  /**
+   * Set the end line number
+   *
+   * @param value End line number
+   */
+  public void setEndlineno(String value);
 
-    /**
-     * Get the line number
-     * @return line number
-     */
-    public String getRawlineno();
+  /**
+   * Get the line number
+   *
+   * @return line number
+   */
+  public String getRawlineno();
 
-    /**
-     * Set the line number
-     * @param value Line number
-     */
-    public void setRawlineno(String value);
+  /**
+   * Set the line number
+   *
+   * @param value Line number
+   */
+  public void setRawlineno(String value);
 
-    /**
-     * Get the file name
-     * @return filename
-     */
-    public String getFile();
+  /**
+   * Get the file name
+   *
+   * @return filename
+   */
+  public String getFile();
 
-    /**
-     * Set the file name
-     * @param value filename
-     */
-    public void setFile(String value);
+  /**
+   * Set the file name
+   *
+   * @param value filename
+   */
+  public void setFile(String value);
 }

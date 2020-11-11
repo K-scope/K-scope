@@ -17,113 +17,105 @@
 package jp.riken.kscope.action;
 
 import java.awt.event.ActionEvent;
-//import java.io.File;
-
+// import java.io.File;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-//import javax.swing.tree.DefaultMutableTreeNode;
-
+// import javax.swing.tree.DefaultMutableTreeNode;
 import jp.riken.kscope.common.ANALYSIS_PANEL;
 import jp.riken.kscope.gui.IAnalisysComponent;
 import jp.riken.kscope.service.AppController;
 
 /**
  * Analysis tab change action class
+ *
  * @author RIKEN
  */
 public class AnalysisTabChangeAction extends ActionBase implements ChangeListener {
 
-    /**
-     * Constructor
-     * @param controller Application controller
-     */
-    public AnalysisTabChangeAction(AppController controller) {
-        super(controller);
+  /**
+   * Constructor
+   *
+   * @param controller Application controller
+   */
+  public AnalysisTabChangeAction(AppController controller) {
+    super(controller);
+  }
+
+  /**
+   * Action occurrence event
+   *
+   * @param event Event information
+   */
+  @Override
+  public void actionPerformed(ActionEvent event) {
+    // Display the keywords of the selected analysis tab in the source view
+    changeAnalisysTab();
+  }
+
+  /**
+   * Tab selection change event
+   *
+   * @param event Event information
+   */
+  @Override
+  public void stateChanged(ChangeEvent event) {
+    // Display information for the selected tree node
+    changeAnalisysTab();
+  }
+
+  /**
+   * Selective analysis view change event.
+   *
+   * <p>Display the keywords of the selected analysis tab in the source view. <br>
+   * Set profile bar graph to source view. <br>
+   * Display additional information. </ p>
+   */
+  public void changeAnalisysTab() {
+    // Display the keywords of the selected analysis tab in the source view
+    viewKeywardSource();
+    // Set profile bar graph to source view
+    setProfilerBargraph();
+    // Display additional information.
+    setInformation();
+  }
+
+  /** Set keywords on the Analysis tab to Source View */
+  public void viewKeywardSource() {
+    IAnalisysComponent panel =
+        this.controller.getMainframe().getPanelAnalysisView().getSelectedPanel();
+    if (panel == null) {
+      return;
+    }
+    if (panel.getEnumPanel() == ANALYSIS_PANEL.SEARCHRESULT) {
+      // Set search keywords
+      this.controller.setSearchKeywords();
+    } else if (panel.getEnumPanel() == ANALYSIS_PANEL.TRACE) {
+      // Set the trace keyword
+      this.controller.setTraceKeywords();
+    }
+  }
+
+  /** Set profile bar graph to source view */
+  public void setProfilerBargraph() {
+    this.controller.setProfilerBargraph();
+
+    return;
+  }
+
+  /** Display additional information. */
+  public void setInformation() {
+
+    IAnalisysComponent panel =
+        this.controller.getMainframe().getPanelAnalysisView().getSelectedPanel();
+    if (panel == null) {
+      return;
+    }
+    if (panel.getEnumPanel() != ANALYSIS_PANEL.INFORMATION) {
+      return;
     }
 
-    /**
-     * Action occurrence event
-     * @param event Event information
-     */
-    @Override
-    public void actionPerformed(ActionEvent event) {
-        // Display the keywords of the selected analysis tab in the source view
-    	changeAnalisysTab();
-    }
-
-    /**
-     * Tab selection change event
-     * @param event Event information
-     */
-    @Override
-    public void stateChanged(ChangeEvent event) {
-        // Display information for the selected tree node
-    	changeAnalisysTab();
-    }
-
-    /**
-     * Selective analysis view change event.
-     * <p>
-     * Display the keywords of the selected analysis tab in the source view. <br/>
-     * Set profile bar graph to source view. <br/>
-     * Display additional information.
-     * </ p>
-     */
-    public void changeAnalisysTab() {
-        // Display the keywords of the selected analysis tab in the source view
-        viewKeywardSource();
-        // Set profile bar graph to source view
-        setProfilerBargraph();
-        // Display additional information.
-        setInformation();
-    }
-
-    /**
-     * Set keywords on the Analysis tab to Source View
-     */
-    public void viewKeywardSource() {
-        IAnalisysComponent panel = this.controller.getMainframe().getPanelAnalysisView().getSelectedPanel();
-        if (panel == null) {
-            return;
-        }
-        if (panel.getEnumPanel() == ANALYSIS_PANEL.SEARCHRESULT) {
-            // Set search keywords
-            this.controller.setSearchKeywords();
-        }
-        else if (panel.getEnumPanel() == ANALYSIS_PANEL.TRACE) {
-        	// Set the trace keyword
-        	this.controller.setTraceKeywords();
-        }
-    }
-
-    /**
-     * Set profile bar graph to source view
-     */
-    public void setProfilerBargraph() {
-        this.controller.setProfilerBargraph();
-
-        return;
-    }
-
-    /**
-     * Display additional information.
-     */
-    public void setInformation() {
-
-        IAnalisysComponent panel = this.controller.getMainframe().getPanelAnalysisView().getSelectedPanel();
-        if (panel == null) {
-            return;
-        }
-        if (panel.getEnumPanel() != ANALYSIS_PANEL.INFORMATION) {
-        	return;
-        }
-
-
-        // Explorer tree change action class
-        ExploreTreeChangeAction action = new ExploreTreeChangeAction(this.controller);
-        action.setInformation();
-    }
+    // Explorer tree change action class
+    ExploreTreeChangeAction action = new ExploreTreeChangeAction(this.controller);
+    action.setInformation();
+  }
 }
-
-
-

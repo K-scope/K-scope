@@ -18,54 +18,57 @@ package jp.riken.kscope.data;
 
 /**
  * Error line information class
+ *
  * @author RIKEN
  */
 public class ErrorInfo {
-    /** Error line information */
-    private CodeLine codeLine;
-    /** Error message */
-    private String message;
+  /** Error line information */
+  private CodeLine codeLine;
+  /** Error message */
+  private String message;
 
-    /**
-     * Constructor
-     * @param line Error line information
-     * @param message Error message
-     */
-    public ErrorInfo(CodeLine line, String message) {
-        this.codeLine = line;
-        this.message = message;
+  /**
+   * Constructor
+   *
+   * @param line Error line information
+   * @param message Error message
+   */
+  public ErrorInfo(CodeLine line, String message) {
+    this.codeLine = line;
+    this.message = message;
+  }
+
+  /**
+   * Constructor
+   *
+   * @param ex Exception information
+   */
+  public ErrorInfo(Exception ex) {
+    this.codeLine = null;
+    if (ex != null) {
+      if (ex.getMessage() != null) {
+        this.message = ex.getMessage();
+      } else {
+        this.message = ex.toString();
+      }
     }
+  }
 
-    /**
-     * Constructor
-     * @param ex Exception information
-     */
-    public ErrorInfo(Exception ex) {
-        this.codeLine = null;
-        if (ex != null) {
-	        if (ex.getMessage() != null) {
-	        	this.message = ex.getMessage();
-	        }
-	        else {
-	        	this.message = ex.toString();
-	        }
-        }
-    }
+  /**
+   * Get error line information
+   *
+   * @return Error line information
+   */
+  public CodeLine getCodeLine() {
+    return codeLine;
+  }
 
-
-    /**
-     * Get error line information
-     * @return Error line information
-     */
-    public CodeLine getCodeLine() {
-        return codeLine;
-    }
-
-    /**
-     * Get error messages
-     * @return error message
-     */
-    public String getMessage() {
-        return message;
-    }
+  /**
+   * Get error messages
+   *
+   * @return error message
+   */
+  public String getMessage() {
+    return message;
+  }
 }

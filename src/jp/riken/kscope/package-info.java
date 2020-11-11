@@ -16,8 +16,8 @@
  */
 
 /**
- * Provides the main function and base class of the application. <br/>
- * Provides the startup main class, log configuration file, property file, and read class of property file.
+ * Provides the main function and base class of the application. <br>
+ * Provides the startup main class, log configuration file, property file, and read class of
+ * property file.
  */
 package jp.riken.kscope;
-

@@ -22,12 +22,10 @@ import javax.xml.bind.annotation.XmlEnumValue;
 import javax.xml.bind.annotation.XmlType;
 
 /**
- * <p>
  * Java class for defChoiceIntent.
  *
- * <p>
- * The following schema fragment specifies the expected content contained within
- * this class.
+ * <p>The following schema fragment specifies the expected content contained within this class.
+ *
  * <p>
  *
  * <pre>
@@ -39,50 +37,54 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/restriction>
  * &lt;/simpleType>
  * </pre>
- *
  */
 @XmlType(name = "defChoiceIntent")
 @XmlEnum
 public enum DefChoiceIntent {
 
-    /** intent(in) */
-    @XmlEnumValue("in") IN("in"),
-    /** intent(out) */
-    @XmlEnumValue("out") OUT("out"),
-    /** intent(inout) */
-    @XmlEnumValue("inout") INOUT("inout");
+  /** intent(in) */
+  @XmlEnumValue("in")
+  IN("in"),
+  /** intent(out) */
+  @XmlEnumValue("out")
+  OUT("out"),
+  /** intent(inout) */
+  @XmlEnumValue("inout")
+  INOUT("inout");
 
-    /** intent statement */
-    private final String value;
+  /** intent statement */
+  private final String value;
 
-    /**
-     * Constructor
-     * @param v intent statement
-     */
-    DefChoiceIntent(String v) {
-        value = v;
+  /**
+   * Constructor
+   *
+   * @param v intent statement
+   */
+  DefChoiceIntent(String v) {
+    value = v;
+  }
+
+  /**
+   * Get the intent statement
+   *
+   * @return intent statement
+   */
+  public String value() {
+    return value;
+  }
+
+  /**
+   * Get the Intent identifier from the intent statement
+   *
+   * @param v intent statement
+   * @return Intent identifier
+   */
+  public static DefChoiceIntent fromValue(String v) {
+    for (DefChoiceIntent c : DefChoiceIntent.values()) {
+      if (c.value.equals(v)) {
+        return c;
+      }
     }
-
-    /**
-     * Get the intent statement
-     * @return intent statement
-     */
-    public String value() {
-        return value;
-    }
-
-    /**
-     * Get the Intent identifier from the intent statement
-     * @param v intent statement
-     * @return Intent identifier
-     */
-    public static DefChoiceIntent fromValue(String v) {
-        for (DefChoiceIntent c : DefChoiceIntent.values()) {
-            if (c.value.equals(v)) {
-                return c;
-            }
-        }
-        throw new IllegalArgumentException(v);
-    }
-
+    throw new IllegalArgumentException(v);
+  }
 }

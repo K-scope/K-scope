@@ -15,7 +15,5 @@
  * limitations under the License.
  */
 
-/**
- * Provides XML elements automatically generated from the XcodeML schema.
- */
+/** Provides XML elements automatically generated from the XcodeML schema. */
 package jp.riken.kscope.xcodeml.xml.gen;

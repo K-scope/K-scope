@@ -17,56 +17,57 @@
 
 package jp.riken.kscope.language;
 
-
 /**
  * A class for expressing keyword arguments.
- * @author RIKEN
  *
+ * @author RIKEN
  */
 public class KeywordArgument extends Expression {
-	/** Serial number */
-	private static final long serialVersionUID = 7613378389238504275L;
-    private String keyword = "";
+  /** Serial number */
+  private static final long serialVersionUID = 7613378389238504275L;
 
-    /**
-     * Constructor.
-     */
-    public KeywordArgument() {
-        super();
-    }
+  private String keyword = "";
 
-    /**
-     * Get keywords.
-     * @return keyword
-     */
-    public String getKeyword() {
-        return keyword;
-    }
+  /** Constructor. */
+  public KeywordArgument() {
+    super();
+  }
 
-    /**
-     * Set keywords.
-     * @param key keyword
-     */
-    public void setKeyword(String key) {
-        this.keyword = key;
-    }
+  /**
+   * Get keywords.
+   *
+   * @return keyword
+   */
+  public String getKeyword() {
+    return keyword;
+  }
 
-    /**
-     * Constructor
-     * @param key keyword
-     * @param expr Copy source expression class
-     */
-    public KeywordArgument(String key, Expression expr) {
-        this.keyword = key;
+  /**
+   * Set keywords.
+   *
+   * @param key keyword
+   */
+  public void setKeyword(String key) {
+    this.keyword = key;
+  }
 
-        this.setLine(expr.getLine());
-        this.setVariableType(expr.getType());
-        this.getVariables().addAll(expr.getVariables());
-        this.getFuncCalls().addAll(expr.getFuncCalls());
-        this.setAddCount(expr.getAddCount());
-        this.setSubCount(expr.getSubCount());
-        this.setMulCount(expr.getMulCount());
-        this.setDivCount(expr.getDivCount());
-        this.setPowCount(expr.getPowCount());
-    }
+  /**
+   * Constructor
+   *
+   * @param key keyword
+   * @param expr Copy source expression class
+   */
+  public KeywordArgument(String key, Expression expr) {
+    this.keyword = key;
+
+    this.setLine(expr.getLine());
+    this.setVariableType(expr.getType());
+    this.getVariables().addAll(expr.getVariables());
+    this.getFuncCalls().addAll(expr.getFuncCalls());
+    this.setAddCount(expr.getAddCount());
+    this.setSubCount(expr.getSubCount());
+    this.setMulCount(expr.getMulCount());
+    this.setDivCount(expr.getDivCount());
+    this.setPowCount(expr.getPowCount());
+  }
 }

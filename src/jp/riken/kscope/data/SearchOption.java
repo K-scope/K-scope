@@ -19,119 +19,129 @@ package jp.riken.kscope.data;
 
 /**
  * Search condition class
+ *
  * @author RIKEN
  */
 public class SearchOption {
 
-    /** Search string */
-    private String searchText;
-    /** Case sensitive (true = case sensitive) */
-    private boolean sensitivecase;
-    /** Regular expressions */
-    private boolean regex;
-    /** Word search */
-    private boolean word;
-    /** Variable search (= trace) */
-    private boolean variable;
-    /** Search node object class */
-    private Class<?> searchClass;
+  /** Search string */
+  private String searchText;
+  /** Case sensitive (true = case sensitive) */
+  private boolean sensitivecase;
+  /** Regular expressions */
+  private boolean regex;
+  /** Word search */
+  private boolean word;
+  /** Variable search (= trace) */
+  private boolean variable;
+  /** Search node object class */
+  private Class<?> searchClass;
 
-    /**
-     * Get the search string.
-     * @return Search string
-     */
-    public String getSearchText() {
-        return searchText;
-    }
+  /**
+   * Get the search string.
+   *
+   * @return Search string
+   */
+  public String getSearchText() {
+    return searchText;
+  }
 
-    /**
-     * Set the search string
-     * @param text Search string
-     */
-    public void setSearchText(String text) {
-        this.searchText = text;
-    }
+  /**
+   * Set the search string
+   *
+   * @param text Search string
+   */
+  public void setSearchText(String text) {
+    this.searchText = text;
+  }
 
-    /**
-     * Get case sensitive.
-     * @return true = case sensitive
-     */
-    public boolean isSensitivecase() {
-        return sensitivecase;
-    }
+  /**
+   * Get case sensitive.
+   *
+   * @return true = case sensitive
+   */
+  public boolean isSensitivecase() {
+    return sensitivecase;
+  }
 
-    /**
-     * Set case sensitivity
-     * @param sensitivecase true = case sensitive
-     */
-    public void setSensitivecase(boolean sensitivecase) {
-        this.sensitivecase = sensitivecase;
-    }
+  /**
+   * Set case sensitivity
+   *
+   * @param sensitivecase true = case sensitive
+   */
+  public void setSensitivecase(boolean sensitivecase) {
+    this.sensitivecase = sensitivecase;
+  }
 
-    /**
-     * Get a regular expression
-     * @return true = regular expression search
-     */
-    public boolean isRegex() {
-        return regex;
-    }
+  /**
+   * Get a regular expression
+   *
+   * @return true = regular expression search
+   */
+  public boolean isRegex() {
+    return regex;
+  }
 
-    /**
-     * Set regular expression
-     * @param regex true = regular expression search
-     */
-    public void setRegex(boolean regex) {
-        this.regex = regex;
-    }
+  /**
+   * Set regular expression
+   *
+   * @param regex true = regular expression search
+   */
+  public void setRegex(boolean regex) {
+    this.regex = regex;
+  }
 
-    /**
-     * Get a word search.
-     * @return true = word search
-     */
-    public boolean isWord() {
-        return word;
-    }
+  /**
+   * Get a word search.
+   *
+   * @return true = word search
+   */
+  public boolean isWord() {
+    return word;
+  }
 
-    /**
-     * Set up word search.
-     * @param word word search
-     */
-    public void setWord(boolean word) {
-        this.word = word;
-    }
+  /**
+   * Set up word search.
+   *
+   * @param word word search
+   */
+  public void setWord(boolean word) {
+    this.word = word;
+  }
 
-    /**
-     * Check if variable search (= trace)
-     * @return Variable search (= trace)
-     */
-    public boolean isVariable() {
-        return this.variable;
-    }
+  /**
+   * Check if variable search (= trace)
+   *
+   * @return Variable search (= trace)
+   */
+  public boolean isVariable() {
+    return this.variable;
+  }
 
-    /**
-     * Set variable search (= trace).
-     * @param variable Variable search (= trace)
-     */
-    public void setVariable(boolean variable) {
-        this.variable = variable;
-    }
+  /**
+   * Set variable search (= trace).
+   *
+   * @param variable Variable search (= trace)
+   */
+  public void setVariable(boolean variable) {
+    this.variable = variable;
+  }
 
-    /**
-     * Get the object class of the search node
-     * @return Search node object class
-     */
-    public Class<?> getSearchClass() {
-        return searchClass;
-    }
+  /**
+   * Get the object class of the search node
+   *
+   * @return Search node object class
+   */
+  public Class<?> getSearchClass() {
+    return searchClass;
+  }
 
-    /**
-     * Set the object class of the search node
-     * @param searchClass Object class of search node
-     */
-    public void setSearchClass(Class<?> searchClass) {
-        this.searchClass = searchClass;
-    }
-
+  /**
+   * Set the object class of the search node
+   *
+   * @param searchClass Object class of search node
+   */
+  public void setSearchClass(Class<?> searchClass) {
+    this.searchClass = searchClass;
+  }
 }
-
-

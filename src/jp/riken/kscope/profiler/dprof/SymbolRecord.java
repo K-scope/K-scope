@@ -21,78 +21,81 @@ import java.util.List;
 
 /**
  * Symbol information record class
+ *
  * @author RIKEN
  */
 public class SymbolRecord {
-    /** Symbol information: Symbol information list (= number of threads) */
-    private List<SymbolList> records;
+  /** Symbol information: Symbol information list (= number of threads) */
+  private List<SymbolList> records;
 
-    /**
-     * Constructor
-     */
-    public SymbolRecord() {
-        records = new ArrayList<SymbolList>();
-    }
+  /** Constructor */
+  public SymbolRecord() {
+    records = new ArrayList<SymbolList>();
+  }
 
-    /**
-     * Add symbol information list
-     * @param symbol Thread list
-     * @return true = success
-     */
-    public boolean addSymbolList(SymbolList symbol) {
-        return this.records.add(symbol);
-    }
+  /**
+   * Add symbol information list
+   *
+   * @param symbol Thread list
+   * @return true = success
+   */
+  public boolean addSymbolList(SymbolList symbol) {
+    return this.records.add(symbol);
+  }
 
-    /**
-     * Get the symbol information record
-     * @return Symbol information record
-     */
-    public List<SymbolList> getSymbolRecord() {
-        return this.records;
-    }
+  /**
+   * Get the symbol information record
+   *
+   * @return Symbol information record
+   */
+  public List<SymbolList> getSymbolRecord() {
+    return this.records;
+  }
 
-    /**
-     * Get the symbol information list of thread number (0 ~)
-     * @param threadid Thread number (0 ~)
-     * @return Symbol information list
-     */
-    public SymbolList getSymbolList(int threadid) {
-        if (this.records == null) return null;
-        if (this.records.size() <= threadid) return null;
-        return this.records.get(threadid);
-    }
+  /**
+   * Get the symbol information list of thread number (0 ~)
+   *
+   * @param threadid Thread number (0 ~)
+   * @return Symbol information list
+   */
+  public SymbolList getSymbolList(int threadid) {
+    if (this.records == null) return null;
+    if (this.records.size() <= threadid) return null;
+    return this.records.get(threadid);
+  }
 
-    /**
-     * Get symbol information
-     * @param threadid Thread number (0 ~)
-     * @param symbolid Symbol index
-     * @return Symbol information
-     */
-    public SymbolInfo getSymbolInfo(int threadid, int symbolid) {
-        SymbolList list = getSymbolList(threadid);
-        if (list == null) return null;
-        return list.getSymbolInfo(symbolid);
-    }
+  /**
+   * Get symbol information
+   *
+   * @param threadid Thread number (0 ~)
+   * @param symbolid Symbol index
+   * @return Symbol information
+   */
+  public SymbolInfo getSymbolInfo(int threadid, int symbolid) {
+    SymbolList list = getSymbolList(threadid);
+    if (list == null) return null;
+    return list.getSymbolInfo(symbolid);
+  }
 
-    /**
-     * Get the number of symbol information list (= number of threads)
-     * @return Number of symbol information lists
-     */
-    public int getSymbolListCount() {
-        if (this.records == null) return 0;
-        return this.records.size();
-    }
+  /**
+   * Get the number of symbol information list (= number of threads)
+   *
+   * @return Number of symbol information lists
+   */
+  public int getSymbolListCount() {
+    if (this.records == null) return 0;
+    return this.records.size();
+  }
 
-
-    /**
-     * Get the number of symbols
-     * @param threadid Thread number (0 ~)
-     * @return Number of symbols
-     */
-    public int getSymbolInfoCount(int threadid) {
-        SymbolList list = getSymbolList(threadid);
-        if (list == null) return 0;
-        return list.getSymbolInfoCount();
-    }
-
+  /**
+   * Get the number of symbols
+   *
+   * @param threadid Thread number (0 ~)
+   * @return Number of symbols
+   */
+  public int getSymbolInfoCount(int threadid) {
+    SymbolList list = getSymbolList(threadid);
+    if (list == null) return 0;
+    return list.getSymbolInfoCount();
+  }
 }

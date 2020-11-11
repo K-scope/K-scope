@@ -18,46 +18,43 @@
 package jp.riken.kscope.language;
 
 import java.util.Set;
-
 import jp.riken.kscope.data.CodeLine;
 
 /**
  * Interface to get the row information of the block.
- * @author RIKEN
  *
+ * @author RIKEN
  */
 public interface IBlock {
 
-    /**
-     * Get the start line number information.
-     * @return Start line number information
-     */
-    CodeLine getStartCodeLine();
+  /**
+   * Get the start line number information.
+   *
+   * @return Start line number information
+   */
+  CodeLine getStartCodeLine();
 
-    /**
-     * Get the end line number information.
-     * @return End line number information
-     */
-    CodeLine getEndCodeLine();
+  /**
+   * Get the end line number information.
+   *
+   * @return End line number information
+   */
+  CodeLine getEndCodeLine();
 
-    /**
-     * Returns the block type.
-     * @return block type
-     */
-    BlockType getBlockType();
+  /**
+   * Returns the block type.
+   *
+   * @return block type
+   */
+  BlockType getBlockType();
 
-    /**
-     * Returns the block type.
-     * @return block type
-     */
-    IBlock getMotherBlock();
+  /**
+   * Returns the block type.
+   *
+   * @return block type
+   */
+  IBlock getMotherBlock();
 
-    /**
-     * Get the variable list of the expression.
-     * Variable list of @return expression
-     */
-	Set<Variable> getAllVariables();
-
+  /** Get the variable list of the expression. Variable list of @return expression */
+  Set<Variable> getAllVariables();
 }
-
-

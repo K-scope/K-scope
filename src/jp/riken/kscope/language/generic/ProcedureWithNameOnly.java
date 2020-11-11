@@ -19,7 +19,6 @@ package jp.riken.kscope.language.generic;
 
 import java.io.Serializable;
 import java.util.List;
-
 import jp.riken.kscope.language.Expression;
 import jp.riken.kscope.language.Procedure;
 
@@ -28,90 +27,95 @@ import jp.riken.kscope.language.Procedure;
  * Supports Fortran module procedure. <br>
  *
  * @author RIKEN
- *
  */
 public class ProcedureWithNameOnly
- implements Serializable,
-        jp.riken.kscope.language.generic.IProcedureItem {
-	/** Serial number */
-	private static final long serialVersionUID = 682980844988371714L;
-    private String name;
-    private Procedure definition;
+    implements Serializable, jp.riken.kscope.language.generic.IProcedureItem {
+  /** Serial number */
+  private static final long serialVersionUID = 682980844988371714L;
 
-    /**
-     * Constructor.
-     *
-     * @param nm
-     * Function name
-     */
-    public ProcedureWithNameOnly(String nm) {
-        this.name = nm;
-    }
+  private String name;
+  private Procedure definition;
 
-    @Override
-    public String toString() {
-        return "module procedure : " + this.name;
-    }
-    /**
-     * Whether the candidate function matches your information <br>
-     * Method to check. Candidate function name & Candidate function <br>
-     * Returns true if the argument list and the actual argument list match. <br>
-     *
-     * @param target
-     * Candidate function
-     * @param actualArguments
-     * List of actual arguments
-     *
-     * @return true: Conforms
-     * false: Not compatible
-     */
-    @Override
-    public boolean matches(Procedure target, List<Expression> actualArguments) {
-        if (target == null || actualArguments == null) { return false; }
-        if (!(target.get_name().equalsIgnoreCase(this.name))) { return false; }
-        if (!target.matches(actualArguments)) { return false; }
-        return true;
-    }
-    /**
-     * Whether the target actual argument matches your information <br>
-     * Method to check. <br>
-     * Returns true if the argument list and the actual argument list match. <br>
-     *
-     * @param actualArguments
-     * List of actual arguments
-     *
-     * @return true: Conforms
-     * false: Not compatible
-     */
-    @Override
-    public boolean matches(List<Expression> actualArguments) {
-        if (this.definition == null || actualArguments == null) { return false; }
-        if (!(this.definition.get_name().equalsIgnoreCase(this.name))) {return false; }
-        if (!this.definition.matches(actualArguments)) {return false; }
-        return true;
-    }
+  /**
+   * Constructor.
+   *
+   * @param nm Function name
+   */
+  public ProcedureWithNameOnly(String nm) {
+    this.name = nm;
+  }
 
-    /**
-     * Get the function name.
-     *
-     * @return function name
-     */
-    public String getName() {
-        return this.name;
+  @Override
+  public String toString() {
+    return "module procedure : " + this.name;
+  }
+  /**
+   * Whether the candidate function matches your information <br>
+   * Method to check. Candidate function name & Candidate function <br>
+   * Returns true if the argument list and the actual argument list match. <br>
+   *
+   * @param target Candidate function
+   * @param actualArguments List of actual arguments
+   * @return true: Conforms false: Not compatible
+   */
+  @Override
+  public boolean matches(Procedure target, List<Expression> actualArguments) {
+    if (target == null || actualArguments == null) {
+      return false;
     }
+    if (!(target.get_name().equalsIgnoreCase(this.name))) {
+      return false;
+    }
+    if (!target.matches(actualArguments)) {
+      return false;
+    }
+    return true;
+  }
+  /**
+   * Whether the target actual argument matches your information <br>
+   * Method to check. <br>
+   * Returns true if the argument list and the actual argument list match. <br>
+   *
+   * @param actualArguments List of actual arguments
+   * @return true: Conforms false: Not compatible
+   */
+  @Override
+  public boolean matches(List<Expression> actualArguments) {
+    if (this.definition == null || actualArguments == null) {
+      return false;
+    }
+    if (!(this.definition.get_name().equalsIgnoreCase(this.name))) {
+      return false;
+    }
+    if (!this.definition.matches(actualArguments)) {
+      return false;
+    }
+    return true;
+  }
 
-    /**
-     * Set the corresponding procedure declaration.
-     * @param proc
-     */
-    public void setDeclaration(Procedure proc) {
-        this.definition = proc;
-    }
-    /**
-     * Returns the corresponding procedure declaration.
-     * @return Declaration of procedure. If not, it returns null.
-     */
-    public Procedure getDeclaration() {
-        return this.definition;
-    }
+  /**
+   * Get the function name.
+   *
+   * @return function name
+   */
+  public String getName() {
+    return this.name;
+  }
+
+  /**
+   * Set the corresponding procedure declaration.
+   *
+   * @param proc
+   */
+  public void setDeclaration(Procedure proc) {
+    this.definition = proc;
+  }
+  /**
+   * Returns the corresponding procedure declaration.
+   *
+   * @return Declaration of procedure. If not, it returns null.
+   */
+  public Procedure getDeclaration() {
+    return this.definition;
+  }
 }

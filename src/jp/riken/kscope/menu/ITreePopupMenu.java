@@ -20,41 +20,45 @@ package jp.riken.kscope.menu;
 import java.awt.event.ActionListener;
 import java.util.EventListener;
 
-
 /**
  * Tree pop-up menu interface
+ *
  * @author RIKEN
  */
 public interface ITreePopupMenu {
 
-    /**
-     * Get all storage action listeners
-     * @return All storage action listener
-     */
-    public ActionListener getActionTreeCollapseAll();
+  /**
+   * Get all storage action listeners
+   *
+   * @return All storage action listener
+   */
+  public ActionListener getActionTreeCollapseAll();
 
-    /**
-     * Get all deployment action listeners
-     * @return All deployment action listener
-     */
-    public ActionListener getActionTreeExpandAll();
+  /**
+   * Get all deployment action listeners
+   *
+   * @return All deployment action listener
+   */
+  public ActionListener getActionTreeExpandAll();
 
-    /**
-     * Get Selective Deployment Action Listener
-     * @return Selective expansion action listener
-     */
-    public ActionListener getActionTreeExpandSelect();
+  /**
+   * Get Selective Deployment Action Listener
+   *
+   * @return Selective expansion action listener
+   */
+  public ActionListener getActionTreeExpandSelect();
 
-    /**
-     * Get the listener to open the file.
-     * @return Open file Listener
-     */
-    public EventListener getActionOpenFile();
+  /**
+   * Get the listener to open the file.
+   *
+   * @return Open file Listener
+   */
+  public EventListener getActionOpenFile();
 
-    /**
-     * Get the explorer export action
-     * @return explorer export action
-     */
-    public ActionListener getActionExportExplore();
-
+  /**
+   * Get the explorer export action
+   *
+   * @return explorer export action
+   */
+  public ActionListener getActionExportExplore();
 }

@@ -15,7 +15,5 @@
  * limitations under the License.
  */
 
-/**
- * Provides profiler EPROF data class. <br/>
- */
+/** Provides profiler EPROF data class. <br> */
 package jp.riken.kscope.profiler.eprof;

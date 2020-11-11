@@ -15,7 +15,5 @@
  * limitations under the License.
  */
 
-/**
- * Provides constants and identifiers (enums). <br/>
- */
+/** Provides constants and identifiers (enums). <br> */
 package jp.riken.kscope.common;
