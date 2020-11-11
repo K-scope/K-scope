@@ -33,30 +33,30 @@ import jp.riken.kscope.xcodeml.xml.*;
 import jp.riken.kscope.xcodeml.xml.gen.*;
 
 /**
- * ソースコード生成クラス
+ * Source code generation class
  * @author RIKEN
  */
 public class CodeBuilder extends XcodeMLVisitorImpl {
-    /** スペース文字 */
+    /** Space character */
     public static final String DEFAULT_SPC_CHARS = " ";
-    /** インデント文字列 */
+    /** Indent string */
     public static final String DEFAULT_INDENT_CHARS = " ";
-    /** テキスト出力ストリーム */
+    /** Text output stream */
     private PrintWriter _out;
-    /** コード行バッファ */
+    /** Code line buffer */
     private StringBuilder m_lineBuf = new StringBuilder();
-    /** コード行リスト */
+    /** Line of code list */
     private ArrayList<CodeLine> m_sourceList = new ArrayList<CodeLine>();
-    /** XMLパース実行状態 */
+    /** XML parsing execution state */
     private XcodeMLContext _context;
-    /** ダミー実行用バッファー（文字列の組み立て機能のみ利用） */
+    /** Dummy execution buffer (use only string assembly function) */
     private StringBuilder m_dummyBuf = null;
-    /** 構文文字の小文字、大文字変換フラグ true=小文字. */
+    /** Lowercase syntax characters, uppercase conversion flag true = lowercase. */
     private boolean lowercase = true;
 
     /**
-     * コンストラクタ
-     * @param context		XcodeMLパーサ実行状況クラス
+     * Constructor
+     * @param context XcodeML parser execution status class
      */
     public CodeBuilder(XcodeMLContext context) {
         _context = context;
@@ -64,9 +64,9 @@ public class CodeBuilder extends XcodeMLVisitorImpl {
     }
 
     /**
-     * 文字のバイト数を取得する.
+     * Get the number of bytes of a character.
      *
-     * @param c   文字
+     * @param c character
      * @return 1 or 2
      */
     private static int _getColumnCount(char c) {
@@ -79,10 +79,10 @@ public class CodeBuilder extends XcodeMLVisitorImpl {
     }
 
     /**
-     * 文字配列のバイト数を取得する.
+     * Get the number of bytes in the character array.
      *
-     * @param array			文字配列
-     * @return			バイト数
+     * @param array Character array
+     * @return Number of bytes
      */
     private static int _getColumnCount(char[] array) {
         int columnCount = 0;
@@ -93,9 +93,9 @@ public class CodeBuilder extends XcodeMLVisitorImpl {
     }
 
     /**
-     * 文字列のバイト数を取得する
-     * @param s		文字列
-     * @return		バイト数
+     * Get the number of bytes in a string
+     * @param s string
+     * @return Number of bytes
      */
     @SuppressWarnings("unused")
     private static int _getColumnCount(String s) {
@@ -135,7 +135,7 @@ public class CodeBuilder extends XcodeMLVisitorImpl {
 
     /**
      * Set writer set by this writer.
-     * @param   out   テキスト出力ストリーム
+     * @param out Text output stream
      */
     public void setWriter(PrintWriter out) {
         _out = out;
@@ -149,13 +149,13 @@ public class CodeBuilder extends XcodeMLVisitorImpl {
     }
 
     /**
-     * コード行を出力する。
+     * Print a line of code.
      *
-     * @param  node    出力ノード
-     * @return  成否
+     * @param node Output node
+     * @return Success or failure
      */
     public boolean updateCodeLine(IXmlNode node) {
-        // ダミー実行中は更新しない。
+        // Do not update during dummy execution.
         if (m_dummyBuf != null) {
             return true;
         }
@@ -180,9 +180,9 @@ public class CodeBuilder extends XcodeMLVisitorImpl {
     }
 
     /**
-     * 大文字・小文字変換を行う。
-     * @param text         変換元文字列
-     * @return    大文字・小文字変換文字列
+     * Performs case conversion.
+     * @param text Conversion source string
+     * @return Uppercase / lowercase conversion string
      */
     private String toCaseSensitive(String text) {
         if (text == null || text.length() == 0) {
@@ -230,26 +230,26 @@ public class CodeBuilder extends XcodeMLVisitorImpl {
     }
 
     /**
-     * 文字リストを出力する.
-     * @param chArray		文字リスト
+     * Output a character list.
+     * @param chArray Character list
      */
     private void _writeCharacterArray(char[] chArray) {
         if (m_dummyBuf != null) {
-            // ダミー実行中
+            // Dummy running
             m_dummyBuf.insert(m_dummyBuf.length(), chArray, 0, chArray.length);
         } else {
-            // 通常実行中
+            // Normal execution
             m_lineBuf.insert(m_lineBuf.length(), chArray, 0, chArray.length);
         }
     }
 
     /**
-     * 行番号, FpragmaStatement出力を行う。
+     * Output line number and FpragmaStatement.
      *
-     * コード行クラスには追加しない。 デバッグ用のファイル出力のみを行う。
+     * Do not add to the code line class. Only output a file for debugging.
      *
      * @param s
-     *            String to write
+     * String to write
      */
     public void writeIsolatedLine(String s) {
         // Note: Omit count up of _columnNumber
@@ -278,8 +278,8 @@ public class CodeBuilder extends XcodeMLVisitorImpl {
     }
 
     /**
-     * 最終コード行を取得する。
-     * @return		最終コード行
+     * Get the last line of code.
+     * @return Last line of code
      */
     public CodeLine getLastCodeLine() {
         if (m_sourceList.size() == 0)
@@ -288,18 +288,18 @@ public class CodeBuilder extends XcodeMLVisitorImpl {
     }
 
     /**
-     * コード行クラスを生成する。
+     * Generate a line of code class.
      *
-     * @param filename			ソースファイル名
-     * @param startlineno		開始行番号
-     * @param endlineno			終了行番号
-     * @param statement			コードステートメント
-     * @return			生成コード行クラス
+     * @param filename Source file name
+     * @param startlineno Start line number
+     * @param endlineno End line number
+     * @param statement Code statement
+     * @return Generated code line class
      */
     private CodeLine createCodeLine(String filename, String startlineno,
             String endlineno, String statement) {
 
-        // 削除 XMLからのパースで開始行番号がない要素(VarDecl)がある。
+        // Delete There is an element (VarDecl) that is parsed from XML and does not have a starting line number.
         // assert (startlineno != null && startlineno.length() > 0);
         assert (m_lineBuf != null || m_lineBuf.length() <= 0);
 
@@ -312,7 +312,7 @@ public class CodeBuilder extends XcodeMLVisitorImpl {
             end_no = Integer.parseInt(endlineno);
         }
 
-        // ソースファイル、ソースコード行
+        // Source file, source code line
         File srcFile = FileUtils.joinFilePath(_context.getSourceXmlFile()
                 .getFile().getParentFile(), filename);
         SourceFile codeFile = null;
@@ -334,13 +334,13 @@ public class CodeBuilder extends XcodeMLVisitorImpl {
     }
 
     /**
-     * コード行クラスを生成する。
+     * Generate a line of code class.
      *
-     * @param node			XMLノード
-     * @return コード行クラス
+     * @param node XML node
+     * @return code line class
      */
     public CodeLine createCodeLine(IXmlNode node) {
-        // 現在要素の親要素からファイル名、開始行番号、終了行番号を取得する。
+        // Get the file name, start line number, and end line number from the parent element of the current element.
         IDefBaseStatement base_node = _context.getInvokeBaseStatement(node);
         if (base_node == null)
             return null;
@@ -354,14 +354,14 @@ public class CodeBuilder extends XcodeMLVisitorImpl {
     }
 
     /**
-     * コード行クラスを生成する。
+     * Generate a line of code class.
      *
-     * @param node		XMLノード
-     * @param line		コード行文字列
-     * @return コード行クラス
+     * @param node XML node
+     * @param line Code line String
+     * @return code line class
      */
     public CodeLine createCodeLine(IXmlNode node, String line) {
-        // 現在要素の親要素からファイル名、開始行番号、終了行番号を取得する。
+        // Get the file name, start line number, and end line number from the parent element of the current element.
         IDefBaseStatement base_node = _context.getInvokeBaseStatement(node);
         if (base_node == null)
             return null;
@@ -398,9 +398,9 @@ public class CodeBuilder extends XcodeMLVisitorImpl {
     }
 
     /**
-     * データ型を取得する
-     * @param type		型名
-     * @return			データ型
+     * Get the data type
+     * @param type type name
+     * @return data type
      */
     private XcodeMLTypeManager.TypeList getTypeList(String type) {
         XcodeMLTypeManager typeManager = _context.getTypeManager();
@@ -494,7 +494,7 @@ public class CodeBuilder extends XcodeMLVisitorImpl {
             String operation, boolean grouping) {
         XcodeMLVisitor visiter = _context.getVisitor();
 
-        // 1つ上の親要素を取得する。
+        // Get the next higher parent element.
         IXmlNode parentNode = _context.getInvokeNode(1);
 
         boolean isExpr = XmlNodeUtil.isExprModel(parentNode);
@@ -537,9 +537,9 @@ public class CodeBuilder extends XcodeMLVisitorImpl {
     /**
      * Write kind and length in character declaration.
      *
-     * @param kind			データ種別
-     * @param lenElem		データ長
-     * @return   成否
+     * @param kind data type
+     * @param lenElem Data length
+     * @return Success or failure
      */
     public boolean writeTypeParam(Kind kind, Len lenElem) {
         if (kind == null && lenElem == null) {
@@ -574,10 +574,10 @@ public class CodeBuilder extends XcodeMLVisitorImpl {
     /**
      * Write index ranges of array.
      *
-     * @param indexRangeArray		インデックス範囲
-     * @return true/false			成否
-     * @example <div class="Example"> INTEGER value<span class="Strong">(10,
-     *          1:20)</span> </div>
+     * @param indexRangeArray Index range
+     * @return true / false Success or failure
+     * @example <div class = "Example"> INTEGER value <span class = "Strong"> (10,
+     * 1:20) </ span> </ div>
      */
     public boolean writeIndexRangeArray(IXmlNode[] indexRangeArray) {
         if (indexRangeArray == null) {
@@ -617,10 +617,10 @@ public class CodeBuilder extends XcodeMLVisitorImpl {
     /**
      * Write coindex ranges of array.
      *
-     * @param indexRangeArray		インデックス範囲
-     * @return true/false
-     * @example <div class="Example"> INTEGER value<span class="Strong">[10,
-     *          1:*]</span> </div>
+     * @param indexRangeArray Index range
+     * @return true / false
+     * @example <div class = "Example"> INTEGER value <span class = "Strong"> [10,
+     * 1: *] </ span> </ div>
      */
     public boolean writeCoIndexRangeArray(IndexRange[] indexRangeArray) {
         if (indexRangeArray == null) {
@@ -659,9 +659,9 @@ public class CodeBuilder extends XcodeMLVisitorImpl {
     }
 
     /**
-     * データ定義属性を出力する
-     * @param top		ルートデータ定義テーブル
-     * @param low		データ定義
+     * Output data definition attributes
+     * @param top Root data definition table
+     * @param low data definition
      */
     private void _writeDeclAttr(IXmlTypeTableChoice top, IXmlTypeTableChoice low) {
         if ((top instanceof FbasicType) && (low instanceof FbasicType)) {
@@ -679,8 +679,8 @@ public class CodeBuilder extends XcodeMLVisitorImpl {
     }
 
     /**
-     * データ定義属性を出力する
-     * @param basicTypeArray		データ定義
+     * Output data definition attributes
+     * @param basicTypeArray Data definition
      */
     private void _writeBasicTypeAttr(FbasicType... basicTypeArray) {
         if (basicTypeArray == null) {
@@ -768,11 +768,11 @@ public class CodeBuilder extends XcodeMLVisitorImpl {
     }
 
     /**
-     * 関数データ型を出力する
-     * @param symbol		XmlSymbol
-     * @param funcType		FfunctionType
-     * @param visitable		要素
-     * @return		成否
+     * Output function data type
+     * @param symbol XmlSymbol
+     * @param funcType FfunctionType
+     * @param visitable element
+     * @return Success or failure
      */
     public boolean writeFunctionSymbol(XmlSymbol symbol,
             FfunctionType funcType, IXmlNode visitable) {
@@ -896,10 +896,10 @@ public class CodeBuilder extends XcodeMLVisitorImpl {
     }
 
     /**
-     * 基本データ型を出力する
-     * @param basicTypeElem		基本データ型要素
-     * @param typeList			typeTable
-     * @return			成否
+     * Output basic data type
+     * @param basicTypeElem Basic data type element
+     * @param typeList typeTable
+     * @return Success or failure
      */
     public boolean writeBasicType(FbasicType basicTypeElem,
             XcodeMLTypeManager.TypeList typeList) {
@@ -1259,14 +1259,14 @@ public class CodeBuilder extends XcodeMLVisitorImpl {
         writeLineDirective(visitable.getLineno(), visitable.getFile());
 
         List<IXmlNode> content = visitable.getContent();
-        // 左辺
+        // Left side
         IXmlNode leftExpr = (content != null && content.size() >= 1) ? content
                 .get(0) : null;
-        // 右辺
+        // Right side
         IXmlNode rightExpr = (content != null && content.size() >= 2) ? content
                 .get(1) : null;
 
-        assert (leftExpr != null && rightExpr != null); // 左辺、右辺は必須
+        assert (leftExpr != null && rightExpr != null); // Left side and right side are required
 
         if (writeBinaryExpr(leftExpr, rightExpr, "=", false) == false) {
             return false;
@@ -2695,9 +2695,9 @@ public class CodeBuilder extends XcodeMLVisitorImpl {
         if (_context.isInvokeNodeOf(Else.class, 2)) {
             boolean isElseIf = false;
             Else elseNode = (Else) _context.getInvokeNode(2);
-            // 開始行番号が設定されているか？
+            // Is the start line number set?
             if (StringUtils.isNullOrEmpty(elseNode.getLineno())) {
-                // 2つ上のElse要素の開始行番号が設定されていないのでElseIF文である。
+                // This is an Else IF statement because the start line number of the Else element two above is not set.
                 isElseIf = true;
             }
             if (isElseIf) {
@@ -3200,10 +3200,10 @@ public class CodeBuilder extends XcodeMLVisitorImpl {
         writeLineDirective(visitable.getLineno(), visitable.getFile());
 
         List<IXmlNode> content = visitable.getContent();
-        // 左辺
+        // Left side
         IXmlNode leftExpr = (content != null && content.size() >= 1) ? content
                 .get(0) : null;
-        // 右辺
+        // Right side
         IXmlNode rightExpr = (content != null && content.size() >= 2) ? content
                 .get(1) : null;
         if (writeBinaryExpr(leftExpr, rightExpr, "=>", false) == false) {
@@ -3984,7 +3984,7 @@ public class CodeBuilder extends XcodeMLVisitorImpl {
         writeToken(toCaseSensitive("GOTO "));
         String labelName = visitable.getLabelName();
         if (StringUtils.isNullOrEmpty(labelName) == false) {
-            // 行番号の場合は、数値文字にする
+            // For line numbers, use numeric characters
             if (StringUtils.isNumeric(labelName)) {
                 labelName = Integer.valueOf(labelName).toString();
             }
@@ -4578,7 +4578,7 @@ public class CodeBuilder extends XcodeMLVisitorImpl {
         // DONE: StatementLabel
         writeLineDirective(visitable.getLineno(), visitable.getFile());
         String label = visitable.getLabelName();
-        // 行番号の場合は、数値文字にする
+        // For line numbers, use numeric characters
         if (StringUtils.isNumeric(label)) {
             label = Integer.valueOf(label).toString();
         }
@@ -4991,19 +4991,19 @@ public class CodeBuilder extends XcodeMLVisitorImpl {
     }
 
     /**
-     * 組み立て中のコードから部分文字列位置の取得する。
-     * @return      部分文字列位置
+     * Get the substring position from the code being assembled.
+     * @return Substring position
      */
     public int getCurrentColumn() {
         return m_lineBuf.length();
     }
 
     /**
-     * 組み立て中のコードから部分文字列を取得する.<br/>
+     * Get the substring from the code being assembled. <br/>
      *
-     * stealStartによって開始された文字列から現在文字列までを取得する。
-     * @param  start_idx    開始位置
-     * @return  部分文字列
+     * Get from the string started by stealStart to the current string.
+     * @param start_idx Start position
+     * @return substring
      */
     public String stealLineBuf(int start_idx) {
         if (m_lineBuf.length() <= 0)
@@ -5014,9 +5014,9 @@ public class CodeBuilder extends XcodeMLVisitorImpl {
     }
 
     /**
-     * 引数リストを文字列で取得する.
-     * @param args		引数要素
-     * @return			引数リスト
+     * Get the argument list as a string.
+     * @param args argument element
+     * @return argument list
      */
     public String[] getArgumentList(Arguments args) {
         List<IXmlNode> list = args
@@ -5027,54 +5027,54 @@ public class CodeBuilder extends XcodeMLVisitorImpl {
         ArrayList<String> arg_list = new ArrayList<String>();
         XcodeMLVisitor visiter = _context.getVisitor();
         for (IXmlNode node : list) {
-            // ダミー実行ON
+            // Dummy execution ON
             m_dummyBuf = new StringBuilder();
             if (visiter.invokeEnter(node) == false) {
-                // ダミー実行OFF
+                // Dummy execution OFF
                 m_dummyBuf = null;
                 return null;
             }
             if (m_dummyBuf == null) {
                 assert (false);
             }
-            // 引数の追加
+            // Add argument
             arg_list.add(m_dummyBuf.toString());
 
-            // ダミー実行ON
+            // Dummy execution ON
             m_dummyBuf = new StringBuilder();
         }
 
-        // ダミー実行OFF
+        // Dummy execution OFF
         m_dummyBuf = null;
 
         return (String[]) arg_list.toArray(new String[arg_list.size()]);
     }
 
     /**
-     * コードを組み立てる
-     * @param node		要素
-     * @return			コード文字列
+     * Assemble the cord
+     * @param node element
+     * @return code string
      */
     public String getCodeString(IXmlNode node) {
         XcodeMLVisitor visiter = _context.getVisitor();
-        // ダミー実行ON
+        // Dummy execution ON
         m_dummyBuf = new StringBuilder();
         if (visiter.invokeEnter(node) == false) {
-            // ダミー実行OFF
+            // Dummy execution OFF
             m_dummyBuf = null;
             return null;
         }
         String line = m_dummyBuf.toString();
 
-        // ダミー実行OFF
+        // Dummy execution OFF
         m_dummyBuf = null;
 
         return line;
     }
 
     /**
-     * ソースコード行を取得する
-     * @return		コード行リスト
+     * Get a line of source code
+     * @return Code line list
      */
     public CodeLine[] getCodeLineList() {
         if (m_sourceList == null || m_sourceList.size() <= 0)

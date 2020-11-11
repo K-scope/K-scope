@@ -16,6 +16,6 @@
  */
 
 /**
- * XcodeMLのXML要素を提供します.
+ * Provides XML elements for XcodeML.
  */
 package jp.riken.kscope.xcodeml.xml;

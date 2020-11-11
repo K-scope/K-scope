@@ -18,12 +18,12 @@
 package jp.riken.kscope.xcodeml.xml;
 
 /**
- * エラー識別子
+ * Error identifier
  * @author RIKEN
  */
 public enum EnumError {
     /**
-     * 成功
+     * Success
      */
     SUCCESS {
         @Override
@@ -44,7 +44,7 @@ public enum EnumError {
     },
 
     /**
-     * ノードタイプ欠如エラー
+     * Node type missing error
      */
     XCODEML_TYPE_NOT_FOUND {
         @Override
@@ -53,10 +53,10 @@ public enum EnumError {
         }
 
         /**
-         * 書式付きメッセージ
+         * Formatted message
          * @param args
-         *            args[0]: Type name.
-         * @return  メッセージ
+         * args [0]: Type name.
+         * @return message
          */
         @Override
         public String format(Object... args) {
@@ -67,7 +67,7 @@ public enum EnumError {
     },
 
     /**
-     * ノード名欠如エラー
+     * Missing node name error
      */
     XCODEML_NAME_NOT_FOUND {
         @Override
@@ -76,10 +76,10 @@ public enum EnumError {
         }
 
         /**
-         * 書式付きメッセージ
+         * Formatted message
          * @param args
-         *            args[0]: Symbol name.
-         * @return  メッセージ
+         * args [0]: Symbol name.
+         * @return message
          */
         @Override
         public String format(Object... args) {
@@ -90,7 +90,7 @@ public enum EnumError {
     },
 
     /**
-     * ノードタイプ不一致エラー
+     * Node type mismatch error
      */
     XCODEML_TYPE_MISMATCH {
         @Override
@@ -99,12 +99,12 @@ public enum EnumError {
         }
 
         /**
-         * 書式付きメッセージ
+         * Formatted message
          * @param args
-         *            args[0]: Type name. (basic, function, struct, Fint, etc...) <br/>
-         *            args[1]: Actual type. (basic, function, struct, etc...)<br/>
-         *            args[2]: Expect type. (basic, function, struct, etc...)<br/>
-         * @return  メッセージ
+         * args [0]: Type name. (Basic, function, struct, Fint, etc ...) <br/>
+         * args [1]: Actual type. (Basic, function, struct, etc ...) <br/>
+         * args [2]: Expect type. (Basic, function, struct, etc ...) <br/>
+         * @return message
          */
         @Override
         public String format(Object... args) {
@@ -117,7 +117,7 @@ public enum EnumError {
     },
 
     /**
-     * ノード属性エラー
+     * Node attribute error
      */
     XCODEML_NEED_ATTR {
         @Override
@@ -127,11 +127,11 @@ public enum EnumError {
         }
 
         /**
-         * 書式付きメッセージ
+         * Formatted message
          * @param args
-         *            args[0]: Attribute name.<br/>
-         *            args[1]: Element name.
-         * @return  メッセージ
+         * args [0]: Attribute name. <br/>
+         * args [1]: Element name.
+         * @return message
          */
         @Override
         public String format(Object... args) {
@@ -143,7 +143,7 @@ public enum EnumError {
     },
 
     /**
-     * ノード不明エラー
+     * Unknown node error
      */
     XCODEML_SEMANTICS {
         @Override
@@ -164,7 +164,7 @@ public enum EnumError {
     },
 
     /**
-     * ノード参照エラー
+     * Node reference error
      */
     XCODEML_CYCLIC_TYPE {
         @Override
@@ -187,21 +187,21 @@ public enum EnumError {
     ;
 
     /**
-     * メッセージを取得する
-     * @return		メッセージ
+     * Get a message
+     * @return message
      */
     public abstract String message();
 
     /**
-     * 書式付きメッセージの取得を行う
-     * @param args   エラーメッセージ
-     * @return		メッセージ
+     * Get a formatted message
+     * @param args error message
+     * @return message
      */
     public abstract String format(Object... args);
 
     /**
-     * エラーであるかチェックする
-     * @return		true=エラー
+     * Check for errors
+     * @return true = error
      */
     public boolean isError() {
         return true;

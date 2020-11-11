@@ -21,72 +21,72 @@ import jp.riken.kscope.xcodeml.xml.IXmlVisitor;
 import jp.riken.kscope.xcodeml.xml.gen.*;
 
 /**
- * FdoStatement要素(DO文)クラス
+ * FdoStatement element (DO statement) class
  * @author RIKEN
  *
  */
 public class FdoStatementSequence implements IXmlNode {
-	/** DO変数 */
+	/** DO variable */
 	protected Var var;
-	/** DO変数の値範囲 */
+	/** DO variable value range */
 	protected IndexRange indexRange;
 	
 	/**
-	 * コンストラクタ
-	 * @param var		DO変数
-	 * @param index		DO変数の値範囲 
-	 */
+* Constructor
+* @param var DO variable
+* @param index DO variable value range
+*/
 	public FdoStatementSequence(Var var, IndexRange index) {
 		this.var = var;
 		indexRange = index;
 	}
 	
 	/**
-	 * DO変数を取得する
-	 * @return		DO変数
-	 */
+* Get the DO variable
+* @return DO variable
+*/
 	public Var getVar() {
 		return var;
 	}
 	
 	/**
-	 * DO変数を設定する
-	 * @param var		DO変数
-	 */
+* Set the DO variable
+* @param var DO variable
+*/
 	public void setVar(Var var) {
 		this.var = var;
 	}
 	
 	/**
-	 * DO変数の値範囲を取得する
-	 * @return		DO変数の値範囲 
-	 */
+* Get the value range of a DO variable
+* @return DO variable value range
+*/
 	public IndexRange getIndexRange() {
 		return indexRange;
 	}
 	
 	/**
-	 * DO変数の値範囲を設定する
-	 * @param indexRange		DO変数の値範囲 
-	 */
+* Set the value range of the DO variable
+* @param indexRange DO variable value range
+*/
 	public void setIndexRange(IndexRange indexRange) {
 		this.indexRange = indexRange;
 	}
 
 	/**
-	 * FdoStatement要素(DO文)の探索を開始する
-	 * @param visitor		XcodeMLノード探索
-	 * @return		成否
-	 */
+* Start searching for FdoStatement element (DO statement)
+* @param visitor Xcode ML node search
+* @return Success or failure
+*/
 	@Override
 	public boolean enter(IXmlVisitor visitor) {
 		return (visitor.enter(this));
 	}
 
 	/**
-	 * FdoStatement要素(DO文)の探索を終了する
-	 * @param visitor		XcodeMLノード探索
-	 */
+* End the search for the Fdo Statement element (DO statement)
+* @param visitor Xcode ML node search
+*/
 	@Override
 	public void leave(IXmlVisitor visitor) {
 		visitor.leave(this);

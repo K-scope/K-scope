@@ -27,12 +27,12 @@ import jp.riken.kscope.xcodeml.xml.gen.*;
  * XcodeML/F validation utility.
  */
 public class XcodeMLValidator {
-    /** エラーメッセージ */
+    /** Error message */
     private String errorDescription;
 
     /**
      * Get error description
-     * @return  エラーメッセージ
+     * @return error message
      */
     public String getErrDesc() {
         return errorDescription;
@@ -69,9 +69,9 @@ public class XcodeMLValidator {
     }
 
     /**
-     * FfunctionType属性をチェックする
-     * @param obj		FfunctionType
-     * @return		false=属性エラー
+     * Check the FfunctionType attribute
+     * @param obj FfunctionType
+     * @return false = attribute error
      */
     public final boolean validAttr(FfunctionType obj) {
         if (obj == null)
@@ -95,9 +95,9 @@ public class XcodeMLValidator {
     }
 
     /**
-     * FstructType属性をチェックする
-     * @param obj		FstructType
-     * @return		false=属性エラー
+     * Check the FstructType attribute
+     * @param obj FstructType
+     * @return false = attribute error
      */
     public final boolean validAttr(FstructType obj) {
         if (obj == null)
@@ -114,9 +114,9 @@ public class XcodeMLValidator {
     }
 
     /**
-     * FmoduleDefinition属性をチェックする
-     * @param obj		FmoduleDefinition
-     * @return		false=属性エラー
+     * Check the FmoduleDefinition attribute
+     * @param obj FmoduleDefinition
+     * @return false = attribute error
      */
     public final boolean validAttr(FmoduleDefinition obj) {
         if (obj == null)
@@ -133,9 +133,9 @@ public class XcodeMLValidator {
     }
 
     /**
-     * FblockDataDefinition属性をチェックする
-     * @param obj		FblockDataDefinition
-     * @return		false=属性エラー
+     * Check the FblockDataDefinition attribute
+     * @param obj FblockDataDefinition
+     * @return false = attribute error
      */
     public final boolean validAttr(FblockDataDefinition obj) {
         if (obj == null)
@@ -152,9 +152,9 @@ public class XcodeMLValidator {
     }
 
     /**
-     * FuseDecl属性をチェックする
-     * @param obj		FuseDecl
-     * @return		false=属性エラー
+     * Check the FuseDecl attribute
+     * @param obj FuseDecl
+     * @return false = attribute error
      */
     public final boolean validAttr(FuseDecl obj) {
         if (obj == null)
@@ -171,9 +171,9 @@ public class XcodeMLValidator {
     }
 
     /**
-     * FuseOnlyDecl属性をチェックする
-     * @param obj		FuseOnlyDecl
-     * @return		false=属性エラー
+     * Check the FuseOnlyDecl attribute
+     * @param obj FuseOnlyDecl
+     * @return false = attribute error
      */
     public final boolean validAttr(FuseOnlyDecl obj) {
         if (obj == null)
@@ -190,9 +190,9 @@ public class XcodeMLValidator {
     }
 
     /**
-     * StatementLabel属性をチェックする
-     * @param obj		StatementLabel
-     * @return		false=属性エラー
+     * Check StatementLabel attribute
+     * @param obj Statement Label
+     * @return false = attribute error
      */
     public final boolean validAttr(StatementLabel obj) {
         if (obj == null)
@@ -209,9 +209,9 @@ public class XcodeMLValidator {
     }
 
     /**
-     * FprintStatement属性をチェックする
-     * @param obj		FprintStatement
-     * @return		false=属性エラー
+     * Check the FprintStatement attribute
+     * @param obj FprintStatement
+     * @return false = attribute error
      */
     public final boolean validAttr(FprintStatement obj) {
         if (obj == null)
@@ -228,9 +228,9 @@ public class XcodeMLValidator {
     }
 
     /**
-     * FformatDecl属性をチェックする
-     * @param obj		FformatDecl
-     * @return		false=属性エラー
+     * Check the FformatDecl attribute
+     * @param obj FformatDecl
+     * @return false = attribute error
      */
     public final boolean validAttr(FformatDecl obj) {
         if (obj == null)
@@ -247,9 +247,9 @@ public class XcodeMLValidator {
     }
 
     /**
-     * FmemberRef属性をチェックする
-     * @param obj		FmemberRef
-     * @return		false=属性エラー
+     * Check the FmemberRef attribute
+     * @param obj FmemberRef
+     * @return false = attribute error
      */
     public final boolean validAttr(FmemberRef obj) {
         if (obj == null)
@@ -266,9 +266,9 @@ public class XcodeMLValidator {
     }
 
     /**
-     * Id属性をチェックする
-     * @param obj		Id
-     * @return		false=属性エラー
+     * Check the Id attribute
+     * @param obj Id
+     * @return false = attribute error
      */
     public final boolean validAttr(Id obj) {
         if (obj == null)
@@ -292,9 +292,9 @@ public class XcodeMLValidator {
     }
 
     /**
-     * Name属性をチェックする
-     * @param obj		Name
-     * @return		false=属性エラー
+     * Check the Name attribute
+     * @param obj Name
+     * @return false = attribute error
      */
     public final boolean validAttr(Name obj) {
         if (obj == null)
@@ -311,9 +311,9 @@ public class XcodeMLValidator {
     }
 
     /**
-     * Rename属性をチェックする
-     * @param obj		Rename
-     * @return		false=属性エラー
+     * Check the Rename attribute
+     * @param obj Rename
+     * @return false = attribute error
      */
     public final boolean validAttr(Rename obj) {
         if (obj == null)
@@ -337,9 +337,9 @@ public class XcodeMLValidator {
     }
 
     /**
-     * Renamable属性をチェックする
-     * @param obj		Renamable
-     * @return		false=属性エラー
+     * Check Renamable attribute
+     * @param obj Renamable
+     * @return false = attribute error
      */
     public final boolean validAttr(Renamable obj) {
         if (obj == null)
@@ -356,9 +356,9 @@ public class XcodeMLValidator {
     }
 
     /**
-     * NamedValue属性をチェックする
-     * @param obj		NamedValue
-     * @return		false=属性エラー
+     * Check the NamedValue attribute
+     * @param obj NamedValue
+     * @return false = attribute error
      */
     public final boolean validAttr(NamedValue obj) {
         if (obj == null)
@@ -387,9 +387,9 @@ public class XcodeMLValidator {
      */
 
     /**
-     * IXmlNode属性をチェックする
-     * @param node		IXmlNode
-     * @return		false=属性エラー
+     * Check the IXmlNode attribute
+     * @param node IXmlNode
+     * @return false = attribute error
      */
     public final boolean validAttr(IXmlNode node) {
         if (node instanceof FbasicType)

@@ -110,28 +110,28 @@ import jp.riken.kscope.xcodeml.xml.gen.VarList;
 import jp.riken.kscope.xcodeml.xml.gen.VarRef;
 
 /**
- * フォートランデータベースにパース結果を格納する
+ * Store parse results in Fortran database
  * @author RIKEN
  *
  */
 public class DbUpdater extends XcodeMLVisitorImpl {
-    /** フォートランデータベース */
+    /** Fortran database */
     private Fortran m_database = null;
-    /** XcodeMLパーサ実行状況クラス */
+    /** XcodeML parser execution status class */
     private XcodeMLContext m_context;
-    /** 前ノードの文番号ノード */
+    /** Statement number node of the previous node */
     @SuppressWarnings("unused")
     private StatementLabel prevLabel = null;
-    /** エラー情報リスト */
+    /** Error information list */
     private List<ErrorInfo> listErrorInfo;
 
     /**
-     * コンストラクタ
+     * Constructor
      *
      * @param db
-     *            Fortranデータベース
+     * Fortran database
      * @param context
-     *            XcodeMLパーサ実行状況クラス
+     * XcodeML parser execution status class
      */
     public DbUpdater(Fortran db, XcodeMLContext context) {
         m_database = db;
@@ -139,28 +139,28 @@ public class DbUpdater extends XcodeMLVisitorImpl {
     }
 
     /**
-     * FfunctionDefinition要素（MAIN PROGRAM・関数・サブルーチン定義）の開始を登録する。
+     * Register the start of the FfunctionDefinition element (MAIN PROGRAM / function / subroutine definition).
      *
      * @param visitable
-     *            FfunctionDefinition要素
-     * @return boolean 成否
+     * FfunctionDefinition element
+     * @return boolean Success or failure
      */
     @Override
     public boolean enter(FfunctionDefinition visitable) {
 
-        // コード出力クラス
+        // Code output class
         XcodeMLTypeManager typeManager = m_context.getTypeManager();
         VariableTypeParser typePaser = new VariableTypeParser(typeManager);
 
-        // ソースファイル、ソースコード行
+        // Source file, source code line
         CodeLine lineInfo = m_context.getCodeBuilder().getLastCodeLine();
 
-        // PROGRAM, SUBROUTINE, FUNCTION文の情報
-        // プログラム名、サブルーチン名、関数名
+        // PROGRAM, SUBROUTINE, FUNCTION statement information
+        // Program name, subroutine name, function name
         Name functionNameElem = visitable.getName();
         String functionname = functionNameElem.getValue();
 
-        // データ型
+        // Data type
         IXmlTypeTableChoice typeChoice = typeManager.findType(functionNameElem);
         FfunctionType functionTypeElem = (FfunctionType) typeChoice;
         VariableType funcType = typePaser.parseVarDefFunctionType(functionTypeElem);
@@ -171,12 +171,12 @@ public class DbUpdater extends XcodeMLVisitorImpl {
         // result
         String result = functionTypeElem.getResultName();
 
-        // 属性
+        // Attribute
         boolean is_recursive = XmlNodeUtil.isBoolean(functionTypeElem.isIsRecursive());
         boolean is_puiblic = XmlNodeUtil.isBoolean(functionTypeElem.isIsPublic());
         boolean is_private = XmlNodeUtil.isBoolean(functionTypeElem.isIsPrivate());
 
-        // 仮引数
+        // Formal argument
         Params params = functionTypeElem.getParams();
         ArrayList<String> args = new ArrayList<String>();
         if (params != null) {
@@ -185,9 +185,9 @@ public class DbUpdater extends XcodeMLVisitorImpl {
             }
         }
 
-        // データベース登録
+        // Database registration
         if (XmlNodeUtil.isBoolean(functionTypeElem.isIsProgram())) {
-            // 既存のプログラムが存在するかチェックする.
+            // Check if an existing program exists.
         	Procedure errorProc = m_database.getMainProgram();
         	if (errorProc != null) {
         		addDuplicateError(functionname, lineInfo, errorProc);
@@ -197,7 +197,7 @@ public class DbUpdater extends XcodeMLVisitorImpl {
         }
         else {
         	if (typeId == EnumType.VOID) {
-	            // 既存のサブルーチンが存在するかチェックする.
+	            // Check if an existing subroutine exists.
         		Procedure errorProc = m_database.getProcedure(m_database.getCurrentUnit(), functionname);
 	        	if (errorProc != null) {
 	            	addDuplicateError(functionname, lineInfo, errorProc);
@@ -212,7 +212,7 @@ public class DbUpdater extends XcodeMLVisitorImpl {
 	            funcType = new VariableType(PrimitiveDataType.VOID);
 	        }
         	else {
-	            // 既存の関数が存在するかチェックする.
+	            // Check if an existing function exists.
         		Procedure errorProc = m_database.getProcedure(m_database.getCurrentUnit(), functionname);
 	        	if (errorProc != null) {
 	            	addDuplicateError(functionname, lineInfo, errorProc);
@@ -228,7 +228,7 @@ public class DbUpdater extends XcodeMLVisitorImpl {
         }
         m_database.get_current_unit().set_start(lineInfo);
 
-        // 関数データ型
+        // Function data type
         m_database.setReturnValueType(funcType);
         // result
         m_database.setResult(result);
@@ -243,32 +243,32 @@ public class DbUpdater extends XcodeMLVisitorImpl {
     }
 
     /**
-     * FfunctionDefinition要素（MAIN PROGRAM・関数・サブルーチン定義）の終了を登録する。
+     * Register the end of the FfunctionDefinition element (MAIN PROGRAM / function / subroutine definition).
      *
      * @param visitable
-     *            FfunctionDefinition要素
+     * FfunctionDefinition element
      */
     @Override
     public void leave(FfunctionDefinition visitable) {
 
-        // コード出力クラス
+        // Code output class
         XcodeMLTypeManager typeManager = m_context.getTypeManager();
 
-        // ソースファイル、ソースコード行
+        // Source file, source code line
         CodeLine lineInfo = m_context.getCodeBuilder().getLastCodeLine();
 
-        // PROGRAM, SUBROUTINE, FUNCTION文の情報
-        // プログラム名、サブルーチン名、関数名
+        // PROGRAM, SUBROUTINE, FUNCTION statement information
+        // Program name, subroutine name, function name
         Name functionNameElem = visitable.getName();
         String functionname = functionNameElem.getValue();
 
-        // 宣言文
+        // Declaration
         IXmlTypeTableChoice typeChoice = typeManager.findType(functionNameElem);
         FfunctionType functionTypeElem = (FfunctionType) typeChoice;
         String returnTypeName = functionTypeElem.getReturnType();
         EnumType typeId = EnumType.getTypeIdFromXcodemlTypeName(returnTypeName);
 
-        // データベース登録
+        // Database registration
         m_database.get_current_unit().set_end(lineInfo);
         if (XmlNodeUtil.isBoolean(functionTypeElem.isIsProgram())) {
             // PROGRAM
@@ -285,44 +285,44 @@ public class DbUpdater extends XcodeMLVisitorImpl {
     }
 
     /**
-     * FunctionCall要素(関数・サブルーチン呼び出し)を登録する。
+     * Register the FunctionCall element (function / subroutine call).
      *
      * @param visitable
-     *            FunctionCall
+     * FunctionCall
      * @param call_line
-     *            サブルーチン呼び出し文、又は関数名(引数)の部分文字列
-     * @return 成否
+     * Subroutine call statement or substring of function name (argument)
+     * @return Success or failure
      */
     public boolean enterFunctionCall(FunctionCall visitable, String call_line) {
 
         String label = Statement.NO_LABEL;
 
-        // 1つ上のノードがExprStatementであるか？
+        // Is the next higher node ExprStatement?
         if (!m_context.isInvokeNodeOf(ExprStatement.class, 1)) {
             return true;
         }
 
-        // データベースがfunctionCallを登録可能であるか(現在ブロックがProgramUnitであるか?)
+        // Is the database able to register functionCall (is the block currently a ProgramUnit?)
         if (!isCurrentProgramUnit()) {
             return true;
         }
 
-        // データ型パーサ
+        // Data type parser
         VariableTypeParser typePaser = new VariableTypeParser(this.m_context.getTypeManager());
         VariableType funcVarType = null;
 
-        // ソースファイル、ソースコード行
+        // Source file, source code line
         CodeLine lineInfo = m_context.getCodeBuilder().createCodeLine(
                 visitable, call_line);
         int lineno = lineInfo.getStartLine();
 
-        // set_callの引数
+        // argument of set_call
         List<Expression> list = null;
-        // サブルーチン名、関数名
+        // Subroutine name, function name
         Name functionNameElem = visitable.getName();
         String functionname = functionNameElem.getValue();
 
-        // 属性
+        // Attribute
         boolean is_intrinsic = false;
         boolean is_external = false;
         boolean is_recursive = false;
@@ -344,7 +344,7 @@ public class DbUpdater extends XcodeMLVisitorImpl {
         }
         boolean intrinsic = XmlNodeUtil.isBoolean(visitable.isIsIntrinsic());
 
-        // 引数リスト
+        // Argument list
         try {
             Arguments arguments = visitable.getArguments();
             ExpressionParser exprParser = new ExpressionParser(m_context.getTypeManager());
@@ -353,16 +353,16 @@ public class DbUpdater extends XcodeMLVisitorImpl {
                 list = new ArrayList<Expression>(java.util.Arrays.asList(argsExpr));
             }
 
-            // 外部手続きの登録
+            // Registration of external procedures
             addExternalFunction(exprParser.getExternalFunction());
 
         } catch (XcodeMLException ex) {
             ex.printStackTrace();
         }
-        // CALL文、関数呼出登録
+        // CALL statement, function call registration
         m_database.setCall(lineInfo, label, functionname, list, intrinsic);
         if (is_external) {
-            // 外部手続きの登録
+            // Registration of external procedures
             addExternalFunction(functionname, funcVarType);
         }
 
@@ -370,9 +370,9 @@ public class DbUpdater extends XcodeMLVisitorImpl {
     }
 
     /**
-     * FortranクラスのcurrentUnitがProgramUnitであるかチェックする。
+     * Check if the currentUnit of the Fortran class is ProgramUnit.
      *
-     * @return true:currentUnitはProgramUnitである。
+     * @return true: currentUnit is a ProgramUnit.
      */
     private boolean isCurrentProgramUnit() {
         ProgramUnit unit = m_database.get_current_unit();
@@ -384,29 +384,29 @@ public class DbUpdater extends XcodeMLVisitorImpl {
     }
 
     /**
-     * 文番号をパースする。
-     * @param visitable		StatementLabel
-     * @param nextNode		文番号対象要素
-     * @return 成否
+     * Parse the statement number.
+     * @param visitable StatementLabel
+     * @param nextNode Statement number Target element
+     * @return Success or failure
      */
     public boolean enterStatementLabel(StatementLabel visitable,
             IXmlNode nextNode) {
 
         String label = Statement.NO_LABEL;
-        // ソースファイル、ソースコード行
+        // Source file, source code line
         CodeLine lineInfo = m_context.getCodeBuilder().getLastCodeLine();
 
         if ((nextNode != null) && (nextNode instanceof StatementLabel)) {
-            // 文番号のみの行
-            // CONTINUE文として登録する。
+            // Line with statement number only
+            // Register as a CONTINUE statement.
             if (!StringUtils.isNullOrEmpty(visitable.getLabelName())) {
                 label = visitable.getLabelName();
             }
-            // StatementLabel文を登録する。
+            // Register the Statement Label statement.
             m_database.setContinue(lineInfo, label);
         } else {
-            // 何もしない。
-            // 次行で文番号と共に登録する。
+            // do nothing.
+            // Register with the sentence number on the next line.
             prevLabel = visitable;
         }
 
@@ -414,18 +414,18 @@ public class DbUpdater extends XcodeMLVisitorImpl {
     }
 
     /**
-     * 引数リストをパースする.<br/>
+     * Parse the argument list. <br/>
      *
-     * コードビルダクラスから引数文字列リストを取得する。 引数リストメンバにセットする。
+     * Get the argument string list from the code builder class. Set to the argument list member.
      *
      * @param visitable
-     *            Arguments
-     * @return 成否
+     * Arguments
+     * @return Success or failure
      */
     @Override
     public boolean enter(Arguments visitable) {
 
-        // 引数リストを取得する。
+        // Get the argument list.
         // m_argumentList =
         // m_context.getCodeBuilder().getArgumentList(visitable);
 
@@ -433,50 +433,50 @@ public class DbUpdater extends XcodeMLVisitorImpl {
     }
 
     /**
-     * FassignStatement要素(代入文)を登録する。
+     * Register the FassignStatement element (assignment statement).
      *
      * @param visitable
-     *            FassignStatement
-     * @return 成否
+     * FassignStatement
+     * @return Success or failure
      */
     @Override
     public boolean enter(FassignStatement visitable) {
         String label = Statement.NO_LABEL;
 
 //        try {
-            // データベースがfunctionCallを登録可能であるか(現在ブロックがProgramUnitであるか?)
+            // Is the database able to register functionCall (is the block currently a ProgramUnit?)
             if (!isCurrentProgramUnit()) {
                 return true;
             }
 
-            // ソースファイル、ソースコード行
+            // Source file, source code line
             CodeLine lineInfo = m_context.getCodeBuilder().getLastCodeLine();
             int lineno = lineInfo.getStartLine();
 
             List<IXmlNode> content = visitable.getContent();
-            // 左辺
+            // Left side
             IXmlNode leftExpr = (content != null && content.size() >= 1) ? content
                     .get(0) : null;
-            // 右辺
+            // Right side
             IXmlNode rightExpr = (content != null && content.size() >= 2) ? content
                     .get(1) : null;
 
-            // ExpressionParserモデルパーサ
+            // Expression Parser Model Parser
             ExpressionParser exprParser = new ExpressionParser(m_context.getTypeManager());
 
-            // 変数のパース
+            // Parse variables
             VariableParser varParser = new VariableParser(m_context.getTypeManager());
 
-            // 左辺
+            // Left side
             Variable leftVar = varParser.getVariable(leftExpr);
 
-            // 右辺
+            // Right side
             exprParser.setParseNode(rightExpr);
             Expression rightVar = exprParser.getExpression();
 
             m_database.setSubstitution(leftVar, rightVar, lineInfo, label);
 
-            // 外部手続きの登録
+            // Registration of external procedures
             addExternalFunction(exprParser.getExternalFunction());
 
             return true;
@@ -484,24 +484,24 @@ public class DbUpdater extends XcodeMLVisitorImpl {
     }
 
     /**
-     * FdoStatement(DO文)の開始要素を登録する。
+     * Register the starting element of Fdo Statement (DO statement).
      *
      * @param visitable
-     *            FdoStatement(DO文)要素
-     * @return 成否
+     * Fdo Statement element
+     * @return Success or failure
      */
     @Override
     public boolean enter(FdoStatement visitable) {
-        // ソースファイル、ソースコード行
+        // Source file, source code line
         CodeLine lineInfo = m_context.getCodeBuilder().getLastCodeLine();
 
-        // DO構文名 (SSSS : DO)
+        // DO syntax name (SSSS: DO)
         String construct_name = visitable.getConstructName();
 
-        // 変数名
+        // Variable name
         Var var = visitable.getVar();
         if (var == null) {
-            // 条件文なし（無限ループ）のDO文
+            // DO statement with no conditional statement (infinite loop)
             if (construct_name != null) {
                 m_database.start_loop(lineInfo, construct_name);
             } else {
@@ -510,80 +510,80 @@ public class DbUpdater extends XcodeMLVisitorImpl {
             return true;
         }
 
-        // 変数データ型の取得
+        // Get variable data type
         VariableDefinitionParser varParser = new VariableDefinitionParser(this.m_context.getTypeManager());
         VariableDefinition varDef = varParser.parseVariableDefinition(var);
         Variable variable = new Variable(var.getValue());
         variable.setDefinition(varDef);
 
-        // ExpressionParserモデルパーサ
+        // Expression Parser Model Parser
         ExpressionParser exprParser = new ExpressionParser(m_context.getTypeManager());
 
-        // ループ式をパースする。
-        // 範囲の下限を取得する
+        // Parse the loop expression.
+        // Get the lower bound of the range
         Expression lowerExp = null;
         if (visitable.getIndexRange() != null && visitable.getIndexRange().getLowerBound() != null) {
             exprParser.setParseNode(visitable.getIndexRange().getLowerBound());
-            // 範囲の下限を取得する
+            // Get the lower bound of the range
             lowerExp = exprParser.getExpression();
         }
-        // 範囲の上限を取得する
+        // Get the upper limit of the range
         Expression upperExp = null;
         if (visitable.getIndexRange() != null && visitable.getIndexRange().getUpperBound() != null) {
             exprParser.setParseNode(visitable.getIndexRange().getUpperBound());
-            // 範囲の上限を取得する
+            // Get the upper limit of the range
             upperExp = exprParser.getExpression();
         }
-        // 範囲のステップを取得する
+        // Get the steps in the range
         Expression stepExp = null;
         if (visitable.getIndexRange() != null && visitable.getIndexRange().getUpperBound() != null) {
             exprParser.setParseNode(visitable.getIndexRange().getStep());
-            // 範囲のステップを取得する
+            // Get the steps in the range
             stepExp = exprParser.getExpression();
         }
 
-        // DO文のブロック開始
+        // Start blocking DO statement
         if (construct_name != null) {
             m_database.start_loop(lineInfo, construct_name, variable, lowerExp, upperExp, stepExp);
         } else {
             m_database.start_loop(lineInfo, Statement.NO_LABEL, variable, lowerExp, upperExp, stepExp);
         }
 
-        // 外部手続きの登録
+        // Registration of external procedures
         addExternalFunction(exprParser.getExternalFunction());
 
         return true;
     }
 
     /**
-     * FdoStatement(DO文)の終了要素を登録する。
+     * Register the end element of Fdo Statement (DO statement).
      *
      * @param visitable
-     *            FdoStatement(DO文)要素
+     * Fdo Statement element
      */
     @Override
     public void leave(FdoStatement visitable) {
-        // ソースファイル、ソースコード行
+        // Source file, source code line
         CodeLine lineInfo = m_context.getCodeBuilder().getLastCodeLine();
 
-        // DO文のブロック終了
+        // End of DO statement block
         m_database.end_loop(lineInfo);
     }
 
     /**
-     * FmoduleDefinition(MODULE文)の開始要素を登録する。
+     * Register the start element of FmoduleDefinition (MODULE statement).
      *
      * @param visitable
-     *            FmoduleDefinition(MODULE文)要素
-     * @return 成否
+     * FmoduleDefinition (MODULE statement) element
+     * @return Success or failure
      */
     @Override
     public boolean enter(FmoduleDefinition visitable) {
-        // ソースファイル、ソースコード行
+        // Source file, source code line
         CodeLine lineInfo = m_context.getCodeBuilder().getLastCodeLine();
 
         String name = visitable.getName();
-        // 既存のモジュールが存在するかチェックする.
+        // Check if an existing module exists.
         Module module = m_database.module(name);
         if (module != null && module.get_start() != null && module.get_start().getLineInfo() != null) {
         	addDuplicateError(name, lineInfo, module);
@@ -595,14 +595,14 @@ public class DbUpdater extends XcodeMLVisitorImpl {
     }
 
     /**
-     * FmoduleDefinition(MODULE文)の終了要素を登録する。
+     * Register the end element of FmoduleDefinition (MODULE statement).
      *
      * @param visitable
-     *            FmoduleDefinition(MODULE文)要素
+     * FmoduleDefinition (MODULE statement) element
      */
     @Override
     public void leave(FmoduleDefinition visitable) {
-        // ソースファイル、ソースコード行
+        // Source file, source code line
         CodeLine lineInfo = m_context.getCodeBuilder().getLastCodeLine();
 
         m_database.get_current_unit().set_end(lineInfo);
@@ -610,95 +610,95 @@ public class DbUpdater extends XcodeMLVisitorImpl {
     }
 
     /**
-     * ContinueStatement(CONTAINUE文)の要素を登録する
+     * Register the element of ContinueStatement (CONTAINUE statement)
      *
      * @param visitable
-     *            ContinueStatement(CONTAINUE文)要素
+     * ContinueStatement (CONTAINUE statement) element
      */
     @Override
     public boolean enter(ContinueStatement visitable) {
 
         String label = Statement.NO_LABEL;
-        // ソースファイル、ソースコード行
+        // Source file, source code line
         CodeLine lineInfo = m_context.getCodeBuilder().getLastCodeLine();
 
         if (!StringUtils.isNullOrEmpty(m_context.getStatementLabel())) {
             label = m_context.getStatementLabel();
         }
-        // StatementLabel文を登録する。
+        // Register the Statement Label statement.
         m_database.setContinue(lineInfo, label);
 
         return true;
     }
 
     /**
-     * FdoWhileStatement(DO WHILE文)の開始要素を登録する。
+     * Register the starting element of the Fdo While Statement (DO WHILE statement).
      *
      * @param visitable
-     *            FdoStatement(DO文)要素
-     * @return 成否
+     * Fdo Statement element
+     * @return Success or failure
      */
     @Override
     public boolean enter(FdoWhileStatement visitable) {
-        // ソースファイル、ソースコード行
+        // Source file, source code line
         CodeLine lineInfo = m_context.getCodeBuilder().getLastCodeLine();
 
-        // DO構文名 (SSSS : DO)
+        // DO syntax name (SSSS: DO)
         String construct_name = visitable.getConstructName();
 
-        // ExpressionParserモデルパーサ
+        // Expression Parser Model Parser
         ExpressionParser exprParser = new ExpressionParser(m_context.getTypeManager());
 
-        // ループ条件式をパースする。
-        // ループ条件式を取得する
+        // Parse the loop conditional expression.
+        // Get the loop conditional expression
         Expression conditionExp = null;
         if (visitable.getCondition() != null) {
             exprParser.setParseNode(visitable.getCondition());
-            // 範囲の下限を取得する
+            // Get the lower bound of the range
             conditionExp = exprParser.getExpression();
         }
 
-        // DO文のブロック開始
+        // Start blocking DO statement
         if (construct_name != null) {
             m_database.start_loop(lineInfo, construct_name, null, null, conditionExp, null);
         } else {
             m_database.start_loop(lineInfo, Statement.NO_LABEL, null, null, conditionExp, null);
         }
 
-        // 外部手続きの登録
+        // Registration of external procedures
         addExternalFunction(exprParser.getExternalFunction());
 
         return true;
     }
 
     /**
-     * FdoWhileStatement(DO WHILE文)の終了要素を登録する。
+     * Register the end element of FdoWhileStatement (DO WHILE statement).
      *
      * @param visitable
-     *            FdoStatement(DO文)要素
+     * Fdo Statement element
      */
     @Override
     public void leave(FdoWhileStatement visitable) {
-        // ソースファイル、ソースコード行
+        // Source file, source code line
         CodeLine lineInfo = m_context.getCodeBuilder().getLastCodeLine();
 
-        // DO文のブロック終了
+        // End of DO statement block
         m_database.end_loop(lineInfo);
     }
 
     /**
-     * FselectCaseStatement(SELECT-CASE文)の開始要素を登録する。
+     * Register the start element of FselectCaseStatement (SELECT-CASE statement).
      *
      * @param visitable
-     *            FselectCaseStatement(SELECT-CASE文)要素
-     * @return 成否
+     * FselectCaseStatement (SELECT-CASE statement) element
+     * @return Success or failure
      */
     @Override
     public boolean enter(FselectCaseStatement visitable) {
-        // ソースファイル、ソースコード行
+        // Source file, source code line
         CodeLine lineInfo = m_context.getCodeBuilder().getLastCodeLine();
 
-        // SELECT構文名 (SSSS : SELECT)
+        // SELECT syntax name (SSSS: SELECT)
         String construct_name = visitable.getConstructName();
 
         if (construct_name != null) {
@@ -707,36 +707,36 @@ public class DbUpdater extends XcodeMLVisitorImpl {
             m_database.startSelection(lineInfo, Statement.NO_LABEL, jp.riken.kscope.language.Selection.SelectionType.SELECT);
         }
 
-        // 条件式をパースする。
-        // ExpressionParserモデルパーサ
+        // Parse the conditional expression.
+        // Expression Parser Model Parser
         ExpressionParser exprParser = new ExpressionParser(
                                                 m_context.getTypeManager(),
                                                 visitable.getValue());
 
-        // 条件式を取得する
+        // Get the conditional expression
         Expression condExpr = exprParser.getExpression();
 
-        // 条件式
+        // Conditional expression
         m_database.setSelectCaseCondition(condExpr);
 
-        // 外部手続きの登録
+        // Registration of external procedures
         addExternalFunction(exprParser.getExternalFunction());
 
         return true;
     }
 
     /**
-     * FselectCaseStatement(SELECT-CASE文)の終了要素を登録する。
+     * Register the end element of FselectCaseStatement (SELECT-CASE statement).
      *
      * @param visitable
-     *            FselectCaseStatement(SELECT-CASE文)要素
+     * FselectCaseStatement (SELECT-CASE statement) element
      */
     @Override
     public void leave(FselectCaseStatement visitable) {
-        // ソースファイル、ソースコード行
+        // Source file, source code line
         CodeLine lineInfo = m_context.getCodeBuilder().getLastCodeLine();
 
-        // SELECT文のブロック終了
+        // End block of SELECT statement
         // m_database.endCondition(lineInfo, Statement.NO_LABEL);
         m_database.end_selection(lineInfo);
 
@@ -744,31 +744,31 @@ public class DbUpdater extends XcodeMLVisitorImpl {
     }
 
     /**
-     * FcaseLabel(CASE文)の開始要素を登録する。
+     * Register the start element of FcaseLabel (CASE statement).
      *
      * @param visitable
-     *            FcaseLabel(CASE文)要素
-     * @return 成否
+     * FcaseLabel (CASE statement) element
+     * @return Success or failure
      */
     @Override
     public boolean enter(FcaseLabel visitable) {
-        // ソースファイル、ソースコード行
+        // Source file, source code line
         CodeLine lineInfo = m_context.getCodeBuilder().getLastCodeLine();
 
 //        if (((Procedure) (m_database.currentUnit)).body.getCurrentBlock() instanceof Condition) {
 //            m_database.endCondition(lineInfo, Statement.NO_LABEL);
 //        }
 
-        // 行ラベル
+        // Row label
         String construct_name = visitable.getConstructName();
 
-        // 条件式をパースする。
-        // ExpressionParserモデルパーサ
+        // Parse the conditional expression.
+        // Expression Parser Model Parser
         ExpressionParser exprParser = new ExpressionParser(
                                                 m_context.getTypeManager(),
                                                 visitable);
 
-        // 条件式を取得する
+        // Get the conditional expression
         Expression condExpr = exprParser.getExpression();
 
         if (construct_name != null) {
@@ -778,64 +778,64 @@ public class DbUpdater extends XcodeMLVisitorImpl {
             m_database.startCondition(condExpr, lineInfo, Statement.NO_LABEL);
         }
 
-        // 外部手続きの登録
+        // Registration of external procedures
         addExternalFunction(exprParser.getExternalFunction());
 
         return true;
     }
 
     /**
-     * FcaseLabel(CASE文)の終了要素を登録する。
+     * Register the end element of FcaseLabel (CASE statement).
      *
      * @param visitable
-     *            FcaseLabel(CASE文)要素
+     * FcaseLabel (CASE statement) element
      */
     @Override
     public void leave(FcaseLabel visitable) {
-        // ソースファイル、ソースコード行
+        // Source file, source code line
         CodeLine lineInfo = m_context.getCodeBuilder().getLastCodeLine();
         m_database.endCondition(lineInfo, Statement.NO_LABEL);
     }
 
     /**
-     * FifStatement(IF文)の開始要素を登録する。
+     * Register the start element of FifStatement (IF statement).
      *
      * @param visitable
-     *            FifStatement(IF文)要素
-     * @return 成否
+     * FifStatement element
+     * @return Success or failure
      */
     @Override
     public boolean enter(FifStatement visitable) {
-        // ソースファイル、ソースコード行
+        // Source file, source code line
         CodeLine lineInfo = m_context.getCodeBuilder().getLastCodeLine();
 
-        // IF構文名 (SSSS : IF)
+        // IF syntax name (SSSS: IF)
         String construct_name = visitable.getConstructName();
 
-        // 条件式をパースする。
-        // ExpressionParserモデルパーサ
+        // Parse the conditional expression.
+        // Expression Parser Model Parser
         ExpressionParser exprParser = new ExpressionParser(
                                                 m_context.getTypeManager(),
                                                 visitable.getCondition());
 
-        // 条件式を取得する
+        // Get the conditional expression
         Expression condExpr = exprParser.getExpression();
 
-        // ElseIF文であるかチェックする。
+        // Check if it is an Else IF statement.
         boolean isElseIf = false;
-        // 2つ上のノードがElseであるか？
+        // Is the next higher node Else?
         if (m_context.isInvokeNodeOf(Else.class, 2)) {
             Else elseNode = (Else) m_context.getInvokeNode(2);
-            // 開始行番号が設定されているか？
+            // Is the start line number set?
             if (StringUtils.isNullOrEmpty(elseNode.getLineno())) {
-                // 2つ上のElse要素の開始行番号が設定されていないのでElseIF文である。
+                // This is an Else IF statement because the start line number of the Else element two above is not set.
                 isElseIf = true;
             }
         }
 
         //
         if (!isElseIf) {
-            // IF文
+            // IF statement
             if (construct_name != null) {
                 m_database.startSelection(lineInfo, construct_name,
                         jp.riken.kscope.language.Selection.SelectionType.IF);
@@ -843,45 +843,45 @@ public class DbUpdater extends XcodeMLVisitorImpl {
                 m_database.startSelection(lineInfo, Statement.NO_LABEL, jp.riken.kscope.language.Selection.SelectionType.IF);
             }
 
-            // 条件式
+            // Conditional expression
             m_database.startCondition(condExpr, lineInfo, visitable.getConstructName());
         } else {
-            // ELSE-IF文
+            // ELSE-IF statement
             // String line = "ELSE IF " + cond_str;
-            // 条件式
+            // Conditional expression
             m_database.startCondition(condExpr, lineInfo, visitable.getConstructName());
         }
 
-        // 外部手続きの登録
+        // Registration of external procedures
         addExternalFunction(exprParser.getExternalFunction());
 
         return true;
     }
 
     /**
-     * FifStatement(IF文)の終了要素を登録する。
+     * Register the end element of FifStatement (IF statement).
      *
      * @param visitable
-     *            FifStatement(IF文)要素
+     * FifStatement element
      */
     @Override
     public void leave(FifStatement visitable) {
-        // ソースファイル、ソースコード行
+        // Source file, source code line
         CodeLine lineInfo = m_context.getCodeBuilder().getLastCodeLine();
 
-        // ElseIF文デあるかチェックする。
+        // Check if there is an Else IF statement.
         boolean isElseIf = false;
-        // 2つ上のノードがElseであるか？
+        // Is the next higher node Else?
         if (m_context.isInvokeNodeOf(Else.class, 2)) {
             Else elseNode = (Else) m_context.getInvokeNode(2);
-            // 開始行番号が設定されているか？
+            // Is the start line number set?
             if (StringUtils.isNullOrEmpty(elseNode.getLineno())) {
-                // 2つ上のElse要素の開始行番号が設定されていないのでElseIF文である。
+                // This is an Else IF statement because the start line number of the Else element two above is not set.
                 isElseIf = true;
             }
         }
 
-        // ELSE-IFの場合はend_selectionを呼び出さない。
+        // In case of ELSE-IF, do not call end_selection.
         if (!isElseIf) {
             m_database.end_selection(lineInfo);
         }
@@ -890,15 +890,15 @@ public class DbUpdater extends XcodeMLVisitorImpl {
     }
 
     /**
-     * Then(真の文ブロック)の終了要素を登録する。
+     * Register the end element of Then (true sentence block).
      *
      * @param visitable
-     *            Then(真の文ブロック)
+     * Then (true sentence block)
      */
     @Override
     public void leave(Then visitable) {
 
-        // ソースファイル、ソースコード行
+        // Source file, source code line
         CodeLine lineInfo = m_context.getCodeBuilder().getLastCodeLine();
         m_database.endCondition(lineInfo, Statement.NO_LABEL);
 
@@ -906,26 +906,26 @@ public class DbUpdater extends XcodeMLVisitorImpl {
     }
 
     /**
-     * Else(偽の文ブロック)の開始要素を登録する。
+     * Register the starting element of Else (fake sentence block).
      *
      * @param visitable
-     *            Else(偽の文ブロック)
-     * @return 成否
+     * Else (fake sentence block)
+     * @return Success or failure
      */
     @Override
     public boolean enter(Else visitable) {
-        // ソースファイル、ソースコード行
+        // Source file, source code line
         CodeLine lineInfo = m_context.getCodeBuilder().getLastCodeLine();
 
-        // Elseであるかチェックする。
+        // Check if it is Else.
         boolean isElseIf = false;
-        // 開始行番号が設定されているか？
+        // Is the start line number set?
         if (StringUtils.isNullOrEmpty(visitable.getLineno())) {
-            // 開始行番号が設定されていないのでElseIF文である。
+            // This is an Else IF statement because the start line number is not set.
             isElseIf = true;
         }
 
-        // ELSE-IF文の場合は次のIF要素でDBに登録する。
+        // In the case of ELSE-IF statement, register it in the DB with the following IF element.
         if (!isElseIf) {
             m_database.startCondition(null, lineInfo, Statement.NO_LABEL);
         }
@@ -933,26 +933,26 @@ public class DbUpdater extends XcodeMLVisitorImpl {
     }
 
     /**
-     * Else(偽の文ブロック)の終了要素を登録する。
+     * Register the end element of Else (fake sentence block).
      *
      * @param visitable
-     *            Else(偽の文ブロック)
+     * Else (fake sentence block)
      */
     @Override
     public void leave(Else visitable) {
 
-        // ソースファイル、ソースコード行
+        // Source file, source code line
         CodeLine lineInfo = m_context.getCodeBuilder().getLastCodeLine();
 
-        // ElseIF文デあるかチェックする。
+        // Check if there is an Else IF statement.
         boolean isElseIf = false;
-        // 開始行番号が設定されているか？
+        // Is the start line number set?
         if (StringUtils.isNullOrEmpty(visitable.getLineno())) {
-            // 開始行番号が設定されていないのでElseIF文である。
+            // This is an Else IF statement because the start line number is not set.
             isElseIf = true;
         }
 
-        // ELSE-IF文の場合はend_conditionを呼び出さない。
+        // Do not call end_condition for ELSE-IF statements.
         if (!isElseIf) {
             m_database.endCondition(lineInfo, Statement.NO_LABEL);
         }
@@ -960,46 +960,46 @@ public class DbUpdater extends XcodeMLVisitorImpl {
     }
 
     /**
-     * FwhereStatement(WHERE文)の開始要素を登録する。
+     * Register the start element of FwhereStatement (WHERE statement).
      *
      * @param visitable
-     *            FwhereStatement(WHERE文)要素
-     * @return 成否
+     * FwhereStatement (WHERE statement) element
+     * @return Success or failure
      */
     @Override
     public boolean enter(FwhereStatement visitable) {
-        // ソースファイル、ソースコード行
+        // Source file, source code line
         CodeLine lineInfo = m_context.getCodeBuilder().getLastCodeLine();
 
-        // 条件式をパースする。
-        // ExpressionParserモデルパーサ
+        // Parse the conditional expression.
+        // Expression Parser Model Parser
         ExpressionParser exprParser = new ExpressionParser(
                                                 m_context.getTypeManager(),
                                                 visitable.getCondition());
 
-        // 条件式を取得する
+        // Get the conditional expression
         Expression condExpr = exprParser.getExpression();
 
         m_database.startSelection(lineInfo, Statement.NO_LABEL, jp.riken.kscope.language.Selection.SelectionType.WHERE);
 
-        // 条件式
+        // Conditional expression
         m_database.startCondition(condExpr, lineInfo, Statement.NO_LABEL);
 
-        // 外部手続きの登録
+        // Registration of external procedures
         addExternalFunction(exprParser.getExternalFunction());
 
         return true;
     }
 
     /**
-     * FwhereStatement(WHERE文)の終了要素を登録する。
+     * Register the end element of FwhereStatement (WHERE statement).
      *
      * @param visitable
-     *            FwhereStatement(WHERE文)要素
+     * FwhereStatement (WHERE statement) element
      */
     @Override
     public void leave(FwhereStatement visitable) {
-        // ソースファイル、ソースコード行
+        // Source file, source code line
         CodeLine lineInfo = m_context.getCodeBuilder().getLastCodeLine();
 
         m_database.end_selection(lineInfo);
@@ -1009,20 +1009,20 @@ public class DbUpdater extends XcodeMLVisitorImpl {
 
 
     /**
-     * Return(RETURN文)の開始要素を登録する。
+     * Register the start element of Return (RETURN statement).
      *
      * @param visitable
-     *            RETURN文
-     * @return 成否
+     * RETURN statement
+     * @return Success or failure
      */
     @Override
     public boolean enter(FreturnStatement visitable) {
 
         String label = Statement.NO_LABEL;
-        // ソースファイル、ソースコード行
+        // Source file, source code line
         CodeLine lineInfo = m_context.getCodeBuilder().getLastCodeLine();
 
-        // RETURN文
+        // RETURN statement
         m_database.setReturn(lineInfo, label);
 
         return true;
@@ -1030,62 +1030,62 @@ public class DbUpdater extends XcodeMLVisitorImpl {
     }
 
     /**
-     * VarDecl(変数宣言文)の開始要素を登録する。
+     * Register the starting element of VarDecl (variable declaration statement).
      *
      * @param visitable
-     *            VarDecl(変数宣言文)
-     * @return 成否
+     * VarDecl (variable declaration statement)
+     * @return Success or failure
      */
     @Override
     public boolean enter(VarDecl visitable) {
-        // ソースファイル、ソースコード行
+        // Source file, source code line
         CodeLine lineInfo = m_context.getCodeBuilder().getLastCodeLine();
 
-        // 変数宣言文
+        // Variable declaration statement
         VariableDefinitionParser varParser = new VariableDefinitionParser(this.m_context.getTypeManager());
         VariableDefinition varDef = varParser.parseVariableDefinition(visitable.getName());
         if (varDef == null) {
-            // 組込関数の型宣言の場合はnull
+            // Null for built-in function type declarations
 //            assert (varDef != null);
             return true;
         }
 
-        // ソースコード行を設定する
+        // Set the source code line
         varDef.setCodeLine(lineInfo);
 
-        // 初期値をパースする。
+        // Parse the initial value.
         if (visitable.getValue() != null) {
-            // ExpressionParserモデルパーサ
+            // Expression Parser Model Parser
             ExpressionParser exprParser = new ExpressionParser(
                                                     m_context.getTypeManager(),
                                                     visitable.getValue());
             Expression init_value = exprParser.getExpression();
             if (init_value != null) {
-                varDef.setInitValue(init_value.getLine()); // 初期値
+                varDef.setInitValue(init_value.getLine()); // initial value
             }
-            // 外部手続きの登録
+            // Registration of external procedures
             addExternalFunction(exprParser.getExternalFunction());
         }
 
-        // 変数宣言文を登録する。
+        // Register the variable declaration statement.
         m_database.set_variable_def(varDef);
 
         return true;
     }
 
     /**
-     * FstructDecl(変数宣言文)の開始要素を登録する。
+     * Register the starting element of FstructDecl (variable declaration statement).
      *
      * @param visitable
-     *            FstructDecl(構造体の定義)
-     * @return 成否
+     * FstructDecl (definition of structure)
+     * @return Success or failure
      */
     @Override
     public boolean enter(FstructDecl visitable) {
-        // ソースファイル、ソースコード行
+        // Source file, source code line
         CodeLine lineInfo = m_context.getCodeBuilder().getLastCodeLine();
 
-        // 変数宣言文
+        // Variable declaration statement
         VariableDefinitionParser parserDef = new VariableDefinitionParser(this.m_context.getTypeManager());
         VariableDefinition def = parserDef.parseVariableDefinition(visitable);
         if (def == null) return false;
@@ -1093,37 +1093,37 @@ public class DbUpdater extends XcodeMLVisitorImpl {
         if (((VariableType)def.getVariableType()).getPrimitiveDataType() != PrimitiveDataType.TYPE
             && ((VariableType)def.getVariableType()).getPrimitiveDataType() != PrimitiveDataType.STRUCTURE)  return false;
 
-        // 構造体定義
+        // Structure definition
         jp.riken.kscope.language.fortran.Type type = ((VariableType)def.getVariableType()).getType();
         type.setStartCodeLine(lineInfo);
 
-        // 構造体定義を登録する。
+        // Register the structure definition.
         m_database.addTypeDefinition(type);
 
         return true;
     }
 
     /**
-     * FuseDecl(ONLY指定子なしのUSE宣言文)の開始要素を登録する。
+     * Register the start element of FuseDecl (USE declaration statement without ONLY specifier).
      *
      * @param visitable
-     *            FuseDecl(ONLY指定子なしのUSE宣言文)
-     * @return 成否
+     * FuseDecl (USE declaration without ONLY specifier)
+     * @return Success or failure
      */
     @Override
     public boolean enter(FuseDecl visitable) {
         String label = Statement.NO_LABEL;
-        // ソースファイル、ソースコード行
+        // Source file, source code line
         CodeLine lineInfo = m_context.getCodeBuilder().getLastCodeLine();
 
-        // モジュール名
+        // Module name
         String mod_name = visitable.getName();
 
-        // USE文クラス
+        // USE statement class
         UseState use = new UseState();
         use.setModuleName(mod_name);
 
-        // 局所名と参照対象名
+        // Local name and reference name
         List<Rename> renames = visitable.getRename();
         for (Rename rename : renames) {
             if (StringUtils.isNullOrEmpty(rename.getLocalName())) {
@@ -1134,34 +1134,34 @@ public class DbUpdater extends XcodeMLVisitorImpl {
             }
         }
 
-        // USE宣言文を登録する。
+        // Register the USE declaration statement.
         m_database.setUse(use, lineInfo, label);
 
         return true;
     }
 
     /**
-     * FuseOnlyDecl(ONLY指定子のUSE宣言文)の開始要素を登録する。
+     * Register the start element of FuseOnlyDecl (USE declaration statement of ONLY specifier).
      *
      * @param visitable
-     *            FuseOnlyDecl(ONLY指定子のUSE宣言文)
-     * @return 成否
+     * FuseOnlyDecl (USE declaration statement of ONLY specifier)
+     * @return Success or failure
      */
     @Override
     public boolean enter(FuseOnlyDecl visitable) {
         String label = Statement.NO_LABEL;
 
-        // ソースファイル、ソースコード行
+        // Source file, source code line
         CodeLine lineInfo = m_context.getCodeBuilder().getLastCodeLine();
 
-        // モジュール名
+        // Module name
         String mod_name = visitable.getName();
 
-        // USE文クラス
+        // USE statement class
         UseState use = new UseState();
         use.setModuleName(mod_name);
 
-        // 局所名と参照対象名
+        // Local name and reference name
         List<Renamable> renames = visitable.getRenamable();
         for (Renamable rename : renames) {
             if (StringUtils.isNullOrEmpty(rename.getLocalName())) {
@@ -1172,47 +1172,47 @@ public class DbUpdater extends XcodeMLVisitorImpl {
             }
         }
 
-        // USE宣言文を登録する。
+        // Register the USE declaration statement.
         m_database.setUse(use, lineInfo, label);
 
         return true;
     }
 
     /**
-     * FpointerAssignStatement(ポインタ代入文)の開始要素を登録する。
+     * Register the start element of FpointerAssignStatement.
      *
-     * @param visitable        FpointerAssignStatement(ポインタ代入文)
-     * @return 成否
+     * @param visitable FpointerAssignStatement (pointer assignment statement)
+     * @return Success or failure
      */
     @Override
     public boolean enter(FpointerAssignStatement visitable) {
         String label = Statement.NO_LABEL;
 
-        // ソースファイル、ソースコード行
+        // Source file, source code line
         CodeLine lineInfo = m_context.getCodeBuilder().getLastCodeLine();
 
         List<IXmlNode> content = visitable.getContent();
-        // 左辺
+        // Left side
         IXmlNode leftExpr = (content != null && content.size() >= 1) ? content.get(0) : null;
-        // 右辺
+        // Right side
         IXmlNode rightExpr = (content != null && content.size() >= 2) ? content.get(1) : null;
 
-        // ExpressionParserモデルパーサ
+        // Expression Parser Model Parser
         ExpressionParser exprParser = new ExpressionParser(m_context.getTypeManager());
 
-        // 変数のパース
+        // Parse variables
         VariableParser varParser = new VariableParser(m_context.getTypeManager());
 
-        // 左辺
+        // Left side
         Variable leftVar = varParser.getVariable(leftExpr);
 
-        // 右辺
+        // Right side
         exprParser.setParseNode(rightExpr);
         Expression rightVar = exprParser.getExpression();
 
         m_database.setSubstitution(leftVar, rightVar, lineInfo, label);
 
-        // 外部手続きの登録
+        // Registration of external procedures
         addExternalFunction(exprParser.getExternalFunction());
 
         return true;
@@ -1220,21 +1220,21 @@ public class DbUpdater extends XcodeMLVisitorImpl {
     }
 
     /**
-     * FpragmaStatement(OpenMP3.0の指示文)の開始要素を登録する。
+     * Register the start element of FpragmaStatement (OpenMP3.0 directive).
      *
-     * @param visitable        FpragmaStatement(OpenMP3.0の指示文)
-     * @return 成否
+     * @param visitable FpragmaStatement (OpenMP3.0 directive)
+     * @return Success or failure
      */
     @Override
     public boolean enter(FpragmaStatement visitable) {
         String label = Statement.NO_LABEL;
-        // ソースファイル、ソースコード行
+        // Source file, source code line
         CodeLine lineInfo = m_context.getCodeBuilder().getLastCodeLine();
 
-        // 指示文
+        // Instructions
         String value = visitable.getValue();
 
-        // ディレクティブ文を登録する。
+        // Register the directive statement.
         m_database.setDirective(value, lineInfo, label);
 
         return true;
@@ -1242,64 +1242,64 @@ public class DbUpdater extends XcodeMLVisitorImpl {
 
 
     /**
-     * FexitStatement(EXIT文)の開始要素を登録する。
+     * Register the start element of FexitStatement (EXIT statement).
      *
-     * @param visitable   EXIT文
-     * @return 成否
+     * @param visitable EXIT statement
+     * @return Success or failure
      */
     @Override
     public boolean enter(FexitStatement visitable) {
 
         String label = Statement.NO_LABEL;
-        // ソースファイル、ソースコード行
+        // Source file, source code line
         CodeLine lineInfo = m_context.getCodeBuilder().getLastCodeLine();
 
-        // EXIT文
+        // EXIT statement
         if (!StringUtils.isNullOrEmpty(visitable.getConstructName())) {
             label = visitable.getConstructName();
         }
-        // EXIT文を登録する。
+        // Register the EXIT statement.
         m_database.setExit(lineInfo, label);
 
         return true;
     }
 
     /**
-     * FcycleStatement(CYCLE文)の開始要素を登録する。
+     * Register the start element of FcycleStatement (CYCLE statement).
      *
-     * @param visitable   CYCLE文
-     * @return 成否
+     * @param visitable CYCLE statement
+     * @return Success or failure
      */
     @Override
     public boolean enter(FcycleStatement visitable) {
 
         String label = Statement.NO_LABEL;
-        // ソースファイル、ソースコード行
+        // Source file, source code line
         CodeLine lineInfo = m_context.getCodeBuilder().getLastCodeLine();
 
-        // CYCLE文
+        // CYCLE statement
         if (!StringUtils.isNullOrEmpty(visitable.getConstructName())) {
             label = visitable.getConstructName();
         }
-        // CYCLE文を登録する。
+        // Register the CYCLE statement.
         m_database.setCycle(lineInfo, label);
 
         return true;
     }
 
     /**
-     * FstopStatement(STOP文)の開始要素を登録する。
+     * Register the start element of FstopStatement (STOP statement).
      *
-     * @param visitable   STOP文
-     * @return 成否
+     * @param visitable STOP statement
+     * @return Success or failure
      */
     @Override
     public boolean enter(FstopStatement visitable) {
         String label = Statement.NO_LABEL;
-        // ソースファイル、ソースコード行
+        // Source file, source code line
         CodeLine lineInfo = m_context.getCodeBuilder().getLastCodeLine();
 
-        // STOP文
+        // STOP statement
         String arg = null;
         String code = visitable.getCode();
         String msg = visitable.getMessage();
@@ -1310,25 +1310,25 @@ public class DbUpdater extends XcodeMLVisitorImpl {
             arg = msg;
         }
 
-        // STOP文を登録する。
+        // Register the STOP statement.
         m_database.setStop(arg, lineInfo, label);
 
         return true;
     }
 
     /**
-     * FpauseStatement(PAUSE文)の開始要素を登録する。
+     * Register the start element of FpauseStatement (PAUSE statement).
      *
-     * @param visitable   PAUSE文
-     * @return 成否
+     * @param visitable PAUSE statement
+     * @return Success or failure
      */
     @Override
     public boolean enter(FpauseStatement visitable) {
         String label = Statement.NO_LABEL;
-        // ソースファイル、ソースコード行
+        // Source file, source code line
         CodeLine lineInfo = m_context.getCodeBuilder().getLastCodeLine();
 
-        // PAUSE文
+        // PAUSE statement
         String arg = null;
         String code = visitable.getCode();
         String msg = visitable.getMessage();
@@ -1339,33 +1339,33 @@ public class DbUpdater extends XcodeMLVisitorImpl {
             arg = msg;
         }
 
-        // PAUSE文を登録する。
+        // Register the PAUSE statement.
         m_database.setPause(arg, lineInfo, label);
 
         return true;
     }
 
     /**
-     * GotoStatement(GOTO文)の開始要素を登録する。
+     * Register the start element of GotoStatement (GOTO statement).
      *
-     * @param visitable   GOTO文
-     * @return 成否
+     * @param visitable GOTO statement
+     * @return Success or failure
      */
     @Override
     public boolean enter(GotoStatement visitable) {
         String label = Statement.NO_LABEL;
-        // ソースファイル、ソースコード行
+        // Source file, source code line
         CodeLine lineInfo = m_context.getCodeBuilder().getLastCodeLine();
 
-        // GOTO文
+        // GOTO statement
         String arg = visitable.getLabelName();
         if (StringUtils.isNullOrEmpty(arg)) {
             GotoStatementSequence seq = new GotoStatementSequence(visitable.getParams(), visitable.getValue());
             return enter(seq);
         }
 
-        // GOTO文を登録する。
-        // 行番号の場合は、数値文字にする(先頭０削除）
+        // Register the GOTO statement.
+        // If it is a line number, use a numeric character (delete the first 0)
         if (StringUtils.isNumeric(arg)) {
             arg = Integer.valueOf(arg).toString();
         }
@@ -1375,21 +1375,21 @@ public class DbUpdater extends XcodeMLVisitorImpl {
     }
 
     /**
-     * GotoStatementSequence(GOTO文)の開始要素を登録する。
+     * Register the start element of GotoStatementSequence (GOTO statement).
      *
-     * @param visitable   GOTO文
-     * @return 成否
+     * @param visitable GOTO statement
+     * @return Success or failure
      */
     @Override
     public boolean enter(GotoStatementSequence visitable) {
         String label = Statement.NO_LABEL;
-        // ソースファイル、ソースコード行
+        // Source file, source code line
         CodeLine lineInfo = m_context.getCodeBuilder().getLastCodeLine();
 
-        // ExpressionParserモデルパーサ
+        // Expression Parser Model Parser
         ExpressionParser exprParser = new ExpressionParser(m_context.getTypeManager());
 
-        // GOTO文
+        // GOTO statement
         StringBuffer arg = new StringBuffer();
         {
             Params params = visitable.getParams();
@@ -1410,31 +1410,31 @@ public class DbUpdater extends XcodeMLVisitorImpl {
             }
         }
 
-        // GOTO文を登録する。
+        // Register the GOTO statement.
         m_database.setGoTo(arg.toString(), lineInfo, label);
 
-        // 外部手続きの登録
+        // Registration of external procedures
         addExternalFunction(exprParser.getExternalFunction());
 
         return true;
     }
 
     /**
-     * FnullifyStatement(NULLIFY文)の開始要素を登録する。
+     * Register the start element of FnullifyStatement (NULLIFY statement).
      *
-     * @param visitable   NULLIFY文
-     * @return 成否
+     * @param visitable NULLIFY statement
+     * @return Success or failure
      */
     @Override
     public boolean enter(FnullifyStatement visitable) {
         String label = Statement.NO_LABEL;
-        // ソースファイル、ソースコード行
+        // Source file, source code line
         CodeLine lineInfo = m_context.getCodeBuilder().getLastCodeLine();
 
-        // ExpressionParserモデルパーサ
+        // Expression Parser Model Parser
         ExpressionParser exprParser = new ExpressionParser(m_context.getTypeManager());
 
-        // 変数のパース
+        // Parse variables
         VariableParser varParser = new VariableParser(m_context.getTypeManager());
 
         List<Alloc> list = visitable.getAlloc();
@@ -1443,19 +1443,19 @@ public class DbUpdater extends XcodeMLVisitorImpl {
             for (Alloc  nodeAlloc : list) {
                 IXmlNode node = XmlNodeUtil.getXmlNodeChoice(nodeAlloc);
 
-                // 変数
+                // Variable
                 Variable var = varParser.getVariable(node);
-                // 変数を追加する
+                // add a variable
                 if (var != null) {
                     varlist.add(var);
                 }
             }
         }
 
-        // NULLIFY文を登録する。
+        // Register the NULLIFY statement.
         m_database.setNullify(varlist, lineInfo, label);
 
-        // 外部手続きの登録
+        // Registration of external procedures
         addExternalFunction(exprParser.getExternalFunction());
 
         return true;
@@ -1463,24 +1463,24 @@ public class DbUpdater extends XcodeMLVisitorImpl {
     }
 
     /**
-     * FallocateStatement(ALLOCATE文)の開始要素を登録する。
+     * Register the start element of FallocateStatement (ALLOCATE statement).
      *
-     * @param visitable   ALLOCATE文
-     * @return 成否
+     * @param visitable ALLOCATE statement
+     * @return Success or failure
      */
     @Override
     public boolean enter(FallocateStatement visitable) {
         String label = Statement.NO_LABEL;
-        // ソースファイル、ソースコード行
+        // Source file, source code line
         CodeLine lineInfo = m_context.getCodeBuilder().getLastCodeLine();
 
         List<Alloc> list = visitable.getAlloc();
         String stat = visitable.getStatName();
 
-        // 変数のパース
+        // Parse variables
         VariableParser varParser = new VariableParser(m_context.getTypeManager());
 
-        // VariableDimensionパーサ
+        // VariableDimension parser
         VariableDimensionParser dimsParser = new VariableDimensionParser(m_context.getTypeManager());
 
         Map<Variable, VariableDimension> targets = new LinkedHashMap<Variable, VariableDimension>();
@@ -1492,7 +1492,7 @@ public class DbUpdater extends XcodeMLVisitorImpl {
                 IXmlNode node = XmlNodeUtil.getXmlNodeChoice(nodeAlloc);
                 var = varParser.getVariable(node);
 
-                // 配列宣言
+                // Array declaration
                 List<IXmlNode> arrayElems = nodeAlloc.getIndexRangeOrArrayIndex();
                 if (arrayElems != null && arrayElems.size() > 0) {
                     dims = dimsParser.parseVariableDimension(arrayElems);
@@ -1504,7 +1504,7 @@ public class DbUpdater extends XcodeMLVisitorImpl {
             }
         }
 
-        // ALLOCATE文を登録する。
+        // Register the ALLOCATE statement.
         Variable err = null;
         if (stat != null) {
             err = new Variable(stat);
@@ -1515,22 +1515,22 @@ public class DbUpdater extends XcodeMLVisitorImpl {
     }
 
     /**
-     * FdeallocateStatement(DEALLOCATE文)の開始要素を登録する。
+     * Register the start element of FdeallocateStatement (DEALLOCATE statement).
      *
-     * @param visitable   DEALLOCATE文
-     * @return 成否
+     * @param visitable DEALLOCATE statement
+     * @return Success or failure
      */
     @Override
     public boolean enter(FdeallocateStatement visitable) {
 
         String label = Statement.NO_LABEL;
-        // ソースファイル、ソースコード行
+        // Source file, source code line
         CodeLine lineInfo = m_context.getCodeBuilder().getLastCodeLine();
 
         List<Alloc> list = visitable.getAlloc();
         String stat = visitable.getStatName();
 
-        // 変数のパース
+        // Parse variables
         VariableParser varParser = new VariableParser(m_context.getTypeManager());
         List<Variable> targets = new ArrayList<Variable>();
         if (list != null) {
@@ -1543,7 +1543,7 @@ public class DbUpdater extends XcodeMLVisitorImpl {
             }
         }
 
-        // ALLOCATE文を登録する。
+        // Register the ALLOCATE statement.
         Variable err = null;
         if (stat != null) {
             err = new Variable(stat);
@@ -1555,10 +1555,10 @@ public class DbUpdater extends XcodeMLVisitorImpl {
 
 
     /**
-     * FdataDecl(DATA文)の開始要素を登録する。
+     * Register the start element of FdataDecl (DATA statement).
      *
-     * @param visitable   DATA文
-     * @return 成否
+     * @param visitable DATA statement
+     * @return Success or failure
      */
     @Override
     public boolean enter(FdataDecl visitable) {
@@ -1590,21 +1590,21 @@ public class DbUpdater extends XcodeMLVisitorImpl {
     }
 
     /**
-     * FdataDeclSequence(DATA文)の開始要素を登録する。
+     * Register the start element of FdataDeclSequence (DATA statement).
      *
-     * @param visitable   DATA文
-     * @return 成否
+     * @param visitable DATA statement
+     * @return Success or failure
      */
     @Override
     public boolean enter(FdataDeclSequence visitable) {
         String label = Statement.NO_LABEL;
-        // ソースファイル、ソースコード行
+        // Source file, source code line
         CodeLine lineInfo = m_context.getCodeBuilder().getLastCodeLine();
 
-        // ExpressionParserモデルパーサ
+        // Expression Parser Model Parser
         ExpressionParser exprParser = new ExpressionParser(m_context.getTypeManager());
 
-        // 変数のパース
+        // Parse variables
         VariableParser varParser = new VariableParser(m_context.getTypeManager());
 
         // ((varList, valueList)+)
@@ -1624,7 +1624,7 @@ public class DbUpdater extends XcodeMLVisitorImpl {
                     block.setValues(values);
                 }
 
-                // Data文を登録する。
+                // Register the Data statement.
                 m_database.setData(block, lineInfo, label);
             }
 
@@ -1633,26 +1633,26 @@ public class DbUpdater extends XcodeMLVisitorImpl {
             return false;
         }
 
-        // 外部手続きの登録
+        // Registration of external procedures
         addExternalFunction(exprParser.getExternalFunction());
 
         return true;
     }
 
     /**
-     * FequivalenceDecl(EQUIVALENCE文)の開始要素を登録する。
+     * Register the starting element of FequivalenceDecl (EQUIVALENCE statement).
      *
-     * @param visitable   EQUIVALENCE文
-     * @return 成否
+     * @param visitable EQUIVALENCE statement
+     * @return Success or failure
      */
     @Override
     public boolean enter(FequivalenceDecl visitable) {
 
         String label = Statement.NO_LABEL;
-        // ソースファイル、ソースコード行
+        // Source file, source code line
         CodeLine lineInfo = m_context.getCodeBuilder().getLastCodeLine();
 
-        // 変数のパース
+        // Parse variables
         VariableParser varParser = new VariableParser(m_context.getTypeManager());
 
         List<IXmlNode> list = visitable.getVarRefAndVarList();
@@ -1675,7 +1675,7 @@ public class DbUpdater extends XcodeMLVisitorImpl {
             }
         }
 
-        // EQUIVALENCE文を登録する。
+        // Register the EQUIVALENCE statement.
         Equivalence block = new Equivalence();
         block.setVariables(variables);
         m_database.setEquivalence(block, lineInfo, label);
@@ -1684,19 +1684,19 @@ public class DbUpdater extends XcodeMLVisitorImpl {
     }
 
     /**
-     * FcommonDecl(COMMON文)の開始要素を登録する。
+     * Register the start element of FcommonDecl (COMMON statement).
      *
-     * @param visitable   COMMON文
-     * @return 成否
+     * @param visitable COMMON statement
+     * @return Success or failure
      */
     @Override
     public boolean enter(FcommonDecl visitable) {
 
         String label = Statement.NO_LABEL;
-        // ソースファイル、ソースコード行
+        // Source file, source code line
         CodeLine lineInfo = m_context.getCodeBuilder().getLastCodeLine();
 
-        // 変数のパース
+        // Parse variables
         VariableParser varParser = new VariableParser(m_context.getTypeManager());
 
         List<VarList> list = visitable.getVarList();
@@ -1714,7 +1714,7 @@ public class DbUpdater extends XcodeMLVisitorImpl {
             }
 
             if (variables != null && variables.size() > 0) {
-                // COMMON文を登録する。
+                // Register the COMMON statement.
                 Common block = new Common();
                 block.setName(name);
                 block.setVariables(variables);
@@ -1726,36 +1726,36 @@ public class DbUpdater extends XcodeMLVisitorImpl {
     }
 
     /**
-     * FinterfaceDecl(INTERFACE文)の開始要素を登録する。
+     * Register the start element of FinterfaceDecl (INTERFACE statement).
      *
-     * @param visitable   INTERFACE文
-     * @return 成否
+     * @param visitable INTERFACE statement
+     * @return Success or failure
      */
     @Override
     public boolean enter(FinterfaceDecl visitable) {
 
-        // コード出力クラス
+        // Code output class
         XcodeMLTypeManager typeManager = m_context.getTypeManager();
 
         String label = Statement.NO_LABEL;
-        // ソースファイル、ソースコード行
+        // Source file, source code line
         CodeLine lineInfo = m_context.getCodeBuilder().getLastCodeLine();
 
-        // インターフェイス名
+        // interface name
         String infName = visitable.getName();
         List<IXmlNode> list = visitable.getFfunctionDeclOrFmoduleProcedureDecl();
 
         VariableTypeParser typePaser = new VariableTypeParser(this.m_context.getTypeManager());
         VariableDefinitionParser defPaser = new VariableDefinitionParser(this.m_context.getTypeManager());
 
-        // インターフェイス名の生成
+        // Generate interface name
         if (XmlNodeUtil.isBoolean(visitable.isIsOperator())) {
             infName = "OPERATOR(" + infName + ")";
         }
         else if (XmlNodeUtil.isBoolean(visitable.isIsAssignment())) {
             infName = "ASSIGNMENT(" + infName + ")";
         }
-        // INTERFACE文クラス生成
+        // INTERFACE statement class generation
         Procedures interProc = new Procedures(infName);
         for (IXmlNode node : list) {
             if (node instanceof FfunctionDecl) {
@@ -1771,10 +1771,10 @@ public class DbUpdater extends XcodeMLVisitorImpl {
                 // result
                 String result = functionTypeElem.getResultName();
 
-                // 総称定義関数データ型
+                // Generic definition function data type
                 VariableType funcType = typePaser.parseVariableType(((FfunctionDecl) node).getName());
 
-                // 仮引数
+                // Formal argument
                 Params params = functionTypeElem.getParams();
                 jp.riken.kscope.language.generic.Arguments args = new jp.riken.kscope.language.generic.Arguments();
                 if (params != null) {
@@ -1809,25 +1809,25 @@ public class DbUpdater extends XcodeMLVisitorImpl {
     }
 
     /**
-     * 外部手続きリストに追加する
-     * @param funcName		外部手続き名
-     * @param varType		データ型
+     * Add to external procedure list
+     * @param funcName External procedure name
+     * @param varType data type
      */
     private void addExternalFunction(String funcName, IVariableType varType) {
         if (funcName == null || varType == null) return;
 
-        // 外部手続きリストに追加する
+        // Add to external procedure list
         m_database.addExternalFunction(funcName, varType);
     }
 
     /**
-     * 外部手続きリストに追加する
-     * @param list		外部手続きリスト
+     * Add to external procedure list
+     * @param list External procedure list
      */
     private void addExternalFunction(Map<String, IVariableType> list) {
         if (list == null || list.size() <= 0) return;
 
-        // 外部手続きリストに追加する
+        // Add to external procedure list
         for (Iterator<Entry<String, IVariableType>> itr = list.entrySet().iterator(); itr.hasNext();) {
             Map.Entry<String, IVariableType> entry = itr.next();
             String funcName = entry.getKey();
@@ -1838,10 +1838,10 @@ public class DbUpdater extends XcodeMLVisitorImpl {
 
 	@Override
 	public void leave(FstructDecl visitable) {
-        // ソースファイル、ソースコード行
+        // Source file, source code line
         CodeLine lineInfo = m_context.getCodeBuilder().getLastCodeLine();
 
-        // 変数名
+        // Variable name
         Name nameStruct = visitable.getName();
         String name = nameStruct.getValue();
         if (this.m_database.getCurrentUnit() == null) return;
@@ -1852,10 +1852,10 @@ public class DbUpdater extends XcodeMLVisitorImpl {
 	}
 
 	/**
-	 * エラー情報を登録する.
-	 * @param line		コード行情報
-	 * @param message	エラーメッセージ
-	 */
+* Register error information.
+* @param line Code line information
+* @param message Error message
+*/
 	private void addErrorInfo(CodeLine line, String message) {
 		if (this.listErrorInfo == null) {
 			this.listErrorInfo = new ArrayList<ErrorInfo>();
@@ -1864,9 +1864,9 @@ public class DbUpdater extends XcodeMLVisitorImpl {
 	}
 
 	/**
-	 * エラーリストを取得する.
-	 * @return    エラーリスト
-	 */
+* Get the error list.
+* @return error list
+*/
 	public ErrorInfo[] getListErrorInfo() {
 		if (this.listErrorInfo == null || this.listErrorInfo.size() <= 0) {
 			return null;
@@ -1875,11 +1875,11 @@ public class DbUpdater extends XcodeMLVisitorImpl {
 	}
 
 	/**
-	 * プロシージャの重複エラーメッセージを取得する.
-	 * @param overridename		重複プロシージャ名
-	 * @param lineInfo		エラーコード情報
-	 * @param duplicateUnit		重複ブロック
-	 */
+* Get duplicate procedure error messages.
+* @param overridename Duplicate procedure name
+* @param lineInfo Error code information
+* @param duplicateUnit Duplicate block
+*/
 	private void addDuplicateError(String overridename, CodeLine lineInfo, ProgramUnit duplicateUnit) {
 		if (overridename == null) return;
 		if (lineInfo == null) return;
@@ -1892,20 +1892,20 @@ public class DbUpdater extends XcodeMLVisitorImpl {
     	String dupInfo = getErrorLineInfo(duplicateUnit);
     	if (dupInfo == null) return;
     	String key = null;
-		// dbupdate.error.duplicate.module=[警告] MODULE[%s]が重複しています。override=%s.
+		// dbupdate.error.duplicate.module = [Warning] MODULE [% s] is duplicated. override =% s.
 		if (duplicateUnit instanceof Module) {
 			key = "dbupdate.error.duplicate.module";
 		}
 		else if (duplicateUnit instanceof Procedure) {
-			// dbupdate.error.duplicate.program=[警告] PROGRAM[%s, %s]が重複しています。override=%s.
+			// dbupdate.error.duplicate.program = [Warning] PROGRAM [% s,% s] is duplicated. override =% s.
 			if (((Procedure) duplicateUnit).isProgram()) {
 				key = "dbupdate.error.duplicate.program";
 			}
-			// dbupdate.error.duplicate.subroutine=[警告] SUBROUTINE[%s]が重複しています。override=%s.
+			// dbupdate.error.duplicate.subroutine = [Warning] SUBROUTINE [% s] is duplicated. override =% s.
 			else if (((Procedure) duplicateUnit).isSubroutine()) {
 				key = "dbupdate.error.duplicate.subroutine";
 			}
-			// dbupdate.error.duplicate.function=[警告] FUNCTION[%s]が重複しています。override=%s.
+			// dbupdate.error.duplicate.function = [Warning] Duplicate FUNCTION [% s]. override =% s.
 			else if (((Procedure) duplicateUnit).isFunction()) {
 				key = "dbupdate.error.duplicate.function";
 			}
@@ -1916,10 +1916,10 @@ public class DbUpdater extends XcodeMLVisitorImpl {
 	}
 
 	/**
-	 * コード行情報のエラー表示文字列を作成する.
-	 * @param block		エラーブロック
-	 * @return			エラー表示文字列
-	 */
+* Create an error display string for code line information.
+* @param block Error block
+* @return Error display string
+*/
 	private String getErrorLineInfo(ProgramUnit block) {
 		if (block == null) return null;
 		if (block.get_start() == null) return null;

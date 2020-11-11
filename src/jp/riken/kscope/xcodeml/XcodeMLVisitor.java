@@ -32,21 +32,21 @@ import jp.riken.kscope.xcodeml.xml.IXmlTypeTableChoice;
 import jp.riken.kscope.xcodeml.xml.gen.*;
 
 /**
- * XMLノード探索クラス
+ * XML node search class
  * @author RIKEN
  */
 public class XcodeMLVisitor extends XcodeMLVisitorImpl {
 
-    /** XMLパース実行環境 */
+    /** XML parsing execution environment */
     private XcodeMLContext _context;
-    /** XML検証クラス */
+    /** XML validation class */
     private XcodeMLValidator _validator;
-    /** 次XMLノード */
+    /** Next XML node */
     private IXmlNode _nextNode;
 
     /**
-     * コンストラクタ
-     * @param context		XcodeMLパーサコンテキストクラス
+     * Constructor
+     * @param context XcodeML parser context class
      */
     public XcodeMLVisitor(XcodeMLContext context) {
         _context = context;
@@ -160,18 +160,18 @@ public class XcodeMLVisitor extends XcodeMLVisitorImpl {
                 return false;
             }
 
-            // 現在ノードを_nextNodeにセットする。
+            // Set the current node to _nextNode.
             _nextNode = node;
 
             if (currentNode != null) {
-                // １つ手前のノードを処理する。
+                // Process the previous node.
                 if (invokeEnter(currentNode) == false) {
                     return false;
                 }
                 this._context.setPreviousNode(currentNode);
             }
 
-            // 現在ノードをcurrentNodeにセットして次のループで処理する。
+            // Set the current node to currentNode and process in the next loop.
             currentNode = node;
         }
 
@@ -228,7 +228,7 @@ public class XcodeMLVisitor extends XcodeMLVisitorImpl {
 
         _context.popInvokeNode();
 
-        // 途中エラー発生しても最後まで処理する。
+        // Even if an error occurs on the way, it will be processed to the end.
         if (result == false) {
             System.err.println("Error:invokeEnter : error node[" + node.toString() + "]");
         }
@@ -2479,7 +2479,7 @@ public class XcodeMLVisitor extends XcodeMLVisitorImpl {
         if (!result)
             return result;
 
-        // TYPE文内部のPRIVATE, SEQUENCE文
+        // PRIVATE, SEQUENCE statement inside the TYPE statement
         writer.enterStructTypeElem(visitable);
 
         if (invokeEnter(structTypeElem) == false) {
@@ -2523,14 +2523,14 @@ public class XcodeMLVisitor extends XcodeMLVisitorImpl {
         boolean result = true;
         CodeBuilder writer = _context.getCodeBuilder();
 
-        // FunctionCallの部分文字列を取得する為に現在の開始文字位置を取得する。
+        // Get the current start character position to get the substring of FunctionCall.
         int start_idx = writer.getCurrentColumn();
 
         result = writer.enter(visitable);
         if (!result)
             return result;
 
-        // FunctionCallの部分文字列
+        // FunctionCall substring
         String call = writer.stealLineBuf(start_idx);
 
         DbUpdater updater = _context.getDbUpdater();

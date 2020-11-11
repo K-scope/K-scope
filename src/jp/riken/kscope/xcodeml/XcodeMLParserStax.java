@@ -50,52 +50,52 @@ import jp.riken.kscope.xcodeml.xml.gen.TypeTable;
 import jp.riken.kscope.xcodeml.xml.gen.XcodeProgram;
 
 /**
- * XcodeML構文解析クラス
+ * XcodeML parsing class
  *
- * XcodeML出力のXMLファイルから一括でバインディングを行い、XcodeProgramクラスを生成する。
- * 生成XcodeProgramクラスから、コード行を作成し、データベースへ登録する。
+ * Generate XcodeProgram class by batch binding from XML file of XcodeML output.
+ * Create a line of code from the generated XcodeProgram class and register it in the database.
  *
  * @author RIKEN
  */
 public class XcodeMLParserStax extends XcodeMLParserCls {
 
-    /** StAX 用ファクトリ */
+    /** Factory for StAX */
     private XMLInputFactory factory = null;
 
-    /** JAXB 用ファクトリ */
+    /** Factory for JAXB */
     private JAXBContext context = null;
-    /** JAXB アンマーシャラー */
+    /** JAXB Ammershaller */
     private Unmarshaller unmarshaller = null;
-    /** 現在処理中ノード */
+    /** Currently processing node */
     protected Stack<IXmlNode> m_nodeStack = null;
-    /** Fortranデータベース */
+    /** Fortran database */
     protected Fortran m_dbFortran = null;
-    /** XcodeMLパース設定 */
+    /** XcodeML perspective settings */
     protected XcodeMLContext m_xmodContext = null;
-    /** XcodeMLパーサ */
+    /** XcodeML parser */
     protected XcodeMLVisitor m_xmodVisitor = null;
-    // modify at 2013/03/01 by @hira FileからSourceFileに変更
-    /** 元ソースファイル(Fortranソースファイル) */
+    // modify at 2013/03/01 by @hira Change from File to Source File
+    /** Original source file (Fortran source file) */
     protected SourceFile languageFile = null;
 
     /**
-     * コンストラクタ
+     * Constructor
      */
     public XcodeMLParserStax() {
         super();
 
         try {
-            // StAX用ファクトリの生成
+            // Generate a factory for StAX
             factory = XMLInputFactory.newInstance();
 
-            // JAXB用ファクトリの生成
+            // Generate factory for JAXB
             context = JAXBContext.newInstance(ObjectFactory.class);
-            // アンマーシャラー生成
+            // Generate unmarshaller
             unmarshaller = context.createUnmarshaller();
 
-            // XcodeMLパース設定
+            // XcodeML perspective settings
             m_xmodContext = new XcodeMLContext();
-            // デバッグ出力
+            // Debug output
             // XcodeMLOption.setDebugOutput(true);
 
 //            String outputFilePath = "xcodeml_debug.txt";
@@ -109,7 +109,7 @@ public class XcodeMLParserStax extends XcodeMLParserCls {
 
             m_xmodVisitor = new XcodeMLVisitor(m_xmodContext);
 
-            // 現在のFfunctionDefinition、FmoduleDefinitionのスタックリスト
+            // Current FfunctionDefinition, FmoduleDefinition stack list
             m_nodeStack = new Stack<IXmlNode>();
 
         } catch (FactoryConfigurationError e) {
@@ -123,10 +123,10 @@ public class XcodeMLParserStax extends XcodeMLParserCls {
     }
 
     /**
-     * ソースファイルからファイルを読み込み、事前処理を行う。
+     * Read the file from the source file and perform preprocessing.
      *
      * @param file
-     *            ソースファイル
+     *            source file
      *
      */
     @Override
@@ -135,11 +135,11 @@ public class XcodeMLParserStax extends XcodeMLParserCls {
     }
 
     /**
-     * 生成XcodeProgramクラスから、コード行を作成し、データベースへ登録する。
+     * Create a line of code from the generated XcodeProgram class and register it in the database.
      *
      * @param ft
-     *            解析結果格納フォートランデータベース
-     * @throws InterruptedException			割り込みエラー
+     * Analysis result storage Fortran database
+     * @throws InterruptedException Interrupt error
      */
     @Override
     public void parseFile(Fortran ft) throws InterruptedException {
@@ -151,7 +151,7 @@ public class XcodeMLParserStax extends XcodeMLParserCls {
         XMLStreamReader reader = null;
         InputStream stream = null;
 
-        // XcodeMLのパース準備
+        // Preparation for parsing XcodeML
         m_dbFortran = ft;
         DbUpdater db = new DbUpdater(m_dbFortran, m_xmodContext);
         m_xmodContext.setDbUpdater(db);
@@ -161,12 +161,12 @@ public class XcodeMLParserStax extends XcodeMLParserCls {
             String xmlfile = m_sourceFile.getPath();
             stream = new FileInputStream(xmlfile);
 
-            // パーサの生成
+            // Generate parser
             reader = factory.createXMLStreamReader(stream);
 
-            // イベントループ
+            // Event loop
             while (reader.hasNext()) {
-                // 次のイベントを取得
+                // get the next event
                 int eventType = reader.next();
                 if (eventType == XMLStreamReader.START_ELEMENT) {
                     String elem_name = reader.getLocalName();
@@ -176,13 +176,13 @@ public class XcodeMLParserStax extends XcodeMLParserCls {
                     // XcodeProgram
                     if (parseXcodeProgram(reader)) {
                     }
-                    // typeTable、globalSymbols
+                    // typeTable, globalSymbols
                     else if (unmarshalType(reader)) {
                     }
-                    // FfunctionDefinition、FmoduleDefinition、body、FcontainsStatement
+                    // FfunctionDefinition, FmoduleDefinition, body, FcontainsStatement
                     else if (startElement(reader)) {
                     }
-                    // その他
+                    // Other
                     else if (unmarshalNode(reader)) {
                     }
                 } else if (eventType == XMLStreamReader.END_ELEMENT) {
@@ -211,7 +211,7 @@ public class XcodeMLParserStax extends XcodeMLParserCls {
             throw new LanguageException(ex, m_sourceFile);
         } finally {
 
-            // ステータスバー：進捗メッセージ
+            // Status bar: Progress message
             firePropertyChange("status_sub_message", null, "done");
             firePropertyChange("prograss_clear", null, null);
 
@@ -229,17 +229,17 @@ public class XcodeMLParserStax extends XcodeMLParserCls {
             }
         }
 
-        // ステータスバー：進捗メッセージ
+        // Status bar: Progress message
         firePropertyChange("status_sub_message", null, "done");
         firePropertyChange("prograss_clear", null, null);
     }
 
     /**
-     * タイプテーブル要素をJAXBでアンマーシャリングを行う。
-     * 要素名が typeTable, globalSymbolsのみアンマーシャリングを行う。
-     * @param reader     ストリームリーダー
-     * @return    成否
-     * @throws XcodeMLException     XMLリードエラー
+     * Unmarshall type table elements with JAXB.
+     * Unmarshall only if the element name is typeTable, globalSymbols.
+     * @param reader Stream reader
+     * @return Success or failure
+     * @throws XcodeMLException XML read error
      */
     private boolean unmarshalType(XMLStreamReader reader)
             throws XcodeMLException {
@@ -251,13 +251,13 @@ public class XcodeMLParserStax extends XcodeMLParserCls {
         }
 
         try {
-            // アンマーシャリング
+            // Unmarshalling
             Object obj = unmarshaller.unmarshal(reader);
             if (m_program == null) {
                 m_program = new XcodeProgram();
             }
 
-            // タイプテーブルをXcodeProgramにセットする。
+            // Set the type table in XcodeProgram.
             if ("typeTable".equals(elem_name)) {
                 m_program.setTypeTable((TypeTable) obj);
                 invokeEnter((TypeTable) obj);
@@ -267,7 +267,7 @@ public class XcodeMLParserStax extends XcodeMLParserCls {
             }
 
         } catch (JAXBException ex) {
-            // 例外処理:アンマーシャリングに失敗しました。[要素名=%s]
+            // Exception handling: Unmarshalling failed. [Element name =% s]
             throw new XcodeMLException(Message.getString("xcodemlparserstax.error.unmarshaller",
                                                          reader.getLocalName()));
         }
@@ -276,41 +276,41 @@ public class XcodeMLParserStax extends XcodeMLParserCls {
     }
 
     /**
-     * タイプテーブル要素をJAXBでアンマーシャリングを行う。
-     * @param reader     ストリームリーダー
-     * @return    成否
-     * @throws XcodeMLException     XMLリードエラー
+     * Unmarshall type table elements with JAXB.
+     * @param reader Stream reader
+     * @return Success or failure
+     * @throws XcodeMLException XML read error
      */
     private boolean unmarshalNode(XMLStreamReader reader)
             throws XcodeMLException {
         try {
-            // 要素名
+            // element name
             String elem_name = reader.getLocalName();
 
-            // FfunctionDefinition/nameの場合
+            // For FfunctionDefinition / name
             if ("name".equals(elem_name)) {
-                // FfunctionDefinition要素配下のname要素と共にVisiterへ渡す。
-                // DB登録はVisitorから行う。
+                // Pass it to Visitor along with the name element under the FfunctionDefinition element.
+                // DB registration is done from Visitor.
                 IXmlNode node = m_nodeStack.peek();
                 if (node != null && node instanceof FfunctionDefinition) {
-                    // アンマーシャリング
+                    // Unmarshalling
                     Name name = (Name) unmarshaller.unmarshal(reader);
                     assert (name != null);
 
-                    // FfunctionDefinition/name要素のみ組み立ててVisiterへ渡す。
+                    // Assemble only the FfunctionDefinition / name element and pass it to the visitor.
                     ((FfunctionDefinition) node).setName(name);
                     node.enter(m_xmodVisitor);
                     return true;
                 }
             }
 
-            // アンマーシャリング
+            // Unmarshalling
             IXmlNode node = (IXmlNode) unmarshaller.unmarshal(reader);
 
             invokeEnter(node);
 
         } catch (JAXBException ex) {
-            // 例外処理:アンマーシャリングに失敗しました。[要素名=%s]
+            // Exception handling: Unmarshalling failed. [Element name =% s]
             throw new XcodeMLException(Message.getString("xcodemlparserstax.error.unmarshaller",
                                                          reader.getLocalName()));
         }
@@ -319,33 +319,33 @@ public class XcodeMLParserStax extends XcodeMLParserCls {
     }
 
     /**
-     * JAXBでアンマーシャリングを行わず、XML要素を直接取得する。
+     * Get the XML element directly without unmarshalling with JAXB.
      *
-     * FfunctionDefinition、FmoduleDefinition、FcontainsStatement要素
+     * FfunctionDefinition, FmoduleDefinition, FcontainsStatement elements
      *
-     * @param reader     ストリームリーダー
-     * @return    成否
-     * @throws XcodeMLException     XMLリードエラー
+     * @param reader Stream reader
+     * @return Success or failure
+     * @throws XcodeMLException XML read error
      */
     private boolean startElement(XMLStreamReader reader)
             throws XcodeMLException {
 
-        // 要素名
+        // element name
         String elem_name = reader.getLocalName();
 
-        // 無視する要素
+        // Elements to ignore
         if ("globalDeclarations".equals(elem_name))
             return true;
         if ("body".equals(elem_name))
             return true;
 
-        // 属性
+        // Attribute
         String filename = reader.getAttributeValue(null, "file");
         String lineno = reader.getAttributeValue(null, "lineno");
         String endlineno = reader.getAttributeValue(null, "endlineno");
 
         IXmlNode node = null;
-        // FfunctionDefinition、FmoduleDefinition、body要素以外は対象外
+        // Except for FfunctionDefinition, FmoduleDefinition, and body elements
         if ("FfunctionDefinition".equals(elem_name)) {
             node = new FfunctionDefinition();
             ((FfunctionDefinition) node).setFile(filename);
@@ -370,33 +370,33 @@ public class XcodeMLParserStax extends XcodeMLParserCls {
         if (node == null)
             return false;
 
-        // XML要素をスタックに入れる
+        // Put the XML element on the stack
         m_nodeStack.push(node);
 
-        // 事前のXMLノードをクリアする。
+        // Clear the previous XML node.
         m_xmodContext.setPreviousNode(null);
 
         return true;
     }
 
     /**
-     * ノードの終了タグによるイベント
+     * Event by node termination tag
      *
-     * Visitorのleaveメソッドを呼出し、DBへブロックの終了を登録する。
+     * Call the leave method of Visitor and register the end of the block in the DB.
      *
-     * @param reader		XMLスキーマリーダー
-     * @return				成否
-     * @throws XcodeMLException		パースエラー
+     * @param reader XML Schema Reader
+     * @return Success or failure
+     * @throws XcodeMLException Parsing error
      */
     private boolean endElement(XMLStreamReader reader) throws XcodeMLException {
 
-        // 要素名
+        // element name
         String elem_name = reader.getLocalName();
 
         if (m_nodeStack.size() <= 0)
             return true;
 
-        // スタックノード
+        // Stack node
         IXmlNode node = m_nodeStack.peek();
 
         if ("FfunctionDefinition".equals(elem_name)
@@ -417,10 +417,10 @@ public class XcodeMLParserStax extends XcodeMLParserCls {
     }
 
     /**
-     * XMLノードをパースする
+     * Parse XML node
      *
      * @param node
-     *            XMLノード
+     * XML node
      * @throws XcodeMLException
      */
     private void invokeEnter(IXmlNode node) throws XcodeMLException {
@@ -430,7 +430,7 @@ public class XcodeMLParserStax extends XcodeMLParserCls {
                     m_xmodContext.getLastCause());
         }
 
-        // 事前のXMLノードを設定する。
+        // Set the XML node in advance.
         m_xmodContext.setPreviousNode(node);
 
         if (m_xmodContext.getCodeBuilder() != null)
@@ -438,37 +438,37 @@ public class XcodeMLParserStax extends XcodeMLParserCls {
     }
 
     /**
-     * ルート要素のXcodeProgramをパースする。
+     * Parse the root element XcodeProgram.
      *
-     * XcodeProgramに記述のソースファイルが存在するかチェックする。 ソースファイルが存在しない場合はXcodeMLExceptionとする。
+     * Check if the source file described in the Xcode Program exists. If the source file does not exist, XcodeMLException will be thrown.
      *
-     * @param reader		XMLスキーマリーダー
-     * @return				成否
-     * @throws XcodeMLException		パースエラー
+     * @param reader XML Schema Reader
+     * @return Success or failure
+     * @throws XcodeMLException Parsing error
      */
     private boolean parseXcodeProgram(XMLStreamReader reader) throws XcodeMLException {
 
-        // 要素名
+        // element name
         String elem_name = reader.getLocalName();
         if (!"XcodeProgram".equals(elem_name))
             return false;
 
         String source = reader.getAttributeValue(null, "source");
         if (source == null) {
-            throw new XcodeMLException(Message.getString("xcodemlparserstax.error.sourcefile")); //ソースファイルが設定されていません。
+            throw new XcodeMLException(Message.getString("xcodemlparserstax.error.sourcefile")); // The source file is not set.
         }
 
         if (new File(source).isAbsolute()) {
-            // 元ソースファイルを設定する
+            // Set the original source file
             this.languageFile = new SourceFile(source);
         }
         else {
-            // 元ソースファイルパスの取得を行う
+            // Get the original source file path
             File path = m_sourceFile.getFile().getParentFile();
             File srcPath = new File(path.getAbsoluteFile() + File.separator + source);
 
             if (this.m_xmodContext.getBaseFolder() != null) {
-                // 基準パスからの相対パスを取得する
+                // Get the relative path from the reference path
                 String relPath = FileUtils.getRelativePath(srcPath, this.m_xmodContext.getBaseFolder());
                 if (relPath == null) {
                 	this.languageFile = new SourceFile(srcPath);
@@ -480,18 +480,18 @@ public class XcodeMLParserStax extends XcodeMLParserCls {
             else {
                 this.languageFile = new SourceFile(srcPath);
             }
-        	// 相対パス設定であるかもしれないので、更新日付を絶対パスから設定する。
+        	// Since it may be a relative path setting, set the update date from the absolute path.
             this.languageFile.setModifyDate(srcPath);
         }
 
-//        // 元ソースファイルの存在チェック
+// // Existence check of original source file
 //        if (!this.languageFile.exists()) {
-//            throw new XcodeMLException("ソースファイル[" + source + "]が存在しません。");
+// throw new XcodeMLException ("source file [" + source + "] does not exist.");
 //        }
-        // XMLファイルの更新日付を更新する。
+        // Update the modification date of the XML file.
         this.m_sourceFile.updateModifyDate();
 
-        // XMLファイルにソースファイル、ソースファイルにXMLファイルを関連付ける
+        // Associate the source file with the XML file and the XML file with the source file
         this.m_sourceFile.setRelationFile(this.languageFile);
         this.languageFile.setRelationFile(this.m_sourceFile);
 
@@ -501,7 +501,7 @@ public class XcodeMLParserStax extends XcodeMLParserCls {
     @Override
     public CodeLine[] getCodeLineList() throws InterruptedException {
 
-        // ダミーのデータベース作成
+        // Create a dummy database
         Fortran ft = new Fortran();
         parseFile(ft);
         CodeBuilder builder = m_xmodContext.getCodeBuilder();
@@ -513,8 +513,8 @@ public class XcodeMLParserStax extends XcodeMLParserCls {
 
 
     /**
-     * 元ソースファイル(Fortranソースファイル)を取得する
-     * @return		元ソースファイル(Fortranソースファイル)
+     * Get the original source file (Fortran source file)
+     * @return Original source file (Fortran source file)
      */
     @Override
     public SourceFile getLanguageFile() {
@@ -523,7 +523,7 @@ public class XcodeMLParserStax extends XcodeMLParserCls {
 
 
     /**
-     * XMLファイルからソースファイルを取得する.
+     * Get the source file from the XML file.
      */
     @Override
     public void parseSourceFile()  {
@@ -539,19 +539,19 @@ public class XcodeMLParserStax extends XcodeMLParserCls {
             String xmlfile = m_sourceFile.getPath();
             stream = new FileInputStream(xmlfile);
 
-            // パーサの生成
+            // Generate parser
             reader = factory.createXMLStreamReader(stream);
 
-            // イベントループ
+            // Event loop
             while (reader.hasNext()) {
-                // 次のイベントを取得
+                // get the next event
                 int eventType = reader.next();
                 if (eventType == XMLStreamReader.START_ELEMENT) {
                     String elem_name = reader.getLocalName();
 //                    System.out.println(elem_name);
                     firePropertyChange("status_sub_message", null, "parsing..." + elem_name);
 
-                    // XcodeProgramからソースファイルリストのみパースする。
+                    // Parse only the source file list from the Xcode Program.
                     if (parseXcodeProgram(reader)) {
                         break;
                     }
@@ -574,7 +574,7 @@ public class XcodeMLParserStax extends XcodeMLParserCls {
             throw new LanguageException(ex, m_sourceFile);
         } finally {
 
-            // ステータスバー：進捗メッセージ
+            // Status bar: Progress message
             firePropertyChange("status_sub_message", null, "done");
             firePropertyChange("prograss_clear", null, null);
 
@@ -592,14 +592,14 @@ public class XcodeMLParserStax extends XcodeMLParserCls {
             }
         }
 
-        // ステータスバー：進捗メッセージ
+        // Status bar: Progress message
         firePropertyChange("status_sub_message", null, "done");
         firePropertyChange("prograss_clear", null, null);
     }
 
     /**
-     * ソースファイルの基準フォルダを設定する
-     * @param	folder	ソースファイルの基準フォルダ
+     * Set the reference folder for source files
+     * @param folder Reference folder for source files
      */
     @Override
     public void setBaseFolder(File folder) {
@@ -607,8 +607,8 @@ public class XcodeMLParserStax extends XcodeMLParserCls {
     }
 
     /**
-     * エラー情報を取得する.
-     * @return		エラー情報リスト
+     * Get error information.
+     * @return Error information list
      */
 	@Override
 	public ErrorInfo[] getErrorInfos() {

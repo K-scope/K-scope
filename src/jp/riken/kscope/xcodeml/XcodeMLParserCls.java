@@ -40,10 +40,10 @@ import jp.riken.kscope.xcodeml.xml.gen.ObjectFactory;
 import jp.riken.kscope.xcodeml.xml.gen.XcodeProgram;
 
 /**
- * XcodeML構文解析抽象クラス
+ * XcodeML parsing abstract class
  *
- * XcodeML出力のXMLファイルから一括でバインディングを行い、XcodeProgramクラスを生成する。
- * 生成XcodeProgramクラスから、コード行を作成し、データベースへ登録する。
+ * Generate XcodeProgram class by batch binding from XML file of XcodeML output.
+ * Create a line of code from the generated XcodeProgram class and register it in the database.
  *
  * @author RIKEN
  */
@@ -52,37 +52,37 @@ public abstract class XcodeMLParserCls implements IAnalyseParser {
     int HIST_NUM = 10;
     Integer[] histgram;
     int line_counter = 0;
-    /** 進捗状況表示用プロパティ */
+    /** Progress display property */
     PropertyChangeSupport m_statusProperty;
-    /** キャンセルフラグ */
+    /** Cancel flag */
     boolean m_cancel = false;
-    /** インクルードファイルがない場合の対応 true:確認する/false:無視する */
+    /** What to do if there is no include file true: Confirm / false: Ignore */
     @SuppressWarnings("unused")
     private boolean m_confirm_include = true;
 
-    /** パース対象のXMLファイル */
+    /** XML file to be parsed */
     protected SourceFile m_sourceFile;
 
-    /** XcodeML:XcodeProgram要素(トップ要素) */
+    /** XcodeML: XcodeProgram element (top element) */
     protected XcodeProgram m_program;
 
     /**
-     * コンストラクタ
+     * Constructor
      */
     public XcodeMLParserCls() {
         histgram = new Integer[10];
         for (int i = 0; i < 10; i++)
             histgram[i] = 0;
 
-        // ステータスバーへの表示リスナ用
+        // Display to status bar For listeners
         m_statusProperty = new PropertyChangeSupport(this);
     }
 
     /**
-     * ソースファイルからファイルを読み込み、事前処理を行う。
+     * Read the file from the source file and perform preprocessing.
      *
      * @param file
-     *            ソースファイル
+     *            source file
      *
      */
     @Override
@@ -98,20 +98,20 @@ public abstract class XcodeMLParserCls implements IAnalyseParser {
 
             long start = System.currentTimeMillis();
 
-            // JAXBContextオブジェクトの生成
+            // Create a JAXBContext object
             JAXBContext context = JAXBContext.newInstance(ObjectFactory.class);
 
-            // Unmarsallerオブジェクトの取得
+            // Get the Unmarsaller object
             Unmarshaller unmarshaller = context.createUnmarshaller();
 
-            // アンマーシャリング
-            // 戻り値はXcodeProgramクラス
+            // Unmarshalling
+            // The return value is the XcodeProgram class
             m_program = (XcodeProgram) unmarshaller
                     .unmarshal(new File(filePath));
 
             long stop = System.currentTimeMillis();
             long diff = stop - start;
-            // System.out.println("JaxbReader 実行時間 : " + diff + "ミリ秒");
+            // System.out.println ("JaxbReader execution time:" + diff + "milliseconds");
 
         } catch (JAXBException ex) {
             firePropertyChange("status_sub_message", null, "exception");
@@ -123,10 +123,10 @@ public abstract class XcodeMLParserCls implements IAnalyseParser {
     }
 
     /**
-     * プロパティー変更リスナの登録を行う。
+     * Register the property change listener.
      *
      * @param listener
-     *            ステータスリスナー
+     * Status listener
      */
     @Override
     public void addPropertyChangeListener(PropertyChangeListener listener) {
@@ -134,10 +134,10 @@ public abstract class XcodeMLParserCls implements IAnalyseParser {
     }
 
     /**
-     * プロパティー変更リスナの削除を行う。
+     * Delete the property change listener.
      *
      * @param listener
-     *            ステータスリスナー
+     * Status listener
      */
     @Override
     public void removePropertyChangeListener(PropertyChangeListener listener) {
@@ -145,14 +145,14 @@ public abstract class XcodeMLParserCls implements IAnalyseParser {
     }
 
     /**
-     * プロパティー変更をリスナへ通知する
+     * Notify listener of property changes
      *
      * @param propertyName
-     *            プロパティー名
+     * Property name
      * @param oldValue
-     *            旧プロパティ値
+     * Old property value
      * @param newValue
-     *            新プロパティ値
+     * New property value
      */
     @Override
     public void firePropertyChange(String propertyName, Object oldValue, Object newValue) {
@@ -182,10 +182,10 @@ public abstract class XcodeMLParserCls implements IAnalyseParser {
 
 
     /**
-     * プロパティ変更による構文解析処理の中止イベントを取得する。
+     * Get the event to stop parsing processing due to property change.
      *
      * @param evt
-     *            プロパティ変更イベント
+     * Property change event
      */
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
@@ -195,10 +195,10 @@ public abstract class XcodeMLParserCls implements IAnalyseParser {
     }
 
     /**
-     * 構文解析処理の中止を設定する。
+     * Set to stop parsing processing.
      *
      * @param cancel
-     *            true:中止
+     * true: Cancel
      */
     @Override
     public void setCancel(boolean cancel) {
@@ -206,20 +206,20 @@ public abstract class XcodeMLParserCls implements IAnalyseParser {
     }
 
     /**
-     * 構文解析処理の中止を判断する。
+     * Judge to stop the parsing process.
      *
-     * @return true:中止
+     * @return true: Cancel
      */
     public boolean isCancel() {
         return m_cancel;
     }
 
     /**
-     * FortranクラスのcurrentUnitがProgramUnitであるかチェックする。
+     * Check if the currentUnit of the Fortran class is ProgramUnit.
      *
      * @param ft
-     *            出力Fortranクラス
-     * @return true:currentUnitはProgramUnitである。
+     * Output Fortran class
+     * @return true: currentUnit is a ProgramUnit.
      */
     @SuppressWarnings("unused")
     private boolean isCurrentProgramUnit(Fortran ft) {
@@ -233,10 +233,10 @@ public abstract class XcodeMLParserCls implements IAnalyseParser {
 
 
     /**
-     * 存在しなかったインクルードの確認フラグ
+     * Confirmation flag for includes that did not exist
      *
      * @param confirm
-     *            true:存在しなかった場合インクルードファイルを確認する
+     * true: Check include file if it does not exist
      */
     @Override
     public void setConfirmInclude(boolean confirm) {
@@ -244,11 +244,11 @@ public abstract class XcodeMLParserCls implements IAnalyseParser {
     }
 
     /**
-     * 生成XcodeProgramクラスから、コード行を作成し、データベースへ登録する。
+     * Create a line of code from the generated XcodeProgram class and register it in the database.
      *
      * @param ft
-     *            解析結果格納フォートランデータベース
-     * @throws InterruptedException 			割り込みエラー
+     * Analysis result storage Fortran database
+     * @throws InterruptedException Interrupt error
      */
     @Override
     public void parseFile(Fortran ft) throws InterruptedException {
@@ -258,7 +258,7 @@ public abstract class XcodeMLParserCls implements IAnalyseParser {
 //                    new FileWriter(outputFilePath)));
 
             XcodeMLContext context = new XcodeMLContext();
-            // デバッグ出力
+            // Debug output
             // XcodeMLOption.setDebugOutput(true);
 
             CodeBuilder fwriter = new CodeBuilder(context);
@@ -287,7 +287,7 @@ public abstract class XcodeMLParserCls implements IAnalyseParser {
         }
 
 
-        // ステータスバー：進捗メッセージ
+        // Status bar: Progress message
         firePropertyChange("status_sub_message", null, "done");
         firePropertyChange("prograss_clear", null, null);
     }
