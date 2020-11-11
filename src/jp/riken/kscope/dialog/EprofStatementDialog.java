@@ -326,7 +326,7 @@ public class EprofStatementDialog extends javax.swing.JDialog implements ActionL
         error +=
             Message.getString(
                 "eprofstatementdialog.detailnum.error.message"); // Please enter the detailed
-                                                                 // number. \ n
+        // number. \ n
       }
       //            else if (!StringUtils.isNumeric(this.txtNumber.getText())){
       // error + = "Enter the detail number as a number. \ N";

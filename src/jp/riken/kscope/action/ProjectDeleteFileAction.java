@@ -122,7 +122,7 @@ public class ProjectDeleteFileAction extends ActionBase {
     String confirm =
         Message.getString(
             "projectdeletefileaction.xml.confirmdialog.message"); // Delete the selected XML file /
-                                                                  // folder, are you sure?
+    // folder, are you sure?
     if (project.getFileType() == FILE_TYPE.XCODEML_XML) {
       selectedFiles =
           this.controller
@@ -140,19 +140,19 @@ public class ProjectDeleteFileAction extends ActionBase {
       title =
           Message.getString(
               "projectdeletefileaction.source.confirmdialog.title"); // Delete source files /
-                                                                     // folders
+      // folders
       confirm =
           Message.getString(
               "projectdeletefileaction.source.confirmdialog.message"); // Delete the selected source
-                                                                       // file / folder, are you
-                                                                       // sure?
+      // file / folder, are you
+      // sure?
     }
     if (selectedFiles == null) {
       JOptionPane.showMessageDialog(
           frame,
           Message.getString(
               "projectdeletefileaction.selectdialog.message"), // Select the file / folder you want
-                                                               // to delete.
+          // to delete.
           Message.getString("dialog.common.error"), // error
           JOptionPane.ERROR_MESSAGE);
 

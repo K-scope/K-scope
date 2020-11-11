@@ -100,7 +100,7 @@ public class FileProjectSaveAction extends ActionBase {
             frame,
             Message.getString(
                 "fileprojectsaveaction.save.confirm.dialog.message"), // Do you want to save the
-                                                                      // project?
+            // project?
             message, // Save project
             JOptionPane.OK_CANCEL_OPTION,
             JOptionPane.WARNING_MESSAGE);

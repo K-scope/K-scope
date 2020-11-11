@@ -396,7 +396,7 @@ public final class Fortran extends Program {
       changeName = this.searchCallDeclarationForInterface(pu, call);
       if (!(changeName.equalsIgnoreCase(call.getCallName()))) {
         return changeName; // The search procedure name has been changed, so processing is
-                           // interrupted.
+        // interrupted.
       }
       // add by @hira at 2013/02/01
       if (call.getCallDefinition() != null) {
@@ -441,7 +441,7 @@ public final class Fortran extends Program {
           if (!(changeName.equalsIgnoreCase(call.getCallName()))
               || (call.getCallDefinition() != null)) {
             return changeName; // The search procedure name has been changed, or the declaration has
-                               // been found, so processing is interrupted.
+            // been found, so processing is interrupted.
           }
         }
       }

@@ -91,7 +91,7 @@ public class OperationProperties extends PropertiesBase {
       throw (new Exception(
           Message.getString(
               "propertiesbase.exeption.notexist"))); // The operation count property file does not
-                                                     // exist.
+      // exist.
     }
 
     // Read resource file

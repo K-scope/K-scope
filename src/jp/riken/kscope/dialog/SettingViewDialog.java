@@ -946,8 +946,8 @@ public class SettingViewDialog extends javax.swing.JDialog
                 this,
                 Message.getString(
                     "settingviewdialog.infodialog.word-erapping.message"), // Set a value of 0 or
-                                                                           // more for the number of
-                                                                           // wrapping characters.
+                // more for the number of
+                // wrapping characters.
                 Message.getString("settingviewdialog.dialog.title"), // Source view settings
                 JOptionPane.INFORMATION_MESSAGE);
             return;

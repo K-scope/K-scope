@@ -126,7 +126,7 @@ public class FileOpenSourceFileAction extends ActionBase {
               line,
               Message.getString(
                   "fileopensourcefileaction.openfile.filenotget.errinfo")); // Could not get the
-                                                                            // file.
+      // file.
       Application.status.setMessageMain(
           message + ":" + Message.getString("action.common.error.status")); // :error
       return;
@@ -146,7 +146,7 @@ public class FileOpenSourceFileAction extends ActionBase {
               line,
               Message.getString(
                   "fileopensourcefileaction.openfile.notexist.errinfo")); // The file does not
-                                                                          // exist.
+      // exist.
       Application.status.setMessageMain(
           message + ":" + Message.getString("action.common.error.status")); // :error
       return;
@@ -161,7 +161,7 @@ public class FileOpenSourceFileAction extends ActionBase {
               line,
               Message.getString(
                   "fileopensourcefileaction.openfile.noprogram.errinfo")); // No external tools have
-                                                                           // been set.
+      // been set.
       Application.status.setMessageMain(
           message + Message.getString("action.common.error.status")); // :error
       return;

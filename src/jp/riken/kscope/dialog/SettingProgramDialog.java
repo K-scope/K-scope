@@ -450,7 +450,7 @@ public class SettingProgramDialog extends javax.swing.JDialog
             label1.setText(
                 Message.getString(
                     "settingprogramdialog.label.suffix.desc")); // You can set multiple extensions
-                                                                // separated by commas.
+            // separated by commas.
             // JLabel label2 = new JLabel();
             // label2.setText (Message.getString ("settingprogramdialog.label.suffix.ex")); //
             // (Example) LOG, TXT, DAT
@@ -866,7 +866,7 @@ public class SettingProgramDialog extends javax.swing.JDialog
               this,
               Message.getString(
                   "settingprogramdialog.confirmationdialog.delete.message"), // Delete Are you sure
-                                                                             // you want to?
+              // you want to?
               Message.getString(
                   "settingprogramdialog.confirmationdialog.delete.title"), // Remove external tools
               JOptionPane.OK_CANCEL_OPTION);
@@ -1147,7 +1147,7 @@ public class SettingProgramDialog extends javax.swing.JDialog
           this,
           Message.getString(
               "settingprogramdialog.errordialog.duplication.message"), // Duplicate extensions
-                                                                       // cannot be registered.
+          // cannot be registered.
           Message.getString("dialog.common.error"), // error
           JOptionPane.ERROR_MESSAGE);
       return false;

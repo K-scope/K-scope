@@ -248,7 +248,7 @@ public class SettingRequiredBFDialog extends javax.swing.JDialog
               new JLabel(
                   Message.getString(
                       "settingrequiredbfdialog.label.performance")); // Theoretical operation
-                                                                     // performance
+          // performance
           panelPerformance.add(
               label,
               new GridBagConstraints(
@@ -364,7 +364,7 @@ public class SettingRequiredBFDialog extends javax.swing.JDialog
                   new JLabel(
                       Message.getString(
                           "settingrequiredbfdialog.label.throughput")); // Memory throughput (GB /
-                                                                        // s)
+              // s)
               header.setHorizontalAlignment(JLabel.CENTER);
               panelRequiredBF.add(
                   header,

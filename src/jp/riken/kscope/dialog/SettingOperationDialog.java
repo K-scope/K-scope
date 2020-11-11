@@ -200,7 +200,7 @@ public class SettingOperationDialog extends javax.swing.JDialog
         String title =
             Message.getString(
                 "settingoperationdialog.panelflop.title"); // Set the number of arithmetic
-                                                           // operations
+        // operations
         TitledBorder borderTitle = new TitledBorder(BorderFactory.createEtchedBorder(), title);
         Border border = new CompoundBorder(new EmptyBorder(7, 7, 7, 7), borderTitle);
         panelFlop.setBorder(border);
@@ -361,7 +361,7 @@ public class SettingOperationDialog extends javax.swing.JDialog
         String title =
             Message.getString(
                 "settingoperationdialog.contentspanel.title"); // Set the number of operations of
-                                                               // the built-in function
+        // the built-in function
         TitledBorder titleOp = new TitledBorder(BorderFactory.createEtchedBorder(), title);
         Border borderOut = new CompoundBorder(new EmptyBorder(7, 7, 7, 7), titleOp);
         Border border = new CompoundBorder(borderOut, new EmptyBorder(7, 7, 7, 7));
@@ -835,7 +835,7 @@ public class SettingOperationDialog extends javax.swing.JDialog
               this,
               Message.getString(
                   "settingoperationdialog.confirmdialog.delete.message"), // Delete Are you sure you
-                                                                          // want to?
+              // want to?
               Message.getString("settingoperationdialog.confirmdialog.delete.title"),
               JOptionPane.OK_CANCEL_OPTION); // Delete operation count
       if (option == JOptionPane.OK_OPTION) {
@@ -1045,7 +1045,7 @@ public class SettingOperationDialog extends javax.swing.JDialog
           this,
           Message.getString(
               "settingoperationdialog.errordialog.nameempty.message"), // Enter the built-in
-                                                                       // function name.
+          // function name.
           Message.getString("dialog.common.error"), // error
           JOptionPane.ERROR_MESSAGE);
       return false;
@@ -1076,8 +1076,8 @@ public class SettingOperationDialog extends javax.swing.JDialog
           this,
           Message.getString(
               "settingoperationdialog.errordialog.duplication.message"), // Duplicate built-in
-                                                                         // function names cannot be
-                                                                         // registered.
+          // function names cannot be
+          // registered.
           Message.getString("dialog.common.error"),
           JOptionPane.ERROR_MESSAGE);
       return false;

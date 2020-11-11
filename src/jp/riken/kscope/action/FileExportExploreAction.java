@@ -123,7 +123,7 @@ public class FileExportExploreAction extends ActionBase {
             null,
             Message.getString(
                 "fileexportexploreaction.exportexploer.dialog.message"), // The output procedure
-                                                                         // does not exist.
+            // does not exist.
             message,
             JOptionPane.ERROR_MESSAGE);
         Application.status.setMessageMain(

@@ -360,8 +360,8 @@ public class InformationDialog extends javax.swing.JDialog implements ActionList
               this,
               Message.getString(
                   "informationdialog.confirmdialog.delete.message"), // Are you sure you want to
-                                                                     // delete the additional
-                                                                     // information?
+              // delete the additional
+              // information?
               Message.getString("informationdialog.confirmdialog.delete.title"), // Confirm deletion
               JOptionPane.OK_CANCEL_OPTION);
       if (option != JOptionPane.OK_OPTION) return;
@@ -476,7 +476,7 @@ public class InformationDialog extends javax.swing.JDialog implements ActionList
           this,
           Message.getString(
               "informationdialog.errordialog.informationempty.message"), // Please enter additional
-                                                                         // information.
+          // information.
           Message.getString("dialog.common.error"), // error
           JOptionPane.ERROR_MESSAGE);
       return false;

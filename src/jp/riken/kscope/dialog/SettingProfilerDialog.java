@@ -404,7 +404,7 @@ public class SettingProfilerDialog extends javax.swing.JDialog
     private String title =
         Message.getString(
             "settingprofilerdialog.label.setupmesurementrange.title"); // Measurement interval
-                                                                       // setting
+    // setting
 
     /** Constructor */
     public EprofStatementTitlePanel() {
@@ -726,7 +726,7 @@ public class SettingProfilerDialog extends javax.swing.JDialog
             new JLabel(
                 Message.getString(
                     "settingprofilerdialog.label.maxlinenumber")); // Maximum number of rows
-                                                                   // displayed in the table
+        // displayed in the table
         panelProperty.add(
             lblName,
             new GridBagConstraints(
@@ -1043,7 +1043,7 @@ public class SettingProfilerDialog extends javax.swing.JDialog
             new JLabel(
                 Message.getString(
                     "settingprofilerdialog.label.background")); // KEY33 = Code display background
-                                                                // color
+        // color
         panelProperty.add(
             lblName,
             new GridBagConstraints(
@@ -1113,7 +1113,7 @@ public class SettingProfilerDialog extends javax.swing.JDialog
             new JLabel(
                 Message.getString(
                     "settingprofilerdialog.label.costminimun")); // KEY34 = Cost Ruler: Minimum
-                                                                 // Color
+        // Color
         panelProperty.add(
             lblName,
             new GridBagConstraints(
@@ -1154,7 +1154,7 @@ public class SettingProfilerDialog extends javax.swing.JDialog
             new JLabel(
                 Message.getString(
                     "settingprofilerdialog.label.costmaximun")); // KEY34 = Cost Ruler: Maximum
-                                                                 // Color
+        // Color
         panelProperty.add(
             lblName,
             new GridBagConstraints(

@@ -117,7 +117,7 @@ public class RemoteBuildProperties extends PropertiesBase {
       throw (new Exception(
           Message.getString(
               "propertiesbase.exeption.notexist"))); // Source settings properties file does not
-                                                     // exist.
+      // exist.
     }
 
     // Read resource file

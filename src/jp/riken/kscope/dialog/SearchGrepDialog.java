@@ -156,7 +156,7 @@ public class SearchGrepDialog extends javax.swing.JDialog implements ActionListe
           label.setText(
               Message.getString(
                   "searchgrepdialog.label.desc")); // Perform a text search from the project source
-                                                   // file.
+          // file.
           // label.setForeground(Color.BLUE);
         }
         // Search label

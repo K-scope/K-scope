@@ -82,7 +82,7 @@ public class FileProjectCloseAction extends ActionBase {
               frame,
               Message.getString(
                   "fileprojectaloseaction.closeproject.dialog.message"), // Do you want to close the
-                                                                         // project?
+              // project?
               message, // close the project
               JOptionPane.OK_CANCEL_OPTION,
               JOptionPane.WARNING_MESSAGE);

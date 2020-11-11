@@ -53,29 +53,29 @@ public class ProfilerEventCounterModel extends ProfilerTableBaseModel {
     Message.getString("profilereventcountermodel.header_columns_cache.usertime"), // User time (s)
     Message.getString(
         "profilereventcountermodel.header_columns_cache.num-instruction-exe"), // Number of
-                                                                               // instruction
-                                                                               // executions
+    // instruction
+    // executions
     Message.getString(
         "profilereventcountermodel.header_columns_cache.num-load-store"), // Number of load / store
-                                                                          // instructions
+    // instructions
     Message.getString(
         "profilereventcountermodel.header_columns_cache.num-prefetch"), // Number of prefetch
-                                                                        // instructions
+    // instructions
     Message.getString(
         "profilereventcountermodel.header_columns_cache.num-SIMD-load-store"), // SIMD load / store
-                                                                               // instructions
+    // instructions
     Message.getString(
         "profilereventcountermodel.header_columns_cache.num-L1-cachemisses"), // Number of L1 data
-                                                                              // cache misses
+    // cache misses
     Message.getString(
         "profilereventcountermodel.header_columns_cache.num-L2-cachedemandmisses"), // L2 cache
-                                                                                    // demand number
-                                                                                    // of misses
+    // demand number
+    // of misses
     Message.getString(
         "profilereventcountermodel.header_columns_cache.num-L2-cacheprefetchmisses"), // L2 cache
-                                                                                      // prefetch
-                                                                                      // number of
-                                                                                      // misses
+    // prefetch
+    // number of
+    // misses
     Message.getString("profilereventcountermodel.header_columns_cache.num-dataaccessMDTLBmisses")
   }; // Number of data access MDTLB mistakes
   /**
@@ -91,29 +91,29 @@ public class ProfilerEventCounterModel extends ProfilerTableBaseModel {
     Message.getString("profilereventcountermodel.header_columns_cache.usertime"), // User time (s)
     Message.getString(
         "profilereventcountermodel.header_columns_cache.num-instruction-exe"), // Number of
-                                                                               // instruction
-                                                                               // executions
+    // instruction
+    // executions
     Message.getString(
         "profilereventcountermodel.header_columns_cache.num-load-store"), // Number of load / store
-                                                                          // instructions
+    // instructions
     Message.getString(
         "profilereventcountermodel.header_columns_instructions.num-floating-point"), // Number of
-                                                                                     // floating
-                                                                                     // point
-                                                                                     // arithmetic
-                                                                                     // instructions
+    // floating
+    // point
+    // arithmetic
+    // instructions
     Message.getString(
         "profilereventcountermodel.header_columns_instructions.num-high-speed"), // Number of
-                                                                                 // high-speed
-                                                                                 // arithmetic
-                                                                                 // instructions
+    // high-speed
+    // arithmetic
+    // instructions
     Message.getString(
         "profilereventcountermodel.header_columns_cache.num-SIMD-load-store"), // SIMD load / store
-                                                                               // instructions
+    // instructions
     Message.getString(
         "profilereventcountermodel.header_columns_instructions.num-SIMD-floating-point"), // Number
-                                                                                          // of SIMD
-                                                                                          // floating point arithmetic instructions
+    // of SIMD
+    // floating point arithmetic instructions
     Message.getString("profilereventcountermodel.header_columns_instructions.num-SIMD-high-speed")
   }; // Number of SIMD high-speed arithmetic instructions
   /**
@@ -129,30 +129,30 @@ public class ProfilerEventCounterModel extends ProfilerTableBaseModel {
     Message.getString("profilereventcountermodel.header_columns_cache.usertime"), // User time (s)
     Message.getString(
         "profilereventcountermodel.header_columns_cache.num-instruction-exe"), // Number of
-                                                                               // instruction
-                                                                               // executions
+    // instruction
+    // executions
     Message.getString(
         "profilereventcountermodel.header_columns_cache.num-load-store"), // Number of load / store
-                                                                          // instructions
+    // instructions
     Message.getString(
         "profilereventcountermodel.header_columns_cache.num-prefetch"), // Number of prefetch
-                                                                        // instructions
+    // instructions
     Message.getString(
         "profilereventcountermodel.header_columns_cache.num-SIMD-load-store"), // SIMD load / store
-                                                                               // instructions
+    // instructions
     Message.getString(
         "profilereventcountermodel.header_columns_cache.num-L2-cachedemandmisses"), // L2 cache
-                                                                                    // demand number
-                                                                                    // of misses
+    // demand number
+    // of misses
     Message.getString(
         "profilereventcountermodel.header_columns_cache.num-L2-cacheprefetchmisses"), // L2 cache
-                                                                                      // prefetch
-                                                                                      // number of
-                                                                                      // misses
+    // prefetch
+    // number of
+    // misses
     Message.getString(
         "profilereventcountermodel.header_columns_mem.num-L2-cachedemandmiss"), // L2 cache demand
-                                                                                // Miss writeback
-                                                                                // number
+    // Miss writeback
+    // number
     Message.getString("profilereventcountermodel.header_columns_mem.num-L2-prefetchmiss")
   }; // "L2 cache prefetch miswriteback count"
   /**
@@ -216,36 +216,36 @@ public class ProfilerEventCounterModel extends ProfilerTableBaseModel {
     Message.getString("profilereventcountermodel.header_columns_cache.usertime"), // User time (s)
     Message.getString(
         "profilereventcountermodel.header_columns_cache.num-instruction-exe"), // Number of
-                                                                               // instruction
-                                                                               // executions
+    // instruction
+    // executions
     Message.getString(
         "profilereventcountermodel.header_columns_instructions.num-floating-point"), // Number of
-                                                                                     // floating
-                                                                                     // point
-                                                                                     // arithmetic
-                                                                                     // instructions
+    // floating
+    // point
+    // arithmetic
+    // instructions
     Message.getString(
         "profilereventcountermodel.header_columns_instructions.num-high-speed"), // Number of
-                                                                                 // high-speed
-                                                                                 // arithmetic
-                                                                                 // instructions
+    // high-speed
+    // arithmetic
+    // instructions
     Message.getString(
         "profilereventcountermodel.header_columns_cache.num-SIMD-load-store"), // SIMD load / store
-                                                                               // instructions
+    // instructions
     Message.getString(
         "profilereventcountermodel.header_columns_instructions.num-SIMD-floating-point"), // Number
-                                                                                          // of SIMD
-                                                                                          // floating point arithmetic instructions
+    // of SIMD
+    // floating point arithmetic instructions
     Message.getString(
         "profilereventcountermodel.header_columns_instructions.num-SIMD-high-speed"), // Number of
-                                                                                      // SIMD
-                                                                                      // high-speed
-                                                                                      // arithmetic
-                                                                                      // instructions
+    // SIMD
+    // high-speed
+    // arithmetic
+    // instructions
     Message.getString(
         "profilereventcountermodel.header_columns_statistics.datatransfer-r"), // Data transfer
-                                                                               // amount between
-                                                                               // memory CPU (r)
+    // amount between
+    // memory CPU (r)
     Message.getString("profilereventcountermodel.header_columns_statistics.datatransfer-w")
   }; // Data transfer amount between memory CPU (w)
   /** Table column display status */

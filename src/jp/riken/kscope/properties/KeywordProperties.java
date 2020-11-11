@@ -87,7 +87,7 @@ public class KeywordProperties extends PropertiesBase {
       throw (new Exception(
           Message.getString(
               "propertiesbase.exeption.notexist"))); // Source settings property file does not
-                                                     // exist.
+      // exist.
     }
 
     // Read resource file

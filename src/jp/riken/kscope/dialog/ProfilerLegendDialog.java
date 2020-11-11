@@ -102,7 +102,7 @@ public class ProfilerLegendDialog extends javax.swing.JDialog implements Propert
             new TitledBorder(
                 Message.getString(
                     "profilerlegenddialog.costsourcecolor.title"))); // Cost information display
-                                                                     // color
+        // color
         this.add(
             panel,
             new GridBagConstraints(

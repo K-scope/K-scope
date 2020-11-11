@@ -282,7 +282,7 @@ public class SettingProjectDialog extends javax.swing.JDialog
             lblList.setText(
                 Message.getString(
                     "settingprojectdialog.label.setupprojectlist")); // Project settings / Project
-                                                                     // settings list
+            // settings list
           }
           {
             JScrollPane scrollList = new JScrollPane();

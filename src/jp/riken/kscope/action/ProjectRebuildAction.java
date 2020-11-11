@@ -109,7 +109,7 @@ public class ProjectRebuildAction extends ActionBase {
             frame,
             Message.getString(
                 "projectrebuildaction.confirmdialog.message"), // Do you want to re-execute the
-                                                               // structural analysis?
+            // structural analysis?
             message, // Re-execute structural analysis
             JOptionPane.OK_CANCEL_OPTION,
             JOptionPane.QUESTION_MESSAGE);

@@ -85,7 +85,7 @@ public class ProgramProperties extends PropertiesBase {
       throw (new Exception(
           Message.getString(
               "propertiesbase.exeption.notexist"))); // External tool properties file does not
-                                                     // exist.
+      // exist.
     }
 
     // Read resource file

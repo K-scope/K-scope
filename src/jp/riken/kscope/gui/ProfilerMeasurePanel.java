@@ -154,12 +154,12 @@ public class ProfilerMeasurePanel extends AnalisysPanelBase
                             null,
                             Message.getString(
                                 "profilermeasurepanel.confirmdialog.clearall.message"), // Delete
-                                                                                        // all
-                                                                                        // registered measurement intervals. \ n Are you sure?
+                            // all
+                            // registered measurement intervals. \ n Are you sure?
                             Message.getString(
                                 "profilermeasurepanel.confirmdialog.clearall.title"), // Clear
-                                                                                      // measurement
-                                                                                      // section
+                            // measurement
+                            // section
                             JOptionPane.OK_CANCEL_OPTION,
                             JOptionPane.WARNING_MESSAGE);
                     if (option != JOptionPane.OK_OPTION) {
@@ -190,15 +190,15 @@ public class ProfilerMeasurePanel extends AnalisysPanelBase
                             null,
                             Message.getString(
                                 "profilermeasurepanel.confirmdialog.clear.message"), // Delete the
-                                                                                     // selected
-                                                                                     // measurement
-                                                                                     // interval. \
-                                                                                     // n Are you
-                                                                                     // sure?
+                            // selected
+                            // measurement
+                            // interval. \
+                            // n Are you
+                            // sure?
                             Message.getString(
                                 "profilermeasurepanel.confirmdialog.clear.title"), // Delete
-                                                                                   // measurement
-                                                                                   // section
+                            // measurement
+                            // section
                             JOptionPane.OK_CANCEL_OPTION,
                             JOptionPane.WARNING_MESSAGE);
                     if (option != JOptionPane.OK_OPTION) {

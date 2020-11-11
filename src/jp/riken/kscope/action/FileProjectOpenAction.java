@@ -217,9 +217,9 @@ public class FileProjectOpenAction extends ActionBase {
             .addErrorInfo(
                 Message.getString(
                     "fileprojectopenaction.build.noxmlerr.errinfo")); // Since the XML file does not
-                                                                      // exist, new structural
-                                                                      // analysis cannot be
-                                                                      // executed.
+        // exist, new structural
+        // analysis cannot be
+        // executed.
       }
 
     } catch (Exception e) {

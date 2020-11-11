@@ -137,7 +137,7 @@ public class KscopeProperties {
             null,
             Message.getString(
                 "kscopeproperties.errdialog.cannnotopenpropertyfile"), // Could not open the
-                                                                       // properties file.
+            // properties file.
             Message.getString("dialog.common.error"), // error
             JOptionPane.ERROR_MESSAGE);
       }

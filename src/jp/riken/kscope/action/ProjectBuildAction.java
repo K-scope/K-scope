@@ -115,7 +115,7 @@ public class ProjectBuildAction extends ActionBase {
           frame,
           Message.getString(
               "projectbuildaction.build.errdialog.xmlnotexist.message"), // There is no XML file to
-                                                                         // parse.
+          // parse.
           Message.getString(
               "projectbuildaction.build.errdialog.xmlnotexist.title"), // XML file error
           JOptionPane.ERROR_MESSAGE);

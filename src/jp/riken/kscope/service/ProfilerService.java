@@ -92,7 +92,7 @@ public class ProfilerService extends BaseService {
       this.addErrorInfo(
           Message.getString(
               "profilerservice.profilerdatafile.invalidfile")); // The profiler file could not be
-                                                                // identified.
+      // identified.
       return;
     }
 
@@ -707,7 +707,7 @@ public class ProfilerService extends BaseService {
       this.addErrorInfo(
           Message.getString(
               "profilerservice.measurefile.measureline.null")); // Could not get the measurement
-                                                                // interval
+      // interval
       return false;
     }
     Set<SourceFile> keySet = mapLines.keySet();

@@ -225,7 +225,7 @@ public enum FILE_TYPE {
             String dest =
                 Message.getString(
                     "file_type.enum.fortran-fix-72.p"); // "Fortran fixed format (72 digits) file
-                                                        // (";
+            // (";
             for (int i = 0; EXT_FORTRAN_FIXED72 != null && i < EXT_FORTRAN_FIXED72.length; i++) {
               dest += "*." + EXT_FORTRAN_FIXED72[i] + ";";
             }
@@ -263,7 +263,7 @@ public enum FILE_TYPE {
             String dest =
                 Message.getString(
                     "file_type.enum.fortran-fix-exp.p"); // "Fortran fixed format (extended number
-                                                         // of digits) file (";
+            // of digits) file (";
             for (int i = 0; EXT_FORTRAN_FIXEDEXT != null && i < EXT_FORTRAN_FIXEDEXT.length; i++) {
               dest += "*." + EXT_FORTRAN_FIXEDEXT[i] + ";";
             }

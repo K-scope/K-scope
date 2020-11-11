@@ -1049,7 +1049,7 @@ public class SettingKeywordDialog extends javax.swing.JDialog
           this,
           Message.getString(
               "settingkeyworddialog.informationdialog.update.message"), // Select the keyword to be
-                                                                        // updated from the list.
+          // updated from the list.
           Message.getString(
               "settingkeyworddialog.informationdialog.update.title"), // Update keywords
           JOptionPane.INFORMATION_MESSAGE);
@@ -1092,7 +1092,7 @@ public class SettingKeywordDialog extends javax.swing.JDialog
             this,
             Message.getString(
                 "settingkeyworddialog.confirmdialog.delete.message"), // Delete Are you sure you
-                                                                      // want to?
+            // want to?
             Message.getString("settingkeyworddialog.confirmdialog.delete.title"), // Delete keywords
             JOptionPane.OK_CANCEL_OPTION);
     if (option == JOptionPane.OK_OPTION) {
@@ -1169,7 +1169,7 @@ public class SettingKeywordDialog extends javax.swing.JDialog
           this,
           Message.getString(
               "settingkeyworddialog.errordialog.exist.message"), // Duplicate keywords cannot be
-                                                                 // registered.
+          // registered.
           Message.getString("dialog.common.error"), // error
           JOptionPane.ERROR_MESSAGE);
       return false;

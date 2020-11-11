@@ -345,7 +345,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
           new JLabel(
               Message.getString(
                   "fileprojectnewdialog.statuspanel.kind")); // Select Behavior Mode: Select
-                                                             // Behavior Mode
+      // Behavior Mode
       panelContent.add(
           label,
           new GridBagConstraints(
@@ -465,7 +465,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
                 labelStatus[3].setText(
                     Message.getString(
                         "fileprojectnewdialog.statuspanel.xml")); // Additional selection of
-                                                                  // intermediate code
+                // intermediate code
               }
               if (panelStatusContent != null) {
                 panelStatusContent.repaint();
@@ -519,9 +519,9 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
       radioFullMode.setToolTipText(
           Message.getString(
               "fileprojectnewdialog.kindpanel.radiobutton.fullmode.tooltip")); // Mode in which all
-                                                                               // functions of
-                                                                               // K-scope can be
-                                                                               // used
+      // functions of
+      // K-scope can be
+      // used
 
       radioGenXML.setSelected(genXML());
       radioNotGenXML.setSelected(!genXML());
@@ -533,10 +533,10 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
       radioSimpleMode.setToolTipText(
           Message.getString(
               "fileprojectnewdialog.kindpanel.radiobutton.simplemode.tooltip")); // Mode in which
-                                                                                 // only the
-                                                                                 // profiler linkage
-                                                                                 // function can be
-                                                                                 // used
+      // only the
+      // profiler linkage
+      // function can be
+      // used
 
       radioFullMode.addActionListener(this);
       radioSimpleMode.addActionListener(this);
@@ -762,7 +762,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
           new JTextArea(
               Message.getString(
                   "fileprojectnewdialog.basepanel.desc")); // Title: Enter the title of the project
-                                                           // ...
+      // ...
       text.setLineWrap(true);
       text.setWrapStyleWord(true);
       text.setOpaque(false);
@@ -1269,7 +1269,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
           new JTextArea(
               Message.getString(
                   "fileprojectnewdialog.xmlpanel.desc")); // Select the intermediate code folder or
-                                                          // file.
+      // file.
       txaXMLPanelDesc.setLineWrap(true);
       txaXMLPanelDesc.setWrapStyleWord(true);
       txaXMLPanelDesc.setOpaque(false);
@@ -1315,7 +1315,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
           new JLabel(
               Message.getString(
                   "fileprojectnewdialog.statuspanel.make_long")); // Intermediate code build linkage
-                                                                  // settings
+      // settings
       panelContent.add(
           label,
           new GridBagConstraints(
@@ -1338,7 +1338,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
           new JTextArea(
               Message.getString(
                   "fileprojectnewdialog.makefilepanel.desc")); // Select the build command to
-                                                               // execute.
+      // execute.
       text.setLineWrap(true);
       text.setWrapStyleWord(true);
       text.setOpaque(false);
@@ -1421,7 +1421,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
           new JLabel(
               Message.getString(
                   "fileprojectnewdialog.makefilepanel.clean-command.dsc")), // Clean command
-                                                                            // description
+          // description
           new GridBagConstraints(
               1,
               3,
@@ -2053,7 +2053,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
         new JLabel(
             Message.getString(
                 "fileprojectnewdialog.statuspanel.make")); // make input input of cooperation
-                                                           // information
+    // information
     labelStatus[2].setPreferredSize(sizex2);
     labelStatus[2].setBorder(new LineBorder(Color.BLACK));
     labelStatus[2].setHorizontalAlignment(JLabel.CENTER);
@@ -2259,8 +2259,8 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
         msg =
             Message.getString(
                 "fileprojectnewdialog.errordialog.message.projectfolderempty"); // "Project folder
-                                                                                // is a required
-                                                                                // item."
+        // is a required
+        // item."
         ret = false;
       } else {
         File f = new File(s);
@@ -2268,16 +2268,16 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
           msg =
               Message.getString(
                   "fileprojectnewdialog.errordialog.message.projectfoldermissing"); // The specified
-                                                                                    // project
-                                                                                    // folder does
-                                                                                    // not exist.
+          // project
+          // folder does
+          // not exist.
           msg += " [" + s + "]";
           ret = false;
         } else if (!f.isDirectory()) {
           msg =
               Message.getString(
                   "fileprojectnewdialog.errordialog.message.projectfolderisnotdirectory"); // The
-                                                                                           // specified project folder is not a directory.
+          // specified project folder is not a directory.
           ret = false;
         }
       }
@@ -2288,7 +2288,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
         msg =
             Message.getString(
                 "fileprojectnewdialog.errordialog.message.makecommandempty"); // Make command is not
-                                                                              // set.
+        // set.
         ret = false;
       }
       // makefile path
@@ -2319,12 +2319,12 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
         msg =
             Message.getString(
                 "fileprojectnewdialog.errordialog.message.xmlempty"); // The intermediate code is
-                                                                      // not set.
+        // not set.
         if (isSelectedSimpleMode()) {
           msg =
               Message.getString(
                   "fileprojectnewdialog.errordialog.message.fortranempty"); // Fortran source file
-                                                                            // is not set.
+          // is not set.
         }
         ret = false;
       }
@@ -2434,8 +2434,8 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
                     desc,
                     Message.getString(
                         "fileprojectnewdialog.confirmdialog.projectfolderchange.title"), // Change
-                                                                                         // project
-                                                                                         // folder
+                    // project
+                    // folder
                     JOptionPane.WARNING_MESSAGE,
                     JOptionPane.YES_NO_OPTION);
             if (ret == JOptionPane.YES_OPTION) {
@@ -2461,9 +2461,9 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
                 this,
                 Message.getString(
                     "fileprojectnewdialog.warnningdialog.projectexist.message"), // The selected
-                                                                                 // project folder
-                                                                                 // is an existing
-                                                                                 // project ~
+                // project folder
+                // is an existing
+                // project ~
                 Message.getString("mainmenu.file.saveproject"), // Save project
                 JOptionPane.OK_CANCEL_OPTION,
                 JOptionPane.WARNING_MESSAGE);
@@ -2528,7 +2528,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
         title =
             Message.getString(
                 "fileprojectnewdialog.selectfolderdialog.xml.title"); // Select intermediate code
-                                                                      // folder
+        // folder
       } else if (this.radioSimpleMode.isSelected()) {
         title =
             Message.getString(
@@ -2599,7 +2599,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
               this,
               Message.getString(
                   "fileprojectnewdialog.selectfiledialog.makecommand.title"), // Select build
-                                                                              // command
+              // command
               currentFolder,
               null,
               false);
@@ -2632,8 +2632,8 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
               this,
               Message.getString(
                   "fileprojectnewdialog.selectfiledialog.cleancommand.title"), // Dialog title for
-                                                                               // refer clean
-                                                                               // command
+              // refer clean
+              // command
               currentFolder,
               null,
               false);
@@ -2751,17 +2751,17 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
                   this,
                   Message.getString(
                       "fileprojectnewdialog.confirmdialog.filekindchange.message"), // If you change
-                                                                                    // the file
-                                                                                    // type, the
-                                                                                    // file list
-                                                                                    // will be
-                                                                                    // cleared. Do
-                                                                                    // you want to
-                                                                                    // change the
-                                                                                    // file type?
+                  // the file
+                  // type, the
+                  // file list
+                  // will be
+                  // cleared. Do
+                  // you want to
+                  // change the
+                  // file type?
                   Message.getString(
                       "fileprojectnewdialog.confirmdialog.filekindchange.title"), // Change file
-                                                                                  // type
+                  // type
                   JOptionPane.OK_CANCEL_OPTION);
           if (res == JOptionPane.OK_OPTION) {
             model.clear();
@@ -2788,17 +2788,17 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
                   this,
                   Message.getString(
                       "fileprojectnewdialog.confirmdialog.filekindchange.message"), // If you change
-                                                                                    // the file
-                                                                                    // type, the
-                                                                                    // file list
-                                                                                    // will be
-                                                                                    // cleared. Do
-                                                                                    // you want to
-                                                                                    // change the
-                                                                                    // file type?
+                  // the file
+                  // type, the
+                  // file list
+                  // will be
+                  // cleared. Do
+                  // you want to
+                  // change the
+                  // file type?
                   Message.getString(
                       "fileprojectnewdialog.confirmdialog.filekindchange.title"), // Change file
-                                                                                  // type
+                  // type
                   JOptionPane.OK_CANCEL_OPTION);
           if (res == JOptionPane.OK_OPTION) {
             model.clear();
@@ -2973,7 +2973,7 @@ public class FileProjectNewDialog extends javax.swing.JDialog implements ActionL
           this,
           Message.getString(
               "fileprojectnewdialog.errordialog.noprojectfolder.messag"), // Select the project
-                                                                          // folder.
+          // folder.
           Message.getString("dialog.common.error"), // error
           JOptionPane.ERROR_MESSAGE);
       return false;

@@ -200,8 +200,8 @@ public class ProfilerTablePanel extends AnalisysPanelBase
         throw new Exception(
             Message.getString(
                 "profilertablepanel.exception.panelidentiferinvalid")); // The analysis information
-                                                                        // panel identifier is
-                                                                        // invalid.
+        // panel identifier is
+        // invalid.
     }
 
     return profilerModel;

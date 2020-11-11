@@ -235,7 +235,7 @@ public class DProfReader extends BaseReader implements IProfilerReader {
                   "dprofreader.exception.outside",
                   version,
                   PROFILER_VERSION)); // This is an unsupported DProf version. Read =% # 04X Support
-                                      // =% # 04X
+      // =% # 04X
     }
     newMagicKey.setVer(version);
     return newMagicKey;

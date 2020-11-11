@@ -105,7 +105,7 @@ public class FileProjectNewAction extends ActionBase {
               frame,
               Message.getString(
                   "fileprojectsaveaction.save.confirm.dialog.message"), // Do you want to save the
-                                                                        // project?
+              // project?
               Message.getString(
                   "mainmenu.file.closeproject"), // close the project, // save the project
               JOptionPane.OK_CANCEL_OPTION,

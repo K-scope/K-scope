@@ -62,11 +62,11 @@ public class ProjectClearLanguageAction extends ActionBase {
             this.controller.getMainframe(),
             Message.getString(
                 "projectclearlanguageaction.clear.confirmdialog.message"), // Clear the analysis
-                                                                           // result and analysis
-                                                                           // result, is that okay?
+            // result and analysis
+            // result, is that okay?
             Message.getString(
                 "projectclearlanguageaction.clear.confirmdialog.title"), // Clear structural
-                                                                         // information
+            // information
             JOptionPane.OK_CANCEL_OPTION,
             JOptionPane.WARNING_MESSAGE);
     if (option != JOptionPane.OK_OPTION) {

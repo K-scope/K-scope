@@ -155,7 +155,7 @@ public class RequiredBFProperties extends PropertiesBase {
       throw (new Exception(
           Message.getString(
               "propertiesbase.exeption.notexist"))); // Request Byte / FLOP property file does not
-                                                     // exist.
+      // exist.
     }
 
     // Read resource file

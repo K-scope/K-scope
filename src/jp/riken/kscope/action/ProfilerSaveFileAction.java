@@ -100,9 +100,9 @@ public class ProfilerSaveFileAction extends ActionBase {
             frame,
             Message.getString(
                 "profilersavefileaction.rangesave.confirmdialog.message"), // "I want to overwrite
-                                                                           // the measurement
-                                                                           // section, is that
-                                                                           // okay?"
+            // the measurement
+            // section, is that
+            // okay?"
             Message.getString(
                 "profilersavefileaction.rangesave.confirmdialog.title"), // "Overwrite confirmation"
             JOptionPane.OK_CANCEL_OPTION,
@@ -131,8 +131,8 @@ public class ProfilerSaveFileAction extends ActionBase {
       errorModel.addErrorInfo(
           Message.getString(
               "profilersavefileaction.rangesave.errorinfo.nodata.message")); // There is no
-                                                                             // measurement interval
-                                                                             // data.
+      // measurement interval
+      // data.
       return;
     }
     CodeLine code = data.getMeasureArea();
@@ -141,9 +141,9 @@ public class ProfilerSaveFileAction extends ActionBase {
       errorModel.addErrorInfo(
           Message.getString(
               "profilersavefileaction.rangesave.errorinfo.nosettingfile.message")); // There is no
-                                                                                    // measurement
-                                                                                    // interval
-                                                                                    // setting file.
+      // measurement
+      // interval
+      // setting file.
       return;
     }
     if (file.getFile().isAbsolute()) {

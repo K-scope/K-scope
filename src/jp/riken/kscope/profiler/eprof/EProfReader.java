@@ -166,7 +166,7 @@ public class EProfReader extends BaseReader implements IProfilerReader {
                   "eprofreader.exception.outside",
                   version,
                   PROFILER_VERSION)); // This is an unsupported EProf version. Read =% # 04X Support
-                                      // =% # 04X
+      // =% # 04X
     }
     newMagicKey.setVer(version);
     return newMagicKey;

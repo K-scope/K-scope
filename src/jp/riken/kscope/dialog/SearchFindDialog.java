@@ -147,7 +147,7 @@ public class SearchFindDialog extends javax.swing.JDialog implements ActionListe
           label.setText(
               Message.getString(
                   "searchfinddialog.label.desc")); // Perform a text search from the displayed
-                                                   // source code.
+          // source code.
           // label.setForeground(Color.BLUE);
         }
         // Search label

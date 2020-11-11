@@ -89,9 +89,9 @@ public class FileExportAnalysisAction extends ActionBase {
           frame,
           Message.getString(
               "fileexportanalysisaction.exportanalysisinfo.dialog.message"), // There is no analysis
-                                                                             // information to
-                                                                             // output. The process
-                                                                             // ends.
+          // information to
+          // output. The process
+          // ends.
           message,
           JOptionPane.CLOSED_OPTION);
       Application.status.setMessageMain(

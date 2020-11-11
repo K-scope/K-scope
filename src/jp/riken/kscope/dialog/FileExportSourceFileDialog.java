@@ -206,13 +206,13 @@ public class FileExportSourceFileDialog extends javax.swing.JDialog implements A
           txtExcludeFiles.setToolTipText(
               Message.getString(
                   "fileexportsourcefiledialog.tooltip.excludefile")); // List the file names to
-                                                                      // exclude, separated by
-                                                                      // commas. ...
+          // exclude, separated by
+          // commas. ...
           chxOtherFiles =
               new JCheckBox(
                   Message.getString(
                       "fileexportsourcefiledialog.checkbox.excludefile"), // Output files other than
-                                                                          // source
+                  // source
                   false) {
                 /** Serial number */
                 private static final long serialVersionUID = 1L;
@@ -293,7 +293,7 @@ public class FileExportSourceFileDialog extends javax.swing.JDialog implements A
       errMsg =
           Message.getString(
               "fileexportsourcefiledialog.errdlg.msg.outputfolderunset"); // The output destination
-                                                                          // folder is not set.
+      // folder is not set.
       return false;
     }
     File f = new File(str);
@@ -301,16 +301,16 @@ public class FileExportSourceFileDialog extends javax.swing.JDialog implements A
       errMsg =
           Message.getString(
               "fileexportsourcefiledialog.errdlg.msg.outputfoldernotexist"); // The specified output
-                                                                             // folder does not
-                                                                             // exist.
+      // folder does not
+      // exist.
       return false;
     }
     if (!f.isDirectory()) {
       errMsg =
           Message.getString(
               "fileexportsourcefiledialog.errdlg.msg.outputfoldernotdir"); // The specified output
-                                                                           // folder is not a
-                                                                           // directory.
+      // folder is not a
+      // directory.
       return false;
     }
 
@@ -342,8 +342,8 @@ public class FileExportSourceFileDialog extends javax.swing.JDialog implements A
               this,
               Message.getString(
                   "fileexportsourcefiledialog.outputfolderselectdialog.title"), // Select output
-                                                                                // destination
-                                                                                // folder
+              // destination
+              // folder
               this.projectFolder.getAbsolutePath(),
               false);
       if (selected == null || selected.length <= 0) return;

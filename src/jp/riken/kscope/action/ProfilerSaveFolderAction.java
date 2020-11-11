@@ -97,7 +97,7 @@ public class ProfilerSaveFolderAction extends ActionBase {
     String title =
         Message.getString(
             "profilersavefolderaction.savefolder.selectdialog.title"); // Measurement interval:
-                                                                       // Select save folder
+    // Select save folder
     // Display the folder selection dialog.
     File[] selected =
         SwingUtils.showSaveFolderDialog(frame, title, projectFolder.getAbsolutePath(), false);
