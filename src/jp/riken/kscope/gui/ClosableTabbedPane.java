@@ -35,7 +35,6 @@ import javax.swing.JViewport;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-//import jp.riken.kscope.common.ANALYSIS_PANEL;
 import jp.riken.kscope.common.FRAME_VIEW;
 
 /**

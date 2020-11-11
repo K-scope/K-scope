@@ -18,14 +18,12 @@ package jp.riken.kscope;
 
 import java.io.IOException;
 import java.io.InputStream;
-//import java.lang.reflect.Method;
 
 import java.awt.EventQueue;
 import java.awt.Toolkit;
 
 
 
-//import java.util.Locale;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;

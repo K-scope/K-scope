@@ -54,7 +54,7 @@ public class Expression implements Serializable {
     private int divCount = 0;
     /** Power count */
     private int powCount = 0;
-    /** Parent block of variable: Substitution, syntax */ to which the variable belongs
+    /** Parent block of variable: Substitution, syntax to which the variable belongs */
     private IBlock parentStatement;
 
     /**

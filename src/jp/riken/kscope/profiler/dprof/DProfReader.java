@@ -26,7 +26,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-//import javax.swing.JOptionPane;
 
 import jp.riken.kscope.Message;
 import jp.riken.kscope.data.CodeLine;

@@ -23,8 +23,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Observable;
-
-//import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 import jp.riken.kscope.Message;

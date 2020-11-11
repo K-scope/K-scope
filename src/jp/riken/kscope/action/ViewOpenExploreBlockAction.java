@@ -79,7 +79,7 @@ public class ViewOpenExploreBlockAction extends ActionBase implements MouseListe
             if (line[i].getSourceFile() == null || line[i].getSourceFile().getFile() == null) {
             	Frame frame = this.controller.getMainframe();
             	JOptionPane.showMessageDialog(frame,
-            			Message.getString("viewopenexploreblockaction.errdialog.notsetsource.message", line[i].getStatement()), The source file for // is not set.
+            			Message.getString("viewopenexploreblockaction.errdialog.notsetsource.message", line[i].getStatement()),  //The source file for is not set.
             			Message.getString("dialog.common.error"), //error
             			JOptionPane.ERROR_MESSAGE);
             	continue;
@@ -155,7 +155,7 @@ public class ViewOpenExploreBlockAction extends ActionBase implements MouseListe
      * @param e Mouse event information
      */
     @Override
-    public void mousePressed(MouseEvent e) { }
+    public void mousePressed(MouseEvent e) {}
 
     /**
      * Mouse button up event

@@ -23,9 +23,6 @@ import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 
 
-//import jp.riken.kscope.action.AnalysisOperandAction;
-//import jp.riken.kscope.action.AnalysisReferenceAction;
-//import jp.riken.kscope.action.AnalysisScopeAction;
 import jp.riken.kscope.action.EditInformationEditAction;
 import jp.riken.kscope.action.FileExportExploreAction;
 import jp.riken.kscope.common.FRAME_VIEW;

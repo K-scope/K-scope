@@ -46,7 +46,7 @@ public class Variable implements Serializable {
     private VariableDefinition def;
     /** Access memory */
     private ACCESSMEMORY_TYPE memoryType;
-    /** Parent block of variable: Substitution, syntax */ to which the variable belongs
+    /** Parent block of variable: Substitution, syntax to which the variable belongs */
     private IBlock parentStatement;
     /** Temporary setting access destination memory */
     private transient ACCESSMEMORY_TYPE temporaryMemoryType;

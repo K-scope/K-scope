@@ -1308,7 +1308,7 @@ public class LanguageService extends BaseService {
         // File
         String errMsg = null;
         if (node.getStartCodeLine() == null) {
-            errMsg = Message.getString("languageservice.sourcefilepath.block.error", classname); Could not get the // line block.
+            errMsg = Message.getString("languageservice.sourcefilepath.block.error", classname); // Could not get the line block.
         }
         if (errMsg != null) {
             // Do not display an error message for variable declaration statements
