@@ -28,7 +28,7 @@ import jp.riken.kscope.xcodeml.xml.gen.ArrayIndex;
 import jp.riken.kscope.xcodeml.xml.gen.IndexRange;
 
 /**
- * VariableDimensionパーサクラス
+ * VariableDimension parser class
  * @author RIKEN
  */
 public class VariableDimensionParser {
@@ -37,52 +37,52 @@ public class VariableDimensionParser {
     private XcodeMLTypeManager typeManager;
 
     /**
-     * コンストラクタ
-     * @param typeManager    typeTable
+     * Constructor
+     * @param typeManager typeTable
      */
     public VariableDimensionParser(XcodeMLTypeManager typeManager) {
         this.typeManager = typeManager;
     }
 
     /**
-     * 配列定義要素からDB::VariableDimensionクラスをパース、生成する。
+     * Parse and generate DB :: VariableDimension class from the array definition element.
      *
-     * @param arrayNodes          配列定義
-     * @return DB::VariableDimensionクラス
+     * @param arrayNodes Array definition
+     * @return DB :: VariableDimension class
      */
     public VariableDimension parseVariableDimension(List<IXmlNode> arrayNodes) {
 
         if (arrayNodes == null || arrayNodes.size() <= 0) {
             return null;
         }
-        // ExprModelパーサ;
+        // ExprModel parser;
         ExpressionParser exprParser = new ExpressionParser(this.typeManager);
 
-        // 配列宣言
+        // Array declaration
         ArrayList<DimensionIndex> dim_list = new ArrayList<DimensionIndex>();
         for (IXmlNode elem : arrayNodes) {
             if (elem instanceof ArrayIndex) {
-                // 配列サイズのみ
+                // Array size only
                 exprParser.setParseNode(elem);
                 Expression expr = exprParser.getExpression();
                 if (expr != null) {
-                    // 配列下限は１とする。
+                    // The lower limit of the array is 1.
                     DimensionIndex idx = new DimensionIndex(new Expression("1"), expr);
                     dim_list.add(idx);
                 }
             } else if (elem instanceof IndexRange) {
-                // 配列下限
+                // Array lower limit
                 exprParser.setParseNode(((IndexRange) elem).getLowerBound());
                 Expression exprLower = exprParser.getExpression();
                 if (exprLower == null) {
-                    // 配列サイズなし
+                    // No array size
                     exprLower = new Expression("");
                 }
-                // 配列上限
+                // Array upper limit
                 exprParser.setParseNode(((IndexRange) elem).getUpperBound());
                 Expression exprUpper = exprParser.getExpression();
                 if (exprUpper == null) {
-                    // 配列サイズなし
+                    // No array size
                     exprUpper = new Expression("");
                 }
                 DimensionIndex idx = new DimensionIndex(exprLower, exprUpper);
@@ -91,7 +91,7 @@ public class VariableDimensionParser {
         }
         if (dim_list.size() <= 0) return null;
 
-        // 配列宣言
+        // Array declaration
         VariableDimension dims = new VariableDimension(dim_list.toArray(new DimensionIndex[0]));
         return dims;
 

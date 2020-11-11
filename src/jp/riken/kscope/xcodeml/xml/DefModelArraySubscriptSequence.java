@@ -20,25 +20,25 @@ package jp.riken.kscope.xcodeml.xml;
 import java.util.List;
 
 /**
- * 配列要素クラス
+ * Array element class
  * @author RIKEN
  */
 public class DefModelArraySubscriptSequence implements IXmlNode {
 
-    /** 配列要素リスト */
+    /** Array element list */
     protected List<IXmlNode> indexRangeOrArrayIndex;
 
     /**
-     * コンストラクタ
-     * @param index		配列要素リスト
+     * Constructor
+     * @param index Array element list
      */
     public DefModelArraySubscriptSequence(List<IXmlNode> index) {
         this.indexRangeOrArrayIndex = index;
     }
 
     /**
-     * 配列要素リストを取得する
-     * @return		配列要素リスト
+     * Get a list of array elements
+     * @return Array element list
      */
     public IXmlNode[] getIndexRangeOrArrayIndex() {
         IXmlNode[] array = new IXmlNode[indexRangeOrArrayIndex.size()];
@@ -46,9 +46,9 @@ public class DefModelArraySubscriptSequence implements IXmlNode {
     }
 
     /**
-     * 配列要素のパースを開始する
-     * @param visitor		パーサVisitor
-     * @return		成否
+     * Start parsing array elements
+     * @param visitor Parser Visitor
+     * @return Success or failure
      */
     @Override
     public boolean enter(IXmlVisitor visitor) {
@@ -56,8 +56,8 @@ public class DefModelArraySubscriptSequence implements IXmlNode {
     }
 
     /**
-     * 配列要素のパースを終了する
-     * @param visitor		パーサVisitor
+     * Exit parsing of array elements
+     * @param visitor Parser Visitor
      */
     @Override
     public void leave(IXmlVisitor visitor) {

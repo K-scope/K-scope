@@ -22,73 +22,73 @@ import jp.riken.kscope.xcodeml.xml.gen.ValueList;
 import jp.riken.kscope.xcodeml.xml.gen.VarList;
 
 /**
- * FdataDecl要素(DATA文)クラス
+ * FdataDecl element (DATA statement) class
  * @author RIKEN
  *
  */
 public class FdataDeclSequence implements IXmlNode {
 	
-	/** 初期化項目並び */
+	/** Initialization item list */
 	protected VarList varList;
-	/** 初期値項目並び */
+	/** Initial value item list */
 	protected ValueList valueList;
 	
 	/**
-	 * コンストラクタ
-	 * @param varList		初期化項目並び
-	 * @param valueList		初期値項目並び
-	 */
+* Constructor
+* @param varList Initialization item list
+* @param valueList Initial value item list
+*/
 	public FdataDeclSequence(VarList varList, ValueList valueList) {
 		this.varList = varList;
 		this.valueList = valueList;
 	}
 	
 	/**
-	 * 初期化項目並びを取得する
-	 * @return		初期化項目並び
-	 */
+* Get the initialization item list
+* @return Initialization item list
+*/
 	public VarList getVarList() {
 		return varList;
 	}
 	
 	/**
-	 * 初期化項目並びを設定する
-	 * @param varList		初期化項目並び
-	 */
+* Set the initialization item list
+* @param varList Initialization item list
+*/
 	public void setVarList(VarList varList) {
 		this.varList = varList;
 	}
 	
 	/**
-	 * 初期値項目並びを取得する
-	 * @return		初期値項目並び
-	 */
+* Get the initial value item list
+* @return Initial value item list
+*/
 	public ValueList getValueList() {
 		return valueList;
 	}
 	
 	/**
-	 * 初期値項目並びを取得する
-	 * @param valueList		初期値項目並び
-	 */
+* Get the initial value item list
+* @param valueList Initial value item list
+*/
 	public void setValueList(ValueList valueList) {
 		this.valueList = valueList;
 	}
 	
 	/**
-	 * FdataDecl要素(DATA文)の探索を開始する
-	 * @param visitor		XcodeMLノード探索
-	 * @return		成否
-	 */
+* Start searching for FdataDecl element (DATA statement)
+* @param visitor Xcode ML node search
+* @return Success or failure
+*/
 	@Override
 	public boolean enter(IXmlVisitor visitor) {
 		return (visitor.enter(this));
 	}
 
 	/**
-	 * FdataDecl要素(DATA文)の探索を終了する
-	 * @param visitor		XcodeMLノード探索
-	 */
+* End the search for the FdataDecl element (DATA statement)
+* @param visitor Xcode ML node search
+*/
 	@Override
 	public void leave(IXmlVisitor visitor) {
 		visitor.leave(this);

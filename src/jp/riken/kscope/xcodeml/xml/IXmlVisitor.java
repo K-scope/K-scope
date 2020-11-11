@@ -22,7 +22,7 @@ import jp.riken.kscope.xcodeml.xml.GotoStatementSequence;
 import jp.riken.kscope.xcodeml.xml.gen.*;
 
 /**
- * XcodeMLノード探索インターフェイス
+ * XcodeML node discovery interface
  * @author RIKEN
  */
 public interface IXmlVisitor {

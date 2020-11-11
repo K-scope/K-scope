@@ -17,40 +17,40 @@
 package jp.riken.kscope.xcodeml.xml;
 
 /**
- * シンボルリストクラス
+ * Symbol list class
  * @author RIKEN
  *
  */
 public class XmlSymbol {
-    /** シンボル名 */
+    /** Symbol name */
     private String _symbolName;
-    /** タイプID */
+    /** Type ID */
     private EnumType _typeId;
-    /** 派生名 */
+    /** Derived name */
     private String _derivedName;
 
     /**
-     * コンストラクタ
-     * @param symbolName		シンボル名
+     * Constructor
+     * @param symbolName Symbol name
      */
     public XmlSymbol(String symbolName) {
         this(symbolName, EnumType.VOID, null);
     }
 
     /**
-     * コンストラクタ
-     * @param symbolName		シンボル名
-     * @param typeId		タイプID
+     * Constructor
+     * @param symbolName Symbol name
+     * @param typeId Type ID
      */
     public XmlSymbol(String symbolName, EnumType typeId) {
         this(symbolName, typeId, null);
     }
 
     /**
-     * コンストラクタ
-     * @param symbolName		シンボル名
-     * @param typeId		タイプID
-     * @param derivedName		派生名
+     * Constructor
+     * @param symbolName Symbol name
+     * @param typeId Type ID
+     * @param derivedName Derived name
      */
     public XmlSymbol(String symbolName, EnumType typeId, String derivedName) {
         _symbolName = symbolName;
@@ -59,24 +59,24 @@ public class XmlSymbol {
     }
 
     /**
-     * タイプIDを取得する
-     * @return		タイプID
+     * Get type ID
+     * @return Type ID
      */
     public EnumType getTypeId() {
         return _typeId;
     }
 
     /**
-     * シンボル名を取得する
-     * @return		シンボル名
+     * Get the symbol name
+     * @return Symbol name
      */
     public String getSymbolName() {
         return _symbolName;
     }
 
     /**
-     * 派生名を取得する
-     * @return		派生名
+     * Get the derived name
+     * @return Derived name
      */
     public String getDerivedName() {
         return _derivedName;

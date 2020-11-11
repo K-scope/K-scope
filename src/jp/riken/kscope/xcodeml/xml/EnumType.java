@@ -18,41 +18,41 @@
 package jp.riken.kscope.xcodeml.xml;
 
 /**
- * データ型識別子
+ * Data type identifier
  * @author RIKEN
  */
 public enum EnumType {
-    /** void型 */
+    /** void type */
     VOID("Fvoid", null, false),
-    /** integer型 */
+    /** integer type */
     INT("Fint", "INTEGER", true),
-    /** real型 */
+    /** real type */
     REAL("Freal", "REAL", true),
-    /** complex型 */
+    /** complex type */
     COMPLEX("Fcomplex", "COMPLEX", true),
-    /** logical型 */
+    /** logical type */
     LOGICAL("Flogical", "LOGICAL", true),
-    /** character型 */
+    /** character type */
     CHARACTER("Fcharacter", "CHARACTER", true),
-    /** numeric型 */
+    /** numeric type */
     NUMERIC("Fnumeric", null, true),
-    /** numericAll型 */
+    /** numericAll type */
     NUMERICALL("FnumericAll", null, true),
-    /** 不明 */
+    /** Unknown */
     DERIVED(null, null, false);
 
-    /** プリミティブ型 */
+    /** Primitive type */
     private boolean _isPrimitive = false;
-    /** XML要素名 */
+    /** XML element name */
     private String _xcodemlName;
-    /** フォートラン型名 */
+    /** Fortran model name */
     private String _fortranName;
 
     /**
-     * コンストラクタ
-     * @param xcodemlName		XML要素名
-     * @param fortranName		フォートラン型名
-     * @param isPrimitive		true=プリミティブ型
+     * Constructor
+     * @param xcodemlName XML element name
+     * @param fortranName Fortran type name
+     * @param isPrimitive true = Primitive type
      */
     private EnumType(String xcodemlName, String fortranName, boolean isPrimitive) {
         _isPrimitive = isPrimitive;
@@ -61,33 +61,33 @@ public enum EnumType {
     }
 
     /**
-     * プリミティブ型であるか取得する
-     * @return		true=プリミティブ型
+     * Get if it is a primitive type
+     * @return true = primitive type
      */
     public boolean isPrimitive() {
         return _isPrimitive;
     }
 
     /**
-     * XML要素名を取得する
-     * @return		XML要素名
+     * Get the XML element name
+     * @return XML element name
      */
     public String xcodemlName() {
         return _xcodemlName;
     }
 
     /**
-     * フォートラン型名を取得する
-     * @return		フォートラン型名
+     * Get a Fortran type name
+     * @return Fortran model name
      */
     public String fortranName() {
         return _fortranName;
     }
 
     /**
-     * XML要素名からデータ型識別子を取得する
-     * @param xcodemlTypeName		XML要素名
-     * @return		データ型識別子
+     * Get the data type identifier from the XML element name
+     * @param xcodemlTypeName XML element name
+     * @return data type identifier
      */
     public static EnumType getTypeIdFromXcodemlTypeName(String xcodemlTypeName) {
         if (xcodemlTypeName == null) {

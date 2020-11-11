@@ -16,6 +16,6 @@
  */
 
 /**
- * XcodeMLのスキーマから自動生成したXML要素を提供します.
+ * Provides XML elements automatically generated from the XcodeML schema.
  */
 package jp.riken.kscope.xcodeml.xml.gen;

@@ -52,29 +52,29 @@ public enum DefChoiceScope {
     /** param */
     @XmlEnumValue("param") PARAM("param");
 
-    /** 識別名 */
+    /** Identification name */
     private final String value;
 
     /**
-     * コンストラクタ
-     * @param v		識別名
+     * Constructor
+     * @param v Distinguished name
      */
     DefChoiceScope(String v) {
         value = v;
     }
 
     /**
-     * 識別名を取得する
-     * @return		識別名
+     * Get the distinguished name
+     * @return Distinguished name
      */
     public String value() {
         return value;
     }
 
     /**
-     * 識別名からDefChoiceScopeクラスを取得する
-     * @param v		識別名
-     * @return		DefChoiceSclass
+     * Get the DefChoiceScope class from the distinguished name
+     * @param v Distinguished name
+     * @return DefChoiceSclass
      */
     public static DefChoiceScope fromValue(String v) {
         for (DefChoiceScope c : DefChoiceScope.values()) {

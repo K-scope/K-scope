@@ -17,56 +17,56 @@
 package jp.riken.kscope.xcodeml.xml;
 
 /**
- * ステートメント文のインターフェイスクラス
+ * Statement interface class
  * @author RIKEN
  *
  */
 public interface IDefBaseStatement {
     /**
-     * 開始行番号を取得する
-     * @return		開始行番号
+     * Get the starting line number
+     * @return Start line number
      */
     public String getLineno();
 
     /**
-     * 開始行番号を設定する
-     * @param value		開始行番号
+     * Set the start line number
+     * @param value Start line number
      */
     public void setLineno(String value);
 
     /**
-     * 終了行番号を取得する
-     * @return		終了行番号
+     * Get the end line number
+     * @return End line number
      */
     public String getEndlineno();
 
     /**
-     * 終了行番号を設定する
-     * @param value		終了行番号
+     * Set the end line number
+     * @param value End line number
      */
     public void setEndlineno(String value);
 
     /**
-     * 行番号を取得する
-     * @return		行番号
+     * Get the line number
+     * @return line number
      */
     public String getRawlineno();
 
     /**
-     * 行番号を設定する
-     * @param value		行番号
+     * Set the line number
+     * @param value Line number
      */
     public void setRawlineno(String value);
 
     /**
-     * ファイル名を取得する
-     * @return		ファイル名
+     * Get the file name
+     * @return filename
      */
     public String getFile();
 
     /**
-     * ファイル名を設定する
-     * @param value		ファイル名
+     * Set the file name
+     * @param value filename
      */
     public void setFile(String value);
 }

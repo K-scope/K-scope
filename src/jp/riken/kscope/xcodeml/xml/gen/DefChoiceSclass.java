@@ -66,29 +66,29 @@ public enum DefChoiceSclass {
     /** fnamelist_name */
     @XmlEnumValue("fnamelist_name") FNAMELIST_NAME("fnamelist_name");
 
-    /** 識別名 */
+    /** Identification name */
     private final String value;
 
     /**
-     * コンストラクタ
-     * @param v		識別名
+     * Constructor
+     * @param v Distinguished name
      */
     DefChoiceSclass(String v) {
         value = v;
     }
 
     /**
-     * 識別名を取得する
-     * @return		識別名
+     * Get the distinguished name
+     * @return Distinguished name
      */
     public String value() {
         return value;
     }
 
     /**
-     * 識別名からDefChoiceSclassクラスを取得する
-     * @param v		識別名
-     * @return		DefChoiceSclass
+     * Get the DefChoiceSclass class from the distinguished name
+     * @param v Distinguished name
+     * @return DefChoiceSclass
      */
     public static DefChoiceSclass fromValue(String v) {
         for (DefChoiceSclass c : DefChoiceSclass.values()) {

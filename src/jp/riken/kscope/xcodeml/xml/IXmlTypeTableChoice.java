@@ -17,50 +17,50 @@
 package jp.riken.kscope.xcodeml.xml;
 
 /**
- * データ型インターフェイスクラス
+ * Data type interface class
  * @author RIKEN
  */
 public interface IXmlTypeTableChoice {
 
     /**
-     * データ型名を取得する
-     * @return データ型名
+     * Get the data type name
+     * @return data type name
      */
     String getType();
 
     /**
-     * データ型名を設定する
-     * @param type		データ型名
+     * Set the data type name
+     * @param type data type name
      */
     void setType(String type);
 
     /**
-     * public属性をチェックする
-     * @return		public属性
+     * Check public attribute
+     * @return public attribute
      */
     Boolean isIsPublic();
 
     /**
-     * public属性を設定する
-     * @param isPublic		public属性
+     * Set public attribute
+     * @param isPublic public attribute
      */
     void setIsPublic(Boolean isPublic);
 
     /**
-     * private属性をチェックする
-     * @return		private属性
+     * Check private attribute
+     * @return private attribute
      */
     Boolean isIsPrivate();
 
     /**
-     * private属性を設定する
-     * @param isPrivate	private属性
+     * Set private attribute
+     * @param isPrivate private attribute
      */
     void setIsPrivate(Boolean isPrivate);
 
     /**
-     * データ型を文字列にする
-     * @return データ型文字列
+     * Set the data type to a string
+     * @return Data type string
      */
     @Override
     String toString();

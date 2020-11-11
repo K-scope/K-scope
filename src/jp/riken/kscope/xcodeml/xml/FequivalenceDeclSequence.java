@@ -20,20 +20,20 @@ import jp.riken.kscope.xcodeml.xml.gen.VarList;
 import jp.riken.kscope.xcodeml.xml.gen.VarRef;
 
 /**
- * FequivalenceDecl要素(EQUIVALENCE文)クラス
+ * FequivalenceDecl element (EQUIVALENCE statement) class
  * @author RIKEN
  *
  */
 public class FequivalenceDeclSequence implements IXmlNode {
-    /** 結合実体 */
+    /** Combined entity */
     protected VarRef varRef;
-    /** 結合実体並び */
+    /** Combined entity arrangement */
     protected VarList varList;
 
     /**
-     * コンストラクタ
-     * @param varRef		結合実体
-     * @param varList		結合実体並び
+     * Constructor
+     * @param varRef Join entity
+     * @param varList Join entity list
      */
     public FequivalenceDeclSequence(VarRef varRef, VarList varList) {
         this.varRef = varRef;
@@ -41,41 +41,41 @@ public class FequivalenceDeclSequence implements IXmlNode {
     }
 
     /**
-     * 結合実体を取得する
-     * @return		結合実体
+     * Get the combined entity
+     * @return Combined entity
      */
     public VarRef getVarRef() {
         return varRef;
     }
 
     /**
-     * 結合実体を設定する
-     * @param varRef		結合実体
+     * Set the combined entity
+     * @param varRef Join entity
      */
     public void setVarRef(VarRef varRef) {
         this.varRef = varRef;
     }
 
     /**
-     * 結合実体並びを取得する
-     * @return		結合実体並び
+     * Get the combined entity list
+     * @return Combined entity list
      */
     public VarList getVarList() {
         return varList;
     }
 
     /**
-     * 結合実体並びを設定する
-     * @param varList		結合実体並び
+     * Set the join entity list
+     * @param varList Join entity list
      */
     public void setVarList(VarList varList) {
         this.varList = varList;
     }
 
     /**
-     * FequivalenceDecl要素(EQUIVALENCE文)の探索を開始する
-     * @param visitor		XcodeMLノード探索
-     * @return		成否
+     * Start searching for FequivalenceDecl element (EQUIVALENCE statement)
+     * @param visitor Xcode ML node search
+     * @return Success or failure
      */
     @Override
     public boolean enter(IXmlVisitor visitor) {
@@ -83,8 +83,8 @@ public class FequivalenceDeclSequence implements IXmlNode {
     }
 
     /**
-     * FequivalenceDecl要素(EQUIVALENCE文)の探索を終了する
-     * @param visitor		XcodeMLノード探索
+     * End the search for the FequivalenceDecl element (EQUIVALENCE statement)
+     * @param visitor Xcode ML node search
      */
     @Override
     public void leave(IXmlVisitor visitor) {

@@ -52,29 +52,29 @@ public enum DefChoiceIntent {
     /** intent(inout) */
     @XmlEnumValue("inout") INOUT("inout");
 
-    /** intent文 */
+    /** intent statement */
     private final String value;
 
     /**
-     * コンストラクタ
-     * @param   v   intent文
+     * Constructor
+     * @param v intent statement
      */
     DefChoiceIntent(String v) {
         value = v;
     }
 
     /**
-     * intent文を取得する
-     * @return		intent文
+     * Get the intent statement
+     * @return intent statement
      */
     public String value() {
         return value;
     }
 
     /**
-     * intent文からIntent識別子を取得する
-     * @param v		intent文
-     * @return		Intent識別子
+     * Get the Intent identifier from the intent statement
+     * @param v intent statement
+     * @return Intent identifier
      */
     public static DefChoiceIntent fromValue(String v) {
         for (DefChoiceIntent c : DefChoiceIntent.values()) {

@@ -21,21 +21,21 @@ import jp.riken.kscope.xcodeml.xml.gen.Params;
 import jp.riken.kscope.xcodeml.xml.gen.Value;
 
 /**
- * GotoStatement要素(GOTO文)クラス
+ * GotoStatement element (GOTO statement) class
  * @author RIKEN
  *
  */
 public class GotoStatementSequence implements IXmlNode {
 
-    /** 計算形GOTO文の文番号並び */
+    /** Sentence number sequence of calculated GOTO statement */
     protected Params params;
-    /** 計算形GOTO文の式 */
+    /** Formula GOTO statement formula */
     protected Value value;
 
     /**
-     * コンストラクタ
-     * @param params		計算形GOTO文の文番号並び
-     * @param value			計算形GOTO文の式
+     * Constructor
+     * @param params Sentence number sequence of calculated GOTO statement
+     * @param value Computational GOTO statement expression
      */
     public GotoStatementSequence(Params params, Value value) {
         this.params = params;
@@ -43,32 +43,32 @@ public class GotoStatementSequence implements IXmlNode {
     }
 
     /**
-     * 計算形GOTO文の文番号並びを取得する
-     * @return		計算形GOTO文の文番号並び
+     * Get the sentence number sequence of the calculated GOTO statement
+     * @return Statement number sequence of calculated GOTO statement
      */
     public Params getParams() {
         return params;
     }
 
     /**
-     * 計算形GOTO文の文番号並びを設定する
-     * @param params		計算形GOTO文の文番号並び
+     * Set the sentence number sequence of the calculated GOTO statement
+     * @param params Sentence number sequence of calculated GOTO statement
      */
     public void setParams(Params params) {
         this.params = params;
     }
 
     /**
-     * 計算形GOTO文の式を取得する
-     * @return		計算形GOTO文の式
+     * Get the formula of the calculated GOTO statement
+     * @return Computational GOTO statement formula
      */
     public Value getValue() {
         return value;
     }
 
     /**
-     * 計算形GOTO文の式を設定する
-     * @param value		計算形GOTO文の式
+     * Set the formula of the calculated GOTO statement
+     * @param value Computational GOTO statement expression
      */
     public void setValue(Value value) {
         this.value = value;
@@ -76,9 +76,9 @@ public class GotoStatementSequence implements IXmlNode {
 
 
     /**
-     * GotoStatement要素(GOTO文)の探索を開始する
-     * @param visitor		XcodeMLノード探索
-     * @return		成否
+     * Start searching for GotoStatement element (GOTO statement)
+     * @param visitor Xcode ML node search
+     * @return Success or failure
      */
     @Override
     public boolean enter(IXmlVisitor visitor) {
@@ -86,8 +86,8 @@ public class GotoStatementSequence implements IXmlNode {
     }
 
     /**
-     * GotoStatement要素(GOTO文)の探索を終了する
-     * @param visitor		XcodeMLノード探索
+     * End the search for the GotoStatement element (GOTO statement)
+     * @param visitor Xcode ML node search
      */
     @Override
     public void leave(IXmlVisitor visitor) {

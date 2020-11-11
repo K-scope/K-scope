@@ -19,429 +19,429 @@ package jp.riken.kscope.xcodeml.xml;
 import jp.riken.kscope.xcodeml.xml.gen.*;
 
 /**
- * 式モデルインターフェイスクラス
+ * Expression model interface class
  * @author RIKEN
  *
  */
 public interface IDefModelExpr {
 	
 	/**
-	 * DivExpr(除算)要素を取得する
-	 * @return    DivExpr(除算)要素
-	 */
+* Get the DivExpr element
+* @return DivExpr (division) element
+*/
 	public DivExpr getDivExpr();
 	
 	/**
-	 * FarrayConstructor(配列構成子)要素を取得する
-	 * @return		FarrayConstructor(配列構成子)要素
-	 */
+* Get the FarrayConstructor element
+* @return FarrayConstructor element
+*/
 	public FarrayConstructor getFarrayConstructor();
 	
 	/**
-	 * FarrayRef(部分配列、または配列要素参照)要素を取得する
-	 * @return		FarrayRef(部分配列、または配列要素参照)要素
-	 */
+* Get a FarrayRef (see subarray or array element) element
+* @return FarrayRef (see subarray or array element) element
+*/
 	public FarrayRef getFarrayRef();
 
 	/**
-	 * FcharacterConstant(文字列)要素を取得する
-	 * @return		FcharacterConstant(文字列)要素
-	 */
+* Get the FcharacterConstant element
+* @return FcharacterConstant (string) element
+*/
 	public FcharacterConstant getFcharacterConstant();
 
 	/**
-	 * FcharacterRef(部分文字列参照)要素を取得する
-	 * @return		FcharacterRef(部分文字列参照)要素
-	 */
+* Get the FcharacterRef (see substring) element
+* @return FcharacterRef (see substring) element
+*/
 	public FcharacterRef getFcharacterRef();
 
 	/**
-	 * FcoArrayRef(coarray参照)要素を取得する
-	 * @return		FcoArrayRef(coarray参照)要素
-	 */
+* Get the FcoArrayRef (see coarray) element
+* @return FcoArrayRef (see coarray) element
+*/
 	public FcoArrayRef getFcoArrayRef();
 
 	/**
-	 * FcomplexConstant(COMPLEX型の定数)要素を取得する
-	 * @return		FcomplexConstant(COMPLEX型の定数)要素
-	 */
+* Get the FcomplexConstant (complex type constant) element
+* @return FcomplexConstant (COMPLEX type constant) element
+*/
 	public FcomplexConstant getFcomplexConstant();
 
 	/**
-	 * FconcatExpr(文字式の連結)要素を取得する
-	 * @return		FconcatExpr(文字式の連結)要素
-	 */
+* Get the FconcatExpr (concatenation of character expressions) element
+* @return FconcatExpr (character expression concatenation) element
+*/
 	public FconcatExpr getFconcatExpr();
 
 	/**
-	 * FdoLoop(DO型反復)要素を取得する
-	 * @return		FdoLoop(DO型反復)要素
-	 */
+* Get FdoLoop (DO type iteration) element
+* @return FdoLoop (DO type iteration) element
+*/
 	public FdoLoop getFdoLoop();
 
 	/**
-	 * FintConstant(整数定数)要素を取得する
-	 * @return		FintConstant(整数定数)要素
-	 */
+* Get the FintConstant (integer constant) element
+* @return FintConstant (integer constant) element
+*/
 	public FintConstant getFintConstant();
 
 	/**
-	 * FlogicalConstant(論理値定数)要素を取得する
-	 * @return		FlogicalConstant(論理値定数)要素
-	 */
+* Get the FlogicalConstant element
+* @return FlogicalConstant element
+*/
 	public FlogicalConstant getFlogicalConstant();
 
 	/**
-	 * FmemberRef(構造体メンバ参照)要素を取得する
-	 * @return		FmemberRef(構造体メンバ参照)要素
-	 */
+* Get the FmemberRef (struct member reference) element
+* @return FmemberRef (see structure member) element
+*/
 	public FmemberRef getFmemberRef();
 
 	/**
-	 * FpowerExpr(べき乗)要素を取得する
-	 * @return		FpowerExpr(べき乗)要素
-	 */
+* Get the FpowerExpr element
+* @return FpowerExpr element
+*/
 	public FpowerExpr getFpowerExpr();
 
 	/**
-	 * FrealConstant(浮動小数点数定数)要素を取得する
-	 * @return		FrealConstant(浮動小数点数定数)要素
-	 */
+* Get FrealConstant (floating point constant) element
+* @return FrealConstant (floating point constant) element
+*/
 	public FrealConstant getFrealConstant();
 
 	/**
-	 * FstructConstructor(構造体構成子)要素を取得する
-	 * @return		FstructConstructor(構造体構成子)要素
-	 */
+* Get the FstructConstructor element
+* @return FstructConstructor element
+*/
 	public FstructConstructor getFstructConstructor();
 	
 	/**
-	 * FunctionCall(関数・サブルーチン呼び出し)要素を取得する
-	 * @return		FunctionCall(関数・サブルーチン呼び出し)要素
-	 */
+* Get a FunctionCall element
+* @return FunctionCall (function / subroutine call) element
+*/
 	public FunctionCall getFunctionCall();
 
 	/**
-	 * LogAndExpr(論理積)要素を取得する
-	 * @return		LogAndExpr(論理積)要素
-	 */
+* Get the LogAndExpr (logical product) element
+* @return LogAndExpr (logical product) element
+*/
 	public LogAndExpr getLogAndExpr();
 
 	/**
-	 * LogEQExpr(等価)要素を取得する
-	 * @return		LogEQExpr(等価)要素
-	 */
+* Get the LogEQExpr (equivalent) element
+* @return LogEQExpr (equivalent) element
+*/
 	public LogEQExpr getLogEQExpr();
 
 	/**
-	 * LogEQVExpr(論理等価)要素を取得する
-	 * @return		LogEQVExpr(論理等価)要素
-	 */
+* Get the LogEQVExpr (logical equivalent) element
+* @return LogEQVExpr (logical equivalent) element
+*/
 	public LogEQVExpr getLogEQVExpr();
 
 	/**
-	 * LogGEExpr(大なり、または同値)要素を取得する
-	 * @return		LogGEExpr(大なり、または同値)要素
-	 */
+* Get the LogGEExpr (greater than or equivalent) element
+* @return LogGEExpr (greater than or equivalent) element
+*/
 	public LogGEExpr getLogGEExpr();
 
 	/**
-	 * LogGTExpr(大なり)要素を取得する
-	 * @return		LogGTExpr(大なり)要素
-	 */
+* Get the LogGTExpr (greater than) element
+* @return LogGTExpr (greater than) element
+*/
 	public LogGTExpr getLogGTExpr();
 
 	/**
-	 * LogLEExpr(小なり、または等価)要素を取得する
-	 * @return		LogLEExpr(小なり、または等価)要素
-	 */
+* Get LogLEExpr (less or equivalent) element
+* @return LogLEExpr (less or equivalent) element
+*/
 	public LogLEExpr getLogLEExpr();
 
 	/**
-	 * LogLTExpr(小なり)要素を取得する
-	 * @return		LogLTExpr(小なり)要素
-	 */
+* Get the LogLTExpr (less than) element
+* @return LogLTExpr (less) element
+*/
 	public LogLTExpr getLogLTExpr();
 
 	/**
-	 * LogNEQExpr(非等価)要素を取得する
-	 * @return		LogNEQExpr(非等価)要素
-	 */
+* Get LogNEQExpr (non-equivalent) element
+* @return LogNEQExpr (non-equivalent) element
+*/
 	public LogNEQExpr getLogNEQExpr();
 
 	/**
-	 * LogNEQVExpr(論理非等価)要素を取得する
-	 * @return		LogNEQVExpr(論理非等価)要素
-	 */
+* Get LogNEQVExpr (logical non-equivalent) element
+* @return LogNEQVExpr (logical non-equivalent) element
+*/
 	public LogNEQVExpr getLogNEQVExpr();
 
 	/**
-	 * LogNotExpr(論理否定)要素を取得する
-	 * @return		LogNotExpr(論理否定)要素
-	 */
+* Get the LogNotExpr (logical negation) element
+* @return LogNotExpr (logical negation) element
+*/
 	public LogNotExpr getLogNotExpr();
 
 	/**
-	 * LogOrExpr(論理和)要素を取得する
-	 * @return		LogOrExpr(論理和)要素
-	 */
+* Get the LogOrExpr (OR) element
+* @return LogOrExpr (logical sum) element
+*/
 	public LogOrExpr getLogOrExpr();
 
 	/**
-	 * MinusExpr(減算)要素を取得する
-	 * @return		MinusExpr(減算)要素
-	 */
+* Get the MinusExpr (subtraction) element
+* @return MinusExpr (subtraction) element
+*/
 	public MinusExpr getMinusExpr();
 
 	/**
-	 * MulExpr(乗算)要素を取得する
-	 * @return		MulExpr(乗算)要素
-	 */
+* Get the MulExpr (multiplication) element
+* @return MulExpr (multiplication) element
+*/
 	public MulExpr getMulExpr();
 
 	/**
-	 * PlusExpr(加算)要素を取得する
-	 * @return		PlusExpr(加算)要素
-	 */
+* Get the PlusExpr element
+* @return PlusExpr (addition) element
+*/
 	public PlusExpr getPlusExpr();
 
 	/**
-	 * UnaryMinusExpr(符号反転)要素を取得する
-	 * @return		UnaryMinusExpr(符号反転)要素
-	 */
+* Get the UnaryMinusExpr (sign inversion) element
+* @return UnaryMinusExpr (sign inversion) element
+*/
 	public UnaryMinusExpr getUnaryMinusExpr();
 
 	/**
-	 * UserBinaryExpr(INTERFACE依存２項演算子)要素を取得する
-	 * @return		UserBinaryExpr(INTERFACE依存２項演算子)要素
-	 */
+* Get UserBinaryExpr (INTERFACE dependent ternary operator) element
+* @return UserBinaryExpr (INTERFACE dependent ternary operator) element
+*/
 	public UserBinaryExpr getUserBinaryExpr();
 
 	/**
-	 * UserUnaryExpr(INTERFACE依存単項演算子)要素を取得する
-	 * @return		UserUnaryExpr(INTERFACE依存単項演算子)要素
-	 */
+* Get the UserUnaryExpr (INTERFACE dependent unary operator) element
+* @return UserUnaryExpr (INTERFACE dependent unary operator) element
+*/
 	public UserUnaryExpr getUserUnaryExpr();
 
 	/**
-	 * Var(変数名)要素を取得する
-	 * @return		Var(変数名)要素
-	 */
+* Get Var (variable name) element
+* @return Var (variable name) element
+*/
 	public Var getVar();
 
 	/**
-	 * VarRef(変数参照)要素を取得する
-	 * @return		VarRef(変数参照)要素
-	 */
+* Get VarRef (variable reference) element
+* @return VarRef (variable reference) element
+*/
 	public VarRef getVarRef();
 
 	/**
-	 * DivExpr(除算)要素を設定する
-	 * @param  value    DivExpr(除算)要素
-	 */
+* Set the DivExpr element
+* @param value DivExpr (division) element
+*/
 	public void setDivExpr(DivExpr value);
 
 	/**
-	 * FarrayConstructor(配列構成子)要素を取得する
-	 * @param  value		FarrayConstructor(配列構成子)
-	 */
+* Get the FarrayConstructor element
+* @param value FarrayConstructor
+*/
 	public void setFarrayConstructor(FarrayConstructor value);
 
 	/**
-	 * FarrayRef(部分配列、または配列要素参照)要素を取得する
-	 * @param  value		FarrayRef(部分配列、または配列要素参照)要素
-	 */
+* Get a FarrayRef (see subarray or array element) element
+* @param value FarrayRef (see subarray or array element) element
+*/
 	public void setFarrayRef(FarrayRef value);
 
 	/**
-	 * FcharacterConstant(文字列)要素を取得する
-	 * @param  value		FcharacterConstant(文字列)要素
-	 */
+* Get the FcharacterConstant element
+* @param value FcharacterConstant element
+*/
 	public void setFcharacterConstant(FcharacterConstant value);
 
 	/**
-	 * FcharacterRef(部分文字列参照)要素を取得する
-	 * @param  value		FcharacterRef(部分文字列参照)要素
-	 */
+* Get the FcharacterRef (see substring) element
+* @param value FcharacterRef (see substring) element
+*/
 	public void setFcharacterRef(FcharacterRef value);
 
 	/**
-	 * FcoArrayRef(coarray参照)要素を取得する
-	 * @param  value		FcoArrayRef(coarray参照)要素
-	 */
+* Get the FcoArrayRef (see coarray) element
+* @param value FcoArrayRef (see coarray) element
+*/
 	public void setFcoArrayRef(FcoArrayRef value);
 
 	/**
-	 * FcomplexConstant(COMPLEX型の定数)要素を取得する
-	 * @param  value		FcomplexConstant(COMPLEX型の定数)要素
-	 */
+* Get the FcomplexConstant (complex type constant) element
+* @param value FcomplexConstant (COMPLEX type constant) element
+*/
 	public void setFcomplexConstant(FcomplexConstant value);
 
 	/**
-	 * FconcatExpr(文字式の連結)要素を取得する
-	 * @param  value		FconcatExpr(文字式の連結)要素
-	 */
+* Get the FconcatExpr (concatenation of character expressions) element
+* @param value FconcatExpr (concatenation of character expressions) element
+*/
 	public void setFconcatExpr(FconcatExpr value);
 
 	/**
-	 * FdoLoop(DO型反復)要素を取得する
-	 * @param  value		FdoLoop(DO型反復)要素
-	 */
+* Get FdoLoop (DO type iteration) element
+* @param value FdoLoop (DO type iteration) element
+*/
 	public void setFdoLoop(FdoLoop value);
 
 	/**
-	 * FintConstant(整数定数)要素を取得する
-	 * @param  value		FintConstant(整数定数)要素
-	 */
+* Get the FintConstant (integer constant) element
+* @param value FintConstant (integer constant) element
+*/
 	public void setFintConstant(FintConstant value);
 
 	/**
-	 * FlogicalConstant(論理値定数)要素を取得する
-	 * @param  value		FlogicalConstant(論理値定数)要素
-	 */
+* Get the FlogicalConstant element
+* @param value FlogicalConstant element
+*/
 	public void setFlogicalConstant(FlogicalConstant value);
 
 	/**
-	 * FmemberRef(構造体メンバ参照)要素を取得する
-	 * @param  value		FmemberRef(構造体メンバ参照)要素
-	 */
+* Get the FmemberRef (struct member reference) element
+* @param value FmemberRef (see structure member) element
+*/
 	public void setFmemberRef(FmemberRef value);
 
 	/**
-	 * FpowerExpr(べき乗)要素を取得する
-	 * @param  value		FpowerExpr(べき乗)要素
-	 */
+* Get the FpowerExpr element
+* @param value FpowerExpr element
+*/
 	public void setFpowerExpr(FpowerExpr value);
 
 	/**
-	 * FrealConstant(浮動小数点数定数)要素を取得する
-	 * @param  value		FrealConstant(浮動小数点数定数)要素
-	 */
+* Get FrealConstant (floating point constant) element
+* @param value FrealConstant (floating point constant) element
+*/
 	public void setFrealConstant(FrealConstant value);
 
 	/**
-	 * FstructConstructor(構造体構成子)要素を取得する
-	 * @param  value		FstructConstructor(構造体構成子)要素
-	 */
+* Get the FstructConstructor element
+* @param value FstructConstructor element
+*/
 	public void setFstructConstructor(FstructConstructor value);
 
 	/**
-	 * FunctionCall(関数・サブルーチン呼び出し)要素を取得する
-	 * @param  value		FunctionCall(関数・サブルーチン呼び出し)要素
-	 */
+* Get a FunctionCall element
+* @param value FunctionCall (function / subroutine call) element
+*/
 	public void setFunctionCall(FunctionCall value);
 
 	/**
-	 * LogAndExpr(論理積)要素を取得する
-	 * @param  value		LogAndExpr(論理積)要素
-	 */
+* Get the LogAndExpr (logical product) element
+* @param value LogAndExpr (logical product) element
+*/
 	public void setLogAndExpr(LogAndExpr value);
 
 	/**
-	 * LogEQExpr(等価)要素を取得する
-	 * @param  value		LogEQExpr(等価)要素
-	 */
+* Get the LogEQExpr (equivalent) element
+* @param value LogEQExpr (equivalent) element
+*/
 	public void setLogEQExpr(LogEQExpr value);
 
 	/**
-	 * LogEQVExpr(論理等価)要素を取得する
-	 * @param  value		LogEQVExpr(論理等価)要素
-	 */
+* Get the LogEQVExpr (logical equivalent) element
+* @param value LogEQVExpr (logical equivalent) element
+*/
 	public void setLogEQVExpr(LogEQVExpr value);
 
 	/**
-	 * LogGEExpr(大なり、または同値)要素を取得する
-	 * @param  value		LogGEExpr(大なり、または同値)要素
-	 */
+* Get the LogGEExpr (greater than or equivalent) element
+* @param value LogGEExpr (greater than or equivalent) element
+*/
 	public void setLogGEExpr(LogGEExpr value);
 
 	/**
-	 * LogGTExpr(大なり)要素を取得する
-	 * @param  value		LogGTExpr(大なり)要素
-	 */
+* Get the LogGTExpr (greater than) element
+* @param value LogGTExpr (greater than) element
+*/
 	public void setLogGTExpr(LogGTExpr value);
 
 	/**
-	 * LogLEExpr(小なり、または等価)要素を取得する
-	 * @param  value		LogLEExpr(小なり、または等価)要素
-	 */
+* Get LogLEExpr (less or equivalent) element
+* @param value LogLEExpr (less or equivalent) element
+*/
 	public void setLogLEExpr(LogLEExpr value);
 
 	/**
-	 * LogLTExpr(小なり)要素を取得する
-	 * @param  value		LogLTExpr(小なり)要素
-	 */
+* Get the LogLTExpr (less than) element
+* @param value LogLTExpr (less than) element
+*/
 	public void setLogLTExpr(LogLTExpr value);
 
 	/**
-	 * LogNEQExpr(非等価)要素を取得する
-	 * @param  value		LogNEQExpr(非等価)要素
-	 */
+* Get LogNEQExpr (non-equivalent) element
+* @param value LogNEQExpr (non-equivalent) element
+*/
 	public void setLogNEQExpr(LogNEQExpr value);
 
 	/**
-	 * LogNEQVExpr(論理非等価)要素を取得する
-	 * @param  value		LogNEQVExpr(論理非等価)要素
-	 */
+* Get LogNEQVExpr (logical non-equivalent) element
+* @param value LogNEQVExpr (logical non-equivalent) element
+*/
 	public void setLogNEQVExpr(LogNEQVExpr value);
 
 	/**
-	 * LogNotExpr(論理否定)要素を取得する
-	 * @param  value		LogNotExpr(論理否定)要素
-	 */
+* Get the LogNotExpr (logical negation) element
+* @param value LogNotExpr (logical negation) element
+*/
 	public void setLogNotExpr(LogNotExpr value);
 
 	/**
-	 * LogOrExpr(論理和)要素を取得する
-	 * @param  value		LogOrExpr(論理和)要素
-	 */
+* Get the LogOrExpr (OR) element
+* @param value LogOrExpr (logical sum) element
+*/
 	public void setLogOrExpr(LogOrExpr value);
 
 	/**
-	 * MinusExpr(減算)要素を取得する
-	 * @param  value		MinusExpr(減算)要素
-	 */
+* Get the MinusExpr (subtraction) element
+* @param value MinusExpr (subtraction) element
+*/
 	public void setMinusExpr(MinusExpr value);
 
 	/**
-	 * MulExpr(乗算)要素を取得する
-	 * @param  value		MulExpr(乗算)要素
-	 */
+* Get the MulExpr (multiplication) element
+* @param value MulExpr (multiplication) element
+*/
 	public void setMulExpr(MulExpr value);
 
 	/**
-	 * PlusExpr(加算)要素を取得する
-	 * @param  value		PlusExpr(加算)要素
-	 */
+* Get the PlusExpr element
+* @param value PlusExpr (addition) element
+*/
 	public void setPlusExpr(PlusExpr value);
 
 	/**
-	 * UnaryMinusExpr(符号反転)要素を取得する
-	 * @param  value		UnaryMinusExpr(符号反転)要素
-	 */
+* Get the UnaryMinusExpr (sign inversion) element
+* @param value UnaryMinusExpr (sign inversion) element
+*/
 	public void setUnaryMinusExpr(UnaryMinusExpr value);
 
 	/**
-	 * UserBinaryExpr(INTERFACE依存２項演算子)要素を取得する
-	 * @param  value		UserBinaryExpr(INTERFACE依存２項演算子)要素
-	 */
+* Get UserBinaryExpr (INTERFACE dependent ternary operator) element
+* @param value UserBinaryExpr (INTERFACE dependent ternary operator) element
+*/
 	public void setUserBinaryExpr(UserBinaryExpr value);
 
 	/**
-	 * UserUnaryExpr(INTERFACE依存単項演算子)要素を取得する
-	 * @param  value		UserUnaryExpr(INTERFACE依存単項演算子)要素
-	 */
+* Get the UserUnaryExpr (INTERFACE dependent unary operator) element
+* @param value UserUnaryExpr (INTERFACE dependent unary operator) element
+*/
 	public void setUserUnaryExpr(UserUnaryExpr value);
 
 	/**
-	 * Var(変数名)要素を取得する
-	 * @param  value		Var(変数名)要素
-	 */
+* Get Var (variable name) element
+* @param value Var (variable name) element
+*/
 	public void setVar(Var value);
 
 	/**
-	 * VarRef(変数参照)要素を取得する
-	 * @param  value		VarRef(変数参照)要素
-	 */
+* Get VarRef (variable reference) element
+* @param value VarRef (variable reference) element
+*/
 	public void setVarRef(VarRef value);
 }
