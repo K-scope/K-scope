@@ -52,68 +52,68 @@ import jp.riken.kscope.utils.ResourceUtils;
 import jp.riken.kscope.utils.SwingUtils;
 
 /**
- * エラーパネルクラス
+ * Error panel class
  * @author RIKEN
  *
  */
 public class ErrorInfoPanel extends AnalisysPanelBase implements Observer, IAnalisysComponent {
 
-    /** シリアル番号 */
+    /** Serial number */
     private static final long serialVersionUID = 1L;
-    /** エラーテーブル */
+    /** Error table */
     private JTable tableError;
-    /** クリアボタン */
+    /** Clear button */
     private JButton btnClear;
-    /** エクスポートボタン */
+    /** Export button */
     private JButton btnExport;
-    /** ファイルを開く */
+    /** Open file */
     private JButton btnOpenFile;
-    /** エラーラベル */
+    /** Error label */
     private JLabel label;
 
-    /** エラーテーブルモデル */
+    /** Error table model */
     private ErrorInfoModel model;
 
     /**
-     * コンストラクタ
+     * Constructor
      */
     public ErrorInfoPanel() {
         super();
 
-        // 初期化を行う。
+        // Initialize.
         initialize();
 
     }
 
     /**
-     * コンストラクタ
-     * @param panel		分析情報パネル識別子
+     * Constructor
+     * @param panel Analysis information panel identifier
      */
     public ErrorInfoPanel(ANALYSIS_PANEL panel) {
         super(panel);
 
-        // 初期化を行う。
+        // Initialize.
         initialize();
 
     }
 
     /**
-     * 初期化を行う。
+     * Initialize.
      */
     private void initialize() {
 
-        // モデルの生成を行う
+        // Generate a model
         model = new ErrorInfoModel();
-        // オブザーバを設定する。
+        // Set the observer.
         model.addObserver(this);
 
-        // GUI初期化を行う。
+        // Initialize the GUI.
         initGUI();
     }
 
 
     /**
-     * GUI初期化を行う。
+     * Initialize the GUI.
      */
     private void initGUI() {
         try {
@@ -121,7 +121,7 @@ public class ErrorInfoPanel extends AnalisysPanelBase implements Observer, IAnal
             this.setLayout(thisLayout);
 //            setPreferredSize(new Dimension(400, 64));
 
-            // 上部の情報ラベル、ボタンの配置パネル
+            // Information label at the top, button placement panel
             {
                 JPanel panelTop = new JPanel();
                 panelTop.setLayout(new BorderLayout());
@@ -129,14 +129,14 @@ public class ErrorInfoPanel extends AnalisysPanelBase implements Observer, IAnal
                 panelTop.setBorder(new CompoundBorder(
                                             new LineBorder(Color.BLACK, 1),
                                             BorderFactory.createEmptyBorder(0, 5, 0, 20)));
-                // ボタン配置パネル
+                // Button layout panel
                 {
                     JPanel panelButtons = new JPanel();
                     panelButtons.setLayout(new BoxLayout(panelButtons, BoxLayout.LINE_AXIS));
                     panelTop.add(panelButtons, BorderLayout.EAST);
 
                     java.awt.Dimension buttonSize = new java.awt.Dimension(24, 24);
-                    // クリアボタン
+                    // Clear button
                     {
                         Icon icon = ResourceUtils.getIcon("removeall.gif");
                         btnClear = new JButton(icon);
@@ -149,7 +149,7 @@ public class ErrorInfoPanel extends AnalisysPanelBase implements Observer, IAnal
                         btnClear.addActionListener( new ActionListener() {
                             @Override
                             public void actionPerformed(ActionEvent e) {
-                                // モデルクリア
+                                // Model clear
                                 clearModel();
                             }
                         });
@@ -176,7 +176,7 @@ public class ErrorInfoPanel extends AnalisysPanelBase implements Observer, IAnal
                     }
                 }
 
-                // ラベル配置
+                // Label placement
                 {
                     label = new JLabel();
                     panelTop.add(label, BorderLayout.CENTER);
@@ -185,7 +185,7 @@ public class ErrorInfoPanel extends AnalisysPanelBase implements Observer, IAnal
             }
             {
                 {
-                    // エラーテーブル
+                    // Error table
                     tableError = new JStripeTable();
                     tableError.setModel(model.getTableModel());
 
@@ -193,33 +193,33 @@ public class ErrorInfoPanel extends AnalisysPanelBase implements Observer, IAnal
                     tableError.setSelectionMode(ListSelectionModel.SINGLE_SELECTION );
                     tableError.setColumnSelectionAllowed(false);
 
-                    // テーブル列モデル
+                    // Table column model
                     DefaultTableColumnModel columnModel = (DefaultTableColumnModel)tableError.getColumnModel();
                     TableColumn column = null;
 
-                    // 1列目はコード行情報：非表示
+                    // First column is code line information: hidden
                     column = columnModel.getColumn(0);
                     column.setPreferredWidth(0);
                     column.setMinWidth(0);
                     column.setMaxWidth(0);
                     column.setResizable(false);
 
-                    // エラーメッセージ列
+                    // Error message string
                     column = columnModel.getColumn(1);
                     column.setPreferredWidth(360);
                     column.setMinWidth(160);
 
-                    // ファイル名
+                    // file name
                     column = columnModel.getColumn(2);
                     column.setPreferredWidth(240);
                     column.setMinWidth(120);
 
-                    // 行番号
+                    // line number
                     column = columnModel.getColumn(3);
                     column.setPreferredWidth(80);
                     column.setMinWidth(80);
 
-                    // スクロールパイン
+                    // Scroll pine
                     JScrollPane scrollTable = new JScrollPane(tableError);
                     scrollTable.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
                     scrollTable.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
@@ -231,10 +231,10 @@ public class ErrorInfoPanel extends AnalisysPanelBase implements Observer, IAnal
 
             }
 
-            // ツールチップ設定
-            btnClear.setToolTipText(Message.getString("informationdialog.button.clear.tooltip")); //クリア
-            btnOpenFile.setToolTipText(Message.getString("errorInfopanel.tooltip.open")); //エラー箇所を開く
-            btnExport.setToolTipText(Message.getString("mainmenu.file.export")); //エクスポート
+            // Tooltip settings
+            btnClear.setToolTipText(Message.getString("informationdialog.button.clear.tooltip")); //clear
+            btnOpenFile.setToolTipText(Message.getString("errorInfopanel.tooltip.open")); // Open the error part
+            btnExport.setToolTipText(Message.getString("mainmenu.file.export")); //export
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -242,30 +242,30 @@ public class ErrorInfoPanel extends AnalisysPanelBase implements Observer, IAnal
     }
 
     /**
-     * エラーモデルの変更通知イベント
-     * @param o			通知元
-     * @param arg		通知項目
+     * Error model change notification event
+     * @param o Notification source
+     * @param arg Notification item
      */
     @Override
     public void update(Observable o, Object arg) {
-        // テーブルモデル
+        // Table model
         ErrorInfoModel observer = (ErrorInfoModel)o;
         tableError.setModel(observer.getTableModel());
 
-        // パネルタイトル
+        // Panel title
         this.label.setText(observer.getTitle());
 
-        // エラー発生状況
+        // Error occurrence status
         if (observer.getErrorListCount() > 0) {
-            // エラー発生であるので、自身タブをアクティブにする
+            // Since an error has occurred, activate your own tab
             AnalysisView tab = (AnalysisView)this.getParentComponent();
             tab.setSelectedPanel(this.getEnumPanel());
         }
     }
 
     /**
-     * エラーテーブルモデルを取得する
-     * @return		エラーテーブルモデル
+     * Get the error table model
+     * @return error table model
      */
     public ErrorInfoModel getModel() {
         return model;
@@ -273,13 +273,13 @@ public class ErrorInfoPanel extends AnalisysPanelBase implements Observer, IAnal
 
 
     /**
-     * タブフォーカスリスナを設定する
-     * @param listener		フォーカスリスナ
+     * Set tab focus listener
+     * @param listener Focus listener
      */
     @Override
     public void addTabFocusListener(TabFocusListener listener) {
         this.addFocusListener(listener);
-        // 子コンポーネントにもフォーカスリスナを設定する
+        // Set focus listener on child components as well
         if (this.tableError != null) {
             this.tableError.addFocusListener(listener);
             this.btnClear.addFocusListener(listener);
@@ -290,7 +290,7 @@ public class ErrorInfoPanel extends AnalisysPanelBase implements Observer, IAnal
 
 
     /**
-     * エクスポートを行う
+     * Export
      */
     @Override
     public void export(File file) {
@@ -300,31 +300,31 @@ public class ErrorInfoPanel extends AnalisysPanelBase implements Observer, IAnal
     }
 
     /**
-     * パネルにアクションリスナを設定する.<br/>
-     * メニューバーに作成済みのアクションリスナをパネルボタンに割り当てる。
-     * @param menu		メニューバー
+     * Set an action listener on the panel. <br/>
+     * Assign the created action listener to the menu bar to the panel button.
+     * @param menu Menu bar
      */
     @Override
     public void setActionListener(MainMenu menu) {
-        // 分析情報エクスポートアクション
+        // Analysis information export action
         this.btnExport.addActionListener(menu.getActionExportAnalysis());
-        // エラー箇所を開く
+        // Open the error part
         this.btnOpenFile.addActionListener((ActionListener) menu.getActionErrorOpenFile());
         this.tableError.addMouseListener((MouseListener) menu.getActionErrorOpenFile());
     }
 
     /**
-     * 選択行のエラーメッセージを取得する.<br/>
-     * テーブルモデルの2列目がエラーメッセージが設定されている。
-     * @return		コード情報
+     * Get the error message for the selected line. <br/>
+     * An error message is set in the second column of the table model.
+     * @return code information
      */
     public String getSelectedErrorMessage() {
 
-        //  選択行
+        // Selected line
         int row = this.tableError.getSelectedRow();
         if (row < 0) return null;
 
-        // ２列目はエラーメッセージ
+        // The second column is the error message
         DefaultTableModel tableModel = (DefaultTableModel) this.tableError.getModel();
         Object obj = tableModel.getValueAt(row, 1);
         if (obj == null) return null;
@@ -333,31 +333,31 @@ public class ErrorInfoPanel extends AnalisysPanelBase implements Observer, IAnal
     }
 
     /**
-     * モデルのクリアを行う。
+     * Clear the model.
      */
     @Override
     public void clearModel() {
-        // モデルクリア
+        // Model clear
         model.clearErrorList();
     }
 
     /**
-     * タブのクローズを行う
+     * Close the tab
      */
     @Override
     public void closeTab() { }
 
     /**
-     * 選択ソースコード行情報を取得する
-     * @return		選択ソースコード行情報
+     * Get selected source code line information
+     * @return Selected source code line information
      */
     @Override
     public CodeLine getSelectedCodeLine() {
-        //  選択行
+        // Selected line
         int row = this.tableError.getSelectedRow();
         if (row < 0) return null;
 
-        // 1列目がCodeLine情報
+        // The first column is CodeLine information
         DefaultTableModel tableModel = (DefaultTableModel) this.tableError.getModel();
         Object obj = tableModel.getValueAt(row, 0);
         if (obj == null) return null;
@@ -369,16 +369,16 @@ public class ErrorInfoPanel extends AnalisysPanelBase implements Observer, IAnal
     }
 
     /**
-     * 選択ブロックを取得する
-     * @return		選択ブロック
+     * Get the selected block
+     * @return selection block
      */
     @Override
     public IBlock getSelectedBlock() {
-        //  選択行
+        // Selected line
         int row = this.tableError.getSelectedRow();
         if (row < 0) return null;
 
-        // 1列目がCodeLine情報
+        // The first column is CodeLine information
         DefaultTableModel tableModel = (DefaultTableModel) this.tableError.getModel();
         Object obj = tableModel.getValueAt(row, 0);
         if (obj == null) return null;
@@ -390,8 +390,8 @@ public class ErrorInfoPanel extends AnalisysPanelBase implements Observer, IAnal
     }
 
     /**
-     * 選択付加情報を取得する
-     * @return		選択付加情報
+     * Get additional selection information
+     * @return Selectable additional information
      */
     @Override
     public IInformation getSelectedInformation() {
@@ -399,15 +399,15 @@ public class ErrorInfoPanel extends AnalisysPanelBase implements Observer, IAnal
     }
 
     /**
-     * ソースビュープロパティを設定する
-     * @param properties		ソースビュープロパティ
+     * Set source view properties
+     * @param properties Source view properties
      */
     @Override
     public void setSourceProperties(SourceProperties properties) {}
 
 
     /**
-     * 選択項目をクリップボードにコピーする.
+     * Copy the selection to the clipboard.
      */
     @Override
     public void copyClipboard() {
@@ -415,12 +415,12 @@ public class ErrorInfoPanel extends AnalisysPanelBase implements Observer, IAnal
         String text = SwingUtils.toCsvOfSeletedRows(this.tableError);
         if (text == null) return;
 
-        // クリップボードにコピーする
+        // copy to clipboard
         SwingUtils.copyClipboard(text);
     }
 
     /**
-     * エクスポート可能か否か
+     * Whether it can be exported
      */
 	@Override
 	public boolean isExportable() {

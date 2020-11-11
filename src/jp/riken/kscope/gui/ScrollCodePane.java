@@ -57,54 +57,54 @@ import jp.riken.kscope.utils.SwingUtils;
 
 
 /**
- * ソースコード表示パイン.<br/>
- * ソースコードを表示するテキストペインを提供する。<br/>
+ * Source code display pine. <br/>
+ * Provides a text pane that displays the source code. <br/>
  * @author RIKEN
  */
 public class ScrollCodePane extends FrameScrollPane implements ITabComponent, ChangeListener, CaretListener, Observer {
 
-    /** シリアル番号 */
+    /** Serial number */
     private static final long serialVersionUID = 1L;
 
-    /** 行番号最小桁数 */
+    /** Minimum number of columns in line number */
     private final int MINIMUMDISPLAYDIGITS = 5;
-    /** プロファイラコストデータ表示エリア最小桁数(=表示幅) */
+    /** Minimum number of digits in profiler cost data display area (= display width) */
     private final int PROFILER_BARGPRAPH_DIGITS = 7;
 
-    /** コード表示テキストパイン */
+    /** Code display text pine */
     private CodePane sourcePane;
 
-    /** 行番号表示ヘッダー */
+    /** Line number display header */
     private TextLineNumber lineHeader;
-    /** プロファイラー表示フッター */
+    /** Profiler display footer */
     private ProfilerLineInfo profilerFooter;
 
-    /** 表示ソースモデル */
+    /** Display source model */
     private SourceCodeModel model;
 
-    /** 親コンポーネント */
+    /** Parent component */
     private ITabComponent parentCompornent = null;
 
-    /** タブサイズ */
+    /** Tab size */
     private final int TAB_SIZE = 4;
 
     /**
-     * キーワードプロパティ.<br/>
-     * テキストパインの表示している領域のみキーワードのハイライトを適用する。<br/>
-     * スクロールしたときに再適用する為に待避しておく。
+     * Keyword properties. <br/>
+     * Apply keyword highlighting only to the area where the text pine is displayed. <br/>
+     * Save it for reapplying when scrolling.
      */
     private KeywordProperties propertiesKeyword;
 
-    /** 選択コード行情報 */
+    /** Selection code line information */
     private CodeLine selectedline;
 
-    /** 現在の表示開始行番号 */
+    /** Current display start line number */
     private int currentStartLine;
-    /** 現在の表示終了行番号 */
+    /** Current display end line number */
     private int currentEndLine;
 
     /**
-     * コンストラクタ
+     * Constructor
      */
     public ScrollCodePane() {
         super();
@@ -112,33 +112,33 @@ public class ScrollCodePane extends FrameScrollPane implements ITabComponent, Ch
     }
 
     /**
-     * 初期化を行う.<br/>
-     * ソースコードタブを配置する。
+     * Initialize. <br/>
+     * Place the source code tab.
      */
     private void initGUI() {
         try {
             sourcePane = new CodePane();
             //sourcePane.setUI(new LineHighlightTextPaneUI(sourcePane));
 
-            // 読み取り専用とする。
+            // Make it read-only.
             sourcePane.setEditable(false);
-            sourcePane.getCaret().setVisible(true);   // キャレットを表示する
+            sourcePane.getCaret().setVisible(true);   // Show the caret
             sourcePane.setParentComponent(this);
 
-            // タブサイズを設定する。
+            // Set the tab size.
             SwingUtils.setTabSize(sourcePane, TAB_SIZE);
 
             this.setViewportView(sourcePane);
 
-            // 行番号表示
+            // Line number display
             this.lineHeader = new TextLineNumber(sourcePane, MINIMUMDISPLAYDIGITS);
             this.lineHeader.setBackground(new jp.riken.kscope.properties.SourceProperties().getLineNumberColor());
             this.setRowHeaderView(this.lineHeader);
 
-            // プロファイラデータ表示フッター生成
+            // Profiler data display footer generation
             this.profilerFooter = new ProfilerLineInfo(sourcePane, PROFILER_BARGPRAPH_DIGITS);
 
-            // スクロールイベント
+            // Scroll event
             this.getViewport().addChangeListener(this);
 
             // CaretListener
@@ -150,8 +150,8 @@ public class ScrollCodePane extends FrameScrollPane implements ITabComponent, Ch
     }
 
     /**
-     * プロファイラデータ表示フッターを表示する
-     * @param visible		true=表示
+     * Display profiler data display footer
+     * @param visible true = display
      */
     public void setVisibleBargraph(boolean visible) {
         if (visible) {
@@ -164,9 +164,9 @@ public class ScrollCodePane extends FrameScrollPane implements ITabComponent, Ch
 
 
     /**
-     * 末尾に文字列を追加する。
-     * @param str		追加文字列
-     * @throws BadLocationException			文字列追加エラー
+     * Add a string at the end.
+     * @param str Additional string
+     * @throws BadLocationException String addition error
      */
     public void appendString(String str) throws BadLocationException {
         Document doc = this.sourcePane.getDocument();
@@ -175,13 +175,13 @@ public class ScrollCodePane extends FrameScrollPane implements ITabComponent, Ch
         SimpleAttributeSet attr = new SimpleAttributeSet();
         doc.insertString(endPos.getOffset(), str, attr);
 
-        // タブサイズを設定する。
+        // Set the tab size.
         SwingUtils.setTabSize(sourcePane, TAB_SIZE);
     }
 
 
     /**
-     * 表示ドキュメントをクリアする。
+     * Clear the displayed document.
      */
     public void clearDocument() {
         StyleContext sc = new StyleContext();
@@ -191,8 +191,8 @@ public class ScrollCodePane extends FrameScrollPane implements ITabComponent, Ch
 
 
     /**
-     * 表示ソースファイルパス（絶対パス)を取得する。
-     * @return filePath		表示ソースファイルパス（絶対パス)
+     * Get the display source file path (absolute path).
+     * @return filePath Display source file path (absolute path)
      */
     public String getFilePath() {
         if (this.model == null) return null;
@@ -201,16 +201,16 @@ public class ScrollCodePane extends FrameScrollPane implements ITabComponent, Ch
 
 
     /**
-     * テキストパインを取得する。
-     * @return		テキストパイン
+     * Get text pine.
+     * @return text pine
      */
     public CodePane getSourcePane() {
         return this.sourcePane;
     }
 
     /**
-     * 親コンポーネントを取得する.
-     * @return		親コンポーネント
+     * Get the parent component.
+     * @return Parent component
      */
     @Override
     public ITabComponent getParentComponent() {
@@ -218,8 +218,8 @@ public class ScrollCodePane extends FrameScrollPane implements ITabComponent, Ch
     }
 
     /**
-     * 親コンポーネントを設定する.
-     * @param component		親コンポーネント
+     * Set the parent component.
+     * @param component Parent component
      */
     @Override
     public void setParentComponent(ITabComponent component) {
@@ -227,8 +227,8 @@ public class ScrollCodePane extends FrameScrollPane implements ITabComponent, Ch
     }
 
     /**
-     * フォーカスリスナを設定する
-     * @param listener		フォーカスリスナ
+     * Set focus listener
+     * @param listener Focus listener
      */
     @Override
     public void addTabFocusListener(TabFocusListener listener) {
@@ -239,75 +239,75 @@ public class ScrollCodePane extends FrameScrollPane implements ITabComponent, Ch
     }
 
     /**
-     * タブを閉じる
+     * Close tab
      */
     @Override
     public void closeTabComponent() {
-        // 親のタブパインにてタブを閉じる。
+        // Close the tab with the parent tab pine.
         if (this.parentCompornent != null) {
             this.parentCompornent.closeTabComponent();
         }
     }
 
     /**
-     * ソースビュープロパティを設定する
-     * @param properties		ソースビュープロパティ
+     * Set source view properties
+     * @param properties Source view properties
      */
     public void setSourceProperties(SourceProperties properties) {
-        // フォント
+        // Font
         sourcePane.setFont(properties.getFont());
-        // フォント色
+        // Font color
         sourcePane.setForeground(properties.getFontColor());
-        // 背景色
+        // Background color
         sourcePane.setBackground(properties.getBackgroundColor());
-        // 選択行背景色
+        // Selected line background color
         sourcePane.setActiveRowColor(properties.getActiverowColor());
-        // 折り返し位置
+        // Wrap position
         sourcePane.setWordwrap(properties.getWordwrap());
         if (this.model != null) {
-            // 強調範囲背景色
+            // Highlight range background color
             this.model.setColorHighlightArea(properties.getAreaColor());
-            // 選択範囲背景色
+            // Selection background color
             this.model.setColorSelectedBlock(properties.getBlockColor());
 
-            // 背景色設定を更新する
+            // Update background color settings
             this.setLinesBackground();
 
-            // 検索文字列の文字色
+            // Character color of search string
             this.model.setColorSearchFont(properties.getSearchFontColor());
-            // 検索文字列の背景色
+            // Background color of search string
             this.model.setColorSearchBackground(properties.getSearchBackgroundColor());
         }
 
-        // 行番号ヘッダーを再描画する。
+        // Redraw the line number header.
         this.lineHeader.setBackground(properties.getLineNumberColor());
         this.lineHeader.update();
 
-        // キーワードプロパティ、検索・トレースキーワードを適用する.
+        // Apply keyword properties, search / trace keywords.
         applyKeyword();
     }
 
     /**
-     * キーワードプロパティを設定する
-     * @param properties		キーワードプロパティ
+     * Set keyword properties
+     * @param properties Keyword properties
      */
     public void setKeywordProperties(KeywordProperties properties) {
         this.propertiesKeyword = properties;
 
-        // キーワードプロパティ、検索・トレースキーワードを適用する.
+        // Apply keyword properties, search / trace keywords.
         applyKeyword();
     }
 
 
     /**
-     * 検索・トレースキーワードを設定する
-     * @param keywords		検索・トレースキーワード
+     * Set search / trace keywords
+     * @param keywords Search / trace keywords
      */
     public void setSearchWords(Keyword[] keywords) {
         if (this.model == null) return;
         if (keywords == null) return;
 
-        // キーワードがこのソースに適用するか判断する
+        // Determine if the keyword applies to this source
         List<Keyword> list = new ArrayList<Keyword>();
         for (Keyword word : keywords) {
             CodeLine searchline = word.getSearchLine();
@@ -324,24 +324,24 @@ public class ScrollCodePane extends FrameScrollPane implements ITabComponent, Ch
         }
         this.model.setSearchWords(list);
 
-        // キーワードプロパティ、検索・トレースキーワードを適用する.
+        // Apply keyword properties, search / trace keywords.
         applyKeyword();
     }
 
     /**
-     * 検索・トレースキーワードをクリアする.
+     * Clear search / trace keywords.
      */
     public void clearSearchWords() {
         if (this.model == null) return;
         this.model.clearSearchWords();
 
-        // キーワードプロパティ、検索・トレースキーワードを適用する.
+        // Apply keyword properties, search / trace keywords.
         applyKeyword();
     }
 
 
     /**
-     * キーワードプロパティ、検索・トレースキーワードを適用する.
+     * Apply keyword properties, search / trace keywords.
      */
     public void applyKeyword() {
         if (this.model == null) return;
@@ -351,38 +351,38 @@ public class ScrollCodePane extends FrameScrollPane implements ITabComponent, Ch
         }
         BatchDocument doc = (BatchDocument)sourcePane.getDocument();
 
-        // 表示始点、終点キャレット位置から表示開始、終了行番号の取得
+        // Get display start and end line numbers from display start and end caret positions
         int startline = this.sourcePane.getViewStartLine();
         int endline = this.sourcePane.getViewEndLine();
         if (startline <= 0 || endline <= 0) return;
 
-        // キーワードハイライトのクリア
+        // Clear keyword highlights
         doc.clearKeywordAttributes(startline, endline);
 
-        // 表示位置の予約後のハイライト設定
+        // Highlight setting after reservation of display position
         doc.applyHighlighting(this.propertiesKeyword, startline, endline);
 
         int startOffset   = this.sourcePane.getLineStartOffset(startline);
         int endOffset   = this.sourcePane.getLineEndOffset(endline);
-        // 検索・トレースキーワードのハイライト設定
+        // Search / trace keyword highlighting
         List<Keyword> list = this.model.getSearchWords();
         if (list != null) {
             for (Keyword word : list) {
                 try {
-                	// 検索文字のコード行情報
+                	// Search character code line information
                     CodeLine searchline = word.getSearchLine();
                     if (searchline == null) {
-                        // ハイライト設定の適用
+                        // Apply highlight settings
                         doc.applyKeyword(word, startOffset, endOffset);
                     }
                     else {
-                        // 適用対象行を含むかチェックする
+                        // Check if the applicable line is included
                         int startLineOffset   = this.sourcePane.getLineStartOffset(searchline.getStartLine());
                         int endLineOffset   = this.sourcePane.getLineEndOffset(searchline.getEndLine());
                         if (endOffset < startLineOffset) continue;
                         if (endLineOffset < startOffset) continue;
 
-                        // ハイライト設定の適用
+                        // Apply highlight settings
                         doc.applyKeyword(word, startLineOffset, endLineOffset);
                     }
                 } catch (Exception e) {
@@ -391,20 +391,20 @@ public class ScrollCodePane extends FrameScrollPane implements ITabComponent, Ch
             }
         }
 
-        // 変数アクセス先メモリキーワードのハイライト設定
+        // Variable access destination memory keyword highlight setting
         List<VariableMemory> listVar = this.model.getVariableMemories();
         if (listVar != null) {
             for (Keyword word : listVar) {
                 try {
                     CodeLine searchline = word.getSearchLine();
                     if (searchline == null) continue;
-                    // 適用対象行を含むかチェックする
+                    // Check if the applicable line is included
                     int startLineOffset   = this.sourcePane.getLineStartOffset(searchline.getStartLine());
                     int endLineOffset   = this.sourcePane.getLineEndOffset(searchline.getEndLine());
                     if (endOffset < startLineOffset) continue;
                     if (endLineOffset < startOffset) continue;
 
-                    // ハイライト設定の適用
+                    // Apply highlight settings
                     doc.applyKeyword(word, startLineOffset, endLineOffset);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -414,24 +414,24 @@ public class ScrollCodePane extends FrameScrollPane implements ITabComponent, Ch
     }
 
     /**
-     * スクロール変更イベント
-     * @param event		イベント情報
+     * Scroll change event
+     * @param event Event information
      */
     @Override
     public void stateChanged(ChangeEvent event) {
 
-        // 表示開始行番号
+        // Display start line number
         int startLine = this.sourcePane.getViewStartLine();
-        // 現在の表示終了行番号
+        // Current display end line number
         int endLine = this.sourcePane.getViewEndLine();
 
-        // ビューの変更により表示行の変更がなければ、適用は行わない。
-        // イベントが頻発する為の適用呼出の軽減対策
+        // If there is no change in the display row due to the change in the view, it will not be applied.
+        // Measures to mitigate applied calls due to frequent events
         if (this.currentStartLine == startLine && this.currentEndLine == endLine) {
             return;
         }
 
-        // キーワードプロパティ、検索・トレースキーワードを適用する.
+        // Apply keyword properties, search / trace keywords.
         applyKeyword();
 
         this.currentStartLine = startLine;
@@ -439,9 +439,9 @@ public class ScrollCodePane extends FrameScrollPane implements ITabComponent, Ch
     }
 
     /**
-     * ソースファイルを読み込む
-     * @param source		ソースファイル
-     * @throws Exception		ソースファイル読込エラー
+     * Read the source file
+     * @param source source file
+     * @throws Exception Source file read error
      */
     public void readFile(SourceFile source) throws Exception {
         this.model = new SourceCodeModel(source);
@@ -449,14 +449,14 @@ public class ScrollCodePane extends FrameScrollPane implements ITabComponent, Ch
 
         sourcePane.setDocument(this.model.getDocument());
 
-        // タブサイズを設定する。
+        // Set the tab size.
         SwingUtils.setTabSize(sourcePane, TAB_SIZE);
 
-        // キャレット位置を先頭にする
+        // Caret position first
         this.sourcePane.setCaretPosition(0);
-        this.sourcePane.getCaret().setVisible(true);   // キャレットを表示する
+        this.sourcePane.getCaret().setVisible(true);   // Show the caret
 
-        // 選択行情報
+        // Selected row information
         SourceFile f = model.getSourceFile();
         String fn = null;
         if (f != null) {
@@ -464,18 +464,18 @@ public class ScrollCodePane extends FrameScrollPane implements ITabComponent, Ch
         }
         this.selectedline = new CodeLine(f, null, 1, fn);
 
-        // オブザーバを設定する。
+        // Set the observer.
         model.addObserver(this);
     }
 
     /**
-     * キャレット位置更新イベント
-     * @param event		イベント情報
+     * Caret position update event
+     * @param event Event information
      */
     @Override
     public void caretUpdate(CaretEvent event) {
         if (this.model == null) return;
-        // 選択行情報
+        // Selected row information
         this.selectedline = null;
 
         if (sourcePane.getDocument() == null) return;
@@ -484,31 +484,31 @@ public class ScrollCodePane extends FrameScrollPane implements ITabComponent, Ch
             return;
         }
 
-        // キャレットの位置
+        // Caret position
         int dot = event.getDot();
-        // 論理選択範囲の反対側の位置を返します。選択範囲がない場合は、ドットと同じ
+        // Returns the position on the opposite side of the logical selection. Same as dot if there is no selection
         int mark = event.getMark();
 
-        // キャレット位置の行番号
+        // Line number of caret position
         //int row = SwingUtils.getRow((JTextComponent)event.getSource(), event.getDot());
         int row = sourcePane.getRow(event.getDot());
-        // キャレット位置の列番号
+        // Column number of caret position
         int col = SwingUtils.getColumn((JTextComponent)event.getSource(), event.getDot());
 
-        // 選択文字列クリア
+        // Clear selected string
         String selectword = null;
         try{
             BatchDocument document = (BatchDocument)sourcePane.getDocument();
 
-            // 選択文字列数
+            // Number of selected strings
             int len = dot < mark ? mark-dot : dot-mark;
 
             if (len > 0) {
-                // 選択文字列
+                // Selected string
                 selectword = document.getText(dot < mark ? dot : mark, len);
                 if (selectword != null) {
                     selectword = selectword.trim();
-                    // 選択範囲の場合、改行位置まで
+                    // In case of selection, up to line feed position
                     int crpos = selectword.indexOf('\n');
                     if (crpos > 0) {
                         selectword = selectword.substring(0, crpos);
@@ -521,33 +521,33 @@ public class ScrollCodePane extends FrameScrollPane implements ITabComponent, Ch
             }
             if (selectword != null) selectword = selectword.trim();
 
-            // 選択文字列が変数として認識可能であるかチェックする。
+            // Check if the selected string is recognizable as a variable.
             if (!isVariableWord(selectword)) {
-                // 変数名ではない。
+                // Not a variable name.
                 selectword = null;
             }
 
-            // 選択行情報
+            // Selected row information
             SourceFile f = model.getSourceFile();
             String fn = null;
             if (f != null) {
             	fn = f.getPath();
             }
             selectedline = new CodeLine(f, selectword, row, fn);
-            // ステータスバーに表示
+            // Show in status bar
             Application.status.setMessageLocation(row, col, selectword);
 
         }catch (BadLocationException ble){
-            System.err.println(Message.getString("scrollcodepane.errout.processfaild")); //文書の読み込みに失敗しました。
+            System.err.println(Message.getString("scrollcodepane.errout.processfaild")); // Failed to read the document.
         }
 
     }
 
     /**
-     * 変数文字列として認識可能であるかチェックする.<br/>
-     * a-zの英字を含む文字列であるかチェックする.
-     * @param word		変数文字列
-     * @return			true=変数文字列として認識可能
+     * Check if it can be recognized as a variable string. <br/>
+     * Check if the string contains the letters a-z.
+     * @param word variable string
+     * @return true = Can be recognized as a variable string
      */
     private boolean isVariableWord(String word) {
         if (word == null) return false;
@@ -561,8 +561,8 @@ public class ScrollCodePane extends FrameScrollPane implements ITabComponent, Ch
 
 
     /**
-     * コード行情報の選択範囲を追加する
-     * @param lines		コード行情報
+     * Add a selection of code line information
+     * @param lines Code line information
      */
     public void setSelectedBlock(CodeLine[] lines) {
         if (this.model == null) return;
@@ -571,63 +571,63 @@ public class ScrollCodePane extends FrameScrollPane implements ITabComponent, Ch
             return;
         }
 
-        // ソースファイル情報が一致しているかチェックする
+        // Check if the source file information matches
         List<CodeLine> list = new ArrayList<CodeLine>();
         for (int i=0; i<lines.length; i++) {
             if (lines[i].getSourceFile() != null) {
                  if (lines[i].getSourceFile().equals(this.model.getSourceFile())) {
-                     // ソースファイル一致
+                     // Source file match
                      list.add(lines[i]);
                  }
             }
             else {
-                // ソースファイルの情報がないので、そのまま追加する
+                // Since there is no source file information, add it as it is
                 list.add(lines[i]);
             }
         }
 
-        // コード行情報の選択範囲を追加する
+        // Add a selection of code line information
         this.model.setSelectedBlock(list);
 
-        // 背景色設定を更新する
+        // Update background color settings
         this.setLinesBackground();
     }
 
 
     /**
-     * コード行情報の選択範囲を追加する
-     * @param line		コード行情報
+     * Add a selection of code line information
+     * @param line Code line information
      */
     public void addSelectedBlock(CodeLine line) {
         if (line == null) return;
         if (this.model == null) return;
 
-        // ソースファイル情報が一致しているかチェックする
-         // ソースファイルの情報がない場合は、そのまま追加する
+        // Check if the source file information matches
+         // If there is no source file information, add it as it is
 //        if (line.getSourceFile() != null) {
 //             if (!line.getSourceFile().equals(this.model.getSourceFile())) {
-//                 // ソースファイル不一致
+// // Source file mismatch
 //                 return;
 //             }
 //        }
 
-        // コード行情報の選択範囲を追加する
+        // Add a selection of code line information
         this.model.addSelectedBlock(line);
 
-        // 背景色設定を更新する
+        // Update background color settings
         this.setLinesBackground();
 
         setLinePosition(line);
     }
 
     /**
-     * コード行情報の選択範囲をクリアする。
+     * Clear the selection of code line information.
      */
     public void clearSelectedBlock() {
         if (this.model == null) return;
         this.model.clearSelectedBlock();
 
-        // 背景色設定を更新する
+        // Update background color settings
         this.setLinesBackground();
 
         this.repaint();
@@ -635,14 +635,14 @@ public class ScrollCodePane extends FrameScrollPane implements ITabComponent, Ch
     }
 
     /**
-     * ソースコードパインに行ハイライト情報を設定する
+     * Set line highlight information in the source code pine
      */
     private void setLinesBackground() {
         if (this.model == null) return;
-        // 行ハイライト設定のクリア
+        // Clear line highlight settings
         this.sourcePane.clearListLinesColor();
 
-        // 強調範囲
+        // Highlight range
         if (this.model.getColorHighlightArea() != null && this.model.getHighlightArea() != null) {
             List<CodeLine> lines = this.model.getHighlightArea();
             Color background = this.model.getColorHighlightArea();
@@ -651,7 +651,7 @@ public class ScrollCodePane extends FrameScrollPane implements ITabComponent, Ch
             }
 
         }
-        // 選択ブロック
+        // Select block
         if (this.model.getColorSelectedBlock() != null && this.model.getSelectedBlock() != null) {
             List<CodeLine> lines = this.model.getSelectedBlock();
             Color background = this.model.getColorSelectedBlock();
@@ -664,32 +664,32 @@ public class ScrollCodePane extends FrameScrollPane implements ITabComponent, Ch
     }
 
     /**
-     * 指定行番号位置を表示領域に表示する。
-     * @param line		表示行番号
+     * Display the specified line number position in the display area.
+     * @param line Display line number
      */
     public void setLinePosition(CodeLine line) {
         if (line == null) return;
 
-        // 開始行番号
+        // Start line number
         int start = line.getStartLine();
-        // 指定行番号位置を表示領域に表示する。
+        // Display the specified line number position in the display area.
         setLinePosition(start);
 
     }
 
     /**
-     * 指定行番号位置を表示領域に表示する。
-     * @param line		表示行番号
+     * Display the specified line number position in the display area.
+     * @param line Display line number
      */
     public void setLinePosition(int start) {
 
         if (start <= 0) start = 1;
 
-        // 上部に2行の余白を設ける
+        // Leave two lines at the top
         int viewLine = start - 2;
         if (viewLine <= 0) viewLine = 1;
 
-        // 行番号のキャレットインデックスの取得を行う
+        // Get the caret index of the line number
         int pos = this.sourcePane.getLineStartOffset(start);
         this.sourcePane.setCaretPosition(pos);
 
@@ -709,44 +709,44 @@ public class ScrollCodePane extends FrameScrollPane implements ITabComponent, Ch
     }
 
     /**
-     * ソースコードモデルを取得する
-     * @return			ソースコードモデル
+     * Get the source code model
+     * @return Source code model
      */
     public SourceCodeModel getModel() {
         return this.model;
     }
 
     /**
-     * ソースファイルパネルコンテキストメニューを設定する
-     * @param menuSourcePanel		ソースファイルパネルコンテキストメニュー
+     * Set the source file panel context menu
+     * @param menuSourcePanel Source File Panel Context Menu
      */
     public void setSourcePanelPopupMenu(SourcePanelPopupMenu menuSourcePanel) {
         this.sourcePane.setComponentPopupMenu(menuSourcePanel);
 
-        // Filtered-ASTへの逆引き機能用に追加(2014/4/8 ohichi)
+        // Added for reverse lookup function to Filtered-AST (2014/4/8 ohichi)
         this.sourcePane.addMouseListener((MouseListener) menuSourcePanel.getAction());
     }
 
     /**
-     * 選択行、選択文字情報を取得する
-     * @return		選択行情報
+     * Get selected line and selected character information
+     * @return Selected line information
      */
     public CodeLine getSelectedCodeLine() {
-        // 選択されている文字列を取得する
+        // Get the selected string
         String selectText = sourcePane.getSelectedText();
         if (selectedline == null) return null;
 
-        // 実際に選択されている文字列を設定する
+        // Set the actually selected string
         selectedline.setStatement(selectText);
         return selectedline;
     }
 
     /**
-     * 選択行範囲を取得する
-     * @return		選択範囲行コード情報
+     * Get the selected row range
+     * @return Selection line code information
      */
     public CodeLine getSelectedArea() {
-        // 選択されている文字列を取得する
+        // Get the selected string
         String selectText = sourcePane.getSelectedText();
         int startpos = sourcePane.getSelectionStart();
         int endpos = sourcePane.getSelectionEnd();
@@ -763,8 +763,8 @@ public class ScrollCodePane extends FrameScrollPane implements ITabComponent, Ch
 
 
     /**
-     * ソースファイルを取得する
-     * @return		ソースファイル
+     * Get the source file
+     * @return source file
      */
     public SourceFile getSelectedSourceFile() {
         if (this.model == null) return null;
@@ -773,35 +773,35 @@ public class ScrollCodePane extends FrameScrollPane implements ITabComponent, Ch
     }
 
     /**
-     * クリップボードへコピーを行う
+     * Copy to clipboard
      */
     public void copyClipboard() {
         this.sourcePane.copy();
     }
 
     /**
-     * 検索・トレースキーワードをクリアする
-     * @param  type     クリアキーワードタイプ
+     * Clear search / trace keywords
+     * @param type Clear keyword type
      */
     public void clearSearchWords(KEYWORD_TYPE type) {
         if (this.model == null) return;
         this.model.clearSearchWords(type);
 
-        // キーワードプロパティ、検索・トレースキーワードを適用する.
+        // Apply keyword properties, search / trace keywords.
         applyKeyword();
     }
 
 
     /**
-     * バーグラフデータを設定する
-     * @param bardata			バーグラフデータ
+     * Set bar graph data
+     * @param bardata Bar graph data
      */
     public void setBargraphData(List<ISourceBargraph> bardata) {
         this.profilerFooter.setBargraphData(bardata);
     }
 
     /**
-     * バーグラフデータをクリアする。
+     * Clear the bar graph data.
      */
     public void clearBargraphData() {
         this.profilerFooter.clearBargraphData();
@@ -812,9 +812,9 @@ public class ScrollCodePane extends FrameScrollPane implements ITabComponent, Ch
 
 
     /**
-     * ソースビューモデルの変更通知イベント
-     * @param o			通知元
-     * @param arg		通知項目
+     * Source view model change notification event
+     * @param o Notification source
+     * @param arg Notification item
      */
     @Override
     public void update(Observable o, Object arg) {
@@ -824,7 +824,7 @@ public class ScrollCodePane extends FrameScrollPane implements ITabComponent, Ch
             return;
         }
 
-        // バーグラフデータをセットする
+        // Set bar graph data
         setBargraphData(list);
 
         this.repaint();
@@ -832,15 +832,15 @@ public class ScrollCodePane extends FrameScrollPane implements ITabComponent, Ch
     }
 
     /**
-     * 変数アクセス先メモリプロパティを設定する
-     * @param properties	変数アクセス先メモリプロパティ
+     * Set variable access destination memory property
+     * @param properties Variable access destination memory property
      */
 	public void setVariableMemoryProperties(VariableMemoryProperties properties) {
 
         if (this.model == null) return;
         if (properties == null) return;
 
-        // 変数アクセス先メモリがこのソースに適用するか判断する
+        // Determine if variable access memory applies to this source
         List<VariableMemory> varmems = properties.getListVariableMemory();
         List<VariableMemory> list = new ArrayList<VariableMemory>();
         for (VariableMemory var : varmems) {
@@ -856,7 +856,7 @@ public class ScrollCodePane extends FrameScrollPane implements ITabComponent, Ch
         }
         this.model.setVariableMemories(list);
 
-        // キーワードプロパティ、検索・トレースキーワードを適用する.
+        // Apply keyword properties, search / trace keywords.
         applyKeyword();
 	}
 
@@ -864,10 +864,10 @@ public class ScrollCodePane extends FrameScrollPane implements ITabComponent, Ch
 
         if (line == null) return;
         if (this.model == null) return;
-        // コード行情報の選択範囲を追加する
+        // Add a selection of code line information
         this.model.addSelectedBlock(line);
 
-        // 背景色設定を更新する
+        // Update background color settings
         this.setLinesBackground();
 
         clearSelectionPos();
@@ -875,7 +875,7 @@ public class ScrollCodePane extends FrameScrollPane implements ITabComponent, Ch
 
 
     /**
-     * 選択範囲をクリアする。
+     * Clear the selection.
      */
     public void clearSelectionPos() {
         int start = this.sourcePane.getSelectionStart();

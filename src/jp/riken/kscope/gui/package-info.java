@@ -16,6 +16,6 @@
  */
 
 /**
- * 画面構成部品パッケージ
+ * Screen component package
  */
 package jp.riken.kscope.gui;

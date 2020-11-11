@@ -45,28 +45,28 @@ import jp.riken.kscope.properties.SourceProperties;
 import jp.riken.kscope.utils.SwingUtils;
 
 /**
- * エクスプローラビュークラス.<br/>
- * 構造、モジュール、ソース、XMLタブを配置する。
+ * Explorer view class. <br/>
+ * Place structures, modules, sources and XML tabs.
  * @author RIKEN
  */
 public class ExploreView extends ClosableTabbedPane implements ITabComponent, PropertyChangeListener {
 
-    /** シリアル番号  */
+    /** Serial number  */
     private static final long serialVersionUID = 1L;
 
-    /** モジュールエクスプローラパネル */
+    /** Module Explorer Panel */
     private ModuleTreePanel moduleTreePanel;
-    /** ソースエクスプローラパネル */
+    /** Source Explorer Panel */
     private FileTreePanel sourceTreePanel;
-    /** XMLエクスプローラパネル */
+    /** XML Explorer Panel */
     private FileTreePanel xmlTreePanel;
-    /** 構造ツリーポップアップメニュー */
+    /** Structure tree pop-up menu */
     private LanguageTreePopupMenu menuLanguagePopup;
-    /** ツリーの変更リスナ */
+    /** Tree change listener */
     private ExploreTreeChangeAction actionTreeChange;
 
     /**
-     * コンストラクタ
+     * Constructor
      */
     public ExploreView() {
         super(FRAME_VIEW.EXPLORE_VIEW);
@@ -75,36 +75,36 @@ public class ExploreView extends ClosableTabbedPane implements ITabComponent, Pr
 
 
     /**
-     * 初期化を行う.<br/>
-     * 構造、モジュール、ソース、XMLをタブを配置する。
+     * Initialize. <br/>
+     * Place tabs for structures, modules, sources and XML.
      */
     private void initGUI() {
         try {
-            // 構造ツリーパネル
+            // Structure Tree Panel
             LanguageTreePanel languageTreePanel = new LanguageTreePanel(EXPLORE_PANEL.LANGUAGE);
             this.addTab(EXPLORE_PANEL.LANGUAGE.getTabName(),  languageTreePanel);
 
-            // モジュールツリーパネル
+            // Module Tree Panel
             moduleTreePanel = new ModuleTreePanel(EXPLORE_PANEL.MODULE);
             this.addTab(
-                    Message.getString("mainmenu.window.explore.module"), //モジュール
+                    Message.getString("mainmenu.window.explore.module"), //module
                     moduleTreePanel);
 
-            // ソースファイルパネル
+            // Source File Panel
             sourceTreePanel = new FileTreePanel(EXPLORE_PANEL.SOURCE);
-            sourceTreePanel.initTreeTitle(Message.getString("exploreview.treename.source")); //ソースファイル
+            sourceTreePanel.initTreeTitle(Message.getString("exploreview.treename.source")); //source file
             this.addTab(
-                    Message.getString("mainmenu.window.explore.source"), //ソース
+                    Message.getString("mainmenu.window.explore.source"), //Source
                     sourceTreePanel);
 
-            // XMLファイルパネル
+            // XML File Panel
             xmlTreePanel = new FileTreePanel(EXPLORE_PANEL.XML);
-            xmlTreePanel.initTreeTitle(Message.getString("exploreview.treename.xml")); //XMLファイル
+            xmlTreePanel.initTreeTitle(Message.getString("exploreview.treename.xml")); // XML file
             this.addTab(
                     Message.getString("mainmenu.window.explore.xml"), //XML
                     xmlTreePanel);
 
-            // 初期表示を構造ツリータブとする。
+            // Set the initial display to the structure tree tab.
             this.setSelectedIndex(0);
 
         } catch (Exception e) {
@@ -114,7 +114,7 @@ public class ExploreView extends ClosableTabbedPane implements ITabComponent, Pr
 
 
     /**
-     * タブを閉じる
+     * Close tab
      */
     @Override
     public void closeTabComponent() {
@@ -123,8 +123,8 @@ public class ExploreView extends ClosableTabbedPane implements ITabComponent, Pr
     }
 
     /**
-     * XMLエクスプローラパネルがアクティブであるかチェックする
-     * @return   true=XMLエクスプローラパネルがアクティブ
+     * Check if the XML Explorer panel is active
+     * @return true = XML Explorer panel active
      */
     public boolean isActiveXmlTreePanel() {
         if (this.getSelectedComponent() == this.xmlTreePanel) {
@@ -134,7 +134,7 @@ public class ExploreView extends ClosableTabbedPane implements ITabComponent, Pr
     }
 
     /**
-     * 選択タブのツリーをすべて収納する。
+     * Stores the entire tree on the selection tab.
      */
     public void collapseTreeAll() {
         ITreeComponent tree = (ITreeComponent)this.getSelectedComponent();
@@ -144,7 +144,7 @@ public class ExploreView extends ClosableTabbedPane implements ITabComponent, Pr
 
 
     /**
-     * 選択タブのツリーをすべて展開する。
+     * Expand the entire tree on the Selection tab.
      */
     public void expandTreeAll() {
         ITreeComponent tree = (ITreeComponent)this.getSelectedComponent();
@@ -154,7 +154,7 @@ public class ExploreView extends ClosableTabbedPane implements ITabComponent, Pr
 
 
     /**
-     * 選択タブの選択ツリー配下ノードを展開する。
+     * Expand the nodes under the selection tree on the selection tab.
      */
     public void expandTreeSelect() {
         ITreeComponent tree = (ITreeComponent)this.getSelectedComponent();
@@ -164,8 +164,8 @@ public class ExploreView extends ClosableTabbedPane implements ITabComponent, Pr
 
 
     /**
-     * 選択ファイルを取得する
-     * @return		選択ファイル
+     * Get the selected file
+     * @return selection file
      */
     public SourceFile[] getSelectedSourceFiles() {
         ITreeComponent tree = (ITreeComponent)this.getSelectedComponent();
@@ -175,8 +175,8 @@ public class ExploreView extends ClosableTabbedPane implements ITabComponent, Pr
 
 
     /**
-     * 選択ノードのフォルダ・ファイルを取得する
-     * @return		選択フォルダ・ファイル
+     * Get the folder / file of the selected node
+     * @return Selected folder / file
      */
     public File[] getSelectedNodeFiles() {
         ITreeComponent tree = (ITreeComponent)this.getSelectedComponent();
@@ -185,8 +185,8 @@ public class ExploreView extends ClosableTabbedPane implements ITabComponent, Pr
     }
 
     /**
-     * 選択ソースコード行情報を取得する
-     * @return		選択ソースコード行情報
+     * Get selected source code line information
+     * @return Selected source code line information
      */
     public CodeLine[] getSelectedCodeLines() {
         ITreeComponent tree = (ITreeComponent)this.getSelectedComponent();
@@ -196,8 +196,8 @@ public class ExploreView extends ClosableTabbedPane implements ITabComponent, Pr
 
 
     /**
-     * 選択ブロックを取得する
-     * @return		選択ブロック
+     * Get the selected block
+     * @return selection block
      */
     public IBlock[] getSelectedBlocks() {
         ITreeComponent tree = (ITreeComponent)this.getSelectedComponent();
@@ -207,8 +207,8 @@ public class ExploreView extends ClosableTabbedPane implements ITabComponent, Pr
 
 
     /**
-     * 現在選択されているノードを取得する。
-     * @return		選択ノード
+     * Get the currently selected node.
+     * @return Selected node
      */
     public DefaultMutableTreeNode getSelectedNode() {
         ITreeComponent tree = (ITreeComponent)this.getSelectedComponent();
@@ -217,8 +217,8 @@ public class ExploreView extends ClosableTabbedPane implements ITabComponent, Pr
     }
 
     /**
-     * 現在選択されているノードリストを取得する。
-     * @return		選択ノードリスト
+     * Get the currently selected node list.
+     * @return Selected node list
      */
     public DefaultMutableTreeNode[] getSelectedNodes() {
         ITreeComponent tree = (ITreeComponent)this.getSelectedComponent();
@@ -228,15 +228,15 @@ public class ExploreView extends ClosableTabbedPane implements ITabComponent, Pr
 
 
     /**
-     * タブを閉じる
-     * @param index		閉じるタブインデックス
+     * Close tab
+     * @param index Close tab index
      */
     @Override
     protected void closeTab(int index) {
 
         if (index < 0) return;
 
-        // 閉じるタブ
+        // Close tab
         Component tab = this.getComponentAt(index);
         tab.setVisible(false);
         if (tab instanceof ITabComponent) {
@@ -248,8 +248,8 @@ public class ExploreView extends ClosableTabbedPane implements ITabComponent, Pr
     }
 
     /**
-     * 構造エクスプローラパネルを取得する
-     * @return		構造エクスプローラパネル
+     * Get the Structure Explorer panel
+     * @return Structure Explorer Panel
      */
     public LanguageTreePanel getPanelLanguageTree() {
 
@@ -268,24 +268,24 @@ public class ExploreView extends ClosableTabbedPane implements ITabComponent, Pr
     }
 
     /**
-     * モジュールエクスプローラパネルを取得する
-     * @return		モジュールエクスプローラパネル
+     * Get the Module Explorer panel
+     * @return Module Explorer Panel
      */
     public ModuleTreePanel getPanelModuleTree() {
         return this.moduleTreePanel;
     }
 
     /**
-     * ソースエクスプローラパネルを取得する
-     * @return		ソースエクスプローラパネル
+     * Get the Source Explorer panel
+     * @return Source Explorer Panel
      */
     public FileTreePanel getPanelSourceTree() {
         return this.sourceTreePanel;
     }
 
     /**
-     * XMLエクスプローラパネルを取得する
-     * @return		XMLエクスプローラパネル
+     * Get the XML Explorer panel
+     * @return XML Explorer Panel
      */
     public FileTreePanel getPanelXmlTree() {
         return this.xmlTreePanel;
@@ -293,8 +293,8 @@ public class ExploreView extends ClosableTabbedPane implements ITabComponent, Pr
 
 
     /**
-     * ソースツリーポップアップメニューの設定を行う
-     * @param menuPopup		ソースツリーポップアップメニュー
+     * Set the source tree pop-up menu
+     * @param menuPopup Sourcetree pop-up menu
      */
     public void setSourcePopupMenu(ITreePopupMenu menuPopup) {
         sourceTreePanel.setPopupMenu(menuPopup);
@@ -302,8 +302,8 @@ public class ExploreView extends ClosableTabbedPane implements ITabComponent, Pr
 
 
     /**
-     * XMLファイルツリーのポップアップメニューを設定する
-     * @param menuPopup		XMLファイルツリーポップアップメニュー
+     * Set the pop-up menu of the XML file tree
+     * @param menuPopup XML file tree pop-up menu
      */
     public void setXmlPopupMenu(ITreePopupMenu menuPopup) {
         xmlTreePanel.setPopupMenu(menuPopup);
@@ -311,8 +311,8 @@ public class ExploreView extends ClosableTabbedPane implements ITabComponent, Pr
 
 
     /**
-     * 構造ツリーのポップアップメニューを設定する
-     * @param menuPopup		構造ツリーポップアップメニュー
+     * Set the structure tree pop-up menu
+     * @param menuPopup Structure tree pop-up menu
      */
     public void setLanguagePopupMenu(LanguageTreePopupMenu menuPopup) {
 
@@ -331,8 +331,8 @@ public class ExploreView extends ClosableTabbedPane implements ITabComponent, Pr
     }
 
     /**
-     * 現在選択されているツリーパネルの取得を行う。
-     * @return		選択ツリーパネル
+     * Get the currently selected tree panel.
+     * @return selection tree panel
      */
     public ITreeComponent getSelectedPanel() {
         int index = this.getSelectedIndex();
@@ -346,20 +346,20 @@ public class ExploreView extends ClosableTabbedPane implements ITabComponent, Pr
 
 
     /**
-     * モジュールツリーのポップアップメニューを設定する
-     * @param menuPopup		モジュールツリーポップアップメニュー
+     * Set the module tree pop-up menu
+     * @param menuPopup Module tree pop-up menu
      */
     public void setModulePopupMenu(ModuleTreePopupMenu menuPopup) {
         this.moduleTreePanel.setPopupMenu(menuPopup);
     }
 
     /**
-     * ツリーの変更リスナの登録を行う。
-     * @param action		ツリーの変更リスナ
+     * Change tree Register the listener.
+     * @param action Tree change listener
      */
     public void addTreeSelectionListener(ExploreTreeChangeAction action) {
 
-        // ツリーの変更リスナの登録
+        // Change tree Listener registration
         int count = this.getTabCount();
         for (int i=0; i<count; i++) {
             Component comp = this.getComponentAt(i);
@@ -368,15 +368,15 @@ public class ExploreView extends ClosableTabbedPane implements ITabComponent, Pr
             }
         }
 
-        // タブの変更リスナの登録
+        // Change tab Listener registration
         this.addChangeListener(action);
 
         this.actionTreeChange = action;
     }
 
     /**
-     * 選択ツリーパネル識別子を取得する
-     * @return		選択ツリーパネル識別子
+     * Get the selection tree panel identifier
+     * @return Selection tree panel identifier
      */
     public EXPLORE_PANEL getSelectedEnumPanel() {
         ITreeComponent tree = getSelectedPanel();
@@ -387,12 +387,12 @@ public class ExploreView extends ClosableTabbedPane implements ITabComponent, Pr
 
 
     /**
-     * 選択ノードを設定する
-     * @param node		選択ノード
+     * Set the selected node
+     * @param node Selected node
      */
     public void setSelectedNode(Object node) {
 
-        // 選択ノードの設定
+        // Setting the selected node
         int count = this.getTabCount();
         for (int i=0; i<count; i++) {
             Component comp = this.getComponentAt(i);
@@ -403,12 +403,12 @@ public class ExploreView extends ClosableTabbedPane implements ITabComponent, Pr
     }
 
     /**
-     * 選択ノードを設定する
-     * @param nodes		選択ノード
+     * Set the selected node
+     * @param nodes Selected nodes
      */
     public void setSelectedNodes(Object[] nodes) {
 
-        // 選択ノードの設定
+        // Setting the selected node
         int count = this.getTabCount();
         for (int i=0; i<count; i++) {
             Component comp = this.getComponentAt(i);
@@ -420,13 +420,13 @@ public class ExploreView extends ClosableTabbedPane implements ITabComponent, Pr
 
 
     /**
-     * ノード範囲を選択する
-     * @param startnode		選択開始ノード
-     * @param endnode		選択終了ノード
+     * Select a node range
+     * @param startnode Selection start node
+     * @param endnode Selection end node
      */
     public void setSelectedNodeArea(Object startnode, Object endnode) {
 
-        // 選択ノードの設定
+        // Setting the selected node
         int count = this.getTabCount();
         for (int i=0; i<count; i++) {
             Component comp = this.getComponentAt(i);
@@ -437,13 +437,13 @@ public class ExploreView extends ClosableTabbedPane implements ITabComponent, Pr
     }
 
     /**
-     * ノード選択範囲を追加する
-     * @param startnode		選択開始ノード
-     * @param endnode		選択終了ノード
+     * Add node selection
+     * @param startnode Selection start node
+     * @param endnode Selection end node
      */
     public void addSelectedNodeArea(Object startnode, Object endnode) {
 
-        // 選択ノードの設定
+        // Setting the selected node
         int count = this.getTabCount();
         for (int i=0; i<count; i++) {
             Component comp = this.getComponentAt(i);
@@ -454,9 +454,9 @@ public class ExploreView extends ClosableTabbedPane implements ITabComponent, Pr
     }
 
     /**
-     * 指定エクスプローラ情報パネルをアクティブにする.<br/>
-     * 閉じている場合は開く
-     * @param panel		選択分析情報パネル識別子
+     * Activate the specified explorer information panel. <br/>
+     * Open if closed
+     * @param panel Selective analysis information panel identifier
      */
     public void setSelectedPanel(EXPLORE_PANEL panel) {
 
@@ -473,22 +473,22 @@ public class ExploreView extends ClosableTabbedPane implements ITabComponent, Pr
             }
         }
 
-        // タブが表示されていない。
+        // The tab is not displayed.
         if (viewpanel == null) {
 
-            /** 構造エクスプローラパネル */
+            /** Structure Explorer Panel */
             if (panel == EXPLORE_PANEL.LANGUAGE) {
                 viewpanel = createLanguageTreePanel();
             }
-            /** モジュールエクスプローラパネル */
+            /** Module Explorer Panel */
             if (moduleTreePanel.getEnumPanel() == panel) {
                 viewpanel = moduleTreePanel;
             }
-            /** ソースエクスプローラパネル */
+            /** Source Explorer Panel */
             else if (sourceTreePanel.getEnumPanel() == panel) {
                 viewpanel = sourceTreePanel;
             }
-            /** XMLエクスプローラパネル */
+            /** XML Explorer Panel */
             else if (xmlTreePanel.getEnumPanel() == panel) {
                 viewpanel = xmlTreePanel;
             }
@@ -496,7 +496,7 @@ public class ExploreView extends ClosableTabbedPane implements ITabComponent, Pr
         }
         if (viewpanel == null) return;
 
-        // タブが表示されていないので、追加する
+        // The tab is not displayed, so add it
         this.addTab(panel.getTabName(),  viewpanel);
         this.setSelectedIndex(this.getTabCount()-1);
 
@@ -505,8 +505,8 @@ public class ExploreView extends ClosableTabbedPane implements ITabComponent, Pr
 
 
     /**
-     * 指定エクスプローラ情報パネルを閉じる.<br/>
-     * @param panel		選択分析情報パネル識別子
+     * Close the specified explorer information panel. <br/>
+     * @param panel Selective analysis information panel identifier
      */
     public void closePanel(EXPLORE_PANEL panel) {
         int count = this.getTabCount();
@@ -523,8 +523,8 @@ public class ExploreView extends ClosableTabbedPane implements ITabComponent, Pr
     }
 
     /**
-     * ツリーモデルを取得する
-     * @return		ツリーモデル
+     * Get a tree model
+     * @return Tree model
      */
     public TreeModel getTreeModel() {
         ITreeComponent tree = getSelectedPanel();
@@ -535,8 +535,8 @@ public class ExploreView extends ClosableTabbedPane implements ITabComponent, Pr
 
 
     /**
-     * ツリーノード選択を行う.
-     * @param path		選択ツリーパス
+     * Select a tree node.
+     * @param path Selected tree path
      */
     public void setSelectionPath(TreePath path) {
 
@@ -550,14 +550,14 @@ public class ExploreView extends ClosableTabbedPane implements ITabComponent, Pr
     }
 
     /**
-     * 新規の構造ツリータブを開く.<br/>
-     * 表示済みの場合は、アクティブにするのみとする。
-     * @param model			構造モデル
+     * Open a new structure tree tab. <br/>
+     * If it is already displayed, only activate it.
+     * @param model Structural model
      */
     public void viewLanguageTree(LanguageTreeModel model) {
         if (model == null) return;
 
-        // ルートから２つ目までのノードで表示済みであるかチェックする
+        // Check if it has been displayed on the second node from the root
         DefaultMutableTreeNode root = model.getRootNode();
         if (root == null || root.getChildCount() <= 0) return;
         DefaultMutableTreeNode child = (DefaultMutableTreeNode) root.getChildAt(0);
@@ -586,31 +586,31 @@ public class ExploreView extends ClosableTabbedPane implements ITabComponent, Pr
         }
 
         if (languageTreePanel == null) {
-            // 同一構造ツリーが存在しないので新規に作成する
+            // Create a new tree because the same structure tree does not exist
             languageTreePanel = createLanguageTreePanel();
-            // モデルを設定する
+            // set the model
             languageTreePanel.setModel(model);
-            // タブ名を変更する
+            // change the tab name
             setLanguageTabname(languageTreePanel, model);
         }
         else if (isblank) {
-            // モデルを設定する
+            // set the model
             languageTreePanel.setModel(model);
         }
 
-        // アクティブにする
+        // Activate
         this.setSelectedComponent(languageTreePanel);
     }
 
     /**
-     * 構造タブ名を設定する
-     * @param panel			構造タブ
-     * @param model			構造ツリーモデル
+     * Set the structure tab name
+     * @param panel Structure tab
+     * @param model Structural tree model
      */
     private void setLanguageTabname(LanguageTreePanel panel, LanguageTreeModel model) {
         if (model == null) return;
 
-        // ルートから２つ目のノードからタブ名を生成する
+        // Generate a tab name from the second node from the root
         DefaultMutableTreeNode root = model.getRootNode();
         if (root == null || root.getChildCount() <= 0) return;
         DefaultMutableTreeNode child = (DefaultMutableTreeNode) root.getChildAt(0);
@@ -633,23 +633,23 @@ public class ExploreView extends ClosableTabbedPane implements ITabComponent, Pr
             }
         }
 
-        // タブ名を設定する
+        // Set the tab name
         setTabTitle(index, tabname);
     }
 
     /**
-     * 構造ツリーパネルを作成する
-     * @return		構造ツリーパネル
+     * Create a structure tree panel
+     * @return Structure Tree Panel
      */
     public LanguageTreePanel createLanguageTreePanel() {
         LanguageTreePanel languageTreePanel = new LanguageTreePanel(EXPLORE_PANEL.LANGUAGE);
         this.addTab(EXPLORE_PANEL.LANGUAGE.getTabName(),  languageTreePanel);
 
-        // 構造ツリーポップアップメニュー
+        // Structure tree pop-up menu
         if (this.menuLanguagePopup != null) {
             languageTreePanel.setPopupMenu(this.menuLanguagePopup);
         }
-        // ツリーの変更リスナ
+        // Tree change listener
         if (this.actionTreeChange != null) {
             languageTreePanel.addTreeSelectionListener(this.actionTreeChange);
         }
@@ -659,13 +659,13 @@ public class ExploreView extends ClosableTabbedPane implements ITabComponent, Pr
 
 
     /**
-     * XMLツリー以外のツリーモデルをクリアする.<br/>
-     * フォートランデータベースのクリアに伴う関連情報のクリアを行う.
+     * Clear tree models other than XML tree. <br/>
+     * Clear the related information that accompanies the clearing of the Fortran database.
      */
     public void clearTreeModel() {
 
         int count = this.getTabCount();
-        // 最初の構造タブインデックスの取得
+        // Get the first structure tab index
         int languageIndex = -1;
         for (int i=0; i<count; i++) {
             Component comp = this.getComponentAt(i);
@@ -686,7 +686,7 @@ public class ExploreView extends ClosableTabbedPane implements ITabComponent, Pr
                     LanguageTreePanel panel = (LanguageTreePanel)comp;
                     panel.getModel().clearTreeModel();
                     if (languageIndex != i) {
-                        // 最初の構造タブ以外は削除する
+                        // Delete all but the first structure tab
                         this.remove(i);
                     }
                 }
@@ -704,8 +704,8 @@ public class ExploreView extends ClosableTabbedPane implements ITabComponent, Pr
 
 
     /**
-     * 構造タブのモデルを取得する
-     * @return		構造モデルリスト
+     * Get the model on the Structure tab
+     * @return Structural model list
      */
     public LanguageTreeModel[] getLanguageModels() {
 
@@ -717,7 +717,7 @@ public class ExploreView extends ClosableTabbedPane implements ITabComponent, Pr
                 EXPLORE_PANEL type = ((ITreeComponent)comp).getEnumPanel();
                 if (type == EXPLORE_PANEL.LANGUAGE) {
                     LanguageTreePanel panel = (LanguageTreePanel)comp;
-                    // ツリーを表示しているパネルのみ取得する
+                    // Get only the panel displaying the tree
                     if (!panel.isBlankTreeModel()) {
                         list.add(panel.getModel());
                     }
@@ -731,8 +731,8 @@ public class ExploreView extends ClosableTabbedPane implements ITabComponent, Pr
 
 
     /**
-     * 構造ツリーにフィルタを設定する
-     * @param filters		構造ツリーフィルタ
+     * Set a filter in the structure tree
+     * @param filters Structural tree filters
      */
     public void setLanguageTreeFilter(FILTER_TYPE[] filters) {
 
@@ -751,12 +751,12 @@ public class ExploreView extends ClosableTabbedPane implements ITabComponent, Pr
 
 
     /**
-     * ツリーノード選択を行う.
-     * @param blocks		選択ブロックリスト
+     * Select a tree node.
+     * @param blocks Selected block list
      */
     public void setSelectedBlocks(IBlock[] blocks) {
 
-        // 選択ノードの設定
+        // Setting the selected node
         int count = this.getTabCount();
         for (int i=0; i<count; i++) {
             Component comp = this.getComponentAt(i);
@@ -768,13 +768,13 @@ public class ExploreView extends ClosableTabbedPane implements ITabComponent, Pr
 
 
     /**
-     * パネルの描画更新を行う。
+     * Update the drawing of the panel.
      */
     @Override
     public void updateUI() {
         super.updateUI();
 
-        // 選択ノードの設定
+        // Setting the selected node
         int count = this.getTabCount();
         for (int i=0; i<count; i++) {
             Component comp = this.getComponentAt(i);
@@ -786,12 +786,12 @@ public class ExploreView extends ClosableTabbedPane implements ITabComponent, Pr
 
 
     /**
-     * 選択ノードを追加する
-     * @param nodes		選択ノード
+     * Add a selection node
+     * @param nodes Selected nodes
      */
     public void addSelectedNodes(Object[] nodes) {
 
-        // 選択ノードの設定
+        // Setting the selected node
         int count = this.getTabCount();
         for (int i=0; i<count; i++) {
             Component comp = this.getComponentAt(i);
@@ -803,13 +803,13 @@ public class ExploreView extends ClosableTabbedPane implements ITabComponent, Pr
 
 
     /**
-     * プロパティ変更イベント
-     * @param event   イベント情報
+     * Property change event
+     * @param event Event information
      */
 	@Override
 	public void propertyChange(PropertyChangeEvent event) {
 
-        // ソース表示フォント、フォント色等のソースビュープロパティの変更
+        // Change source view properties such as source display font, font color, etc.
         if (event.getNewValue() instanceof SourceProperties) {
             SourceProperties properties = (SourceProperties)event.getNewValue();
             int count = this.getTabCount();
@@ -836,11 +836,11 @@ public class ExploreView extends ClosableTabbedPane implements ITabComponent, Pr
 
 
     /**
-     * 選択ノードの変更イベントを発生させる
+     * Raise a change event for the selected node
      */
     public void fireSelectNodeChanged() {
 
-        // 選択ノードの設定
+        // Setting the selected node
         int count = this.getTabCount();
         for (int i=0; i<count; i++) {
             Component comp = this.getComponentAt(i);
@@ -848,7 +848,7 @@ public class ExploreView extends ClosableTabbedPane implements ITabComponent, Pr
                 ((ITreeComponent)comp).fireSelectNodeChanged();
             }
         }
-        // 再描画
+        // redraw
         updateUI();
     }
 }
