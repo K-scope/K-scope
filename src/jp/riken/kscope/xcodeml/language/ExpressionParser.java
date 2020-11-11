@@ -40,96 +40,96 @@ import jp.riken.kscope.xcodeml.xml.gen.*;
 
 
 /**
- * Expressionパーサクラス
+ * Expression parser class
  * @author RIKEN
  */
 public class ExpressionParser {
 
-    /** パースIXmlNode要素 */
+    /** Perth IXmlNode element */
     private IXmlNode parseNode;
     /** typeTable */
     private XcodeMLTypeManager typeManager;
-    /** IndexRangeの親クラス */
+    /** Parent class of IndexRange */
     private Class<?> parentIndexRange;
-    /** 外部手続きリスト */
+    /** External procedure list */
     private Map<String, IVariableType> externalFunctionList;
 
-    // 演算子文字列
-    /** カンマ */
+    // Operator string
+    /** Comma */
     private final String EXPR_COMMA = ",";
-    /** plusExpr + : 加算 */
+    /** plusExpr +: Addition */
     private final String EXPR_PLUS = "+";
-    /** minusExpr - : 減算 */
+    /** minusExpr-: Subtraction */
     private final String EXPR_MINUS = "-";
-    /** mulExpr * : 乗算 */
+    /** mulExpr *: Multiplication */
     private final String EXPR_MUL = "*";
-    /** divExpr / : 除算 */
+    /** divExpr /: Division */
     private final String EXPR_DIV = "/";
-    /** FpowerExpr ** : べき乗 */
+    /** FpowerExpr **: Exponentiation */
     private final String EXPR_POWER = "**";
-    /** FconcatExpr // : 文字式の連結 */
+    /** FconcatExpr //: Concatenation of character expressions */
     private final String EXPR_CONCAT = "//";
-    /** logEQExpr == .EQ. : 等価 */
+    /** logEQExpr == .EQ .: Equivalent */
     private final String EXPR_LOGEQ = "==";
-    /** logNEQExpr /= .NE. : 非等価 */
+    /** logNEQExpr /= .NE .: Non-equivalent */
     private final String EXPR_LOGNEQ = "/=";
-    /** logGEExpr >= .GE. : 大なり、または同値 */
+    /** logGEExpr> = .GE .: Greater or equivalent */
     private final String EXPR_LOGGE = ">=";
-    /** logGTExpr > .GT. : 大なり */
+    /** logGTExpr> .GT .: Greater */
     private final String EXPR_LOGGT = ">";
-    /** logLEExpr <= .LE. : 小なり、または等価 */
+    /** logLEExpr <= .LE .: Less or equivalent */
     private final String EXPR_LOGLE = "<=";
-    /** logLTExpr < .LT. : 小なり */
+    /** logLTExpr <.LT .: Lesser */
     private final String EXPR_LOGLT = "<";
-    /** logAndExpr .AND. : 論理積 */
+    /** logAndExpr .AND .: AND */
     private final String EXPR_LOGAND = ".AND.";
-    /** logOrExpr .OR. : 論理和 */
+    /** logOrExpr .OR .: OR */
     private final String EXPR_LOGOR = ".OR.";
-    /** logEQVExpr .EQV. : 論理等価 */
+    /** logEQVExpr .EQV .: Logical equivalent */
     private final String EXPR_LOGEQV = ".EQV.";
-    /** logNEQVExpr .NEQV. : 論理非等価 */
+    /** logNEQVExpr .NEQV .: Logical unequal */
     private final String EXPR_LOGNEQV = ".NEQV.";
-    /** unaryMinusExpr - : 符号反転 */
+    /** unaryMinusExpr-: Sign inversion */
     private final String EXPR_UNARYMINUS = "-";
-    /** logNotExpr .NOT. : 論理否定 */
+    /** logNotExpr .NOT .: Logical negation */
     private final String EXPR_LOGNOT = ".NOT.";
-    /** 左小括弧 ( */
+    /** Left parenthesis (*/
     private final String EXPR_PARENLEFT = "(";
-    /** 右小括弧 ) */
+    /** Right parenthesis) */
     private final String EXPR_PARENRIGHT = ")";
-    /** FmemberRef % : 構造体メンバ */
+    /** FmemberRef%: Structure member */
     @SuppressWarnings("unused")
     private final String EXPR_TYPEMEMBER = "%";
-    /** 左大括弧 [ */
+    /** Left bracket [*/
     private final String EXPR_COARRAYLEFT = "[";
-    /** 右大括弧 ] */
+    /** Right bracket] */
     private final String EXPR_COARRAYRIGHT = "[";
-    /** 等号記号 = */
+    /** Equal sign = */
     private final String EXPR_EQUAL = "=";
-    /** スペース */
+    /** Space */
     private final String EXPR_SPACE = " ";
-    /** FarrayConstructor 左初期化小括弧 */
+    /** FarrayConstructor Left initialization parentheses */
     private final String EXPR_ARRAYLEFT = "(/";
-    /** FarrayConstructor 右初期化小括弧 */
+    /** FarrayConstructor Right initialization parentheses */
     private final String EXPR_ARRAYRIGHT = "/)";
-    /** FarrayRef 配列区切りコロン : */
+    /** FarrayRef Array delimiter colon: */
     private final String EXPR_ARRAYCOLON = ":";
 
 
     /**
-     * コンストラクタ
+     * Constructor
      *
-     * @param typeManager    typeTable
+     * @param typeManager typeTable
      */
     public ExpressionParser(XcodeMLTypeManager typeManager) {
         this.typeManager = typeManager;
     }
 
     /**
-     * コンストラクタ
+     * Constructor
      *
-     * @param typeManager    typeTable
-     * @param node           パースexprModel要素
+     * @param typeManager typeTable
+     * @param node Perspective exprModel element
      */
     public ExpressionParser(XcodeMLTypeManager typeManager, IXmlNode node) {
         this(typeManager);
@@ -137,41 +137,41 @@ public class ExpressionParser {
     }
 
     /**
-     * パースIXmlNode要素を取得する
-     * @return		パースIXmlNode要素
+     * Get the perspective IXmlNode element
+     * @return Perspective IXmlNode element
      */
     public IXmlNode getParseNode() {
         return parseNode;
     }
 
     /**
-     * パースIXmlNode要素を設定する
-     * @param parseNode		パースIXmlNode要素
+     * Set the perspective IXmlNode element
+     * @param parseNode parse IXmlNode element
      */
     public void setParseNode(IXmlNode parseNode) {
         this.parseNode = parseNode;
     }
 
     /**
-     * typeTableを取得する
-     * @return		typeTable
+     * Get typeTable
+     * @return typeTable
      */
     public XcodeMLTypeManager getTypeManager() {
         return typeManager;
     }
 
     /**
-     * typeTableを設定する
-     * @param typeManager		typeTable
+     * Set typeTable
+     * @param typeManager typeTable
      */
     public void setTypeManager(XcodeMLTypeManager typeManager) {
         this.typeManager = typeManager;
     }
 
     /**
-     * 要素から式クラスオブジェクトを取得する。
+     * Get an expression class object from an element.
      *
-     * @return 式クラスオブジェクト
+     * @return expression class object
      */
     public Expression getExpression()  {
         if (this.parseNode == null) return null;
@@ -186,11 +186,11 @@ public class ExpressionParser {
     }
 
     /**
-     * 要素から式クラスオブジェクトを取得する。
+     * Get an expression class object from an element.
      *
-     * @param node            IXmlNode要素
-     * @return 式クラスオブジェクト
-     * @throws XcodeMLException   パースエラー
+     * @param node IXmlNode element
+     * @return expression class object
+     * @throws XcodeMLException Parsing error
      */
     public Expression getExpression(IXmlNode node) throws XcodeMLException {
         if (node == null) return null;
@@ -213,26 +213,26 @@ public class ExpressionParser {
         else if (node instanceof UserUnaryExpr)
             expr = getExpression((UserUnaryExpr) node);
         /*
-         * DefModelBinaryOperation要素
-         * 		DivExpr
-         *		FconcatExpr
-         * 		FpowerExpr
-         * 		LogAndExpr
-         * 		LogEQExpr
-         * 		LogEQVExpr
-         * 		LogGEExpr
-         * 		LogGTExpr
-         * 		LogLEExpr
-         * 		LogLTExpr
-         * 		LogNEQExpr
-         * 		LogNEQVExpr
-         * 		LogNotExpr (単項)
-         * 		LogOrExpr
-         * 		MinusExpr
-         * 		MulExpr
-         * 		PlusExpr
-         * 		UnaryMinusExpr (単項)
-         * 		UserBinaryExpr (単項)
+         * DefModelBinaryOperation element
+         * DivExpr
+         * FconcatExpr
+         * FpowerExpr
+         * LogAndExpr
+         * LogEQExpr
+         * LogEQVExpr
+         * LogGEExpr
+         * LogGTExpr
+         * LogLEExpr
+         * LogLTExpr
+         * LogNEQExpr
+         * LogNEQVExpr
+         * LogNotExpr (unary)
+         * LogOrExpr
+         * MinusExpr
+         * MulExpr
+         * PlusExpr
+         * UnaryMinusExpr (unary)
+         * UserBinaryExpr (unary)
          */
         else if (node instanceof LogNotExpr)
             expr = getExpression((LogNotExpr) node);
@@ -296,10 +296,10 @@ public class ExpressionParser {
 
 
     /**
-     * IDefModelExpr要素から式クラスを作成する
-     * @param node            IDefModelExpr要素
-     * @return 式クラス
-     * @throws XcodeMLException  パースエラー
+     * Create an expression class from the IDefModelExpr element
+     * @param node IDefModelExpr element
+     * @return expression class
+     * @throws XcodeMLException Parsing error
      */
     private Expression getExpression(IDefModelExpr node) throws XcodeMLException {
         if (node == null) return null;
@@ -310,24 +310,24 @@ public class ExpressionParser {
     }
 
     /**
-     * FunctionCall(関数呼出)要素から式クラスを作成する
-     * @param node            FunctionCall(関数呼出)要素
-     * @return 式クラス
-     * @throws XcodeMLException  パースエラー
+     * Create an expression class from the FunctionCall element
+     * @param node FunctionCall element
+     * @return expression class
+     * @throws XcodeMLException Parsing error
      */
     private Expression getExpression(FunctionCall node) throws XcodeMLException {
-        // 式バッファ
+        // Expression buffer
         StringBuffer buf = new StringBuffer();
 
-        // サブルーチン名、関数名
+        // Subroutine name, function name
         Name name = node.getName();
         String funcName = name.getValue();
 
-        // データ型パーサ
+        // Data type parser
         VariableTypeParser typePaser = new VariableTypeParser(this.typeManager);
         VariableType funcVarType = null;
 
-        // 属性
+        // Attribute
         boolean is_intrinsic = false;
         boolean is_external = false;
         boolean is_recursive = false;
@@ -348,22 +348,22 @@ public class ExpressionParser {
             }
         }
         if (funcVarType == null) {
-            // 変数のパース
+            // Parse variables
             funcVarType = getVariableType(node.getType());
         }
 
         boolean intrinsic = XmlNodeUtil.isBoolean(node.isIsIntrinsic());
 
-        // FunctionCall式
+        // FunctionCall expression
         Expression expr = new Expression();
 
-        // バッファ追加:関数名
+        // Add buffer: Function name
         buf.append(name.getValue());
 
-        // バッファ追加:左括弧
+        // Add buffer: Left parenthesis
         buf.append(EXPR_PARENLEFT);
 
-        // 仮引数の取得を行う
+        // Get formal arguments
         Arguments args = node.getArguments();
         Expression[] argsExpr = getExpressionArray(args);
         if (argsExpr != null) {
@@ -375,34 +375,34 @@ public class ExpressionParser {
                 buf.append(arg.getLine());
                 count++;
             }
-            // 1つのExpressionの生成
+            // Generate one Expression
             // Expression exprFuncArg = mergeExpression(argsExpr);
             // expr = mergeExpression(new Expression[]{expr, exprFuncArg});
         }
 
-        // バッファ追加:右括弧
+        // Add buffer: Right parenthesis
         buf.append(EXPR_PARENRIGHT);
 
-        // 組込関数に引数の追加
+        // Add arguments to built-in functions
         List<Expression> argslist = null;
         if (argsExpr != null) {
             argslist = new ArrayList<Expression>(java.util.Arrays.asList(argsExpr));
         }
         ProcedureUsage proc = new ProcedureUsage(name.getValue(), argslist);
-        // 組込関数フラグセット
+        // Built-in function flag set
         if (intrinsic || is_intrinsic) {
             proc.setIntrinsic();
         }
 
-        // 関数を追加する
+        // add a function
         expr.addFuncCall(proc);
-        // データ型
+        // Data type
         expr.setVariableType(funcVarType);
 
-        // FunctionCall:式文字列
+        // FunctionCall: expression string
         expr.setLine(buf.toString());
 
-        // 外部手続きリストに追加する
+        // Add to external procedure list
         if (is_external && funcVarType != null) {
             addExternalFunction(funcName, funcVarType);
         }
@@ -410,16 +410,16 @@ public class ExpressionParser {
     }
 
     /**
-     * Arguments(引数)要素から式クラスを作成する
-     * @param node            Arguments(引数)要素
-     * @return 式クラス
-     * @throws XcodeMLException  パースエラー
+     * Create an expression class from the Arguments elements
+     * @param node Arguments element
+     * @return expression class
+     * @throws XcodeMLException Parsing error
      */
     private Expression getExpression(Arguments node) throws XcodeMLException {
-        // 式バッファ
+        // Expression buffer
         StringBuffer buf = new StringBuffer();
 
-        // 仮引数の取得を行う
+        // Get formal arguments
         Expression[] argsExpr = getExpressionArray(node);
         if (argsExpr == null) return null;
 
@@ -432,24 +432,24 @@ public class ExpressionParser {
             count++;
         }
 
-        // 1つのExpressionの生成
+        // Generate one Expression
         Expression expr = mergeExpression(argsExpr);
 
-        // Arguments:式文字列
+        // Arguments: Expression string
         expr.setLine(buf.toString());
 
         return expr;
     }
 
     /**
-     * Arguments(引数)要素から式クラスを作成する
-     * @param node            Arguments(引数)要素
-     * @return 式クラス
-     * @throws XcodeMLException  パースエラー
+     * Create an expression class from the Arguments elements
+     * @param node Arguments element
+     * @return expression class
+     * @throws XcodeMLException Parsing error
      */
     public Expression[] getExpressionArray(Arguments node) throws XcodeMLException {
 
-        // 仮引数の取得を行う
+        // Get formal arguments
         List<Expression> argsExpr = new ArrayList<Expression>();
         if (node != null && node.getFintConstantOrFrealConstantOrFcomplexConstant() != null) {
             List<IXmlNode> list = node.getFintConstantOrFrealConstantOrFcomplexConstant();
@@ -466,13 +466,13 @@ public class ExpressionParser {
 
 
     /**
-     * UserBinaryExpr(INTERFACE依存)要素から式クラスを作成する
-     * @param node            UserBinaryExpr(INTERFACE依存)要素
-     * @return 式クラス
-     * @throws XcodeMLException  パースエラー
+     * Create an expression class from the UserBinaryExpr (INTERFACE dependent) element
+     * @param node UserBinaryExpr (INTERFACE dependent) element
+     * @return expression class
+     * @throws XcodeMLException Parsing error
      */
     private Expression getExpression(UserBinaryExpr node) throws XcodeMLException {
-        // 式バッファ
+        // Expression buffer
         StringBuffer buf = new StringBuffer();
 
         List<IXmlNode> content = node.getContent();
@@ -487,14 +487,14 @@ public class ExpressionParser {
             if (var != null) {
                 list.add(var);
 
-                // バッファ追加
+                // Add buffer
                 buf.append(var.getLine());
                 buf.append(EXPR_SPACE);
 
             }
         }
 
-        // 演算子名追加
+        // Add operator name
         buf.append(name);
         buf.append(EXPR_SPACE);
 
@@ -502,34 +502,34 @@ public class ExpressionParser {
             Expression var = getExpression(rightExpr);
             if (var != null) {
                 list.add(var);
-                // バッファ追加
+                // Add buffer
                 buf.append(var.getLine());
                 buf.append(EXPR_SPACE);
             }
         }
         if (list.size() <= 0) return null;
 
-        // 1つのExpressionの生成
+        // Generate one Expression
         Expression expr = mergeExpression(list.toArray(new Expression[0]));
-        // 変数のパース
+        // Parse variables
         VariableType varType = getVariableType(node.getType());
         expr.setVariableType(varType);
 
-        // UserBinaryExpr:式文字列
+        // UserBinaryExpr: Expression string
         expr.setLine(buf.toString());
 
         return expr;
     }
 
     /**
-     * DefModelBinaryOperation(二項演算式)要素から式クラスを作成する
-     * @param node            DefModelBinaryOperation(二項演算式)要素
-     * @return 式クラス
-     * @throws XcodeMLException  パースエラー
+     * Create an expression class from the DefModelBinaryOperation element
+     * @param node DefModelBinaryOperation element
+     * @return expression class
+     * @throws XcodeMLException Parsing error
      */
     private Expression getExpression(DefModelBinaryOperation node) throws XcodeMLException {
 
-        // 式バッファ
+        // Expression buffer
         StringBuffer buf = new StringBuffer();
 
         List<IXmlNode> content = node.getContent();
@@ -542,15 +542,15 @@ public class ExpressionParser {
             Expression var = getExpression(leftExpr);
             if (var != null) {
                 list.add(var);
-                // バッファ追加
+                // Add buffer
                 buf.append(var.getLine());
                 buf.append(EXPR_SPACE);
             }
         }
 
-        // バッファに追加:演算子
+        // Add to buffer: Operator
         String op = getOperation(node);
-        // バッファ追加
+        // Add buffer
         buf.append(op);
         buf.append(EXPR_SPACE);
 
@@ -558,60 +558,60 @@ public class ExpressionParser {
             Expression var = getExpression(rightExpr);
             if (var != null) {
                 list.add(var);
-                // バッファ追加
+                // Add buffer
                 buf.append(var.getLine());
             }
         }
         if (list.size() <= 0) return null;
 
-        // 1つのExpressionの生成
+        // Generate one Expression
         Expression expr = mergeExpression(list.toArray(new Expression[0]));
 
-        //(2012/4/18) changed by tomiyama and teraim 浮動小数点演算のみ対象とするように変更
+        // (2012/4/18) changed by tomiyama and teraim Changed to target only floating point arithmetic
         String attr = node.getType();
         if (!attr.equals(new String("Fint"))) {
             if (node instanceof PlusExpr) {
-                // 加算のインクリメント
+                // Addition increment
                 expr.incrementAdd();
             } else if (node instanceof MinusExpr) {
-                // 減算のインクリメント
+                // subtraction increment
                 expr.incrementSub();
             } else if (node instanceof MulExpr) {
-                // 乗算のインクリメント
+                // Multiplication increment
                 expr.incrementMul();
             } else if (node instanceof DivExpr) {
-                // 除算のインクリメント
+                // Increment of division
                 expr.incrementDiv();
             } else if (node instanceof FpowerExpr) {
-                // べき算のインクリメント
+                // Increment of power calculation
                 expr.incrementPow();
             }
         }
         
-        // 変数のパース
+        // Parse variables
         VariableType varType = getVariableType(node.getType());
         expr.setVariableType(varType);
 
-        // DefModelBinaryOperation:式文字列
+        // DefModelBinaryOperation: Expression string
         expr.setLine(buf.toString());
 
         return expr;
     }
 
     /**
-     * LogNotExpr(論理否定)要素から式クラスを作成する
-     * @param node            LogNotExpr(論理否定)要素
-     * @return 式クラス
-     * @throws XcodeMLException  パースエラー
+     * Create an expression class from the LogNotExpr (logical negation) element
+     * @param node LogNotExpr (logical negation) element
+     * @return expression class
+     * @throws XcodeMLException Parsing error
      */
     private Expression getExpression(LogNotExpr node) throws XcodeMLException {
 
-        // 式バッファ
+        // Expression buffer
         StringBuffer buf = new StringBuffer();
 
         List<IXmlNode> contents = node.getContent();
 
-        // バッファ追加 : '.NOT.' : 論理否定
+        // Add buffer:'.NOT.': Logical negation
         buf.append(EXPR_LOGNOT);
         buf.append(EXPR_SPACE);
 
@@ -622,7 +622,7 @@ public class ExpressionParser {
                 if (expr != null) {
                     list.add(expr);
 
-                    // バッファ追加
+                    // Add buffer
                     buf.append(expr.getLine());
                     buf.append(EXPR_SPACE);
                 }
@@ -630,14 +630,14 @@ public class ExpressionParser {
         }
         if (list.size() <= 0) return null;
 
-        // 1つのExpressionの生成
+        // Generate one Expression
         Expression expr = mergeExpression(list.toArray(new Expression[0]));
 
-        // 変数のパース
+        // Parse variables
         VariableType varType = getVariableType(node.getType());
         expr.setVariableType(varType);
 
-        // LogNotExpr:式文字列
+        // LogNotExpr: expression string
         expr.setLine(buf.toString());
 
         return expr;
@@ -645,20 +645,20 @@ public class ExpressionParser {
 
 
     /**
-     * UnaryMinusExpr(符号反転)要素から式クラスを作成する
-     * @param node            UnaryMinusExpr(符号反転)要素
-     * @return 式クラス
-     * @throws XcodeMLException  パースエラー
+     * Create an expression class from the UnaryMinusExpr (sign inversion) element
+     * @param node UnaryMinusExpr (sign inversion) element
+     * @return expression class
+     * @throws XcodeMLException Parsing error
      */
     private Expression getExpression(UnaryMinusExpr node) throws XcodeMLException {
 
-        // 式バッファ
+        // Expression buffer
         StringBuffer buf = new StringBuffer();
 
         List<IXmlNode> contents = node.getContent();
 
-        // バッファ追加 : '-' : 符号反転
-        buf.append(EXPR_UNARYMINUS); // '-' : 符号反転
+        // Add buffer:'-': Sign inversion
+        buf.append(EXPR_UNARYMINUS); //'-': Sign inversion
 
         List<Expression> list = new ArrayList<Expression>();
         if (contents != null && contents.size() > 0) {
@@ -667,7 +667,7 @@ public class ExpressionParser {
                 if (expr != null) {
                     list.add(expr);
 
-                    // バッファ追加
+                    // Add buffer
                     buf.append(expr.getLine());
                     buf.append(EXPR_SPACE);
                 }
@@ -675,14 +675,14 @@ public class ExpressionParser {
         }
         if (list.size() <= 0) return null;
 
-        // 1つのExpressionの生成
+        // Generate one Expression
         Expression expr = mergeExpression(list.toArray(new Expression[0]));
 
-        // 変数のパース
+        // Parse variables
         VariableType varType = getVariableType(node.getType());
         expr.setVariableType(varType);
 
-        // UnaryMinusExpr:式文字列
+        // UnaryMinusExpr: expression string
         expr.setLine(buf.toString());
 
         return expr;
@@ -690,10 +690,10 @@ public class ExpressionParser {
 
 
     /**
-     * Condition(条件式)要素から式クラスを作成する
-     * @param node            Condition(条件式)要素
-     * @return 式クラス
-     * @throws XcodeMLException  パースエラー
+     * Create an expression class from Condition elements
+     * @param node Condition element
+     * @return expression class
+     * @throws XcodeMLException Parsing error
      */
     private Expression getExpression(Condition node) throws XcodeMLException {
 
@@ -705,44 +705,44 @@ public class ExpressionParser {
 
 
     /**
-     * FcharacterRef(部分文字列参照)要素から式クラスを作成する
+     * Create an expression class from FcharacterRef (see substring) elements
      *
-     * @param node            FcharacterRef(部分文字列参照)要素
-     * @return 式クラス
-     * @throws XcodeMLException  パースエラー
+     * @param node FcharacterRef (see substring) element
+     * @return expression class
+     * @throws XcodeMLException Parsing error
      */
     private Expression getExpression(FcharacterRef node) throws XcodeMLException {
 
-        // IndexRange呼出クラス:FcharacterRef
+        // IndexRange call class: FcharacterRef
         this.parentIndexRange = node.getClass();
 
         String type = node.getType();
 
-        // 変数のパース
+        // Parse variables
         VariableType varType = getVariableType(type);
 
-        // 子要素の取得
+        // Get child elements
         VarRef varRef = node.getVarRef();
         IndexRange indexRange = node.getIndexRange();
 
-        // 部分文字列変数
+        // Substring variable
         Expression exprVar = getExpression(varRef);
 
-        // インデックス
+        // index
         Expression exprIndex = getExpression(indexRange);
 
-        // 変数のパース
+        // Parse variables
         VariableParser varParser = new VariableParser(this.typeManager);
         Variable var = varParser.getVariable(node);
 
-        // Expressionクラス生成
+        // Expression class generation
         Expression expr = mergeExpression(new Expression[]{exprVar, exprIndex});
         expr.setVariableType(varType);
         if (var != null) {
             expr.addVariable(var);
         }
 
-        // FcharacterRef:式文字列
+        // FcharacterRef: Expression string
         expr.setLine(var.getVariableString());
 
         return expr;
@@ -750,38 +750,38 @@ public class ExpressionParser {
 
 
     /**
-     * FmemberRef(構造体メンバ参照)要素から式クラスを作成する
+     * Create an expression class from FmemberRef (struct member reference) elements
      *
-     * @param node            FmemberRef(構造体メンバ参照)要素
-     * @return 式クラス
-     * @throws XcodeMLException  パースエラー
+     * @param node FmemberRef (see structure member) element
+     * @return expression class
+     * @throws XcodeMLException Parsing error
      */
     private Expression getExpression(FmemberRef node) throws XcodeMLException {
 
         String type = node.getType();
 
-        // 変数データ型のパース
+        // Parse variable data type
         VariableType varType = getVariableType(type);
 
-        // 子要素の取得
+        // Get child elements
         VarRef varRef = node.getVarRef();
 
-        // 子要素のExpressionクラス
+        // Expression class of child element
         Expression exprVar = getExpression(varRef);
 
-        // Expressionクラス生成
+        // Expression class generation
         exprVar.setVariableType(varType);
 
-        // 変数のパース
+        // Parse variables
         VariableParser varParser = new VariableParser(this.typeManager);
         Variable var = varParser.getVariable(node);
 
-        // 構造体参照の設定
+        // Structure reference settings
         if (var != null) {
             exprVar.addVariable(var);
         }
 
-        // FmemberRef:式文字列
+        // FmemberRef: Expression string
         exprVar.setLine(var.getVariableString());
 
         return exprVar;
@@ -789,31 +789,31 @@ public class ExpressionParser {
 
     
     /**
-     * FcoArrayRef(coarrayの参照)要素から式クラスを作成する
+     * Create an expression class from the FcoArrayRef (see coarray) element
      *
-     * @param node            FcoArrayRef(coarrayの参照)要素
-     * @return 式クラス
-     * @throws XcodeMLException  パースエラー
+     * @param node FcoArrayRef (see coarray) element
+     * @return expression class
+     * @throws XcodeMLException Parsing error
      */
     private Expression getExpression(FcoArrayRef node) throws XcodeMLException {
-        // 式バッファ
+        // Expression buffer
         StringBuffer buf = new StringBuffer();
 
         String type = node.getType();
 
-        // 変数データ型のパース
+        // Parse variable data type
         VariableType varType = getVariableType(type);
 
-        // 子要素の取得
+        // Get child elements
         VarRef varRef = node.getVarRef();
         List<ArrayIndex> arrayIndexes = node.getArrayIndex();
 
-        // 子要素のExpressionクラス
+        // Expression class of child element
         Expression exprVar = getExpression(varRef);
-        // バッファ追加
+        // Add buffer
         buf.append(exprVar.getLine());
 
-        // バッファ追加: [
+        // Add buffer: [
         buf.append(EXPR_COARRAYLEFT);
 
         List<Expression> list = new ArrayList<Expression>();
@@ -822,11 +822,11 @@ public class ExpressionParser {
             int count = 0;
             for (ArrayIndex index : arrayIndexes) {
                 if (count > 0) {
-                    // バッファ追加
-                    buf.append(EXPR_COMMA);       // カンマ
+                    // Add buffer
+                    buf.append(EXPR_COMMA);       // Comma
                 }
                 Expression expr = getExpression(index);
-                // バッファ追加
+                // Add buffer
                 buf.append(expr.getLine());
                 list.add(expr);
                 count++;
@@ -836,21 +836,21 @@ public class ExpressionParser {
             exprIndex = mergeExpression(list.toArray(new Expression[0]));
         }
 
-        // バッファ追加: ]
+        // Add buffer:]
         buf.append(EXPR_COARRAYRIGHT);
 
-        // 変数のパース
+        // Parse variables
         VariableParser varParser = new VariableParser(this.typeManager);
         Variable var = varParser.getVariable(node);
 
-        // Expressionクラス生成
+        // Expression class generation
         Expression expr = mergeExpression(new Expression[]{exprVar, exprIndex});
         expr.setVariableType(varType);
         if (var != null) {
             expr.addVariable(var);
         }
 
-        // FcoArrayRef:式文字列
+        // FcoArrayRef: Expression string
         expr.setLine(buf.toString());
 
         return expr;
@@ -858,27 +858,27 @@ public class ExpressionParser {
 
 
     /**
-     * FdoLoop(DO型反復)要素から式クラスを作成する
+     * Create an expression class from FdoLoop (DO type iteration) elements
      *
-     * @param node            FdoLoop(DO型反復)要素
-     * @return 式クラス
-     * @throws XcodeMLException  パースエラー
+     * @param node FdoLoop (DO type iteration) element
+     * @return expression class
+     * @throws XcodeMLException Parsing error
      */
     private Expression getExpression(FdoLoop node) throws XcodeMLException {
-        // 式バッファ
+        // Expression buffer
         StringBuffer buf = new StringBuffer();
 
-        // IndexRange呼出クラス:FdoLoop
+        // IndexRange call class: FdoLoop
         this.parentIndexRange = node.getClass();
 
-        // 子要素の取得
+        // Get child elements
         Var var = node.getVar();
         IndexRange indexRange = node.getIndexRange();
         List<Value> values = node.getValue();
 
-        // 子要素のExpressionクラス
-        // バッファ追加:左括弧
-        buf.append(EXPR_PARENLEFT); // 左括弧 (
+        // Expression class of child element
+        // Add buffer: Left parenthesis
+        buf.append(EXPR_PARENLEFT); // Left parenthesis (
 
         List<Expression> list = new ArrayList<Expression>();
         Expression exprValue = null;
@@ -886,11 +886,11 @@ public class ExpressionParser {
             int count = 0;
             for (Value value : values) {
                 if (count > 0) {
-                    // バッファ追加
-                    buf.append(EXPR_COMMA);        // カンマ
+                    // Add buffer
+                    buf.append(EXPR_COMMA);        // Comma
                 }
                 Expression expr = getExpression(value);
-                // バッファ追加
+                // Add buffer
                 buf.append(expr.getLine());
                 list.add(expr);
                 count++;
@@ -902,21 +902,21 @@ public class ExpressionParser {
 
         Expression exprVar = getExpression(var);
 
-        // バッファ追加:=
+        // Add buffer: =
         buf.append(EXPR_EQUAL); // =
 
         // IndexRange
         Expression exprIndex = getExpression(indexRange);
-        // バッファ追加
+        // Add buffer
         buf.append(exprIndex.getLine());
 
-        // バッファ追加:右括弧 )
-        buf.append(EXPR_PARENRIGHT); // 右括弧 )
+        // Add buffer: right parenthesis)
+        buf.append(EXPR_PARENRIGHT); // Right parenthesis)
 
-        // Expressionクラス生成
+        // Expression class generation
         Expression expr = mergeExpression(new Expression[]{exprVar, exprIndex, exprValue});
 
-        // FdoLoop:式文字列
+        // FdoLoop: expression string
         expr.setLine(buf.toString());
 
         return expr;
@@ -924,34 +924,34 @@ public class ExpressionParser {
 
 
     /**
-     * FarrayRef(部分配列、または配列要素参照)要素から式クラスを作成する.
-     * (例) a(1:3) = 5
-     * @param node            FarrayRef(部分配列、または配列要素参照)要素
-     * @return 式クラス
-     * @throws XcodeMLException  パースエラー
+     * Create an expression class from a FarrayRef (see subarray or array element) element.
+     * (Example) a (1: 3) = 5
+     * @param node FarrayRef (see subarray or array element) element
+     * @return expression class
+     * @throws XcodeMLException Parsing error
      */
     private Expression getExpression(FarrayRef node) throws XcodeMLException {
-        // 式バッファ
+        // Expression buffer
         StringBuffer buf = new StringBuffer();
 
-        // IndexRange呼出クラス:FarrayRef
+        // IndexRange call class: FarrayRef
         this.parentIndexRange = node.getClass();
 
         String type = node.getType();
 
-        // 変数データ型のパース
+        // Parse variable data type
         VariableType varType = getVariableType(type);
 
-        // 子要素の取得
+        // Get child elements
         VarRef varref = node.getVarRef();
         List<IXmlNode> indexes = node.getIndexRangeOrArrayIndexOrFarrayConstructor();
 
-        // 変数名
+        // Variable name
         Expression exprVarRef = getExpression(varref);
 
-        // 変数のパース
+        // Parse variables
         VariableParser varParser = new VariableParser(this.typeManager);
-        // 変数
+        // Variable
         Variable arrayVar = varParser.getVariable(node);
 
         if (arrayVar == null) {
@@ -960,11 +960,11 @@ public class ExpressionParser {
             }
         }
 
-        // バッファ追加:変数名
+        // Add buffer: Variable name
         buf.append(arrayVar.getName());
 
-        // バッファ追加:左括弧
-        buf.append(EXPR_PARENLEFT); // 左括弧 (
+        // Add buffer: Left parenthesis
+        buf.append(EXPR_PARENLEFT); // Left parenthesis (
 
         List<Expression> list = new ArrayList<Expression>();
         Expression exprIndex = null;
@@ -974,19 +974,19 @@ public class ExpressionParser {
                 if (count != 0) buf.append(EXPR_COMMA);
                 Expression expr = getExpression(index);
                 list.add(expr);
-                // バッファ追加:変数名
+                // Add buffer: Variable name
                 buf.append(expr.getLine());
                 count++;
             }
         }
 
-        // バッファ追加:右括弧
-        buf.append(EXPR_PARENRIGHT);    // 右括弧 )
+        // Add buffer: Right parenthesis
+        buf.append(EXPR_PARENRIGHT);    // Right parenthesis)
         if (list.size() > 0) {
 //            exprIndex = mergeExpression(list.toArray(new Expression[0]));
         }
 
-        // Expressionクラス生成
+        // Expression class generation
 //        Expression expr = mergeExpression(new Expression[]{exprVarRef, exprIndex});
         Expression expr = exprVarRef;
         expr.setVariableType(varType);
@@ -996,7 +996,7 @@ public class ExpressionParser {
             vars.addAll(Arrays.asList(new Variable[]{arrayVar}));
             expr.setVariables(vars);
         }
-        // FarrayRef:式文字列
+        // FarrayRef: Expression string
         expr.setLine(buf.toString());
 
         return expr;
@@ -1004,39 +1004,39 @@ public class ExpressionParser {
 
 
     /**
-     * FcomplexConstant(複素数型定数)要素から式クラスを作成する
+     * Create an expression class from FcomplexConstant elements
      *
-     * @param node            FcomplexConstant(複素数型定数)要素
-     * @return 式クラス
-     * @throws XcodeMLException  パースエラー
+     * @param node FcomplexConstant element
+     * @return expression class
+     * @throws XcodeMLException Parsing error
      */
     private Expression getExpression(FcomplexConstant node) throws XcodeMLException {
-        // 式バッファ
+        // Expression buffer
         StringBuffer buf = new StringBuffer();
 
         String type = node.getType();
 
-        // 変数データ型のパース
+        // Parse variable data type
         VariableType varType = getVariableType(type);
 
-        // 子要素の取得
+        // Get child elements
         List<IXmlNode> contents = node.getContent();
 
-        // バッファ追加:左括弧
-        buf.append(EXPR_PARENLEFT); // 左括弧 (
+        // Add buffer: Left parenthesis
+        buf.append(EXPR_PARENLEFT); // Left parenthesis (
 
-        // 子要素のExpressionクラス
+        // Expression class of child element
         List<Expression> list = new ArrayList<Expression>();
         Expression exprContent = null;
         if (contents != null && contents.size() > 0) {
             int count = 0;
             for (IXmlNode content : contents) {
                 if (count > 0) {
-                    // バッファ追加
-                    buf.append(EXPR_COMMA);        // カンマ
+                    // Add buffer
+                    buf.append(EXPR_COMMA);        // Comma
                 }
                 Expression expr = getExpression(content);
-                // バッファ追加
+                // Add buffer
                 buf.append(expr.getLine());
                 list.add(expr);
                 count++;
@@ -1044,16 +1044,16 @@ public class ExpressionParser {
         }
         if (list.size() <= 0 ) return null;
 
-        // バッファ追加:右括弧
-        buf.append(EXPR_PARENRIGHT); // 右括弧 )
+        // Add buffer: Right parenthesis
+        buf.append(EXPR_PARENRIGHT); // Right parenthesis)
 
         exprContent = mergeExpression(list.toArray(new Expression[0]));
 
-        // Expressionクラス生成
+        // Expression class generation
         Expression expr = exprContent;
         expr.setVariableType(varType);
 
-        // FcomplexConstant:式文字列
+        // FcomplexConstant: expression string
         expr.setLine(buf.toString());
 
         return expr;
@@ -1061,96 +1061,96 @@ public class ExpressionParser {
 
 
     /**
-     * FrealConstant(浮動小数定数)要素から式クラスを作成する
+     * Create an expression class from FrealConstant elements
      *
-     * @param node           FrealConstant(浮動小数定数)要素
-     * @return 式クラス
-     * @throws XcodeMLException  パースエラー
+     * @param node FrealConstant (floating point constant) element
+     * @return expression class
+     * @throws XcodeMLException Parsing error
      */
     private Expression getExpression(FrealConstant node) throws XcodeMLException {
-        // 式バッファ
+        // Expression buffer
         StringBuffer buf = new StringBuffer();
 
         String type = node.getType();
 
-        // 変数データ型のパース
+        // Parse variable data type
         VariableType varType = getVariableType(type);
 
-        // 定数値
+        // constant number
         String value = node.getValue();
 
-        // バッファ追加：値
+        // Add buffer: Value
         buf.append(value);
 
-        // Expressionクラス生成
+        // Expression class generation
         Expression expr = new Expression(value);
         expr.setVariableType(varType);
 
-        // FrealConstant:式文字列
+        // FrealConstant: expression string
         expr.setLine(buf.toString());
 
         return expr;
     }
 
     /**
-     * FcharacterConstant(文字列定数)要素から式クラスを作成する
+     * Create an expression class from the FcharacterConstant element
      *
-     * @param node           FcharacterConstant(文字列定数)要素
-     * @return 式クラス
-     * @throws XcodeMLException  パースエラー
+     * @param node FcharacterConstant (string constant) element
+     * @return expression class
+     * @throws XcodeMLException Parsing error
      */
     private Expression getExpression(FcharacterConstant node) throws XcodeMLException {
-        // 式バッファ
+        // Expression buffer
         StringBuffer buf = new StringBuffer();
 
         String type = node.getType();
 
-        // 変数データ型のパース
+        // Parse variable data type
         VariableType varType = getVariableType(type);
 
-        // 定数値
+        // constant number
         String value = node.getValue();
 
-        // バッファ追加：値
+        // Add buffer: Value
         buf.append("\"" + value + "\"");
 
-        // Expressionクラス生成
+        // Expression class generation
         Expression expr = new Expression(value);
         expr.setVariableType(varType);
 
-        // FcharacterConstant:式文字列
+        // FcharacterConstant: expression string
         expr.setLine(buf.toString());
 
         return expr;
     }
 
     /**
-     * FintConstant(整数型定数)要素から式クラスを作成する
+     * Create an expression class from FintConstant (integer constant) elements
      *
-     * @param node            FintConstant(整数型定数)要素
-     * @return 式クラス
-     * @throws XcodeMLException  パースエラー
+     * @param node FintConstant (integer constant) element
+     * @return expression class
+     * @throws XcodeMLException Parsing error
      */
     private Expression getExpression(FintConstant node) throws XcodeMLException {
-        // 式バッファ
+        // Expression buffer
         StringBuffer buf = new StringBuffer();
 
         String type = node.getType();
 
-        // 変数データ型のパース
+        // Parse variable data type
         VariableType varType = getVariableType(type);
 
-        // 定数値
+        // constant number
         String value = node.getValue();
 
-        // バッファ追加：値
+        // Add buffer: Value
         buf.append(value);
 
-        // Expressionクラス生成
+        // Expression class generation
         Expression expr = new Expression(value);
         expr.setVariableType(varType);
 
-        // FintConstant:式文字列
+        // FintConstant: expression string
         expr.setLine(buf.toString());
 
         return expr;
@@ -1159,69 +1159,69 @@ public class ExpressionParser {
 
 
     /**
-     * FlogicalConstant(論理値定数)要素から式クラスを作成する
+     * Create an expression class from FlogicalConstant elements
      *
-     * @param node            FlogicalConstant(整数型定数)要素
-     * @return 式クラス
-     * @throws XcodeMLException  パースエラー
+     * @param node FlogicalConstant (integer constant) element
+     * @return expression class
+     * @throws XcodeMLException Parsing error
      */
     private Expression getExpression(FlogicalConstant node) throws XcodeMLException {
-        // 式バッファ
+        // Expression buffer
         StringBuffer buf = new StringBuffer();
 
         String type = node.getType();
 
-        // 変数データ型のパース
+        // Parse variable data type
         VariableType varType = getVariableType(type);
 
-        // 定数値
+        // constant number
         String value = node.getValue();
 
-        // バッファ追加：値
+        // Add buffer: Value
         buf.append(value);
 
-        // Expressionクラス生成
+        // Expression class generation
         Expression expr = new Expression(value);
         expr.setVariableType(varType);
 
-        // FlogicalConstant:式文字列
+        // FlogicalConstant: expression string
         expr.setLine(buf.toString());
 
         return expr;
     }
 
     /**
-     * UserUnaryExpr(単項演算式:INTERFACE依存)要素から式クラスを作成する
+     * Create an expression class from the UserUnaryExpr (unary expression: INTERFACE dependent) element
      *
-     * @param node            UserUnaryExpr(単項演算式:INTERFACE依存)要素
-     * @return 式クラス
-     * @throws XcodeMLException  パースエラー
+     * @param node UserUnaryExpr (unary operation: INTERFACE dependent) element
+     * @return expression class
+     * @throws XcodeMLException Parsing error
      */
     private Expression getExpression(UserUnaryExpr node) throws XcodeMLException {
-        // 式バッファ
+        // Expression buffer
         StringBuffer buf = new StringBuffer();
 
         String type = node.getType();
 
-        // 変数データ型のパース
+        // Parse variable data type
         VariableType varType = getVariableType(type);
 
-        // バッファ追加:左括弧
-        buf.append(EXPR_PARENLEFT); // 左括弧 (
+        // Add buffer: Left parenthesis
+        buf.append(EXPR_PARENLEFT); // Left parenthesis (
 
-        // 子要素の取得
+        // Get child elements
         IXmlNode child = XmlNodeUtil.getXmlNodeChoice(node);
         Expression expr = getExpression(child);
-        // バッファ追加
+        // Add buffer
         buf.append(expr.getLine());
 
-        // バッファ追加:右括弧
-        buf.append(EXPR_PARENRIGHT); // 右括弧 )
+        // Add buffer: Right parenthesis
+        buf.append(EXPR_PARENRIGHT); // Right parenthesis)
 
-        // Expressionクラス生成
+        // Expression class generation
         expr.setVariableType(varType);
 
-        // UserUnaryExpr:式文字列
+        // UserUnaryExpr: expression string
         expr.setLine(buf.toString());
 
         return expr;
@@ -1229,46 +1229,46 @@ public class ExpressionParser {
 
 
     /**
-     * DefModelExprList(配列構成子,構造体構成子)要素から式クラスを作成する
+     * Create an expression class from DefModelExprList (array constructor, struct constructor) elements
      *
-     * @param node            DefModelExprList(配列構成子,構造体構成子)要素
-     * @return 式クラス
-     * @throws XcodeMLException  パースエラー
+     * @param node DefModelExprList (array constructor, structure constructor) element
+     * @return expression class
+     * @throws XcodeMLException Parsing error
      */
     private Expression getExpression(DefModelExprList node) throws XcodeMLException {
-        // 式バッファ
+        // Expression buffer
         StringBuffer buf = new StringBuffer();
 
         String type = null;
         if (node instanceof FarrayConstructor) {
             type = ((FarrayConstructor)node).getType();
-            // バッファ追加 : (/
+            // Add buffer: (/
             buf.append( EXPR_ARRAYLEFT);
         }
         else if (node instanceof FstructConstructor) {
             type = ((FstructConstructor)node).getType();
-            // バッファ追加 : (
-            buf.append( EXPR_PARENLEFT); // 左括弧 (
+            // Add buffer: (
+            buf.append( EXPR_PARENLEFT); // Left parenthesis (
         }
 
-        // 変数データ型のパース
+        // Parse variable data type
         VariableType varType = getVariableType(type);
 
-        // 子要素の取得
+        // Get child elements
         List<IXmlNode> models = node.getDefModelExpr();
 
-        // 子要素のExpressionクラス
+        // Expression class of child element
         List<Expression> list = new ArrayList<Expression>();
         Expression exprContent = null;
         if (models != null && models.size() > 0) {
             int count = 0;
             for (IXmlNode model : models) {
                 if (count > 0) {
-                    // バッファ追加:カンマ
-                    buf.append(EXPR_COMMA); // カンマ
+                    // Add buffer: comma
+                    buf.append(EXPR_COMMA); // Comma
                 }
                 Expression expr = getExpression(model);
-                // バッファ追加
+                // Add buffer
                 buf.append(expr.getLine());
                 list.add(expr);
                 count++;
@@ -1279,19 +1279,19 @@ public class ExpressionParser {
         exprContent = mergeExpression(list.toArray(new Expression[0]));
 
         if (node instanceof FarrayConstructor) {
-            // バッファ追加 : /)
+            // Add buffer: /)
             buf.append( EXPR_ARRAYRIGHT);
         }
         else if (node instanceof FstructConstructor) {
-            // バッファ追加 : )
-            buf.append( EXPR_PARENRIGHT); // 右括弧 )
+            // Add buffer :)
+            buf.append( EXPR_PARENRIGHT); // Right parenthesis)
         }
 
-        // Expressionクラス生成
+        // Expression class generation
         Expression expr = exprContent;
         expr.setVariableType(varType);
 
-        // DefModelExprList:式文字列
+        // DefModelExprList: Expression string
         expr.setLine(buf.toString());
 
         return expr;
@@ -1299,55 +1299,55 @@ public class ExpressionParser {
 
 
     /**
-     * Var(変数名)要素から式クラスを作成する
+     * Create an expression class from the Var (variable name) element
      *
-     * @param node            Var(変数名)
-     * @return 式クラス
-     * @throws XcodeMLException  パースエラー
+     * @param node Var (variable name)
+     * @return expression class
+     * @throws XcodeMLException Parsing error
      */
     private Expression getExpression(Var node) throws XcodeMLException {
 
-        // 変数データ型のパース
+        // Parse variable data type
         VariableTypeParser typeParser = new VariableTypeParser(this.typeManager);
         VariableType varType = typeParser.parseVariableType(node);
 
-        // Expressionクラス生成
+        // Expression class generation
         Expression expr = new Expression();
        
-        // 変数のパース
+        // Parse variables
         VariableParser varParser = new VariableParser(this.typeManager);
         Variable var = varParser.getVariable(node);
 
-        // 変数の追加
+        // Add variable
         if (var != null) {
             expr.addVariable(var);
         }
         expr.setVariableType(varType);
 
-        // Var:式文字列
+        // Var: expression string
         expr.setLine(var.getVariableString());
 
         return expr;
     }
 
     /**
-     * VarRef(変数参照)要素から式クラスを作成する
+     * Create an expression class from a VarRef element
      *
-     * @param node            VarRef(変数参照)要素
-     * @return 式クラス
-     * @throws XcodeMLException  パースエラー
+     * @param node VarRef (variable reference) element
+     * @return expression class
+     * @throws XcodeMLException Parsing error
      */
     private Expression getExpression(VarRef node) throws XcodeMLException {
         String type = node.getType();
 
-        // 変数データ型のパース
+        // Parse variable data type
         VariableType varType = getVariableType(type);
 
-        // 子要素の取得
+        // Get child elements
         IXmlNode child = XmlNodeUtil.getXmlNodeChoice(node);
         Expression expr = getExpression(child);
 
-        // Expressionクラス生成
+        // Expression class generation
         expr.setVariableType(varType);
 
         return expr;
@@ -1355,18 +1355,18 @@ public class ExpressionParser {
 
 
     /**
-     * IndexRange(インデックス範囲)要素から式クラスを作成する
+     * Create an expression class from the IndexRange element
      *
-     * @param node            IndexRange(インデックス範囲)要素
-     * @return 式クラス
-     * @throws XcodeMLException  パースエラー
+     * @param node Index Range element
+     * @return expression class
+     * @throws XcodeMLException Parsing error
      */
     private Expression getExpression(IndexRange node) throws XcodeMLException {
 
-        // 式バッファ
+        // Expression buffer
         StringBuffer buf = new StringBuffer();
 
-        // IndexRangeの区切文字
+        // Index Range delimiter
         String delim = EXPR_ARRAYCOLON;
         if (this.parentIndexRange != null) {
             if (this.parentIndexRange.equals(FdoLoop.class)) {
@@ -1379,19 +1379,19 @@ public class ExpressionParser {
             }
         }
 
-        // 子要素の取得
+        // Get child elements
         LowerBound lower = node.getLowerBound();
         Expression exprLower = null;
         if (lower != null) {
             IXmlNode nodeLower = XmlNodeUtil.getXmlNodeChoice(lower);
             exprLower = getExpression(nodeLower);
-            // バッファ追加
+            // Add buffer
             if (exprLower != null) {
                 buf.append(exprLower.getLine());
             }
         }
 
-        // バッファ追加:IndexRangeの区切文字
+        // Add buffer: IndexRange delimiter
         buf.append(delim);
 
         UpperBound upper = node.getUpperBound();
@@ -1399,7 +1399,7 @@ public class ExpressionParser {
         if (upper != null) {
             IXmlNode nodeUpper = XmlNodeUtil.getXmlNodeChoice(upper);
             exprUpper = getExpression(nodeUpper);
-            // バッファ追加
+            // Add buffer
             if (exprUpper != null) {
                 buf.append(exprUpper.getLine());
             }
@@ -1407,21 +1407,21 @@ public class ExpressionParser {
         Step step = node.getStep();
         Expression exprStep = null;
         if (step != null) {
-            // バッファ追加:IndexRangeの区切文字
+            // Add buffer: IndexRange delimiter
             buf.append(delim);
 
             IXmlNode nodeStep = XmlNodeUtil.getXmlNodeChoice(step);
             exprStep = getExpression(nodeStep);
-            // バッファ追加
+            // Add buffer
             if (exprStep != null) {
                 buf.append(exprStep.getLine());
             }
         }
 
-        // Expressionクラス生成
+        // Expression class generation
         Expression expr = mergeExpression(new Expression[]{exprLower, exprUpper, exprStep});
 
-        // IndexRange:式文字列
+        // IndexRange: Expression string
         expr.setLine(buf.toString());
 
         return expr;
@@ -1429,15 +1429,15 @@ public class ExpressionParser {
 
 
     /**
-     * LowerBound(範囲の下限)要素から式クラスを作成する
+     * Create an expression class from the LowerBound element
      *
-     * @param node            LowerBound(範囲の下限)要素
-     * @return 式クラス
-     * @throws XcodeMLException  パースエラー
+     * @param node LowerBound element
+     * @return expression class
+     * @throws XcodeMLException Parsing error
      */
     private Expression getExpression(LowerBound node) throws XcodeMLException {
 
-        // 子要素の取得
+        // Get child elements
         IXmlNode nodeLower = XmlNodeUtil.getXmlNodeChoice(node);
         Expression expr = getExpression(nodeLower);
 
@@ -1445,15 +1445,15 @@ public class ExpressionParser {
     }
 
     /**
-     * UpperBound(範囲の上限)要素から式クラスを作成する
+     * Create an expression class from the UpperBound element
      *
-     * @param node            UpperBound(範囲の上限)要素
-     * @return 式クラス
-     * @throws XcodeMLException  パースエラー
+     * @param node UpperBound element
+     * @return expression class
+     * @throws XcodeMLException Parsing error
      */
     private Expression getExpression(UpperBound node) throws XcodeMLException {
 
-        // 子要素の取得
+        // Get child elements
         IXmlNode nodeUpper = XmlNodeUtil.getXmlNodeChoice(node);
         Expression expr = getExpression(nodeUpper);
 
@@ -1461,15 +1461,15 @@ public class ExpressionParser {
     }
 
     /**
-     * Step(範囲のステップ)要素から式クラスを作成する
+     * Create an expression class from the Step element
      *
-     * @param node            Step(範囲のステップ)要素
-     * @return 式クラス
-     * @throws XcodeMLException  パースエラー
+     * @param node Step element
+     * @return expression class
+     * @throws XcodeMLException Parsing error
      */
     private Expression getExpression(Step node) throws XcodeMLException {
 
-        // 子要素の取得
+        // Get child elements
         IXmlNode nodeStep = XmlNodeUtil.getXmlNodeChoice(node);
         Expression expr = getExpression(nodeStep);
 
@@ -1478,15 +1478,15 @@ public class ExpressionParser {
 
 
     /**
-     * ArrayIndex(インデックス値)要素から式クラスを作成する
+     * Create an expression class from the ArrayIndex element
      *
-     * @param node            ArrayIndex(インデックス値)要素
-     * @return 式クラス
-     * @throws XcodeMLException  パースエラー
+     * @param node ArrayIndex element
+     * @return expression class
+     * @throws XcodeMLException Parsing error
      */
     private Expression getExpression(ArrayIndex node) throws XcodeMLException {
 
-        // 子要素の取得
+        // Get child elements
         IXmlNode nodeStep = XmlNodeUtil.getXmlNodeChoice(node);
         Expression expr = getExpression(nodeStep);
 
@@ -1494,60 +1494,60 @@ public class ExpressionParser {
     }
 
     /**
-     * NamedValue(インデックス値)要素から式クラスを作成する
+     * Create an expression class from the NamedValue element
      *
-     * @param node            ArrayIndex(インデックス値)要素
-     * @return 式クラス
-     * @throws XcodeMLException  パースエラー
+     * @param node ArrayIndex element
+     * @return expression class
+     * @throws XcodeMLException Parsing error
      */
     private Expression getExpression(NamedValue node) throws XcodeMLException {
-        // 式バッファ
+        // Expression buffer
         StringBuffer buf = new StringBuffer();
 
-        // 名前
+        // name
         String name = node.getName();
-        // 値
+        // value
         String value = node.getValue();
 
-        // バッファ追加:名前
+        // Add buffer: Name
         buf.append(name);
 
-        // バッファ追加:=
+        // Add buffer: =
         buf.append(EXPR_EQUAL);
 
-        // Expressionクラス生成
+        // Expression class generation
         Expression exprValue = null;
         if (value != null) {
-            // バッファ追加:値
+            // Add buffer: Value
             buf.append(value);
         }
         else {
-            // 子要素の取得
+            // Get child elements
             IXmlNode nodeValue = XmlNodeUtil.getXmlNodeChoice(node);
             exprValue = getExpression(nodeValue);
-            // バッファ追加:値
+            // Add buffer: Value
             buf.append(exprValue.getLine());
         }
 
         if (exprValue == null) return null;
 
-        // キーワード引数
+        // Keyword argument
         KeywordArgument expr = new KeywordArgument(name, exprValue);
-        // NamedValue:式文字列
+        // NamedValue: expression string
         expr.setLine(buf.toString());
 
         return expr;
     }
 
     /**
-     * Value(式で表わされる任意の値)要素から式クラスを作成する
+     * Create an expression class from a Value (arbitrary value represented by an expression) element
      *
-     * @param node            Value(式で表わされる任意の値)要素
-     * @return 式クラス
-     * @throws XcodeMLException  パースエラー
+     * @param node Value (arbitrary value represented by an expression) element
+     * @return expression class
+     * @throws XcodeMLException Parsing error
      */
     private Expression getExpression(Value node) throws XcodeMLException {
-        // 式バッファ
+        // Expression buffer
         StringBuffer buf = new StringBuffer();
 
         RepeatCount repeat = node.getRepeatCount();
@@ -1555,9 +1555,9 @@ public class ExpressionParser {
         if (repeat != null) {
             IXmlNode nodeRep = XmlNodeUtil.getXmlNodeChoice(repeat);
             exprRepeat = getExpression(nodeRep);
-            // バッファ追加
+            // Add buffer
             buf.append(exprRepeat.getLine());
-            // バッファ追加 : *
+            // Add buffer: *
             buf.append(EXPR_MUL); // *
         }
 
@@ -1565,28 +1565,28 @@ public class ExpressionParser {
         Expression exprModel = null;
         if (nodeModel != null) {
             exprModel = getExpression(nodeModel);
-            // バッファ追加
+            // Add buffer
             buf.append(exprModel.getLine());
         }
 
-        // Expressionクラス生成
+        // Expression class generation
         Expression expr = mergeExpression(new Expression[]{exprRepeat, exprModel});
 
-        // Value:式文字列
+        // Value: expression string
         expr.setLine(buf.toString());
 
         return expr;
     }
 
     /**
-     * FcaseLabel(SELECT CASE構文のCASE文)要素から式クラスを作成する
+     * Create an expression class from the FcaseLabel (CASE statement in SELECT CASE syntax) element
      *
-     * @param node            FcaseLabel(SELECT CASE構文のCASE文)要素
-     * @return 式クラス
-     * @throws XcodeMLException  パースエラー
+     * @param node FcaseLabel (CASE statement in SELECT CASE syntax) element
+     * @return expression class
+     * @throws XcodeMLException Parsing error
      */
     private Expression getExpression(FcaseLabel node) throws XcodeMLException {
-        // 式バッファ
+        // Expression buffer
         StringBuffer buf = new StringBuffer();
 
         buf.append("CASE");
@@ -1599,13 +1599,13 @@ public class ExpressionParser {
                 Expression exprCase = getExpression(caseNode);
                 exprs.add(exprCase);
 
-                // バッファ追加
+                // Add buffer
                 buf.append(exprCase.getLine());
                 buf.append(EXPR_SPACE);
             }
         }
 
-        // Expressionクラス生成
+        // Expression class generation
         Expression expr = null;
         if (exprs.size() > 0) {
             expr = mergeExpression(exprs.toArray(new Expression[0]));
@@ -1615,7 +1615,7 @@ public class ExpressionParser {
             buf.append("DEFAULT");
         }
 
-        // CASE:式文字列
+        // CASE: expression string
         expr.setLine(buf.toString());
 
         return expr;
@@ -1623,14 +1623,14 @@ public class ExpressionParser {
 
 
     /**
-     * Params要素から式クラスを作成する
+     * Create an expression class from Params elements
      *
-     * @param node            Params要素
-     * @return 式クラス
-     * @throws XcodeMLException  パースエラー
+     * @param node Params element
+     * @return expression class
+     * @throws XcodeMLException Parsing error
      */
     private Expression getExpression(Params node) throws XcodeMLException {
-        // 式バッファ
+        // Expression buffer
         StringBuffer buf = new StringBuffer();
 
         List<Name> list = node.getName();
@@ -1646,33 +1646,33 @@ public class ExpressionParser {
                 if (count > 0) {
                     buf.append(EXPR_COMMA);
                 }
-                // バッファ追加
+                // Add buffer
                 buf.append(nameNode.getValue());
                 count++;
             }
         }
 
-        // Expressionクラス生成
+        // Expression class generation
         Expression expr = new Expression();
         if (exprs.size() > 0) {
             expr = mergeExpression(exprs.toArray(new Expression[0]));
         }
 
-        // パラメータ文字列
+        // Parameter string
         expr.setLine(buf.toString());
 
         return expr;
     }
 
     /**
-     * VarList要素から式クラスを作成する
+     * Create an expression class from the VarList element
      *
-     * @param node            VarList要素
-     * @return 式クラスリスト
-     * @throws XcodeMLException  パースエラー
+     * @param node VarList element
+     * @return expression class list
+     * @throws XcodeMLException Parsing error
      */
     public Expression getExpression(VarList node) throws XcodeMLException {
-        // 式バッファ
+        // Expression buffer
         StringBuffer buf = new StringBuffer();
 
         Expression[] list = getExpressionArray(node);
@@ -1681,17 +1681,17 @@ public class ExpressionParser {
         for (Expression expr : list) {
             int count = 0;
             if (count > 0) {
-                // バッファ追加
-                buf.append(EXPR_COMMA);        // カンマ
+                // Add buffer
+                buf.append(EXPR_COMMA);        // Comma
             }
-            // バッファ追加
+            // Add buffer
             buf.append(expr.getLine());
             count++;
         }
 
-        // Expressionクラス生成
+        // Expression class generation
         Expression expr = mergeExpression(list);
-        // パラメータ文字列
+        // Parameter string
         expr.setLine(buf.toString());
 
         return expr;
@@ -1699,14 +1699,14 @@ public class ExpressionParser {
 
 
     /**
-     * ValueList要素から式クラスを作成する
+     * Create an expression class from the ValueList element
      *
-     * @param node            ValueList要素
-     * @return 式クラスリスト
-     * @throws XcodeMLException  パースエラー
+     * @param node ValueList element
+     * @return expression class list
+     * @throws XcodeMLException Parsing error
      */
     public Expression getExpression(ValueList node) throws XcodeMLException {
-        // 式バッファ
+        // Expression buffer
         StringBuffer buf = new StringBuffer();
 
         Expression[] list = getExpressionArray(node);
@@ -1715,34 +1715,34 @@ public class ExpressionParser {
         for (Expression expr : list) {
             int count = 0;
             if (count > 0) {
-                // バッファ追加
-                buf.append(EXPR_COMMA);        // カンマ
+                // Add buffer
+                buf.append(EXPR_COMMA);        // Comma
             }
-            // バッファ追加
+            // Add buffer
             buf.append(expr.getLine());
             count++;
         }
 
-        // Expressionクラス生成
+        // Expression class generation
         Expression expr = mergeExpression(list);
-        // パラメータ文字列
+        // Parameter string
         expr.setLine(buf.toString());
 
         return expr;
     }
 
     /**
-     * VarList要素から式クラスを作成する
+     * Create an expression class from the VarList element
      *
-     * @param node            VarList要素
-     * @return 式クラスリスト
-     * @throws XcodeMLException  パースエラー
+     * @param node VarList element
+     * @return expression class list
+     * @throws XcodeMLException Parsing error
      */
     public Expression[] getExpressionArray(VarList node) throws XcodeMLException {
-        // IXmlNodeリスト
+        // IXmlNode list
         List<IXmlNode> vars = node.getVarRefOrFdoLoop();
 
-        // 子要素のExpressionクラス
+        // Expression class of child element
         List<Expression> list = new ArrayList<Expression>();
         if (vars != null && vars.size() > 0) {
             for (IXmlNode var : vars) {
@@ -1759,18 +1759,18 @@ public class ExpressionParser {
 
 
     /**
-     * ValueList要素から式クラスを作成する
+     * Create an expression class from the ValueList element
      *
-     * @param node            ValueList要素
-     * @return 式クラスリスト
-     * @throws XcodeMLException  パースエラー
+     * @param node ValueList element
+     * @return expression class list
+     * @throws XcodeMLException Parsing error
      */
     public Expression[] getExpressionArray(ValueList node) throws XcodeMLException {
 
-        // Valueリスト
+        // Value list
         List<Value> values = node.getValue();
 
-        // 子要素のExpressionクラス
+        // Expression class of child element
         List<Expression> list = new ArrayList<Expression>();
         if (values != null && values.size() > 0) {
             for (Value value : values) {
@@ -1786,9 +1786,9 @@ public class ExpressionParser {
     }
 
     /**
-     * Expressionの集計を行う
-     * @param exprs		Expressionリスト
-     * @return				合計Expression
+     * Aggregate Expression
+     * @param exprs Expression list
+     * @return Total Expression
      */
     private Expression mergeExpression(Expression[] exprs) {
         if (exprs == null) return null;
@@ -1830,14 +1830,14 @@ public class ExpressionParser {
     }
 
     /**
-     *  変数データ型を取得する
-     * @param typename		データタイプ名
-     * @return			変数データ型
+     * Get variable data type
+     * @param typename Data type name
+     * @return variable data type
      */
     private VariableType getVariableType(String typename) {
         if (typename == null || typename.isEmpty()) return null;
 
-        // 変数のパース
+        // Parse variables
         VariableTypeParser typeParser = new VariableTypeParser(this.typeManager);
         VariableType varType = typeParser.parseVariableType(typename);
 
@@ -1845,74 +1845,74 @@ public class ExpressionParser {
     }
 
     /**
-     * 演算子を取得する
-     * @param node		XMLノード
-     * @return   演算子文字列
+     * Get the operator
+     * @param node XML node
+     * @return operator string
      */
     private String getOperation(IXmlNode node) {
 
         if (node instanceof PlusExpr) {
-            // 加算
+            // Addition
             return (EXPR_PLUS);
         }
         else if (node instanceof MinusExpr) {
-            // 減算
+            // Subtraction
             return (EXPR_MINUS);
         }
         else if (node instanceof MulExpr) {
-            // 乗算
+            // Multiply
             return (EXPR_MUL);
         }
         else if (node instanceof DivExpr) {
-            // 除算
+            // Division
             return (EXPR_DIV);
         }
         else if (node instanceof FpowerExpr) {
-            // べき算
+            // Power calculation
             return (EXPR_POWER);
         }
         else if (node instanceof LogLEExpr) {
-            // logLEExpr <= .LE. : 小なり、または等価
+            // logLEExpr <= .LE .: less or equivalent
             return (EXPR_LOGLE);
         }
         else if (node instanceof FconcatExpr) {
-            // FconcatExpr // : 文字式の連結
+            // FconcatExpr //: Concatenation of character expressions
             return (EXPR_CONCAT);
         }
         else if (node instanceof LogEQExpr) {
-            // logEQExpr == .EQ. : 等価
+            // logEQExpr == .EQ .: Equivalent
             return (EXPR_LOGEQ);
         }
         else if (node instanceof LogNEQExpr) {
-            // logNEQExpr /= .NE. : 非等価
+            // logNEQExpr / = .NE .: Non-equivalent
             return (EXPR_LOGNEQ);
         }
         else if (node instanceof LogGEExpr) {
-            // logGEExpr >= .GE. : 大なり、または同値
+            // logGEExpr> = .GE .: Greater or equivalent
             return (EXPR_LOGGE);
         }
         else if (node instanceof LogGTExpr) {
-            // logGTExpr > .GT. : 大なり
+            // logGTExpr> .GT .: Greater
             return (EXPR_LOGGT);
         }
         else if (node instanceof LogLTExpr) {
-            // logLTExpr < .LT. : 小なり
+            // logLTExpr <.LT .: less
             return (EXPR_LOGLT);
         }
         else if (node instanceof LogAndExpr) {
-            // logAndExpr .AND. : 論理積
+            // logAndExpr .AND .: AND
             return (EXPR_LOGAND);
         }
         else if (node instanceof LogOrExpr) {
-            // logOrExpr .OR. : 論理和
+            // logOrExpr .OR .: OR
             return (EXPR_LOGOR);
         }
         else if (node instanceof LogEQVExpr) {
-            // logEQVExpr .EQV. : 論理等価
+            // logEQVExpr .EQV .: Logical equivalent
             return (EXPR_LOGEQV);
         }
         else if (node instanceof LogNEQVExpr) {
-            // logNEQVExpr .NEQV. : 論理非等価
+            // logNEQVExpr .NEQV .: Logical non-equivalent
             return (EXPR_LOGNEQV);
         }
 
@@ -1920,9 +1920,9 @@ public class ExpressionParser {
     }
 
     /**
-     * 外部手続きリストに追加する
-     * @param funcName		外部手続き名
-     * @param varType		データ型
+     * Add to external procedure list
+     * @param funcName External procedure name
+     * @param varType data type
      */
     private void addExternalFunction(String funcName, IVariableType varType) {
         if (this.externalFunctionList == null) {
@@ -1936,8 +1936,8 @@ public class ExpressionParser {
     }
 
     /**
-     * 外部手続きリストを取得する
-     * @return		外部手続きリスト
+     * Get a list of external procedures
+     * @return External procedure list
      */
     public Map<String, IVariableType> getExternalFunction() {
         return this.externalFunctionList;

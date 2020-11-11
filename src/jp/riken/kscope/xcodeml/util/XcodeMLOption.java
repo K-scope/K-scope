@@ -18,26 +18,26 @@
 package jp.riken.kscope.xcodeml.util;
 
 /**
- * XcodeMLパースオプション
+ * XcodeML parsing options
  * @author RIKEN
  */
 public class XcodeMLOption {
 
     /**
-     * 言語タイプ
+     * Language type
      * @author RIKEN
      *
      */
     public enum LanguageType {
-        /** C言語 */
+        /** C language */
         C,
         /** Fortran */
         F, ;
     }
 
-    /** コンパイラ識別子:GNU */
+    /** Compiler identifier: GNU */
     public static final int COMP_VENDOR_GNU = 'G';
-    /** コンパイラ識別子:INTEL */
+    /** Compiler identifier: INTEL */
     public static final int COMP_VENDOR_INTEL = 'I';
 
     /** if suppress to write line directives */
@@ -63,7 +63,7 @@ public class XcodeMLOption {
     private static int _compilerVendor = COMP_VENDOR_GNU;
 
     /**
-     * コンストラクタ
+     * Constructor
      */
     private XcodeMLOption() {
     }

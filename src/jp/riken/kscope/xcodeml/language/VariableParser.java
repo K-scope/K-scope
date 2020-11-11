@@ -28,7 +28,7 @@ import jp.riken.kscope.xcodeml.xml.IXmlNode;
 import jp.riken.kscope.xcodeml.xml.gen.*;
 
 /**
- * Variableパーサクラス
+ * Variable parser class
  * @author RIKEN
  */
 public class VariableParser {
@@ -37,8 +37,8 @@ public class VariableParser {
     private XcodeMLTypeManager typeManager;
 
     /**
-     * コンストラクタ
-     * @param typeManager    typeTable
+     * Constructor
+     * @param typeManager typeTable
      */
     public VariableParser(XcodeMLTypeManager typeManager) {
         this.typeManager = typeManager;
@@ -46,10 +46,10 @@ public class VariableParser {
 
 
     /**
-     * IXmlNode要素からDB::Variableクラスをパース、生成する。
+     * Parse and generate DB :: Variable class from IXmlNode element.
      *
-     * @param node          IXmlNode要素
-     * @return DB::Variableクラス
+     * @param node IXmlNode element
+     * @return DB :: Variable class
      */
     public Variable getVariable(IXmlNode node) {
 
@@ -84,10 +84,10 @@ public class VariableParser {
     }
 
     /**
-     * Value要素からDB::Variableクラスをパース、生成する。
+     * Parse and generate DB :: Variable class from Value element.
      *
-     * @param node          Value要素
-     * @return DB::Variableクラス
+     * @param node Value element
+     * @return DB :: Variable class
      */
     public Variable getVariable(Value node) {
 
@@ -95,10 +95,10 @@ public class VariableParser {
             return null;
         }
 
-        // 変数名
+        // Variable name
         IXmlNode value = XmlNodeUtil.getXmlNodeChoice(node);
 
-        // Variableクラス生成
+        // Variable class generation
         Variable var = getVariable(value);
 
         return var;
@@ -106,10 +106,10 @@ public class VariableParser {
 
 
     /**
-     * Var要素からDB::Variableクラスをパース、生成する。
+     * Parse and generate DB :: Variable class from Var element.
      *
-     * @param node          Var要素
-     * @return DB::Variableクラス
+     * @param node Var element
+     * @return DB :: Variable class
      */
     public Variable getVariable(Var node) {
 
@@ -117,20 +117,20 @@ public class VariableParser {
             return null;
         }
 
-        // 変数名
+        // Variable name
         String value = node.getValue();
 
-        // Variableクラス生成
+        // Variable class generation
         Variable var = new Variable(value);
 
         return var;
     }
 
     /**
-     * FmemberRef要素からDB::Variableクラスをパース、生成する。
+     * Parse and generate DB :: Variable class from FmemberRef element.
      *
-     * @param node          FmemberRef要素
-     * @return DB::Variableクラス
+     * @param node FmemberRef element
+     * @return DB :: Variable class
      */
     public Variable getVariable(FmemberRef node) {
 
@@ -138,14 +138,14 @@ public class VariableParser {
             return null;
         }
 
-        // 変数
+        // Variable
         VarRef varNode = node.getVarRef();
         String member = node.getMember();
 
-        // Variableクラス生成
+        // Variable class generation
         Variable var = getVariable(varNode);
 
-        // 構造体メンバ名を付加した変数名に変更する
+        // Change the structure member name to the added variable name
         String name = var.getName();
         name = name + "%" + member;
         var.setName(name);
@@ -154,10 +154,10 @@ public class VariableParser {
     }
 
     /**
-     * FarrayRef要素からDB::Variableクラスをパース、生成する。
+     * Parse and generate DB :: Variable class from FarrayRef element.
      *
-     * @param node          FarrayRef要素
-     * @return DB::Variableクラス
+     * @param node FarrayRef element
+     * @return DB :: Variable class
      */
     public Variable getVariable(FarrayRef node) {
 
@@ -165,11 +165,11 @@ public class VariableParser {
             return null;
         }
 
-        // 変数
+        // Variable
         VarRef varNode = node.getVarRef();
         List<IXmlNode> indexes = node.getIndexRangeOrArrayIndexOrFarrayConstructor();
 
-        // Variableクラス生成
+        // Variable class generation
         Variable var = getVariable(varNode);
         List<Expression> list = getIndexValues(indexes);
         var.setDimensionIndexValue(list);
@@ -178,10 +178,10 @@ public class VariableParser {
     }
 
     /**
-     * FcoArrayRef要素からDB::Variableクラスをパース、生成する。
+     * Parse and generate DB :: Variable class from FcoArrayRef element.
      *
-     * @param node          FcoArrayRef要素
-     * @return DB::Variableクラス
+     * @param node FcoArrayRef element
+     * @return DB :: Variable class
      */
     public Variable getVariable(FcoArrayRef node) {
 
@@ -189,11 +189,11 @@ public class VariableParser {
             return null;
         }
 
-        // 変数
+        // Variable
         VarRef varNode = node.getVarRef();
         List<ArrayIndex> indexes = node.getArrayIndex();
 
-        // Variableクラス生成
+        // Variable class generation
         Variable var = getVariable(varNode);
         List<Expression> list = getArrayIndexValues(indexes);
         var.setDimensionIndexValue(list);
@@ -202,10 +202,10 @@ public class VariableParser {
     }
 
     /**
-     * FcharacterRef要素からDB::Variableクラスをパース、生成する。
+     * Parse and generate DB :: Variable class from FcharacterRef element.
      *
-     * @param node          FcharacterRef要素
-     * @return DB::Variableクラス
+     * @param node FcharacterRef element
+     * @return DB :: Variable class
      */
     public Variable getVariable(FcharacterRef node) {
 
@@ -213,9 +213,9 @@ public class VariableParser {
             return null;
         }
 
-        // 変数
+        // Variable
         VarRef varNode = node.getVarRef();
-        // Variableクラス生成
+        // Variable class generation
         Variable var = getVariable(varNode);
 
         IndexRange indexRange = node.getIndexRange();
@@ -227,10 +227,10 @@ public class VariableParser {
 
 
     /**
-     * VarRef要素からDB::Variableクラスをパース、生成する。
+     * Parse and generate DB :: Variable class from VarRef element.
      *
-     * @param node          VarRef要素
-     * @return DB::Variableクラス
+     * @param node VarRef element
+     * @return DB :: Variable class
      */
     public Variable getVariable(VarRef node) {
 
@@ -238,7 +238,7 @@ public class VariableParser {
             return null;
         }
 
-        // 子要素の取得
+        // Get child elements
         IXmlNode child = XmlNodeUtil.getXmlNodeChoice(node);
         Variable var = getVariable(child);
 
@@ -246,14 +246,14 @@ public class VariableParser {
     }
 
     /**
-     * 配列添字のリストを取得する
-     * @param index		IndexRange要素
-     * @return			配列添字リスト
+     * Get a list of array subscripts
+     * @param index IndexRange element
+     * @return Array subscript list
      */
     private List<Expression> getIndexRangeValues(IndexRange index) {
         if (index == null) return null;
 
-        // ExpressionParserモデルパーサ
+        // Expression Parser Model Parser
         ExpressionParser exprParser = new ExpressionParser(this.typeManager, index);
         Expression expr = exprParser.getExpression();
         if (expr == null) return null;
@@ -265,14 +265,14 @@ public class VariableParser {
     }
 
     /**
-     * 配列添字のリストを取得する
-     * @param index		IXmlNode要素リスト
-     * @return			配列添字リスト
+     * Get a list of array subscripts
+     * @param index IXmlNode element list
+     * @return Array subscript list
      */
     private List<Expression> getIndexValues(List<IXmlNode> indexes) {
         if (indexes == null) return null;
 
-        // ExpressionParserモデルパーサ
+        // Expression Parser Model Parser
         ExpressionParser exprParser = new ExpressionParser(this.typeManager);
 
         List<Expression> list = new ArrayList<Expression>();
@@ -293,9 +293,9 @@ public class VariableParser {
 
 
     /**
-     * 配列添字のリストを取得する
-     * @param index		ArrayIndex要素リスト
-     * @return			配列添字リスト
+     * Get a list of array subscripts
+     * @param index ArrayIndex Element list
+     * @return Array subscript list
      */
     private List<Expression> getArrayIndexValues(List<ArrayIndex> indexes) {
         if (indexes == null) return null;
@@ -308,10 +308,10 @@ public class VariableParser {
 
 
     /**
-     * VarList要素からDB::Variableクラスリストをパース、生成する。
+     * Parse and generate DB :: Variable class list from VarList element.
      *
-     * @param node          VarList要素
-     * @return DB::Variableクラスリスト
+     * @param node VarList element
+     * @return DB :: Variable class list
      */
     public List<Variable> getVariableList(VarList node) {
         if (node == null) return null;

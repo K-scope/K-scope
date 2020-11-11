@@ -16,6 +16,6 @@
  */
 
 /**
- * データベースクラスのパーサを提供します.
+ * Provides a database class parser.
  */
 package jp.riken.kscope.xcodeml.language;

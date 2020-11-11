@@ -39,7 +39,7 @@ import jp.riken.kscope.xcodeml.xml.gen.Symbols;
 import jp.riken.kscope.xcodeml.xml.gen.Var;
 
 /**
- * VariableTypeパーサクラス
+ * VariableType parser class
  * @author RIKEN
  */
 public class VariableTypeParser {
@@ -47,28 +47,28 @@ public class VariableTypeParser {
     /** typeTable */
     private XcodeMLTypeManager typeManager;
 
-    /** 構造体の入れ子リスト */
+    /** Nested list of structures */
     private List<jp.riken.kscope.language.fortran.Type> stackType;
 
 
     /**
-     * コンストラクタ
+     * Constructor
      *
-     * @param typeManager    typeTable
+     * @param typeManager typeTable
      */
     public VariableTypeParser(XcodeMLTypeManager typeManager) {
         this.typeManager = typeManager;
     }
 
     /**
-     * XcodeML::NameクラスからDB::VariableTypeクラスをパース、生成する.
-     * @param type_name           変数、構造体宣言
-     * @return DB::VariableTypeクラス
+     * Parse and generate DB :: VariableType class from XcodeML :: Name class.
+     * @param type_name Variable, structure declaration
+     * @return DB :: VariableType class
      */
     public VariableType parseVariableType(String type_name) {
         if (type_name == null || type_name.isEmpty()) return null;
 
-        // 変数名
+        // Variable name
         Var var = new Var();
         var.setType(type_name);
 
@@ -78,14 +78,14 @@ public class VariableTypeParser {
 
 
     /**
-     * XcodeML::VarクラスからDB::VariableTypeクラスをパース、生成する.<br/>
+     * Parse and generate DB :: VariableType class from XcodeML :: Var class. <br/>
      *
-     * @param var           変数、構造体名
-     * @return DB::VariableTypeクラス
+     * @param var variable, structure name
+     * @return DB :: VariableType class
      */
     public VariableType parseVariableType(Var var) {
 
-        // データ型
+        // Data type
         VariableType varType = null;
         String type_name = var.getType();
         EnumType type = EnumType.getTypeIdFromXcodemlTypeName(type_name);
@@ -107,15 +107,15 @@ public class VariableTypeParser {
 
 
     /**
-     * XcodeML::NameクラスからDB::VariableTypeクラスをパース、生成する.<br/>
-     * 関数データ型は取得しない。
+     * Parse and generate DB :: VariableType class from XcodeML :: Name class. <br/>
+     * Do not get the function data type.
      *
-     * @param name           変数、構造体宣言
-     * @return DB::VariableTypeクラス
+     * @param name variable, structure declaration
+     * @return DB :: VariableType class
      */
     public VariableType parseVariableType(Name name) {
 
-        // データ型
+        // Data type
         VariableType varType = null;
         String type_name = name.getType();
         EnumType type = EnumType.getTypeIdFromXcodemlTypeName(type_name);
@@ -136,17 +136,17 @@ public class VariableTypeParser {
     }
 
     /**
-     * XcodeML::visitableクラスからDB::VariableTypeクラスをパース、生成する.
+     * Parse and generate DB :: VariableType class from XcodeML :: visitable class.
      *
-     * @param visitable           構造体宣言
-     * @return DB::VariableTypeクラス
+     * @param visitable Structure declaration
+     * @return DB :: VariableType class
      */
     public VariableType parseVariableType(FstructDecl visitable) {
 
-        // 変数名
+        // Variable name
         Name name = visitable.getName();
 
-        // データ型
+        // Data type
         IXmlTypeTableChoice typeChoice = this.typeManager.findType(name);
         if (!(typeChoice instanceof FstructType)) {
             return null;
@@ -157,15 +157,15 @@ public class VariableTypeParser {
     }
 
     /**
-     * XcodeML::NameクラスからDB::VariableTypeクラスをパース、生成する.<br/>
-     * 関数データ型も取得する。
+     * Parse and generate DB :: VariableType class from XcodeML :: Name class. <br/>
+     * Also get the function data type.
      *
-     * @param name           変数、構造体宣言、関数名
-     * @return DB::VariableTypeクラス
+     * @param name Variable, structure declaration, function name
+     * @return DB :: VariableType class
      */
     public VariableType parseVariableTypeWithFfunctionType(Name name) {
 
-        // データ型
+        // Data type
         VariableType varType = parseVariableType(name);
         if (varType != null) {
             return varType;
@@ -180,13 +180,13 @@ public class VariableTypeParser {
     }
 
     /**
-     * 型定義要素からDB::VariableTypeクラスをパース、生成する。
+     * Parse and generate DB :: VariableType class from type definition element.
      *
-     * @param type            プリミティブ型や他の型定義要素への参照の定義
-     * @return DB::VariableTypeクラス
+     * @param type Defining references to primitive types and other type definition elements
+     * @return DB :: VariableType class
      */
     public VariableType parseVarDefEnumType(EnumType type) {
-        // データ型
+        // Data type
         String type_name = type.fortranName();
 
         PrimitiveDataType primitive = PrimitiveDataType.findTypeBy(type_name);
@@ -196,14 +196,14 @@ public class VariableTypeParser {
     }
 
     /**
-     * 型定義要素からDB::VariableTypeクラスをパース、生成する。
+     * Parse and generate DB :: VariableType class from type definition element.
      *
-     * @param basicType         プリミティブ型や他の型定義要素への参照の定義
-     * @return DB::VariableTypeクラス
+     * @param basicType Defining references to primitive types and other type definition elements
+     * @return DB :: VariableType class
      */
     public VariableType parseVarDefBasicType(FbasicType basicType) {
 
-        // データ型
+        // Data type
         VariableType varType = null;
         String refName = basicType.getRef();
         EnumType refTypeId = EnumType.getTypeIdFromXcodemlTypeName(refName);
@@ -222,13 +222,13 @@ public class VariableTypeParser {
         }
         if (varType == null) return null;
 
-        // ExprModelパーサ;
+        // ExprModel parser;
         ExpressionParser exprParser = new ExpressionParser(this.typeManager);
 
-        // データバイト数
+        // Number of data bytes
         Kind kindElem = basicType.getKind();
         if (kindElem != null) {
-            // データ型種別のパース
+            // Data type parsing
             exprParser.setParseNode(kindElem);
             Expression expr = exprParser.getExpression();
             if (expr != null) {
@@ -236,7 +236,7 @@ public class VariableTypeParser {
             }
         }
 
-        // CHARACTOR文字列長
+        // CHARACTER string length
         Len lenElem = basicType.getLen();
         if (lenElem != null) {
             exprParser.setParseNode(lenElem);
@@ -253,14 +253,14 @@ public class VariableTypeParser {
     }
 
     /**
-     * 構造体要素からDB::VariableTypeクラスをパース、生成する。
+     * Parse and generate DB :: VariableType class from structure elements.
      *
-     * @param structType          構造体の定義
-     * @return DB::VariableTypeクラス
+     * @param structType Structure definition
+     * @return DB :: VariableType class
      */
     public VariableType parseVarDefStructType(FstructType structType) {
 
-        // 構造体名
+        // Structure name
         //String structTypeName = structType.getType();
         String structName = this.typeManager.getAliasTypeName(structType.getType());
 
@@ -269,21 +269,21 @@ public class VariableTypeParser {
             return null;
         }
 
-        // 入れ子構造体であるかチェックする
+        // Check if it is a nested structure
         if (this.containsStackType(structName)) {
-            // 定義済みであるので、作成済み構造体を返す。
+            // Returns the created structure because it is already defined.
             return new VariableType(this.getStackType(structName));
         }
 
-        // DB::Typeクラス生成
+        // DB :: Type class generation
         jp.riken.kscope.language.fortran.Type typeDef = new jp.riken.kscope.language.fortran.Type(structName);
         this.addStackType(typeDef);
 
-        // 変数宣言パーサ
+        // Variable declaration parser
         VariableDefinitionParser defParser = new VariableDefinitionParser(this.typeManager);
         defParser.setStackType(this.getStackType());
 
-        // 構造体メンバ
+        // Structure member
         Symbols symbols = structType.getSymbols();
         if (symbols == null)
             return null;
@@ -293,7 +293,7 @@ public class VariableTypeParser {
             String id_type = id_elem.getType();
             String id_name = id_elem.getName().getValue();
 
-            // データ型
+            // Data type
             EnumType refTypeId = EnumType.getTypeIdFromXcodemlTypeName(id_type);
             if (refTypeId == null || refTypeId.isPrimitive() == false) {
                 IXmlTypeTableChoice typeidChoice = this.typeManager.findType(id_type);
@@ -302,29 +302,29 @@ public class VariableTypeParser {
                     String ref = ((FbasicType)typeidChoice).getRef();
                     varMem = defParser.parseVarDefBasicType(id_name, (FbasicType) typeidChoice);
                     /*
-                    if (structTypeName.equals(ref)) {
-                        // 構造体メンバ=同一構造体メンバ追加
-                        varMem = new VariableType(typeDef);
+                    if (structTypeName.equals (ref)) {
+                        // Structure member = Add same structure member
+                        varMem = new VariableType (typeDef);
                     }
                     else {
-                        varMem = defParser.parseVarDefBasicType(id_name, (FbasicType) typeidChoice);
+                        varMem = defParser.parseVarDefBasicType (id_name, (FbasicType) typeidChoice);
                     }
                     */
                 } else if (typeidChoice instanceof FstructType) {
                     String ref = ((FstructType)typeidChoice).getType();
                     varMem = defParser.parseVarDefStructType(id_name, (FstructType) typeidChoice);
                     /*
-                    if (structTypeName.equals(ref)) {
-                        // 構造体メンバ=同一構造体メンバ追加
-                        varMem = new VariableType(typeDef);
+                    if (structTypeName.equals (ref)) {
+                        // Structure member = Add same structure member
+                        varMem = new VariableType (typeDef);
                     }
                     else {
-                        varMem = parseVarDefStructType((FstructType) typeidChoice);
+                        varMem = parseVarDefStructType ((FstructType) typeidChoice);
                     }
                     */
                 }
                 if (varMem != null) {
-                    // 構造体メンバ追加
+                    // Add structure member
                     typeDef.add(varMem);
                 }
             } else {
@@ -335,21 +335,21 @@ public class VariableTypeParser {
 
         }
 
-        // 構造体のデータ型を設定する
+        // Set the data type of the structure
         VariableType varType = new VariableType(typeDef);
 
         return varType;
     }
 
     /**
-     * 関数定義要素からDB::VariableTypeクラスをパース、生成する。
+     * Parse and generate DB :: VariableType class from the function definition element.
      *
-     * @param functionType           関数定義要素
-     * @return DB::VariableTypeクラス
+     * @param functionType Function definition element
+     * @return DB :: VariableType class
      */
     public VariableType parseVarDefFunctionType(FfunctionType functionType) {
 
-        // データ型
+        // Data type
         VariableType varType = null;
         String refName = functionType.getReturnType();
         EnumType refTypeId = EnumType.getTypeIdFromXcodemlTypeName(refName);
@@ -374,24 +374,24 @@ public class VariableTypeParser {
 
 
     /**
-     * 構造体の入れ子リストを取得する
-     * @return		構造体の入れ子リスト
+     * Get a nested list of structs
+     * @return Nested list of structures
      */
     public List<jp.riken.kscope.language.fortran.Type> getStackType() {
         return stackType;
     }
 
     /**
-     * 構造体の入れ子リストを設定する
-     * @param stackType		構造体の入れ子リスト
+     * Set a nested list of structs
+     * @param stackType Nested list of structures
      */
     public void setStackType(List<jp.riken.kscope.language.fortran.Type> stackType) {
         this.stackType = stackType;
     }
 
     /**
-     * 構造体の入れ子リストに追加する
-     * @param type		追加構造体
+     * Add to the nested list of structs
+     * @param type Additional structure
      */
     private void addStackType(jp.riken.kscope.language.fortran.Type type) {
         if (type == null) return;
@@ -402,9 +402,9 @@ public class VariableTypeParser {
     }
 
     /**
-     * 構造体の入れ子リストに構造体が追加済みであるかチェックする。
-     * @param type		構造体名
-     * @return    true=追加済み
+     * Check if the structure has been added to the nested list of structures.
+     * @param type Structure name
+     * @return true = added
      */
     private boolean containsStackType(String typeName) {
         if (StringUtils.isNullOrEmpty(typeName)) return false;
@@ -416,9 +416,9 @@ public class VariableTypeParser {
     }
 
     /**
-     * 構造体の入れ子リストから構造体名の構造体を取得する。
-     * @param typeName		構造体名
-     * @return    		構造体
+     * Get the structure with the structure name from the nested list of structures.
+     * @param typeName Structure name
+     * @return structure
      */
     private jp.riken.kscope.language.fortran.Type getStackType(String typeName) {
         if (StringUtils.isNullOrEmpty(typeName)) return null;

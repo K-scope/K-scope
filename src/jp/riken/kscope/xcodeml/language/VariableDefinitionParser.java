@@ -39,68 +39,68 @@ import jp.riken.kscope.xcodeml.xml.gen.Name;
 import jp.riken.kscope.xcodeml.xml.gen.Var;
 
 /**
- * VariableDefinitionパーサクラス
+ * VariableDefinition parser class
  * @author RIKEN
  */
 public class VariableDefinitionParser {
 
-    /** PUBLIC属性 */
+    /** PUBLIC attribute */
     private final String ATTRIBUTE_PUBLIC = "public";
-    /** PRIVATE属性 */
+    /** PRIVATE attribute */
     private final String ATTRIBUTE_PRIVATE = "private";
-    /** EXTERNAL属性 */
+    /** EXTERNAL attribute */
     private final String ATTRIBUTE_EXTERNAL = "external";
-    /** INTERNAL属性 */
+    /** INTERNAL attribute */
     private final String ATTRIBUTE_INTERNAL = "internal";
-    /** INTRINSIC属性 */
+    /** INTRINSIC attribute */
     private final String ATTRIBUTE_INTRINSIC = "intrinsic";
-    /** POINTER属性 */
+    /** POINTER attribute */
     private final String ATTRIBUTE_POINTER = "pointer";
-    /** TARGET属性 */
+    /** TARGET attribute */
     private final String ATTRIBUTE_TARGET = "target";
-    /** OPTIONAL属性 */
+    /** OPTIONAL attribute */
     private final String ATTRIBUTE_OPTIONAL = "optional";
-    /** SAVE属性 */
+    /** SAVE attribute */
     private final String ATTRIBUTE_SAVE = "save";
-    /** PARAMETER属性 */
+    /** PARAMETER attribute */
     private final String ATTRIBUTE_PARAMETER = "parameter";
-    /** ALLOCATABLE属性 */
+    /** ALLOCATABLE attribute */
     private final String ATTRIBUTE_ALLOCATABLE = "allocatable";
-    /** INTENT属性 */
+    /** INTENT attribute */
     private final String ATTRIBUTE_INTENT = "intent";
-    /** SEQUENCE属性 */
+    /** SEQUENCE attribute */
     private final String ATTRIBUTE_SEQUENCE = "sequence";
-    /** INTERNAL PRIVATE属性 */
+    /** INTERNAL PRIVATE attribute */
     private final String ATTRIBUTE_INTERNALPRIVATE = "private";
     /** PROGRAM */
     private final String ATTRIBUTE_PROGRAM = "program";
-    /** RECURSIVE属性 */
+    /** RECURSIVE attribute */
     private final String ATTRIBUTE_RECURSIVE = "recursive";
 
     /** typeTable */
     private XcodeMLTypeManager typeManager;
 
-    /** 構造体の入れ子リスト */
+    /** Nested list of structures */
     private List<jp.riken.kscope.language.fortran.Type> stackType = new ArrayList<jp.riken.kscope.language.fortran.Type>();
 
     /**
-     * コンストラクタ
+     * Constructor
      *
-     * @param typeManager    typeTable
+     * @param typeManager typeTable
      */
     public VariableDefinitionParser(XcodeMLTypeManager typeManager) {
         this.typeManager = typeManager;
     }
 
     /**
-     * XcodeML::NameクラスからDB::VariableDefinitionクラスをパース、生成する.<br/>
-     * VariableDefinitionの変数名はnullとなる。
-     * @param type_name           変数、構造体宣言
-     * @return DB::VariableDefinitionクラス
+     * Parse and generate DB :: VariableDefinition class from XcodeML :: Name class. <br/>
+     * The variable name of VariableDefinition is null.
+     * @param type_name Variable, structure declaration
+     * @return DB :: VariableDefinition class
      */
     public VariableDefinition parseVariableDefinition(String type_name) {
 
-        // 変数名
+        // Variable name
         Var var = new Var();
         var.setType(type_name);
 
@@ -110,18 +110,18 @@ public class VariableDefinitionParser {
 
 
     /**
-     * XcodeML::VarクラスからDB::VariableDefinitionクラスをパース、生成する.<br/>
+     * Parse and generate DB :: VariableDefinition class from XcodeML :: Var class. <br/>
      *
-     * @param var           変数、構造体名
-     * @return DB::VariableDefinitionクラス
+     * @param var variable, structure name
+     * @return DB :: VariableDefinition class
      */
     public VariableDefinition parseVariableDefinition(Var var) {
         if (var == null) return null;
 
-        // 変数名
+        // Variable name
         String var_name = var.getValue();
 
-        // データ型
+        // Data type
         VariableDefinition varDef = null;
         String type_name = var.getType();
         EnumType type = EnumType.getTypeIdFromXcodemlTypeName(type_name);
@@ -143,14 +143,14 @@ public class VariableDefinitionParser {
 
 
     /**
-     * XcodeML::FstructDeclクラスからDB::VariableDefinitionクラスをパース、生成する.<br/>
+     * Parse and generate DB :: VariableDefinition class from XcodeML :: FstructDecl class. <br/>
      *
-     * @param visitable           構造体要素
-     * @return DB::VariableDefinitionクラス
+     * @param visitable struct element
+     * @return DB :: VariableDefinition class
      */
     public VariableDefinition parseVariableDefinition(FstructDecl visitable) {
 
-        // 変数名
+        // Variable name
         Name name = visitable.getName();
         VariableDefinition varDef = parseVariableDefinition(name);
 
@@ -158,18 +158,18 @@ public class VariableDefinitionParser {
     }
 
     /**
-     * XcodeML::NameクラスからDB::VariableDefinitionクラスをパース、生成する.<br/>
-     * 関数データ型は取得しない。
+     * Parse and generate DB :: VariableDefinition class from XcodeML :: Name class. <br/>
+     * Do not get the function data type.
      *
-     * @param name           変数、構造体宣言
-     * @return DB::VariableDefinitionクラス
+     * @param name variable, structure declaration
+     * @return DB :: VariableDefinition class
      */
     public VariableDefinition parseVariableDefinition(Name name) {
 
-        // 変数名
+        // Variable name
         String var_name = name.getValue();
 
-        // データ型
+        // Data type
         VariableDefinition varDef = null;
         String type_name = name.getType();
         EnumType type = EnumType.getTypeIdFromXcodemlTypeName(type_name);
@@ -189,21 +189,21 @@ public class VariableDefinitionParser {
     }
 
     /**
-     * XcodeML::NameクラスからDB::VariableDefinitionクラスをパース、生成する.<br/>
-     * 関数データ型も取得する。
+     * Parse and generate DB :: VariableDefinition class from XcodeML :: Name class. <br/>
+     * Also get the function data type.
      *
-     * @param name           変数、構造体宣言、関数名
-     * @return DB::VariableDefinitionクラス
+     * @param name Variable, structure declaration, function name
+     * @return DB :: VariableDefinition class
      */
     public VariableDefinition parseVariableDefinitionWithFfunctionType(Name name) {
 
-        // データ型
+        // Data type
         VariableDefinition varDef = parseVariableDefinition(name);
         if (varDef != null) {
             return varDef;
         }
 
-        // 変数名
+        // Variable name
         String var_name = name.getValue();
 
         IXmlTypeTableChoice typeChoice = this.typeManager.findType(name);
@@ -216,19 +216,19 @@ public class VariableDefinitionParser {
     }
 
     /**
-     * 型定義要素からDB::VariableDefinitionクラスをパース、生成する。
+     * Parse and generate DB :: VariableDefinition class from type definition element.
      *
      * @param var_name
-     *            変数名
+     *            Variable name
      * @param basicType
-     *            プリミティブ型や他の型定義要素への参照の定義
-     * @return DB::VariableDefinitionクラス
+     * Defining references to primitive types and other type definition elements
+     * @return DB :: VariableDefinition class
      */
     private VariableDefinition parseVarDefEnumType(String var_name, EnumType type) {
-        // DB::VariableDefinitionクラス生成
+        // DB :: VariableDefinition class generation
         VariableDefinition varDef = new VariableDefinition(var_name);
 
-        // データ型パーサ
+        // Data type parser
         VariableTypeParser parserType = new VariableTypeParser(this.typeManager);
         parserType.setStackType(this.getStackType());
         VariableType varType = parserType.parseVarDefEnumType(type);
@@ -238,71 +238,71 @@ public class VariableDefinitionParser {
     }
 
     /**
-     * 型定義要素からDB::VariableDefinitionクラスをパース、生成する。
+     * Parse and generate DB :: VariableDefinition class from type definition element.
      *
      * @param var_name
-     *            変数名
+     *            Variable name
      * @param basicType
-     *            プリミティブ型や他の型定義要素への参照の定義
-     * @return DB::VariableDefinitionクラス
+     * Defining references to primitive types and other type definition elements
+     * @return DB :: VariableDefinition class
      */
     public VariableDefinition parseVarDefBasicType(String var_name, FbasicType basicType) {
 
-        // DB::VariableDefinitionクラス生成
+        // DB :: VariableDefinition class generation
         VariableDefinition varDef = new VariableDefinition(var_name);
 
-        // データ型
+        // Data type
         VariableTypeParser parserType = new VariableTypeParser(this.typeManager);
         parserType.setStackType(this.getStackType());
         VariableType varType = parserType.parseVarDefBasicType(basicType);
         varDef.setVariableType(varType);
 
-        // VariableDimensionパーサ
+        // VariableDimension parser
         VariableDimensionParser dimsParser = new VariableDimensionParser(this.typeManager);
 
-        // 配列宣言
+        // Array declaration
         List<IXmlNode> arrayElems = basicType.getIndexRangeOrArrayIndex();
         if (arrayElems != null && arrayElems.size() > 0) {
             VariableDimension dims = dimsParser.parseVariableDimension(arrayElems);
-            // 配列を設定する。
+            // Set the array.
             varDef.setDimension(dims);
         }
 
-        // 属性
+        // Attribute
         Set<String> listAttr = new HashSet<String>();
-        // PUBLIC モジュール外で参照可能にします。
+        // Make it visible outside the PUBLIC module.
         if (XmlNodeUtil.isBoolean(basicType.isIsPublic())) {
             listAttr.add(this.ATTRIBUTE_PUBLIC);
         }
-        // PRIVATE モジュール外での参照を禁止します。
+        // Prohibit references outside the PRIVATE module.
         if (XmlNodeUtil.isBoolean(basicType.isIsPrivate())) {
             listAttr.add(this.ATTRIBUTE_PRIVATE);
         }
-        // POINTER 言語要素をポインタとして宣言します。
+        // Declare the POINTER language element as a pointer.
         if (XmlNodeUtil.isBoolean(basicType.isIsPointer())) {
             listAttr.add(this.ATTRIBUTE_POINTER);
         }
-        // TARGET 言語要素をポインタの指示先として使用可能にします。
+        // Enable the TARGET language element as a pointer destination.
         if (XmlNodeUtil.isBoolean(basicType.isIsTarget())) {
             listAttr.add(this.ATTRIBUTE_TARGET);
         }
-        // OPTIONAL 実引き数の存在を省略可能として宣言します。
+        // OPTIONAL Declare the existence of a real argument as optional.
         if (XmlNodeUtil.isBoolean(basicType.isIsOptional())) {
             listAttr.add(this.ATTRIBUTE_OPTIONAL);
         }
-        // SAVE 手続きの呼び出し間で、言語要素の値が保持されることを保証します。
+        // Guarantee that the value of the language element is preserved between calls to the SAVE procedure.
         if (XmlNodeUtil.isBoolean(basicType.isIsSave())) {
             listAttr.add(this.ATTRIBUTE_SAVE);
         }
-        // PARAMETER 名前付き定数を定義します。
+        // PARAMETER Defines a named constant.
         if (XmlNodeUtil.isBoolean(basicType.isIsParameter())) {
             listAttr.add(this.ATTRIBUTE_PARAMETER);
         }
-        // ALLOCATABLE 実行中に割り付け可能な配列を宣言します。
+        // Declare an array that can be allocated during ALLOCATABLE execution.
         if (XmlNodeUtil.isBoolean(basicType.isIsAllocatable())) {
             listAttr.add(this.ATTRIBUTE_ALLOCATABLE);
         }
-        // INTENT 仮引き数の使用方法を定義します。
+        // INTENT Defines how to use temporary arguments.
         if (basicType.getIntent() != null) {
             String intent = this.ATTRIBUTE_INTENT + "(" + basicType.getIntent().value().toLowerCase() + ")";
             listAttr.add(intent);
@@ -316,47 +316,47 @@ public class VariableDefinitionParser {
     }
 
     /**
-     * 構造体要素からDB::VariableDefinitionクラスをパース、生成する。
+     * Parse and generate DB :: VariableDefinition class from structure elements.
      *
-     * @param var_name            変数名
-     * @param structType          構造体の定義
-     * @return DB::VariableDefinitionクラス
+     * @param var_name Variable name
+     * @param structType Structure definition
+     * @return DB :: VariableDefinition class
      */
     public VariableDefinition parseVarDefStructType(String var_name, FstructType structType) {
 
-        // DB::VariableDefinitionクラス生成
+        // DB :: VariableDefinition class generation
         VariableDefinition varDef = new VariableDefinition(var_name);
 
         VariableType varType = null;
-        // 入れ子構造体であるかチェックする
+        // Check if it is a nested structure
         if (this.containsStackType(var_name)) {
             varType = new VariableType(this.getStackType(var_name));
         }
         else {
-            // 構造体データ型のパース
+            // Structure data type parsing
             VariableTypeParser parserType = new VariableTypeParser(this.typeManager);
             parserType.setStackType(this.getStackType());
             varType = parserType.parseVarDefStructType(structType);
         }
         
-        // 構造体のデータ型を設定する
+        // Set the data type of the structure
         varDef.setVariableType(varType);
 
-        // 属性
+        // Attribute
         Set<String> listAttr = new HashSet<String>();
-        // PUBLIC モジュール外で参照可能にします。
+        // Make it visible outside the PUBLIC module.
         if (XmlNodeUtil.isBoolean(structType.isIsPublic())) {
             listAttr.add(this.ATTRIBUTE_PUBLIC);
         }
-        // PRIVATE モジュール外での参照を禁止します。
+        // Prohibit references outside the PRIVATE module.
         if (XmlNodeUtil.isBoolean(structType.isIsPrivate())) {
             listAttr.add(this.ATTRIBUTE_PRIVATE);
         }
-        // SEQUENCE 記憶列内のすべての成分を定義時と同じ順序で配置します
+        // SEQUENCE Places all components in the storage column in the same order as when they were defined.
         if (XmlNodeUtil.isBoolean(structType.isIsSequence())) {
             listAttr.add(this.ATTRIBUTE_SEQUENCE);
         }
-        // PRIVATE 定義をモジュール中で書く場合にのみ使用できます。
+        // Can only be used when writing the PRIVATE definition in a module.
         if (XmlNodeUtil.isBoolean(structType.isIsInternalPrivate())) {
             listAttr.add(this.ATTRIBUTE_INTERNALPRIVATE);
         }
@@ -369,32 +369,32 @@ public class VariableDefinitionParser {
     }
 
     /**
-     * 関数定義要素からDB::VariableDefinitionクラスをパース、生成する。
+     * Parse and generate DB :: VariableDefinition class from function definition element.
      *
      * @param var_name
-     *            変数名
+     *            Variable name
      * @param basicType
-     *            関数定義要素
-     * @return DB::VariableDefinitionクラス
+     * Function definition element
+     * @return DB :: VariableDefinition class
      */
     private VariableDefinition parseVarDefFunctionType(String var_name, FfunctionType functionType) {
 
-        // DB::VariableDefinitionクラス生成
+        // DB :: VariableDefinition class generation
         VariableDefinition varDef = new VariableDefinition(var_name);
 
-        // データ型
+        // Data type
         VariableTypeParser parserType = new VariableTypeParser(this.typeManager);
         parserType.setStackType(this.getStackType());
         VariableType varType = parserType.parseVarDefFunctionType(functionType);
         varDef.setVariableType(varType);
 
-        // 属性
+        // Attribute
         Set<String> listAttr = new HashSet<String>();
-        // PUBLIC モジュール外で参照可能にします。
+        // Make it visible outside the PUBLIC module.
         if (XmlNodeUtil.isBoolean(functionType.isIsPublic())) {
             listAttr.add(this.ATTRIBUTE_PUBLIC);
         }
-        // PRIVATE モジュール外での参照を禁止します。
+        // Prohibit references outside the PRIVATE module.
         if (XmlNodeUtil.isBoolean(functionType.isIsPrivate())) {
             listAttr.add(this.ATTRIBUTE_PRIVATE);
         }
@@ -427,24 +427,24 @@ public class VariableDefinitionParser {
     }
 
     /**
-     * 構造体の入れ子リストを取得する
-     * @return		構造体の入れ子リスト
+     * Get a nested list of structs
+     * @return Nested list of structures
      */
     public List<jp.riken.kscope.language.fortran.Type> getStackType() {
         return stackType;
     }
 
     /**
-     * 構造体の入れ子リストを設定する
-     * @param stackType		構造体の入れ子リスト
+     * Set a nested list of structs
+     * @param stackType Nested list of structures
      */
     public void setStackType(List<jp.riken.kscope.language.fortran.Type> stackType) {
         this.stackType = stackType;
     }
 
     /**
-     * 構造体の入れ子リストに追加する
-     * @param type		追加構造体
+     * Add to the nested list of structs
+     * @param type Additional structure
      */
     @SuppressWarnings("unused")
     private void addStackType(jp.riken.kscope.language.fortran.Type type) {
@@ -456,9 +456,9 @@ public class VariableDefinitionParser {
     }
 
     /**
-     * 構造体の入れ子リストに構造体が追加済みであるかチェックする。
-     * @param type		構造体名
-     * @return    true=追加済み
+     * Check if the structure has been added to the nested list of structures.
+     * @param type Structure name
+     * @return true = added
      */
     private boolean containsStackType(String typeName) {
         if (StringUtils.isNullOrEmpty(typeName)) return false;
@@ -470,9 +470,9 @@ public class VariableDefinitionParser {
     }
 
     /**
-     * 構造体の入れ子リストから構造体名の構造体を取得する。
-     * @param typeName		構造体名
-     * @return    		構造体
+     * Get the structure with the structure name from the nested list of structures.
+     * @param typeName Structure name
+     * @return structure
      */
     private jp.riken.kscope.language.fortran.Type getStackType(String typeName) {
         if (StringUtils.isNullOrEmpty(typeName)) return null;
