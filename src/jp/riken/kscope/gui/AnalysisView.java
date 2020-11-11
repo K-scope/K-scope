@@ -44,55 +44,55 @@ import jp.riken.kscope.properties.ProfilerProperties;
 import jp.riken.kscope.properties.SourceProperties;
 
 /**
- * 解析ビュークラス.<br/>
- * 参照一覧、トレース、検索結果をタブを配置する。
+ * Parsing view class. <br/>
+ * Place tabs for reference lists, traces, and search results.
  * @author RIKEN
  *
  */
 public class AnalysisView  extends ClosableTabbedPane implements PropertyChangeListener {
 
-    /** シリアル番号  */
+    /** Serial number  */
     private static final long serialVersionUID = 1L;
 
-    /** 変数特性一覧パネル */
+    /** Variable characteristic list panel */
     private VariableTablePanel panelVariable;
-    /** 付加情報パネル */
+    /** Additional information panel */
     private InformationPanel panelInformation;
-    /** 演算カウントパネル */
+    /** Calculation count panel */
     private OperandTablePanel panelOperand;
-    /** 要求Byte/FLOP算出結果パネル */
+    /** Request Byte / FLOP calculation result panel */
     private RequiredByteFlopPanel panelRequiredByteFlop;
-    /** プロパティテーブルパネル */
+    /** Property table panel */
     private PropertiesTablePanel panelPropertiesTable;
-    /** コンソールパネル */
+    /** Console panel */
     private ConsolePanel panelConsole;
-    /** エラー箇所パネル */
+    /** Error location panel */
     private ErrorInfoPanel panelError;
-    /** 検索結果パネル */
+    /** Search Results Panel */
     private SearchResultPanel panelSearchResult;
-    /** 参照一覧パネル */
+    /** Reference list panel */
     private ReferencePanel panelReference;
-    /** 変数有効域パネル */
+    /** Variable Effectiveness Panel */
     private ScopePanel panelScope;
-    /** トレースパネル */
+    /** Trace panel */
     private TraceResultPanel panelTrace;
-    /** プロファイラ:情報パネル */
+    /** Profiler: Information Panel */
     private List<ProfilerTablePanel> panelProfilerList;
-    /** プロファイラ:測定区間情報テーブルパネル */
+    /** Profiler: Measurement interval information table panel */
     private ProfilerMeasurePanel panelProfilerMeasure;
 
-    // トレースパネルを新規作成する時に必要な情報。
-    /** メインメニュー */
+    // Information required when creating a new trace panel.
+    /** Main menu */
     private MainMenu mainMenu;
-    /** ソース設定プロパティ */
+    /** Source settings properties */
     private SourceProperties propertiesSource;
-    /** プロファイラプロパティ */
+    /** Profiler Properties */
     private ProfilerProperties propertiesProfiler;
-    /** トレースクローズアクション */
+    /** Trace close action */
     private AnalysisTraceAction closeTraceAction;
 
     /**
-     * コンストラクタ
+     * Constructor
      */
     public AnalysisView() {
         super(FRAME_VIEW.ANALYSIS_VIEW);
@@ -100,127 +100,127 @@ public class AnalysisView  extends ClosableTabbedPane implements PropertyChangeL
     }
 
     /**
-     * 初期化を行う.<br/>
-     * 参照一覧、トレース、検索結果をタブを配置する。
+     * Initialize. <br/>
+     * Place tabs for reference lists, traces, and search results.
      */
     private void initGUI() {
         try {
 
-            // 分析タブの追加
-            // 付加情報
+            // Add analysis tab
+            // Additional information
             panelInformation = new InformationPanel(ANALYSIS_PANEL.INFORMATION);
             panelInformation.setParentComponent(this);
             this.addTab(ANALYSIS_PANEL.INFORMATION.getTabName(),  panelInformation);
 
-            // 検索結果
+            // search results
             panelSearchResult = new SearchResultPanel(ANALYSIS_PANEL.SEARCHRESULT);
             panelSearchResult.setParentComponent(this);
             this.addTab(ANALYSIS_PANEL.SEARCHRESULT.getTabName(),  panelSearchResult);
 
-            // 変数特性一覧パネル
+            // Variable characteristic list panel
             panelVariable = new VariableTablePanel(ANALYSIS_PANEL.VALIABLE);
             panelVariable.setParentComponent(this);
             this.addTab(ANALYSIS_PANEL.VALIABLE.getTabName(), panelVariable);
 
-            // 演算カウント
+            // Calculation count
             panelOperand = new OperandTablePanel(ANALYSIS_PANEL.OPERAND);
             panelOperand.setParentComponent(this);
             this.addTab(ANALYSIS_PANEL.OPERAND.getTabName(),  panelOperand);
 
-            // 要求Byte/FLOP算出結果パネル
+            // Request Byte / FLOP calculation result panel
             panelRequiredByteFlop = new RequiredByteFlopPanel(ANALYSIS_PANEL.REQUIRED);
             panelRequiredByteFlop.setParentComponent(this);
 
-            // 宣言・定義・参照
+            // Declaration / Definition / Reference
             panelReference = new ReferencePanel(ANALYSIS_PANEL.REFERENCE);
             panelReference.setParentComponent(this);
             this.addTab(ANALYSIS_PANEL.REFERENCE.getTabName(),  panelReference);
 
-            // トレース
+            // Trace
             panelTrace = new TraceResultPanel(ANALYSIS_PANEL.TRACE);
             panelTrace.setParentComponent(this);
             this.addTab(ANALYSIS_PANEL.TRACE.getTabName(),  panelTrace);
 
-            // 変数有効域パネル
+            // Variable Effectiveness Panel
             panelScope = new ScopePanel(ANALYSIS_PANEL.SCOPE);
             panelScope.setParentComponent(this);
             this.addTab(ANALYSIS_PANEL.SCOPE.getTabName(),  panelScope);
 
-            // プロファイラパネルリスト
+            // Profiler panel list
             if (panelProfilerList == null) {
                 panelProfilerList = new ArrayList<ProfilerTablePanel>();
             }
             panelProfilerList.clear();
-            // プロファイラコスト情報(手続)パネル
+            // Profiler cost information (procedure) panel
             {
                 ProfilerTablePanel panelProfiler = new ProfilerTablePanel(ANALYSIS_PANEL.COST_PROCEDURE);
                 panelProfiler.setParentComponent(this);
                 panelProfilerList.add(panelProfiler);
             }
-            // プロファイラコスト情報(ループ)パネル
+            // Profiler cost information (loop) panel
             {
                 ProfilerTablePanel panelProfiler = new ProfilerTablePanel(ANALYSIS_PANEL.COST_LOOP);
                 panelProfiler.setParentComponent(this);
                 panelProfilerList.add(panelProfiler);
             }
-            // プロファイラコスト情報(ライン)パネル
+            // Profiler cost information (line) panel
             {
                 ProfilerTablePanel panelProfiler = new ProfilerTablePanel(ANALYSIS_PANEL.COST_LINE);
                 panelProfiler.setParentComponent(this);
                 panelProfilerList.add(panelProfiler);
             }
-            // プロファイラ:コールグラフ情報
+            // Profiler: Call graph information
             {
                 ProfilerTablePanel panelProfiler = new ProfilerTablePanel(ANALYSIS_PANEL.CALLGRAPH);
                 panelProfiler.setParentComponent(this);
                 panelProfilerList.add(panelProfiler);
             }
-            // プロファイラ:イベントカウンタ情報:Eprof_CACHE
+            // Profiler: Event counter information: Eprof_CACHE
             {
                 ProfilerTablePanel panelProfiler = new ProfilerTablePanel(ANALYSIS_PANEL.EVENTCOUNTER_CACHE);
                 panelProfiler.setParentComponent(this);
                 panelProfilerList.add(panelProfiler);
             }
-            // プロファイラ:イベントカウンタ情報:Eprof_INSTRUCTIONS
+            // Profiler: Event counter information: Eprof_INSTRUCTIONS
             {
                 ProfilerTablePanel panelProfiler = new ProfilerTablePanel(ANALYSIS_PANEL.EVENTCOUNTER_INSTRUCTIONS);
                 panelProfiler.setParentComponent(this);
                 panelProfilerList.add(panelProfiler);
             }
-            // プロファイラ:イベントカウンタ情報:Eprof_MEM_ACCESS
+            // Profiler: Event counter information: Eprof_MEM_ACCESS
             {
                 ProfilerTablePanel panelProfiler = new ProfilerTablePanel(ANALYSIS_PANEL.EVENTCOUNTER_MEM_ACCESS);
                 panelProfiler.setParentComponent(this);
                 panelProfilerList.add(panelProfiler);
             }
-            // プロファイラ:イベントカウンタ情報:Eprof_PERFORMANCE
+            // Profiler: Event counter information: Eprof_PERFORMANCE
             {
                 ProfilerTablePanel panelProfiler = new ProfilerTablePanel(ANALYSIS_PANEL.EVENTCOUNTER_PERFORMANCE);
                 panelProfiler.setParentComponent(this);
                 panelProfilerList.add(panelProfiler);
             }
-            // プロファイラ:イベントカウンタ情報:Eprof_STATISTICS
+            // Profiler: Event counter information: Eprof_STATISTICS
             {
                 ProfilerTablePanel panelProfiler = new ProfilerTablePanel(ANALYSIS_PANEL.EVENTCOUNTER_STATISTICS);
                 panelProfiler.setParentComponent(this);
                 panelProfilerList.add(panelProfiler);
             }
-            // プロファイラ:測定区間情報テーブルパネル
+            // Profiler: Measurement interval information table panel
             panelProfilerMeasure = new ProfilerMeasurePanel(ANALYSIS_PANEL.EPROF_MEASURE);
             panelProfilerMeasure.setParentComponent(this);
             // this.addTab(ANALYSIS_PANEL.TIMERINFO.getTabName(),  panelTimerTable);
 
-            // プロパティパネル
+            // Property panel
             panelPropertiesTable = new PropertiesTablePanel(ANALYSIS_PANEL.PROPARTIES);
             panelPropertiesTable.setParentComponent(this);
             this.addTab(ANALYSIS_PANEL.PROPARTIES.getTabName(),  panelPropertiesTable);
 
-            // エラー箇所パネル
+            // Error location panel
             panelError = new ErrorInfoPanel(ANALYSIS_PANEL.ERROR);
             panelError.setParentComponent(this);
             this.addTab(ANALYSIS_PANEL.ERROR.getTabName(),  panelError);
 
-            // コンソールパネル
+            // Console panel
             panelConsole = new ConsolePanel(ANALYSIS_PANEL.CONSOLE);
             panelConsole.setParentComponent(this);
             //this.addTab(ANALYSIS_PANEL.CONSOLE.getTabName(),  panelConsole);
@@ -230,7 +230,7 @@ public class AnalysisView  extends ClosableTabbedPane implements PropertyChangeL
             this.setPreferredSize(new Dimension(400, 100));
             this.setSize(new Dimension(400, 50));
 
-            // 初期表示を付加情報タブとする。
+            // Set the initial display to the additional information tab.
             this.setSelectedIndex(0);
 
         } catch (Exception e) {
@@ -239,24 +239,24 @@ public class AnalysisView  extends ClosableTabbedPane implements PropertyChangeL
     }
 
     /**
-     * タブを閉じる
+     * Close tab
      */
     @Override
     public void closeTabComponent() {
         int index = this.getSelectedIndex();
-        // タブを閉じる
+        // close tab
         closeTab(index);
     }
 
     /**
-     * タブを閉じる
-     * @param index		閉じるタブインデックス
+     * Close tab
+     * @param index Close tab index
      */
     @Override
     protected void closeTab(int index) {
         if (index < 0) return;
 
-        // 閉じるタブ
+        // Close tab
         Component tab = this.getComponentAt(index);
         tab.setVisible(false);
         if (tab instanceof IAnalisysComponent) {
@@ -264,78 +264,78 @@ public class AnalysisView  extends ClosableTabbedPane implements PropertyChangeL
         }
         this.remove(index);
 
-        // トレースキーワードを再設定する
+        // Reset the trace keyword
         this.closeTraceAction.setTraceKeywords();
     }
 
     /**
-     * 付加情報パネルを取得する
-     * @return		付加情報パネル
+     * Get additional information panel
+     * @return Additional information panel
      */
     public InformationPanel getPanelInformation() {
         return panelInformation;
     }
 
     /**
-     * 参照一覧パネルを取得する
-     * @return		参照一覧パネル
+     * Get the reference list panel
+     * @return Reference list panel
      */
     public ReferencePanel getPanelReference() {
         return this.panelReference;
     }
 
     /**
-     * 検索結果パネルを取得する
-     * @return		検索結果パネル
+     * Get the search results panel
+     * @return Search results panel
      */
     public SearchResultPanel getPanelSearchResult() {
         return this.panelSearchResult;
     }
 
     /**
-     * 変数特性一覧パネルを取得する
-     * @return		変数特性一覧パネル
+     * Get the variable characteristic list panel
+     * @return Variable characteristics list panel
      */
     public VariableTablePanel getPanelVariable() {
         return panelVariable;
     }
 
     /**
-     * 変数有効域パネルを取得する
-     * @return		変数有効域パネル
+     * Get the variable effective area panel
+     * @return Variable Effectiveness Panel
      */
     public ScopePanel getPanelScope() {
         return this.panelScope;
     }
 
     /**
-     * コンソールパネルを取得する
-     * @return		コンソールパネル
+     * Get the console panel
+     * @return console panel
      */
     public ConsolePanel getPanelConsole() {
         return panelConsole;
     }
 
     /**
-     * エラー箇所パネルを取得する
-     * @return		エラー箇所パネル
+     * Get the error location panel
+     * @return Error location panel
      */
     public ErrorInfoPanel getPanelError() {
         return panelError;
     }
 
     /**
-     * プロパティテーブルパネルを取得する
-     * @return		プロパティテーブルパネル
+     * Get the property table panel
+     * @return property table panel
      */
     public PropertiesTablePanel getPanelPropertiesTable() {
         return panelPropertiesTable;
     }
 
     /**
-     * プロファイラパネルを取得する
-     * @param  type   パネル識別子
-     * @return		プロファイラパネル
+     * Get profiler panel
+     * @param type Panel identifier
+     * @return Profiler panel
      */
     public ProfilerTablePanel getPanelProfiler(ANALYSIS_PANEL type) {
         for (ProfilerTablePanel panel : this.panelProfilerList) {
@@ -347,16 +347,16 @@ public class AnalysisView  extends ClosableTabbedPane implements PropertyChangeL
     }
 
     /**
-     * 測定区間情報テーブルパネルを取得する
-     * @return		測定区間情報テーブルパネル
+     * Get the measurement interval information table panel
+     * @return Measurement interval information table panel
      */
     public ProfilerMeasurePanel getPanelProfilerMeasure() {
         return this.panelProfilerMeasure;
     }
 
     /**
-     * 現在選択されている分析情報パネルの取得を行う。
-     * @return		選択分析情報パネル
+     * Get the currently selected analysis information panel.
+     * @return Selective analysis information panel
      */
     public IAnalisysComponent getSelectedPanel() {
         int index = this.getSelectedIndex();
@@ -370,9 +370,9 @@ public class AnalysisView  extends ClosableTabbedPane implements PropertyChangeL
     }
 
     /**
-     * 指定分析情報パネルをアクティブにする.<br/>
-     * 閉じている場合は開く
-     * @param panel      選択分析情報パネル
+     * Activate the designated analysis information panel. <br/>
+     * Open if closed
+     * @param panel Selective analysis information panel
      */
     public void setSelectedPanel(ANALYSIS_PANEL panel) {
 
@@ -389,74 +389,74 @@ public class AnalysisView  extends ClosableTabbedPane implements PropertyChangeL
             }
         }
 
-        // タブが表示されていない。
+        // The tab is not displayed.
         if (viewpanel == null) {
-            /** 変数特性一覧パネル */
+            /** Variable characteristic list panel */
             if (panelVariable.getEnumPanel() == panel) {
                 viewpanel = panelVariable;
             }
-            /** 付加情報パネル */
+            /** Additional information panel */
             if (panelInformation.getEnumPanel() == panel) {
                 viewpanel = panelInformation;
             }
-            /** 演算カウントパネル */
+            /** Calculation count panel */
             if (panelOperand.getEnumPanel() == panel) {
                 viewpanel = panelOperand;
             }
-            /** 要求Byte/FlOP算出結果パネル */
+            /** Request Byte / FlOP calculation result panel */
             if (panelRequiredByteFlop.getEnumPanel() == panel) {
                 viewpanel = panelRequiredByteFlop;
             }
-            /** プロパティテーブルパネル */
+            /** Property table panel */
             if (panelPropertiesTable.getEnumPanel() == panel) {
                 viewpanel = panelPropertiesTable;
             }
-            /** コンソールパネル */
+            /** Console panel */
             if (panelConsole.getEnumPanel() == panel) {
                 viewpanel = panelConsole;
             }
-            /** エラー箇所パネル */
+            /** Error location panel */
             if (panelError.getEnumPanel() == panel) {
                 viewpanel = panelError;
             }
-            /** 検索結果パネル */
+            /** Search Results Panel */
             if (panelSearchResult.getEnumPanel() == panel) {
                 viewpanel = panelSearchResult;
             }
-            /** 参照一覧パネル */
+            /** Reference list panel */
             if (panelReference.getEnumPanel() == panel) {
                 viewpanel = panelReference;
             }
-            /** 変数有効域パネル */
+            /** Variable Effectiveness Panel */
             if (panelScope.getEnumPanel() == panel) {
                 viewpanel = panelScope;
             }
-            // トレース
+            // Trace
             if (ANALYSIS_PANEL.TRACE == panel) {
                 TraceResultPanel panelTrace = createTraceResultPanel();
                 viewpanel = panelTrace;
             }
-            /** プロファイラ:コスト情報パネル(手続) */
+            /** Profiler: Cost Information Panel (Procedure) */
             ProfilerTablePanel profilerpanel = getPanelProfiler(panel);
             if (profilerpanel != null) {
                 viewpanel = profilerpanel;
             }
-            /** プロファイラ:測定区間情報テーブルパネル */
+            /** Profiler: Measurement interval information table panel */
             if (panelProfilerMeasure.getEnumPanel() == panel) {
                 viewpanel = panelProfilerMeasure;
             }
         }
         if (viewpanel == null) return;
 
-        // タブが表示されていないので、追加する
+        // The tab is not displayed, so add it
         this.addTab(panel.getTabName(),  viewpanel);
         this.setSelectedIndex(this.getTabCount()-1);
 
-        // 表示プロパティを設定する
+        // Set display properties
         if (viewpanel instanceof IAnalisysComponent) {
         	((IAnalisysComponent)viewpanel).setSourceProperties(this.propertiesSource);
         }
-        // プロファイラプロパティを設定する
+        // Set profiler properties
         if ( viewpanel instanceof ProfilerTablePanel) {
             ((ProfilerTablePanel)viewpanel).setProfilerProperties(this.propertiesProfiler);
         }
@@ -465,13 +465,13 @@ public class AnalysisView  extends ClosableTabbedPane implements PropertyChangeL
     }
 
     /**
-     * パネルにアクションリスナを設定する.<br/>
-     * メニューバーに作成済みのアクションリスナをパネルボタンに割り当てる。
-     * @param menu		メインメニュー
+     * Set an action listener on the panel. <br/>
+     * Assign the created action listener to the menu bar to the panel button.
+     * @param menu Main menu
      */
     public void setActionListener(MainMenu menu) {
 
-        /** パネルリスト */
+        /** Panel list */
         IAnalisysComponent[] listPanel = {panelVariable, panelInformation,
     						    		panelOperand, panelRequiredByteFlop,
     						    		panelPropertiesTable,
@@ -484,59 +484,59 @@ public class AnalysisView  extends ClosableTabbedPane implements PropertyChangeL
             }
         }
 
-        // プロファイラパネル
+        // Profiler panel
         for (ProfilerTablePanel panel : this.panelProfilerList) {
             panel.setActionListener(menu);
         }
 
-        // トレースクローズアクション
+        // Trace close action
         this.closeTraceAction = menu.getActionAnalysisTrace(TRACE_DIR.REFRESH);
 
         this.mainMenu = menu;
     }
 
     /**
-     * 分析情報をクリアする
+     * Clear analysis information
      */
     public void clearModels() {
 
-        /** 付加情報パネル */
+        /** Additional information panel */
         this.panelInformation.clearModel();
-        /** 変数特性一覧パネル */
+        /** Variable characteristic list panel */
         this.panelVariable.clearModel();
-        /** 演算カウントパネル */
+        /** Calculation count panel */
         this.panelOperand.clearModel();
-        /** 要求B/F算出結果パネル */
+        /** Request B / F calculation result panel */
         this.panelRequiredByteFlop.clearModel();
-        /** プロパティテーブルパネル */
+        /** Property table panel */
         this.panelPropertiesTable.clearModel();
-        /** エラー箇所パネル */
+        /** Error location panel */
         this.panelError.clearModel();
-        /** 検索結果パネル */
+        /** Search Results Panel */
         this.panelSearchResult.clearModel();
-        /** 参照一覧パネル */
+        /** Reference list panel */
         this.panelReference.clearModel();
-        /** 変数有効域パネル */
+        /** Variable Effectiveness Panel */
         this.panelScope.clearModel();
-        /** プロファイラパネル */
+        /** Profiler panel */
         for (ProfilerTablePanel panel : this.panelProfilerList) {
             panel.clearModel();
         }
-        /** プロファイラ:測定区間情報テーブルパネル */
+        /** Profiler: Measurement interval information table panel */
         panelProfilerMeasure.clearModel();
 
-        // トレース結果をクリアする
+        // Clear the trace result
         clearTrace();
 
     }
 
     /**
-     * トレース結果をクリアする.<br/>
-     * トレースタブすべてを閉じる.
+     * Clear the trace result. <br/>
+     * Close all trace tabs.
      */
     public void clearTrace() {
 
-        // トレース結果パネルを閉じる
+        // Close the trace result panel
         int count = this.getTabCount();
         boolean blankPanel = false;
         for (int i=count-1; i>=0; i--) {
@@ -544,7 +544,7 @@ public class AnalysisView  extends ClosableTabbedPane implements PropertyChangeL
             if ( comp instanceof TraceResultPanel) {
                 TraceResultPanel panel = (TraceResultPanel)comp;
                 if (!blankPanel) {
-                    // 最初のトレースパネルはブランクパネルとする。
+                    // The first trace panel is a blank panel.
                     panel.clearModel();
                     blankPanel = true;
                     setTracePanelTabname(i, panel.getModel());
@@ -558,26 +558,26 @@ public class AnalysisView  extends ClosableTabbedPane implements PropertyChangeL
 
 
     /**
-     * 演算カウントパネルを取得する
-     * @return		演算カウントパネル
+     * Get the calculation count panel
+     * @return Calculation count panel
      */
     public OperandTablePanel getPanelOperand() {
         return this.panelOperand;
     }
 
     /**
-     * 要求Byte/FLOP算出結果パネル
-     * @return		要求Byte/FLOP算出結果パネル
+     * Request Byte / FLOP calculation result panel
+     * @return Request Byte / FLOP calculation result panel
      */
     public RequiredByteFlopPanel getPanelRequiredByteFlop() {
         return this.panelRequiredByteFlop;
     }
 
     /**
-     * 指定分析情報パネルのインデックスを取得する.<br/>
-     * 閉じている場合は-1を返す
-     * @param panel 		指定分析情報パネル識別子
-     * @return 		タブインデックス
+     * Get the index of the specified analysis information panel. <br/>
+     * Returns -1 if closed
+     * @param panel Specified analysis information panel identifier
+     * @return tab index
      */
     public int getTabIndex(ANALYSIS_PANEL panel) {
 
@@ -594,8 +594,8 @@ public class AnalysisView  extends ClosableTabbedPane implements PropertyChangeL
     }
 
     /**
-     * 選択ソースコード行情報を取得する
-     * @return		選択ソースコード行情報
+     * Get selected source code line information
+     * @return Selected source code line information
      */
     public CodeLine getSelectedCodeLine() {
         IAnalisysComponent tab = (IAnalisysComponent)this.getSelectedComponent();
@@ -604,8 +604,8 @@ public class AnalysisView  extends ClosableTabbedPane implements PropertyChangeL
 
 
     /**
-     * 選択ブロックを取得する
-     * @return		選択ブロック
+     * Get the selected block
+     * @return selection block
      */
     public IBlock getSelectedBlock() {
         IAnalisysComponent tab = (IAnalisysComponent)this.getSelectedComponent();
@@ -613,8 +613,8 @@ public class AnalysisView  extends ClosableTabbedPane implements PropertyChangeL
     }
 
     /**
-     * 選択付加情報を取得する
-     * @return		選択付加情報
+     * Get additional selection information
+     * @return Selectable additional information
      */
     public IInformation getSelectedInformation() {
         IAnalisysComponent tab = (IAnalisysComponent)this.getSelectedComponent();
@@ -622,8 +622,8 @@ public class AnalysisView  extends ClosableTabbedPane implements PropertyChangeL
     }
 
     /**
-     * トレース結果を表示する
-     * @param modelTrace		トレース結果モデル
+     * Display trace results
+     * @param modelTrace Trace result model
      */
     public void viewAnalysisTrace(TraceResultModel modelTrace) {
 
@@ -637,13 +637,13 @@ public class AnalysisView  extends ClosableTabbedPane implements PropertyChangeL
             if ( comp instanceof TraceResultPanel) {
                 TraceResultPanel panel = (TraceResultPanel)comp;
                 TraceResultModel panelModel = panel.getModel();
-                // ブランクモデルであるか
+                // Is it a blank model?
                 if (panelModel.getTraceWord() == null || panelModel.getRootBlock() == null) {
                     index = i;
                     panelTrace = panel;
                     break;
                 }
-                // 同一トレースモデルであるかチェックする
+                // Check if they are the same trace model
                 if (panelModel.equalsTrace(modelTrace)) {
                     index = i;
                     panelTrace = panel;
@@ -660,9 +660,9 @@ public class AnalysisView  extends ClosableTabbedPane implements PropertyChangeL
                     lastindex = i;
                 }
             }
-            // トレースパネル挿入位置
+            // Trace panel insertion position
             lastindex++;
-            // ブランクモデル,同一トレースモデルが存在しないので、新しいトレースパネルを作成する
+            // Blank model, same trace model does not exist, so create a new trace panel
             panelTrace = createTraceResultPanel();
             if (lastindex > 0 && lastindex <= count-1) {
                 this.insertTab(ANALYSIS_PANEL.TRACE.getTabName(),  panelTrace, lastindex);
@@ -674,42 +674,42 @@ public class AnalysisView  extends ClosableTabbedPane implements PropertyChangeL
             }
         }
 
-        // トレースモデルを設定する
+        // Set the trace model
         panelTrace.setModel(modelTrace);
 
-        // トレース結果タブ名を設定する
+        // Set the trace result tab name
         setTracePanelTabname(index, modelTrace);
 
-        // トレースタブをアクティブにする
+        // Activate the Trace tab
         this.setSelectedIndex(index);
     }
 
 
     /**
-     * 新しいトレースパネルを作成する
-     * @return		 作成トレースパネル
+     * Create a new trace panel
+     * @return Create Trace Panel
      */
     private TraceResultPanel createTraceResultPanel() {
         TraceResultPanel panelTrace = new TraceResultPanel(ANALYSIS_PANEL.TRACE);
 
-        // アクションリスナ設定
+        // Action listener settings
         panelTrace.setActionListener(this.mainMenu);
-        // ソースプロパティ設定
+        // Source property settings
         panelTrace.setSourceProperties(this.propertiesSource);
 
         return panelTrace;
     }
 
     /**
-     * トレース結果タブ名を設定する.<br/>
-     * トレース変数と行番号とする
-     * @param index		タブインデックス
-     * @param modelTrace	トレースモデル
+     * Set the trace result tab name. <br/>
+     * Trace variables and line numbers
+     * @param index Tab index
+     * @param modelTrace Trace model
      */
     private void setTracePanelTabname(int index, TraceResultModel modelTrace) {
         if (index >= this.getTabCount()) return;
 
-        // トレース変数と行番号とする
+        // Trace variables and line numbers
         String msg = null;
         if (modelTrace != null) {
             String  word = modelTrace.getTraceWord();
@@ -727,15 +727,15 @@ public class AnalysisView  extends ClosableTabbedPane implements PropertyChangeL
             tabname += " " + msg;
         }
 
-        // タブ名を設定する
+        // Set the tab name
         setTabTitle(index, tabname);
     }
 
 
     /**
-     * 現在選択されている分析情報:トレースパネルの取得を行う.<br/>
-     * トレースパネルが未選択の場合は、nullを返す。
-     * @return		選択分析情報トレースパネル
+     * Currently selected analysis information: Get the trace panel. <br/>
+     * Returns null if the trace panel is unselected.
+     * @return Selective analysis information trace panel
      */
     public TraceResultPanel getSelectedTracePanel() {
         int index = this.getSelectedIndex();
@@ -748,9 +748,9 @@ public class AnalysisView  extends ClosableTabbedPane implements PropertyChangeL
     }
 
     /**
-     * 現在選択されている分析情報:プロファイラ:コスト情報パネルの取得を行う.<br/>
-     * プロファイラパネルが未選択の場合は、nullを返す。
-     * @return		選択プロファイラ:コスト情報パネル
+     * Currently selected analysis information: Profiler: Get cost information panel. <br/>
+     * Returns null if the profiler panel is not selected.
+     * @return Select Profiler: Cost Information Panel
      */
     public ProfilerTablePanel getSelectedProfilerCostPanel() {
         int index = this.getSelectedIndex();
@@ -765,17 +765,17 @@ public class AnalysisView  extends ClosableTabbedPane implements PropertyChangeL
     }
 
     /**
-     * プロパティ変更イベント
-     * @param event		イベント情報
+     * Property change event
+     * @param event Event information
      */
     @Override
     public void propertyChange(PropertyChangeEvent event) {
 
-        // ソース表示フォント、フォント色等のソースビュープロパティの変更
+        // Change source view properties such as source display font, font color, etc.
         if (event.getNewValue() instanceof SourceProperties) {
             propertiesSource = (SourceProperties)event.getNewValue();
 
-            // 分析ビュータブにソース表示プロパティを設定する。
+            // Set the source display properties on the Analysis View tab.
             int count = this.getTabCount();
             for (int i=0; i<count; i++) {
                 Component comp = this.getComponentAt(i);
@@ -784,7 +784,7 @@ public class AnalysisView  extends ClosableTabbedPane implements PropertyChangeL
                 }
             }
         }
-        // プロファイラプロパティの変更
+        // Change profiler properties
         else if (event.getNewValue() instanceof ProfilerProperties) {
             ProfilerProperties newProp = (ProfilerProperties)event.getNewValue();
             int newvalue = newProp.getCostinfoMaxCount();
@@ -795,7 +795,7 @@ public class AnalysisView  extends ClosableTabbedPane implements PropertyChangeL
                 }
             }
             this.propertiesProfiler = (ProfilerProperties)((ProfilerProperties)event.getNewValue()).clone();
-            // プロファイラタブにプロファイラプロパティを設定する。
+            // Set profiler properties on the profiler tab.
             int count = this.getTabCount();
             for (int i=0; i<count; i++) {
                 Component comp = this.getComponentAt(i);
@@ -808,24 +808,24 @@ public class AnalysisView  extends ClosableTabbedPane implements PropertyChangeL
 
 
     /**
-     * トレース結果のキーワードリストを取得する
-     * @return		トレースキーワードリスト
+     * Get the keyword list of trace results
+     * @return Trace keyword list
      */
     public Keyword[] getTraceKeywords() {
 
-        // キーワードリスト
+        // Keyword list
         List<Keyword> list = new ArrayList<Keyword>();
 
-        /***** アクティブトレースタブののキーワードリストを取得する  ******
-        // トレース結果のキーワードリストを取得する
-        int count = this.getTabCount();
-        for (int i=0; i<count; i++) {
-            Component comp = this.getComponentAt(i);
-            if ( comp instanceof TraceResultPanel) {
-                TraceResultPanel panel = (TraceResultPanel)comp;
-                Keyword[] words = panel.getTraceKeywords();
-                if (words != null) {
-                    list.addAll(Arrays.asList(words));
+        /***** Get the keyword list for the Active Trace tab ******
+        // Get the keyword list of trace results
+        int count = this.getTabCount ();
+        for (int i = 0; i <count; i ++) {
+            Component comp = this.getComponentAt (i);
+            if (comp instanceof TraceResultPanel) {
+                TraceResultPanel panel = (TraceResultPanel) comp;
+                Keyword [] words = panel.getTraceKeywords ();
+                if (words! = null) {
+                    list.addAll (Arrays.asList (words));
                 }
             }
         }
@@ -844,8 +844,8 @@ public class AnalysisView  extends ClosableTabbedPane implements PropertyChangeL
     }
 
     /**
-     * トレースパネルモデルを取得する
-     * @return		トレースパネルモデル
+     * Get the trace panel model
+     * @return Trace panel model
      */
     public TraceResultModel[] getTraceResultModels() {
 
@@ -856,7 +856,7 @@ public class AnalysisView  extends ClosableTabbedPane implements PropertyChangeL
             if ( comp instanceof TraceResultPanel) {
                 TraceResultPanel panel = (TraceResultPanel)comp;
                 TraceResultModel panelModel = panel.getModel();
-                // ブランクモデル以外を取得する
+                // Get a non-blank model
                 if (panelModel.getTraceWord() != null && panelModel.getRootBlock() != null) {
                     list.add(panelModel);
                 }
@@ -868,15 +868,15 @@ public class AnalysisView  extends ClosableTabbedPane implements PropertyChangeL
     }
 
     /**
-     * 検索結果のキーワードリストを取得する
-     * @return		検索キーワードリスト
+     * Get the keyword list of search results
+     * @return Search keyword list
      */
     public Keyword[] getSearchKeywords() {
 
-        // キーワードリスト
+        // Keyword list
         List<Keyword> list = new ArrayList<Keyword>();
 
-        // 検索結果のキーワードリストを取得する
+        // Get the keyword list of search results
         int count = this.getTabCount();
         for (int i=0; i<count; i++) {
             Component comp = this.getComponentAt(i);
@@ -894,15 +894,15 @@ public class AnalysisView  extends ClosableTabbedPane implements PropertyChangeL
     }
 
     /**
-     * 分析タブ変更イベント
-     * @param action        タブの変更アクション
+     * Analysis tab change event
+     * @param action Tab change action
      */
     public void addTabChangeListener(AnalysisTabChangeAction action) {
         this.addChangeListener(action);
     }
 
     /**
-     * 分析タブ変更に伴う処理を行う。
+     * Performs processing associated with changing the analysis tab.
      */
     public void changeAnalisysTab() {
         ChangeListener[] listeners = this.getChangeListeners();
@@ -915,23 +915,23 @@ public class AnalysisView  extends ClosableTabbedPane implements PropertyChangeL
     }
 
     /**
-     * プロファイラポップアップメニューを設定する
-     * @param profilerPopup		プロファイラポップアップメニュー
+     * Set profiler pop-up menu
+     * @param profilerPopup Profiler pop-up menu
      */
     public void setProfilerPopupMenu(ProfilerPopupMenu profilerPopup) {
-        /** プロファイラパネル */
+        /** Profiler panel */
         for (ProfilerTablePanel panel : this.panelProfilerList) {
             panel.setPopupMenu(profilerPopup);
         }
     }
 
     /**
-     * プロファイラモデルを取得するする
-     * @return       プロファイラモデル
+     * Get a profiler model
+     * @return Profiler model
      */
     public ProfilerTableBaseModel[] getProfilerModels() {
         List<ProfilerTableBaseModel> list = new ArrayList<ProfilerTableBaseModel>();
-        /** プロファイラパネル */
+        /** Profiler panel */
         for (ProfilerTablePanel panel : this.panelProfilerList) {
             if (panel.getModel() != null) {
                 list.add(panel.getModel());
@@ -942,10 +942,10 @@ public class AnalysisView  extends ClosableTabbedPane implements PropertyChangeL
     }
 
     /**
-     * プロファイラ情報をクリアする
+     * Clear profiler information
      */
     public void clearProfilerInfo() {
-        /** プロファイラパネル */
+        /** Profiler panel */
         for (ProfilerTablePanel panel : this.panelProfilerList) {
             if (panel.getModel() != null) {
                 panel.clearModel();
@@ -954,7 +954,7 @@ public class AnalysisView  extends ClosableTabbedPane implements PropertyChangeL
     }
 
     /**
-     * 選択項目をクリップボードにコピーする.
+     * Copy the selection to the clipboard.
      */
     public void copyClipboard() {
         IAnalisysComponent panel = getSelectedPanel();
@@ -963,8 +963,8 @@ public class AnalysisView  extends ClosableTabbedPane implements PropertyChangeL
 
 
     /**
-     * 指定分析情報パネルを閉じる.
-     * @param panel      閉じる分析情報パネル
+     * Close the designated analysis information panel.
+     * @param panel Close Analysis Information Panel
      */
     public void closeTab(ANALYSIS_PANEL panel) {
         int count = this.getTabCount();

@@ -57,78 +57,78 @@ import jp.riken.kscope.utils.ResourceUtils;
 
 
 /**
- * ファイルツリータブパネルクラス.
+ * File tree tab panel class.
  * @author RIKEN
  *
  */
 public class FileTreePanel extends javax.swing.JPanel implements ITabComponent, ITreeComponent, Observer {
 
-    /** シリアル番号 */
+    /** Serial number */
     private static final long serialVersionUID = 1L;
-    /** ツリー展開ボタン */
+    /** Tree expansion button */
     private JButton btnExpand;
-    /** ツリー収納ボタン */
+    /** Tree storage button */
     private JButton btnCollapse;
-    /** ツリーパイン */
+    /** Tree Pine */
     private ObjectTree  treeExplore;
-    /** ボタンパネル */
+    /** Button panel */
     private JPanel panelButtons;
-    /** ファイルを開くボタン */
+    /** Open file button */
     private JButton btnOpenFile;
-    /** エクスポートボタン */
+    /** Export button */
     private JButton btnExport;
 
-    /** ファイルツリーモデル */
+    /** File tree model */
     private FileTreeModel model;
 
-    /** エクスプローラパネル識別子 */
+    /** Explorer panel identifier */
     private EXPLORE_PANEL enumPanel;
-    /** 親コンポーネント */
+    /** Parent component */
     private ITabComponent parentCompornent = null;
 
-    /** XMLファイルツリーポップアップメニュー */
+    /** XML File Tree Pop-up Menu */
     @SuppressWarnings("unused")
     private ITreePopupMenu menuPopup;
 
     /**
-     * コンストラクタ
+     * Constructor
      */
     public FileTreePanel() {
         super();
 
-        // 初期化を行う
+        // Initialize
         initialize();
     }
 
     /**
-     * コンストラクタ
-     * @param panel		エクスプローラパネル識別子
+     * Constructor
+     * @param panel Explorer panel identifier
      */
     public FileTreePanel(EXPLORE_PANEL panel) {
         super();
 
-        // パネル識別子
+        // Panel identifier
         this.enumPanel = panel;
 
-        // 初期化を行う
+        // Initialize
         initialize();
     }
 
     /**
-     * 初期化を行う
+     * Initialize
      */
     private void initialize() {
-        // GUI初期化を行う
+        // Initialize the GUI
         initGUI();
 
-        // ファイルツリーモデルの生成
+        // Generate file tree model
         this.model = new FileTreeModel();
         this.model.addObserver(this);
 
     }
 
     /**
-     * GUI初期化を行う
+     * Perform GUI initialization
      */
     private void initGUI() {
         try {
@@ -158,7 +158,7 @@ public class FileTreePanel extends javax.swing.JPanel implements ITabComponent, 
                         btnExpand.setMaximumSize(buttonSize);
                         panelButtons.add(btnExpand);
                     }
-                    // 余白設定
+                    // Margin setting
                     panelButtons.add(Box.createHorizontalStrut(5));
                     {
                         Icon icon = ResourceUtils.getIcon("collapseall.gif");
@@ -170,7 +170,7 @@ public class FileTreePanel extends javax.swing.JPanel implements ITabComponent, 
                         btnCollapse.setMaximumSize(buttonSize);
                         panelButtons.add(btnCollapse);
                     }
-                    // 余白設定
+                    // Margin setting
                     panelButtons.add(Box.createHorizontalStrut(5));
                     {
                         Icon icon = ResourceUtils.getIcon("openfile.gif");
@@ -182,7 +182,7 @@ public class FileTreePanel extends javax.swing.JPanel implements ITabComponent, 
                         btnOpenFile.setMaximumSize(buttonSize);
                         panelButtons.add(btnOpenFile);
                     }
-                    // 余白設定
+                    // Margin setting
                     panelButtons.add(Box.createHorizontalStrut(5));
                     {
                         Icon icon = ResourceUtils.getIcon("save.gif");
@@ -207,11 +207,11 @@ public class FileTreePanel extends javax.swing.JPanel implements ITabComponent, 
                 }
             }
 
-            // ツールチップ設定
-            btnExpand.setToolTipText(Message.getString("treechooserdialog.tooltip.expandall")); //すべて展開
-            btnCollapse.setToolTipText(Message.getString("treechooserdialog.tooltip.collapseall")); //すべて収納
-            btnOpenFile.setToolTipText(Message.getString("filetreepanel.tooltip.selective")); //選択箇所を開く
-            btnExport.setToolTipText(Message.getString("mainmenu.file.export")); //エクスポート
+            // Tooltip settings
+            btnExpand.setToolTipText(Message.getString("treechooserdialog.tooltip.expandall")); // Expand all
+            btnCollapse.setToolTipText(Message.getString("treechooserdialog.tooltip.collapseall")); // All stored
+            btnOpenFile.setToolTipText(Message.getString("filetreepanel.tooltip.selective")); // open the selection
+            btnExport.setToolTipText(Message.getString("mainmenu.file.export")); //export
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -219,8 +219,8 @@ public class FileTreePanel extends javax.swing.JPanel implements ITabComponent, 
     }
 
     /**
-     * 親コンポーネントを取得する.
-     * @return		親コンポーネント
+     * Get the parent component.
+     * @return Parent component
      */
     @Override
     public ITabComponent getParentComponent() {
@@ -228,8 +228,8 @@ public class FileTreePanel extends javax.swing.JPanel implements ITabComponent, 
     }
 
     /**
-     * 親コンポーネントを設定する.
-     * @param component		親コンポーネント
+     * Set the parent component.
+     * @param component Parent component
      */
     @Override
     public void setParentComponent(ITabComponent component) {
@@ -238,8 +238,8 @@ public class FileTreePanel extends javax.swing.JPanel implements ITabComponent, 
 
 
     /**
-     * フォーカスリスナを設定する
-     * @param listener		フォーカスリスナ
+     * Set focus listener
+     * @param listener Focus listener
      */
     @Override
     public void addTabFocusListener(TabFocusListener listener) {
@@ -250,25 +250,25 @@ public class FileTreePanel extends javax.swing.JPanel implements ITabComponent, 
     }
 
     /**
-     * アクティブタブを閉じる。
+     * Close the active tab.
      */
     @Override
     public void closeTabComponent() {
-        // 親コンポーネントで閉じる
+        // Close with parent component
         this.parentCompornent.closeTabComponent();
     }
 
     /**
-     * ファイルツリーモデルを取得する
-     * @return model		ファイルツリーモデル
+     * Get the file tree model
+     * @return model File tree model
      */
     public FileTreeModel getModel() {
         return model;
     }
 
     /**
-     * 初期ツリー表示タイトルを設定する
-     * @param title			タイトル
+     * Set the initial tree display title
+     * @param title Title
      */
     public void initTreeTitle(String title) {
         this.model.setInitTreeTitle(title);
@@ -277,28 +277,28 @@ public class FileTreePanel extends javax.swing.JPanel implements ITabComponent, 
 
 
     /**
-     * 選択されているノード配下のソースファイルを取得する。
+     * Get the source file under the selected node.
      *
-     * @return ソースファイルリスト
+     * @return Source file list
      */
     @Override
     public SourceFile[] getSelectedSourceFiles() {
 
         ArrayList<SourceFile> list = new ArrayList<SourceFile>();
 
-        // 選択されたファイルのソースファイルオブジェクトを取得する。
+        // Get the source file object for the selected file.
         TreePath[] paths = this.treeExplore.getSelectionPaths();
         if (paths == null)  return null;
 
         for (int i = 0; i < paths.length; i++) {
             int count = paths[i].getPath().length;
-            // ルート以外
+            // Other than root
             if (count >= 2) {
                 DefaultMutableTreeNode node = (DefaultMutableTreeNode) paths[i].getPath()[count - 1];
                 Object obj = node.getUserObject();
-                // ソースファイルオブジェクトであるか？
+                // Is it a source file object?
                 if (obj instanceof SourceFile) {
-                    // ソースファイルの追加
+                    // Add source file
                     list.add((SourceFile) obj);
                 }
             }
@@ -308,30 +308,30 @@ public class FileTreePanel extends javax.swing.JPanel implements ITabComponent, 
     }
 
     /**
-     * 選択されているノード配下のソースファイルを取得する。
+     * Get the source file under the selected node.
      *
-     * @return ソースファイルリスト
+     * @return Source file list
      */
     public SourceFile[] getSelectChildSourceFiles() {
 
         ArrayList<SourceFile> list = new ArrayList<SourceFile>();
 
-        // 選択されたファイルのソースファイルオブジェクトを取得する。
+        // Get the source file object for the selected file.
         TreePath[] paths = this.treeExplore.getSelectionPaths();
         if (paths == null)  return null;
 
         for (int i = 0; i < paths.length; i++) {
             int count = paths[i].getPath().length;
-            // ルート以外
+            // Other than root
             if (count >= 2) {
                 MutableTreeNode node = (MutableTreeNode) paths[i].getPath()[count - 1];
                 SourceFile[] child_list = getSourceFiles((DefaultMutableTreeNode) node);
                 if (child_list != null) {
-                    // ソースファイルの追加
+                    // Add source file
                     list.addAll(Arrays.asList(child_list));
                 }
             } else if (count == 1) {
-                // ルートの場合、全要素の追加
+                // Add all elements for root
                 return getAllSourceFiles();
             }
         }
@@ -340,10 +340,10 @@ public class FileTreePanel extends javax.swing.JPanel implements ITabComponent, 
     }
 
     /**
-     * 指定ノードの子要素のソースファイルを取得する。
+     * Get the source file of the child element of the specified node.
      *
-     * @param node    子要素検索ノード
-     * @return ソースファイルリスト
+     * @param node Child element search node
+     * @return Source file list
      */
     private SourceFile[] getSourceFiles(DefaultMutableTreeNode node) {
 
@@ -351,15 +351,15 @@ public class FileTreePanel extends javax.swing.JPanel implements ITabComponent, 
 
         ArrayList<SourceFile> list = new ArrayList<SourceFile>();
 
-        // 自身の追加
+        // Add yourself
         Object obj = node.getUserObject();
-        // ソースファイルオブジェクトであるか？
+        // Is it a source file object?
         if (obj instanceof SourceFile) {
-            // ソースファイルの追加
+            // Add source file
             list.add((SourceFile) obj);
         }
 
-        // 子要素の検索
+        // Search for child elements
         int count = node.getChildCount();
         for (int i = 0; i < count; i++) {
             DefaultMutableTreeNode child = (DefaultMutableTreeNode) node
@@ -367,10 +367,10 @@ public class FileTreePanel extends javax.swing.JPanel implements ITabComponent, 
             Object child_obj = child.getUserObject();
             if (child_obj == null) continue;
 
-            // 子要素からソースファイルの取得
+            // Get the source file from the child element
             SourceFile[] child_list = getSourceFiles(child);
             if (child_list != null) {
-                // ソースファイルの追加
+                // Add source file
                 list.addAll(Arrays.asList(child_list));
             }
         }
@@ -382,21 +382,21 @@ public class FileTreePanel extends javax.swing.JPanel implements ITabComponent, 
 
 
     /**
-     * ツリー上のすべてのソースファイルを取得する。
+     * Get all source files on the tree.
      *
-     * @return ソースファイルリスト
+     * @return Source file list
      */
     public SourceFile[] getAllSourceFiles() {
 
 
-        // ルートノード
+        // Root node
         DefaultMutableTreeNode node = (DefaultMutableTreeNode) this.treeExplore.getModel().getRoot();
         if (node == null) return null;
 
         ArrayList<SourceFile> list = new ArrayList<SourceFile>();
         SourceFile[] child_list = getSourceFiles(node);
         if (child_list != null) {
-            // ソースファイルの追加
+            // Add source file
             list.addAll(Arrays.asList(child_list));
         }
         if (list.size() <= 0) return null;
@@ -405,7 +405,7 @@ public class FileTreePanel extends javax.swing.JPanel implements ITabComponent, 
     }
 
     /**
-     * 選択タブのツリーをすべて収納する。
+     * Stores the entire tree of selection tabs.
      */
     @Override
     public void collapseTreeAll() {
@@ -414,12 +414,12 @@ public class FileTreePanel extends javax.swing.JPanel implements ITabComponent, 
             this.treeExplore.collapseRow(row);
             row--;
         }
-        // ルートノードのみ展開
+        // Expand only root node
         this.treeExplore.expandRow(0);
     }
 
     /**
-     * 選択タブのツリーをすべて展開する。
+     * Expand the entire tree on the Selection tab.
      */
     @Override
     public void expandTreeAll() {
@@ -431,7 +431,7 @@ public class FileTreePanel extends javax.swing.JPanel implements ITabComponent, 
     }
 
     /**
-     * 選択タブの選択ツリー配下ノードを展開する。
+     * Expand the nodes under the selection tree on the selection tab.
      */
     @Override
     public void expandTreeSelect() {
@@ -439,17 +439,17 @@ public class FileTreePanel extends javax.swing.JPanel implements ITabComponent, 
         if (paths == null) return;
 
         for (int i=0; i<paths.length; i++) {
-            // ツリーパス配下を展開する。
+            // Expand under the tree path.
             visitAll(paths[i], true);
         }
     }
 
 
     /**
-     * ツリーパス配下を展開、折り畳み表示を行う。
+     * Expand under the tree path and display it in a collapsed manner.
      *
-     * @param parent		ツリーパス
-     * @param expand		展開(true)/折り畳み(false)
+     * @param parent Tree path
+     * @param expand Expand (true) / Collapse (false)
      */
     public void visitAll(TreePath parent, boolean expand) {
         TreeNode node = (TreeNode)parent.getLastPathComponent();
@@ -468,22 +468,22 @@ public class FileTreePanel extends javax.swing.JPanel implements ITabComponent, 
     }
 
     /**
-     * ファイルツリーのポップアップメニューを設定する
-     * @param menuPopup		ファイルツリーポップアップメニュー
+     * Set the file tree pop-up menu
+     * @param menuPopup File tree pop-up menu
      */
     public void setPopupMenu(ITreePopupMenu menuPopup) {
-        // ポップアップメニュー設定
+        // Pop-up menu settings
         this.treeExplore.setComponentPopupMenu((JPopupMenu) menuPopup);
 
-        // 展開ボタンにアクションリスナを設定する
+        // Set the action listener on the expand button
         this.btnExpand.addActionListener(menuPopup.getActionTreeExpandAll());
-        // 収納ボタンにアクションリスナを設定する
+        // Set the action listener for the storage button
         this.btnCollapse.addActionListener(menuPopup.getActionTreeCollapseAll());
-        // ファイルを開くボタンにアクションリスナを設定する
+        // Set an action listener for the file open button
         this.btnOpenFile.addActionListener((ActionListener) menuPopup.getActionOpenFile());
-        // ダブルクリックイベント(ファイルを開く)の登録
+        // Register for double-click event (open file)
         this.treeExplore.addMouseListener((MouseListener) menuPopup.getActionOpenFile());
-        // エクスポートの登録
+        // Register for export
         this.btnExport.addActionListener(menuPopup.getActionExportExplore());
 
         this.menuPopup = menuPopup;
@@ -491,15 +491,15 @@ public class FileTreePanel extends javax.swing.JPanel implements ITabComponent, 
 
 
     /**
-     * 選択ファイルを取得する
-     * @return		選択ファイル
+     * Get the selected file
+     * @return selection file
      */
     @Override
     public File[] getSelectedNodeFiles() {
 
         ArrayList<File> list = new ArrayList<File>();
 
-        // 選択されたファイルのソースファイルオブジェクトを取得する。
+        // Get the source file object for the selected file.
         TreePath[] paths = this.treeExplore.getSelectionPaths();
         if (paths == null)  return null;
 
@@ -508,13 +508,13 @@ public class FileTreePanel extends javax.swing.JPanel implements ITabComponent, 
             DefaultMutableTreeNode node = (DefaultMutableTreeNode) paths[i].getPath()[count - 1];
 
             Object obj = node.getUserObject();
-            // ソースファイルオブジェクトであるか？
+            // Is it a source file object?
             if (obj instanceof SourceFile) {
-                // ソースファイルの追加
+                // Add source file
                 list.add(((SourceFile)obj).getFile());
             }
             else if (obj instanceof File) {
-                // ソースファイルの追加
+                // Add source file
                 list.add((File)obj);
             }
             else if (obj instanceof String) {
@@ -540,42 +540,42 @@ public class FileTreePanel extends javax.swing.JPanel implements ITabComponent, 
     }
 
     /**
-     * プロパティモデルの変更通知イベント
-     * @param o			通知元
-     * @param arg		通知項目
+     * Property model change notification event
+     * @param o Notification source
+     * @param arg Notification item
      */
     @Override
     public void update(Observable o, Object arg) {
 
-        // 現在のファイルリスト
+        // Current file list
         SourceFile[] oldlist = getAllSourceFiles();
         int oldcount = oldlist != null ? oldlist.length : 0;
 
         FileTreeModel observer = (FileTreeModel)o;
-        // 現在のノード状態の待避
+        // Save the current node state
         this.treeExplore.storeTreeNode();
 
-        // ツリー再描画
+        // Tree redraw
         this.treeExplore.setModel(observer.getTreeModel());
         this.treeExplore.updateUI();
 
-        // ノード状態の復元
+        // Restore node state
         this.treeExplore.restoreTreeNode();
 
-        // 最初のファイル設定であるので、すべて展開表示を行う
+        // Since it is the first file setting, expand and display all
         if (oldcount == 0) {
-            // すべて展開
+            // Expand all
             this.expandTreeAll();
         }
     }
 
     /**
-     * 選択ソースコード行情報を取得する
-     * @return		選択ソースコード行情報
+     * Get selected source code line information
+     * @return Selected source code line information
      */
     @Override
     public CodeLine[] getSelectedCodeLines() {
-        // 選択されているノード配下のソースファイルを取得する。
+        // Get the source file under the selected node.
         SourceFile[] files = getSelectedSourceFiles();
         if (files == null || files.length <= 0) return null;
 
@@ -589,18 +589,18 @@ public class FileTreePanel extends javax.swing.JPanel implements ITabComponent, 
     }
 
     /**
-     * 選択ブロックを取得する
-     * @return		選択ブロック
+     * Get the selected block
+     * @return selection block
      */
     @Override
     public IBlock[] getSelectedBlocks() {
-        // ソースツリーの場合はブロックはない
+        // No blocks in the source tree
         return null;
     }
 
     /**
-     * エクスプローラツリーをエクスポートする
-     * @param file		出力ファイル
+     * Export explorer tree
+     * @param file Output file
      */
     @Override
     public void export(File file) {
@@ -611,8 +611,8 @@ public class FileTreePanel extends javax.swing.JPanel implements ITabComponent, 
 
 
     /**
-     * エクスプローラパネル識別子を取得する
-     * @return		エクスプローラパネル識別子
+     * Get the explorer panel identifier
+     * @return Explorer panel identifier
      */
     @Override
     public EXPLORE_PANEL getEnumPanel() {
@@ -621,8 +621,8 @@ public class FileTreePanel extends javax.swing.JPanel implements ITabComponent, 
 
 
     /**
-     * 現在選択されているノードを取得する。
-     * @return		選択ノード
+     * Get the currently selected node.
+     * @return Selected node
      */
     @Override
     public DefaultMutableTreeNode getSelectedNode() {
@@ -637,8 +637,8 @@ public class FileTreePanel extends javax.swing.JPanel implements ITabComponent, 
     }
 
     /**
-     * 現在選択されているノードリストを取得する。
-     * @return		選択ノードリスト
+     * Get the currently selected node list.
+     * @return Selected node list
      */
     @Override
     public DefaultMutableTreeNode[] getSelectedNodes() {
@@ -659,8 +659,8 @@ public class FileTreePanel extends javax.swing.JPanel implements ITabComponent, 
     }
 
     /**
-     * ツリーの変更リスナの登録を行う。
-     * @param action		ツリーの変更リスナ
+     * Change tree Register the listener.
+     * @param action Tree change listener
      */
     @Override
     public void addTreeSelectionListener(ExploreTreeChangeAction action) {
@@ -668,36 +668,36 @@ public class FileTreePanel extends javax.swing.JPanel implements ITabComponent, 
     }
 
     /**
-     * 選択ノードを設定する
-     * @param selectnode		選択ノード
+     * Set the selected node
+     * @param selectnode Select node
      */
     @Override
     public void setSelectedNode(Object selectnode) {
         if (selectnode == null) return;
 
-        // 選択ノードを設定する
+        // Set the selected node
         this.treeExplore.setSelectedNode(selectnode);
 
         return;
     }
 
     /**
-     * 複数選択ノードを設定する
-     * @param selectnodes		選択ノードリスト
+     * Set multiple selection node
+     * @param selectnodes Select node list
      */
     @Override
     public void setSelectedNodes(Object[] selectnodes) {
         if (selectnodes == null) return;
 
-        // 選択ノードを設定する
+        // Set the selected node
         this.treeExplore.setSelectedNodes(selectnodes);
 
         return;
     }
 
     /**
-     * ツリーモデルを取得する
-     * @return		ツリーモデル
+     * Get a tree model
+     * @return Tree model
      */
     @Override
     public TreeModel getTreeModel() {
@@ -705,80 +705,80 @@ public class FileTreePanel extends javax.swing.JPanel implements ITabComponent, 
     }
 
     /**
-     * ツリーノード選択を行う.
-     * @param path		選択ツリーパス
+     * Select a tree node.
+     * @param path Selected tree path
      */
     @Override
     public void setSelectionPath(TreePath path) {
-        // 実際のツリーパスを取得する
+        // Get the actual tree path
         TreePath real = this.treeExplore.getRealTreePath(path);
         if (real != null) {
-            // ツリーパスを選択する
+            // Select a tree path
             this.treeExplore.setSelectionPath(real);
 
-            // パスノードを表示するようにスクロースする。
+            // Sucrose to show the path node.
             this.treeExplore.scrollPathToVisibleForVertical(real);
 
-            // タブをアクティブにする
+            // Activate the tab
             ((JTabbedPane)this.parentCompornent).setSelectedComponent(this);
         }
     }
 
 
     /**
-     * パネルの描画更新を行う。
+     * Update the drawing of the panel.
      */
     @Override
     public void updateUI() {
         if (treeExplore != null) {
-            // 再描画
+            // redraw
             treeExplore.updateUI();
         }
         super.updateUI();
     }
 
     /**
-     * ノード範囲を選択する
-     * @param startnode		選択開始ノード
-     * @param endnode		選択終了ノード
+     * Select a node range
+     * @param startnode Selection start node
+     * @param endnode Selection end node
      */
     @Override
     public void setSelectedNodeArea(Object startnode, Object endnode) {
         if (startnode == null && endnode == null) return;
 
-        // 選択ノードを設定する
+        // Set the selected node
         this.treeExplore.setSelectedNodeArea(startnode, endnode);
     }
     /**
-     * ノード選択範囲を追加する
-     * @param startnode		選択開始ノード
-     * @param endnode		選択終了ノード
+     * Add node selection
+     * @param startnode Selection start node
+     * @param endnode Selection end node
      */
     @Override
     public void addSelectedNodeArea(Object startnode, Object endnode) {
         if (startnode == null && endnode == null) return;
 
-        // 選択ノードを設定する
+        // Set the selected node
         this.treeExplore.addSelectedNodeArea(startnode, endnode);
     }
 
     /**
-     * 複数選択ノードを追加する
-     * @param selectnodes		選択ノードリスト
+     * Add multiple selection node
+     * @param selectnodes Select node list
      */
     @Override
     public void addSelectedNodes(Object[] selectnodes) {
         if (selectnodes == null) return;
 
-        // 選択ノードを設定する
+        // Set the selected node
         this.treeExplore.addSelectedNodes(selectnodes);
 
         return;
     }
 
     /**
-     * ソースビュープロパティを設定する
-     * @param properties		ソースビュープロパティ
+     * Set source view properties
+     * @param properties Source view properties
      */
     public void setSourceProperties(SourceProperties properties) {
         this.treeExplore.setSourceProperties(properties);
@@ -786,7 +786,7 @@ public class FileTreePanel extends javax.swing.JPanel implements ITabComponent, 
 
 
     /**
-     * 選択ノードの変更イベントを発生させる
+     * Raise a change event for the selected node
      */
 	@Override
 	public void fireSelectNodeChanged() {

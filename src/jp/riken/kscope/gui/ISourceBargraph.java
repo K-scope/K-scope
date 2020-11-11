@@ -22,45 +22,45 @@ import jp.riken.kscope.data.CodeLine;
 import jp.riken.kscope.data.SourceFile;
 
 /**
- * ソースビューのバーグラフインターフェイスクラス
+ * Source view bar graph interface class
  * @author RIKEN
  */
 public interface ISourceBargraph {
 
     /**
-     * バーグラフの値を取得する.
-     * Max=1.0 〜 Min=0.0
-     * @return		バーグラフの値
+     * Get the value of the bar graph.
+     * Max = 1.0 ~ Min = 0.0
+     * @return Bar graph value
      */
     public float getBarValue();
 
     /**
-     * バーグラフ横に表示する文字列を取得する
-     * @return		表示文字列
+     * Get the character string to be displayed next to the bar graph
+     * @return Display string
      */
     public String getBarText();
 
     /**
-     * バーグラフの対象行情報を取得する
-     * @return		対象行情報
+     * Get the target row information of the bar graph
+     * @return Target line information
      */
     public CodeLine getCodeLine();
 
     /**
-     * バーグラフの対象ソースファイルを取得する
-     * @return		対象ソースファイル
+     * Get the target source file for the bar graph
+     * @return Target source file
      */
     public SourceFile getSourceFile();
 
     /**
-     * バーグラフの表示色を取得する
-     * @return		バーグラフ表示色
+     * Get the display color of the bar graph
+     * @return Bar graph display color
      */
     public Color getBarColor();
 
     /**
-     * バーグラフのタイプ名を取得する
-     * @return		バーグラフタイプ名
+     * Get the bar graph type name
+     * @return Bar graph type name
      */
     public String getTypeName();
 }

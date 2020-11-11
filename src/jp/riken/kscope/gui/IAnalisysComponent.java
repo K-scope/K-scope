@@ -27,74 +27,74 @@ import jp.riken.kscope.properties.SourceProperties;
 
 
 /**
- * 分析情報パネルコンポーネントインターフェイス.<br/>
- * 分析情報パネルコンポーネントのインターフェイス
+ * Analysis Information Panel Component Interface. <br/>
+ * Analysis Information Panel Component Interface
  * @author RIKEN
  */
 public interface IAnalisysComponent {
 
     /**
-     * 分析情報のエクスポートを行う
-     * @param   file    出力ファイル
+     * Export analysis information
+     * @param file Output file
      */
     public void export(File file);
 
     /**
-     * パネルにアクションリスナを設定する.<br/>
-     * メニューバーに作成済みのアクションリスナをパネルボタンに割り当てる。
-     * @param menu		メインメニュー
+     * Set an action listener on the panel. <br/>
+     * Assign the created action listener to the menu bar to the panel button.
+     * @param menu Main menu
      */
     public void setActionListener(MainMenu menu);
 
     /**
-     * 分析情報パネル識別子を設定する
-     * @return enumPanel		分析情報パネル識別子
+     * Set the analysis information panel identifier
+     * @return enumPanel Analysis Information Panel Identifier
      */
     public ANALYSIS_PANEL getEnumPanel();
 
     /**
-     * モデルのクリアを行う。
+     * Clear the model.
      */
     public void clearModel();
 
     /**
-     * タブのクローズを行う
+     * Close the tab
      */
     public void closeTab();
 
     /**
-     * 選択ソースコード行情報を取得する
-     * @return		選択ソースコード行情報
+     * Get selected source code line information
+     * @return Selected source code line information
      */
     public CodeLine getSelectedCodeLine();
 
     /**
-     * 選択ブロックを取得する
-     * @return		選択ブロック
+     * Get the selected block
+     * @return selection block
      */
     public IBlock getSelectedBlock();
 
     /**
-     * 選択付加情報を取得する
-     * @return		選択付加情報
+     * Get additional selection information
+     * @return Selectable additional information
      */
     public IInformation getSelectedInformation();
 
     /**
-     * ソースビュープロパティを設定する
-     * @param properties		ソースビュープロパティ
+     * Set source view properties
+     * @param properties Source view properties
      */
     void setSourceProperties(SourceProperties properties);
 
     /**
-     * 選択項目をクリップボードにコピーする.
+     * Copy the selection to the clipboard.
      */
 	public void copyClipboard();
 	
 	/**
-	 * エクスポートできる情報があるか判定する
-	 * @return	true: 情報あり　false:情報無し
-	 */
+* Determine if there is information that can be exported
+* @return true: With information false: No information
+*/
 	public boolean isExportable();
 
 }

@@ -39,23 +39,23 @@ import jp.riken.kscope.properties.VariableMemoryProperties;
 
 
 /**
- * ルーラ付きソースコード表示パイン.<br/>
- * 右側にプロファイラプレビューパネルを表示する.
+ * Source code display pine with ruler. <br/>
+ * Display the profiler preview panel on the right side.
  * @author RIKEN
  */
 public class SourceCodePanel extends JPanel implements ITabComponent, ChangeListener, CaretListener, Observer {
 
-    /** シリアル番号 */
+    /** Serial number */
     private static final long serialVersionUID = 1L;
-    /** ソースコードパネル */
+    /** Source Code Panel */
     private ScrollCodePane panelCode;
-    /** プロファイラルーラパネル */
+    /** Profile Laura Panel */
     private ProfilerRulerPanel rulerProfiler;
-    /** 親コンポーネント */
+    /** Parent component */
     private ITabComponent parentCompornent = null;
 
     /**
-     * コンストラクタ
+     * Constructor
      */
     public SourceCodePanel() {
         super();
@@ -63,20 +63,20 @@ public class SourceCodePanel extends JPanel implements ITabComponent, ChangeList
     }
 
     /**
-     * 初期化を行う.<br/>
-     * ソースコードパネルを配置する。
+     * Initialize. <br/>
+     * Place the source code panel.
      */
     private void initGUI() {
         try {
             BorderLayout thisLayout = new BorderLayout();
             this.setLayout(thisLayout);
 
-            // ソースコード表示パイン
+            // Source code display pine
             {
             	this.panelCode = new ScrollCodePane();
                 this.add(this.panelCode, BorderLayout.CENTER);
             }
-            // プロファイラルーラパネル
+            // Profile profiling panel
             {
             	this.rulerProfiler = new ProfilerRulerPanel(this.panelCode);
                 this.add(this.rulerProfiler, BorderLayout.EAST);
@@ -88,9 +88,9 @@ public class SourceCodePanel extends JPanel implements ITabComponent, ChangeList
     }
 
     /**
-     * ソースビューモデルの変更通知イベント
-     * @param o			通知元
-     * @param arg		通知項目
+     * Source view model change notification event
+     * @param o Notification source
+     * @param arg Notification item
      */
 	@Override
 	public void update(Observable o, Object arg) {
@@ -99,8 +99,8 @@ public class SourceCodePanel extends JPanel implements ITabComponent, ChangeList
 	}
 
     /**
-     * キャレット位置更新イベント
-     * @param event		イベント情報
+     * Caret position update event
+     * @param event Event information
      */
 	@Override
 	public void caretUpdate(CaretEvent event) {
@@ -108,8 +108,8 @@ public class SourceCodePanel extends JPanel implements ITabComponent, ChangeList
 	}
 
     /**
-     * スクロール変更イベント
-     * @param event		イベント情報
+     * Scroll change event
+     * @param event Event information
      */
 	@Override
 	public void stateChanged(ChangeEvent event) {
@@ -117,8 +117,8 @@ public class SourceCodePanel extends JPanel implements ITabComponent, ChangeList
 	}
 
     /**
-     * 親コンポーネントを取得する.
-     * @return		親コンポーネント
+     * Get the parent component.
+     * @return Parent component
      */
     @Override
     public ITabComponent getParentComponent() {
@@ -126,8 +126,8 @@ public class SourceCodePanel extends JPanel implements ITabComponent, ChangeList
     }
 
     /**
-     * 親コンポーネントを設定する.
-     * @param component		親コンポーネント
+     * Set the parent component.
+     * @param component Parent component
      */
     @Override
     public void setParentComponent(ITabComponent component) {
@@ -135,8 +135,8 @@ public class SourceCodePanel extends JPanel implements ITabComponent, ChangeList
     }
 
     /**
-     * フォーカスリスナを設定する
-     * @param listener		フォーカスリスナ
+     * Set focus listener
+     * @param listener Focus listener
      */
     @Override
     public void addTabFocusListener(TabFocusListener listener) {
@@ -147,20 +147,20 @@ public class SourceCodePanel extends JPanel implements ITabComponent, ChangeList
     }
 
     /**
-     * タブを閉じる
+     * Close tab
      */
     @Override
     public void closeTabComponent() {
-        // 親のタブパインにてタブを閉じる。
+        // Close the tab with the parent tab pine.
         if (this.parentCompornent != null) {
             this.parentCompornent.closeTabComponent();
         }
     }
 
     /**
-     * ソースファイルを読み込む
-     * @param source		ソースファイル
-     * @throws Exception		ソースファイル読込エラー
+     * Read the source file
+     * @param source source file
+     * @throws Exception Source file read error
      */
     public void readFile(SourceFile source) throws Exception {
 		this.panelCode.readFile(source);
@@ -168,133 +168,133 @@ public class SourceCodePanel extends JPanel implements ITabComponent, ChangeList
     }
 
     /**
-     * ソースファイルパネルコンテキストメニューを設定する
-     * @param menuSourcePanel		ソースファイルパネルコンテキストメニュー
+     * Set the source file panel context menu
+     * @param menuSourcePanel Source File Panel Context Menu
      */
     public void setSourcePanelPopupMenu(SourcePanelPopupMenu menuSourcePanel) {
         this.panelCode.setSourcePanelPopupMenu(menuSourcePanel);
     }
 
     /**
-     * テキストパインを取得する。
-     * @return		テキストパイン
+     * Get text pine.
+     * @return text pine
      */
     public CodePane getSourcePane() {
         return this.panelCode.getSourcePane();
     }
 
     /**
-     * ソースビュープロパティを設定する
-     * @param properties		ソースビュープロパティ
+     * Set source view properties
+     * @param properties Source view properties
      */
     public void setSourceProperties(SourceProperties properties) {
         this.panelCode.setSourceProperties(properties);
     }
 
     /**
-     * キーワードプロパティを設定する
-     * @param properties		キーワードプロパティ
+     * Set keyword properties
+     * @param properties Keyword properties
      */
     public void setKeywordProperties(KeywordProperties properties) {
         this.panelCode.setKeywordProperties(properties);
     }
 
     /**
-     * ソースコードモデルを取得する
-     * @return			ソースコードモデル
+     * Get the source code model
+     * @return Source code model
      */
     public SourceCodeModel getModel() {
         return this.panelCode.getModel();
     }
 
     /**
-     * 表示ソースファイルパス（絶対パス)を取得する。
-     * @return filePath		表示ソースファイルパス（絶対パス)
+     * Get the display source file path (absolute path).
+     * @return filePath Display source file path (absolute path)
      */
     public String getFilePath() {
         return this.panelCode.getFilePath();
     }
 
     /**
-     * コード行情報の選択範囲をクリアする。
+     * Clear the selection of code line information.
      */
     public void clearSelectedBlock() {
     	this.panelCode.clearSelectedBlock();
     }
 
     /**
-     * コード行情報の選択範囲を追加する
-     * @param line		コード行情報
+     * Add a selection of code line information
+     * @param line Code line information
      */
     public void addSelectedBlock(CodeLine line) {
     	this.panelCode.addSelectedBlock(line);
     }
 
     /**
-     * 指定行番号位置を表示領域に表示する。
-     * @param line		表示行番号
+     * Display the specified line number position in the display area.
+     * @param line Display line number
      */
     public void setLinePosition(CodeLine line) {
     	this.panelCode.setLinePosition(line);
     }
 
     /**
-     * 指定行番号位置を表示領域に表示する。
-     * @param start		表示行番号
+     * Display the specified line number position in the display area.
+     * @param start Display line number
      */
     public void setLinePosition(int start) {
     	this.panelCode.setLinePosition(start);
     }
 
     /**
-     * 選択行、選択文字情報を取得する
-     * @return		選択行情報
+     * Get selected line and selected character information
+     * @return Selected line information
      */
     public CodeLine getSelectedCodeLine() {
     	return this.panelCode.getSelectedCodeLine();
     }
 
     /**
-     * 選択行範囲を取得する
-     * @return		選択範囲行コード情報
+     * Get the selected row range
+     * @return Selection line code information
      */
     public CodeLine getSelectedArea() {
     	return this.panelCode.getSelectedArea();
     }
 
     /**
-     * ソースファイルを取得する
-     * @return		ソースファイル
+     * Get the source file
+     * @return source file
      */
     public SourceFile getSelectedSourceFile() {
     	return this.panelCode.getSelectedSourceFile();
     }
 
     /**
-     * 検索・トレースキーワードを設定する
-     * @param keywords		検索・トレースキーワード
+     * Set search / trace keywords
+     * @param keywords Search / trace keywords
      */
     public void setSearchWords(Keyword[] keywords) {
     	this.panelCode.setSearchWords(keywords);
     }
 
     /**
-     * 検索・トレースキーワードをクリアする.
+     * Clear search / trace keywords.
      */
     public void clearSearchWords() {
     	this.panelCode.clearSearchWords();
     }
 
     /**
-     * 検索・トレースキーワードをクリアする
-     * @param  type     クリアキーワードタイプ
+     * Clear search / trace keywords
+     * @param type Clear keyword type
      */
     public void clearSearchWords(KEYWORD_TYPE type) {
     	this.panelCode.clearSearchWords(type);
     }
 
     /**
-     * バーグラフデータをクリアする。
+     * Clear the bar graph data.
      */
     public void clearBargraphData() {
         this.panelCode.clearBargraphData();
@@ -302,64 +302,64 @@ public class SourceCodePanel extends JPanel implements ITabComponent, ChangeList
     }
 
     /**
-     * 現在選択されているテキストをクリップボードにコピーする
+     * Copy the currently selected text to the clipboard
      */
     public void copyClipboard() {
     	this.panelCode.copyClipboard();
     }
 
     /**
-     * プロファイラデータ表示フッターを表示する
-     * @param visible		true=表示
+     * Display profiler data display footer
+     * @param visible true = display
      */
     public void setVisibleBargraph(boolean visible) {
     	this.panelCode.setVisibleBargraph(visible);
     }
 
     /**
-     * プロファイラデータ表示ルーラを表示する
-     * @param visible		true=表示
+     * Show profiler data display ruler
+     * @param visible true = display
      */
     public void setVisibleRuler(boolean visible) {
     	this.rulerProfiler.setVisible(visible);
     }
 
     /**
-     * プロファイラプロパティを設定する
-     * @param properties	プロファイラプロパティ
+     * Set profiler properties
+     * @param properties Profiler properties
      */
 	public void setProfilerProperties(ProfilerProperties properties) {
-        // コストバーグラフ表示切替
+        // Cost bar graph display switching
         boolean visibleBargraph = properties.isVisibleBargraph();
-    	// 表示切替及び再描画を行う.
+    	// Switch the display and redraw.
         setVisibleBargraph(visibleBargraph);
-        // コストルーラ表示切替
+        // Cost ruler display switching
         boolean visibleRuler = properties.isVisibleRuler();
         setVisibleRuler(visibleRuler);
-        // プロファイラプロパティを設定する
+        // Set profiler properties
         this.rulerProfiler.setProfilerProperties(properties);
 	}
 
     /**
-     * 変数アクセス先メモリプロパティを設定する
-     * @param properties	変数アクセス先メモリプロパティ
+     * Set variable access destination memory property
+     * @param properties Variable access destination memory property
      */
 	public void setVariableMemoryProperties(VariableMemoryProperties properties) {
         this.panelCode.setVariableMemoryProperties(properties);
 	}
 
 	/**
-	 * 選択行を追加する.<br/>
-	 * キャレットの移動は行わない.
-	 * @param line		コード行情報
-	 */
+* Add a selected line. <br/>
+* The caret is not moved.
+* @param line Code line information
+*/
 	public void addSelectedBlockNoCaret(CodeLine line) {
     	this.panelCode.addSelectedBlockNoCaret(line);
 	}
 
 	/**
-	 * キーワードのハイライトを適用する.
-	 */
+* Apply keyword highlights.
+*/
 	public void applyKeyword() {
 		this.panelCode.applyKeyword();
 	}

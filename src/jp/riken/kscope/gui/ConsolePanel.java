@@ -76,34 +76,34 @@ import jp.riken.kscope.utils.ResourceUtils;
 import jp.riken.kscope.utils.SwingUtils;
 
 /**
- * コンソール画面クラス
+ * Console screen class
  * @author RIKEN
  */
 public class ConsolePanel extends AnalisysPanelBase implements FocusListener, IAnalisysComponent, ComponentListener{
 
-    /** シリアル番号 */
+    /** Serial number */
     private static final long serialVersionUID = 1L;
 
-    /** タブサイズ */
+    /** Tab size */
     private final int TAB_SIZE = 4;
-    /** コンソールテキストボックス */
+    /** Console text box */
     private JTextPane consoleTextPane;
-    /** クリアボタン */
+    /** Clear button */
     private JButton btnClear;
-    /** ラベル */
+    /** Label */
     private JLabel label;
-    /** コンソール出力キュー */
+    /** Console output queue */
     private Queue<PrintQueue>  listout;
 
-    /** 標準出力ストリーム:システムデフォルト */
+    /** Standard output stream: System default */
     private PrintStream sysOut = System.out;
-    /** 標準エラー出力ストリーム:システムデフォルト */
+    /** Standard error output stream: system default */
     private PrintStream sysErr = System.err;
     
     public boolean disable_horizontal_scroll = false;
 
     /**
-     * コンソール出力キュー
+     * Console output queue
      * @author RIKEN
      */
     private class PrintQueue {
@@ -117,7 +117,7 @@ public class ConsolePanel extends AnalisysPanelBase implements FocusListener, IA
 
     private WorkerThread worker;
     /**
-     * コンストラクタ
+     * Constructor
      */
     public ConsolePanel() {
         super();
@@ -127,8 +127,8 @@ public class ConsolePanel extends AnalisysPanelBase implements FocusListener, IA
     }
 
     /**
-     * コンストラクタ
-     * @param console		分析情報パネル識別子
+     * Constructor
+     * @param console Analysis information panel identifier
      */
     public ConsolePanel(ANALYSIS_PANEL console) {
         super(console);
@@ -137,7 +137,7 @@ public class ConsolePanel extends AnalisysPanelBase implements FocusListener, IA
     }
 
     /**
-     * GUIの初期化を行う
+     * Initialize the GUI
      */
     @SuppressWarnings("serial")
     private void initGUI() {
@@ -146,7 +146,7 @@ public class ConsolePanel extends AnalisysPanelBase implements FocusListener, IA
             this.setLayout(thisLayout);
 //            setPreferredSize(new Dimension(400, 64));
 
-            // 上部の情報ラベル、ボタンの配置パネル
+            // Information label at the top, button placement panel
             {
                 JPanel panelTop = new JPanel();
                 panelTop.setLayout(new BorderLayout());
@@ -154,14 +154,14 @@ public class ConsolePanel extends AnalisysPanelBase implements FocusListener, IA
                 panelTop.setBorder(new CompoundBorder(
                                             new LineBorder(Color.BLACK, 1),
                                             BorderFactory.createEmptyBorder(0, 5, 0, 20)));
-                // ボタン配置パネル
+                // Button layout panel
                 {
                     JPanel panelButtons = new JPanel();
                     panelButtons.setLayout(new BoxLayout(panelButtons, BoxLayout.LINE_AXIS));
                     panelTop.add(panelButtons, BorderLayout.EAST);
 
                     java.awt.Dimension buttonSize = new java.awt.Dimension(24, 24);
-                    // クリアボタン
+                    // Clear button
                     {
                         Icon icon = ResourceUtils.getIcon("removeall.gif");
                         btnClear = new JButton(icon);
@@ -174,35 +174,35 @@ public class ConsolePanel extends AnalisysPanelBase implements FocusListener, IA
                         btnClear.addActionListener( new ActionListener() {
                             @Override
                             public void actionPerformed(ActionEvent e) {
-                                // コンソールをクリアする。
+                                // Clear the console.
                                 clearConsole();
                             }
                         });
                     }
                 }
 
-                // ラベル配置
+                // Label placement
                 {
                     label = new JLabel();
                     panelTop.add(label, BorderLayout.CENTER);
                     //label.setText().getString("");
                 }
             }
-            // コンソールテキストパイン
+            // Console text pine
             {
-                // 読み取り専用とする。
+                // Make it read-only.
                 consoleTextPane = new JTextPane() {
                     @Override
                     public boolean getScrollableTracksViewportWidth() {
-                        // 折り返しを行わない
+                        // Do not wrap
                         try {
                             Object parent = getParent();
                             if (parent instanceof JViewport) {
                                 JViewport port = (JViewport) parent;
-                                int w = port.getWidth();	// 表示できる範囲(上限)
+                                int w = port.getWidth();	// Displayable range (upper limit)
                                 TextUI ui = getUI();
                                 if (ui == null) return true;
-                                Dimension sz = ui.getPreferredSize(this); // 実際の文字列サイズ
+                                Dimension sz = ui.getPreferredSize(this); // Actual string size
                                 if (sz == null) return true;
                                 if (sz.width < w) {
                                     return true;
@@ -216,9 +216,9 @@ public class ConsolePanel extends AnalisysPanelBase implements FocusListener, IA
                     }
                 };
                 consoleTextPane.setEditable(false);
-                consoleTextPane.getCaret().setVisible(true);   // キャレットを表示する
+                consoleTextPane.getCaret().setVisible(true);   // Show the caret
                 
-                // タブサイズを設定する。
+                // Set the tab size.
                 SwingUtils.setTabSize(consoleTextPane, TAB_SIZE);
 
                 final JScrollPane scroll = new JScrollPane();
@@ -240,13 +240,13 @@ public class ConsolePanel extends AnalisysPanelBase implements FocusListener, IA
             //OutputStream os = new JTextAreaOutputStream(consoleTextPane, "UTF-8");
             //System.setOut(new PrintStream(os, true));
 
-            // フォーカスイベントの登録
+            // Focus event registration
             this.consoleTextPane.addFocusListener(this);
 
             this.addComponentListener(this);
 
-            // ツールチップ設定
-            btnClear.setToolTipText(Message.getString("informationdialog.button.clear.tooltip")); //クリア
+            // Tooltip settings
+            btnClear.setToolTipText(Message.getString("informationdialog.button.clear.tooltip")); //clear
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -278,22 +278,22 @@ public class ConsolePanel extends AnalisysPanelBase implements FocusListener, IA
     
 
     /**
-     * コンソールをクリアする
+     * Clear the console
      */
     public void clearConsole() {
         StyleContext sc = new StyleContext();
         DefaultStyledDocument doc = new DefaultStyledDocument(sc);
         this.consoleTextPane.setDocument(doc);
         consoleTextPane.setCaretPosition(0);
-        consoleTextPane.getCaret().setVisible(true);   // キャレットを表示する
+        consoleTextPane.getCaret().setVisible(true);   // Show the caret
 
-        // キューのクリア
+        // Clear queue
         listout.clear();
     }
 
     private void addQueue(PrintQueue queue) {
         if (!listout.offer(queue)) {
-            // 先頭削除
+            // Delete the beginning
             listout.poll();
             listout.offer(queue);
         }
@@ -301,9 +301,9 @@ public class ConsolePanel extends AnalisysPanelBase implements FocusListener, IA
 
 
     /**
-     * コンソールに出力する
-     * @param text		出力文字列
-     * @param error		true=エラー出力
+     * Output to console
+     * @param text Output string
+     * @param error true = error output
      */
     private void updateTextPane(final String text, final boolean error) {
         Color fontcolor = error ? Color.RED : Color.BLACK;
@@ -311,19 +311,19 @@ public class ConsolePanel extends AnalisysPanelBase implements FocusListener, IA
     }
 
     /**
-     * コンソールに出力する
-     * @param text		出力文字列
-     * @param error		true=エラー出力
+     * Output to console
+     * @param text Output string
+     * @param error true = error output
      */
     private void updateTextPane(final String text, final Color fontcolor) {
 
         SimpleAttributeSet attr = new SimpleAttributeSet();
         StyleConstants.setForeground(attr, fontcolor);
 
-        // キューに追加する
+        // Add to queue
         addQueue(new PrintQueue(text, attr));
 
-        // スレッドを起動する
+        // Start a thread
         if (worker == null) {
             try {
 				worker = new WorkerThread();
@@ -334,8 +334,8 @@ public class ConsolePanel extends AnalisysPanelBase implements FocusListener, IA
     }
 
     /**
-     * コンソールに出力する
-     * @param text		出力文字列
+     * Output to console
+     * @param text Output string
      */
     public void outputString(final String text) {
         Color fontcolor = Color.BLACK;
@@ -343,15 +343,15 @@ public class ConsolePanel extends AnalisysPanelBase implements FocusListener, IA
     }
 
     /**
-     * キューの情報をテキストボックスに表示を行うスレッドクラス
+     * Thread class that displays queue information in a text box
      * @author RIKEN
      */
     private class WorkerThread  extends SwingWorker<Object, Object> {
 
         /**
-         * キューの情報をテキストボックスに表示を行う
-         * @return      	計算結果
-         * @throws Exception		キュー情報の表示エラー
+         * Display queue information in a text box
+         * @return Calculation result
+         * @throws Exception Queue information display error
          */
         @Override
         protected Object doInBackground() throws Exception {
@@ -365,7 +365,7 @@ public class ConsolePanel extends AnalisysPanelBase implements FocusListener, IA
         			// consoleTextPane.setDocument(doc);
 
         			Document doc = consoleTextPane.getDocument();
-        			// タブサイズを設定する。
+        			// Set the tab size.
         			SwingUtils.setTabSize(consoleTextPane, TAB_SIZE);
 
         			PrintQueue queue = null;
@@ -383,7 +383,7 @@ public class ConsolePanel extends AnalisysPanelBase implements FocusListener, IA
         			int len = doc.getLength();
         			if (len > 0) len = len - 1;
         			consoleTextPane.setCaretPosition(len);
-        			consoleTextPane.getCaret().setVisible(true);   // キャレットを表示する
+        			consoleTextPane.getCaret().setVisible(true);   // Show the caret
         		}
         	});
         	return null;
@@ -396,7 +396,7 @@ public class ConsolePanel extends AnalisysPanelBase implements FocusListener, IA
     }
 
     /**
-     * System.out/errのフックを取り止める.
+     * Unhook System.out/err.
      */
     private void terminateSystemStreams() {
         System.setOut(this.sysOut);
@@ -404,7 +404,7 @@ public class ConsolePanel extends AnalisysPanelBase implements FocusListener, IA
     }
 
     /**
-     * System.out/errのフックを行う
+     * Hook System.out/err
      */
     private void redirectSystemStreams() {
         OutputStream stdout = new OutputStream() {
@@ -450,41 +450,41 @@ public class ConsolePanel extends AnalisysPanelBase implements FocusListener, IA
     }
 
     /**
-     * テキストボックス出力クラス（未使用）.
+     * Textbox output class (unused).
      * @author RIKEN
      *
      */
     public class JTextAreaOutputStream extends OutputStream {
         private ByteArrayOutputStream os;
-        /** 出力テキストボックス */
+        /** Output textbox */
         @SuppressWarnings("unused")
         private JTextPane textBox;
-        /** エンコード */
+        /** Encode */
         private String encode;
 
         /**
-         * コンストラクタ
-         * @param textArea		テキストボックス
-         * @param encode		エンコード
+         * Constructor
+         * @param textArea Textbox
+         * @param encode encode
          */
         public JTextAreaOutputStream(JTextPane textArea, String encode) {
             this.textBox = textArea;
             this.encode = encode;
             this.os = new ByteArrayOutputStream();
         }
-        /** OutputStream#write(byte[])のオーバーライド */
+        /** Override OutputStream # write (byte []) */
         @Override
 		public void write(int arg) throws IOException {
             this.os.write(arg);
         }
         /**
-         * flush()でJTextAreaに書き出す
+         * Export to JTextArea with flush ()
          */
         @Override
 		public void flush() throws IOException {
-            // 文字列のエンコード
+            // String encoding
             final String str = new String(this.os.toByteArray(), this.encode);
-            // 実際の書き出し処理
+            // Actual export process
             SwingUtilities.invokeLater(new Runnable(){
                 @Override
 				public void run() {
@@ -492,28 +492,28 @@ public class ConsolePanel extends AnalisysPanelBase implements FocusListener, IA
         			updateTextPane(str, fontcolor);
 
                     /*
-                    Document doc = JTextAreaOutputStream.this.textBox.getDocument();
-                    SimpleAttributeSet attr = new SimpleAttributeSet();
-                    StyleConstants.setForeground(attr, fontcolor);
+                    Document doc = JTextAreaOutputStream.this.textBox.getDocument ();
+                    SimpleAttributeSet attr = new SimpleAttributeSet ();
+                    StyleConstants.setForeground (attr, fontcolor);
 
                     try {
-                        doc.insertString(doc.getLength(), str, attr);
+                        doc.insertString (doc.getLength (), str, attr);
                     } catch (BadLocationException e) {
-                        throw new RuntimeException(e);
+                        throw new RuntimeException (e);
                     }
-                    JTextAreaOutputStream.this.textBox.setCaretPosition(doc.getLength() - 1);
-                    JTextAreaOutputStream.this.textBox.getCaret().setVisible(true);   // キャレットを表示する
+                    JTextAreaOutputStream.this.textBox.setCaretPosition (doc.getLength () -- 1);
+                    JTextAreaOutputStream.this.textBox.getCaret (). setVisible (true); // Show caret
                     */
                 }
             });
-            // 書き出した内容はクリアする
+            // Clear the exported content
             this.os.reset();
         }
     }
 
     /**
-     * コンソール出力のOutputStreamを取得する.
-     * @return		OutputStream
+     * Get the OutputStream of the console output.
+     * @return OutputStream
      */
     public OutputStream getOutputStream() {
         OutputStream os = new JTextAreaOutputStream(consoleTextPane, "UTF-8");
@@ -521,9 +521,9 @@ public class ConsolePanel extends AnalisysPanelBase implements FocusListener, IA
     }
 
     /**
-     * フォーカス取得イベント.<br/>
-     * フォーカス移動時にキャレットが非表示となるので、フォーカス取得時にキャレット表示を再設定する。
-     * @param event		イベント情報
+     * Focus acquisition event. <br/>
+     * Since the caret is hidden when the focus is moved, the caret display is reset when the focus is acquired.
+     * @param event Event information
      */
     @Override
     public void focusGained(FocusEvent event) {
@@ -531,15 +531,15 @@ public class ConsolePanel extends AnalisysPanelBase implements FocusListener, IA
     }
 
     /**
-     * フォーカス喪失イベント
-     * @param event		イベント情報
+     * Loss of focus event
+     * @param event Event information
      */
     @Override
     public void focusLost(FocusEvent event) { }
 
     /**
-     * 分析情報のエクスポートを行う
-     * @param file			出力ファイル
+     * Export analysis information
+     * @param file Output file
      */
     @Override
     public void export(File file) {
@@ -548,7 +548,7 @@ public class ConsolePanel extends AnalisysPanelBase implements FocusListener, IA
         String text = this.consoleTextPane.getText();
 
         try {
-            // ファイル出力
+            // File output
             PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(file)));
             pw.println(text);
             pw.close();
@@ -559,8 +559,8 @@ public class ConsolePanel extends AnalisysPanelBase implements FocusListener, IA
     }
 
     /**
-     * タブフォーカスリスナを追加する.
-     * @param listener		タブフォーカスリスナ
+     * Add a tab focus listener.
+     * @param listener Tab focus listener
      */
     @Override
     public void addTabFocusListener(TabFocusListener listener) {
@@ -569,17 +569,17 @@ public class ConsolePanel extends AnalisysPanelBase implements FocusListener, IA
     }
 
     /**
-     * パネルにアクションリスナを設定する.<br/>
-     * メニューバーに作成済みのアクションリスナをパネルボタンに割り当てる。
-     * @param menu		メニューバー
+     * Set an action listener on the panel. <br/>
+     * Assign the created action listener to the menu bar to the panel button.
+     * @param menu Menu bar
      */
     @Override
     public void setActionListener(MainMenu menu) {
-        // 割り当てボタンなし
+        // No assign button
     }
 
     /**
-     * モデルのクリアを行う。
+     * Clear the model.
      */
     @Override
     public void clearModel() {
@@ -587,50 +587,50 @@ public class ConsolePanel extends AnalisysPanelBase implements FocusListener, IA
     }
 
     /**
-     * コンポーネントのリサイズイベント.
-     * @param e			イベント情報
+     * Component resizing event.
+     * @param e Event information
      */
     @Override
     public void componentResized(ComponentEvent e) { }
 
     /**
-     * コンポーネントの移動イベント.
-     * @param e		イベント情報
+     * Component move event.
+     * @param e Event information
      */
     @Override
     public void componentMoved(ComponentEvent e) { }
 
     /**
-     * コンポーネントの表示イベント
-     * @param e		イベント情報
+     * Component display event
+     * @param e Event information
      */
     @Override
     public void componentShown(ComponentEvent e) {
-        // コンポーネントが非表示となっる時も表示イベントが発生する
+        // Show event also occurs when the component is hidden
         if (isTabVisible()) {
-            // System出力をコンソールテキストペインに出力する。
+            // Output System output to the console text pane.
             redirectSystemStreams();
         }
     }
 
     /**
-     * コンポーネントの非表示イベント
-     * @param e		イベント情報
+     * Component hiding event
+     * @param e Event information
      */
     @Override
     public void componentHidden(ComponentEvent e) {
-        // コンポーネントが非表示となっても、コンソールタブが閉じていなければ、フックは継続する。
+        // Even if the component is hidden, the hook will continue if the console tab is not closed.
         if (!isTabVisible()) {
-            // System.out/errのフックを取り止める.
+            // Unhook the System.out/err.
             terminateSystemStreams();
         }
     }
 
 
     /**
-     * コンソールタブが表示されているかチェックする. <br/>
-     * アクティブではなくとも、タブに含まれているれば、trueとする
-     * @return		true=タブが表示、含まれている
+     * Check if the console tab is displayed. <br/>
+     * True if it is included in the tab, even if it is not active
+     * @return true = Tabs are displayed and included
      */
     private boolean isTabVisible() {
         int index = ((AnalysisView)this.getParentComponent()).getTabIndex(this.getEnumPanel());
@@ -639,17 +639,17 @@ public class ConsolePanel extends AnalisysPanelBase implements FocusListener, IA
 
 
     /**
-     * タブのクローズを行う
+     * Close the tab
      */
     @Override
     public void closeTab() {
-        // System.out/errのフックを取り止める.
+        // Unhook the System.out/err.
         terminateSystemStreams();
     }
 
     /**
-     * 選択ソースコード行情報を取得する
-     * @return		選択ソースコード行情報
+     * Get selected source code line information
+     * @return Selected source code line information
      */
     @Override
     public CodeLine getSelectedCodeLine() {
@@ -657,8 +657,8 @@ public class ConsolePanel extends AnalisysPanelBase implements FocusListener, IA
     }
 
     /**
-     * 選択ブロックを取得する
-     * @return		選択ブロック
+     * Get the selected block
+     * @return selection block
      */
     @Override
     public IBlock getSelectedBlock() {
@@ -666,8 +666,8 @@ public class ConsolePanel extends AnalisysPanelBase implements FocusListener, IA
     }
 
     /**
-     * 選択付加情報を取得する
-     * @return		選択付加情報
+     * Get additional selection information
+     * @return Selectable additional information
      */
     @Override
     public IInformation getSelectedInformation() {
@@ -675,14 +675,14 @@ public class ConsolePanel extends AnalisysPanelBase implements FocusListener, IA
     }
 
     /**
-     * ソースビュープロパティを設定する
-     * @param properties		ソースビュープロパティ
+     * Set source view properties
+     * @param properties Source view properties
      */
     @Override
     public void setSourceProperties(SourceProperties properties) {}
 
     /**
-     * 選択項目をクリップボードにコピーする.
+     * Copy the selection to the clipboard.
      */
     @Override
     public void copyClipboard() {
@@ -690,7 +690,7 @@ public class ConsolePanel extends AnalisysPanelBase implements FocusListener, IA
     }
 
     /**
-     * エクスポートするデータがあるか否か
+     * Whether there is data to export
      */
 	@Override
 	public boolean isExportable() {
@@ -699,8 +699,8 @@ public class ConsolePanel extends AnalisysPanelBase implements FocusListener, IA
 	}
 
 	/**
-	 * キューの文字列をJTextAreaに書き出す
-	 */
+* Write the queue string to JTextArea
+*/
 	public void flush() {
 		try {
 			OutputStream out = this.getOutputStream();
