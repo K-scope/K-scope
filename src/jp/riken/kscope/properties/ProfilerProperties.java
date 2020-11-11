@@ -27,84 +27,84 @@ import jp.riken.kscope.utils.ResourceUtils;
 import jp.riken.kscope.utils.XmlUtils;
 
 /**
- * プロファイラプロパティクラス
+ * Profiler property class
  * @author RIKEN
  *
  */
 public class ProfilerProperties extends PropertiesBase {
 
-    /** シリアル番号 */
+    /** Serial number */
     private static final long serialVersionUID = 1L;
 
-    /* プロパティキー */
-    /** コスト情報表示最大数 */
+    /* Property key */
+    /** Maximum number of cost information displayed */
     private final String KEY_COSTINFO_MAXCOUNT = "costinfo-maxcount";
-    /** コスト情報表示色:手続 */
+    /** Cost information display color: Procedure */
     private final String KEY_COSTINFO_BARCOLOR_PROCEDURE = "costinfo-barcolor-procedure";
-    /** コスト情報表示色:ループ */
+    /** Cost information display color: Loop */
     private final String KEY_COSTINFO_BARCOLOR_LOOP = "costinfo-barcolor-loop";
-    /** コスト情報表示色:ライン */
+    /** Cost information display color: Line */
     private final String KEY_COSTINFO_BARCOLOR_LINE = "costinfo-barcolor-line";
-    /** コストルーラ:最小色 */
+    /** Cost ruler: Minimum color */
     private final String KEY_RULER_COLOR_MIN = "costruler-color-minimum";
-    /** コストルーラ:最大色 */
+    /** Cost Ruler: Maximum Color */
     private final String KEY_RULER_COLOR_MAX = "costruler-color-maximum";
-    /** コストルーラ:コード枠色 */
+    /** Cost ruler: Code frame color */
     private final String KEY_RULER_BORDERCOLOR_PANEL = "costruler-bordercolor-panel";
-    /** コストルーラ:コード背景色 */
+    /** Cost ruler: Code background color */
     private final String KEY_RULER_BACKCOLOR_PANEL = "costruler-backcolor-panel";
-    /** 測定区間ステートメント:開始関数名 */
+    /** Measurement interval statement: Start function name */
     private final String KEY_EPROF_FUNCTION_START = "eprof-function-start";
-    /** 測定区間ステートメント:終了関数名 */
+    /** Measurement interval statement: End function name */
     private final String KEY_EPROF_FUNCTION_END = "eprof-function-end";
-    /** 測定区間ステートメント:開始ステートメント */
+    /** Measurement interval statement: Start statement */
     private final String KEY_EPROF_STATEMENT_START = "eprof-statement-start";
-    /** 測定区間ステートメント:終了ステートメント */
+    /** Measurement interval statement: End statement */
     private final String KEY_EPROF_STATEMENT_END = "eprof-statement-end";
-    /** コスト情報表示最大数:デフォルト=0*/
+    /** Maximum number of cost information displayed: Default = 0 */
     private final int DEFAULT_COSTINFO_MAXNO = 0;
-    /** プロファイラコストバーグラフ表示:初期状態 */
+    /** Profiler cost bar graph display: Initial state */
     public static boolean INITIALIZE_VISIBLE_BARGRAPH = false;
-    /** プロファイラコストバーグラフ表示:初期状態false(=非表示) */
+    /** Profiler cost bar graph display: Initial state false (= hidden) */
     private boolean visibleBargraph = INITIALIZE_VISIBLE_BARGRAPH;
-    /** プロファイラコストルーラ表示:初期状態 */
+    /** Profiler cost ruler display: Initial state */
     public static boolean INITIALIZE_VISIBLE_RULER = false;
-    /** プロファイラコストルーラ表示:初期状態false(=非表示) */
+    /** Profiler cost ruler display: Initial state false (= hidden) */
     private boolean visibleRuler = INITIALIZE_VISIBLE_RULER;
-    /** Eprof測定区間マクロ:関数名 */
+    /** Eprof measurement interval macro: function name */
     private final String MACRO_EPROF_STATEMENT_FUNCTION = "%FUNCTION";
-    /** Eprof測定区間マクロ:グループ名 */
+    /** Eprof measurement interval macro: group name */
     private final String MACRO_EPROF_STATEMENT_NAME = "%NAME";
-    /** Eprof測定区間マクロ:詳細番号 */
+    /** Eprof measurement interval macro: detail number */
     private final String MACRO_EPROF_STATEMENT_NUMBER = "%NUMBER";
-    /** Eprof測定区間マクロ:プライオリティレベル */
+    /** Eprof Measurement Interval Macro: Priority Level */
     private final String MACRO_EPROF_STATEMENT_LEVEL= "%LEVEL";
-    /** コスト表示桁数(小数点以下桁数) */
+    /** Cost display digits (number of digits after the decimal point) */
     public static final int COST_RATIO_SCALE = 2;
-    /** コストルーラ:最小値色 */
+    /** Cost ruler: Minimum color */
     private static final Color RULER_MIN_DEFAULTCOLOR = Color.BLUE;
-    /** コストルーラ:最大値色 */
+    /** Cost ruler: Maximum color */
     private static final Color RULER_MAX_DEFAULTCOLOR = Color.RED;
-    /** コストルーラ:コード枠色 */
+    /** Cost ruler: Code frame color */
     private static final Color RULER_PANEL_DEFAULTBORDERCOLOR = Color.GRAY;
-    /** コストルーラ:コード背景色 */
+    /** Cost ruler: Code background color */
     private static final Color RULER_PANEL_DEFAULTBACKCOLOR = new Color(220, 220, 220, 64);
 
     /**
-     * コンストラクタ
-     * @throws Exception     プロパティ読込エラー
+     * Constructor
+     * @throws Exception Property read error
      */
     public ProfilerProperties() throws Exception {
         loadProperties();
     }
 
     /**
-     * コピーコンストラクタ
-     * @param  properties  プロファイラプロパティ
-     * @throws Exception     プロパティ読込エラー
+     * Copy constructor
+     * @param properties Profiler properties
+     * @throws Exception Property read error
      */
     public ProfilerProperties(ProfilerProperties properties) throws Exception {
-    	// メニュー表示項目をコピーする
+    	// Copy menu display items
     	if (properties != null) {
     		this.visibleBargraph = properties.visibleBargraph;
     		this.visibleRuler = properties.visibleRuler;
@@ -114,48 +114,48 @@ public class ProfilerProperties extends PropertiesBase {
 
 
     /**
-     * プロファイラプロパティをデフォルト設定ファイルから読み込む。
-     * @throws Exception     プロパティ読込エラー
+     * Read profiler properties from the default configuration file.
+     * @throws Exception Property read error
      */
     public void loadProperties() throws Exception {
 
-        // リソースファイルの読込
+        // Read resource file
         InputStream stream = ResourceUtils.getPropertiesFile(KscopeProperties.PROPERTIES_FILE);
-        // プロファイラプロパティを設定ファイルから読み込む。
+        // Read profiler properties from the config file.
         loadProperties(stream);
     }
 
 
     /**
-     * プロファイラプロパティを設定ファイルから読み込む。
-     * @param  propertiesFile 		プロファイラプロパティ設定ファイル
-     * @throws Exception     プロパティ読込エラー
+     * Read profiler properties from the config file.
+     * @param propertiesFile Profiler property settings file
+     * @throws Exception Property read error
      */
     public void loadProperties(File propertiesFile) throws Exception {
 
         if (!propertiesFile.exists()) {
-            throw(new Exception(Message.getString("propertiesbase.exeption.notexist"))); //プロパティファイルが存在しません。
+            throw(new Exception(Message.getString("propertiesbase.exeption.notexist"))); // The property file does not exist.
         }
 
-        // リソースファイルの読込
+        // Read resource file
         InputStream stream = new FileInputStream(propertiesFile);
 
-        // XMLファイルのパース
+        // Parsing the XML file
         loadProperties(stream);
     }
 
 
     /**
-     * 演算カウントプロパティを設定ファイルから読み込む。
-     * @param   stream      設定ファイルストリーム
-     * @throws Exception     プロパティ読込エラー
+     * Read the operation count property from the configuration file.
+     * @param stream Configuration file stream
+     * @throws Exception Property read error
      */
     public void loadProperties(InputStream stream) throws Exception {
 
-        // XMLファイルのパース
+        // Parsing the XML file
         XmlUtils xml = new XmlUtils(stream);
 
-        // コスト情報表示最大数
+        // Maximum number of cost information displayed
         {
             String key = KEY_COSTINFO_MAXCOUNT;
             int value = xml.getInt("//settings/profiler[@key='" + key + "']/@value");
@@ -167,7 +167,7 @@ public class ProfilerProperties extends PropertiesBase {
             }
             this.setCostinfoMaxCount(value);
         }
-        // コスト情報表示色:手続
+        // Cost information display color: Procedure
         {
             String key = KEY_COSTINFO_BARCOLOR_PROCEDURE;
             Color value = xml.getColor("//settings/profiler[@key='" + key + "']/@color");
@@ -176,7 +176,7 @@ public class ProfilerProperties extends PropertiesBase {
             }
             this.setCostinfoBarcolorProcedure(value);
         }
-        // コスト情報表示色:ループ
+        // Cost information display color: Loop
         {
             String key = KEY_COSTINFO_BARCOLOR_LOOP;
             Color value = xml.getColor("//settings/profiler[@key='" + key + "']/@color");
@@ -185,7 +185,7 @@ public class ProfilerProperties extends PropertiesBase {
             }
             this.setCostinfoBarcolorLoop(value);
         }
-        // コスト情報表示色:ライン
+        // Cost information display color: Line
         {
             String key = KEY_COSTINFO_BARCOLOR_LINE;
             Color value = xml.getColor("//settings/profiler[@key='" + key + "']/@color");
@@ -194,7 +194,7 @@ public class ProfilerProperties extends PropertiesBase {
             }
             this.setCostinfoBarcolorLine(value);
         }
-        // 測定区間:開始関数名
+        // Measurement interval: Start function name
         {
             String key = KEY_EPROF_FUNCTION_START;
             String value = xml.getString("//settings/profiler[@key='" + key + "']/@value");
@@ -203,7 +203,7 @@ public class ProfilerProperties extends PropertiesBase {
             }
             this.setEprofFunctionStart(value);
         }
-        // 測定区間:終了関数名
+        // Measurement interval: End function name
         {
             String key = KEY_EPROF_FUNCTION_END;
             String value = xml.getString("//settings/profiler[@key='" + key + "']/@value");
@@ -212,7 +212,7 @@ public class ProfilerProperties extends PropertiesBase {
             }
             this.setEprofFunctionEnd(value);
         }
-        // 測定区間:開始ステートメント
+        // Measurement interval: Start statement
         {
             String key = KEY_EPROF_STATEMENT_START;
             String value = xml.getString("//settings/profiler[@key='" + key + "']/text()");
@@ -221,7 +221,7 @@ public class ProfilerProperties extends PropertiesBase {
             }
             this.setEprofStatementStart(value);
         }
-        // 測定区間:終了ステートメント
+        // Measurement interval: End statement
         {
             String key = KEY_EPROF_STATEMENT_END;
             String value = xml.getString("//settings/profiler[@key='" + key + "']/text()");
@@ -230,7 +230,7 @@ public class ProfilerProperties extends PropertiesBase {
             }
             this.setEprofStatementEnd(value);
         }
-        // コストルーラ:最小色
+        // Cost ruler: Minimum color
         {
             String key = KEY_RULER_COLOR_MIN;
             Color value = xml.getColor("//settings/profiler[@key='" + key + "']/@color");
@@ -242,7 +242,7 @@ public class ProfilerProperties extends PropertiesBase {
             }
             this.setRulerColorMin(value);
         }
-        // コストルーラ:最大色
+        // Cost ruler: Maximum color
         {
             String key = KEY_RULER_COLOR_MAX;
             Color value = xml.getColor("//settings/profiler[@key='" + key + "']/@color");
@@ -254,7 +254,7 @@ public class ProfilerProperties extends PropertiesBase {
             }
             this.setRulerColorMax(value);
         }
-        // コストルーラ:コード枠色
+        // Cost ruler: Code frame color
         {
             String key = KEY_RULER_BORDERCOLOR_PANEL;
             Color value = xml.getColor("//settings/profiler[@key='" + key + "']/@color");
@@ -266,7 +266,7 @@ public class ProfilerProperties extends PropertiesBase {
             }
             this.setRulerPanelBorderColor(value);
         }
-        // コストルーラ:コード背景色
+        // Cost ruler: Code background color
         {
             String key = KEY_RULER_BACKCOLOR_PANEL;
             Color value = xml.getColor("//settings/profiler[@key='" + key + "']/@color");
@@ -283,20 +283,20 @@ public class ProfilerProperties extends PropertiesBase {
     }
 
 	/**
-     * プロパティをDOMノードに出力する
-     * @param node		出力ノード
+     * Output properties to DOM node
+     * @param node Output node
      */
     public void writeProperties(org.w3c.dom.Element node) {
 
-        // ドキュメントの取得
+        // Get documentation
         org.w3c.dom.Document document = node.getOwnerDocument();
 
-        // コメントを追加
+        // add comment
         {
-            org.w3c.dom.Comment comment = document.createComment(Message.getString("profilerproperties.document.comment")); //プロファイラプロパティ
+            org.w3c.dom.Comment comment = document.createComment(Message.getString("profilerproperties.document.comment")); // Profiler properties
             node.appendChild(comment);
         }
-        // コスト情報表示最大数
+        // Maximum number of cost information displayed
         {
             String key = KEY_COSTINFO_MAXCOUNT;
             int value = this.getCostinfoMaxCount();
@@ -306,7 +306,7 @@ public class ProfilerProperties extends PropertiesBase {
             elem.setAttributeNode(attrValue);
             node.appendChild(elem);
         }
-        // コスト情報表示色:手続
+        // Cost information display color: Procedure
         {
             String key = KEY_COSTINFO_BARCOLOR_PROCEDURE;
             Color value = this.getCostinfoBarcolorProcedure();
@@ -316,7 +316,7 @@ public class ProfilerProperties extends PropertiesBase {
                 node.appendChild(elem);
             }
         }
-        // コスト情報表示色:ループ
+        // Cost information display color: Loop
         {
             String key = KEY_COSTINFO_BARCOLOR_LOOP;
             Color value = this.getCostinfoBarcolorLoop();
@@ -326,7 +326,7 @@ public class ProfilerProperties extends PropertiesBase {
                 node.appendChild(elem);
             }
         }
-        // コスト情報表示色:ライン
+        // Cost information display color: Line
         {
             String key = KEY_COSTINFO_BARCOLOR_LINE;
             Color value = this.getCostinfoBarcolorLine();
@@ -337,7 +337,7 @@ public class ProfilerProperties extends PropertiesBase {
             }
         }
 
-        // 測定区間:開始関数名
+        // Measurement interval: Start function name
         {
             String key = KEY_EPROF_FUNCTION_START;
             String value = this.getEprofFunctionStart();
@@ -347,7 +347,7 @@ public class ProfilerProperties extends PropertiesBase {
             elem.setAttributeNode(attrValue);
             node.appendChild(elem);
         }
-        // 測定区間:終了関数名
+        // Measurement interval: End function name
         {
             String key = KEY_EPROF_FUNCTION_END;
             String value = this.getEprofFunctionEnd();
@@ -357,7 +357,7 @@ public class ProfilerProperties extends PropertiesBase {
             elem.setAttributeNode(attrValue);
             node.appendChild(elem);
         }
-        // 測定区間:開始ステートメント
+        // Measurement interval: Start statement
         {
             String key = KEY_EPROF_STATEMENT_START;
             String value = this.getEprofStatementStart();
@@ -367,7 +367,7 @@ public class ProfilerProperties extends PropertiesBase {
                 node.appendChild(elem);
             }
         }
-        // 測定区間:終了ステートメント
+        // Measurement interval: End statement
         {
             String key = KEY_EPROF_STATEMENT_END;
             String value = this.getEprofStatementEnd();
@@ -377,7 +377,7 @@ public class ProfilerProperties extends PropertiesBase {
                 node.appendChild(elem);
             }
         }
-        // コストルーラ:最小色
+        // Cost ruler: Minimum color
         {
             String key = KEY_RULER_COLOR_MIN;
             Color value = this.getRulerColorMin();
@@ -387,7 +387,7 @@ public class ProfilerProperties extends PropertiesBase {
                 node.appendChild(elem);
             }
         }
-        // コストルーラ:最大色
+        // Cost ruler: Maximum color
         {
             String key = KEY_RULER_COLOR_MAX;
             Color value = this.getRulerColorMax();
@@ -397,7 +397,7 @@ public class ProfilerProperties extends PropertiesBase {
                 node.appendChild(elem);
             }
         }
-        // コストルーラ:コード枠色
+        // Cost ruler: Code frame color
         {
             String key = KEY_RULER_BORDERCOLOR_PANEL;
             Color value = this.getRulerPanelBorderColor();
@@ -407,7 +407,7 @@ public class ProfilerProperties extends PropertiesBase {
                 node.appendChild(elem);
             }
         }
-        // コストルーラ:コード背景色
+        // Cost ruler: Code background color
         {
             String key = KEY_RULER_BACKCOLOR_PANEL;
             Color value = this.getRulerPanelBackColor();
@@ -420,15 +420,15 @@ public class ProfilerProperties extends PropertiesBase {
     }
 
     /**
-     * プロパティ要素を作成する
-     * @param document		XMLドキュメント
-     * @param key			key属性値
-     * @return				プロパティ要素
+     * Create a property element
+     * @param document XML document
+     * @param key key attribute value
+     * @return property element
      */
     private org.w3c.dom.Element createPropertyElement(org.w3c.dom.Document document, String key) {
 
         org.w3c.dom.Element elem = document.createElement("profiler");
-        // プロパティキー
+        // Property key
         {
             org.w3c.dom.Attr attr = document.createAttribute("key");
             attr.setValue(key);
@@ -440,7 +440,7 @@ public class ProfilerProperties extends PropertiesBase {
 
 
     /**
-     * プロパティ変更イベントを通知する。
+     * Notify property change event.
      */
     @Override
     public void firePropertyChange() {
@@ -449,24 +449,24 @@ public class ProfilerProperties extends PropertiesBase {
     }
 
     /**
-     * コスト表示最大数を取得する
-     * @return		コスト表示最大数
+     * Get the maximum number of cost display
+     * @return Maximum number of cost display
      */
     public int getCostinfoMaxCount() {
         return this.getInt(KEY_COSTINFO_MAXCOUNT, DEFAULT_COSTINFO_MAXNO);
     }
 
     /**
-     * コスト表示最大数を設定する
-     * @param value		コスト表示最大数
+     * Set the maximum number of cost display
+     * @param value Maximum number of cost display
      */
     public void setCostinfoMaxCount(int value) {
         this.putInt(KEY_COSTINFO_MAXCOUNT, value);
     }
 
     /**
-     * コスト情報表示色:手続を取得する
-     * @return		コスト情報表示色:手続
+     * Cost information display color: Get procedure
+     * @return Cost information display color: Procedure
      */
     public Color getCostinfoBarcolorProcedure() {
         Object value = this.getObject(KEY_COSTINFO_BARCOLOR_PROCEDURE);
@@ -476,16 +476,16 @@ public class ProfilerProperties extends PropertiesBase {
     }
 
     /**
-     * コスト情報表示色:手続を設定する
-     * @param value		コスト情報表示色:手続
+     * Cost information display color: Set the procedure
+     * @param value Cost information display color: Procedure
      */
     public void setCostinfoBarcolorProcedure(Color value) {
         this.putObject(KEY_COSTINFO_BARCOLOR_PROCEDURE, value);
     }
 
     /**
-     * コスト情報表示色:ループを取得する
-     * @return		コスト情報表示色:ループ
+     * Cost information display color: Get loop
+     * @return Cost information display color: Loop
      */
     public Color getCostinfoBarcolorLoop() {
         Object value = this.getObject(KEY_COSTINFO_BARCOLOR_LOOP);
@@ -495,16 +495,16 @@ public class ProfilerProperties extends PropertiesBase {
     }
 
     /**
-     * コスト情報表示色:ループを設定する
-     * @param value		コスト情報表示色:ループ
+     * Cost information display color: Set loop
+     * @param value Cost information display color: Loop
      */
     public void setCostinfoBarcolorLoop(Color value) {
         this.putObject(KEY_COSTINFO_BARCOLOR_LOOP, value);
     }
 
     /**
-     * コスト情報表示色:ラインを取得する
-     * @return		コスト情報表示色:ライン
+     * Cost information display color: Get line
+     * @return Cost information display color: line
      */
     public Color getCostinfoBarcolorLine() {
         Object value = this.getObject(KEY_COSTINFO_BARCOLOR_LINE);
@@ -514,16 +514,16 @@ public class ProfilerProperties extends PropertiesBase {
     }
 
     /**
-     * コスト情報表示色:ラインを設定する
-     * @param value		コスト情報表示色:ライン
+     * Cost information display color: Set the line
+     * @param value Cost information display color: line
      */
     public void setCostinfoBarcolorLine(Color value) {
         this.putObject(KEY_COSTINFO_BARCOLOR_LINE, value);
     }
 
     /**
-     * コストルーラ:最小色を取得する
-     * @return		コストルーラ:最小色
+     * Cost ruler: Get the minimum color
+     * @return Cost Ruler: Minimum Color
      */
     public Color getRulerColorMin() {
         Object value = this.getObject(KEY_RULER_COLOR_MIN);
@@ -533,16 +533,16 @@ public class ProfilerProperties extends PropertiesBase {
     }
 
     /**
-     * コストルーラ:最小色を設定する
-     * @param value		コストルーラ:最小色
+     * Cost ruler: Set minimum color
+     * @param value Cost ruler: Minimum color
      */
     public void setRulerColorMin(Color value) {
         this.putObject(KEY_RULER_COLOR_MIN, value);
 	}
 
     /**
-     * コストルーラ:最大色を取得する
-     * @return		コストルーラ:最大色
+     * Cost Ruler: Get the maximum color
+     * @return Cost Ruler: Maximum Color
      */
     public Color getRulerColorMax() {
         Object value = this.getObject(KEY_RULER_COLOR_MAX);
@@ -552,16 +552,16 @@ public class ProfilerProperties extends PropertiesBase {
     }
 
     /**
-     * コストルーラ:最大色を設定する
-     * @param value		コストルーラ:最大色
+     * Cost ruler: Set maximum color
+     * @param value Cost ruler: Maximum color
      */
     public void setRulerColorMax(Color value) {
         this.putObject(KEY_RULER_COLOR_MAX, value);
 	}
 
     /**
-     * コストルーラ:コードパネル枠色を取得する
-     * @return		コストルーラ:コードパネル枠色
+     * Cost ruler: Get code panel frame color
+     * @return Cost ruler: Code panel frame color
      */
     public Color getRulerPanelBorderColor() {
         Object value = this.getObject(KEY_RULER_BORDERCOLOR_PANEL);
@@ -571,16 +571,16 @@ public class ProfilerProperties extends PropertiesBase {
     }
 
     /**
-     * コストルーラ:コードパネル枠色を設定する
-     * @param value		コストルーラ:コードパネル枠色
+     * Cost ruler: Set the code panel frame color
+     * @param value Cost ruler: Code panel frame color
      */
     public void setRulerPanelBorderColor(Color value) {
         this.putObject(KEY_RULER_BORDERCOLOR_PANEL, value);
 	}
 
     /**
-     * コストルーラ:コードパネル背景色を取得する
-     * @return		コストルーラ:コードパネル背景色
+     * Cost ruler: Get code panel background color
+     * @return Cost Ruler: Code Panel Background Color
      */
     public Color getRulerPanelBackColor() {
         Object value = this.getObject(KEY_RULER_BACKCOLOR_PANEL);
@@ -590,16 +590,16 @@ public class ProfilerProperties extends PropertiesBase {
     }
 
     /**
-     * コストルーラ:コードパネル背景色を設定する
-     * @param value		コストルーラ:コードパネル背景色
+     * Cost ruler: Set code panel background color
+     * @param value Cost ruler: Code panel background color
      */
     public void setRulerPanelBackColor(Color value) {
         this.putObject(KEY_RULER_BACKCOLOR_PANEL, value);
 	}
 
     /**
-     * 測定区間:開始関数名を取得する
-     * @return		測定区間:開始関数名
+     * Measurement interval: Get the start function name
+     * @return Measurement interval: Start function name
      */
     public String getEprofFunctionStart() {
         String value = this.getProperty(KEY_EPROF_FUNCTION_START);
@@ -607,16 +607,16 @@ public class ProfilerProperties extends PropertiesBase {
     }
 
     /**
-     * 測定区間:開始関数名を設定する
-     * @param value		測定区間:開始関数名
+     * Measurement interval: Set the start function name
+     * @param value Measurement interval: Start function name
      */
     public void setEprofFunctionStart(String value) {
         this.put(KEY_EPROF_FUNCTION_START, value);
     }
 
     /**
-     * 測定区間:終了関数名を取得する
-     * @return		測定区間:終了関数名
+     * Measurement interval: Get the end function name
+     * @return Measurement interval: End function name
      */
     public String getEprofFunctionEnd() {
         String value = this.getProperty(KEY_EPROF_FUNCTION_END);
@@ -624,16 +624,16 @@ public class ProfilerProperties extends PropertiesBase {
     }
 
     /**
-     * 測定区間:終了関数名を設定する
-     * @param value		測定区間:終了関数名
+     * Measurement interval: Set the end function name
+     * @param value Measurement interval: End function name
      */
     public void setEprofFunctionEnd(String value) {
         this.put(KEY_EPROF_FUNCTION_END, value);
     }
 
     /**
-     * 測定区間:開始ステートメントを取得する
-     * @return		測定区間:開始ステートメント
+     * Measurement interval: Get the start statement
+     * @return Measurement interval: Start statement
      */
     public String getEprofStatementStart() {
         String value = this.getProperty(KEY_EPROF_STATEMENT_START);
@@ -641,8 +641,8 @@ public class ProfilerProperties extends PropertiesBase {
     }
 
     /**
-     * 測定区間:開始ステートメントを設定する
-     * @param value		測定区間:開始ステートメント
+     * Measurement interval: Set the start statement
+     * @param value Measurement interval: Start statement
      */
     public void setEprofStatementStart(String value) {
         this.put(KEY_EPROF_STATEMENT_START, value);
@@ -650,8 +650,8 @@ public class ProfilerProperties extends PropertiesBase {
 
 
     /**
-     * 測定区間:終了ステートメントを取得する
-     * @return		測定区間:終了ステートメント
+     * Measurement interval: Get the end statement
+     * @return Measurement interval: End statement
      */
     public String getEprofStatementEnd() {
         String value = this.getProperty(KEY_EPROF_STATEMENT_END);
@@ -659,8 +659,8 @@ public class ProfilerProperties extends PropertiesBase {
     }
 
     /**
-     * 測定区間:終了ステートメントを設定する
-     * @param value		測定区間:終了ステートメント
+     * Measurement interval: Set the end statement
+     * @param value Measurement interval: End statement
      */
     public void setEprofStatementEnd(String value) {
         this.put(KEY_EPROF_STATEMENT_END, value);
@@ -668,32 +668,32 @@ public class ProfilerProperties extends PropertiesBase {
 
 
     /**
-     * プロファイラコストバーグラフ表示
-     * @return プロファイラコストバーグラフ表示
+     * Profiler cost bar graph display
+     * @return Profiler cost bar graph display
      */
     public boolean isVisibleBargraph() {
         return visibleBargraph;
     }
 
     /**
-     * プロファイラコストバーグラフ表示
-     * @param visible プロファイラコストバーグラフ表示
+     * Profiler cost bar graph display
+     * @param visible Profiler cost bar graph display
      */
     public void setVisibleBargraph(boolean visible) {
         this.visibleBargraph = visible;
     }
 
     /**
-     * プロファイラコストルーラ表示
-     * @return プロファイラコストルーラ表示
+     * Profiler cost ruler display
+     * @return Profiler cost ruler display
      */
     public boolean isVisibleRuler() {
         return visibleRuler;
     }
 
     /**
-     * プロファイラコストルーラ表示
-     * @param visible プロファイラコストルーラ表示
+     * Profiler cost ruler display
+     * @param visible Profiler cost ruler display
      */
     public void setVisibleRuler(boolean visible) {
         this.visibleRuler = visible;
@@ -701,24 +701,24 @@ public class ProfilerProperties extends PropertiesBase {
 
 
     /**
-     * 測定区間ステートメントにグループ名マクロが含まれているかチェックする
-     * @return		true=グループ名マクロが含まれている
+     * Check if the measurement interval statement contains a group name macro
+     * @return true = Contains group name macro
      */
     public boolean existsMacroErofName() {
         return existsMacroErof(MACRO_EPROF_STATEMENT_NAME);
     }
 
     /**
-     * 測定区間ステートメントに詳細番号マクロが含まれているかチェックする
-     * @return		true=詳細番号マクロが含まれている
+     * Check if the measurement interval statement contains a detail number macro
+     * @return true = Contains detail number macro
      */
     public boolean existsMacroErofNumber() {
         return existsMacroErof(MACRO_EPROF_STATEMENT_NUMBER);
     }
 
     /**
-     * 測定区間ステートメントにプライオリティレベルマクロが含まれているかチェックする
-     * @return		true=プライオリティレベルマクロが含まれている
+     * Check if the measurement interval statement contains a priority level macro
+     * @return true = Priority level macro included
      */
     public boolean existsMacroErofLevel() {
         return existsMacroErof(MACRO_EPROF_STATEMENT_LEVEL);
@@ -726,8 +726,8 @@ public class ProfilerProperties extends PropertiesBase {
 
 
     /**
-     * 測定区間ステートメントにマクロが含まれているかチェックする
-     * @return		true=マクロが含まれている
+     * Check if the measurement interval statement contains a macro
+     * @return true = Contains macros
      */
     private boolean existsMacroErof(String macro) {
         boolean exists = false;
@@ -747,50 +747,50 @@ public class ProfilerProperties extends PropertiesBase {
     }
 
     /**
-     * 測定区間:開始ステートメントを作成する
-     * @param name			グループ名
-     * @param number		詳細番号
-     * @param level			プライオリティレベル
-     * @return		測定区間:開始ステートメント
+     * Measurement interval: Create a start statement
+     * @param name Group name
+     * @param number Detail number
+     * @param level Priority level
+     * @return Measurement interval: Start statement
      */
     public String createEprofStatementStart(String name, String number, String level) {
         return createEprofStatement(this.getEprofStatementStart(), this.getEprofFunctionStart(), name, number, level);
     }
 
     /**
-     * 測定区間:終了ステートメントを作成する
-     * @param name			グループ名
-     * @param number		詳細番号
-     * @param level			プライオリティレベル
-     * @return		測定区間:終了ステートメント
+     * Measurement interval: Create an end statement
+     * @param name Group name
+     * @param number Detail number
+     * @param level Priority level
+     * @return Measurement interval: End statement
      */
     public String createEprofStatementEnd(String name, String number, String level) {
         return createEprofStatement(this.getEprofStatementEnd(), this.getEprofFunctionEnd(), name, number, level);
     }
 
     /**
-     * 測定区間:開始ステートメントを作成する
-     * @param statement		挿入ステートメント
-     * @param function		関数名
-     * @param name			グループ名
-     * @param number		詳細番号
-     * @param level			プライオリティレベル
-     * @return		測定区間:開始ステートメント
+     * Measurement interval: Create a start statement
+     * @param statement Insert statement
+     * @param function function name
+     * @param name Group name
+     * @param number Detail number
+     * @param level Priority level
+     * @return Measurement interval: Start statement
      */
     private String createEprofStatement(String statement, String function, String name, String number, String level) {
         if (statement == null || statement.isEmpty()) return null;
         String value = statement;
-        // 関数名
+        // Function name
         if (function != null && !function.isEmpty()) {
             value = value.replaceAll(MACRO_EPROF_STATEMENT_FUNCTION, function);
         }
         else {
             value = value.replaceAll(MACRO_EPROF_STATEMENT_FUNCTION, "");
         }
-        // グループ名
+        // group name
         if (name != null && !name.isEmpty()) {
             String rep_name = name;
-            // 削除 2012/05/21 ダブルクォートで囲んでいたらダブルクォートは付けない。
+            // Delete 2012/05/21 If you enclose it in double quotes, do not add double quotes.
 //            if (!(rep_name.startsWith("\"") && rep_name.endsWith("\""))) {
 //                rep_name = "\"" + rep_name + "\"";
 //            }
@@ -799,14 +799,14 @@ public class ProfilerProperties extends PropertiesBase {
         else {
             value = value.replaceAll(MACRO_EPROF_STATEMENT_NAME, "");
         }
-        // 詳細番号
+        // Detail number
         if (number != null && !number.isEmpty()) {
             value = value.replaceAll(MACRO_EPROF_STATEMENT_NUMBER, number);
         }
         else {
             value = value.replaceAll(MACRO_EPROF_STATEMENT_NUMBER, "");
         }
-        // レベル
+        // Level
         if (level != null && !level.isEmpty()) {
             value = value.replaceAll(MACRO_EPROF_STATEMENT_LEVEL, level);
         }
@@ -818,11 +818,11 @@ public class ProfilerProperties extends PropertiesBase {
 
 
     /**
-     * プロファイラメニュー表示項目をコピーする.
-     * @param  properties  プロファイラプロパティ
+     * Copy the profiler menu display items.
+     * @param properties Profiler properties
      */
     public void setVisibleProperties(ProfilerProperties properties) {
-    	// メニュー表示項目をコピーする
+    	// Copy menu display items
     	if (properties != null) {
     		this.visibleBargraph = properties.visibleBargraph;
     		this.visibleRuler = properties.visibleRuler;

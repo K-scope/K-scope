@@ -32,18 +32,18 @@ import jp.riken.kscope.service.AnalysisScopeService;
 import jp.riken.kscope.service.AppController;
 
 /**
- * 変数有効域アクション
+ * Variable scope action
  * @author RIKEN
  */
 public class AnalysisScopeAction extends ActionBase {
 
-    /** 変数有効域変数取得先ビュー */
+    /** Variable effective area Variable acquisition destination view */
     private FRAME_VIEW view;
 
     /**
-     * コンストラクタ
-     * @param controller	アプリケーションコントローラ
-     * @param view 			変数有効域変数取得先ビュー
+     * Constructor
+     * @param controller Application controller
+     * @param view Variable effective area Variable acquisition destination view
      */
     public AnalysisScopeAction(AppController controller, FRAME_VIEW view) {
         super(controller);
@@ -51,14 +51,14 @@ public class AnalysisScopeAction extends ActionBase {
     }
 
     /**
-     * アクションが実行可能であるかチェックする.<br/>
-     * アクションの実行前チェック、メニューのイネーブルの切替を行う。<br/>
-     * @return		true=アクションが実行可能
+     * Check if the action is executable. <br/>
+     * Check before executing the action and switch the menu enable. <br/>
+     * @return true = Action can be executed
      */
     @Override
     public boolean validateAction() {
 
-        // 選択ノードを取得する
+        // Get the selected node
         VariableDefinition variable = getSelectedVariable();
         if (variable == null) return false;
 
@@ -66,41 +66,41 @@ public class AnalysisScopeAction extends ActionBase {
     }
 
     /**
-     * アクション発生イベント
-     * @param event		イベント情報
+     * Action occurrence event
+     * @param event Event information
      */
     @Override
     public void actionPerformed(ActionEvent event) {
-        // アクションチェック
+        // Action check
         if (!validateAction()) {
             return;
         }
 
-        // ステータスメッセージ
-        final String message = Message.getString("mainmenu.analysis.valiablescope"); //変数有効域
+        // Status message
+        final String message = Message.getString("mainmenu.analysis.valiablescope"); // Variable valid area
         Application.status.setMessageMain(message);
 
-        // 選択変数
+        // Select variable
         VariableDefinition variable = getSelectedVariable();
         if (variable == null) return;
 
-        // 変数有効域を取得する
+        // Get the variable valid area
         analysisScope(variable);
     }
 
     /**
-     * 変数有効域の対象変数を取得する
-     * @return		変数有効域の対象変数
+     * Get the target variable of the variable effective area
+     * @return Variable range target variable
      */
     private VariableDefinition getSelectedVariable() {
 
         VariableDefinition variable = null;
         if (this.view == FRAME_VIEW.EXPLORE_VIEW) {
-            // 選択ノードを取得する
+            // Get the selected node
             DefaultMutableTreeNode node = this.controller.getMainframe().getPanelExplorerView().getSelectedNode();
             if (node == null || node.getUserObject() == null) return null;
 
-            // 選択ノード
+            // Selected node
             Object obj = node.getUserObject();
             if (obj instanceof VariableDefinition) {
                 variable = (VariableDefinition) obj;
@@ -114,31 +114,31 @@ public class AnalysisScopeAction extends ActionBase {
 
 
     /**
-     * 変数有効域テーブルを作成する
-     * @param variable		変数有効域の対象変数
+     * Create a variable effective area table
+     * @param variable Variable range target variable
      */
     public void analysisScope(VariableDefinition variable) {
         if (variable == null) return;
 
-        // フォートランデータベース
+        // Fortran database
         Fortran fortran = this.controller.getFortranLanguage();
-        // 変数有効域モデルを取得する
+        // Get the variable scope model
         ScopeModel modelScope = this.controller.getScopeModel();
-        // エラー情報モデル
+        // Error information model
         ErrorInfoModel errorModel = this.controller.getErrorInfoModel();
 
-        // 変数有効域クリア
+        // Clear variable valid area
         modelScope.clear();
 
-        // 分析サービス
+        // Analysis service
         AnalysisScopeService service = new AnalysisScopeService(fortran);
         service.setErrorInfoModel(errorModel);
         service.setModelScope(modelScope);
 
-        // 変数有効域を取得する
+        // Get the variable valid area
         service.analysisScope(variable);
 
-        // 変数有効域タブをアクティブにする
+        // Activate the Variable Effectiveness tab
         this.controller.setSelectedAnalysisPanel(ANALYSIS_PANEL.SCOPE);
 
     }
