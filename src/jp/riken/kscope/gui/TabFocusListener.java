@@ -21,19 +21,19 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 
 /**
- * フォーカスリスナ.<br/>
- * 現在フォーカスのあるコンポーネントを取得する。
+ * Focus listener. <br/>
+ * Get the component that is currently in focus.
  * @author RIKEN
  *
  */
 public class TabFocusListener implements FocusListener {
 
-    /** 最終フォーカスコンポーネント */
+    /** Final focus component */
     private ITabComponent lastTabComponent = null;
 
     /**
-     * フォーカス取得イベント
-     * @param event		イベント情報
+     * Focus acquisition event
+     * @param event Event information
      */
     @Override
     public void focusGained(FocusEvent event) {
@@ -44,15 +44,15 @@ public class TabFocusListener implements FocusListener {
     }
 
     /**
-     * フォーカス喪失イベント
-     * @param event		イベント情報
+     * Loss of focus event
+     * @param event Event information
      */
     @Override
     public void focusLost(FocusEvent event) {}
 
     /**
-     * 最終フォーカスコンポーネントを取得する。
-     * @return		最終フォーカスコンポーネント
+     * Get the final focus component.
+     * @return Final focus component
      */
     public ITabComponent getLastTabComponent() {
         return this.lastTabComponent;

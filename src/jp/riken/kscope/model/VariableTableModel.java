@@ -36,45 +36,45 @@ import jp.riken.kscope.language.VariableDefinition;
 import jp.riken.kscope.utils.SwingUtils;
 
 /**
- * 変数特性情報一覧モデル
+ * Variable characteristic information list model
  * @author RIKEN
  *
  */
 public class VariableTableModel extends Observable {
 
     /**
-     * テーブルヘッダーリスト(15列).<br/>
-     * 1列目はVariableDefinition情報とする。
+     * Table header list (15 columns). <br/>
+     * The first column is Variable Definition information.
      */
     private String[] HEADER_COLUMNS = {"", "type", "name", "data type", "access specifier", "parameter", "init value",
     		"size", "intent", "optional", "pointer/target", "save", "common", "allocatable",
-    		Message.getString("mainmenu.window.analysis.information")}; // 付加情報
+    		Message.getString("mainmenu.window.analysis.information")}; // Additional information
 
     /**
-     * テーブル列サイズ
-     * -1=非表示とする
+     * Table column size
+     * -1 = Hide
      */
     private int[] HEADER_COLUMNS_PREFERREDWIDTH = { -1, 40, 120, 80, 120, 80,
             80, 80, 80, 80, 60, 60, 80, 80, 160 };
     /**
-     * テーブル列最小サイズ.<br/>
-     * -1=非表示とする
+     * Minimum table column size. <br/>
+     * -1 = Hide
      */
     private int[] HEADER_COLUMNS_MINWIDTH = {-1, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80};
 
-    /** タイトル */
+    /** Title */
     private String title;
 
     /**
-     * プロシージャ変数特性情報リスト
+     * Procedure variable characteristic information list
      */
     private List<ProcedureInfo> listProcedureInfo;
-    /** 選択変数宣言文 */
+    /** Select variable declaration statement */
     private VariableDefinition selectedVariable;
 
 
     /**
-     * プロシージャ変数特性情報クラス
+     * Procedure variable characteristic information class
      * @author RIKEN
      */
     public class ProcedureInfo {
@@ -82,8 +82,8 @@ public class VariableTableModel extends Observable {
         private List<VariableInfo> listInfo;
 
         /**
-         * コンストラクタ
-         * @param block			ブロック
+         * Constructor
+         * @param block block
          */
         public ProcedureInfo(IBlock block) {
             this.block = block;
@@ -91,9 +91,9 @@ public class VariableTableModel extends Observable {
         }
 
         /**
-         * コンストラクタ
-         * @param block			ブロック
-         * @param info			変数特性情報リスト
+         * Constructor
+         * @param block block
+         * @param info Variable characteristic information list
          */
         public ProcedureInfo(IBlock block, List<VariableInfo> info) {
             this.block = block;
@@ -101,24 +101,24 @@ public class VariableTableModel extends Observable {
         }
 
         /**
-         * ブロックを取得する
-         * @return		ブロック
+         * Get a block
+         * @return block
          */
         public IBlock getBlock() {
             return this.block;
         }
 
         /**
-         * 変数特性情報リストを取得する
-         * @return		変数特性情報リスト
+         * Get the variable characteristic information list
+         * @return Variable characteristic information list
          */
         public List<VariableInfo> getListInfo() {
             return this.listInfo;
         }
 
         /**
-         * 変数特性情報リストに追加する
-         * @param info		変数特性情報
+         * Add to variable characteristic information list
+         * @param info Variable characteristic information
          */
         public void addVariableInfo(VariableInfo info) {
             if (listInfo == null) {
@@ -128,17 +128,17 @@ public class VariableTableModel extends Observable {
         }
 
         /**
-         * テーブルモデルを取得する
-         * @return		テーブルモデル
+         * Get the table model
+         * @return table model
          */
         public DefaultTableModel getTableModel() {
-            // テーブルモデルの作成
+            // Create a table model
             DefaultTableModel tableModel = getDefaultTableModel();
             if (listInfo == null) return tableModel;
 
             for (VariableInfo info : listInfo) {
                 Object[] rows = new Object[tableModel.getColumnCount()];
-                // 1列目はVariableDefinition：非表示
+                // First column is Variable Definition: Hide
                 rows[0] = info.getVariable();
                 String[] attrs = info.getAttributes();
                 for (int i=0;i<attrs.length; i++) {
@@ -153,19 +153,19 @@ public class VariableTableModel extends Observable {
     }
 
     /**
-     * 変数特性情報クラス
+     * Variable characteristic information class
      * @author RIKEN
      */
     public class VariableInfo {
-        /** 変数宣言文・構造体クラス */
+        /** Variable declaration / structure class */
         private VariableDefinition variable;
-        /** 変数特性情報 */
+        /** Variable characteristic information */
         private String[] attributes;
 
         /**
-         * コンストラクタ
-         * @param variable			変数宣言文・構造体クラス
-         * @param attributes		変数特性情報
+         * Constructor
+         * @param variable Variable declaration / structure class
+         * @param attributes Variable property information
          */
         public VariableInfo(VariableDefinition variable, String[] attributes) {
             this.variable = variable;
@@ -173,16 +173,16 @@ public class VariableTableModel extends Observable {
         }
 
         /**
-         * 変数宣言文・構造体クラスを取得する
-         * @return		変数宣言文・構造体クラス
+         * Get variable declaration statement / structure class
+         * @return Variable declaration / structure class
          */
         public VariableDefinition getVariable() {
             return this.variable;
         }
 
         /**
-         * 変数特性情報を取得する
-         * @return		変数特性情報
+         * Get variable characteristic information
+         * @return Variable characteristic information
          */
         public String[] getAttributes() {
             return this.attributes;
@@ -190,14 +190,14 @@ public class VariableTableModel extends Observable {
     }
 
     /**
-     * コンストラクタ
+     * Constructor
      */
     public VariableTableModel() {
         super();
     }
 
     /**
-     * モデルの変更を通知する
+     * Notify model changes
      */
     private void notifyModel() {
         this.setChanged();
@@ -206,8 +206,8 @@ public class VariableTableModel extends Observable {
     }
 
     /**
-     * プロシージャ変数特性情報リスト数を取得する
-     * @return		プロシージャ変数特性情報リスト数
+     * Get the number of procedure variable characteristic information list
+     * @return Number of procedure variable characteristic information list
      */
     public int getListProcedureInfoCount() {
         if (this.listProcedureInfo == null) {
@@ -218,9 +218,9 @@ public class VariableTableModel extends Observable {
 
 
     /**
-     * プロシージャ変数特性情報を取得する
-     * @param   index    リストインデックス
-     * @return		プロシージャ変数特性情報
+     * Get procedure variable characteristic information
+     * @param index List index
+     * @return Procedure variable characteristic information
      */
     public ProcedureInfo getProcedureInfo(int index) {
         if (this.listProcedureInfo == null) {
@@ -232,11 +232,11 @@ public class VariableTableModel extends Observable {
     }
 
     /**
-     * テーブルモデルを取得する
-     * @return		テーブルモデル
+     * Get the table model
+     * @return table model
      */
     public DefaultTableModel getDefaultTableModel() {
-        // テーブルモデルの作成
+        // Create a table model
         DefaultTableModel tableModel = new DefaultTableModel(HEADER_COLUMNS, 0);
 //        tableModel.setColumnIdentifiers(HEADER_COLUMNS);
         return tableModel;
@@ -244,12 +244,12 @@ public class VariableTableModel extends Observable {
 
 
     /**
-     * 列幅を設定する
-     * @param columnModel		テーブル列モデル
+     * Set column width
+     * @param columnModel Table column model
      */
     public void setTableColumnWidth(DefaultTableColumnModel columnModel) {
         for (int i=0; i<columnModel.getColumnCount(); i++) {
-            // 列取得
+            // Get column
             TableColumn column = columnModel.getColumn(i);
             if (HEADER_COLUMNS_PREFERREDWIDTH.length >= i) {
                 if (HEADER_COLUMNS_PREFERREDWIDTH[i] >= 0) {
@@ -271,35 +271,35 @@ public class VariableTableModel extends Observable {
     }
 
     /**
-     * ヘッダー列リストを取得する。
-     * @return		ヘッダー列リスト
+     * Get the header column list.
+     * @return Header column list
      */
     public String[] getHeaderColumns() {
         return HEADER_COLUMNS;
     }
 
     /**
-     * ヘッダー列幅リストを取得する。
-     * @return		ヘッダー列幅
+     * Get the header column width list.
+     * @return Header column width
      */
     public int[] getHeaderColumnsWidth() {
         return HEADER_COLUMNS_PREFERREDWIDTH;
     }
 
     /**
-     * テーブル行を追加する
-     * @param block			プロシージャブロック
-     * @param variable		変数宣言クラス
-     * @param infos		変数特性情報
+     * Add a table row
+     * @param block Procedure block
+     * @param variable Variable declaration class
+     * @param infos Variable characteristic information
      */
     public void addVariableInfo(IBlock block, VariableDefinition variable, String[] infos) {
 
         if (infos == null) return;
 
-        // 変数特性情報クラスの生成
+        // Generate variable characteristic information class
         VariableInfo info = new VariableInfo(variable, infos);
 
-        // プロシージャ変数特性情報の検索
+        // Search procedure variable characteristic information
         ProcedureInfo procInfo = getProcedureInfo(block);
         if (procInfo == null) {
             procInfo = new ProcedureInfo(block);
@@ -313,14 +313,14 @@ public class VariableTableModel extends Observable {
             procInfo.addVariableInfo(info);
         }
 
-        // モデルの変更を通知
+        // Notify model changes
         notifyModel();
     }
 
     /**
-     * プロシージャ変数特性情報をキー文字列にて検索する
-     * @param block		プロシージャ変数特性情報ブロック
-     * @return			プロシージャ変数特性情報
+     * Search procedure variable characteristic information by key string
+     * @param block Procedure variable characteristic information block
+     * @return Procedure variable characteristic information
      */
     private ProcedureInfo getProcedureInfo(IBlock block) {
         if (block == null) return null;
@@ -338,44 +338,44 @@ public class VariableTableModel extends Observable {
 
 
     /**
-     * テーブルモデルをクリアする。
+     * Clear the table model.
      */
     public void clearVariable() {
-        // テーブルモデルのクリア
+        // Clear table model
         if (this.listProcedureInfo != null) {
             this.listProcedureInfo = new ArrayList<ProcedureInfo>();
         }
-        // タイトルのクリア
+        // Clear title
         this.title = null;
 
-        // モデルの変更を通知
+        // Notify model changes
         notifyModel();
     }
 
     /**
-     * タイトルを取得する
-     * @return	タイトル
+     * Get the title
+     * @return title
      */
     public String getTitle() {
         return title;
     }
 
     /**
-     * タイトルを設定する
-     * @param title		タイトル
+     * Set the title
+     * @param title Title
      */
     public void setTitle(String title) {
         this.title = title;
     }
 
     /**
-     * テーブル情報をファイル出力する。
-     * @param   file   出力ファイル
+     * Output table information to a file.
+     * @param file Output file
      */
     public void writeFile(File file) {
 
         try {
-            // ファイル出力
+            // File output
             PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(file)));
 
             if (this.listProcedureInfo != null) {
@@ -384,7 +384,7 @@ public class VariableTableModel extends Observable {
                     if (block != null) {
                         pw.println(block.toString());
                     }
-                    // テーブルを出力する
+                    // Output the table
                     String buf = SwingUtils.toCsv(info.getTableModel());
                     pw.print(buf);
                     pw.println();
@@ -398,24 +398,24 @@ public class VariableTableModel extends Observable {
     }
 
     /**
-     * 選択変数宣言文を設定する
-     * @param 	variable        選択変数宣言文
+     * Set the selection variable declaration statement
+     * @param variable Select variable declaration statement
      */
     public void setSelectedVariable(VariableDefinition variable) {
         this.selectedVariable = variable;
     }
 
     /**
-     * 選択変数宣言文を取得する
-     * @return		選択変数宣言文
+     * Get the selection variable declaration statement
+     * @return Selective variable declaration statement
      */
     public VariableDefinition getSelectedVariable() {
         return this.selectedVariable;
     }
 
     /**
-     * モデルが空かどうかを返す
-     * @return	空か否か(true: 空，false: データあり)
+     * Returns whether the model is empty
+     * @return Whether it is empty (true: empty, false: with data)
      */
     public boolean isEmpty() {
     	if (this.listProcedureInfo == null) return true;

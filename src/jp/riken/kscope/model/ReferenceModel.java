@@ -31,20 +31,20 @@ import jp.riken.kscope.Message;
 import jp.riken.kscope.utils.SwingUtils;
 
 /**
- * 参照一覧モデル
+ * Reference list model
  * @author RIKEN
  *
  */
 public class ReferenceModel extends Observable {
 
-    /** 参照一覧ツリーモデル */
+    /** Reference list tree model */
     private DefaultTreeModel treeModel;
 
-    /** タイトル */
+    /** Title */
     private String title;
 
     /**
-     * コンストラクタ
+     * Constructor
      */
     public ReferenceModel() {
         clearTreeModel();
@@ -52,7 +52,7 @@ public class ReferenceModel extends Observable {
 
 
     /**
-     * モデルの変更を通知する
+     * Notify model changes
      */
     public void notifyModel() {
         this.setChanged();
@@ -61,10 +61,10 @@ public class ReferenceModel extends Observable {
     }
 
     /**
-     * 参照一覧ツリーをクリアする。
+     * Clear the reference list tree.
      */
     public void clearTreeModel() {
-        DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode(Message.getString("mainmenu.analysis.dec-def-ref")); //宣言・参照一覧
+        DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode(Message.getString("mainmenu.analysis.dec-def-ref")); // Declaration / reference list
         treeModel = new DefaultTreeModel(rootNode);
         this.title = null;
 
@@ -72,66 +72,66 @@ public class ReferenceModel extends Observable {
     }
 
     /**
-     * ルートノードを取得する
-     * @return		ルートノード
+     * Get the root node
+     * @return root node
      */
     public DefaultMutableTreeNode getRootNode() {
         return (DefaultMutableTreeNode) treeModel.getRoot();
     }
 
     /**
-     * ツリーモデルを取得する
-     * @return		ツリーモデル
+     * Get a tree model
+     * @return Tree model
      */
     public DefaultTreeModel getTreeModel() {
         return treeModel;
     }
 
     /**
-     * ツリーモデルを設定する
-     * @param tree		ツリーモデル
+     * Set up a tree model
+     * @param tree Tree model
      */
     public void setTreeModel(DefaultTreeModel tree) {
         this.treeModel = tree;
 
-        // ツリーの更新
+        // Update tree
         notifyModel();
     }
 
     /**
-     * タイトルを取得する
-     * @return	タイトル
+     * Get the title
+     * @return title
      */
     public String getTitle() {
         return title;
     }
 
     /**
-     * タイトルを設定する
-     * @param title		タイトル
+     * Set the title
+     * @param title Title
      */
     public void setTitle(String title) {
         this.title = title;
     }
 
     /**
-     * テーブル情報をファイル出力する。
-     * @param   file   出力ファイル
+     * Output table information to a file.
+     * @param file Output file
      */
     public void writeFile(File file) {
 
-        // ルートノード
+        // Root node
         DefaultMutableTreeNode root = getRootNode();
         if (root == null) return;
         if (root.getChildCount() <= 0) return;
 
         try {
-            // ファイル出力
+            // File output
             PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(file)));
 
-            // ツリーをCSV文字列にする。
+            // Make the tree a CSV string.
             String buf = SwingUtils.toCsv(root);
-            // ファイル出力
+            // File output
             pw.print(buf);
 
             pw.close();
@@ -142,8 +142,8 @@ public class ReferenceModel extends Observable {
     }
 
     /**
-     * モデルが空か否か
-     * @return	空か否か（true: 空，false: データあり）
+     * Whether the model is empty
+     * @return Whether it is empty (true: empty, false: with data)
      */
     public boolean isEmpty() {
     	DefaultMutableTreeNode root = getRootNode();

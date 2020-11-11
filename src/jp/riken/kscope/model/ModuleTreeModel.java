@@ -33,28 +33,28 @@ import jp.riken.kscope.utils.SwingUtils;
 
 
 /**
- * モジュールツリーモデル
+ * Module tree model
  * @author RIKEN
  *
  */
 public class ModuleTreeModel extends Observable {
 
-    /** ツリールートノード */
+    /** Tree root node */
     private DefaultMutableTreeNode rootNode;
-    /** ツリーモデル */
+    /** Tree model */
     private DefaultTreeModel treeModel;
-    /** データベース */
+    /** Database */
     private Program languageDb;
 
     /**
-     * コンストラクタ
+     * Constructor
      */
     public ModuleTreeModel() {
         clearTreeModel();
     }
 
     /**
-     * モデルの変更を通知する
+     * Notify model changes
      */
     public void notifyModel() {
 
@@ -69,7 +69,7 @@ public class ModuleTreeModel extends Observable {
     }
 
     /**
-     * モジュールツリーをクリアする。
+     * Clear the module tree.
      */
     public void clearTreeModel() {
         rootNode = new DefaultMutableTreeNode("Module tree");
@@ -78,39 +78,39 @@ public class ModuleTreeModel extends Observable {
     }
 
     /**
-     * ツリールートノードを取得する
-     * @return		ツリールートノード
+     * Get the tree root node
+     * @return Tree root node
      */
     public DefaultMutableTreeNode getRootNode() {
         return rootNode;
     }
 
     /**
-     * ツリーモデルを取得する
-     * @return		ツリーモデル
+     * Get a tree model
+     * @return Tree model
      */
     public DefaultTreeModel getTreeModel() {
         return treeModel;
     }
 
     /**
-     * ツリー情報をファイル出力する。
-     * @param   file   出力ファイル
+     * Output tree information to a file.
+     * @param file Output file
      */
     public void writeFile(File file) {
-        // ルートノード
+        // Root node
         if (this.treeModel == null) return;
         DefaultMutableTreeNode root = (DefaultMutableTreeNode) this.treeModel.getRoot();
         if (root == null) return;
         if (root.getChildCount() <= 0) return;
 
         try {
-            // ファイル出力
+            // File output
             PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(file)));
 
-            // ツリーをCSV文字列にする。
+            // Make the tree a CSV string.
             String buf = SwingUtils.toCsv(root);
-            // ファイル出力
+            // File output
             pw.print(buf);
 
             pw.close();
@@ -120,17 +120,17 @@ public class ModuleTreeModel extends Observable {
     }
 
 	/**
-	 * データベースを取得する
-	 * @return データベース
-	 */
+* Get the database
+* @return database
+*/
 	public Program getLanguageDb() {
 		return this.languageDb;
 	}
 
 	/**
-	 * データベースを設定する.
-	 * @param languageDb データベース
-	 */
+* Set up the database.
+* @param languageDb database
+*/
 	public void setLanguageDb(Program language) {
 		this.languageDb = language;
 	}

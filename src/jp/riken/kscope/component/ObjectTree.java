@@ -57,83 +57,83 @@ import jp.riken.kscope.properties.SourceProperties;
 import jp.riken.kscope.utils.ResourceUtils;
 
 /**
- * オブジェクトツリークラス.<br/>
- * ノードオブジェクトに合わせてアイコンを表示する.
+ * Object tree class. <br/>
+ * Display the icon according to the node object.
  * @author RIKEN
  */
 public class ObjectTree extends JEntireRowTree {
 
-    /** シリアル番号 */
+    /** Serial number */
     private static final long serialVersionUID = 1L;
 
-    /** 付加情報ノード文字色 */
+    /** Additional information node text color */
     private Color fontColorInformation;
-    /** データベース */
+    /** Database */
     private Program languageDb;
-    /** リンク切れ文字色 */
+    /** Broken link text color */
     private Color fontColorBrokenLink;
-    /** イベントブロックフラグ : true=禁止*/
+    /** Event block flag: true = prohibited */
     private boolean eventBlocked;
-    /** ノード検索済みProcedureリスト */
+    /** Node Searched Procedure List */
     private Map<Procedure, List<Object>> parentLists;
 
     /**
-     * コンストラクタ
+     * Constructor
      */
     public ObjectTree() {
         super();
         this.eventBlocked = false;
-        // ツリーのノード描画クラスの設定
+        // Setting the node drawing class of the tree
         ObjectTreeCellRenderer renderer = new ObjectTreeCellRenderer();
         this.setCellRenderer( renderer);
     }
 
 
     /**
-     * オブジェクトツリーノードのレンダリングクラス
+     * Object tree node rendering class
      * @author RIKEN
      */
     public class ObjectTreeCellRenderer extends EntireRowCellRenderer {
 
-        /** シリアル番号 */
+        /** Serial number */
         private static final long serialVersionUID = 1L;
 
-        /** フォルダアイコン：クローズ */
+        /** Folder icon: Close */
         private Icon iconFolder;
-        /** フォルダアイコン：展開 */
+        /** Folder icon: Expand */
         private Icon iconExpanded;
-        /** XMLファイルアイコン */
+        /** XML file icon */
         private Icon iconXml;
-        /** Fortranファイルアイコン */
+        /** Fortran file icon */
         private Icon iconFortran;
-        /** callブロックアイコン */
+        /** call block icon */
         private Icon callIcon;
-        /** call nullブロックアイコン */
+        /** call null block icon */
         private Icon callnullIcon;
-        /** mpiブロックアイコン */
+        /** mpi block icon */
         private Icon mpiIcon;
-        /** ifブロックアイコン */
+        /** if block icon */
         private Icon ifIcon;
-        /** ifブロックアイコン */
+        /** if block icon */
         private Icon  doIcon;
-        /** doブロックアイコン */
+        /** do block icon */
         private Icon  returnIcon;
-        /** その他ブロックアイコン */
+        /** Other block icons */
         @SuppressWarnings("unused")
         private Icon otherIcon;
 
         /**
-         * コンストラクタ
+         * Constructor
          */
         public ObjectTreeCellRenderer() {
 
-            /** フォルダアイコン：クローズ */
+            /** Folder icon: Close */
             iconFolder = ResourceUtils.getIcon("folder.gif");
-            /** フォルダアイコン：展開 */
+            /** Folder icon: Expand */
             iconExpanded = ResourceUtils.getIcon("folderexpand.gif");
-            /** XMLファイルアイコン */
+            /** XML file icon */
             iconXml = ResourceUtils.getIcon("xmldoc.gif");
-            /** Fortranファイルアイコン */
+            /** Fortran file icon */
             iconFortran = ResourceUtils.getIcon("fortran.gif");
 
             callIcon = ResourceUtils.getIcon("call.gif");
@@ -146,40 +146,40 @@ public class ObjectTree extends JEntireRowTree {
         }
 
         /**
-         * ツリー内のノードを描画方法を決定するメソッド
+         * Methods that determine how to draw the nodes in the tree
          *
          * @param t
-         *            ペイントしているツリー
+         * The tree you are painting
          * @param value
-         *            表示される値
+         * Displayed value
          * @param selected
-         *            ノードが選択された場合にtrue
+         * True if a node is selected
          * @param expanded
-         *            展開されている場合にtrue
+         * True if expanded
          * @param leaf
-         *            要素が葉の場合にtrue
+         * True if the element is a leaf
          * @param row
-         *            ノードのインデックス
+         * Node index
          * @param hasFocus
-         *            指定のノードにフォーカスがある場合にtrue
-         * @return 指定の値を描画するpaint()メソッドがあるコンポーネント
+         * True if the specified node has focus
+         * @return A component with a paint () method that draws the specified value
          * @see javax.swing.tree.TreeCellRenderer
-         * @see javax.swing.tree.DefaultTreeCellRenderer
+         * @ see javax.swing.tree.DefaultTreeCellRenderer
          */
         @Override
         public Component getTreeCellRendererComponent(JTree t, Object value,
                 boolean selected, boolean expanded, boolean leaf, int row,
                 boolean hasFocus) {
 
-            // ローカル変数
+            // Local variables
             String str;
-            // 表示文字列にキャスト
+            // Cast to display string
             str = "" + value;
-            // ツリー内のノードを取得
+            // get the nodes in the tree
             JComponent c = (JComponent) super.getTreeCellRendererComponent(t, str, selected,
                     expanded, leaf, row, hasFocus);
 
-            // 表示アイコンの設定
+            // Display icon settings
             Object obj = ((DefaultMutableTreeNode) value).getUserObject();
             if (obj instanceof ProcedureUsage) {
                 if (obj.toString().toLowerCase().startsWith("call mpi_")) {
@@ -209,7 +209,7 @@ public class ObjectTree extends JEntireRowTree {
                 }
             } else if (obj instanceof File) {
                 File file = (File) ((DefaultMutableTreeNode) value).getUserObject();
-                // フォルダ
+                // Folder
                 if (expanded) {
                     this.setIcon(iconExpanded);
                 }
@@ -217,13 +217,13 @@ public class ObjectTree extends JEntireRowTree {
                     this.setIcon(iconFolder);
                 }
                 if (row > 0) {
-                    // ルート以外は、フォルダ名のみ表示する
+                    // Display only the folder name except the root
                     setText(file.getName());
                 }
             }
             else if (obj instanceof IBlock) {
                 setIcon(null);
-                // ローカルにファイルがないヘッダ定義の場合リーフ文字色をグレーにする処理
+                // Process to make the leaf text color gray in the case of header definition that does not have a file locally
                 IBlock val = (IBlock)obj;
             	CodeLine code = val.getStartCodeLine();
             	if (code == null) {
@@ -237,16 +237,16 @@ public class ObjectTree extends JEntireRowTree {
 	            setIcon(null);
 	        }
 
-            // 付加情報の存在するノードをフォント色の変更
+            // Change the font color of the node where the additional information exists
             if (fontColorInformation != null && obj instanceof IInformation) {
         		IInformation info = (IInformation)obj;
         		if (info.getInformation() != null && !(info.getInformation().getContent().equals(""))) {
-        			// ノードフォント色の変更
+        			// Change node font color
         			drawInformationColor(c);
         		}
-        		// 複数範囲指定の付加情報に含まれているかチェックする
+        		// Check if it is included in the additional information of multiple range specification
         		if (containsInformationBlocks(info)) {
-    				// ノードフォント色の変更
+    				// Change node font color
         			drawInformationColor(c);
         		}
             }
@@ -271,8 +271,8 @@ public class ObjectTree extends JEntireRowTree {
         }
 
         /**
-         * 付加情報が設定されているノードの文字色を変更する
-         * @param label		ノードコンポーネント
+         * Change the text color of the node for which additional information is set
+         * @param label Node component
          */
         private void drawInformationColor(JComponent label) {
         	if (fontColorInformation != null) {
@@ -282,9 +282,9 @@ public class ObjectTree extends JEntireRowTree {
         }
 
         /**
-         * 複数範囲指定の付加情報に含まれているかチェックする.
-         * @param info		チェックノード
-         * @return			true=複数範囲指定の付加情報に含まれている
+         * Check if it is included in the additional information of multiple range specification.
+         * @param info Check node
+         * @return true = Included in additional information with multiple ranges
          */
         private boolean containsInformationBlocks(IInformation info) {
         	if (languageDb == null) return false;
@@ -306,8 +306,8 @@ public class ObjectTree extends JEntireRowTree {
 
 
     /**
-     * 選択ノードを設定する
-     * @param blocks		選択ノードユーザオブジェクト
+     * Set the selected node
+     * @param blocks Selected node user object
      */
     public void setSelectedChainNode(Object[] blocks) {
         if (blocks == null || blocks.length <= 0) return;
@@ -315,7 +315,7 @@ public class ObjectTree extends JEntireRowTree {
         TreeModel model = this.getModel();
         DefaultMutableTreeNode root = (DefaultMutableTreeNode)model.getRoot();
 
-        // ツリーノードを順方向で列挙
+        // List tree nodes in the forward direction
         int count = 0;
         int maxMatch = 0;
         DefaultMutableTreeNode matchNode = null;
@@ -323,7 +323,7 @@ public class ObjectTree extends JEntireRowTree {
         while(depth.hasMoreElements()) {
             DefaultMutableTreeNode treeNode = (DefaultMutableTreeNode)depth.nextElement();
 
-            // ノード検索を行う
+            // Do a node search
             if (treeNode == null || treeNode.getUserObject() == null) {
                 continue;
             }
@@ -353,10 +353,10 @@ public class ObjectTree extends JEntireRowTree {
     }
 
     /**
-     * ブロックリストとパスノードリストの一致ノード数を取得する
-     * @param blocks		ブロックリスト
-     * @param paths			パスノードリスト
-     * @return		一致個数
+     * Get the number of matching nodes in the block list and path node list
+     * @param blocks block list
+     * @param paths Path node list
+     * @return Number of matches
      */
     private int matchChainNode(Object[] blocks, DefaultMutableTreeNode[] paths) {
         if (blocks == null || blocks.length <= 0) return -1;
@@ -379,8 +379,8 @@ public class ObjectTree extends JEntireRowTree {
     }
 
     /**
-     * パスノードを選択状態にする
-     * @param path		パス
+     * Select the path node
+     * @param path path
      */
     @Override
     public void setSelectionPath(TreePath path) {
@@ -410,9 +410,9 @@ public class ObjectTree extends JEntireRowTree {
     }
 
     /**
-     * 選択ノードを展開する.
-     * 構造ツリーは未展開なノードがあるので事前に展開する.
-     * @param path		選択展開パス
+     * Expand the selection node.
+     * The structure tree has unexpanded nodes, so expand it in advance.
+     * @param path Selective expansion path
      */
     public void expandSelectionPath(TreePath path) {
         Object[] objs = path.getPath();
@@ -429,20 +429,20 @@ public class ObjectTree extends JEntireRowTree {
     }
 
     /**
-     * ソースビュープロパティを設定する
-     * @param properties		ソースビュープロパティ
+     * Set source view properties
+     * @param properties Source view properties
      */
     public void setSourceProperties(SourceProperties properties) {
-    	// ツリー選択ノード背景色
+    	// Tree selection node background color
     	if (properties.getBackgoundSelectNodeColor() != null) {
     		this.setSelectionBackground(properties.getBackgoundSelectNodeColor());
     	}
-    	// 付加情報ノードフォント色
+    	// Additional information node font color
     	if (properties.getInformationNodeFontColor() != null) {
     		this.setInformationNodeFontColor(properties.getInformationNodeFontColor());
     	}
 
-    	// リンク切れ文字色
+    	// Broken link text color
     	if (properties.getBrokenLinkNodeFontColor() != null) {
     		this.setBrokenLinkNodeFontColor(properties.getBrokenLinkNodeFontColor());
     	}
@@ -452,27 +452,27 @@ public class ObjectTree extends JEntireRowTree {
 
 
     /**
-     * 付加情報ノードフォント色を設定する.<br>
-     * @param color		付加情報ノードフォント色
+     * Additional information node Set font color. <br>
+     * @param color Additional information node font color
      */
     public void setInformationNodeFontColor(Color color) {
     	fontColorInformation = color;
     }
 
     /**
-     * 選択ノードを展開する.
-     * 構造ツリーは未展開なノードがあるので事前に展開する.
-     * @param selectnode		選択ノードユーザオブジェクト
+     * Expand the selection node.
+     * The structure tree has unexpanded nodes, so expand it in advance.
+     * @param selectnode Select node user object
      */
     public void expandObjectPath(Object selectnode) {
     	if (selectnode == null) return;
 
-    	// 選択ノードの階層を取得する
+    	// Get the hierarchy of selected nodes
     	clearParentLists();
     	List<Object> parents = getLanguagePath(selectnode);
     	if (parents == null || parents.size() <= 0) return;
 
-    	// ルートから展開を行う
+    	// Deploy from root
         TreeModel model = this.getModel();
         DefaultMutableTreeNode node = (DefaultMutableTreeNode)model.getRoot();
         for (int i=parents.size()-1; i>=0; i--) {
@@ -484,26 +484,26 @@ public class ObjectTree extends JEntireRowTree {
     }
 
     /**
-     * 選択ノードを設定する
-     * @param selectnode		選択ノードユーザオブジェクト
+     * Set the selected node
+     * @param selectnode Select node user object
      */
     public void setSelectedNode(Object selectnode) {
         if (selectnode == null) return;
 
-    	// 選択ノードの階層を取得する
+    	// Get the hierarchy of selected nodes
     	clearParentLists();
     	List<Object> parents = getLanguagePath(selectnode);
 
         TreeModel model = this.getModel();
         DefaultMutableTreeNode root = (DefaultMutableTreeNode)model.getRoot();
 
-        // ツリーノードを順方向で列挙
+        // List tree nodes in the forward direction
         TreePath lastpath = null;
         this.eventBlocked = true;
         Enumeration<?> depth = root.preorderEnumeration();
         NODE_LOOP:while (depth.hasMoreElements()) {
             DefaultMutableTreeNode treeNode = (DefaultMutableTreeNode)depth.nextElement();
-            // ノード検索を行う
+            // Do a node search
             if (treeNode == null || treeNode.getUserObject() == null) {
                 continue;
             }
@@ -539,7 +539,7 @@ public class ObjectTree extends JEntireRowTree {
         }
         this.eventBlocked = false;
         if (lastpath != null) {
-        	// ツリーノード変更イベントを発生させる.
+        	// Raise a tree node change event.
             super.setSelectionPath(null);
             super.setSelectionPath(lastpath);
             super.scrollPathToVisibleForVertical(lastpath);
@@ -548,15 +548,15 @@ public class ObjectTree extends JEntireRowTree {
     }
 
     /**
-     * データベース構造階層を取得する.
-     * 階層リストは子から親のリストである.
-     * @param block		データベース構成ブロック
-     * @return			データベース構造階層リスト
+     * Get the database structure hierarchy.
+     * A hierarchical list is a list of children to parents.
+     * @param block Database configuration block
+     * @return Database structure hierarchical list
      */
     private List<Object> getLanguagePath(Object block) {
     	if (block == null) return null;
 
-    	// 選択ノードの階層を取得する
+    	// Get the hierarchy of selected nodes
     	List<Object> parents = new ArrayList<Object>();
     	Object child = block;
     	while (child != null) {
@@ -574,7 +574,7 @@ public class ObjectTree extends JEntireRowTree {
     			if (((Procedure) child).isProgram()) {
     				break;
     			}
-    			// 検索済みProcedure
+    			// Searched Procedure
     			List<Object> searched = getParentLists((Procedure)child);
     			if (searched != null) {
 					parents.add(child);
@@ -596,7 +596,7 @@ public class ObjectTree extends JEntireRowTree {
     	    		List<Object> listMax = null;
     	    		List<Object> listProg = null;
     	    		for (ProcedureUsage useage : array) {
-    	    			// 循環参照となっていないかチェックする.
+    	    			// Check if it is a circular reference.
     	    			if (isRecursiveBlock(parents, useage)) {
     	    				return null;
     	    			}
@@ -650,9 +650,9 @@ public class ObjectTree extends JEntireRowTree {
     }
 
 	/**
-     * ノード範囲を選択する
-     * @param startnode		選択開始ノード
-     * @param endnode		選択終了ノード
+     * Select a node range
+     * @param startnode Selection start node
+     * @param endnode Selection end node
      */
     @Override
     public void setSelectedNodeArea(Object startnode, Object endnode) {
@@ -667,17 +667,17 @@ public class ObjectTree extends JEntireRowTree {
     }
 
 	/**
-	 * データベースを設定する.
-	 * @param language データベース
-	 */
+* Set up the database.
+* @param language database
+*/
 	public void setLanguageDb(Program language) {
 		this.languageDb = language;
 	}
 
 
     /**
-     * 選択ノードを設定する
-     * @param selectnodes		選択ノードユーザオブジェクト
+     * Set the selected node
+     * @param selectnodes Select node user object
      */
     public void setSelectedNodes(Object[] selectnodes) {
     	if (selectnodes == null) return;
@@ -690,8 +690,8 @@ public class ObjectTree extends JEntireRowTree {
     }
 
     /**
-     * リンク切れ文字色を設定する.<br>
-     * @param color		リンク切れ文字色
+     * Set the broken link text color. <br>
+     * @param color Broken link text color
      */
     public void setBrokenLinkNodeFontColor(Color color) {
     	fontColorBrokenLink = color;
@@ -706,10 +706,10 @@ public class ObjectTree extends JEntireRowTree {
 
 
     /**
-     * 循環参照となっていないかチェックする.
-     * @param list		ブロックリスト
-     * @param block			呼出ブロック
-     * @return				true=循環参照
+     * Check if it is a circular reference.
+     * @param list Block list
+     * @param block Call block
+     * @return true = circular reference
      */
     private boolean isRecursiveBlock(List<Object> list, Object block) {
 		if (list == null) return false;
@@ -723,9 +723,9 @@ public class ObjectTree extends JEntireRowTree {
 	}
 
     /**
-     * ノード検索済みProcedureリストに追加する.
-     * @param proc		ノード検索Procedure
-     * @param objs		検索結果親リスト
+     * Add to node-searched Procedure list.
+     * @param proc Node Search Procedure
+     * @param objs Search result parent list
      */
     private void addParentLists(Procedure proc, List<Object> objs) {
     	if (this.parentLists == null) {
@@ -735,7 +735,7 @@ public class ObjectTree extends JEntireRowTree {
     }
 
     /**
-     * ノード検索済みProcedureリストをクリアする
+     * Clear the node-searched Procedure list
      */
     private void clearParentLists() {
     	this.parentLists = null;
@@ -743,9 +743,9 @@ public class ObjectTree extends JEntireRowTree {
     }
 
     /**
-     * ノード検索済みProcedureリストから検索結果親リストを取得する.
-     * @param proc		ノード検索Procedure
-     * @return   検索結果親リスト
+     * Get the search result parent list from the node-searched Procedure list.
+     * @param proc Node Search Procedure
+     * @return Search result parent list
      */
     private List<Object> getParentLists(Procedure proc) {
     	if (this.parentLists == null) return null;
@@ -753,7 +753,7 @@ public class ObjectTree extends JEntireRowTree {
     }
 
     /**
-     * 選択ノードの変更イベントを発生させる
+     * Raise a change event for the selected node
      */
 	public void fireSelectNodeChanged() {
 		TreePath[] paths = this.getSelectionPaths();

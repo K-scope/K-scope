@@ -16,6 +16,6 @@
  */
 
 /**
- * 共通コンポーネントを提供します.<br/>
+ * Provides common components. <br/>
  */
 package jp.riken.kscope.component;

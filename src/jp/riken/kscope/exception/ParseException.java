@@ -20,116 +20,116 @@ import jp.riken.kscope.data.CodeLine;
 import jp.riken.kscope.utils.Logger;
 
 /**
- * 構文解析例外クラス 構文解析部(jp.go.riken.ppa.parse)の例外クラス 構文解析例外は、例外発生箇所、又は呼出側にて例外処理,
- * 又はthrowsを行わなければならない。
- * 
+ * Parsing exception class Exception class of the parsing part (jp.go.riken.ppa.parse) Parsing exceptions are handled by the exception occurrence location or the caller.
+ * Or throws must be done.
+ *
  * @author RIKEN
  */
 public class ParseException extends Exception {
 
-    /** シリアル番号 */
+    /** Serial number */
     private static final long serialVersionUID = 1L;
-	/** コード行情報 */
+	/** Code line information */
 	private CodeLine m_errorCode;
 
 	/**
-	 * コンストラクタ（エラーメッセージ）
-	 * 
-	 * @param msg
-	 *            エラーメッセージ
-	 * @param line
-	 *            エラーコード行
-	 */
+* Constructor (error message)
+*
+* @param msg
+	 *            Error message
+* @param line
+* Error code line
+*/
 	public ParseException(String msg, CodeLine line) {
 		super(msg);
 		setCodeLine(line);
 	}
 
 	/**
-	 * コンストラクタ（エラーメッセージ）
-	 * 
-	 * @param msg
-	 *            エラーメッセージ
-	 * @param line
-	 *            コード行文字列
-	 */
+* Constructor (error message)
+*
+* @param msg
+	 *            Error message
+* @param line
+* Code line string
+*/
 	public ParseException(String msg, String line) {
 		super(msg);
 		setCodeLine(line);
 	}
 
 	/**
-	 * コンストラクタ（例外）
-	 * 
-	 * @param ex
-	 *            例外クラス
-	 * @param line
-	 *            エラーコード行
-	 */
+* Constructor (exception)
+*
+* @param ex
+* Exception class
+* @param line
+* Error code line
+*/
 	public ParseException(Exception ex, CodeLine line) {
 		super(ex);
 		setCodeLine(line);
 	}
 
 	/**
-	 * コンストラクタ（例外）
-	 * 
-	 * @param ex
-	 *            例外クラス
-	 */
+* Constructor (exception)
+*
+* @param ex
+* Exception class
+*/
 	public ParseException(Exception ex) {
 		super(ex);
 	}
 
 	/**
-	 * コンストラクタ（例外）
-	 * 
-	 * @param ex
-	 *            例外クラス
-	 * @param line
-	 *            コード行文字列
-	 * @param lineno
-	 *            コード行番号
-	 */
+* Constructor (exception)
+*
+* @param ex
+* Exception class
+* @param line
+* Code line string
+* @param lineno
+* Code line number
+*/
 	public ParseException(Exception ex, String line, int lineno) {
 		super(ex);
 		setCodeLine(new CodeLine(line, lineno));
 	}
 
 	/**
-	 * コード行情報を設定する。
-	 * 
-	 * @param line
-	 *            コード行情報
-	 */
+* Set code line information.
+*
+* @param line
+* Code line information
+*/
 	public void setCodeLine(CodeLine line) {
 		this.m_errorCode = line;
 	}
 
 	/**
-	 * コード行文字列を設定する。
-	 * 
-	 * @param line
-	 *            コード行文字列
-	 */
+* Set the code line string.
+*
+* @param line
+* Code line string
+*/
 	public void setCodeLine(String line) {
 		this.m_errorCode = new CodeLine(line);
 	}
 
 	/**
-	 * エラー発生コード行情報クラスを取得する。
-	 * 
-	 * @return エラー発生コード行情報
-	 */
+* Get the error occurrence code line information class.
+*
+* @return Error occurrence code line information
+*/
 	public CodeLine getCodeLine() {
 		return m_errorCode;
 	}
 
 	/**
-	 * エラー発生コード（文字列）を取得する。
-	 * 
-	 * @return エラー発生コード（文字列）
-	 */
+* Get the error occurrence code (character string).
+*
+* @return Error occurrence code (character string)
+*/
 	public String getCodeInfo() {
 		String info = m_errorCode.toString();
 		info = info.replace('\n', ' ');
@@ -137,24 +137,24 @@ public class ParseException extends Exception {
 	}
 
 	/**
-	 * エラーメッセージを取得する。
-	 * 
-	 * @return エラーメッセージ
-	 */
+* Get error messages.
+*
+* @return error message
+*/
 	@Override
 	public String toString() {
 		return super.toString() + "\n" + getCodeInfo();
 	}
 
 	/**
-	 * エラー発生のスタックトレースを出力する。 標準エラー出力とログ出力を行う。
-	 */
+* Output the stack trace of the error occurrence. Outputs standard error and log.
+*/
 	@Override
 	public void printStackTrace() {
-		// ログ出力
+		// Log output
 		Logger.error(this);
 
-		// 標準出力
+		// Standard output
 		super.printStackTrace();
 	}
 

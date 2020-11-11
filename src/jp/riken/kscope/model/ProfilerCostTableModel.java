@@ -37,85 +37,85 @@ import jp.riken.kscope.properties.ProfilerProperties;
 import jp.riken.kscope.utils.StringUtils;
 
 /**
- * プロファイラ:コスト情報モデル
+ * Profiler: Cost Information Model
  * @author RIKEN
  *
  */
 public class ProfilerCostTableModel extends ProfilerTableBaseModel {
 
     /**
-     * テーブルヘッダーリスト(5列):コスト情報(手続).<br/>
-     * 1列目はコスト情報とする。
+     * Table header list (5 columns): Cost information (procedure). <br/>
+     * The first column is cost information.
      */
     private String[] HEADER_COLUMNS_PROCEDURE = {"", 
-    		Message.getString("profilercallgraphmodel.header_columns.sampling"), //サンプリング数 
-    		Message.getString("profilercallgraphmodel.header_columns.total-percentage"), //全体に占める割合(%) 
-    		Message.getString("profileinfo_type.enum.procedure"), //手続 
-    		Message.getString("profilercosttablemodel.header_columns.filename"), //ファイル名 
-    		Message.getString("profilercosttablemodel.header_columns.linenumber")}; //行番号
+    		Message.getString("profilercallgraphmodel.header_columns.sampling"), // Number of samples
+    		Message.getString("profilercallgraphmodel.header_columns.total-percentage"), // Percentage of the total (%)
+    		Message.getString("profileinfo_type.enum.procedure"), //procedure
+    		Message.getString("profilercosttablemodel.header_columns.filename"), //file name
+    		Message.getString("profilercosttablemodel.header_columns.linenumber")}; //line number
     /**
-     * テーブルヘッダーリスト(5列):コスト情報(ループ).<br/>
-     * 1列目はコスト情報とする。
+     * Table header list (5 columns): Cost information (loop). <br/>
+     * The first column is cost information.
      */
     private String[] HEADER_COLUMNS_LOOP = {"", 
-    		Message.getString("profilercallgraphmodel.header_columns.sampling"), //サンプリング数 
-    		Message.getString("profilercallgraphmodel.header_columns.total-percentage"), //全体に占める割合(%) 
-    		Message.getString("profileinfo_type.enum.loop"), //ループ 
-    		Message.getString("profilercosttablemodel.header_columns.filename"), //ファイル名 
-    		Message.getString("profilercosttablemodel.header_columns.linenumber")}; //行番号
+    		Message.getString("profilercallgraphmodel.header_columns.sampling"), // Number of samples
+    		Message.getString("profilercallgraphmodel.header_columns.total-percentage"), // Percentage of the total (%)
+    		Message.getString("profileinfo_type.enum.loop"), //loop
+    		Message.getString("profilercosttablemodel.header_columns.filename"), //file name
+    		Message.getString("profilercosttablemodel.header_columns.linenumber")}; //line number
     /**
-     * テーブルヘッダーリスト(5列):コスト情報(ライン).<br/>
-     * 1列目はコスト情報とする。
+     * Table header list (5 columns): Cost information (line). <br/>
+     * The first column is cost information.
      */
     private String[] HEADER_COLUMNS_LINE = {"", 
-    		Message.getString("profilercallgraphmodel.header_columns.sampling"), //サンプリング数 
-    		Message.getString("profilercallgraphmodel.header_columns.total-percentage"), //全体に占める割合(%) 
-    		Message.getString("profileinfo_type.enum.line"), //ライン 
-    		Message.getString("profilercosttablemodel.header_columns.filename"), //ファイル名 
-    		Message.getString("profilercosttablemodel.header_columns.linenumber")}; //行番号
-    /** テーブル列の表示状態 */
+    		Message.getString("profilercallgraphmodel.header_columns.sampling"), // Number of samples
+    		Message.getString("profilercallgraphmodel.header_columns.total-percentage"), // Percentage of the total (%)
+    		Message.getString("profileinfo_type.enum.line"), //line
+    		Message.getString("profilercosttablemodel.header_columns.filename"), //file name
+    		Message.getString("profilercosttablemodel.header_columns.linenumber")}; //line number
+    /** Table column display status */
     private boolean[] visibledcolumns = {false, true, true, true, true, true};
     /**
-     * テーブル列サイズ
-     * -1=非表示とする
+     * Table column size
+     * -1 = Hide
      */
     private int[] HEADER_COLUMNS_PREFERREDWIDTH = { -1, 120, 140, 240, 160, 80 };
 
     /**
-     * テーブル列最小サイズ.<br/>
-     * -1=非表示とする
+     * Minimum table column size. <br/>
+     * -1 = Hide
      */
     private int[] HEADER_COLUMNS_MINWIDTH = {-1, 80, 80, 80, 80, 80};
 
     /**
-     * テーブル列配置.<br/>
+     * Table column arrangement. <br/>
      */
     private int[] COLUMNS_ALIGNMENTS = {SwingConstants.LEFT, SwingConstants.RIGHT, SwingConstants.RIGHT, SwingConstants.LEFT, SwingConstants.LEFT, SwingConstants.LEFT};
 
-    /** タイトル */
+    /** Title */
     private String title;
 
     /**
-     * プロファイラ:コスト情報マップ
-     * キー：プロファイラのプロセス、スレッドを表記する一意の文字列
-     * 値：プロシージャ、ループ、ラインのコスト情報リスト
+     * Profiler: Cost Information Map
+     * Key: A unique string that describes the profiler process and thread
+     * Value: Procedure, loop, line cost information list
      */
     private Map<String, List<ProfilerDprofData>> mapCostInfo;
-    /** 選択コスト情報 */
+    /** Select cost information */
     private ProfilerBaseData selectedCostInfo;
-    /** ビューのソート状態  */
+    /** View sort state */
     private boolean viewSort = false;
 
     /**
-     * コンストラクタ
-     * @param type		プロファイラ情報タイプ
+     * Constructor
+     * @param type Profiler information type
      */
     public ProfilerCostTableModel(PROFILERINFO_TYPE type) {
         super(type);
     }
 
     /**
-     * モデルの変更を通知する
+     * Notify model changes
      */
     @Override
     protected void notifyModel() {
@@ -125,8 +125,8 @@ public class ProfilerCostTableModel extends ProfilerTableBaseModel {
     }
 
     /**
-     * コスト情報マップ数を取得する
-     * @return		コスト情報マップ数
+     * Get the number of cost information maps
+     * @return Number of cost information maps
      */
     @Override
     public int getInfoMapCount() {
@@ -138,9 +138,9 @@ public class ProfilerCostTableModel extends ProfilerTableBaseModel {
 
 
     /**
-     * コスト情報マップキー名を取得する
-     * @param   index    マップインデックス
-     * @return		コスト情報マップキー名
+     * Get cost information map key name
+     * @param index Map index
+     * @return Cost information map key name
      */
     @Override
     public String getInfoMapKey(int index) {
@@ -161,18 +161,18 @@ public class ProfilerCostTableModel extends ProfilerTableBaseModel {
 
 
     /**
-     * コスト情報リストを取得する
-     * @param   index    マップインデックス
-     * @return		コスト情報リスト
+     * Get the cost information list
+     * @param index Map index
+     * @return Cost information list
      */
     public List<ProfilerDprofData> getInfoMapValue(int index) {
         return getInfoMap(getInfoMapKey(index));
     }
 
     /**
-     * コスト情報リストを取得する
-     * @param   key    マップキー
-     * @return		コスト情報リスト
+     * Get the cost information list
+     * @param key Map key
+     * @return Cost information list
      */
     public List<ProfilerDprofData> getInfoMap(String key) {
         if (this.mapCostInfo == null) {
@@ -183,11 +183,11 @@ public class ProfilerCostTableModel extends ProfilerTableBaseModel {
     }
 
     /**
-     * テーブルモデルを取得する
-     * @return		テーブルモデル
+     * Get the table model
+     * @return table model
      */
     public DefaultTableModel getDefaultTableModel() {
-        // テーブルモデルの作成
+        // Create a table model
         String[] header = getHeaderColumns();
         DefaultTableModel tableModel = new DefaultTableModel(header, 0);
         return tableModel;
@@ -195,12 +195,12 @@ public class ProfilerCostTableModel extends ProfilerTableBaseModel {
 
 
     /**
-     * ヘッダー列リストを取得する。
-     * @return		ヘッダー列リスト
+     * Get the header column list.
+     * @return Header column list
      */
     @Override
     public String[] getHeaderColumns() {
-        // テーブルモデルの作成
+        // Create a table model
         String[] header = HEADER_COLUMNS_PROCEDURE;
         if (this.getEnumInfo() == PROFILERINFO_TYPE.COST_PROCEDURE) {
             header = HEADER_COLUMNS_PROCEDURE;
@@ -215,8 +215,8 @@ public class ProfilerCostTableModel extends ProfilerTableBaseModel {
     }
 
     /**
-     * ヘッダー推奨列幅リストを取得する。
-     * @return		ヘッダー推奨列幅
+     * Get the header recommended column width list.
+     * @return Header recommended column width
      */
     @Override
     protected int[] getHeaderColumnsPreferredWidth() {
@@ -224,8 +224,8 @@ public class ProfilerCostTableModel extends ProfilerTableBaseModel {
     }
 
     /**
-     * ヘッダー最小列幅リストを取得する。
-     * @return		ヘッダー最小列幅
+     * Get the header minimum column width list.
+     * @return Header minimum column width
      */
     @Override
     protected int[] getHeaderColumnsMinWidth() {
@@ -233,16 +233,16 @@ public class ProfilerCostTableModel extends ProfilerTableBaseModel {
     }
 
     /**
-     * コスト情報を追加する
-     * @param key			コスト情報キー
-     * @param info			コスト情報
+     * Add cost information
+     * @param key Cost information key
+     * @param info Cost information
      */
     public void addCostInfo(String key, ProfilerDprofData info) {
 
         if (key == null) return;
         if (info == null) return;
 
-        // コスト情報マップの生成
+        // Generate cost information map
         if (this.mapCostInfo == null) {
             this.mapCostInfo = new TreeMap<String, List<ProfilerDprofData>>();
         }
@@ -253,25 +253,25 @@ public class ProfilerCostTableModel extends ProfilerTableBaseModel {
         }
         list.add(info);
 
-        // モデルの変更を通知
+        // Notify model changes
         notifyModel();
     }
 
     /**
-     * プロファイラデータを設定する
-     * @param key			コスト情報キー
-     * @param infos			コスト情報リスト
+     * Set profiler data
+     * @param key Cost information key
+     * @param infos Cost information list
      */
     @Override
     public void setProfilerData(String key, ProfilerBaseData[] infos) {
 
         if (key == null) return;
-        // コスト情報マップの生成
+        // Generate cost information map
         if (this.mapCostInfo == null) {
             this.mapCostInfo = new TreeMap<String, List<ProfilerDprofData>>();
         }
 
-        // コスト情報リストがnullの場合は、コスト情報削除
+        // If the cost information list is null, delete the cost information
         if (infos == null) {
             if (this.mapCostInfo.containsKey(key)) {
                 this.mapCostInfo.remove(key);
@@ -294,31 +294,31 @@ public class ProfilerCostTableModel extends ProfilerTableBaseModel {
             }
         }
 
-        // モデルの変更を通知
+        // Notify model changes
         notifyModel();
     }
 
 
     /**
-     * テーブルモデルをクリアする。
+     * Clear the table model.
      */
     @Override
     public void clearModel() {
-        // コスト情報マップのクリア
+        // Clear cost information map
         if (this.mapCostInfo != null) {
             this.mapCostInfo = new TreeMap<String, List<ProfilerDprofData>>();
         }
-        // タイトルのクリア
+        // Clear title
         this.title = null;
-        // 選択プロファイラデータのクリア
+        // Clear selected profiler data
         this.selectedCostInfo = null;
-        // モデルの変更を通知
+        // Notify model changes
         notifyModel();
     }
 
     /**
-     * タイトルを取得する
-     * @return	タイトル
+     * Get the title
+     * @return title
      */
     @Override
     public String getTitle() {
@@ -326,8 +326,8 @@ public class ProfilerCostTableModel extends ProfilerTableBaseModel {
     }
 
     /**
-     * タイトルを設定する
-     * @param title		タイトル
+     * Set the title
+     * @param title Title
      */
     @Override
     public void setTitle(String title) {
@@ -336,8 +336,8 @@ public class ProfilerCostTableModel extends ProfilerTableBaseModel {
 
 
     /**
-     * 選択コスト情報を設定する
-     * @param 	info        選択コスト情報
+     * Set selection cost information
+     * @param info Select cost information
      */
     @Override
     public void setSelectedInfo(ProfilerBaseData info) {
@@ -345,8 +345,8 @@ public class ProfilerCostTableModel extends ProfilerTableBaseModel {
     }
 
     /**
-     * 選択コスト情報を取得する
-     * @return		選択コスト情報
+     * Get selection cost information
+     * @return Selection cost information
      */
     @Override
     public ProfilerBaseData getSelectedInfo() {
@@ -355,22 +355,22 @@ public class ProfilerCostTableModel extends ProfilerTableBaseModel {
 
 
     /**
-     * テーブルモデルを取得する
-     * @param index		コスト情報マップインデックス
-     * @return		テーブルモデル
+     * Get the table model
+     * @param index Cost information map index
+     * @return table model
      */
     public DefaultTableModel getInfoTableModel(int index) {
         return getCostInfoTableModel(this.getInfoMapKey(index));
     }
 
     /**
-     * テーブルモデルを取得する
-     * @param key		コスト情報識別文字列
-     * @return		テーブルモデル
+     * Get the table model
+     * @param key Cost information identification string
+     * @return table model
      */
     public DefaultTableModel getCostInfoTableModel(String key) {
         if (key == null) return null;
-        // テーブルモデルの作成
+        // Create a table model
         DefaultTableModel tableModel = getDefaultTableModel();
         List<ProfilerDprofData> list = this.mapCostInfo.get(key);
 
@@ -378,19 +378,19 @@ public class ProfilerCostTableModel extends ProfilerTableBaseModel {
         if (this.getProfilerProperties() != null) {
             maxcount = this.getProfilerProperties().getCostinfoMaxCount();
         }
-        final String INDENT = "    ";   // ネストのインデント空白4
+        final String INDENT = "    ";   // Nest indent blank 4
         for (ProfilerDprofData info : list) {
             Object[] cols = new Object[tableModel.getColumnCount()];
-            // 1列目はProfilerCostInfo：非表示
+            // First column is ProfilerCostInfo: Hidden
             cols[0] = info;
             cols[1] = (int)info.getSampling();
             float value = new BigDecimal(String.valueOf(info.getRatio()*100)).setScale(ProfilerProperties.COST_RATIO_SCALE, BigDecimal.ROUND_HALF_UP).floatValue();
             String format = "%.0" + ProfilerProperties.COST_RATIO_SCALE + "f";
             cols[2] = String.format(format, value);
-            // シンボル名
+            // Symbol name
             String name = info.getSymbol();
             int nest = info.getNestLevel();
-            // シンボル名をネスト表示する
+            // Nested symbol names
             name = StringUtils.repeat(INDENT, nest) + name;
             cols[3] = String.valueOf(name);
             if (info.getCodeLine().getSourceFile() != null) {
@@ -401,7 +401,7 @@ public class ProfilerCostTableModel extends ProfilerTableBaseModel {
             }
             tableModel.addRow(cols);
 
-            // 最大表示行数（初期値が0の場合は最大表示行数設定なし）
+            // Maximum number of displayed lines (If the initial value is 0, the maximum number of displayed lines is not set)
             maxcount--;
             if (maxcount == 0) {
                 break;
@@ -413,9 +413,9 @@ public class ProfilerCostTableModel extends ProfilerTableBaseModel {
 
 
     /**
-     * プロファイル情報サブタイトルを取得する
-     * @param   index    マップインデックス
-     * @return		サブタイトル
+     * Get profile information subtitle
+     * @param index Map index
+     * @return Subtitle
      */
     @Override
     public String getSubTitle(int index) {
@@ -424,21 +424,21 @@ public class ProfilerCostTableModel extends ProfilerTableBaseModel {
     }
 
     /**
-     * プロファイラバーグラフデータを取得する
-     * @return   プロファイラバーグラフデータ
+     * Get profile bar graph data
+     * @return Profile bar graph data
      */
     @Override
     public ISourceBargraph[] getSelectedBargraph() {
-        // 選択プロファイラデータの取得
+        // Get selected profiler data
         if (mapCostInfo == null) return null;
 
         List<ProfilerDprofData> selected = null;
         if (this.selectedCostInfo == null) {
-            // 未選択状態であるので、最初のプロファイルデータの取得を行う
+            // Since it is in the unselected state, get the first profile data
             selected = getInfoMapValue(0);
         }
         else {
-            // 選択プロファイルデータの属するリストを取得する
+            // Get the list to which the selected profile data belongs
             Set<String> keySet = this.mapCostInfo.keySet();
             MAP_LABEL:for (String key : keySet) {
                 List<ProfilerDprofData> datas = this.mapCostInfo.get(key);
@@ -456,8 +456,8 @@ public class ProfilerCostTableModel extends ProfilerTableBaseModel {
     }
 
     /**
-     * 選択プロファイルデータのテキストデータを取得する
-     * @return		選択テキストデータ
+     * Get text data of selected profile data
+     * @return Selected text data
      */
     @Override
     public String getSelectedText() {
@@ -465,7 +465,7 @@ public class ProfilerCostTableModel extends ProfilerTableBaseModel {
         if (!(this.selectedCostInfo instanceof ProfilerDprofData)) return null;
         ProfilerDprofData info = (ProfilerDprofData)this.selectedCostInfo;
         StringBuffer buf = new StringBuffer();
-        // ヘッダー:1列目はデータ列であるので除外
+        // Header: Exclude the first column because it is a data column
         String[] header = getHeaderColumns();
         for (int i=1; i<header.length; i++) {
             if (visibledcolumns[i]) {
@@ -476,12 +476,12 @@ public class ProfilerCostTableModel extends ProfilerTableBaseModel {
         buf.delete(buf.length()-2, buf.length());
         buf.append("\n");
 
-        // サンプリング数
+        // Number of samples
         if (visibledcolumns[1]) {
             buf.append(info.getSampling());
             buf.append(", ");
         }
-        // 全体に占める割合(%)
+        // Percentage of the total (%)
         if (visibledcolumns[2]) {
             float value = new BigDecimal(String.valueOf(info.getRatio()*100)).setScale(ProfilerProperties.COST_RATIO_SCALE, BigDecimal.ROUND_HALF_UP).floatValue();
             String format = "%.0" + ProfilerProperties.COST_RATIO_SCALE + "f";
@@ -489,19 +489,19 @@ public class ProfilerCostTableModel extends ProfilerTableBaseModel {
             buf.append(text);
             buf.append(", ");
         }
-        // シンボル名
+        // Symbol name
         if (visibledcolumns[3]) {
             buf.append(info.getSymbol());
             buf.append(", ");
         }
-        // ファイル名
+        // file name
         if (visibledcolumns[4]) {
             if (info.getCodeLine().getSourceFile() != null) {
                 buf.append(info.getCodeLine().getSourceFile().getFile().getName());
             }
             buf.append(", ");
         }
-        // 行番号
+        // line number
         if (visibledcolumns[5]) {
             if (info.getCodeLine() != null) {
                 buf.append(info.getCodeLine().getLineno());
@@ -514,8 +514,8 @@ public class ProfilerCostTableModel extends ProfilerTableBaseModel {
 
 
     /**
-     * ヘッダー列の表示状態を取得する
-     * @return		ヘッダー列表示状態リスト
+     * Get the display status of the header column
+     * @return Header column display status list
      */
     @Override
     public boolean[] getVisibledColumns() {
@@ -523,9 +523,9 @@ public class ProfilerCostTableModel extends ProfilerTableBaseModel {
     }
 
     /**
-     * ヘッダー列の表示状態を設定する
-     * @param col		ヘッダー列番号
-     * @param checked   表示状態
+     * Set the display state of the header column
+     * @param col Header column number
+     * @param checked Display status
      */
     @Override
     public void setVisibledColumns(int col, boolean checked) {
@@ -535,8 +535,8 @@ public class ProfilerCostTableModel extends ProfilerTableBaseModel {
     }
 
     /**
-     * テーブル列配置を取得する
-     * @return		テーブル列配置
+     * Get table column placement
+     * @return Table column placement
      */
     @Override
     public int[] getTableColumnAlignments() {
@@ -544,8 +544,8 @@ public class ProfilerCostTableModel extends ProfilerTableBaseModel {
     }
     
     /**
-     * ソートフラグを設定する
-     * @return		void
+     * Set the sort flag
+     * @return void
      */
     @Override
     public void setViewSort(boolean sort) {

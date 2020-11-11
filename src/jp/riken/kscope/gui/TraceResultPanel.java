@@ -66,81 +66,81 @@ import jp.riken.kscope.utils.ResourceUtils;
 import jp.riken.kscope.utils.SwingUtils;
 
 /**
- * トレース結果パネルクラス
+ * Trace result panel class
  * @author RIKEN
  *
  */
 public class TraceResultPanel extends AnalisysPanelBase implements Observer, IAnalisysComponent, ActionListener, MouseListener, TreeSelectionListener {
 
-    /** シリアル番号 */
+    /** Serial number */
     private static final long serialVersionUID = 1L;
-    /** トレースツリー */
+    /** Trace tree */
     private SearchTree treeTrace;
-    /** エクスポートボタン */
+    /** Export button */
     private JButton btnExport;
-    /** ファイルを開く */
+    /** Open file */
     private JButton btnOpenFile;
-    /** 移動:上ボタン */
+    /** Move: Up button */
     private JButton btnMoveUp;
-    /** 移動:下ボタン */
+    /** Move: Down button */
     private JButton btnMoveDown;
-    /** 移動:INボタン */
+    /** Move: IN button */
     private JButton btnMoveIn;
-    /** 移動:Outボタン */
+    /** Move: Out button */
     private JButton btnMoveOut;
-    /** 移動:Forwardボタン */
+    /** Move: Forward button */
     private JButton btnMoveForward;
-    /** リフレッシュボタン */
+    /** Refresh button */
     private JButton btnRefresh;
 
-    /** トレース結果ラベル */
+    /** Trace result label */
     private JLabel label;
 
-    /** トレース結果テーブルモデル */
+    /** Trace result table model */
     private TraceResultModel model;
-    /** 該当個所を開くアクション */
+    /** Action to open the relevant part */
     private ViewOpenAnalysisLineAction actionOpen;
 
     /**
-     * コンストラクタ
+     * Constructor
      */
     public TraceResultPanel() {
         super();
 
-        // 初期化を行う。
+        // Initialize.
         initialize();
 
     }
 
     /**
-     * コンストラクタ
-     * @param panel		分析情報パネル識別子
+     * Constructor
+     * @param panel Analysis information panel identifier
      */
     public TraceResultPanel(ANALYSIS_PANEL panel) {
         super(panel);
 
-        // 初期化を行う。
+        // Initialize.
         initialize();
 
     }
 
     /**
-     * 初期化を行う。
+     * Initialize.
      */
     private void initialize() {
 
-        // モデルの生成を行う
+        // Generate a model
         model = new TraceResultModel();
-        // オブザーバを設定する。
+        // Set the observer.
         model.addObserver(this);
 
-        // GUI初期化を行う。
+        // Initialize the GUI.
         initGUI();
     }
 
 
     /**
-     * GUI初期化を行う。
+     * Initialize the GUI.
      */
     private void initGUI() {
         try {
@@ -148,7 +148,7 @@ public class TraceResultPanel extends AnalisysPanelBase implements Observer, IAn
             this.setLayout(thisLayout);
 //            setPreferredSize(new Dimension(400, 64));
 
-            // 上部の情報ラベル、ボタンの配置パネル
+            // Information label at the top, button placement panel
             {
                 JPanel panelTop = new JPanel();
                 panelTop.setLayout(new BorderLayout());
@@ -156,7 +156,7 @@ public class TraceResultPanel extends AnalisysPanelBase implements Observer, IAn
                 panelTop.setBorder(new CompoundBorder(
                                             new LineBorder(Color.BLACK, 1),
                                             BorderFactory.createEmptyBorder(0, 5, 0, 20)));
-                // ボタン配置パネル
+                // Button layout panel
                 {
                     JPanel panelButtons = new JPanel();
                     panelButtons.setLayout(new BoxLayout(panelButtons, BoxLayout.LINE_AXIS));
@@ -164,7 +164,7 @@ public class TraceResultPanel extends AnalisysPanelBase implements Observer, IAn
 
                     java.awt.Dimension buttonSize = new java.awt.Dimension(24, 24);
 
-                    // リフレッシュボタン
+                    // Refresh button
                     {
                         Icon icon = ResourceUtils.getIcon("refresh.gif");
                         btnRefresh = new JButton(icon);
@@ -246,7 +246,7 @@ public class TraceResultPanel extends AnalisysPanelBase implements Observer, IAn
                         panelButtons.add(btnExport);
                     }
                 }
-                // ラベル配置
+                // Label placement
                 {
                     label = new JLabel();
                     panelTop.add(label, BorderLayout.CENTER);
@@ -255,21 +255,21 @@ public class TraceResultPanel extends AnalisysPanelBase implements Observer, IAn
             }
             {
                 {
-                    // トレースツリー
+                    // Trace tree
                     treeTrace = new SearchTree();
 
-                    DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode(Message.getString("mainmenu.window.analysis.trace")); //トレース
+                    DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode(Message.getString("mainmenu.window.analysis.trace")); //trace
                     DefaultTreeModel treeModel = new DefaultTreeModel(rootNode);
                     treeTrace.setModel(treeModel);
                     treeTrace.setRootVisible(true);
                     treeTrace.setShowsRootHandles(true);
 
-                    // ダブルクリックによるノードの展開を行わない。
+                    // Do not expand nodes by double-clicking.
                     treeTrace.setToggleClickCount(0);
-                    // 一行だけ選択可能
+                    // Only one line can be selected
                     treeTrace.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
 
-                    // スクロールパイン
+                    // Scroll pine
                     JScrollPane scrollTable = new JScrollPane(treeTrace);
                     scrollTable.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
                     scrollTable.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
@@ -281,17 +281,17 @@ public class TraceResultPanel extends AnalisysPanelBase implements Observer, IAn
 
             }
 
-            // ツールチップ設定
-            btnOpenFile.setToolTipText(Message.getString("traceresultpanel.tooltip.open"));//トレース箇所を開く
-            btnExport.setToolTipText(Message.getString("mainmenu.file.export")); //エクスポート
-            btnMoveUp.setToolTipText(Message.getString("traceresultpanel.tooltip.up")); //トレース:アップ
-            btnMoveDown.setToolTipText(Message.getString("traceresultpanel.tooltip.down")); //トレース:ダウン
-            btnMoveIn.setToolTipText(Message.getString("traceresultpanel.tooltip.in")); //トレース:イン
-            btnMoveOut.setToolTipText(Message.getString("traceresultpanel.tooltip.out")); //トレース:アウト
-            btnMoveForward.setToolTipText(Message.getString("traceresultpanel.tooltip.foward")); //トレース:フォワード
-            btnRefresh.setToolTipText(Message.getString("traceresultpanel.tooltip.update")); //トレース:更新
+            // Tooltip settings
+            btnOpenFile.setToolTipText(Message.getString("traceresultpanel.tooltip.open"));// Open the trace location
+            btnExport.setToolTipText(Message.getString("mainmenu.file.export")); //export
+            btnMoveUp.setToolTipText(Message.getString("traceresultpanel.tooltip.up")); // Trace: Up
+            btnMoveDown.setToolTipText(Message.getString("traceresultpanel.tooltip.down")); // Trace: Down
+            btnMoveIn.setToolTipText(Message.getString("traceresultpanel.tooltip.in")); // Trace: In
+            btnMoveOut.setToolTipText(Message.getString("traceresultpanel.tooltip.out")); // Trace: Out
+            btnMoveForward.setToolTipText(Message.getString("traceresultpanel.tooltip.foward")); // Trace: Forward
+            btnRefresh.setToolTipText(Message.getString("traceresultpanel.tooltip.update")); // Trace: Update
 
-            // ボタンイベント
+            // Button event
             btnMoveUp.addActionListener(this);
             btnMoveDown.addActionListener(this);
             btnOpenFile.addActionListener(this);
@@ -304,83 +304,83 @@ public class TraceResultPanel extends AnalisysPanelBase implements Observer, IAn
     }
 
     /**
-     * トレース結果モデルの変更通知イベント
-     * @param o			通知元
-     * @param arg		通知項目
+     * Trace result model change notification event
+     * @param o Notification source
+     * @param arg Notification item
      */
     @Override
     public void update(Observable o, Object arg) {
-        // トレース結果モデルを更新する.
+        // Update the trace result model.
         updateModel();
     }
 
     /**
-     * トレース結果モデルを更新する.
+     * Update the trace result model.
      */
     private void updateModel() {
-        // ツリーモデルの設定
+        // Tree model settings
         this.treeTrace.setModel(this.model.getTreeModel());
-        // 選択ノードを設定する
+        // Set the selected node
         if (this.model.getSelectedBlock() != null) {
             this.treeTrace.setSelectedNode(this.model.getSelectedBlock());
-            // 該当個所を開く
+            // Open the relevant part
             openTraceBlock();
         }
 
-        // 検索条件を設定する
+        // Set search conditions
         SearchOption searchOption = new SearchOption();
-        searchOption.setSearchText(this.model.getTraceWord());	// トレース変数
-        searchOption.setVariable(true);							// 変数検索
+        searchOption.setSearchText(this.model.getTraceWord());	// Trace variable
+        searchOption.setVariable(true);							// Variable search
         this.treeTrace.setSearchOption(searchOption);
 
-        // パネルタイトル
+        // Panel title
         this.label.setText(this.model.getTitle());
 
-        // 選択ノードによってボタンのイネーブルを切り替える
+        // Toggle button enable by selected node
         setEnableButtons();
 
     }
 
 
     /**
-     * トレース結果モデルを取得する
-     * @return		トレース結果モデル
+     * Get the trace result model
+     * @return Trace result model
      */
     public TraceResultModel getModel() {
         return model;
     }
 
     /**
-     * トレース結果モデルを設定する
-     * @param  model		トレース結果モデル
+     * Set the trace result model
+     * @param model Trace result model
      */
     public void setModel(TraceResultModel model) {
         if (model == null) return;
         this.model = model;
 
-        // オブザーバを設定する。
+        // Set the observer.
         this.model.deleteObservers();
         this.model.addObserver(this);
 
-        // トレース結果モデルを更新する.
+        // Update the trace result model.
         updateModel();
     }
 
 
     /**
-     * フォーカスリスナを設定する
-     * @param listener		フォーカスリスナ
+     * Set focus listener
+     * @param listener Focus listener
      */
     @Override
     public void addTabFocusListener(TabFocusListener listener) {
         this.addFocusListener(listener);
-        // 子コンポーネントにもフォーカスリスナを設定する
+        // Set focus listener for child components as well
         SwingUtils.addChildFocusListener(this, listener);
     }
 
 
     /**
-     * エクスポートを行う
+     * Export
      */
     @Override
     public void export(File file) {
@@ -390,29 +390,29 @@ public class TraceResultPanel extends AnalisysPanelBase implements Observer, IAn
     }
 
     /**
-     * パネルにアクションリスナを設定する.<br/>
-     * メニューバーに作成済みのアクションリスナをパネルボタンに割り当てる。
-     * @param menu		メニューバー
+     * Set an action listener on the panel. <br/>
+     * Assign the created action listener to the menu bar to the panel button.
+     * @param menu Menu bar
      */
     @Override
     public void setActionListener(MainMenu menu) {
-        // 分析情報エクスポートアクション
+        // Analysis information export action
         this.btnExport.addActionListener(menu.getActionExportAnalysis());
-        // トレース
+        // Trace
         this.btnMoveIn.addActionListener(menu.getActionAnalysisTrace(TRACE_DIR.IN));
         this.btnMoveOut.addActionListener(menu.getActionAnalysisTrace(TRACE_DIR.OUT));
         this.btnMoveForward.addActionListener(menu.getActionAnalysisTrace(TRACE_DIR.FORWARD));
-        // トレース:更新
+        // Trace: Update
         this.btnRefresh.addActionListener(menu.getActionAnalysisTrace(TRACE_DIR.REFRESH));
 
-        // 検索結果箇所を開く
+        // Open the search result
         actionOpen = (ViewOpenAnalysisLineAction) menu.getActionOpenAnalysisLine();
     }
 
     /**
-     * 選択行のコード情報を取得する.<br/>
-     * テーブルモデルの1列目にはコード情報オブジェクトが設定されている。
-     * @return		コード情報
+     * Get the code information of the selected line. <br/>
+     * A code information object is set in the first column of the table model.
+     * @return code information
      */
     @Override
     public CodeLine getSelectedCodeLine() {
@@ -424,36 +424,36 @@ public class TraceResultPanel extends AnalisysPanelBase implements Observer, IAn
     }
 
     /**
-     * モデルのクリアを行う。
+     * Clear the model.
      */
     @Override
     public void clearModel() {
-        // モデルクリア
+        // Model clear
         model.clearTreeModel();
     }
 
     /**
-     * タブのクローズを行う
+     * Close the tab
      */
     @Override
     public void closeTab() {
     }
 
     /**
-     * 選択ブロックを取得する
-     * @return		選択ブロック
+     * Get the selected block
+     * @return selection block
      */
     @Override
     public IBlock getSelectedBlock() {
 
-        // 選択されたファイルのソースファイルオブジェクトを取得する。
+        // Get the source file object for the selected file.
         DefaultMutableTreeNode node = (DefaultMutableTreeNode) this.treeTrace.getLastSelectedPathComponent();
         if (node == null)  return null;
         if (node.getUserObject() == null) return null;
 
-        // ブロックオブジェクトであるか？
+        // Is it a block object?
         if (node.getUserObject() instanceof IBlock) {
-            // 開始CodeLineが存在するか？
+            // Does the start CodeLine exist?
             IBlock block = (IBlock)node.getUserObject();
             CodeLine line = block.getStartCodeLine();
             if (line == null) {
@@ -469,18 +469,18 @@ public class TraceResultPanel extends AnalisysPanelBase implements Observer, IAn
     }
 
     /**
-     * 選択付加情報を取得する
-     * @return		選択付加情報
+     * Get additional selection information
+     * @return Selectable additional information
      */
     @Override
     public IInformation getSelectedInformation() {
 
-        // 選択されたファイルのソースファイルオブジェクトを取得する。
+        // Get the source file object for the selected file.
         DefaultMutableTreeNode node = (DefaultMutableTreeNode) this.treeTrace.getLastSelectedPathComponent();
         if (node == null)  return null;
         if (node.getUserObject() == null) return null;
 
-        // 付加情報オブジェクトであるか？
+        // Is it an additional information object?
         if (node.getUserObject() instanceof IInformation) {
             return (IInformation)node.getUserObject();
         }
@@ -489,52 +489,52 @@ public class TraceResultPanel extends AnalisysPanelBase implements Observer, IAn
     }
 
     /**
-     * ボタンのクリックイベント
-     * @param event			イベント情報
+     * Button click event
+     * @param event Event information
      */
     @Override
     public void actionPerformed(ActionEvent event) {
 
         if (event.getSource() == this.btnMoveUp) {
-            // トレース：アップ
+            // Trace: Up
             traceUp();
         }
         else if (event.getSource() == this.btnMoveDown) {
-            // トレース：アップ
+            // Trace: Up
             traceDown();
         }
         else if (event.getSource() == this.btnOpenFile) {
-            // 該当個所を開く
+            // Open the relevant part
             openTraceBlock();
         }
 
     }
 
     /**
-     * 該当個所を開く
+     * Open the relevant part
      */
     private void openTraceBlock() {
         List<IBlock> list = new ArrayList<IBlock>();
-        // トレースパス
+        // Trace path
         IBlock[] paths = this.model.getTracePath();
         if (paths != null && paths.length > 0) {
             list.addAll(Arrays.asList(paths));
         }
-        // ルート選択子ノードを追加する
+        // Add a route selector node
         if (this.treeTrace.getLastSelectedPathComponent() != this.treeTrace.getModel().getRoot()) {
-	        // 選択ブロック
+	        // Select block
 	        IBlock block = getSelectedBlock();
 	        if (block != null) {
 	            list.add(block);
 	        }
         }
-        // 選択ブロックを開く
+        // open the selection block
         this.actionOpen.openTraceBlocks(list.toArray(new IBlock[0]));
 
     }
 
     /**
-     * トレース：アップを行う
+     * Trace: Up
      */
     public void traceUp() {
 
@@ -550,37 +550,37 @@ public class TraceResultPanel extends AnalisysPanelBase implements Observer, IAn
             selectPath = new TreePath(root);
         }
         else {
-            // ツリーノードを順方向で列挙
+            // List tree nodes in the forward direction
             Enumeration<?> depth = root.preorderEnumeration();
             while (depth.hasMoreElements()) {
                 DefaultMutableTreeNode node = (DefaultMutableTreeNode)depth.nextElement();
                 if (currentnode == node) {
-                    // 選択ノードがルートパスの場合, selectPath=nullとなる。
+                    // If the selected node is the root path, selectPath = null.
                     selectPath = lastPath;
                     break;
                 }
-                // １つ手前のノードパス
+                // One node path before
                 lastPath = new TreePath(node.getPath());
             }
         }
 
-        // 選択パスが存在しなければ、ルートパスを選択する
-        // 選択パスが存在しない場合は、選択ノードがルートパスの場合
+        // If the selection path does not exist, select the root path
+        // If the selected path does not exist, if the selected node is the root path
         if (selectPath == null) {
             selectPath = new TreePath(root);
         }
 
-        // 選択パスを選択状態にする
+        // Select the selected path
         this.treeTrace.setSelectionPath(selectPath);
         this.treeTrace.scrollPathToVisible(selectPath);
 
-        // 該当個所を開く
+        // Open the relevant part
         this.btnOpenFile.doClick();
 
     }
 
     /**
-     * トレース：ダウンを行う
+     * Trace: Go down
      */
     public void traceDown() {
 
@@ -596,7 +596,7 @@ public class TraceResultPanel extends AnalisysPanelBase implements Observer, IAn
             selectPath = new TreePath(root);
         }
         else {
-            // ツリーノードを順方向で列挙
+            // List tree nodes in the forward direction
             Enumeration<?> depth = root.preorderEnumeration();
             while (depth.hasMoreElements()) {
                 DefaultMutableTreeNode node = (DefaultMutableTreeNode)depth.nextElement();
@@ -605,37 +605,37 @@ public class TraceResultPanel extends AnalisysPanelBase implements Observer, IAn
                     break;
                 }
                 if (currentnode == node) {
-                    // 現在のノードパス
+                    // Current node path
                     currentPath = new TreePath(node.getPath());
                 }
             }
         }
 
-        // 選択パスが存在しない場合は、選択ノードが最終パスの場合
+        // If the selected path does not exist, if the selected node is the last path
         if (selectPath != null) {
             this.treeTrace.setSelectionPath(selectPath);
             this.treeTrace.scrollPathToVisible(selectPath);
         }
 
-        // 該当個所を開く
+        // Open the relevant part
         this.btnOpenFile.doClick();
     }
 
     /**
-     * ソースビュープロパティを設定する
-     * @param properties		ソースビュープロパティ
+     * Set source view properties
+     * @param properties Source view properties
      */
     @Override
     public void setSourceProperties(SourceProperties properties) {
-        // トレースツリーのマーキング色の設定を行う。
-        // 文字色
+        // Set the marking color of the trace tree.
+        // Letter color
         this.treeTrace.setForecolor(properties.getSearchFontColor());
-        // 背景色
+        // Background color
         this.treeTrace.setBackcolor(properties.getSearchBackgroundColor());
-        // スタイル
+        // Style
         this.treeTrace.setFontstyle(KscopeProperties.SEARCHTREE_FONTSTYLE);
 
-        // ツリーの再描画
+        // Redraw tree
         this.treeTrace.invalidate();
         this.treeTrace.validate();
         this.treeTrace.repaint();
@@ -643,8 +643,8 @@ public class TraceResultPanel extends AnalisysPanelBase implements Observer, IAn
     }
 
     /**
-     * トレース結果のキーワードリストを取得する
-     * @return		トレースキーワードリスト
+     * Get the keyword list of trace results
+     * @return Trace keyword list
      */
     public Keyword[] getTraceKeywords() {
 
@@ -652,18 +652,18 @@ public class TraceResultPanel extends AnalisysPanelBase implements Observer, IAn
         if (model == null) return null;
         DefaultMutableTreeNode root = (DefaultMutableTreeNode)model.getRoot();
 
-        // キーワードリスト
+        // Keyword list
         List<Keyword> list = new ArrayList<Keyword>();
 
-        // トレース変数
+        // Trace variable
         String variable = this.model.getTraceWord();
 
-        // ツリーノードを順方向で列挙
+        // List tree nodes in the forward direction
         Enumeration<?> depth = root.preorderEnumeration();
         while(depth.hasMoreElements()) {
             DefaultMutableTreeNode treeNode = (DefaultMutableTreeNode)depth.nextElement();
 
-            // ノード検索を行う
+            // Do a node search
             if (treeNode == null || treeNode.getUserObject() == null) {
                 continue;
             }
@@ -694,49 +694,49 @@ public class TraceResultPanel extends AnalisysPanelBase implements Observer, IAn
 
 
     /**
-     * マウスクリックイベント
-     * @param event		マウスイベント情報
+     * Mouse click event
+     * @param event Mouse event information
      */
     @Override
     public void mouseClicked(MouseEvent event) {
-        // ダブルクリックチェック
+        // Double click check
         if (SwingUtilities.isLeftMouseButton(event) && event.getClickCount() == 2) {
-            // 該当個所を開く
+            // Open the relevant part
             this.btnOpenFile.doClick();
         }
     }
 
     /**
-     * マウスボタンダウンイベント
-     * @param e		マウスイベント情報
+     * Mouse button down event
+     * @param e Mouse event information
      */
     @Override
     public void mousePressed(MouseEvent e) { }
 
     /**
-     * マウスボタンアップイベント
-     * @param e		マウスイベント情報
+     * Mouse button up event
+     * @param e Mouse event information
      */
     @Override
     public void mouseReleased(MouseEvent e) {}
 
     /**
-     * マウスオーバーイベント
-     * @param e		マウスイベント情報
+     * Mouseover event
+     * @param e Mouse event information
      */
     @Override
     public void mouseEntered(MouseEvent e) {}
 
     /**
-     * マウスアウトイベント
-     * @param e		マウスイベント情報
+     * Mouse out event
+     * @param e Mouse event information
      */
     @Override
     public void mouseExited(MouseEvent e) {}
 
     /**
-     * トレースツリーの選択変更イベント
-     * @param event         イベント情報
+     * Trace tree selection change event
+     * @param event Event information
      */
     @Override
     public void valueChanged(TreeSelectionEvent event) {
@@ -744,24 +744,24 @@ public class TraceResultPanel extends AnalisysPanelBase implements Observer, IAn
             DefaultMutableTreeNode currentnode = (DefaultMutableTreeNode) this.treeTrace.getLastSelectedPathComponent();
             if (currentnode == null) return;
             if (currentnode.getUserObject() instanceof IBlock) {
-                // 選択ブロックを設定する
+                // Set the selection block
                 this.model.setSelectedBlock((IBlock)currentnode.getUserObject());
 
-                // 選択ノードによってボタンのイネーブルを切り替える
+                // Toggle button enable by selected node
                 setEnableButtons();
             }
         }
     }
 
     /**
-     * 選択ノードによってボタンのイネーブルを切り替える。
+     * Toggle button enable by selected node.
      */
     private void setEnableButtons() {
         DefaultMutableTreeNode currentnode = (DefaultMutableTreeNode) this.treeTrace.getLastSelectedPathComponent();
         if (currentnode == null) return;
         if (currentnode.getUserObject() instanceof IBlock) {
-            // 選択ノード
-            // ルート選択
+            // Selected node
+            // Route selection
             boolean enabledMoveUp = true;
             boolean enabledMoveDown = true;
             if (currentnode == this.treeTrace.getModel().getRoot()) {
@@ -791,7 +791,7 @@ public class TraceResultPanel extends AnalisysPanelBase implements Observer, IAn
             btnMoveDown.setEnabled(enabledMoveDown);
         }
 
-        // フォワードボタンのイネーブル切替
+        // Enable switching of forward button
         boolean enabled = (this.model.getTracePath() != null && this.model.getTracePath().length > 2);
         Icon icon = null;
         if (enabled) {
@@ -806,23 +806,23 @@ public class TraceResultPanel extends AnalisysPanelBase implements Observer, IAn
     }
 
     /**
-     * 選択項目をクリップボードにコピーする.
+     * Copy the selection to the clipboard.
      */
     @Override
     public void copyClipboard() {
 
-        // 選択されたファイルのソースファイルオブジェクトを取得する。
+        // Get the source file object for the selected file.
         DefaultMutableTreeNode node = (DefaultMutableTreeNode) this.treeTrace.getLastSelectedPathComponent();
         if (node == null)  return;
         if (node.getUserObject() == null) return;
         String text = node.getUserObject().toString();
 
-        // クリップボードにコピーする
+        // copy to clipboard
         SwingUtils.copyClipboard(text);
     }
 
     /**
-     * エキスポートする情報があるか否か
+     * Whether there is information to export
      */
 	@Override
 	public boolean isExportable() {

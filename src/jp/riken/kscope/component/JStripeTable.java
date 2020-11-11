@@ -33,66 +33,66 @@ import javax.swing.table.JTableHeader;
 
 
 /**
- * ストライプテーブルコンポーネント
+ * Striped table component
  * @author RIKEN
  */
 public class JStripeTable extends JTable implements MouseListener {
 
-    /** シリアル番号 */
+    /** Serial number */
     private static final long serialVersionUID = 1L;
 
-    /** 行高さ */
+    /** Line height */
     private final int ROW_HEIGHT = 22;
 
-    /** 奇数行の背景色 */
+    /** Background color for odd lines */
     private final Color EVEN_COLOR = new Color(240, 240, 255);
 
-    /** セルの左側マージン */
+    /** Left margin of cell */
     private final int CELL_MARGIN = 5;
-    /** 列サイズ変更フラグ */
+    /** Column resizing flag */
     @SuppressWarnings("unused")
     private boolean resizing = false;
 
     /**
-     * コンストラクタ
+     * Constructor
      */
     public JStripeTable() {
         this(SwingConstants.LEFT);
     }
 
     /**
-     * コンストラクタ
-     * @param   alignments   列の表示配置
-     * @param   defultalign   デフォルト表示配置
+     * Constructor
+     * @param alignments Column display alignment
+     * @param defultalign Default display alignment
      */
     public JStripeTable(int[] alignments, int defultalign) {
         super();
 
-        // テーブル高さを拡張する
+        // Extend table height
         this.setFillsViewportHeight(true);
 
-        // セルグリッドを表示しない
+        // Don't show cell grid
         this.setShowGrid(false);
 
-        // 編集不可に設定
+        // Set to non-editable
         this.setDefaultEditor(Object.class, null);
-        // 横スクロールバー表示の為
+        // For horizontal scroll bar display
         this.setAutoResizeMode(AUTO_RESIZE_OFF);
 
-        // 行高さの変更
-        // 行
+        // Change line height
+        // line
         this.setRowHeight(ROW_HEIGHT);
 
-        // 偶数、奇数行で背景色をストライプ描画する
+        // Strip the background color with even and odd lines
         StripeTableRenderer renderer = new StripeTableRenderer(alignments, defultalign, CELL_MARGIN);
         this.setDefaultRenderer(Object.class, renderer);
 
-        // ヘッダー
+        // header
         JTableHeader header = this.getTableHeader();
-        // テーブルの列移動を不許可にする。
+        // Disable column movement of the table.
         header.setReorderingAllowed(false);
 
-        // ヘッダーのレンダリング設定
+        // Header rendering settings
         header.setDefaultRenderer(renderer);
 
         this.getTableHeader().addMouseListener(this);
@@ -100,8 +100,8 @@ public class JStripeTable extends JTable implements MouseListener {
     }
 
     /**
-     * コンストラクタ
-     * @param   alignment   セルのデフォルト表示配置
+     * Constructor
+     * @param alignment Default display alignment of cells
      */
     public JStripeTable(int alignment) {
         this(null, alignment);
@@ -121,25 +121,25 @@ public class JStripeTable extends JTable implements MouseListener {
 */
 
     /**
-     * 偶数、奇数行で背景色をストライプ描画クラス
+     * Striped background color with even and odd lines Drawing class
      * @author RIKEN
      *
      */
     class StripeTableRenderer extends DefaultTableCellRenderer {
 
-        /** シリアル番号 */
+        /** Serial number */
         private static final long serialVersionUID = 1L;
-        /** 配置 */
+        /** Placement */
         private int[] alignments;
-        /** 配置 */
+        /** Placement */
         private int default_alignment;
-        /** マージン */
+        /** Margin */
         private int margin;
 
         /**
-         * コンストラクタ
-         * @param defaultalign		デフォルト配置
-         * @param margin		マージン
+         * Constructor
+         * @param defaultalign Default alignment
+         * @param margin Margin
          */
         public StripeTableRenderer(int defaultalign, int margin) {
             this.default_alignment = defaultalign;
@@ -147,10 +147,10 @@ public class JStripeTable extends JTable implements MouseListener {
         }
 
         /**
-         * コンストラクタ
-         * @param alignments		列配置
-         * @param defaultalign		デフォルト配置
-         * @param margin		マージン
+         * Constructor
+         * @param alignments Column alignment
+         * @param defaultalign Default alignment
+         * @param margin Margin
          */
         public StripeTableRenderer(int[] alignments, int defaultalign, int margin) {
             this.alignments = alignments;
@@ -160,22 +160,22 @@ public class JStripeTable extends JTable implements MouseListener {
 
 
         /**
-         * セルを偶数、奇数行で背景色をストライプ描画を行う
-         * @param table			テーブル
-         * @param value			セル値
-         * @param isSelected	選択状態
-         * @param hasFocus		フォーカス状態
-         * @param row			行インデックス
-         * @param column		列インデックス
-         * @return				描画コンポーネント
+         * Strip the background color with even and odd rows of cells
+         * @param table table
+         * @param value Cell value
+         * @param isSelected Selected state
+         * @param hasFocus Focus state
+         * @param row row index
+         * @param column Column index
+         * @return drawing component
          */
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
             super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 
-            // 偶数、奇数行で背景色をストライプ描画する。
+            // Draw the background color in stripes on even and odd lines.
             if (row == -1) {
-                // ヘッダー
+                // header
                 setForeground(table.getTableHeader().getForeground());
                 setBackground(table.getTableHeader().getBackground());
             }
@@ -190,10 +190,10 @@ public class JStripeTable extends JTable implements MouseListener {
 
             if (margin > 0) {
                 setFont( table.getFont() );
-                // 境界線の設定、左寄せ時のスペースを確保する
+                // Set the border and secure space for left justification
                 Border border = null;
                 if (row == -1) {
-                    // ヘッダー
+                    // header
                     border = UIManager.getBorder( "TableHeader.cellBorder" );
                 }
                 else {
@@ -201,14 +201,14 @@ public class JStripeTable extends JTable implements MouseListener {
                     if (border instanceof LineBorder) {
                         border = new LineBorder(Color.WHITE, 0, false);
                     }
-                    // ヘッダー以外のボーダは描画しない
+                    // Do not draw borders other than headers
                     border = null;
                 }
                 if (border != null) {
                     Border setBorder = BorderFactory.createCompoundBorder( border, new EmptyBorder( 0, margin, 0, 0 ) );
                     setBorder( setBorder );
                 }
-                // 改行を含むテキスト表示は、先頭の１行のみとする.
+                // Text display including line breaks is limited to the first line.
                 String text = value!=null?(String)value.toString():"";
                 String br = System.getProperty("line.separator");
                 if (text.indexOf(br) < 0)  {
@@ -220,9 +220,9 @@ public class JStripeTable extends JTable implements MouseListener {
                 }
             }
 
-            // 文字配置
+            // Character placement
             if (this.alignments == null) {
-                // 数値セルは右寄せとする
+                // Numeric cells are right-justified
                 setHorizontalAlignment(getCellHorizontalAlignment(value));
             }
             else {
@@ -237,9 +237,9 @@ public class JStripeTable extends JTable implements MouseListener {
         }
 
         /**
-         * セルの値により左寄せ、右寄せを行う。
-         * @param value			セル値
-         * @return			SwingConstants.LEFT or SwingConstants.RIGHT
+         * Left or right justify according to the cell value.
+         * @param value Cell value
+         * @return SwingConstants.LEFT or SwingConstants.RIGHT
          */
         private int getCellHorizontalAlignment(Object value) {
             if (value instanceof Integer) return SwingConstants.RIGHT;
@@ -253,15 +253,15 @@ public class JStripeTable extends JTable implements MouseListener {
     }
 
     /**
-     * マウスクリックイベント
-     * @param event		マウスイベント情報
+     * Mouse click event
+     * @param event Mouse event information
      */
     @Override
     public void mouseClicked(MouseEvent event) { }
 
     /**
-     * マウスボタンダウンイベント
-     * @param e		マウスイベント情報
+     * Mouse button down event
+     * @param e Mouse event information
      */
     @Override
     public void mousePressed(MouseEvent e) {
@@ -271,8 +271,8 @@ public class JStripeTable extends JTable implements MouseListener {
     }
 
     /**
-     * マウスボタンアップイベント
-     * @param e		マウスイベント情報
+     * Mouse button up event
+     * @param e Mouse event information
      */
     @Override
     public void mouseReleased(MouseEvent e) {
@@ -280,15 +280,15 @@ public class JStripeTable extends JTable implements MouseListener {
     }
 
     /**
-     * マウスオーバーイベント
-     * @param e		マウスイベント情報
+     * Mouseover event
+     * @param e Mouse event information
      */
     @Override
     public void mouseEntered(MouseEvent e) {}
 
     /**
-     * マウスアウトイベント
-     * @param e		マウスイベント情報
+     * Mouse out event
+     * @param e Mouse event information
      */
     @Override
     public void mouseExited(MouseEvent e) {

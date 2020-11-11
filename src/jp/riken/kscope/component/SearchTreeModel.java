@@ -22,25 +22,25 @@ import jp.riken.kscope.data.SearchOption;
 
 
 /**
- * 検索フィルタツリーモデルクラス
+ * Search filter tree model class
  * @author RIKEN
  *
  */
 public class SearchTreeModel extends FilterTreeModel {
 
-    /** シリアル番号 */
+    /** Serial number */
     private static final long serialVersionUID = 1L;
 
-    /** 検索条件 */
+    /** Search criteria */
     private SearchOption searchOption;
-    /** 検索ノード */
+    /** Search node */
     private TreeNode[] searchNodes;
-    /** フィルタ適用フラグ */
+    /** Filter application flag */
     private boolean applyFilter;
 
     /**
-     * コンストラクタ
-     * @param node		ルートノード
+     * Constructor
+     * @param node Root node
      */
     public SearchTreeModel(SearchTreeNode node) {
         super((SearchTreeNode)node);
@@ -48,33 +48,33 @@ public class SearchTreeModel extends FilterTreeModel {
     }
 
     /**
-     * ノード検索を実行する
+     * Perform a node search
      */
     @Override
     public void find() {
         if (this.root != null) {
             SearchTreeNode node = (SearchTreeNode) root;
-            // 検索条件を設定
+            // Set search conditions
             node.setSearchOption(this);
             node.setApplyFilter(this.applyFilter);
             if (this.applyFilter) {
-	            // フィルタを設定
+	            // Set filter
 	            node.setListFilter(this.getListFilter());
             }
 
-            // ノード検索
+            // Node search
             node.find();
 
-            // ツリー変更イベント
+            // Tree change event
             Object[] path = { root };
             fireTreeStructureChanged(this, path, null, null);
         }
     }
 
     /**
-     * 親ノードの子ノード数を取得する
-     * @param   parent    親ノード
-     * @return		子ノード数
+     * Get the number of child nodes of the parent node
+     * @param parent parent node
+     * @return Number of child nodes
      */
     @Override
     public int getChildCount(Object parent) {
@@ -85,10 +85,10 @@ public class SearchTreeModel extends FilterTreeModel {
     }
 
     /**
-     * 親ノードの子ノードを取得する
-     * @param   parent    親ノード
-     * @param   index    子ノードインデックス
-     * @return		子ノード
+     * Get the child node of the parent node
+     * @param parent parent node
+     * @param index Child node index
+     * @return child node
      */
     @Override
     public Object getChild(Object parent, int index) {
@@ -99,32 +99,32 @@ public class SearchTreeModel extends FilterTreeModel {
     }
 
     /**
-     * 検索ノードを取得する
-     * @return searchNodes		検索ノード
+     * Get search node
+     * @return searchNodes Search nodes
      */
     public TreeNode[] getSearchNodes() {
         return searchNodes;
     }
 
     /**
-     * 検索ノードを設定する
-     * @param searchNodes 		検索ノード
+     * Set search node
+     * @param searchNodes Search nodes
      */
     public void setSearchNodes(TreeNode[] searchNodes) {
         this.searchNodes = searchNodes;
     }
 
     /**
-     * 検索条件を取得する.
-     * @return		検索条件
+     * Get search criteria.
+     * @return Search criteria
      */
     public SearchOption getSearchOption() {
         return this.searchOption;
     }
 
     /**
-     * 検索条件を設定する.
-     * @param searchOption		検索条件
+     * Set search conditions.
+     * @param searchOption Search criteria
      */
     public void setSearchOption(SearchOption searchOption) {
         this.searchOption = searchOption;
@@ -132,8 +132,8 @@ public class SearchTreeModel extends FilterTreeModel {
 
 
     /**
-     * ノードフィルタを適用する
-     * @param filter	true=ノードフィルタを適用する
+     * Apply node filter
+     * @param filter true = Apply node filter
      */
     public void setApplyFilter(boolean filter) {
     	applyFilter = filter;

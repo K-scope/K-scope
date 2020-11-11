@@ -25,19 +25,19 @@ import javax.swing.Icon;
 import javax.swing.JButton;
 
 /**
- * カラーボタン
+ * Color button
  * @author RIKEN
  */
 public class JColorButton extends JButton {
 
-    /** シリアル番号 */
+    /** Serial number */
     private static final long serialVersionUID = 1L;
 
-    /** 表示カラー */
+    /** Display color */
     private Color color;
 
     /**
-     * コンストラクタ
+     * Constructor
      */
     public JColorButton() {
         super();
@@ -46,8 +46,8 @@ public class JColorButton extends JButton {
     }
 
     /**
-     * コンストラクタ
-     * @param color		カラー設定
+     * Constructor
+     * @param color Color settings
      */
     public JColorButton(Color color) {
         super();
@@ -56,7 +56,7 @@ public class JColorButton extends JButton {
     }
 
     /**
-     * GUIの初期化を行う。
+     * Initialize the GUI.
      */
     private void initGUI() {
         java.awt.Dimension size = new java.awt.Dimension(48, 22);
@@ -69,16 +69,16 @@ public class JColorButton extends JButton {
 
 
     /**
-     * ボタンカラーを取得する
-     * @return color		ボタンカラー
+     * Get button color
+     * @return color Button color
      */
     public Color getColor() {
         return color;
     }
 
     /**
-     * ボタンカラーを設定する
-     * @param color 	ボタンカラー
+     * Set the button color
+     * @param color Button color
      */
     public void setColor(Color color) {
         this.color = color;
@@ -86,9 +86,9 @@ public class JColorButton extends JButton {
     }
 
     /**
-     * ボタン表示文字列をnullとする.<br/>
-     * カラーボタンには文字列は表示しない。
-     * @return		null固定
+     * Set the button display string to null. <br/>
+     * The color button does not display a character string.
+     * @return null fixed
      */
     @Override
     public String getText() {
@@ -96,28 +96,28 @@ public class JColorButton extends JButton {
     }
 
     /**
-     * カラーボタン用のカラーアイコン作成クラス
+     * Color icon creation class for color buttons
      * @author RIKEN
      */
     private static class ColorIcon implements Icon {
-    	/** アイコン幅 */
+    	/** Icon width */
         private int width;
-        /** アイコン高さ */
+        /** Icon height */
         private int height;
-        /** カラー */
+        /** Color */
         private Color color;
 
         /**
-         * コンストラクタ
+         * Constructor
          */
         public ColorIcon() {
-            // アイコンサイズは32x12に設定
+            // Icon size set to 32x12
             width  = 32;
             height = 12;
         }
         /**
-         * コンストラクタ
-         * @param color		アイコンカラー
+         * Constructor
+         * @param color Icon color
          */
         public ColorIcon(Color color) {
             this();
@@ -125,7 +125,7 @@ public class JColorButton extends JButton {
         }
 
         /**
-         * カラーアイコンを描画する.
+         * Draw a color icon.
          */
         @Override
         public void paintIcon(Component c, Graphics g, int x, int y) {
@@ -138,7 +138,7 @@ public class JColorButton extends JButton {
         }
 
         /**
-         * カラーアイコン幅を取得する。
+         * Get the color icon width.
          */
         @Override
         public int getIconWidth() {
@@ -146,7 +146,7 @@ public class JColorButton extends JButton {
         }
 
         /**
-         * カラーアイコン高さを取得する。
+         * Get the color icon height.
          */
         @Override
         public int getIconHeight() {

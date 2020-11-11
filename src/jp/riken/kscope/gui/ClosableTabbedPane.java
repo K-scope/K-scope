@@ -39,62 +39,62 @@ import javax.swing.event.ChangeListener;
 import jp.riken.kscope.common.FRAME_VIEW;
 
 /**
- * 閉じるボタンつきタブペイン
+ * Tab pane with close button
  * @author RIKEN
  *
  */
 public abstract class ClosableTabbedPane extends JTabbedPane  implements ITabComponent, ChangeListener, ActionListener {
-    /** シリアル番号 */
+    /** Serial number */
     private static final long serialVersionUID = 1L;
 
-    /** 閉じるボタンアイコン */
+    /** Close button icon */
     private static final Icon icon = new CloseTabIcon();
 
-    /** 親コンポーネント */
+    /** Parent component */
     private ITabComponent parentCompornent = null;
 
-    /** ビューの識別子 */
+    /** View identifier */
     private FRAME_VIEW viewType;
 
-    /** フォーカスリスナ.<br/>
-     * 後で追加されたタブ用に待避しておく.
+    /** Focus listener. <br/>
+     * Save for tabs added later.
      */
     TabFocusListener focusListener = null;
 
 
     /**
-     * コンストラクタ
-     * @param   type		ビューの識別子
+     * Constructor
+     * @param type View identifier
      */
     public ClosableTabbedPane(FRAME_VIEW type) {
         super();
 
-        // タブレイアウトをスクロール表示とする。
+        // Scroll the tab layout.
         this.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
 
-        // タブの変更イベント登録
+        // Tab change event registration
         this.addChangeListener(this);
 
-        // ビューの識別子
+        // View identifier
         this.viewType = type;
     }
 
     /**
-     * タブを閉じる
-     * @param index		タブインデックス
+     * Close tab
+     * @param index Tab index
      */
     protected abstract void closeTab(int index);
 
     /**
-     * アクティブタブを切り替える。
-     * @param index		アクティブタブインデックス
+     * Switch active tabs.
+     * @param index Active tab index
      */
     @Override
     public void setSelectedIndex(int index) {
         super.setSelectedIndex(index);
 
         try {
-            // アクティブタブのみ閉じるボタンを表示する。
+            // Display the close button only for the active tab.
             changeSelectedTab(index);
 
             JViewport vp = null;
@@ -119,24 +119,24 @@ public abstract class ClosableTabbedPane extends JTabbedPane  implements ITabCom
     }
 
     /**
-     * タブにコンポーネントを追加する。
-     * @param title		タブ表示文字列
-     * @param content	追加コンポーネント
+     * Add a component to the tab.
+     * @param title Tab display string
+     * @param content Additional components
      */
     @Override
     public void addTab(String title, final Component content) {
-        // タブラベル部分の作成 (タブ表示文字列+閉じるボタン)
+        // Create tab label part (tab display string + close button)
         JPanel tab = createTabComponent(title);
 
-        // タブにコンポーネントを追加する。
+        // Add a component to the tab.
         super.addTab(title, content);
 
-        // タブラベルの設定
+        // Tab label settings
         setTabComponentAt(getTabCount()-1, tab);
 
-        // フォーカスリスナの設定
+        // Focus listener settings
         if (content instanceof ITabComponent) {
-            // 親コンポーネントを設定する。
+            // Set the parent component.
             ((ITabComponent)content).setParentComponent(this);
 
             if (this.focusListener != null) {
@@ -149,23 +149,23 @@ public abstract class ClosableTabbedPane extends JTabbedPane  implements ITabCom
 
     /**
      *
-     * タブにコンポーネントを追加する。
-     * @param title		タブ表示文字列
-     * @param content	追加コンポーネント
-     * @param index   追加インデックス
+     * Add a component to the tab.
+     * @param title Tab display string
+     * @param content Additional components
+     * @param index Additional index
      */
     public void insertTab(String title, TraceResultPanel content, int index) {
-        // タブラベル部分の作成 (タブ表示文字列+閉じるボタン)
+        // Create tab label part (tab display string + close button)
         JPanel tab = createTabComponent(title);
 
         super.insertTab(title, null, content, null, index);
 
-        // タブラベルの設定
+        // Tab label settings
         setTabComponentAt(index, tab);
 
-        // フォーカスリスナの設定
+        // Focus listener settings
         if (content instanceof ITabComponent) {
-            // 親コンポーネントを設定する。
+            // Set the parent component.
             ((ITabComponent)content).setParentComponent(this);
 
             if (this.focusListener != null) {
@@ -175,24 +175,24 @@ public abstract class ClosableTabbedPane extends JTabbedPane  implements ITabCom
     }
 
     /**
-     * タブラベル部分の作成 (タブ表示文字列+閉じるボタン)
-     * @param title			タイトル
-     * @return		タブラベル部分
+     * Create tab label part (tab display string + close button)
+     * @param title Title
+     * @return tab label part
      */
     private JPanel createTabComponent(String title) {
-        // タブラベル部分の作成 (タブ表示文字列+閉じるボタン)
+        // Create tab label part (tab display string + close button)
         JPanel tab = new JPanel(new BorderLayout());
         tab.setOpaque(false);
 
-        // タブ表示文字列ラベル
+        // Tab display string label
         JLabel label = new JLabel(title);
         label.setBorder(BorderFactory.createEmptyBorder(0,0,0,4));
 
-        // 閉じるボタン
+        // Close button
         JButton button = new JButton(icon);
         button.setBorder(BorderFactory.createEmptyBorder());
         button.setContentAreaFilled(false);
-        // 閉じるボタンクリック時のアクション
+        // Action when the close button is clicked
         button.addActionListener(this);
         tab.add(label,  BorderLayout.WEST);
         tab.add(button, BorderLayout.EAST);
@@ -203,9 +203,9 @@ public abstract class ClosableTabbedPane extends JTabbedPane  implements ITabCom
 
 
     /**
-     * タブラベルを設定する.
-     * @param index		タブインデックス
-     * @param title		タブ表示ラベル
+     * Set the tab label.
+     * @param index Tab index
+     * @param title Tab label
      */
     public void setTabTitle(int index, String title) {
         Component comp = this.getTabComponentAt(index);
@@ -222,8 +222,8 @@ public abstract class ClosableTabbedPane extends JTabbedPane  implements ITabCom
     }
 
     /**
-     * アクティブタブの変更イベント
-     * @param event      イベント発生ソース
+     * Active tab change event
+     * @param event Event occurrence source
      */
     @Override
     public void stateChanged(ChangeEvent event) {
@@ -231,14 +231,14 @@ public abstract class ClosableTabbedPane extends JTabbedPane  implements ITabCom
         int index = tabbedpane.getSelectedIndex();
 //        System.out.println("selected tab => "+tabbedpane.getSelectedIndex());
 
-        // アクティブタブのみ閉じるボタンを表示する。
+        // Display the close button only for the active tab.
         changeSelectedTab(index);
 
     }
 
     /**
-     * タブを閉じるイベント
-     * @param event      イベント発生ソース
+     * Event to close tab
+     * @param event Event occurrence source
      */
     @Override
     public void actionPerformed(ActionEvent event) {
@@ -253,9 +253,9 @@ public abstract class ClosableTabbedPane extends JTabbedPane  implements ITabCom
     }
 
     /**
-     * アクティブタブのみ閉じるボタンを表示する.<br/>
-     * 非アクティブタブの閉じるボタンは非表示とする。
-     * @param activeIndex		アクティブタブインデックス
+     * Show close button only for active tab. <br/>
+     * Hide the close button on the inactive tab.
+     * @param activeIndex Active tab index
      */
     private void changeSelectedTab(int activeIndex) {
         if (activeIndex < 0) return;
@@ -282,26 +282,26 @@ public abstract class ClosableTabbedPane extends JTabbedPane  implements ITabCom
 
 
     /**
-     * 閉じるボタンアイコン
+     * Close button icon
      * @author RIKEN
      *
      */
     private static class CloseTabIcon implements Icon {
-        private int width;			///< アイコン幅
-        private int height;			///< アイコン高さ
+        private int width;			/// <icon width
+        private int height;			/// <icon height
 
         /**
-         * コンストラクタ
+         * Constructor
          */
         public CloseTabIcon() {
-            // アイコンサイズは16x16に設定
+            // Icon size set to 16x16
             width  = 16;
             height = 16;
         }
 
         /**
-         * 閉じるアイコンを描画する.<br/>
-         * ×マークを描画する。
+         * Draw a close icon. <br/>
+         * Draw a cross mark.
          */
         @Override
         public void paintIcon(Component c, Graphics g, int x, int y) {
@@ -338,7 +338,7 @@ public abstract class ClosableTabbedPane extends JTabbedPane  implements ITabCom
         }
 
         /**
-         * 閉じるアイコン幅を取得する。
+         * Get the close icon width.
          */
         @Override
         public int getIconWidth() {
@@ -346,7 +346,7 @@ public abstract class ClosableTabbedPane extends JTabbedPane  implements ITabCom
         }
 
         /**
-         * 閉じるアイコン高さを取得する。
+         * Get close icon height.
          */
         @Override
         public int getIconHeight() {
@@ -355,8 +355,8 @@ public abstract class ClosableTabbedPane extends JTabbedPane  implements ITabCom
     }
 
     /**
-     * 親コンポーネントを取得する.
-     * @return		親コンポーネント
+     * Get the parent component.
+     * @return Parent component
      */
     @Override
     public ITabComponent getParentComponent() {
@@ -364,8 +364,8 @@ public abstract class ClosableTabbedPane extends JTabbedPane  implements ITabCom
     }
 
     /**
-     * 親コンポーネントを設定する.
-     * @param component		親コンポーネント
+     * Set the parent component.
+     * @param component Parent component
      */
     @Override
     public void setParentComponent(ITabComponent component) {
@@ -373,8 +373,8 @@ public abstract class ClosableTabbedPane extends JTabbedPane  implements ITabCom
     }
 
     /**
-     * フォーカスリスナを設定する
-     * @param listener		フォーカスリスナ
+     * Set focus listener
+     * @param listener Focus listener
      */
     @Override
     public void addTabFocusListener(TabFocusListener listener) {
@@ -392,16 +392,16 @@ public abstract class ClosableTabbedPane extends JTabbedPane  implements ITabCom
     }
 
     /**
-     * ビューの識別子を取得する
-     * @return    ビューの識別子
+     * Get the view identifier
+     * @return View identifier
      */
     public FRAME_VIEW getViewType() {
         return this.viewType;
     }
 
     /**
-     * ビューの識別子を設定する
-     * @param type		ビューの識別子
+     * Set the view identifier
+     * @param type View identifier
      */
     public void setViewType(FRAME_VIEW type) {
         this.viewType = type;

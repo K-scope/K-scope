@@ -35,27 +35,27 @@ import jp.riken.kscope.language.Procedure;
 import jp.riken.kscope.utils.SwingUtils;
 
 /**
- * トレース結果モデル
+ * Trace result model
  * @author RIKEN
  *
  */
 public class TraceResultModel extends Observable {
 
-    /** トレースツリーモデル */
+    /** Trace tree model */
     private DefaultTreeModel treeModel;
-    /** タイトル */
+    /** Title */
     private String title;
-    /** トレース対象変数名 */
+    /** Trace target variable name */
     private String traceWord;
-    /** ブロック選択表示ラベル */
+    /** Block selection label */
     private String blocklabel;
-    /** トレース選択ブロック */
+    /** Trace selection block */
     private IBlock selectedBlock;
-    /** トレースパス */
+    /** Trace path */
     private IBlock[] tracePath;
 
     /**
-     * コンストラクタ
+     * Constructor
      */
     public TraceResultModel() {
         clearTreeModel();
@@ -63,7 +63,7 @@ public class TraceResultModel extends Observable {
 
 
     /**
-     * モデルの変更を通知する
+     * Notify model changes
      */
     public void notifyModel() {
         this.setChanged();
@@ -72,7 +72,7 @@ public class TraceResultModel extends Observable {
     }
 
     /**
-     * トレースツリーをクリアする。
+     * Clear the trace tree.
      */
     public void clearTreeModel() {
         this.treeModel = null;
@@ -86,8 +86,8 @@ public class TraceResultModel extends Observable {
     }
 
     /**
-     * トレースルートブロックを取得する.
-     * @return		トレースルートブロック
+     * Get the traceroute block.
+     * @return Traceroute block
      */
     public IBlock getRootBlock() {
         DefaultMutableTreeNode node = getRootNode();
@@ -99,8 +99,8 @@ public class TraceResultModel extends Observable {
     }
 
     /**
-     * ルートノードを取得する
-     * @return		ルートノード
+     * Get the root node
+     * @return root node
      */
     public DefaultMutableTreeNode getRootNode() {
         if (treeModel == null) return null;
@@ -108,16 +108,16 @@ public class TraceResultModel extends Observable {
     }
 
     /**
-     * ツリーモデルを取得する
-     * @return		ツリーモデル
+     * Get a tree model
+     * @return Tree model
      */
     public DefaultTreeModel getTreeModel() {
         return treeModel;
     }
 
     /**
-     * タイトルを取得する
-     * @return	タイトル
+     * Get the title
+     * @return title
      */
     public String getTitle() {
         // return title;
@@ -141,31 +141,31 @@ public class TraceResultModel extends Observable {
     }
 
     /**
-     * タイトルを設定する
-     * @param title		タイトル
+     * Set the title
+     * @param title Title
      */
     public void setTitle(String title) {
         this.title = title;
     }
 
     /**
-     * テーブル情報をファイル出力する。
-     * @param   file   出力ファイル
+     * Output table information to a file.
+     * @param file Output file
      */
     public void writeFile(File file) {
 
-        // ルートノード
+        // Root node
         DefaultMutableTreeNode root = getRootNode();
         if (root == null) return;
         if (root.getChildCount() <= 0) return;
 
         try {
-            // ファイル出力
+            // File output
             PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(file)));
 
-            // ツリーをCSV文字列にする。
+            // Make the tree a CSV string.
             String buf = SwingUtils.toCsv(root);
-            // ファイル出力
+            // File output
             pw.print(buf);
 
             pw.close();
@@ -176,81 +176,81 @@ public class TraceResultModel extends Observable {
     }
 
     /**
-     * ツリーモデルを設定する
-     * @param tree		ツリーモデル
+     * Set up a tree model
+     * @param tree Tree model
      */
     public void setTreeModel(DefaultTreeModel tree) {
         this.treeModel = tree;
 
-        // ツリーの更新
+        // Update tree
         notifyModel();
     }
 
     /**
-     * トレース対象変数名を取得する.
-     * @return		トレース対象変数名
+     * Get the name of the variable to be traced.
+     * @return Traced variable name
      */
     public String getTraceWord() {
         return traceWord;
     }
 
     /**
-     * トレース対象変数名を設定する.
-     * @param word		トレース対象変数名
+     * Set the variable name to be traced.
+     * @param word Trace target variable name
      */
     public void setTraceWord(String word) {
         this.traceWord = word;
     }
 
     /**
-     * ブロック選択表示ラベルを取得する.
-     * @return		ブロック選択表示ラベル
+     * Get the block selection label.
+     * @return Block selection label
      */
     public String getBlocklabel() {
         return blocklabel;
     }
 
     /**
-     * ブロック選択表示ラベルを設定する.
-     * @param blocklabel		ブロック選択表示ラベル
+     * Set the block selection label.
+     * @param blocklabel Block selection label
      */
     public void setBlocklabel(String blocklabel) {
         this.blocklabel = blocklabel;
     }
 
     /**
-     * トレース選択ブロックを取得する
-     * @return		トレース選択ブロック
+     * Get the trace selection block
+     * @return Trace selection block
      */
     public IBlock getSelectedBlock() {
         return selectedBlock;
     }
 
     /**
-     * トレース選択ブロックを設定する
-     * @param selectedBlock		トレース選択ブロック
+     * Set the trace selection block
+     * @param selectedBlock Trace selected block
      */
     public void setSelectedBlock(IBlock selectedBlock) {
         this.selectedBlock = selectedBlock;
     }
 
     /**
-     * 同一トレースであるかチェックする.<br/>
-     * @param model		比較対象トレースモデル
-     * @return			true=同一トレース結果
+     * Check if they are the same trace. <br/>
+     * @param model Compared trace model
+     * @return true = Same trace result
      */
     public boolean equalsTrace(TraceResultModel model) {
-        // トレース結果が存在しない場合は、不一致
+        // Mismatch if trace result does not exist
         if (this.traceWord ==  null) return false;
         if (this.treeModel == null) return false;
         if (this.getRootBlock() == null) return false;
 
-        // トレース変数のチェック
+        // Check trace variables
         if (!this.traceWord.equals(model.getTraceWord())) {
             return false;
         }
 
-        // トレース結果ルートノードが一致していること
+        // Trace result root node matches
         if (this.getRootBlock() != model.getRootBlock()) {
             return false;
         }
@@ -260,8 +260,8 @@ public class TraceResultModel extends Observable {
 
 
     /**
-     * トレースパスを取得する
-     * @return 		トレースパス
+     * Get the trace path
+     * @return Trace path
      */
     public IBlock[] getTracePath() {
         return tracePath;
@@ -269,16 +269,16 @@ public class TraceResultModel extends Observable {
 
 
     /**
-     * トレースパスを設定する
-     * @param tracePath 		トレースパス
+     * Set the trace path
+     * @param tracePath Tracepath
      */
     public void setTracePath(IBlock[] tracePath) {
         this.tracePath = tracePath;
     }
 
     /**
-     * トレースパスを追加する
-     * @param block		追加ブロック
+     * Add a trace path
+     * @param block Additional block
      */
     public void addTracePath(IBlock block) {
         if (block == null) return;
@@ -292,8 +292,8 @@ public class TraceResultModel extends Observable {
     }
 
     /**
-     * トレースパスを追加する
-     * @param blocks		追加ブロックリスト
+     * Add a trace path
+     * @param blocks Additional block list
      */
     public void addTracePaths(IBlock[] blocks) {
         if (blocks == null || blocks.length <= 0) return;
@@ -308,8 +308,8 @@ public class TraceResultModel extends Observable {
 
 
     /**
-     * モデルが空か否か
-     * @return	空か否か（ture: 空，false: データあり）
+     * Whether the model is empty
+     * @return Whether it is empty (ture: empty, false: with data)
      */
     public boolean isEmpty() {
     	DefaultMutableTreeNode root = getRootNode();

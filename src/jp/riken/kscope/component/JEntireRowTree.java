@@ -48,43 +48,43 @@ import jp.riken.kscope.service.LanguageService;
 import jp.riken.kscope.utils.SwingUtils;
 
 /**
- * 行ハイライトツリーコンポーネント
+ * Row highlight tree component
  * @author RIKEN
  */
 public class JEntireRowTree extends javax.swing.JTree implements TreeWillExpandListener {
 
-    /** シリアル番号 */
+    /** Serial number */
     private static final long serialVersionUID = 1L;
 
-    /** ツリー選択背景色(=cornflowerblue) */
+    /** Tree selection background color (= cornflowerblue) */
     private static Color SELECTION_BACKGROUND = new Color(0x66, 0x99, 0xFF);
-    /** ツリー選択文字色 */
+    /** Tree selection text color */
     private static Color SELECTION_FORECOLOR = new Color(255, 255, 255);
 
-    /** 現在選択ノード */
+    /** Currently selected node */
     private List<TreePath> currentSelected;
-    /** 現在展開ノード */
+    /** Currently deployed node */
     private List<TreePath> currentExpanded;
 
     /**
-     * ツリーのLook & Feelクラス.<br/>
-     * ツリーの行選択によりノード選択とする。
+     * Tree Look & Feel class. <br/>
+     * Select a node by selecting a row in the tree.
      */
     private EntireRowTreeUI treeUI;
 
     /**
-     * コンストラクタ
+     * Constructor
      */
     public JEntireRowTree() {
 
-        // ツリーのLook & Feel生成
+        // Tree Look & Feel generation
         treeUI = new EntireRowTreeUI();
         this.setUI(treeUI);
 
-        // 透明設定
+        // Transparency setting
         this.setOpaque(false);
 
-        // ツリーのノード描画クラスの設定
+        // Setting the node drawing class of the tree
         EntireRowCellRenderer renderer = new EntireRowCellRenderer();
         this.setCellRenderer( renderer);
 
@@ -92,8 +92,8 @@ public class JEntireRowTree extends javax.swing.JTree implements TreeWillExpandL
     }
 
     /**
-     * ドキュメントの更新時にツリーのLook & Feelを設定する.<br/>
-     * コンストラクタで設定したTreeUIが解除されるので、毎回設定する。
+     * Set the look and feel of the tree when updating the document. <br/>
+     * The TreeUI set in the constructor is canceled, so set it every time.
      */
     @Override
     public void updateUI() {
@@ -102,14 +102,14 @@ public class JEntireRowTree extends javax.swing.JTree implements TreeWillExpandL
     }
 
     /**
-     * コンポーネントの描画を行う
-     * @param g		グラフィックス
+     * Draw the component
+     * @param g graphics
      */
     @Override
     protected void paintComponent(Graphics g) {
 
         try {
-            // 背景色を描画する
+            // Draw the background color
             g.setColor(getBackground());
             g.fillRect(0,0,getWidth(),getHeight());
 
@@ -117,7 +117,7 @@ public class JEntireRowTree extends javax.swing.JTree implements TreeWillExpandL
                 int count = getSelectionCount();
                 int[] list = getSelectionRows();
                 if (count > 0 && list != null) {
-                    // 選択行全体を塗りつぶす。
+                    // Fill the entire selected line.
                     for(int i: list) {
                         Rectangle r = getRowBounds(i);
                         g.setColor(SELECTION_BACKGROUND);
@@ -127,7 +127,7 @@ public class JEntireRowTree extends javax.swing.JTree implements TreeWillExpandL
             }
             super.paintComponent(g);
 
-            // ボーダを描画する
+            // Draw a border
             if (getLeadSelectionPath()!=null) {
                 Rectangle r = getRowBounds(getRowForPath(getLeadSelectionPath()));
                 if (r != null) {
@@ -142,37 +142,37 @@ public class JEntireRowTree extends javax.swing.JTree implements TreeWillExpandL
     }
 
     /**
-     * 選択行の背景色を設定する.<br>
-     * デフォルト=cornflowerblue
-     * @param color			背景色
+     * Set the background color of the selected line. <br>
+     * Default = cornflowerblue
+     * @param color Background color
      */
     public void setSelectionBackground(Color color) {
         JEntireRowTree.SELECTION_BACKGROUND = color;
     }
 
     /**
-     * 選択行の文字色を設定する.<br>
-     * デフォルト=white
-     * @param color		文字色
+     * Set the text color of the selected line. <br>
+     * Default = white
+     * @param color Text color
      */
     public void setSelectionForeColor(Color color) {
         JEntireRowTree.SELECTION_FORECOLOR = color;
     }
 
     /**
-     * ツリーのLook & Feelクラス.<br/>
-     * ツリーの行選択によりノード選択とする。
+     * Tree Look & Feel class. <br/>
+     * Select a node by selecting a row in the tree.
      * @author RIKEN
      *
      */
     private class EntireRowTreeUI extends javax.swing.plaf.basic.BasicTreeUI {
 
         /**
-         * ノードのボーダを取得する.<br/>
-         * ノードのボーダをノード幅からツリー幅に変更する。
-         * @param tree		ツリー
-         * @param path		ノードパス
-         * @return			ノードのボーダ
+         * Get the border of the node. <br/>
+         * Change the node border from node width to tree width.
+         * @param tree tree
+         * @param path Node path
+         * @return node border
          */
         @Override
         public Rectangle getPathBounds(JTree tree, TreePath path) {
@@ -183,12 +183,12 @@ public class JEntireRowTree extends javax.swing.JTree implements TreeWillExpandL
         }
 
         /**
-         * ノードのボーダを取得する.<br/>
-         * ノードのボーダをノード幅からツリー幅に変更する。
-         * @param path			ノードパス
-         * @param insets		余白
-         * @param bounds		ボーダ
-         * @return			ノードボーダ
+         * Get the border of the node. <br/>
+         * Change the node border from node width to tree width.
+         * @param path Node path
+         * @param insets Margins
+         * @param bounds Border
+         * @return node border
          */
         private Rectangle getPathBounds(TreePath path, Insets insets, Rectangle bounds) {
             bounds = treeState.getBounds(path, bounds);
@@ -201,13 +201,13 @@ public class JEntireRowTree extends javax.swing.JTree implements TreeWillExpandL
         }
 
         /**
-         * 垂直線をペイントします.<br/>
-         * Macの場合は、垂直線をペイントしない。
-         * @param g			Graphics
-         * @param c			ツリーコンポーネント
-         * @param x			X位置
-         * @param top		TOP位置
-         * @param bottom	BOTTOM位置
+         * Paint vertical lines. <br/>
+         * For Mac, do not paint vertical lines.
+         * @param g Graphics
+         * @param c Tree component
+         * @param x X position
+         * @param top TOP position
+         * @param bottom BOTTOM position
          */
         @Override
         protected void paintVerticalLine(Graphics g, JComponent c, int x,
@@ -218,13 +218,13 @@ public class JEntireRowTree extends javax.swing.JTree implements TreeWillExpandL
         }
 
         /**
-         * 水平線をペイントします.<br/>
-         * Macの場合は、水平線をペイントしない。
-         * @param g			Graphics
-         * @param c			ツリーコンポーネント
-         * @param y			Y位置
-         * @param left		LEFT位置
-         * @param right		RIGHT位置
+         * Paint the horizon. <br/>
+         * For Mac, do not paint the horizon.
+         * @param g Graphics
+         * @param c Tree component
+         * @param y Y position
+         * @param left LEFT position
+         * @param right RIGHT position
          */
         @Override
         protected void paintHorizontalLine(Graphics g, JComponent c, int y,
@@ -236,24 +236,24 @@ public class JEntireRowTree extends javax.swing.JTree implements TreeWillExpandL
     }
 
     /**
-     * ツリーのノード描画クラス
+     * Tree node drawing class
      * @author RIKEN
      */
     public class EntireRowCellRenderer extends DefaultTreeCellRenderer {
-        /** シリアル番号 */
+        /** Serial number */
         private static final long serialVersionUID = 1L;
 
         /**
-         * ノードコンポーネントを取得する.<br/>
-         * ノードコンポーネントの背景色、文字色を描画する
-         * @param tree			ツリー
-         * @param value			ノード値
-         * @param selected		選択状態
-         * @param expanded		展開状態
-         * @param leaf			葉状態
-         * @param row			行番号
-         * @param hasFocus		フォーカス
-         * @return				ノードコンポーネント
+         * Get the node component. <br/>
+         * Draw the background color and text color of the node component
+         * @param tree tree
+         * @param value Node value
+         * @param selected Selected state
+         * @param expanded Expanded state
+         * @param leaf Leaf state
+         * @param row row number
+         * @param hasFocus Focus
+         * @return node component
          */
         @Override
         public Component getTreeCellRendererComponent(JTree tree, Object value, boolean selected, boolean expanded, boolean leaf, int row, boolean hasFocus) {
@@ -284,8 +284,8 @@ public class JEntireRowTree extends javax.swing.JTree implements TreeWillExpandL
 
 
     /**
-     * 選択ノードを設定する
-     * @param selectnodes		選択ノードユーザオブジェクト
+     * Set the selected node
+     * @param selectnodes Select node user object
      */
     public void addSelectedNodes(Object[] selectnodes) {
         setSelectedNodes(selectnodes, true);
@@ -293,9 +293,9 @@ public class JEntireRowTree extends javax.swing.JTree implements TreeWillExpandL
     }
 
     /**
-     * 選択ノードを設定する
-     * @param selectnodes		選択ノードユーザオブジェクト
-     * @param addflag		選択範囲の追加フラグ (true=選択範囲の追加)
+     * Set the selected node
+     * @param selectnodes Select node user object
+     * @param addflag Add selection flag (true = add selection)
      */
     protected void setSelectedNodes(Object[] selectnodes, boolean addflag) {
         if (selectnodes == null) return;
@@ -304,12 +304,12 @@ public class JEntireRowTree extends javax.swing.JTree implements TreeWillExpandL
         DefaultMutableTreeNode root = (DefaultMutableTreeNode)model.getRoot();
 
         List<TreePath> selectpaths = new ArrayList<TreePath>();
-        // ツリーノードを順方向で列挙
+        // List tree nodes in the forward direction
         Enumeration<?> depth = root.preorderEnumeration();
         while(depth.hasMoreElements()) {
             DefaultMutableTreeNode treeNode = (DefaultMutableTreeNode)depth.nextElement();
 
-            // ノード検索を行う
+            // Do a node search
             if (treeNode == null || treeNode.getUserObject() == null) {
                 continue;
             }
@@ -317,7 +317,7 @@ public class JEntireRowTree extends javax.swing.JTree implements TreeWillExpandL
                 if (selectnodes[i] == null) continue;
                 if (treeNode.getUserObject().equals(selectnodes[i])) {
                     TreePath path = new TreePath(treeNode.getPath());
-                    // ノードが非表示の場合は、親ノードを追加する
+                    // If the node is hidden, add the parent node
                     if (treeNode instanceof FilterTreeNode) {
                         if (!((FilterTreeNode)treeNode).isPassed()) {
                             path = path.getParentPath();
@@ -347,9 +347,9 @@ public class JEntireRowTree extends javax.swing.JTree implements TreeWillExpandL
 
 
     /**
-     * ノード範囲を選択する
-     * @param startnode		選択開始ノード
-     * @param endnode		選択終了ノード
+     * Select a node range
+     * @param startnode Selection start node
+     * @param endnode Selection end node
      */
     public void setSelectedNodeArea(Object startnode, Object endnode) {
         setSelectedNodeArea(startnode, endnode, false);
@@ -358,9 +358,9 @@ public class JEntireRowTree extends javax.swing.JTree implements TreeWillExpandL
 
 
     /**
-     * ノード範囲を選択する
-     * @param startnode		選択開始ノード
-     * @param endnode		選択終了ノード
+     * Select a node range
+     * @param startnode Selection start node
+     * @param endnode Selection end node
      */
     public void addSelectedNodeArea(Object startnode, Object endnode) {
         setSelectedNodeArea(startnode, endnode, true);
@@ -369,15 +369,15 @@ public class JEntireRowTree extends javax.swing.JTree implements TreeWillExpandL
 
 
     /**
-     * ノード範囲を選択する
-     * @param startnode		選択開始ノード
-     * @param endnode		選択終了ノード
-     * @param addflag		選択範囲の追加フラグ (true=選択範囲の追加)
+     * Select a node range
+     * @param startnode Selection start node
+     * @param endnode Selection end node
+     * @param addflag Add selection flag (true = add selection)
      */
     private void setSelectedNodeArea(Object startnode, Object endnode, boolean addflag) {
         if (startnode == null && endnode == null) return;
 
-        // 最初に選択開始ノード,選択終了ノードを別々に選択状態にする。
+        // First, select the selection start node and the selection end node separately.
         if (addflag) {
             addSelectedNodes(new Object[]{startnode, endnode});
         }
@@ -390,12 +390,12 @@ public class JEntireRowTree extends javax.swing.JTree implements TreeWillExpandL
         DefaultMutableTreeNode root = (DefaultMutableTreeNode)model.getRoot();
 
         List<TreePath> selectpaths = null;
-        // ツリーノードを順方向で列挙
+        // List tree nodes in the forward direction
         Enumeration<?> depth = root.preorderEnumeration();
         while(depth.hasMoreElements()) {
             DefaultMutableTreeNode treeNode = (DefaultMutableTreeNode)depth.nextElement();
 
-            // ノード検索を行う
+            // Do a node search
             if (treeNode == null || treeNode.getUserObject() == null) {
                 continue;
             }
@@ -434,9 +434,9 @@ public class JEntireRowTree extends javax.swing.JTree implements TreeWillExpandL
     }
 
     /**
-     * パスによって指定されるノードが表示されるようにスクロールします.<br/>
-     * 水平方向のスクロールは行わなわず、垂直方向のスクロールのみ行う。
-     * @param path		表示パス
+     * Scrolls to see the nodes specified by the path. <br/>
+     * Do not scroll horizontally, only scroll vertically.
+     * @param path Display path
      */
     public void scrollPathToVisibleForVertical(TreePath path) {
 
@@ -445,27 +445,27 @@ public class JEntireRowTree extends javax.swing.JTree implements TreeWillExpandL
         Point orgin = null;
         if (cont instanceof JViewport) {
             view = (JViewport)cont;
-            // スクロール前のビュー位置
+            // View position before scrolling
             orgin = view.getViewPosition();
         }
 
-        // 選択パスを表示位置にスクロールする
+        // Scroll the selected path to the display position
         this.scrollPathToVisible(path);
 
-        // 水平方向のスクロールは行わない
+        // Do not scroll horizontally
         if (view != null && orgin != null) {
             Point dest = view.getViewPosition();
-            // 水平方向のスクロール位置を元に戻す。
+            // Restore the horizontal scroll position.
             dest.x = orgin.x;
             view.setViewPosition(dest);
         }
     }
 
     /**
-     * ツリーパスを取得する.<br/>
-     * ノードが別オブジェクトノードであってもUserObjectが同一であれば同一パスとして検索する
-     * @param path		ツリーパス
-     * @return 			実ツリーパス
+     * Get the tree path. <br/>
+     * Search as the same path if UserObject is the same even if the node is another object node
+     * @param path Tree path
+     * @return Real tree path
      */
     public TreePath getRealTreePath(TreePath path) {
         if (path == null) return null;
@@ -483,11 +483,11 @@ public class JEntireRowTree extends javax.swing.JTree implements TreeWillExpandL
     }
 
     /**
-     * ツリーパスを検索する.<br/>
-     * ノードが別オブジェクトノードであってもUserObjectが同一であれば同一パスとして検索する
-     * @param parent			現在ノード
-     * @param pathNodes			検索ツリーノードリスト
-     * @return					ツリーパス
+     * Search the tree path. <br/>
+     * Search as the same path if UserObject is the same even if the node is another object node
+     * @param parent Current node
+     * @param pathNodes Search tree node list
+     * @return Tree path
      */
     private TreePath searchTreePath(DefaultMutableTreeNode parent, DefaultMutableTreeNode[] pathNodes) {
 
@@ -514,11 +514,11 @@ public class JEntireRowTree extends javax.swing.JTree implements TreeWillExpandL
     }
 
     /**
-     * ツリーパスを検索する.<br/>
-     * ノードが別オブジェクトノードであってもUserObjectが同一であれば同一パスとして検索する
-     * @param node			現在ノード
-     * @param pathNodes			検索ツリーノードリスト
-     * @return					ツリーパス
+     * Search the tree path. <br/>
+     * Search as the same path if UserObject is the same even if the node is another object node
+     * @param node Current node
+     * @param pathNodes Search tree node list
+     * @return Tree path
      */
     private TreePath getNodePath(DefaultMutableTreeNode node, DefaultMutableTreeNode[] pathNodes) {
 
@@ -541,24 +541,24 @@ public class JEntireRowTree extends javax.swing.JTree implements TreeWillExpandL
 
 
     /**
-     * 現在のノード状態の待避を行う
+     * Save the current node state
      */
     public void storeTreeNode() {
 
-        // 現在選択されているノードの取得
+        // Get the currently selected node
         TreePath[] selectedPath = this.getSelectionPaths();
         this.currentSelected = new ArrayList<TreePath>();
         if (selectedPath != null) {
             this.currentSelected.addAll(Arrays.asList(selectedPath));
         }
-        // 現在の展開ノードの取得
+        // Get the current deployment node
         this.currentExpanded = new ArrayList<TreePath>();
         TreeModel model = this.getModel();
         if (model == null) return;
 
         DefaultMutableTreeNode root = (DefaultMutableTreeNode)model.getRoot();
 
-        // ツリーノードを順方向で列挙
+        // List tree nodes in the forward direction
         Enumeration<?> depth = root.preorderEnumeration();
         while(depth.hasMoreElements()) {
             DefaultMutableTreeNode next = (DefaultMutableTreeNode)depth.nextElement();
@@ -572,7 +572,7 @@ public class JEntireRowTree extends javax.swing.JTree implements TreeWillExpandL
     }
 
     /**
-     * ノード状態の復元を行う
+     * Restore node state
      */
     public void restoreTreeNode() {
 
@@ -581,7 +581,7 @@ public class JEntireRowTree extends javax.swing.JTree implements TreeWillExpandL
 
         DefaultMutableTreeNode root = (DefaultMutableTreeNode)model.getRoot();
 
-        // ツリーノードを順方向で列挙
+        // List tree nodes in the forward direction
         Enumeration<?> depth = root.preorderEnumeration();
         while(depth.hasMoreElements()) {
             DefaultMutableTreeNode next = (DefaultMutableTreeNode)depth.nextElement();
@@ -610,8 +610,8 @@ public class JEntireRowTree extends javax.swing.JTree implements TreeWillExpandL
 
 
     /**
-     * 最後のツリーノードを取得する.
-     * @return  最後のツリーノード
+     * Get the last tree node.
+     * @return Last tree node
      */
     public DefaultMutableTreeNode getLastTreeNode() {
 
@@ -619,7 +619,7 @@ public class JEntireRowTree extends javax.swing.JTree implements TreeWillExpandL
         DefaultMutableTreeNode root = (DefaultMutableTreeNode)model.getRoot();
         DefaultMutableTreeNode lastnode = null;
 
-        // ツリーノードを順方向で列挙
+        // List tree nodes in the forward direction
         Enumeration<?> depth = root.preorderEnumeration();
         while(depth.hasMoreElements()) {
             lastnode = (DefaultMutableTreeNode)depth.nextElement();
@@ -628,10 +628,10 @@ public class JEntireRowTree extends javax.swing.JTree implements TreeWillExpandL
     }
 
     /**
-     * ツリーパスが表示されているかチェックする.<br/>
-     * フィルタノードで表示対象外であれば非表示とする
-     * @param path		ツリーパス
-     * @return			true=表示
+     * Check if the tree path is displayed. <br/>
+     * Hide if not displayed in the filter node
+     * @param path Tree path
+     * @return true = display
      */
     @Override
     public boolean isVisible(TreePath path) {
@@ -648,12 +648,12 @@ public class JEntireRowTree extends javax.swing.JTree implements TreeWillExpandL
     }
 
     /**
-     * ツリーを開く際に呼ばれるイベント
+     * Event called when opening the tree
      */
     @Override
     public void treeWillExpand(TreeExpansionEvent event) throws ExpandVetoException {
         TreePath path = event.getPath();
-        Object obj = path.getLastPathComponent(); //一番末端の(今回開こうとしている)ノード
+        Object obj = path.getLastPathComponent(); // The end node (which we are trying to open this time)
         if (obj instanceof FilterTreeNode) {
             int depth = ((FilterTreeNode)obj).getDepth();
             if (depth > 0) {
@@ -684,18 +684,18 @@ public class JEntireRowTree extends javax.swing.JTree implements TreeWillExpandL
     }
 
     /**
-     * ツリーを閉じる際に呼ばれるイベント
+     * Event called when closing the tree
      */
     @Override
     public void treeWillCollapse(TreeExpansionEvent event) throws ExpandVetoException { }
 
 
     /**
-     * 選択ノードを展開する.
-     * 構造ツリーは未展開なノードがあるので事前に展開する.
-     * @param selectnode		選択ノードユーザオブジェクト
-     * @param parent			展開親ノード
-     * @return             展開ノード
+     * Expand the selection node.
+     * The structure tree has unexpanded nodes, so expand it in advance.
+     * @param selectnode Select node user object
+     * @param parent Expand parent node
+     * @return Deployment node
      */
     public DefaultMutableTreeNode expandObjectPath(Object selectnode, DefaultMutableTreeNode parent) {
     	if (selectnode == null) return null;
@@ -711,12 +711,12 @@ public class JEntireRowTree extends javax.swing.JTree implements TreeWillExpandL
         TreePath parentpath = new TreePath(parentnode.getPath());
         // this.expandPath(parentpath);
 
-        // ツリーノードを順方向で列挙
+        // List tree nodes in the forward direction
         Enumeration<?> depth = parentnode.preorderEnumeration();
         while(depth.hasMoreElements()) {
             DefaultMutableTreeNode treeNode = (DefaultMutableTreeNode)depth.nextElement();
 
-            // ノード検索を行う
+            // Do a node search
             if (treeNode == null || treeNode.getUserObject() == null) {
                 continue;
             }
@@ -728,7 +728,7 @@ public class JEntireRowTree extends javax.swing.JTree implements TreeWillExpandL
             }
         }
 
-        // ノードが存在しなかったので閉じる
+        // Close because the node did not exist
         //this.collapsePath(parentpath);
 
         return null;

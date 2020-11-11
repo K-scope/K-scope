@@ -81,91 +81,91 @@ import jp.riken.kscope.utils.ResourceUtils;
 import jp.riken.kscope.utils.SwingUtils;
 
 /**
- * プロファイラ:コスト情報パネルクラス
+ * Profiler: Cost Information Panel Class
  * @author RIKEN
  *
  */
 public class ProfilerTablePanel extends AnalisysPanelBase implements Observer, IAnalisysComponent, MouseListener, ActionListener {
 
-    /** シリアル番号 */
+    /** Serial number */
     private static final long serialVersionUID = 1L;
 
-    /** クリアボタン */
+    /** Clear button */
     private JButton btnClear;
-    /** 付加情報ボタン */
+    /** Additional information button */
     private JButton btnEdit;
-    /** ファイルを開くボタン */
+    /** Open file button */
     private JButton btnOpenFile;
-    /** エクスポートボタン */
+    /** Export button */
     private JButton btnExport;
-    /** テーブル列の表示切替ボタン */
+    /** Table column display switching button */
     private JButton btnPulldown;
-    /** ソートボタン */
+    /** Sort button */
     //private JButton btnSort;
-    /** プロファイラ:コスト情報ラベル */
+    /** Profiler: Cost Information Label */
     private JLabel label;
-    /** コンテンツボックス */
+    /** Content Box */
     private Box contentInfo;
-    /** 余白ボックス */
+    /** Margin box */
     private final Component glue = Box.createVerticalGlue();
-    /** スクロールパイン */
+    /** Scroll pine */
     private JScrollPane scrollPane;
 
-    /** プロファイラ:コスト情報テーブルモデル */
+    /** Profiler: Cost Information Table Model */
     private ProfilerTableBaseModel model;
 
-    /** 展開ボタンアイコン */
+    /** Expand button icon */
     private Icon expand_icon = ResourceUtils.getIcon("expand_arrow.gif");
-    /** 収納ボタンアイコン */
+    /** Storage button icon */
     private Icon collapse_icon = ResourceUtils.getIcon("collapse_arrow.gif");
 
-    /** プロファイラ:コスト情報コンテキストメニュー */
+    /** Profiler: Cost Information Context Menu */
     private ProfilerPopupMenu costinfoPopupMenu;
 
-    /** 選択テーブル */
+    /** Selection table */
     private JTable selectedTable;
-    /** 選択プロファイラパネル */
+    /** Select Profiler Panel */
     private NodePanel selectedPanel;
-    /** 付加情報編集アクション */
+    /** Additional information editing action */
     private ProfilerInformationEditAction actionEdit;
-    /** 該当個所を開くアクション */
+    /** Action to open the relevant part */
     private ViewOpenAnalysisLineAction actionOpenAnalysis;
     private JPopupMenu menuVisibledColumns;
 
-    /** ソート状態 */
+    /** Sort status */
     @SuppressWarnings("unused")
     private boolean viewSort = false;
-    /** 選択パネル背景色 */
+    /** Selection panel background color */
     private Color colorSelectedPanel;
 
     /**
-     * コンストラクタ
-     * @param panel		分析情報パネル識別子
-     * @throws Exception     分析情報パネル識別子不正
+     * Constructor
+     * @param panel Analysis information panel identifier
+     * @throws Exception Analysis information panel identifier invalid
      */
     public ProfilerTablePanel(ANALYSIS_PANEL panel) throws Exception {
         super(panel);
 
-        // モデルの生成を行う
+        // Generate a model
         model = factoryProfilerTableModel(panel);
 
-        // オブザーバを設定する。
+        // Set the observer.
         model.addObserver(this);
 
-        // GUI初期化を行う。
+        // Initialize the GUI.
         initGUI();
     }
 
     /**
-     * プロファイラモデルを生成する
-     * @param panel		パネル識別子
-     * @return			プロファイラモデル
-     * @throws Exception		パネル識別子例外
+     * Generate profiler model
+     * @param panel Panel identifier
+     * @return Profiler model
+     * @throws Exception Panel identifier exception
      */
     private ProfilerTableBaseModel factoryProfilerTableModel(ANALYSIS_PANEL panel) throws Exception {
 
         ProfilerTableBaseModel profilerModel = null;
-        // モデルの生成を行う
+        // Generate a model
         switch (panel) {
         case COST_LINE:
             profilerModel = new ProfilerCostTableModel(PROFILERINFO_TYPE.COST_LINE);
@@ -195,7 +195,7 @@ public class ProfilerTablePanel extends AnalisysPanelBase implements Observer, I
             profilerModel = new ProfilerEventCounterModel(PROFILERINFO_TYPE.EVENTCOUNTER_STATISTICS);
             break;
         default:
-            throw new Exception(Message.getString("profilertablepanel.exception.panelidentiferinvalid")); //分析情報パネル識別子が不正です。
+            throw new Exception(Message.getString("profilertablepanel.exception.panelidentiferinvalid")); // The analysis information panel identifier is invalid.
         }
 
         return profilerModel;
@@ -203,7 +203,7 @@ public class ProfilerTablePanel extends AnalisysPanelBase implements Observer, I
 
 
     /**
-     * GUI初期化を行う。
+     * Initialize the GUI.
      */
     private void initGUI() {
         try {
@@ -211,7 +211,7 @@ public class ProfilerTablePanel extends AnalisysPanelBase implements Observer, I
             this.setLayout(thisLayout);
 //            setPreferredSize(new Dimension(400, 24));
 
-            // 上部の情報ラベル、ボタンの配置パネル
+            // Information label at the top, button placement panel
             {
                 JPanel panelTop = new JPanel();
                 panelTop.setLayout(new BorderLayout());
@@ -219,14 +219,14 @@ public class ProfilerTablePanel extends AnalisysPanelBase implements Observer, I
                 panelTop.setBorder(new CompoundBorder(
                         new LineBorder(Color.BLACK, 1),
                         BorderFactory.createEmptyBorder(0, 5, 0, 20)));
-                // ボタン配置パネル
+                // Button layout panel
                 {
                     JPanel panelButtons = new JPanel();
                     panelButtons.setLayout(new BoxLayout(panelButtons, BoxLayout.LINE_AXIS));
                     panelTop.add(panelButtons, BorderLayout.EAST);
 
                     java.awt.Dimension buttonSize = new java.awt.Dimension(24, 24);
-                    // クリアボタン
+                    // Clear button
                     {
                         Icon icon = ResourceUtils.getIcon("removeall.gif");
                         btnClear = new JButton(icon);
@@ -237,9 +237,9 @@ public class ProfilerTablePanel extends AnalisysPanelBase implements Observer, I
                         btnClear.setContentAreaFilled(false);
                         btnClear.setBorderPainted(false);
                     }
-                    // 余白設定
+                    // Margin setting
                     //panelButtons.add(Box.createHorizontalStrut(5));
-                    // 付加情報編集ボタン
+                    // Additional information edit button
                     {
                         Icon icon = ResourceUtils.getIcon("edit_info.gif");
                         btnEdit = new JButton(icon);
@@ -292,7 +292,7 @@ public class ProfilerTablePanel extends AnalisysPanelBase implements Observer, I
                     }
                 }
 
-                // ラベル配置
+                // Label placement
                 {
                     label = new JLabel();
                     panelTop.add(label, BorderLayout.CENTER);
@@ -301,37 +301,37 @@ public class ProfilerTablePanel extends AnalisysPanelBase implements Observer, I
             }
             {
                 {
-                    // プロファイラ:コスト情報パネル
+                    // Profiler: Cost Information Panel
                     contentInfo = Box.createVerticalBox();
                     //contentInfo.setBorder(BorderFactory.createLineBorder(Color.RED, 1));
                     contentInfo.setOpaque(false);
 
-                    // スクロールパイン
+                    // Scroll pine
                     scrollPane = new JScrollPane();
                     scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
                     scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
                     scrollPane.setViewportView(contentInfo);
                     scrollPane.getViewport().setBackground(Color.WHITE);
-                    // スクロール量を調整
+                    // Adjust scroll amount
                     scrollPane.getVerticalScrollBar().setUnitIncrement(Constant.VERTICALSCROLL_INCREMENT);
                     add(scrollPane);
                 }
 
             }
-            // イベント追加
+            // Add event
             btnClear.addActionListener(this);
             btnEdit.addActionListener(this);
             btnOpenFile.addActionListener(this);
             btnPulldown.addActionListener(this);
             //btnSort.addActionListener(this);
 
-            // ツールチップ設定
-            btnClear.setToolTipText(Message.getString("informationdialog.button.clear.tooltip")); //クリア
-            btnEdit.setToolTipText(Message.getString("profilertablepanel.tooltip.info")); //付加情報
-            btnOpenFile.setToolTipText(Message.getString("profilertablepanel.tooltip.open")); //選択箇所を開く
-            btnExport.setToolTipText(Message.getString("mainmenu.file.export")); //エクスポート
-            btnPulldown.setToolTipText(Message.getString("profilertablepanel.tooltip.column")); //表示列の選択
-            //btnSort.setToolTipText(Message.getString("profilertablepanel.tooltip.sort")); //行番号でソート
+            // Tooltip settings
+            btnClear.setToolTipText(Message.getString("informationdialog.button.clear.tooltip")); //clear
+            btnEdit.setToolTipText(Message.getString("profilertablepanel.tooltip.info")); //Additional information
+            btnOpenFile.setToolTipText(Message.getString("profilertablepanel.tooltip.open")); // open the selection
+            btnExport.setToolTipText(Message.getString("mainmenu.file.export")); //export
+            btnPulldown.setToolTipText(Message.getString("profilertablepanel.tooltip.column")); // Select display column
+            //btnSort.setToolTipText (Message.getString ("profilertablepanel.tooltip.sort")); // Sort by line number
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -339,19 +339,19 @@ public class ProfilerTablePanel extends AnalisysPanelBase implements Observer, I
     }
 
     /**
-     * プロファイラ:コスト情報モデルの変更通知イベント
-     * @param o			通知元
-     * @param arg		通知項目
+     * Profiler: Cost information model change notification event
+     * @param o Notification source
+     * @param arg Notification item
      */
     @Override
     public void update(Observable o, Object arg) {
-        // プロファイラ:コスト情報のクリア
+        // Profiler: Clear cost information
         clearComponent();
 
-        // テーブルモデル
+        // Table model
         ProfilerTableBaseModel observer = (ProfilerTableBaseModel)o;
 
-        // パネルタイトル
+        // Panel title
         this.label.setText(observer.getTitle());
 
         int count = observer.getInfoMapCount();
@@ -360,56 +360,56 @@ public class ProfilerTablePanel extends AnalisysPanelBase implements Observer, I
             if (key == null) continue;
             TableModel table = observer.getInfoTableModel(i);
 
-            // プロファイラ:コスト情報を追加する
+            // Profiler: Add cost information
             addInfoTable(key, table);
         }
 
     }
 
     /**
-     * プロファイラ情報を追加する
-     * @param key			プロファイラ情報識別文字列
-     * @param table			プロファイラ情報テーブルモデル
+     * Add profiler information
+     * @param key Profiler information identification string
+     * @param table Profiler information table model
      */
     public void addInfoTable(String key, TableModel table) {
 
-        // 追加コンポーネントの作成
+        // Create additional components
         JComponent component = makeRowsPanel(key, table);
 
-        // コンテンツパネルにコンポーネントを追加する
+        // Add a component to the content panel
         addComponent(component);
 
     }
 
 
     /**
-     * コンテンツパネルをクリアする
+     * Clear the content panel
      */
     public void clearComponent() {
         if (this.contentInfo.getComponentCount() > 0) {
             this.contentInfo.removeAll();
         }
 
-        // 再描画
+        // redraw
         refreshPanel();
 
-        // 選択テーブルのクリア
+        // Clear selection table
         this.selectedPanel = null;
         this.selectedTable = null;
     }
 
     /**
-     * コンテンツパネルにコンポーネントを追加する
-     * @param component		追加コンポーネント
+     * Add components to the content panel
+     * @param component Additional component
      */
     private void addComponent(final JComponent component) {
-        // 追加コンポーネントサイズの変更
+        // Change the size of additional components
         component.setMaximumSize(new Dimension(Short.MAX_VALUE, component.getPreferredSize().height));
 
-        // 追加コンポーネントは左詰めで配置する
+        // Place additional components left-justified
         component.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        // コンポーネントの追加
+        // Add component
         this.contentInfo.remove(glue);
 //        this.contentInfo.add(Box.createVerticalStrut(5));
         this.contentInfo.add(component);
@@ -422,18 +422,18 @@ public class ProfilerTablePanel extends AnalisysPanelBase implements Observer, I
             }
         });
 
-        // 再描画
+        // redraw
         refreshPanel();
 
         return;
     }
 
     /**
-     * パネルを再描画する
+     * Redraw the panel
      */
     private void refreshPanel() {
 
-        // 再描画
+        // redraw
         this.contentInfo.revalidate();
         this.validate();
         this.repaint();
@@ -441,25 +441,25 @@ public class ProfilerTablePanel extends AnalisysPanelBase implements Observer, I
     }
 
     /**
-     * プロファイラ:コスト情報パネルの追加
-     * @param key			コスト情報識別文字列
-     * @param table			コスト情報テーブルモデル
-     * @return			プロファイラ:コスト情報パネル
+     * Profiler: Added cost information panel
+     * @param key Cost information identification string
+     * @param table Cost information table model
+     * @return Profiler: Cost Information Panel
      */
     private JComponent makeRowsPanel(String key, TableModel table) {
-        // プロファイラ:コスト情報パネル
+        // Profiler: Cost Information Panel
         NodePanel rows = new NodePanel(key);
         rows.setLayout(new BoxLayout(rows, BoxLayout.Y_AXIS));
         rows.setOpaque(false);
         rows.setBorder(BorderFactory.createLineBorder(Color.GRAY, 1));
         rows.addMouseListener(this);
 
-        // 名前パネル
+        // Name panel
         JPanel panelName = new JPanel();
         panelName.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 0));
         panelName.setOpaque(false);
 
-        // パネル展開ボタン：初期表示は展開ボタン
+        // Panel expansion button: The initial display is the expansion button
         java.awt.Dimension buttonSize = new java.awt.Dimension(18, 18);
         JButton button = new JButton(expand_icon);
         button.setContentAreaFilled(false);
@@ -468,20 +468,20 @@ public class ProfilerTablePanel extends AnalisysPanelBase implements Observer, I
         button.setMinimumSize(buttonSize);
         button.setMaximumSize(buttonSize);
 
-        // 名前ラベル
+        // Name label
         panelName.add(button);
         JLabel label = new JLabel(key);
         label.setOpaque(false);
         panelName.add(label);
 
-        // プロファイラ:コスト情報パネル
+        // Profiler: Cost Information Panel
         JPanel panelTable = new JPanel();
         panelTable.setLayout(new BoxLayout(panelTable, BoxLayout.Y_AXIS));
         panelTable.setOpaque(false);
         panelTable.setBorder(new EmptyBorder(5, 40, 5, 40));
 
-        // プロファイラ:コスト情報テーブル
-        // セル配置
+        // Profiler: Cost information table
+        // Cell placement
         JTable tableInfo = new JStripeTable(this.model.getTableColumnAlignments(), SwingConstants.LEFT);
         tableInfo.setModel(table);
 
@@ -489,78 +489,78 @@ public class ProfilerTablePanel extends AnalisysPanelBase implements Observer, I
         tableInfo.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION );
         tableInfo.setColumnSelectionAllowed(false);
         tableInfo.addMouseListener(this);
-        // テーブル変更イベント
+        // Table change event
         ProfilerInfoListSelectionListener listener = new ProfilerInfoListSelectionListener(tableInfo);
         tableInfo.getSelectionModel().addListSelectionListener(listener);
 
-        // テーブル列幅設定
+        // Table column width setting
         DefaultTableColumnModel columnModel = (DefaultTableColumnModel)tableInfo.getColumnModel();
         model.setTableColumnWidth(columnModel);
 
-        // テーブルヘッダーと行を別々に描画する
+        // Draw table headers and rows separately
         JTableHeader tableHeader = tableInfo.getTableHeader();
 
         tableInfo.setShowGrid(false);
         tableInfo.setIntercellSpacing(new Dimension(0,0));
 
-        // ソート
+        // sort
 //        tableCostInfo.setAutoCreateRowSorter(true);
 //        int index = 1;
 //        tableCostInfo.getRowSorter().setSortKeys(
 //            Arrays.asList(new RowSorter.SortKey(index, SortOrder.DESCENDING)));
 
-        // プロファイラ:コスト情報テーブルのボーダー設定
+        // Profiler: Border setting of cost information table
         LineBorder border = new LineBorder(Color.GRAY, 1, false);
         tableInfo.setBorder(border);
         tableHeader.setBorder(border);
 
-        // プロファイラ:コスト情報パネルに追加
+        // Profiler: Added to Cost Information Panel
         panelTable.add(tableHeader);
         panelTable.add(tableInfo);
 
         tableInfo.validate();
         tableInfo.updateUI();
 
-        // プロファイラ:コスト情報展開ボタンのアクションリスナの設定
+        // Profiler: Setting the action listener for the cost information expansion button
         button.addActionListener(new ProfilerInfoExpandAction(panelTable));
 
-        // プロファイラ:コスト情報パネルに名前パネル、本文パネルの追加
+        // Profiler: Add name panel and body panel to cost information panel
         rows.add(panelName);
         rows.add(panelTable);
 
-        // テーブルを設定
+        // set the table
         rows.setTableInfo(tableInfo);
 
-        // コンテキストメニューを設定する
+        // Set the context menu
         tableInfo.setComponentPopupMenu(this.costinfoPopupMenu);
 
         return rows;
     }
 
     /**
-     * コスト情報ノードパネル
+     * Cost Information Node Panel
      * @author RIKEN
      */
     private class NodePanel extends JPanel {
-        /** シリアル番号 */
+        /** Serial number */
         private static final long serialVersionUID = 1L;
 
-        /** コスト情報識別文字列 */
+        /** Cost information identification string */
         private String key;
-        /** コスト情報テーブル */
+        /** Cost information table */
         private JTable tableInfo;
 
         /**
-         * コンストラクタ
-         * @param key			コスト情報キー文字列
+         * Constructor
+         * @param key Cost information key string
          */
         public NodePanel(String key) {
             this.key = key;
         }
 
         /**
-         * コスト情報識別文字列を取得する
-         * @return		コスト情報識別文字列
+         * Get the cost information identification string
+         * @return Cost information identification string
          */
         @SuppressWarnings("unused")
         public String getKey() {
@@ -568,8 +568,8 @@ public class ProfilerTablePanel extends AnalisysPanelBase implements Observer, I
         }
 
         /**
-         * コスト情報識別文字列を設定する
-         * @param key		コスト情報識別文字列
+         * Set the cost information identification string
+         * @param key Cost information identification string
          */
         @SuppressWarnings("unused")
         public void setKey(String key) {
@@ -577,16 +577,16 @@ public class ProfilerTablePanel extends AnalisysPanelBase implements Observer, I
         }
 
         /**
-         * コスト情報テーブルを取得する
-         * @return		コスト情報テーブル
+         * Get the cost information table
+         * @return Cost information table
          */
         public JTable getTableInfo() {
             return tableInfo;
         }
 
         /**
-         * コスト情報テーブルを設定する
-         * @param table		コスト情報テーブル
+         * Set the cost information table
+         * @param table Cost information table
          */
         public void setTableInfo(JTable table) {
             this.tableInfo = table;
@@ -595,8 +595,8 @@ public class ProfilerTablePanel extends AnalisysPanelBase implements Observer, I
 
 
     /**
-     * プロファイラ:コスト情報テーブルモデルを取得する
-     * @return		プロファイラ:コスト情報テーブルモデル
+     * Profiler: Get cost information table model
+     * @return Profiler: Cost Information Table Model
      */
     public ProfilerTableBaseModel getModel() {
         return model;
@@ -604,19 +604,19 @@ public class ProfilerTablePanel extends AnalisysPanelBase implements Observer, I
 
 
     /**
-     * フォーカスリスナを設定する
-     * @param listener		フォーカスリスナ
+     * Set focus listener
+     * @param listener Focus listener
      */
     @Override
     public void addTabFocusListener(TabFocusListener listener) {
         this.addFocusListener(listener);
-        // 子コンポーネントにもフォーカスリスナを設定する
+        // Set focus listener for child components as well
         SwingUtils.addChildFocusListener(this, listener);
     }
 
 
     /**
-     * エクスポートを行う
+     * Export
      */
     @Override
     public void export(File file) {
@@ -626,56 +626,56 @@ public class ProfilerTablePanel extends AnalisysPanelBase implements Observer, I
     }
 
     /**
-     * パネルにアクションリスナを設定する.<br/>
-     * メニューバーに作成済みのアクションリスナをパネルボタンに割り当てる。
-     * @param menu		メニューバー
+     * Set an action listener on the panel. <br/>
+     * Assign the created action listener to the menu bar to the panel button.
+     * @param menu Menu bar
      */
     @Override
     public void setActionListener(MainMenu menu) {
-        // 分析情報エクスポートアクション
+        // Analysis information export action
         this.btnExport.addActionListener(menu.getActionExportAnalysis());
     }
 
     /**
-     * モデルのクリアを行う。
+     * Clear the model.
      */
     @Override
     public void clearModel() {
-        // モデルクリア
+        // Model clear
         model.clearModel();
     }
 
     /**
-     * コスト情報パネル展開ボタンアクションリスナ
+     * Cost Information Panel Expand Button Action Listener
      * @author RIKEN
      */
     private class ProfilerInfoExpandAction implements ActionListener {
-        /** プロファイラ:コスト情報テーブルパネル */
+        /** Profiler: Cost Information Table Panel */
         private JPanel panelRow;
 
         /**
-         * コンストラクタ
-         * @param panel		表示切替を行うプロファイラ:コスト情報パネル
+         * Constructor
+         * @param panel Profiler to switch the display: Cost information panel
          */
         public ProfilerInfoExpandAction(JPanel panel) {
             this.panelRow = panel;
         }
 
         /**
-         * ボタンのクリックイベント
-         * @param event		イベント情報
+         * Button click event
+         * @param event Event information
          */
         @Override
         public void actionPerformed(ActionEvent event) {
             JButton btn = (JButton) event.getSource();
-            // プロファイラ:コスト情報パネルの表示をトグルする
+            // Profiler: Toggle display of cost information panel
             if (panelRow.isVisible()) {
-                // プロファイラ:コスト情報パネルを非表示する
+                // Profiler: Hide cost information panel
                 btn.setIcon(collapse_icon);
                 panelRow.setVisible(false);
             }
             else {
-                // プロファイラ:コスト情報パネルを表示する
+                // Profiler: Show cost information panel
                 btn.setIcon(expand_icon);
                 panelRow.setVisible(true);
             }
@@ -685,12 +685,12 @@ public class ProfilerTablePanel extends AnalisysPanelBase implements Observer, I
     }
 
     /**
-     * マウスクリックイベント
-     * @param event		マウスイベント情報
+     * Mouse click event
+     * @param event Mouse event information
      */
     @Override
     public void mouseClicked(MouseEvent event) {
-        // クリックチェック
+        // Click check
         if (SwingUtilities.isLeftMouseButton(event)) {
 
             NodePanel panel = null;
@@ -698,34 +698,34 @@ public class ProfilerTablePanel extends AnalisysPanelBase implements Observer, I
                 panel = (NodePanel)event.getSource();
             }
             else if (event.getSource() instanceof JTable) {
-                // 親の親パネル
+                // Parent parent panel
                 Container cont = ((JTable)event.getSource()).getParent().getParent();
                 if (cont instanceof NodePanel) {
                     panel = (NodePanel)cont;
                 }
             }
-            // 選択パネル
+            // Selection panel
             this.selectedPanel = panel;
-            // 選択列の背景色を選択色に変更する
+            // Change the background color of the selected column to the selected color
             setSelectedBackgroud(this.selectedPanel);
 
             if (panel != null) {
                 JTable table = panel.getTableInfo();
                 int selection = table.getSelectedRow();
                 if (selection < 0) {
-                    // １行目を選択状態とする。
+                    // Select the first line.
                     table.setRowSelectionInterval(0, 0);
                 }
-                // テーブル・モデルの行数に変換
+                // Convert to the number of rows in the table model
                 int modelRow = table.convertRowIndexToModel(selection);
                 if (modelRow >= 0) {
                     Object cell = table.getModel().getValueAt(modelRow, 0);
                     if (cell != null && cell instanceof ProfilerBaseData) {
-                        // 選択プロファイラデータを設定する
+                        // Set the selection profiler data
                         this.model.setSelectedInfo((ProfilerBaseData)cell);
                     }
                 }
-                // 選択テーブルを設定する
+                // Set the selection table
                 this.selectedTable = table;
             }
             //
@@ -734,9 +734,9 @@ public class ProfilerTablePanel extends AnalisysPanelBase implements Observer, I
                 ((AnalysisView)parent).changeAnalisysTab();
             }
 
-            // ダブルクリック
+            // Double click
             if (event.getClickCount() == 2) {
-                // 該当個所を開く
+                // Open the relevant part
                 this.btnOpenFile.doClick();
             }
         }
@@ -744,82 +744,82 @@ public class ProfilerTablePanel extends AnalisysPanelBase implements Observer, I
 
 
     /**
-     * マウスボタンダウンイベント
-     * @param event		マウスイベント情報
+     * Mouse button down event
+     * @param event Mouse event information
      */
     @Override
     public void mousePressed(MouseEvent event) {
     }
 
     /**
-     * マウスボタンアップイベント
-     * @param e		マウスイベント情報
+     * Mouse button up event
+     * @param e Mouse event information
      */
     @Override
     public void mouseReleased(MouseEvent e) {}
 
     /**
-     * マウスオーバーイベント
-     * @param e		マウスイベント情報
+     * Mouseover event
+     * @param e Mouse event information
      */
     @Override
     public void mouseEntered(MouseEvent e) {}
 
     /**
-     * マウスアウトイベント
-     * @param e		マウスイベント情報
+     * Mouse out event
+     * @param e Mouse event information
      */
     @Override
     public void mouseExited(MouseEvent e) {}
 
     /**
-     * タブのクローズを行う
+     * Close the tab
      */
     @Override
     public void closeTab() { }
 
     /**
-     * コスト情報テーブル選択変更リスナ
+     * Cost information table selection change listener
      * @author RIKEN
      */
     private class ProfilerInfoListSelectionListener implements ListSelectionListener {
-        /** リスナ対象テーブル */
+        /** Listener target table */
         private JTable table;
 
         /**
-         * コンストラクタ
-         * @param table		リスナ対象テーブル
+         * Constructor
+         * @param table Listener target table
          */
         public ProfilerInfoListSelectionListener(JTable table) {
             this.table = table;
         }
 
         /**
-         * プロファイラ:コスト情報テーブル選択変更イベント.
-         * @param event		イベント情報
+         * Profiler: Cost information table selection change event.
+         * @param event Event information
          */
         @Override
         public void valueChanged(ListSelectionEvent event) {
             if (event.getValueIsAdjusting()) return;
 
             int selection = table.getSelectedRow();
-            // テーブル・モデルの行数に変換
+            // Convert to the number of rows in the table model
             int modelRow = table.convertRowIndexToModel(selection);
             if (modelRow < 0) return;
             Object cell = this.table.getModel().getValueAt(modelRow, 0);
             if (cell == null) return;
             if (cell instanceof ProfilerBaseData) {
-                // 選択プロファイラデータを設定する
+                // Set the selection profiler data
                 ProfilerTablePanel.this.model.setSelectedInfo((ProfilerBaseData)cell);
             }
-            // 選択テーブルを設定する
+            // Set the selection table
             ProfilerTablePanel.this.selectedTable = table;
         }
     }
 
     /**
-     * 選択ソースコード行情報を取得する(未使用)
-     * @return		選択ソースコード行情報
+     * Get selected source code line information (unused)
+     * @return Selected source code line information
      */
     @Override
     public CodeLine getSelectedCodeLine() {
@@ -828,23 +828,23 @@ public class ProfilerTablePanel extends AnalisysPanelBase implements Observer, I
 
 
     /**
-     * コンテキストメニューを設定する
-     * @param popupMenu		コンテキストメニュー
+     * Set the context menu
+     * @param popupMenu Context menu
      */
     public void setPopupMenu(ProfilerPopupMenu popupMenu) {
         this.costinfoPopupMenu = popupMenu;
 
-        // 付加情報
+        // Additional information
         this.actionEdit = popupMenu.getActionAnalysisInformation();
 
-        // 該当箇所を開く
+        // Open the relevant part
         actionOpenAnalysis = (ViewOpenAnalysisLineAction) popupMenu.getActionOpenAnalysisLine();
 
     }
 
     /**
-     * 選択ブロックを取得する
-     * @return		選択ブロック
+     * Get the selected block
+     * @return selection block
      */
     @Override
     public IBlock getSelectedBlock() {
@@ -853,8 +853,8 @@ public class ProfilerTablePanel extends AnalisysPanelBase implements Observer, I
     }
 
     /**
-     * 選択付加情報を取得する
-     * @return		選択付加情報
+     * Get additional selection information
+     * @return Selectable additional information
      */
     @Override
     public IInformation getSelectedInformation() {
@@ -864,8 +864,8 @@ public class ProfilerTablePanel extends AnalisysPanelBase implements Observer, I
     }
 
     /**
-     * 選択付加情報を取得する
-     * @return		選択付加情報範囲
+     * Get additional selection information
+     * @return Select additional information range
      */
     public IInformation[] getSelectedInformations() {
         ProfilerBaseData value = this.model.getSelectedInfo();
@@ -886,20 +886,20 @@ public class ProfilerTablePanel extends AnalisysPanelBase implements Observer, I
 
 
     /**
-     * ソースビュープロパティを設定する
-     * @param properties		ソースビュープロパティ
+     * Set source view properties
+     * @param properties Source view properties
      */
     @Override
     public void setSourceProperties(SourceProperties properties) {
-    	// 選択パネルの背景色
+    	// Background color of selection panel
     	this.colorSelectedPanel = properties.getBackgoundView2Color();
-        // 選択パネルの背景色を設定する.
+        // Set the background color of the selection panel.
         setSelectedBackgroud(this.selectedPanel);
     }
 
     /**
-     * プロファイラプロパティを設定する
-     * @param properties		プロファイラプロパティ
+     * Set profiler properties
+     * @param properties Profiler properties
      */
     public void setProfilerProperties(ProfilerProperties properties) {
         if (this.model == null) return;
@@ -907,17 +907,17 @@ public class ProfilerTablePanel extends AnalisysPanelBase implements Observer, I
     }
 
     /**
-     * ボタンのクリックイベント
-     * @param event			イベント情報
+     * Button click event
+     * @param event Event information
      */
     @Override
     public void actionPerformed(ActionEvent event) {
-        // クリア
+        // clear
         if (event.getSource() == this.btnClear) {
-            // モデルクリア
+            // Model clear
             clearModel();
         }
-        // コスト情報の該当行を開く
+        // Open the corresponding line of cost information
         if (event.getSource() == this.btnOpenFile) {
             ProfilerBaseData value = this.model.getSelectedInfo();
             if (value == null) return;
@@ -929,7 +929,7 @@ public class ProfilerTablePanel extends AnalisysPanelBase implements Observer, I
                 this.actionOpenAnalysis.viewSourceLine(value.getCodeLine());
             }
         }
-        // 付加情報編集
+        // Edit additional information
         else if (event.getSource() == this.btnEdit) {
             ProfilerBaseData value = this.model.getSelectedInfo();
             String text = this.model.getSelectedText();
@@ -940,7 +940,7 @@ public class ProfilerTablePanel extends AnalisysPanelBase implements Observer, I
             menuVisibledColumns = makeVisibledColumnMenu();
             menuVisibledColumns.show(this.btnPulldown, 0, this.btnPulldown.getHeight());
         }
-        // ソート
+        // sort
         //else if (event.getSource() == this.btnSort) {
         //	Icon icon = null;
         //	if (this.viewSort) {
@@ -958,7 +958,7 @@ public class ProfilerTablePanel extends AnalisysPanelBase implements Observer, I
 
 
     /**
-     * 選択項目をクリップボードにコピーする.
+     * Copy the selection to the clipboard.
      */
     @Override
     public void copyClipboard() {
@@ -966,13 +966,13 @@ public class ProfilerTablePanel extends AnalisysPanelBase implements Observer, I
         String text = SwingUtils.toCsvOfSeletedRows(this.selectedTable);
         if (text == null) return;
 
-        // クリップボードにコピーする
+        // copy to clipboard
         SwingUtils.copyClipboard(text);
     }
 
     /**
-     * テーブル列の表示切替プルダウンメニューの作成を行う。
-     * @return		表示切替プルダウンメニュー
+     * Create a pull-down menu for switching the display of table columns.
+     * @return Display switching pull-down menu
      */
     private JPopupMenu makeVisibledColumnMenu() {
         String[] columns = this.model.getHeaderColumns();
@@ -999,7 +999,7 @@ public class ProfilerTablePanel extends AnalisysPanelBase implements Observer, I
     }
 
     /**
-     * エキスポートできるデータがあるか否か
+     * Whether there is data that can be exported
      */
 	@Override
 	public boolean isExportable() {
@@ -1008,15 +1008,15 @@ public class ProfilerTablePanel extends AnalisysPanelBase implements Observer, I
 	}
 
     /**
-     * 選択パネルの背景色を選択色に変更する
-     * @param panel		選択パネル
+     * Change the background color of the selection panel to the selection color
+     * @param panel Selection panel
      */
     private void setSelectedBackgroud(JPanel panel) {
-        // すべてクリア
+        // Clear all
 		if (this.contentInfo != null) {
 			SwingUtils.setBackgroundChildPanel(this.contentInfo, null);
 		}
-        // 選択パネルの背景色を選択色に変更する
+        // Change the background color of the selection panel to the selection color
         if (panel != null) {
             SwingUtils.setBackgroundChildPanel(panel, this.colorSelectedPanel);
         }

@@ -24,48 +24,48 @@ import jp.riken.kscope.common.FILTER_TYPE;
 
 
 /**
- * フィルタツリーモデルクラス
+ * Filter tree model class
  * @author RIKEN
  *
  */
 public class FilterTreeModel extends DefaultTreeModel {
 
-    /** シリアル番号 */
+    /** Serial number */
     private static final long serialVersionUID = 1L;
 
-    /** ノードフィルタのクラス */
+    /** Node filter class */
     private List<FILTER_TYPE> listFilter;
 
     /**
-     * コンストラクタ
-     * @param node		ルートノード
+     * Constructor
+     * @param node Root node
      */
     public FilterTreeModel(FilterTreeNode node) {
         super(node);
     }
 
     /**
-     * ノードフィルタを実行する
+     * Run node filter
      */
     public void find() {
         if (this.root != null) {
             FilterTreeNode node = (FilterTreeNode) root;
-            // フィルタを設定
+            // Set filter
             node.setListFilter(this.listFilter);
 
-            // ノード検索
+            // Node search
             node.find();
 
-            // ツリー変更イベント
+            // Tree change event
             Object[] path = { root };
             fireTreeStructureChanged(this, path, null, null);
         }
     }
 
     /**
-     * 親ノードの子ノード数を取得する
-     * @param   parent    親ノード
-     * @return		子ノード数
+     * Get the number of child nodes of the parent node
+     * @param parent parent node
+     * @return Number of child nodes
      */
     @Override
     public int getChildCount(Object parent) {
@@ -76,10 +76,10 @@ public class FilterTreeModel extends DefaultTreeModel {
     }
 
     /**
-     * 親ノードの子ノードを取得する
-     * @param   parent    親ノード
-     * @param   index    子ノードインデックス
-     * @return		子ノード
+     * Get the child node of the parent node
+     * @param parent parent node
+     * @param index Child node index
+     * @return child node
      */
     @Override
     public Object getChild(Object parent, int index) {
@@ -91,16 +91,16 @@ public class FilterTreeModel extends DefaultTreeModel {
 
 
     /**
-     * ノードフィルタを取得する
-     * @return		ノードフィルタ
+     * Get node filter
+     * @return node filter
      */
     public List<FILTER_TYPE> getListFilter() {
         return listFilter;
     }
 
     /**
-     * ノードフィルタを設定する
-     * @param list		ノードフィルタ
+     * Set node filter
+     * @param list node filter
      */
     public void setListFilter(List<FILTER_TYPE> list) {
         this.listFilter = list;

@@ -26,32 +26,32 @@ import jp.riken.kscope.common.FILTER_TYPE;
 
 
 /**
- * フィルタノードクラス
+ * Filter node class
  * @author RIKEN
  */
 public class FilterTreeNode extends DefaultMutableTreeNode {
 
-    /** シリアル番号 */
+    /** Serial number */
     private static final long serialVersionUID = 1L;
 
     /**
-     * ノードの追加フラグ
-     * true=ノードを親ノードに追加する。ノードがフィルタ一致、又は、子ノードが存在する場合
+     * Add node flag
+     * true = Add node to parent node. If the node has a filter match or if there are child nodes
      */
     private boolean passed = true;
 
-    /** フィルタ一致子ノードリスト */
+    /** Filter matcher node list */
     private List<FilterTreeNode> filteredChildren = new ArrayList<FilterTreeNode>();
 
-    /** ノードフィルタのクラス */
+    /** Node filter class */
     private List<FILTER_TYPE> listFilter;
 
-    /** 子孫ノードの未展開の深さ */
+    /** Unexpanded depth of offspring nodes */
     private int depth;
 
     /**
-     * コンストラクタ
-     * @param userObject		ノードユーザオブジェクト
+     * Constructor
+     * @param userObject Node user object
      */
     public FilterTreeNode(Object userObject) {
         super(userObject);
@@ -59,9 +59,9 @@ public class FilterTreeNode extends DefaultMutableTreeNode {
     }
 
     /**
-     * コンストラクタ
-     * @param userObject		ノードユーザオブジェクト
-     * @param depth				ノード
+     * Constructor
+     * @param userObject Node user object
+     * @param depth node
      */
     public FilterTreeNode(Object userObject, int depth) {
         super(userObject);
@@ -69,51 +69,51 @@ public class FilterTreeNode extends DefaultMutableTreeNode {
     }
 
     /**
-     * コンストラクタ
+     * Constructor
      */
     public FilterTreeNode() {
         super();
     }
 
     /**
-     * ノードフィルタを行う
+     * Perform node filtering
      */
     public void find() {
         passed = false;
         filteredChildren.clear();
-        // フィルタの有無チェック
+        // Check for filter
         if (!validateFilter()) {
-            // フィルタ無しであるので、無条件追加
+            // Since there is no filter, add unconditionally
             passed = true;
-            // 子ノード検索
+            // Child node search
             passFilterDown();
         } else if (pass(this)) {
-            // フィルタクラス一致によるノード追加
+            // Add node by matching filter class
             passed = true;
-            // 子ノード検索
+            // Child node search
             passFilterDown();
         } else {
-            // 子ノード検索
+            // Child node search
             passFilterDown();
             passed = filteredChildren.size() != 0;
         }
     }
 
     /**
-     * 追加ノードであるかチェックする.<br/>
-     * true=フィルタ一致ノードである.<br/>
-     * true=フィルタ条件がない.<br/>
-     * @param node		ノード
-     * @return			true=追加ノード
+     * Check if it is an additional node. <br/>
+     * true = Filter match node. <br/>
+     * true = No filter condition. <br/>
+     * @param node node
+     * @return true = additional node
      */
     protected boolean pass(FilterTreeNode node) {
 
-        // フィルタの有無チェック
+        // Check for filter
         if (!validateFilter()) {
             return true;
         }
 
-        // フィルタ対象ノードクラスであるかチェックする
+        // Check if it is a filtered node class
         Object obj = node.getUserObject();
         if (!isFilter(obj)) {
             return false;
@@ -122,13 +122,13 @@ public class FilterTreeNode extends DefaultMutableTreeNode {
     }
 
     /**
-     * 子ノードのフィルタを行う.
+     * Filter child nodes.
      */
     private void passFilterDown() {
         int childCount = super.getChildCount();
         for (int i = 0; i < childCount; i++) {
             FilterTreeNode child = (FilterTreeNode) super.getChildAt(i);
-            // フィルタを設定する。
+            // Set the filter.
             child.setListFilter(this.listFilter);
 
             child.find();
@@ -139,9 +139,9 @@ public class FilterTreeNode extends DefaultMutableTreeNode {
     }
 
     /**
-     * 子ノードを追加する
-     * @param node		追加子ノード
-     * @return  追加子ノード
+     * Add a child node
+     * @param node Add-on node
+     * @return Add-on node
      */
     public FilterTreeNode add(FilterTreeNode node) {
     	FilterTreeNode result = node;
@@ -153,7 +153,7 @@ public class FilterTreeNode extends DefaultMutableTreeNode {
     		result = (FilterTreeNode)equalsChild(node);
     	}
 
-        // フィルタを設定する。
+        // Set the filter.
         node.setListFilter(this.listFilter);
 
         node.find();
@@ -166,12 +166,12 @@ public class FilterTreeNode extends DefaultMutableTreeNode {
     }
 
     /**
-     * 子ノードを削除する
-     * @param childIndex		子ノードインデックス
+     * Delete child node
+     * @param childIndex Child node index
      */
     @Override
     public void remove(int childIndex) {
-        // フィルタの有無チェック
+        // Check for filter
         if (!validateFilter()) {
             // as child indexes might be inconsistent..
             throw new IllegalStateException(
@@ -181,12 +181,12 @@ public class FilterTreeNode extends DefaultMutableTreeNode {
     }
 
     /**
-     * 子ノード数を取得する
-     * @return		子ノード数
+     * Get the number of child nodes
+     * @return Number of child nodes
      */
     @Override
     public int getChildCount() {
-        // フィルタの有無チェック
+        // Check for filter
         if (!validateFilter()) {
             return super.getChildCount();
         }
@@ -195,12 +195,12 @@ public class FilterTreeNode extends DefaultMutableTreeNode {
 
 
     /**
-     * 子ノードを取得する
-     * @return		子ノードインデックス
+     * Get a child node
+     * @return Child node index
      */
     @Override
     public FilterTreeNode getChildAt(int index) {
-        // フィルタの有無チェック
+        // Check for filter
         if (!validateFilter()) {
             return (FilterTreeNode) super.getChildAt(index);
         }
@@ -208,21 +208,21 @@ public class FilterTreeNode extends DefaultMutableTreeNode {
     }
 
     /**
-     * 親ノードへ追加ノードであるか取得する.
-     * @return			true=追加ノード
+     * Get whether it is an additional node to the parent node.
+     * @return true = additional node
      */
     public boolean isPassed() {
         return passed;
     }
 
     /**
-     * フィルタが設定されているかチェックする.
-     * @return		true=フィルタ設定済み
+     * Check if the filter is set.
+     * @return true = Filtered
      */
     protected boolean validateFilter() {
         if (this.listFilter == null) return false;
         if (this.listFilter.contains(FILTER_TYPE.ALL)) {
-            // すべて表示であるので、フィルタ適用なし
+            // All are displayed, so no filter is applied
             return false;
         }
 
@@ -230,14 +230,14 @@ public class FilterTreeNode extends DefaultMutableTreeNode {
     }
 
     /**
-     * フィルタ対象のノードオブジェクトであるかチェックする。
-     * @param    node		ノードユーザオブジェクト
-     * @return		true=フィルタ対象ノード(表示ノード)
+     * Check if it is a node object to be filtered.
+     * @param node node user object
+     * @return true = Filtered node (display node)
      */
     private boolean isFilter(Object node) {
         if (this.listFilter == null) return false;
 
-        // フィルタ対象のノードオブジェクトであるかチェックする。
+        // Check if it is a node object to be filtered.
         for (FILTER_TYPE filter : this.listFilter) {
             if (filter.isFilter(node)) {
                 return true;
@@ -249,43 +249,43 @@ public class FilterTreeNode extends DefaultMutableTreeNode {
 
 
     /**
-     * ノードフィルタを取得する
-     * @return		ノードフィルタ
+     * Get node filter
+     * @return node filter
      */
     public List<FILTER_TYPE> getListFilter() {
         return listFilter;
     }
 
     /**
-     * ノードフィルタを設定する
-     * @param list		ノードフィルタ
+     * Set node filter
+     * @param list node filter
      */
     public void setListFilter(List<FILTER_TYPE> list) {
         this.listFilter = list;
     }
 
     /**
-     * 子孫ノードの未展開の深さを取得する
-     * @return	子孫ノードの未展開の深さ
+     * Get the unexpanded depth of the offspring node
+     * @return Unexpanded depth of offspring nodes
      */
     public int getDepth() {
     	return this.depth;
     }
 
     /**
-     * 子孫ノードの未展開の深さを設定する
-     * @param depth	子孫ノードの未展開の深さ
+     * Set the unexpanded depth of offspring nodes
+     * @param depth Unexpanded depth of offspring nodes
      */
     public void setDepth(int depth) {
     	this.depth = depth;
     }
 
     /**
-     * 子要素をすべて削除する
+     * Delete all child elements
      */
 	@Override
 	public void removeAllChildren() {
-		// 一時的にフィルタを削除する。
+		// Temporarily remove the filter.
 		List<FILTER_TYPE> filters = this.listFilter;
 		this.listFilter = null;
 		for (int i = super.getChildCount()-1; i >= 0; i--) {
@@ -296,19 +296,19 @@ public class FilterTreeNode extends DefaultMutableTreeNode {
 	}
 
 	/**
-	 * 子ノードに存在するかチェックする.
-	 * @param child		対象ノード
-	 * @return			true=子ノードである
-	 */
+* Check if it exists in the child node.
+* @param child Target node
+* @return true = child node
+*/
 	private boolean containsChild(FilterTreeNode child) {
 		return (equalsChild(child) != null);
 	}
 
 	/**
-	 * 子ノードから同一ノードを取得する.
-	 * @param child		対象ノード
-	 * @return		同一ノード
-	 */
+* Get the same node from a child node.
+* @param child Target node
+* @return Same node
+*/
 	private DefaultMutableTreeNode equalsChild(FilterTreeNode child) {
 		if (child == null) {
 		    return null;
@@ -335,11 +335,11 @@ public class FilterTreeNode extends DefaultMutableTreeNode {
 	}
 
 	/**
-	 * ノードリストにチェックノードが存在するかチェックする
-	 * @param child		チェックノード
-	 * @param list		ノードリスト
-	 * @return			true=存在する
-	 */
+* Check if a check node exists in the node list
+* @param child Check node
+* @param list Node list
+* @return true = exists
+*/
 	private boolean containsList(FilterTreeNode child, List<FilterTreeNode> list) {
 		if (child == null) {
 		    return false;

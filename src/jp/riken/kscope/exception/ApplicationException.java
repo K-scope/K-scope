@@ -19,26 +19,26 @@ package jp.riken.kscope.exception;
 import jp.riken.kscope.data.CodeLine;
 
 /**
- * アプリケーション例外クラス GUIその他、アプリケーション全体の例外クラス アプリケーション例外は、例外発生箇所、又は呼出側にて例外処理,
- * 又はthrowsを行わなければならない。
+ * Application exception class GUI and other exception classes for the entire application Application exceptions are handled by the exception occurrence location or the caller.
+ * Or throws must be done.
  *
  * @author RIKEN
  *
  */
 public class ApplicationException extends Exception {
 
-    /** シリアル番号 */
+    /** Serial number */
     private static final long serialVersionUID = 1L;
-    /** コード行情報 */
+    /** Code line information */
     private CodeLine m_errorCode;
 
     /**
-     * コンストラクタ（エラーメッセージ）
+     * Constructor (error message)
      *
      * @param msg
-     *            エラーメッセージ
+     *            Error message
      * @param line
-     *            エラーコード行
+     * Error code line
      */
     public ApplicationException(String msg, CodeLine line) {
         super(msg);
@@ -46,12 +46,12 @@ public class ApplicationException extends Exception {
     }
 
     /**
-     * コンストラクタ（エラーメッセージ）
+     * Constructor (error message)
      *
      * @param msg
-     *            エラーメッセージ
+     *            Error message
      * @param line
-     *            コード行文字列
+     * Code line string
      */
     public ApplicationException(String msg, String line) {
         super(msg);
@@ -59,12 +59,12 @@ public class ApplicationException extends Exception {
     }
 
     /**
-     * コンストラクタ（例外）
+     * Constructor (exception)
      *
      * @param ex
-     *            例外クラス
+     * Exception class
      * @param line
-     *            エラーコード行
+     * Error code line
      */
     public ApplicationException(Exception ex, CodeLine line) {
         super(ex);
@@ -72,48 +72,48 @@ public class ApplicationException extends Exception {
     }
 
     /**
-     * コンストラクタ（例外）
+     * Constructor (exception)
      *
      * @param ex
-     *            例外クラス
+     * Exception class
      */
     public ApplicationException(Exception ex) {
         super(ex);
     }
 
     /**
-     * コード行情報を設定する。
+     * Set code line information.
      *
      * @param line
-     *            コード行情報
+     * Code line information
      */
     public void setCodeLine(CodeLine line) {
         this.m_errorCode = line;
     }
 
     /**
-     * コード行文字列を設定する。
+     * Set the code line string.
      *
      * @param line
-     *            コード行文字列
+     * Code line string
      */
     public void setCodeLine(String line) {
         this.m_errorCode = new CodeLine(line);
     }
 
     /**
-     * エラー発生コード行情報クラスを取得する。
+     * Get the error occurrence code line information class.
      *
-     * @return エラー発生コード行情報
+     * @return Error occurrence code line information
      */
     public CodeLine getCodeLine() {
         return m_errorCode;
     }
 
     /**
-     * エラー発生コード（文字列）を取得する。
+     * Get the error occurrence code (character string).
      *
-     * @return エラー発生コード（文字列）
+     * @return Error occurrence code (character string)
      */
     public String getCodeInfo() {
         if (m_errorCode == null)
@@ -124,9 +124,9 @@ public class ApplicationException extends Exception {
     }
 
     /**
-     * エラーメッセージを取得する。
+     * Get error messages.
      *
-     * @return エラーメッセージ
+     * @return error message
      */
     @Override
     public String toString() {

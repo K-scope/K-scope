@@ -23,35 +23,35 @@ import javax.swing.*;
 import javax.swing.plaf.metal.MetalComboBoxButton;
 
 /**
- * 背景色付きコンボボックス.
- * コンボボックスのテキストエリアは編集（入力）は不可.
+ * Combo box with colored background.
+ * The text area of the combo box cannot be edited (input).
  * @author RIKEN
  */
 public class JBackgroundComboBox extends JComboBox<Object> {
 
-	/** シリアル番号 */
+	/** Serial number */
 	private static final long serialVersionUID = 1L;
 
-	/** コンボボックスデータ */
+	/** Combo box data */
 	class ColorComboData {
-		/** コンボボックステキスト */
+		/** Combo box text */
 		String text;
-		/** コンボボックス背景色 */
+		/** Combo box background color */
 		Color color;
 		/**
-		 * コンストラクタ
-		 * @param text		テキスト
-		 * @param color		背景色
-		 */
+* Constructor
+* @param text text
+* @param color Background color
+*/
 		public ColorComboData(String text, Color color) {
 			this.text = text;
 			this.color = color;
 		}
 
 		/**
-		 * コンボボックスデータの文字列表現.
-		 * テキストを返す.
-		 */
+* String representation of combo box data.
+* Returns text.
+*/
 		@Override
 		public String toString() {
 			return this.text;
@@ -60,8 +60,8 @@ public class JBackgroundComboBox extends JComboBox<Object> {
 	}
 
 	/**
-	 * コンストラクタ
-	 */
+* Constructor
+*/
 	@SuppressWarnings("unchecked")
 	public JBackgroundComboBox() {
 		super();
@@ -118,16 +118,16 @@ public class JBackgroundComboBox extends JComboBox<Object> {
 	}
 
 	/**
-	 * コンボボックスリストセル描画クラス
-	 * @author RIKEN
-	 */
+* Combo box list cell drawing class
+* @author RIKEN
+*/
 	@SuppressWarnings("rawtypes")
 	class ColorRenderer extends JLabel implements javax.swing.ListCellRenderer {
 		private static final long serialVersionUID = -5992989439503239647L;
 
 		/**
-		 * コンストラクタ
-		 */
+* Constructor
+*/
 		public ColorRenderer() {
 			this.setOpaque(true);
 		}
@@ -176,10 +176,10 @@ public class JBackgroundComboBox extends JComboBox<Object> {
 	}
 
 	/**
-	 * コンボボックスデータを追加する.
-	 * @param text		テキスト
-	 * @param color		背景色
-	 */
+* Add combo box data.
+* @param text text
+* @param color Background color
+*/
 	public void addItem(String text, Color color) {
 		ColorComboData data = new ColorComboData(text, color);
 		addItem(data);

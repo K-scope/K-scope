@@ -42,39 +42,39 @@ import jp.riken.kscope.utils.StringUtils;
 import jp.riken.kscope.utils.SwingUtils;
 
 /**
- * 付加情報モデルクラス
+ * Additional information model class
  * @author RIKEN
  */
 public class InformationModel extends Observable implements PropertyChangeListener {
 
-    /** 付加情報リスト */
+    /** Additional information list */
     List<InformationNode> listInformation;
 
-    /** 外部ツール設定プロパティ */
+    /** External tool settings properties */
     private ProgramProperties propertiesProgram;
 
-    /** プロジェクトフォルダ */
+    /** Project folder */
     private File projectFolder;
 
-    /** タイトル */
+    /** Title */
     private String title;
 
     /**
-     * 付加情報ノードクラス.
+     * Additional information node class.
      * @author RIKEN
      */
     private class InformationNode {
-        /** 付加情報設定開始ノード */
+        /** Additional information setting start node */
         private IInformation startNode;
-        /** 付加情報設定終了ノード */
+        /** Additional information setting end node */
         private IInformation endNode;
-        /** 付加情報 */
+        /** Additional information */
         private TextInfo info;
 
         /**
-         * コンストラクタ
-         * @param node 付加情報設定ステートメント
-         * @param info 付加情報
+         * Constructor
+         * @param node Additional information setting statement
+         * @param info Additional information
          */
         @SuppressWarnings("unused")
         public InformationNode(IInformation node, TextInfo info) {
@@ -84,10 +84,10 @@ public class InformationModel extends Observable implements PropertyChangeListen
             this.info = info;
         }
         /**
-         * コンストラクタ
-         * @param snode 付加情報設定開始ステートメント
-         * @param enode 付加情報設定終了ステートメント
-         * @param info 付加情報
+         * Constructor
+         * @param snode Additional information setting start statement
+         * @param enode Additional information setting end statement
+         * @param info Additional information
          */
         public InformationNode(IInformation snode, IInformation enode, TextInfo info) {
             super();
@@ -97,38 +97,38 @@ public class InformationModel extends Observable implements PropertyChangeListen
         }
 
         /**
-         * 付加情報設定ノードを取得する
-         * @return   付加情報設定ノード
+         * Get additional information setting node
+         * @return Additional information setting node
          */
         public IInformation getNode() {
             return this.startNode;
         }
         /**
-         * 付加情報設定開始ノードを取得する
-         * @return   付加情報設定開始ノード
+         * Get the additional information setting start node
+         * @return Additional information setting start node
          */
         public IInformation getStartNode() {
             return this.startNode;
         }
         /**
-         * 付加情報設定終了ノードを取得する
-         * @return   付加情報設定終了ノード
+         * Get the additional information setting end node
+         * @return Additional information setting end node
          */
         public IInformation getendNode() {
             return this.endNode;
         }
 
         /**
-         * 付加情報を取得する
-         * @return		付加情報
+         * Get additional information
+         * @return Additional information
          */
         public TextInfo getInfo() {
             return info;
         }
 
         /**
-         * 付加情報を設定する
-         * @param	info	付加情報
+         * Set additional information
+         * @param info Additional information
          */
         public void setInfo(TextInfo info) {
             this.info = info;
@@ -136,7 +136,7 @@ public class InformationModel extends Observable implements PropertyChangeListen
     }
 
     /**
-     * モデルの変更を通知する
+     * Notify model changes
      */
     private void notifyModel() {
         this.setChanged();
@@ -145,24 +145,24 @@ public class InformationModel extends Observable implements PropertyChangeListen
     }
 
     /**
-     * タイトルを取得する.
-     * @return		付加情報タイトル
+     * Get the title.
+     * @return Additional information title
      */
     public String getTitle() {
         return this.title;
     }
 
     /**
-     * タイトルを設定する.
-     * @param title		付加情報タイトル
+     * Set the title.
+     * @param title Additional information title
      */
     public void setTitle(String title) {
         this.title = title;
     }
 
     /**
-     * 付加情報リスト数を取得する
-     * @return		付加情報リスト数
+     * Get the number of additional information lists
+     * @return Number of additional information lists
      */
     public int getInformationListCount() {
         if (listInformation == null) return 0;
@@ -170,9 +170,9 @@ public class InformationModel extends Observable implements PropertyChangeListen
     }
 
     /**
-     * 付加情報リストから指定インデックスの付加情報設定ノードを取得する
-     * @param   index    インデックス
-     * @return		付加情報設定ノード
+     * Get the additional information setting node of the specified index from the additional information list
+     * @param index index
+     * @return Additional information setting node
      */
     public IInformation getInformationNode(int index) {
         if (this.listInformation == null) return null;
@@ -181,9 +181,9 @@ public class InformationModel extends Observable implements PropertyChangeListen
     }
 
     /**
-     * 付加情報リストから指定インデックスの付加情報を取得する
-     * @param   index    インデックス
-     * @return		付加情報
+     * Get additional information of the specified index from the additional information list
+     * @param index index
+     * @return Additional information
      */
     public TextInfo getInformationInfo(int index) {
         if (this.listInformation == null) return null;
@@ -193,9 +193,9 @@ public class InformationModel extends Observable implements PropertyChangeListen
 
 
     /**
-     * 付加情報のコンテンツを取得する
-     * @param index		付加情報リストインデックス
-     * @return		付加情報:コンテンツ
+     * Get additional information content
+     * @param index Additional information list index
+     * @return Additional Information: Content
      */
     public String getInformationContent(int index) {
         if (listInformation == null) return null;
@@ -206,9 +206,9 @@ public class InformationModel extends Observable implements PropertyChangeListen
     }
 
     /**
-     * 付加情報のHTML形式のコンテンツを取得する
-     * @param index		付加情報リストインデックス
-     * @return		付加情報:HTML形式のコンテンツ
+     * Get the HTML content of additional information
+     * @param index Additional information list index
+     * @return Additional information: HTML content
      */
     public String getInformationHtmlContent(int index) {
         if (listInformation == null) return null;
@@ -220,32 +220,32 @@ public class InformationModel extends Observable implements PropertyChangeListen
             return listInformation.get(index).getInfo().getContent();
         }
 
-        // 外部ツール設定リストの取得
+        // Get the external tool setting list
         List<Program> list = this.propertiesProgram.getListProgram();
         if (list == null || list.size() <= 0) {
             return listInformation.get(index).getInfo().getContent();
         }
 
-        // 付加情報文字列
+        // Additional information string
         String content = listInformation.get(index).getInfo().getContent();
 
-        // 外部ツールファイルをアンカータグに変換する
+        // Convert external tool files to anchor tags
         content = createHtmlContent(content);
 
         return content;
     }
 
     /**
-     * 文字列をHTMLアンカー文字列に変換する
-     * @param content		付加情報
-     * @return			HTML文字列
+     * Convert strings to HTML anchor strings
+     * @param content Additional information
+     * @return HTML string
      */
     public String createHtmlContent(String content) {
 
-        // 外部ツールファイルをアンカータグに変換する
+        // Convert external tool files to anchor tags
         content = replaceAnchorTag(content);
 
-        // 改行文字、空白、タブをHTMLコードに置換する
+        // Replace newline characters, whitespace, and tabs with HTML code
         content = StringUtils.textTohtml(content);
 
         content = "<html><body>\n" + content;
@@ -256,9 +256,9 @@ public class InformationModel extends Observable implements PropertyChangeListen
 
 
     /**
-     * 外部ツール設定によりアンカータグに置換する
-     * @param content		付加情報
-     * @return				アンカータグ置換付加情報
+     * Replace with anchor tag by external tool setting
+     * @param content Additional information
+     * @return Anchor tag replacement additional information
      */
     private String replaceAnchorTag(String content) {
 
@@ -286,36 +286,36 @@ public class InformationModel extends Observable implements PropertyChangeListen
             }
         }
 
-        // 外部ツール設定によりアンカータグに置換する
+        // Replace with anchor tag by external tool setting
         StringBuffer buf = new StringBuffer();
         for (String word : list) {
-            // 外部ツール設定リストの取得
+            // Get the external tool setting list
             List<Program> programs = this.propertiesProgram.getListProgram();
             if (programs == null || programs.size() <= 0) break;
 
             String atag = null;
             for (Program prog : programs) {
-                // 外部ツールプログラム
+                // External tool program
                 String program = null;
                 String option = null;
                 if (!prog.isRelation()) {
-                    // 関連付けではないので、外部プログラム名の設定
+                    // Since it is not an association, set the external program name
                     program = prog.getExename();
                     if (prog.getOption() != null && !prog.getOption().isEmpty()) {
                         option = prog.getOption();
                     }
                 }
 
-                // 正規表現
+                // Regular expressions
                 if (prog.isRegex()) {
                     atag = createAnchorTag(word, prog.getPattern(), program, option);
                 }
                 else {
-                    // 拡張子
+                    // extension
                     int count = prog.getPatternExtsCount();
                     for (int i=0; i<count; i++) {
                         String ext = prog.getPatternExt(i);
-                        // 拡張子ファイルの検索正規表現
+                        // Search for extension files Regular expression
                         String pattern = "^.+\\." + ext + "$";
                         atag = createAnchorTag(word, pattern, program, option);
                         if (atag != null) break;
@@ -332,13 +332,13 @@ public class InformationModel extends Observable implements PropertyChangeListen
 
 
     /**
-     * 外部ツール設定ファイルをアンカータグで囲む.<br/>
-     * 外部ツール設定ファイルではない場合は、nullを返す。
-     * @param content		付加情報
-     * @param regex			起動ファイル正規表現
-     * @param program		外部プログラム
-     * @param option		起動オプション
-     * @return				アンカータグ変換付加情報
+     * Enclose the external tool configuration file in an anchor tag. <br/>
+     * Returns null if it is not an external tool configuration file.
+     * @param content Additional information
+     * @param regex startup file regular expression
+     * @param program External program
+     * @param option Boot option
+     * @return Anchor tag conversion additional information
      */
     private String createAnchorTag(String content, String regex, String program, String option) {
 
@@ -346,14 +346,14 @@ public class InformationModel extends Observable implements PropertyChangeListen
             return null;
         }
 
-        // 正規表現によるマッチング
+        // Regular expression matching
         java.util.regex.Pattern pattern = java.util.regex.Pattern.compile(
                                                 regex,
                                                 java.util.regex.Pattern.CASE_INSENSITIVE+java.util.regex.Pattern.MULTILINE);
         Matcher m = pattern.matcher(content);
         if (!m.find()) return null;
 
-        // アンカータグの挿入
+        // Insert anchor tag
         String file = null;
         int start = 0;
         int end = 0;
@@ -363,39 +363,39 @@ public class InformationModel extends Observable implements PropertyChangeListen
             end = m.end();
         }
         else if (m.groupCount() >= 1) {
-            // グループ化されている場合、最初(全体)は除外する。
+            // If grouped, exclude the first (whole).
             file = m.group(m.groupCount());
             start = m.start(m.groupCount());
             end = m.end(m.groupCount());
         }
         file = file.trim();
 
-        // URL,ファイル名をURL文字列に変換する
+        // Convert URL and file name to URL string
         String href = toURL(file);
 
-        // hrefの組み立て
+        // href assembly
         String anchor = "<a href='" + href + "' ";
 
-        // 起動プログラム名はclass属性にセットする
+        // Set the startup program name in the class attribute
         if (program != null) {
             anchor += "class='" + program + "' ";
         }
-        // 起動オプションはcomment属性にセットする
+        // Set the boot option to the comment attribute
         if (option != null) {
             anchor += "comment='" + option + "' ";
         }
         anchor += ">" + file + "</a>";
 
-        // アンカータグの置換
+        // Replace anchor tag
         content = content.substring(0, start) + anchor + content.substring(end);
 
         return content;
     }
 
     /**
-     * URL, ファイル名をURL書式文字列に変換する
-     * @param name		url又はファイル名
-     * @return			URL書式文字列
+     * Convert URLs and file names to URL format strings
+     * @param name url or filename
+     * @return URL format string
      */
     private String toURL(String name) {
         if (name == null || name.isEmpty()) return null;
@@ -426,33 +426,33 @@ public class InformationModel extends Observable implements PropertyChangeListen
 
 
     /**
-     * モデル情報のエクスポートを行う
-     * @param file			出力ファイル
+     * Export model information
+     * @param file Output file
      */
     public void writeFile(File file) {
 
         if (this.listInformation == null || this.listInformation.size() <= 0) return;
 
         try {
-            // ファイル出力
+            // File output
             PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(file)));
-            // ヘッダー出力
-            pw.println(Message.getString("informationmodel.file.header")); //コード, 付加情報
+            // Header output
+            pw.println(Message.getString("informationmodel.file.header")); // Code, additional information
 
-            // 付加情報を出力する
+            // Output additional information
             for (InformationNode node : this.listInformation) {
-                // 名前
+                // name
                 String name = node.getNode().toString();
-                // 付加情報
+                // Additional information
                 String content = node.getInfo().getContent();
                 content = content.trim();
 
-                // 出力
+                // Output
                 pw.print(SwingUtils.escapeCsv(name));
                 pw.print(",");
                 pw.print(SwingUtils.escapeCsv(content));
 
-                // 改行追加
+                // Add line breaks
                 pw.println();
             }
 
@@ -464,63 +464,63 @@ public class InformationModel extends Observable implements PropertyChangeListen
     }
 
     /**
-     * 外部ツール設定プロパティの変更イベント
-     * @param event		イベント情報
+     * External tool setting property change event
+     * @param event Event information
      */
     @Override
     public void propertyChange(PropertyChangeEvent event) {
 
-        // 外部ツール設定プロパティの変更
+        // Change external tool setting properties
         if (event.getNewValue() instanceof ProgramProperties) {
             propertiesProgram = (ProgramProperties)event.getNewValue();
 
-            // 付加情報リストの設定を通知する
+            // Notify the setting of the additional information list
             notifyModel();
         }
     }
 
     /**
-     * 外部ツール設定プロパティを設定する
-     * @param properties		外部ツール設定プロパティ
+     * Set external tool settings properties
+     * @param properties External tool settings properties
      */
     public void setPropertiesExtension(ProgramProperties properties) {
         this.propertiesProgram = properties;
     }
 
     /**
-     * プロジェクトフォルダを設定する
-     * @param folder		プロジェクトフォルダ
+     * Set the project folder
+     * @param folder Project folder
      */
     public void setProjectFolder(File folder) {
         this.projectFolder = folder;
     }
 
     /**
-     * 付加情報を設定する
-     * @param node		付加情報設定ノード
-     * @param info			付加情報
+     * Set additional information
+     * @param node Additional information setting node
+     * @param info Additional information
      */
     public void setInformation(IInformation node, TextInfo info) {
-        // モデルのクリア
+        // Clear the model
         clearInformation();
 
         if (node == null) return;
         if (info == null) return;
 
-        // 付加情報が存在するか
+        // Does additional information exist?
         if (info == null || info.getContent() == null || info.getContent().isEmpty()) return;
 
-        // 付加情報を追加する
+        // Add additional information
         addInformation(node, info);
     }
 
 
     /**
-     * 付加情報を設定する
-     * @param node		付加情報設定ノード
+     * Set additional information
+     * @param node Additional information setting node
      */
     public void setInformation(IInformation node) {
-        // モデルのクリア
+        // Clear the model
         clearInformation();
 
         if (node == null) return;
@@ -528,47 +528,47 @@ public class InformationModel extends Observable implements PropertyChangeListen
     }
 
     /**
-     * 付加情報を追加する
-     * @param node		付加情報設定ノード
+     * Add additional information
+     * @param node Additional information setting node
      */
     public void addInformation(IInformation node) {
         if (node == null) return;
 
-        // 付加情報が存在するか
+        // Does additional information exist?
         TextInfo info = node.getInformation();
         if (info == null || info.getContent() == null || info.getContent().isEmpty()) return;
 
-        // 付加情報を追加する
+        // Add additional information
         addInformation(node, info);
     }
 
 
     /**
-     * 付加情報を追加する
-     * @param node		付加情報設定ノード
-     * @param info			付加情報
+     * Add additional information
+     * @param node Additional information setting node
+     * @param info Additional information
      */
     public void addInformation(IInformation node, TextInfo info) {
         this.addInformation(node, node, info);
     }
     /**
-     * 付加情報を追加する
-     * @param snode		付加情報設定開始ノード
-     * @param enode		付加情報設定終了ノード
-     * @param info			付加情報
+     * Add additional information
+     * @param snode Additional information setting start node
+     * @param enode Additional information setting end node
+     * @param info Additional information
      */
     public void addInformation(IInformation snode, IInformation enode, TextInfo info) {
         if (snode == null) return;
 
-        // 既存の付加情報リストから検索する
+        // Search from the existing list of additional information
         InformationNode infonode = getInformationNode(snode, enode);
         if (infonode != null) {
-            // 付加情報を設定する
+            // Set additional information
             infonode.setInfo(info);
         }
         else {
 
-            // 存在しないので、追加する。
+            // It doesn't exist, so add it.
             if (this.listInformation == null) {
                 this.listInformation = new ArrayList<InformationNode>();
             }
@@ -576,15 +576,15 @@ public class InformationModel extends Observable implements PropertyChangeListen
             this.listInformation.add(infonode);
         }
 
-        // 付加情報リストの設定を通知する
+        // Notify the setting of the additional information list
         notifyModel();
     }
 
     /**
-     *  付加情報を取得する
-     * @param snode		設定開始ノード
-     * @param enode		設定終了ノード
-     * @return		付加情報
+     * Get additional information
+     * @param snode Setting start node
+     * @param enode Setting end node
+     * @return Additional information
      */
     private InformationNode getInformationNode(IInformation snode, IInformation enode) {
         if (this.listInformation == null) return null;
@@ -603,19 +603,19 @@ public class InformationModel extends Observable implements PropertyChangeListen
     }
 
     /**
-     * テーブルモデルをクリアする。
+     * Clear the table model.
      */
     public void clearInformation() {
         this.listInformation = new ArrayList<InformationNode>();
         this.title = null;
 
-        // 付加情報リストの設定を通知する
+        // Notify the setting of the additional information list
         notifyModel();
     }
 
     /**
-     * モデルが空か否か
-     * @return	空か否か（ture: 空，false: データあり）
+     * Whether the model is empty
+     * @return Whether it is empty (ture: empty, false: with data)
      */
     public boolean isEmpty() {
     	if (this.listInformation == null) return true;

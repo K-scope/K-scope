@@ -32,24 +32,24 @@ import javax.swing.SwingUtilities;
 import javax.swing.border.Border;
 
 /**
- * コンポーネント付きボーダクラス
+ * Border class with components
  * @author RIKEN
  */
 public class JComponentTitledBorder implements Border, MouseListener, MouseMotionListener, SwingConstants {
-	/** ボーダ上のコンポーネントのX方向オフセット */
+	/** X-direction offset of components on the border */
     private static final int offset = 5;
-    /** ボーダ上のコンポーネント */
+    /** Components on the border */
     private final Component comp;
-    /** コンテナ */
+    /** Container */
     private final JComponent container;
-    /** ボーダ */
+    /** Border */
     private final Border border;
 
     /**
-     * コンストラクタ
-     * @param comp			ボーダ上のコンポーネント
-     * @param container		コンテナ
-     * @param border		ボーダ
+     * Constructor
+     * @param comp Components on the border
+     * @param container container
+     * @param border Border
      */
     public JComponentTitledBorder(Component comp, JComponent container, Border border) {
         this.comp      = comp;
@@ -65,8 +65,8 @@ public class JComponentTitledBorder implements Border, MouseListener, MouseMotio
     }
 
     /**
-     * ボーダを透明描画とするか取得する。
-     * @return		透明描画
+     * Make the border transparent or get it.
+     * @return transparent drawing
      */
     @Override
     public boolean isBorderOpaque() {
@@ -74,13 +74,13 @@ public class JComponentTitledBorder implements Border, MouseListener, MouseMotio
     }
 
     /**
-     * ボーダを描画する
-     * @param c			コンポーネント
-     * @param g			グラフィック
-     * @param x			X位置
-     * @param y			Y位置
-     * @param width		幅
-     * @param height	高さ
+     * Draw a border
+     * @param c component
+     * @param g graphic
+     * @param x X position
+     * @param y Y position
+     * @param width width
+     * @param height Height
      */
     @Override
     public void paintBorder(Component c, Graphics g, int x, int y, int width, int height) {
@@ -95,9 +95,9 @@ public class JComponentTitledBorder implements Border, MouseListener, MouseMotio
     }
 
     /**
-     * ボーダ余白を取得する
-     * @param c		コンポーネント
-     * @return		余白
+     * Get border margins
+     * @param c component
+     * @return Margin
      */
     @Override
     public Insets getBorderInsets(Component c) {
@@ -108,8 +108,8 @@ public class JComponentTitledBorder implements Border, MouseListener, MouseMotio
     }
 
     /**
-     * イベントをディスパッチする
-     * @param me		マウスイベント情報
+     * Dispatch events
+     * @param me Mouse event information
      */
     private void dispatchEvent(MouseEvent me) {
         Component src = me.getComponent();
@@ -117,16 +117,16 @@ public class JComponentTitledBorder implements Border, MouseListener, MouseMotio
         src.repaint();
     }
     /**
-     * マウスクリックイベント
-     * @param me		マウスイベント情報
+     * Mouse click event
+     * @param me Mouse event information
      */
     @Override
     public void mouseClicked(MouseEvent me) {
         dispatchEvent(me);
     }
     /**
-     * マウスオーバーイベント
-     * @param me		マウスイベント情報
+     * Mouseover event
+     * @param me Mouse event information
      */
     @Override
     public void mouseEntered(MouseEvent me) {
@@ -134,8 +134,8 @@ public class JComponentTitledBorder implements Border, MouseListener, MouseMotio
     }
 
     /**
-     * マウスアウトイベント
-     * @param me		マウスイベント情報
+     * Mouse out event
+     * @param me Mouse event information
      */
     @Override
     public void mouseExited(MouseEvent me) {
@@ -143,8 +143,8 @@ public class JComponentTitledBorder implements Border, MouseListener, MouseMotio
     }
 
     /**
-     * マウスボタンダウンイベント
-     * @param me		マウスイベント情報
+     * Mouse button down event
+     * @param me Mouse event information
      */
     @Override
     public void mousePressed(MouseEvent me) {
@@ -152,24 +152,24 @@ public class JComponentTitledBorder implements Border, MouseListener, MouseMotio
     }
 
     /**
-     * マウスボタンアップイベント
-     * @param me		マウスイベント情報
+     * Mouse button up event
+     * @param me Mouse event information
      */
     @Override public void mouseReleased(MouseEvent me) {
         dispatchEvent(me);
     }
 
     /**
-     * マウス移動イベント
-     * @param me		マウスイベント情報
+     * Mouse movement event
+     * @param me Mouse event information
      */
     @Override public void mouseMoved(MouseEvent me) {
         dispatchEvent(me);
     }
 
     /**
-     * マウスドラッグイベント
-     * @param me		マウスイベント情報
+     * Mouse drag event
+     * @param me Mouse event information
      */
     @Override public void mouseDragged(MouseEvent me) {
         dispatchEvent(me);

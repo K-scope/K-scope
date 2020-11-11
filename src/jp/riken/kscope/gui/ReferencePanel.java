@@ -50,72 +50,72 @@ import jp.riken.kscope.utils.ResourceUtils;
 import jp.riken.kscope.utils.SwingUtils;
 
 /**
- * 参照一覧パネルクラス
+ * Reference list panel class
  * @author RIKEN
  *
  */
 public class ReferencePanel extends AnalisysPanelBase implements Observer, IAnalisysComponent, ActionListener {
 
-    /** シリアル番号 */
+    /** Serial number */
     private static final long serialVersionUID = 1L;
-    /** 参照一覧ツリー */
+    /** Reference list tree */
     private ObjectTree treeReference;
-    /** クリアボタン */
+    /** Clear button */
     private JButton btnClear;
-    /** エクスポートボタン */
+    /** Export button */
     private JButton btnExport;
-    /** ファイルを開く */
+    /** Open file */
     private JButton btnOpenFile;
-    /** 参照一覧ラベル */
+    /** Reference list label */
     private JLabel label;
-    /** すべて展開ボタン */
+    /** Expand all button */
     private JButton btnExpand;
-    /** すべて収納ボタン */
+    /** All storage buttons */
     private JButton btnCollapse;
 
-    /** 参照一覧パネルモデル */
+    /** Reference list panel model */
     private ReferenceModel model;
 
     /**
-     * コンストラクタ
+     * Constructor
      */
     public ReferencePanel() {
         super();
 
-        // 初期化を行う。
+        // Initialize.
         initialize();
 
     }
 
     /**
-     * コンストラクタ
-     * @param panel		分析情報パネル識別子
+     * Constructor
+     * @param panel Analysis information panel identifier
      */
     public ReferencePanel(ANALYSIS_PANEL panel) {
         super(panel);
 
-        // 初期化を行う。
+        // Initialize.
         initialize();
 
     }
 
     /**
-     * 初期化を行う。
+     * Initialize.
      */
     private void initialize() {
 
-        // モデルの生成を行う
+        // Generate a model
         model = new ReferenceModel();
-        // オブザーバを設定する。
+        // Set the observer.
         model.addObserver(this);
 
-        // GUI初期化を行う。
+        // Initialize the GUI.
         initGUI();
     }
 
 
     /**
-     * GUI初期化を行う。
+     * Initialize the GUI.
      */
     private void initGUI() {
         try {
@@ -123,7 +123,7 @@ public class ReferencePanel extends AnalisysPanelBase implements Observer, IAnal
             this.setLayout(thisLayout);
 //            setPreferredSize(new Dimension(400, 64));
 
-            // 上部の情報ラベル、ボタンの配置パネル
+            // Information label at the top, button placement panel
             {
                 JPanel panelTop = new JPanel();
                 panelTop.setLayout(new BorderLayout());
@@ -131,14 +131,14 @@ public class ReferencePanel extends AnalisysPanelBase implements Observer, IAnal
                 panelTop.setBorder(new CompoundBorder(
                                             new LineBorder(Color.BLACK, 1),
                                             BorderFactory.createEmptyBorder(0, 5, 0, 20)));
-                // ボタン配置パネル
+                // Button layout panel
                 {
                     JPanel panelButtons = new JPanel();
                     panelButtons.setLayout(new BoxLayout(panelButtons, BoxLayout.LINE_AXIS));
                     panelTop.add(panelButtons, BorderLayout.EAST);
 
                     java.awt.Dimension buttonSize = new java.awt.Dimension(24, 24);
-                    // クリアボタン
+                    // Clear button
                     {
                         Icon icon = ResourceUtils.getIcon("removeall.gif");
                         btnClear = new JButton(icon);
@@ -151,7 +151,7 @@ public class ReferencePanel extends AnalisysPanelBase implements Observer, IAnal
                         btnClear.addActionListener( new ActionListener() {
                             @Override
                             public void actionPerformed(ActionEvent e) {
-                                // モデルクリア
+                                // Model clear
                                 clearModel();
                             }
                         });
@@ -197,7 +197,7 @@ public class ReferencePanel extends AnalisysPanelBase implements Observer, IAnal
                         panelButtons.add(btnExport);
                     }
                 }
-                // ラベル配置
+                // Label placement
                 {
                     label = new JLabel();
                     panelTop.add(label, BorderLayout.CENTER);
@@ -206,18 +206,18 @@ public class ReferencePanel extends AnalisysPanelBase implements Observer, IAnal
             }
             {
                 {
-                    // 参照一覧ツリー
+                    // Reference list tree
                     treeReference = new ObjectTree();
                     treeReference.setModel(model.getTreeModel());
                     treeReference.setRootVisible(true);
                     treeReference.setShowsRootHandles(true);
 
-                    // ダブルクリックによるノードの展開を行わない。
+                    // Do not expand nodes by double-clicking.
                     treeReference.setToggleClickCount(0);
-                    // 一行だけ選択可能
+                    // Only one line can be selected
                     treeReference.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
 
-                    // スクロールパイン
+                    // Scroll pine
                     JScrollPane scrollTable = new JScrollPane(treeReference);
                     scrollTable.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
                     scrollTable.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
@@ -229,14 +229,14 @@ public class ReferencePanel extends AnalisysPanelBase implements Observer, IAnal
 
             }
 
-            // ツールチップ設定
-            btnClear.setToolTipText(Message.getString("informationdialog.button.clear.tooltip")); //クリア
-            btnOpenFile.setToolTipText(Message.getString("referencepanel.tooltip.result")); //検索結果箇所を開く
-            btnExport.setToolTipText(Message.getString("mainmenu.file.export")); //エクスポート
-            btnExpand.setToolTipText(Message.getString("treechooserdialog.tooltip.expandall")); //すべて展開
-            btnCollapse.setToolTipText(Message.getString("treechooserdialog.tooltip.collapseall")); //すべて収納
+            // Tooltip settings
+            btnClear.setToolTipText(Message.getString("informationdialog.button.clear.tooltip")); //clear
+            btnOpenFile.setToolTipText(Message.getString("referencepanel.tooltip.result")); // Open the search result part
+            btnExport.setToolTipText(Message.getString("mainmenu.file.export")); //export
+            btnExpand.setToolTipText(Message.getString("treechooserdialog.tooltip.expandall")); // Expand all
+            btnCollapse.setToolTipText(Message.getString("treechooserdialog.tooltip.collapseall")); // All stored
 
-            // イベント追加
+            // Add event
             btnExpand.addActionListener(this);
             btnCollapse.addActionListener(this);
 
@@ -246,24 +246,24 @@ public class ReferencePanel extends AnalisysPanelBase implements Observer, IAnal
     }
 
     /**
-     * 参照一覧モデルの変更通知イベント
-     * @param o			通知元
-     * @param arg		通知項目
+     * Reference list model change notification event
+     * @param o Notification source
+     * @param arg Notification item
      */
     @Override
     public void update(Observable o, Object arg) {
-        // 参照一覧モデル
+        // Reference list model
         ReferenceModel observer = (ReferenceModel)o;
         treeReference.setModel(model.getTreeModel());
 
-        // パネルタイトル
+        // Panel title
         this.label.setText(observer.getTitle());
 
     }
 
     /**
-     * 参照一覧モデルを取得する
-     * @return		検索結果モデル
+     * Get reference list model
+     * @return Search result model
      */
     public ReferenceModel getModel() {
         return model;
@@ -271,19 +271,19 @@ public class ReferencePanel extends AnalisysPanelBase implements Observer, IAnal
 
 
     /**
-     * フォーカスリスナを設定する
-     * @param listener		フォーカスリスナ
+     * Set focus listener
+     * @param listener Focus listener
      */
     @Override
     public void addTabFocusListener(TabFocusListener listener) {
         this.addFocusListener(listener);
-        // 子コンポーネントにもフォーカスリスナを設定する
+        // Set focus listener for child components as well
         SwingUtils.addChildFocusListener(this, listener);
     }
 
 
     /**
-     * エクスポートを行う
+     * Export
      */
     @Override
     public void export(File file) {
@@ -294,22 +294,22 @@ public class ReferencePanel extends AnalisysPanelBase implements Observer, IAnal
     }
 
     /**
-     * パネルにアクションリスナを設定する.<br/>
-     * メニューバーに作成済みのアクションリスナをパネルボタンに割り当てる。
-     * @param menu		メニューバー
+     * Set an action listener on the panel. <br/>
+     * Assign the created action listener to the menu bar to the panel button.
+     * @param menu Menu bar
      */
     @Override
     public void setActionListener(MainMenu menu) {
-        // 分析情報エクスポートアクション
+        // Analysis information export action
         this.btnExport.addActionListener(menu.getActionExportAnalysis());
-        // 参照一覧箇所を開く
+        // Open the reference list
         this.btnOpenFile.addActionListener((ActionListener) menu.getActionOpenAnalysisLine());
         this.treeReference.addMouseListener((MouseListener) menu.getActionOpenAnalysisLine());
     }
 
     /**
-     * 選択ノードのコード情報を取得する.<br/>
-     * @return		コード情報
+     * Get the code information of the selected node. <br/>
+     * @return code information
      */
     @Override
     public CodeLine getSelectedCodeLine() {
@@ -320,18 +320,18 @@ public class ReferencePanel extends AnalisysPanelBase implements Observer, IAnal
     }
 
     /**
-     * 選択ノードのブロックを取得する
-     * @return		選択ブロック
+     * Get a block of selected nodes
+     * @return selection block
      */
     @Override
     public IBlock getSelectedBlock() {
 
-        // 選択されたファイルのソースファイルオブジェクトを取得する。
+        // Get the source file object for the selected file.
         DefaultMutableTreeNode node = (DefaultMutableTreeNode) this.treeReference.getLastSelectedPathComponent();
         if (node == null)  return null;
         if (node.getUserObject() == null) return null;
 
-        // ブロックオブジェクトであるか？
+        // Is it a block object?
         if (node.getUserObject() instanceof IBlock) {
             return (IBlock)node.getUserObject();
         }
@@ -340,34 +340,34 @@ public class ReferencePanel extends AnalisysPanelBase implements Observer, IAnal
     }
 
     /**
-     * モデルのクリアを行う。
+     * Clear the model.
      */
     @Override
     public void clearModel() {
-        // モデルクリア
+        // Model clear
         model.clearTreeModel();
     }
 
     /**
-     * タブのクローズを行う
+     * Close the tab
      */
     @Override
     public void closeTab() { }
 
 
     /**
-     * 選択付加情報を取得する
-     * @return		選択付加情報
+     * Get additional selection information
+     * @return Selectable additional information
      */
     @Override
     public IInformation getSelectedInformation() {
 
-        // 選択されたファイルのソースファイルオブジェクトを取得する。
+        // Get the source file object for the selected file.
         DefaultMutableTreeNode node = (DefaultMutableTreeNode) this.treeReference.getLastSelectedPathComponent();
         if (node == null)  return null;
         if (node.getUserObject() == null) return null;
 
-        // 付加情報オブジェクトであるか？
+        // Is it an additional information object?
         if (node.getUserObject() instanceof IInformation) {
             return (IInformation)node.getUserObject();
         }
@@ -376,31 +376,31 @@ public class ReferencePanel extends AnalisysPanelBase implements Observer, IAnal
     }
 
     /**
-     * ソースビュープロパティを設定する
-     * @param properties		ソースビュープロパティ
+     * Set source view properties
+     * @param properties Source view properties
      */
     @Override
     public void setSourceProperties(SourceProperties properties) {}
 
     /**
-     * ボタンのクリックイベント
-     * @param event		イベント情報
+     * Button click event
+     * @param event Event information
      */
     @Override
     public void actionPerformed(ActionEvent event) {
         if (event.getSource() == this.btnExpand) {
-            // すべて展開
+            // Expand all
             expandTreeAll();
         }
         else if (event.getSource() == this.btnCollapse) {
-            // すべて収納
+            // store everything
             collapseTreeAll();
         }
     }
 
 
     /**
-     * 選択タブのツリーをすべて収納する。
+     * Stores the entire tree of selection tabs.
      */
     public void collapseTreeAll() {
         int row = this.treeReference.getRowCount()-1;
@@ -408,13 +408,13 @@ public class ReferencePanel extends AnalisysPanelBase implements Observer, IAnal
             this.treeReference.collapseRow(row);
             row--;
         }
-        // ルートノードのみ展開
+        // Expand only root node
         this.treeReference.expandRow(0);
     }
 
 
     /**
-     * 選択タブのツリーをすべて展開する。
+     * Expand the entire tree on the Selection tab.
      */
     public void expandTreeAll() {
         int row = 0;
@@ -425,23 +425,23 @@ public class ReferencePanel extends AnalisysPanelBase implements Observer, IAnal
     }
 
     /**
-     * 選択項目をクリップボードにコピーする.
+     * Copy the selection to the clipboard.
      */
     @Override
     public void copyClipboard() {
 
-        // 選択されたファイルのソースファイルオブジェクトを取得する。
+        // Get the source file object for the selected file.
         DefaultMutableTreeNode node = (DefaultMutableTreeNode) this.treeReference.getLastSelectedPathComponent();
         if (node == null)  return;
         if (node.getUserObject() == null) return;
         String text = node.getUserObject().toString();
 
-        // クリップボードにコピーする
+        // copy to clipboard
         SwingUtils.copyClipboard(text);
     }
 
     /**
-     * エキスポート情報があるか否か
+     * Whether or not there is export information
      */
 	@Override
 	public boolean isExportable() {

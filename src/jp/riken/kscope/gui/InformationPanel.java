@@ -67,94 +67,94 @@ import jp.riken.kscope.utils.ResourceUtils;
 import jp.riken.kscope.utils.SwingUtils;
 
 /**
- * 付加情報パネルクラス
+ * Additional information panel class
  * @author RIKEN
  *
  */
 public class InformationPanel extends AnalisysPanelBase implements Observer, IAnalisysComponent, HyperlinkListener, ActionListener, MouseListener {
 
-    /** シリアル番号 */
+    /** Serial number */
     private static final long serialVersionUID = 1L;
 
-    /** 編集ボタン */
+    /** Edit button */
     private JButton btnEdit;
-    /** ファイルを開くボタン */
+    /** Open file button */
     private JButton btnOpenFile;
-    /** エクスポートボタン */
+    /** Export button */
     private JButton btnExport;
-    /** ロックボタン */
+    /** Lock button */
     private JButton btnLock;
-    /** 付加情報ラベル */
+    /** Additional information label */
     private JLabel label;
-    /** コンテンツボックス */
+    /** Content Box */
     private Box contentInfo;
-    /** 余白ボックス */
+    /** Margin box */
     private final Component glue = Box.createVerticalGlue();
-    /** スクロールパイン */
+    /** Scroll pine */
     private JScrollPane scrollInfo;
 
-    /** 付加情報モデル */
+    /** Additional information model */
     private InformationModel model;
 
-    /** 展開ボタンアイコン */
+    /** Expand button icon */
     private Icon expand_icon = ResourceUtils.getIcon("expand_arrow.gif");
-    /** 収納ボタンアイコン */
+    /** Storage button icon */
     private Icon collapse_icon = ResourceUtils.getIcon("collapse_arrow.gif");
 
-    /** 表示ロック状態 */
+    /** Display locked state */
     private boolean viewLock = false;
 
-    /** 選択付加情報ノードパネル */
+    /** Select additional information node panel */
     private NodePanel selectedInfo;
 
-    /** 付加情報編集アクション */
+    /** Additional information editing action */
     private EditInformationEditAction actionEdit;
-    /** 付加情報パネル下マージン */
+    /** Margin under the additional information panel */
     private final int EDITPANE_BOTTOM_MERGE = 16;
-    /** 選択パネル背景色 */
+    /** Selection panel background color */
     private Color colorSelectedPanel;
 
     /**
-     * コンストラクタ
+     * Constructor
      */
     public InformationPanel() {
         super();
 
-        // 初期化を行う。
+        // Initialize.
         initialize();
 
     }
 
     /**
-     * コンストラクタ
-     * @param panel		分析情報パネル識別子
+     * Constructor
+     * @param panel Analysis information panel identifier
      */
     public InformationPanel(ANALYSIS_PANEL panel) {
         super(panel);
 
-        // 初期化を行う。
+        // Initialize.
         initialize();
 
     }
 
     /**
-     * 初期化を行う。
+     * Initialize.
      */
     private void initialize() {
 
-        // モデルの生成を行う
+        // Generate a model
         model = new InformationModel();
-        // オブザーバを設定する。
+        // Set the observer.
         model.addObserver(this);
 
-        // GUI初期化を行う。
+        // Initialize the GUI.
         initGUI();
 
     }
 
 
     /**
-     * GUI初期化を行う。
+     * Initialize the GUI.
      */
     private void initGUI() {
         try {
@@ -162,7 +162,7 @@ public class InformationPanel extends AnalisysPanelBase implements Observer, IAn
             this.setLayout(thisLayout);
             setPreferredSize(new Dimension(400, 0));
 
-            // 上部の情報ラベル、ボタンの配置パネル
+            // Information label at the top, button placement panel
             {
                 JPanel panelTop = new JPanel();
                 panelTop.setLayout(new BorderLayout());
@@ -170,14 +170,14 @@ public class InformationPanel extends AnalisysPanelBase implements Observer, IAn
                 panelTop.setBorder(new CompoundBorder(
                                             new LineBorder(Color.BLACK, 1),
                                             BorderFactory.createEmptyBorder(0, 5, 0, 20)));
-                // ボタン配置パネル
+                // Button layout panel
                 {
                     JPanel panelButtons = new JPanel();
                     panelButtons.setLayout(new BoxLayout(panelButtons, BoxLayout.LINE_AXIS));
                     panelTop.add(panelButtons, BorderLayout.EAST);
 
                     java.awt.Dimension buttonSize = new java.awt.Dimension(24, 24);
-                    // 編集ボタン
+                    // edit button
                     {
                         Icon icon = ResourceUtils.getIcon("edit_info.gif");
                         btnEdit = new JButton(icon);
@@ -188,7 +188,7 @@ public class InformationPanel extends AnalisysPanelBase implements Observer, IAn
                         btnEdit.setMinimumSize(buttonSize);
                         btnEdit.setMaximumSize(buttonSize);
                     }
-                    // 余白設定
+                    // Margin setting
                     //panelButtons.add(Box.createHorizontalStrut(5));
                     {
                         Icon icon = ResourceUtils.getIcon("openfile.gif");
@@ -200,7 +200,7 @@ public class InformationPanel extends AnalisysPanelBase implements Observer, IAn
                         btnOpenFile.setMaximumSize(buttonSize);
                         panelButtons.add(btnOpenFile);
                     }
-                    // 余白設定
+                    // Margin setting
                     //panelButtons.add(Box.createHorizontalStrut(5));
                     {
                         Icon icon = ResourceUtils.getIcon("save.gif");
@@ -212,7 +212,7 @@ public class InformationPanel extends AnalisysPanelBase implements Observer, IAn
                         btnExport.setMaximumSize(buttonSize);
                         panelButtons.add(btnExport);
                     }
-                    // 余白設定
+                    // Margin setting
                     //panelButtons.add(Box.createHorizontalStrut(5));
                     {
                         Icon icon = ResourceUtils.getIcon("unlock.gif");
@@ -226,7 +226,7 @@ public class InformationPanel extends AnalisysPanelBase implements Observer, IAn
                         btnLock.addActionListener(this);
                     }
                 }
-                // ラベル配置
+                // Label placement
                 {
                     label = new JLabel();
                     panelTop.add(label, BorderLayout.CENTER);
@@ -235,12 +235,12 @@ public class InformationPanel extends AnalisysPanelBase implements Observer, IAn
             }
             {
                 {
-                    // 付加情報パネル
+                    // Additional information panel
                     contentInfo = Box.createVerticalBox();
                     //contentInfo.setBorder(BorderFactory.createLineBorder(Color.RED, 1));
                     contentInfo.setOpaque(false);
 
-                    // スクロールパイン
+                    // Scroll pine
                     scrollInfo = new JScrollPane(contentInfo);
                     scrollInfo.getVerticalScrollBar().setUnitIncrement(25);
                     scrollInfo.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
@@ -252,13 +252,13 @@ public class InformationPanel extends AnalisysPanelBase implements Observer, IAn
                 }
             }
 
-            // ツールチップ設定
-            btnEdit.setToolTipText(Message.getString("mainmenu.edit")); //編集
-            btnExport.setToolTipText(Message.getString("mainmenu.file.export")); //エクスポート
-            btnOpenFile.setToolTipText(Message.getString("informationpanel.tooltip.openblock")); //情報箇所を開く
-            btnLock.setToolTipText(Message.getString("informationpanel.tooltip.lock")); //表示ロック
+            // Tooltip settings
+            btnEdit.setToolTipText(Message.getString("mainmenu.edit")); // edit
+            btnExport.setToolTipText(Message.getString("mainmenu.file.export")); //export
+            btnOpenFile.setToolTipText(Message.getString("informationpanel.tooltip.openblock")); // Open the information section
+            btnLock.setToolTipText(Message.getString("informationpanel.tooltip.lock")); // Display lock
 
-            // ボタンイベント
+            // Button event
             btnEdit.addActionListener(this);
 
         } catch (Exception e) {
@@ -267,35 +267,35 @@ public class InformationPanel extends AnalisysPanelBase implements Observer, IAn
     }
 
     /**
-     * 付加情報モデルの変更通知イベント
-     * @param o			通知元
-     * @param arg		通知項目
+     * Additional information model change notification event
+     * @param o Notification source
+     * @param arg Notification item
      */
     @Override
     public void update(Observable o, Object arg) {
 
-        // 表示ロック状態であれば、付加情報モデルの変更を行わない
+        // If the display is locked, do not change the additional information model.
         if (this.viewLock) {
-            // 選択付加情報の編集の反映のみ行う
+            // Only reflect the editing of selected additional information
             if (selectedInfo == null) return;
 
-            // 表示の更新
+            // Update display
             selectedInfo.refresh();
             return;
         }
 
-        // 付加情報モデルを更新する
+        // Update the additional information model
         updateModel();
 
         return;
     }
 
     /**
-     * 付加情報モデルを更新する
+     * Update additional information model
      */
     public void updateModel() {
 
-        // 付加情報のクリア
+        // Clear additional information
         clearComponent();
 
         if (this.model == null) return;
@@ -306,7 +306,7 @@ public class InformationPanel extends AnalisysPanelBase implements Observer, IAn
             String htmlContent = this.model.getInformationHtmlContent(i);
             IInformation info = this.model.getInformationNode(i);
 
-            // 付加情報を追加する
+            // Add additional information
             addInformation(name, htmlContent, info);
         }
 
@@ -314,56 +314,56 @@ public class InformationPanel extends AnalisysPanelBase implements Observer, IAn
     }
 
     /**
-     * 付加情報を追加する
-     * @param name			付加情報名
-     * @param htmlText		付加情報HTML本文
-     * @param info			付加情報設定ブロック
+     * Add additional information
+     * @param name Additional information name
+     * @param htmlText Additional information HTML body
+     * @param info Additional information setting block
      */
     public void addInformation(String name, String htmlText, IInformation info) {
 
-        // 追加コンポーネントの作成
+        // Create additional components
         JComponent component = makeRowsPanel(name, htmlText, info);
 
-        // コンテンツパネルにコンポーネントを追加する
+        // Add a component to the content panel
         addComponent(component);
 
     }
 
 
     /**
-     * コンテンツパネルをクリアする
+     * Clear the content panel
      */
     public void clearComponent() {
         this.contentInfo.removeAll();
 
-        // 再描画
+        // redraw
         this.refresh();
 
-        // 選択付加情報ブロックのクリア
+        // Clear the selective additional information block
         this.selectedInfo = null;
 
-        // 表示ロック状態の切替
+        // Switching the display lock state
         toggleLockButton(false);
     }
 
     /**
-     * コンテンツパネルにコンポーネントを追加する
-     * @param component		追加コンポーネント
+     * Add components to the content panel
+     * @param component Additional component
      */
     private void addComponent(final JComponent component) {
-        // 追加コンポーネントサイズの変更
+        // Change the size of additional components
         component.setMaximumSize(new Dimension(Short.MAX_VALUE, component.getPreferredSize().height));
 
-        // 追加コンポーネントは左詰めで配置する
+        // Place additional components left-justified
         component.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        // コンポーネントの追加
+        // Add component
         this.contentInfo.remove(glue);
 //        this.contentInfo.add(Box.createVerticalStrut(5));
         this.contentInfo.add(component);
         this.contentInfo.add(glue);
 
-        // 再描画
+        // redraw
         this.refresh();
 
         EventQueue.invokeLater(new Runnable() {
@@ -377,11 +377,11 @@ public class InformationPanel extends AnalisysPanelBase implements Observer, IAn
     }
 
     /**
-     * 再描画を行う
+     * Redraw
      */
     private void refresh() {
 
-        // 再描画
+        // redraw
         this.contentInfo.revalidate();
         this.validate();
         this.repaint();
@@ -390,26 +390,26 @@ public class InformationPanel extends AnalisysPanelBase implements Observer, IAn
 
 
     /**
-     * 付加情報パネルの追加
-     * @param name			付加情報：名前
-     * @param htmlinfo		付加情報：HTML形式情報
-     * @param info			付加情報設定ブロック
-     * @return			付加情報パネル
+     * Addition of additional information panel
+     * @param name Additional information: Name
+     * @param htmlinfo Additional information: HTML format information
+     * @param info Additional information setting block
+     * @return Additional information panel
      */
     private JComponent makeRowsPanel(String name, String htmlinfo, IInformation info) {
-        // 付加情報パネル
+        // Additional information panel
         NodePanel rows = new NodePanel(info);
         rows.setLayout(new BoxLayout(rows, BoxLayout.Y_AXIS));
         rows.setOpaque(false);
         rows.setBorder(BorderFactory.createLineBorder(Color.GRAY, 1));
         rows.addMouseListener(this);
 
-        // 名前パネル
+        // Name panel
         JPanel panelName = new JPanel();
         panelName.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 0));
         panelName.setOpaque(false);
 
-        // 付加情報展開ボタン：初期表示は展開ボタン
+        // Additional information expansion button: Initial display is expansion button
         java.awt.Dimension buttonSize = new java.awt.Dimension(18, 18);
         JButton button = new JButton(expand_icon);
         button.setContentAreaFilled(false);
@@ -418,20 +418,20 @@ public class InformationPanel extends AnalisysPanelBase implements Observer, IAn
         button.setMinimumSize(buttonSize);
         button.setMaximumSize(buttonSize);
 
-        // 名前ラベル
+        // Name label
         panelName.add(button);
         JLabel label = new JLabel(name);
         label.setOpaque(false);
         panelName.add(label);
 
-        // 付加情報本文パネル
+        // Additional information body panel
         JPanel panelEditor = new JPanel();
         panelEditor.setLayout(new BorderLayout());
         panelEditor.setOpaque(false);
 
-        // 付加情報表示テキストボックス
+        // Additional information display text box
         JEditorPane editor = new JEditorPane() {
-            /** シリアル番号 */
+            /** Serial number */
             private static final long serialVersionUID = 1L;
 
             @Override
@@ -447,7 +447,7 @@ public class InformationPanel extends AnalisysPanelBase implements Observer, IAn
             }
 
             /**
-             * 付加情報表示テキストボックスの高さを本文に合わせて拡張する
+             * Extend the height of the additional information display text box to fit the text
              */
             private void setEditorHeight() {
                 if (this.getDocument() == null) return;
@@ -467,7 +467,7 @@ public class InformationPanel extends AnalisysPanelBase implements Observer, IAn
 
             }
         };
-        // 付加情報表示テキストボックスはHTML表示とする。
+        // The additional information display text box is displayed in HTML.
         Dimension editorSize = new java.awt.Dimension(400, 22);
         editor.setEditable(false);
         editor.setContentType("text/html");
@@ -476,32 +476,32 @@ public class InformationPanel extends AnalisysPanelBase implements Observer, IAn
         editor.setPreferredSize(editorSize);
         editor.setText(htmlinfo);
 
-        // イベントリスナ追加
+        // Add event listener
         editor.addHyperlinkListener(this);
         editor.addMouseListener(this);
 
         editor.validate();
         editor.updateUI();
 
-        // 付加情報表示テキストボックスのボーダー設定
+        // Border setting of additional information display text box
         LineBorder border = new LineBorder(Color.GRAY, 1, false);
         editor.setBorder(border);
 
-        // 付加情報本文パネルの余白設定
+        // Additional information Body panel margin settings
         panelEditor.add(Box.createVerticalStrut(5), BorderLayout.NORTH);
         panelEditor.add(Box.createHorizontalStrut(40), BorderLayout.WEST);
         panelEditor.add(Box.createHorizontalStrut(40), BorderLayout.EAST);
         panelEditor.add(Box.createVerticalStrut(5), BorderLayout.SOUTH);
         panelEditor.add(editor, BorderLayout.CENTER);
 
-        // 付加情報展開ボタンのアクションリスナの設定
+        // Setting the action listener of the additional information expansion button
         button.addActionListener(new InformationExpandAction(panelEditor));
 
-        // 付加情報パネルに名前パネル、本文パネルの追加
+        // Add name panel and body panel to additional information panel
         rows.add(panelName);
         rows.add(panelEditor);
 
-        // テキストペインを設定する。
+        // Set the text pane.
         rows.setEditorPane(editor);
 
         return rows;
@@ -509,8 +509,8 @@ public class InformationPanel extends AnalisysPanelBase implements Observer, IAn
 
 
     /**
-     * 付加情報モデルを取得する
-     * @return		付加情報モデル
+     * Get additional information model
+     * @return Additional information model
      */
     public InformationModel getModel() {
         return model;
@@ -518,14 +518,14 @@ public class InformationPanel extends AnalisysPanelBase implements Observer, IAn
 
 
     /**
-     * フォーカスリスナを設定する
-     * @param listener		フォーカスリスナ
+     * Set focus listener
+     * @param listener Focus listener
      */
     @Override
     public void addTabFocusListener(TabFocusListener listener) {
         this.addFocusListener(listener);
 
-        // 子コンポーネントにもフォーカスリスナを設定する
+        // Set focus listener for child components as well
         if (this.contentInfo != null) {
             this.contentInfo.addFocusListener(listener);
             this.btnEdit.addFocusListener(listener);
@@ -535,7 +535,7 @@ public class InformationPanel extends AnalisysPanelBase implements Observer, IAn
 
 
     /**
-     * エクスポートを行う
+     * Export
      */
     @Override
     public void export(File file) {
@@ -545,65 +545,65 @@ public class InformationPanel extends AnalisysPanelBase implements Observer, IAn
     }
 
     /**
-     * パネルにアクションリスナを設定する.<br/>
-     * メニューバーに作成済みのアクションリスナをパネルボタンに割り当てる。
-     * @param menu		メニューバー
+     * Set an action listener on the panel. <br/>
+     * Assign the created action listener to the menu bar to the panel button.
+     * @param menu Menu bar
      */
     @Override
     public void setActionListener(MainMenu menu) {
-        // 付加情報編集アクション
+        // Additional information editing action
         this.actionEdit = menu.getActionEditInformation();
 
-        // 分析情報エクスポートアクション
+        // Analysis information export action
         this.btnExport.addActionListener(menu.getActionExportAnalysis());
 
-        // 該当箇所を開く
+        // Open the relevant part
         this.btnOpenFile.addActionListener((ActionListener) menu.getActionOpenAnalysisLine());
     }
 
     /**
-     * モデルのクリアを行う。
+     * Clear the model.
      */
     @Override
     public void clearModel() {
-        // 画面のクリア
+        // Clear screen
         clearComponent();
 
-        // モデルのクリア
+        // Clear the model
         this.model.clearInformation();
     }
 
     /**
-     * 付加情報展開ボタンアクションリスナ
+     * Additional information expansion button Action listener
      * @author RIKEN
      */
     private class InformationExpandAction implements ActionListener {
-        /** 付加情報本文パネル */
+        /** Additional information body panel */
         private JPanel panelEditor;
 
         /**
-         * コンストラクタ
-         * @param panel		表示切替を行う付加情報本文パネル
+         * Constructor
+         * @param panel Additional information body panel for switching display
          */
         public InformationExpandAction(JPanel panel) {
             this.panelEditor = panel;
         }
 
         /**
-         * ボタンのクリックイベント
-         * @param event		イベント情報
+         * Button click event
+         * @param event Event information
          */
         @Override
         public void actionPerformed(ActionEvent event) {
             JButton btn = (JButton) event.getSource();
-            // 付加情報本文パネルの表示をトグルする
+            // Toggle the display of the additional information body panel
             if (panelEditor.isVisible()) {
-                // 付加情報本文パネルを非表示する
+                // Hide the additional information body panel
                 btn.setIcon(collapse_icon);
                 panelEditor.setVisible(false);
             }
             else {
-                // 付加情報本文パネルを表示する
+                // Display the additional information body panel
                 btn.setIcon(expand_icon);
                 panelEditor.setVisible(true);
             }
@@ -613,45 +613,45 @@ public class InformationPanel extends AnalisysPanelBase implements Observer, IAn
     }
 
     /**
-     * 付加情報ノードパネル
+     * Additional Information Node Panel
      * @author RIKEN
      */
     private class NodePanel extends JPanel {
 
-        /** シリアル番号 */
+        /** Serial number */
         private static final long serialVersionUID = 1L;
 
-        /** 付加情報ノード */
+        /** Additional information node */
         private IInformation info;
-        /** 付加情報表示テキストボックス */
+        /** Additional information display text box */
         private JEditorPane editorPane;
 
         /**
-         * コンストラクタ
-         * @param info		付加情報ブロック
+         * Constructor
+         * @param info Additional information block
          */
         public NodePanel(IInformation info) {
             this.info = info;
         }
 
         /**
-         * 付加情報ノードを取得する
-         * @return		付加情報ノード
+         * Get additional information node
+         * @return Additional information node
          */
         public IInformation getInfo() {
             return this.info;
         }
 
         /**
-         * 付加情報表示テキストボックスを設定する
-         * @param editor 		付加情報表示テキストボックス
+         * Set additional information display text box
+         * @param editor Additional information display text box
          */
         public void setEditorPane(JEditorPane editor) {
             this.editorPane = editor;
         }
 
         /**
-         * 付加情報の表示を再描画する
+         * Redraw the display of additional information
          */
         public void refresh() {
             if (info == null) return;
@@ -662,85 +662,85 @@ public class InformationPanel extends AnalisysPanelBase implements Observer, IAn
             content = InformationPanel.this.model.createHtmlContent(content);
             this.editorPane.setText(content);
 
-            // 再描画
+            // redraw
             InformationPanel.this.refresh();
         }
     }
 
     /**
-     * マウスクリックイベント
-     * @param event		マウスイベント情報
+     * Mouse click event
+     * @param event Mouse event information
      */
     @Override
     public void mouseClicked(MouseEvent event) {
-        // クリックチェック
+        // Click check
         if (SwingUtilities.isLeftMouseButton(event)) {
             NodePanel panel = null;
             if (event.getSource() instanceof NodePanel) {
                 panel = (NodePanel)event.getSource();
             }
             else if (event.getSource() instanceof JEditorPane) {
-                // 親の親パネル
+                // Parent parent panel
                 Container cont = ((JEditorPane)event.getSource()).getParent().getParent();
                 if (cont instanceof NodePanel) {
                     panel = (NodePanel)cont;
                 }
             }
 
-            // 選択付加情報ブロックを設定する
+            // Set the selective additional information block
             this.selectedInfo = panel;
 
-            // 選択パネルの背景色を設定する.
+            // Set the background color of the selection panel.
             setSelectedBackgroud(this.selectedInfo);
 
-            // ダブルクリック
+            // Double click
             if (event.getClickCount() == 2) {
-                // 該当個所を開く
+                // Open the relevant part
                 this.btnOpenFile.doClick();
             }
         }
     }
 
     /**
-     * マウスボタンダウンイベント
-     * @param e		マウスイベント情報
+     * Mouse button down event
+     * @param e Mouse event information
      */
     @Override
     public void mousePressed(MouseEvent e) { }
 
     /**
-     * マウスボタンアップイベント
-     * @param e		マウスイベント情報
+     * Mouse button up event
+     * @param e Mouse event information
      */
     @Override
     public void mouseReleased(MouseEvent e) {}
 
     /**
-     * マウスオーバーイベント
-     * @param e		マウスイベント情報
+     * Mouseover event
+     * @param e Mouse event information
      */
     @Override
     public void mouseEntered(MouseEvent e) {}
 
     /**
-     * マウスアウトイベント
-     * @param e		マウスイベント情報
+     * Mouse out event
+     * @param e Mouse event information
      */
     @Override
     public void mouseExited(MouseEvent e) {}
 
     /**
-     * ハイパーリンクアクションイベント
-     * @param event			イベント情報
+     * Hyperlink action event
+     * @param event Event information
      */
     @Override
     public void hyperlinkUpdate(HyperlinkEvent event) {
-        // ハイパーリンククリックイベント
+        // Hyperlink click event
         if(event.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
-            // リンクファイル
+            // Link file
             URL url = event.getURL();
 
-            // 起動プログラムの取得（起動プログラムはclass属性にセットされている）
+            // Get the startup program (the startup program is set in the class attribute)
             javax.swing.text.Element elem = event.getSourceElement();
             String program = SwingUtils.getAttributeValue(elem, HTML.Tag.A, HTML.Attribute.CLASS);
             String comment = SwingUtils.getAttributeValue(elem, HTML.Tag.A, HTML.Attribute.COMMENT);
@@ -748,10 +748,10 @@ public class InformationPanel extends AnalisysPanelBase implements Observer, IAn
             if (comment != null && !comment.isEmpty()) {
                 args = new String[]{comment};
             }
-            // 外部プログラムの実行
+            // Executing an external program
             String errMsg = SwingUtils.processOpenProgram(url.toString(), program, args);
             if (errMsg != null && !errMsg.isEmpty()) {
-                // エラーメッセージ
+                // Error message
                 JFrame frame = (JFrame)SwingUtilities.getWindowAncestor(this);
                 JOptionPane.showMessageDialog(
                         frame,
@@ -765,14 +765,14 @@ public class InformationPanel extends AnalisysPanelBase implements Observer, IAn
     }
 
     /**
-     * タブのクローズを行う
+     * Close the tab
      */
     @Override
     public void closeTab() { }
 
     /**
-     * 選択ソースコード行情報を取得する
-     * @return		選択ソースコード行情報
+     * Get selected source code line information
+     * @return Selected source code line information
      */
     @Override
     public CodeLine getSelectedCodeLine() {
@@ -784,17 +784,17 @@ public class InformationPanel extends AnalisysPanelBase implements Observer, IAn
 
 
     /**
-     * ボタンクリックイベント
-     * @param event		イベント情報
+     * Button click event
+     * @param event Event information
      */
     @Override
     public void actionPerformed(ActionEvent event) {
 
         if (event.getSource() == this.btnLock) {
-            // 表示ロック状態の切替
+            // Switching the display lock state
             toggleLockButton(!this.viewLock);
 
-            // ロック状態では無いので、最新の付加情報を表示する
+            // Since it is not locked, the latest additional information is displayed.
             if (!this.viewLock) {
                 updateModel();
             }
@@ -804,27 +804,27 @@ public class InformationPanel extends AnalisysPanelBase implements Observer, IAn
             if (this.selectedInfo == null) return;
             if (this.selectedInfo.getInfo() == null) return;
 
-            // 編集を行う
+            // Edit
             this.actionEdit.editInformation(this.selectedInfo.getInfo());
         }
     }
 
     /**
-     * ロックボタンのトグルを入れ替える
-     * @param lock		true = ロック状態
+     * Swap the lock button toggle
+     * @param lock true = Locked state
      */
     private void toggleLockButton(boolean lock) {
 
-        // 表示ロック状態の切替
+        // Switching the display lock state
         this.viewLock = lock;
 
         Icon icon = null;
         if (this.viewLock) {
-            // 表示ロック状態にする
+            // Put the display locked
             icon = ResourceUtils.getIcon("lock.gif");
         }
         else {
-            // 表示ロック状態解除にする
+            // Release the display lock state
             icon = ResourceUtils.getIcon("unlock.gif");
 
         }
@@ -833,8 +833,8 @@ public class InformationPanel extends AnalisysPanelBase implements Observer, IAn
 
 
     /**
-     * 選択付加情報を取得する
-     * @return		選択付加情報
+     * Get additional selection information
+     * @return Selectable additional information
      */
     @Override
     public IInformation getSelectedInformation() {
@@ -843,8 +843,8 @@ public class InformationPanel extends AnalisysPanelBase implements Observer, IAn
     }
 
     /**
-     * 選択ブロックを取得する
-     * @return		選択ブロック
+     * Get the selected block
+     * @return selection block
      */
     @Override
     public IBlock getSelectedBlock() {
@@ -858,19 +858,19 @@ public class InformationPanel extends AnalisysPanelBase implements Observer, IAn
     }
 
     /**
-     * ソースビュープロパティを設定する
-     * @param properties		ソースビュープロパティ
+     * Set source view properties
+     * @param properties Source view properties
      */
     @Override
     public void setSourceProperties(SourceProperties properties) {
-    	// 選択パネルの背景色
+    	// Background color of selection panel
     	this.colorSelectedPanel = properties.getBackgoundView2Color();
-        // 選択パネルの背景色を設定する.
+        // Set the background color of the selection panel.
         setSelectedBackgroud(this.selectedInfo);
     }
 
     /**
-     * 選択項目をクリップボードにコピーする.
+     * Copy the selection to the clipboard.
      */
     @Override
     public void copyClipboard() {
@@ -880,12 +880,12 @@ public class InformationPanel extends AnalisysPanelBase implements Observer, IAn
         IInformation info = this.selectedInfo.getInfo();
         String text = info.getInformation().getContent();
 
-        // クリップボードにコピーする
+        // copy to clipboard
         SwingUtils.copyClipboard(text);
     }
 
     /**
-     * エクスポート可能か否か
+     * Whether it can be exported
      */
 	@Override
 	public boolean isExportable() {
@@ -894,14 +894,14 @@ public class InformationPanel extends AnalisysPanelBase implements Observer, IAn
 	}
 
 	/**
-	 * 選択パネルの背景色を設定する.
-	 */
+* Set the background color of the selection panel.
+*/
 	private void setSelectedBackgroud(JPanel panel) {
-        // すべてクリア
+        // Clear all
 		if (this.contentInfo != null) {
 			SwingUtils.setBackgroundChildPanel(this.contentInfo, null);
 		}
-        // 選択パネルの背景色を選択色に変更する
+        // Change the background color of the selection panel to the selection color
         if (panel != null) {
             SwingUtils.setBackgroundChildPanel(panel, this.colorSelectedPanel);
         }

@@ -53,55 +53,55 @@ import jp.riken.kscope.menu.XmlTreePopupMenu;
 import jp.riken.kscope.service.AppController;
 
 /**
- * メインフレーム
+ * main frame
  * @author RIKEN
  */
 public class MainFrame extends javax.swing.JFrame implements ITabComponent {
 
-    /** シリアル番号 */
+    /** Serial number */
     private static final long serialVersionUID = 1L;
 
-    /** アプリケーションコントローラ */
+    /** Application controller */
     AppController controller;
 
-    /** ステータスビュー */
+    /** Status view */
     private StatusBarPanel panelStatusBar;
-    /** ソースビュー */
+    /** Source view */
     private SourceView panelSourceView;
-    /** 分析情報ビュー */
+    /** Analytical Information View */
     private AnalysisView panelAnalysisView;
-    /** エクスプローラビュー */
+    /** Explorer view */
     private ExploreView panelExplorerView;
-    /** プログレスバーダイアログ */
+    /** Progress bar dialog */
     private ProgressDialog dialogProgress;
 
-    /** ソース検索ダイアログ */
+    /** Source search dialog */
     private SearchFindDialog dialogSearchFind;
-    /** ファイル検索ダイアログ */
+    /** File search dialog */
     private SearchGrepDialog dialogSearchGrep;
-    /** ツリー検索ダイアログ */
+    /** Tree search dialog */
     private SearchTreeDialog dialogSearchTree;
-    /** プロファイラプレビューダイアログ */
+    /** Profiler Preview Dialog */
     private ProfilerLegendDialog dialogProfilerLegend;
 
     /**
-     * タブフォーカスリスナ
-     * 最終アクセス、アクティブパネルの監視用リスナ
+     * Tab focus listener
+     * Last access, active panel monitoring listener
      */
     private TabFocusListener focusListener;
-    /** メインメニュー */
+    /** Main menu */
     private MainMenu menuMain;
 
 	/**
-     * コンストラクタ
+     * Constructor
      */
     public MainFrame() {
         super();
     }
 
     /**
-     * 初期化を行う
-     * @param   controller 			アプリケーションコントローラ
+     * Initialize
+     * @param controller Application controller
      */
     public void initialize(AppController controller) {
         this.controller = controller;
@@ -109,12 +109,12 @@ public class MainFrame extends javax.swing.JFrame implements ITabComponent {
     }
 
     /**
-     * メインフレームの初期化を行う.
+     * Initialize the mainframe.
      */
     private void initGUI() {
         this.setTitle(Message.getString("mainframe.title")); //K-scope
 
-        final int SPLIT_DIVIDERSIZE = 5;        // 仕切線サイズ
+        final int SPLIT_DIVIDERSIZE = 5;        // Divider size
         focusListener = new TabFocusListener();
 
         BorderLayout frameLayout = new BorderLayout();
@@ -138,11 +138,11 @@ public class MainFrame extends javax.swing.JFrame implements ITabComponent {
                 splitVertical.setResizeWeight(0.8);
                 splitVertical.setDividerSize(SPLIT_DIVIDERSIZE);
 
-                // 分析ビューの追加
+                // Add analysis view
                 {
-                    // MacOSXで何故かJTabbedPaneの高さが広がる対策
-                    // 分析ビューをJSplitPaneに直接追加はしない
-                    // JPanelに分析ビューを追加してJPanelをJSplitPaneに追加する。
+                    // Measures to increase the height of JTabbed Pane on MacOSX for some reason
+                    // Do not add analytic views directly to JSplitPane
+                    // Add an analysis view to JPanel and add JPanel to JSplitPane.
                     panelAnalysisView = new AnalysisView();
                     //splitVertical.add(panelAnalysisInfoView, JSplitPane.RIGHT);
                     JPanel panel = new JPanel();
@@ -151,142 +151,142 @@ public class MainFrame extends javax.swing.JFrame implements ITabComponent {
                     panel.setBorder(new LineBorder(Color.GRAY, 1));
                     panel.add(panelAnalysisView);
 
-                    // 親フォームの設定
+                    // Parent form settings
                     panelAnalysisView.setParentComponent(this);
-                    // フォーカスリスナの設定
+                    // Focus listener settings
                     panelAnalysisView.addTabFocusListener(focusListener);
 
                 }
-                // ソースビューの追加
+                // Add source view
                 {
                     panelSourceView = new SourceView();
                     splitVertical.add(panelSourceView, JSplitPane.LEFT);
 
-                    // 親フォームの設定
+                    // Parent form settings
                     panelSourceView.setParentComponent(this);
-                    // フォーカスリスナの設定
+                    // Focus listener settings
                     panelSourceView.addTabFocusListener(focusListener);
                 }
             }
-            // エクスプローラビューの追加
+            // Add explorer view
             {
                 panelExplorerView = new ExploreView();
                 splitHorizontal.add(panelExplorerView, JSplitPane.LEFT);
             }
         }
 
-        // メインメニュー
+        // Main menu
         menuMain = new MainMenu(controller);
         this.setJMenuBar(menuMain);
 
-        // ソースファイルパネルコンテキストメニュー
+        // Source File Panel Context Menu
         SourcePanelPopupMenu menuSourcePanel = new SourcePanelPopupMenu(controller);
         this.panelSourceView.setSourcePanelPopupMenu(menuSourcePanel);
 
-        // 構造ツリーエクスプローラコンテキストメニュー
+        // Structure Tree Explorer Context Menu
         LanguageTreePopupMenu menuLanguageTree = new LanguageTreePopupMenu(controller);
         panelExplorerView.setLanguagePopupMenu(menuLanguageTree);
 
-        // モジュールツリーエクスプローラコンテキストメニュー
+        // Module Tree Explorer Context Menu
         ModuleTreePopupMenu menuModuleTree = new ModuleTreePopupMenu(controller);
         panelExplorerView.setModulePopupMenu(menuModuleTree);
 
-        // ソースファイルエクスプローラコンテキストメニュー
+        // Source File Explorer Context Menu
         SourceTreePopupMenu menuSourceTree = new SourceTreePopupMenu(controller);
         panelExplorerView.setSourcePopupMenu(menuSourceTree);
 
-        // ツリーの変更イベント
+        // Tree change event
         ExploreTreeChangeAction treeChangeAction = new ExploreTreeChangeAction(controller);
         panelExplorerView.addTreeSelectionListener(treeChangeAction);
 
-        // XMLファイルエクスプローラコンテキストメニュー
+        // XML File Explorer context menu
         XmlTreePopupMenu menuXml = new XmlTreePopupMenu(controller);
         panelExplorerView.setXmlPopupMenu(menuXml);
 
-        // メニューのアクションリスナをパネルのボタンに割り当てる。
+        // Assign a menu action listener to a panel button.
         panelAnalysisView.setActionListener(menuMain);
 
-        // 変数特性一覧のコンテキストメニュー
+        // Variable characteristic list context menu
         panelAnalysisView.getPanelVariable().setPopupMenu(new VariablePopupMenu(controller));
 
-        // プロファイラコスト情報のコンテキストメニュー
+        // Profiler cost information context menu
         ProfilerPopupMenu profilerPopup = new ProfilerPopupMenu(controller);
         panelAnalysisView.setProfilerPopupMenu(profilerPopup);
 
-        // タブの変更イベント
+        // Tab change event
         AnalysisTabChangeAction tabChangeAction = new AnalysisTabChangeAction(controller);
         panelAnalysisView.addTabChangeListener(tabChangeAction);
 
-        // 起動時の画面サイズ
+        // Screen size at startup
         this.setSize(new Dimension(screen_size.width, screen_size.height));
 
-        // 終了イベント
+        // End event
         this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         this.addWindowListener(new FileExitAction(this.controller));
 
-        // プログレスバーダイアログ
+        // Progress bar dialog
         dialogProgress = new ProgressDialog(this, false);
-        // ソース検索ダイアログ
+        // Source search dialog
         dialogSearchFind = new SearchFindDialog(this, true);
-        // ファイル検索ダイアログ
+        // File search dialog
         dialogSearchGrep = new SearchGrepDialog(this, true);
-        // ツリー検索ダイアログ
+        // Tree search dialog
         dialogSearchTree = new SearchTreeDialog(this, true);
 
-        // ステータスバーをステータス通知登録
+        // Register the status bar as a status notification
         Application.addStatus(panelStatusBar);
-        // プログレスバーダイアログをステータス通知登録
+        // Register the progress bar dialog as a status notification
         Application.addStatus(dialogProgress);
 
     }
 
     /**
-     * ソースビューを取得する
-     * @return		ソースビュー
+     * Get source view
+     * @return Source view
      */
     public SourceView getPanelSourceView() {
         return panelSourceView;
     }
 
     /**
-     * 分析情報ビューを取得する。
-     * @return		分析情報ビュー
+     * Get the analysis information view.
+     * @return Analysis information view
      */
     public AnalysisView getPanelAnalysisView() {
         return panelAnalysisView;
     }
 
     /**
-     * エクスプローラビューを取得する
-     * @return		エクスプローラビュー
+     * Get explorer view
+     * @return explorer view
      */
     public ExploreView getPanelExplorerView() {
         return panelExplorerView;
     }
 
     /**
-     * 親コンポーネントを取得する.
-     * @return		親コンポーネント
+     * Get the parent component.
+     * @return Parent component
      */
     @Override
     public ITabComponent getParentComponent() { return null; }
 
     /**
-     * 親コンポーネントを設定する.
-     * @param component		親コンポーネント
+     * Set the parent component.
+     * @param component Parent component
      */
     @Override
     public void setParentComponent(ITabComponent component) { }
 
     /**
-     * フォーカスリスナを設定する
-     * @param listener		フォーカスリスナ
+     * Set focus listener
+     * @param listener Focus listener
      */
     @Override
     public void addTabFocusListener(TabFocusListener listener) {}
 
     /**
-     * タブを閉じる
+     * Close tab
      */
     @Override
     public void closeTabComponent() {
@@ -298,8 +298,8 @@ public class MainFrame extends javax.swing.JFrame implements ITabComponent {
     }
 
     /**
-     * アクティブなビュー識別子を取得する
-     * @return		アクティブなビュー識別子
+     * Get the active view identifier
+     * @return Active view identifier
      */
     public FRAME_VIEW getEnumView() {
         ITabComponent forcus = this.focusListener.getLastTabComponent();
@@ -320,23 +320,23 @@ public class MainFrame extends javax.swing.JFrame implements ITabComponent {
 
 
     /**
-     * コントローラを取得する。
-     * @return		アプリケーションコントローラ
+     * Get the controller.
+     * @return application controller
      */
     public AppController getController() {
         return this.controller;
     }
 
     /**
-     * プログレスバーダイアログを取得する
-     * @return		プログレスバーダイアログ
+     * Get the progress bar dialog
+     * @return progress bar dialog
      */
     public ProgressDialog getDialogProgress() {
         return dialogProgress;
     }
 
     /**
-     * バージョン情報ダイアログを表示する
+     * Display the version information dialog
      */
     public void showAboutDialog() {
         HelpVersionAction action = new HelpVersionAction(this.controller);
@@ -344,7 +344,7 @@ public class MainFrame extends javax.swing.JFrame implements ITabComponent {
     }
     
     /**
-     * アプリケーションを終了する
+     * Exit the application
      */
     public void exitApplication() {
         FileExitAction action = new FileExitAction(this.controller);
@@ -352,49 +352,49 @@ public class MainFrame extends javax.swing.JFrame implements ITabComponent {
     }
 
     /**
-     * ソース検索ダイアログを取得する
-     * @return		ソース検索ダイアログ
+     * Get the source search dialog
+     * @return Source search dialog
      */
     public SearchFindDialog getDialogSearchFind() {
         return this.dialogSearchFind;
     }
 
     /**
-     * ファイル検索ダイアログを取得する
-     * @return		ファイル検索ダイアログ
+     * Get the file search dialog
+     * @return File search dialog
      */
     public SearchGrepDialog getDialogSearchGrep() {
         return this.dialogSearchGrep;
     }
 
     /**
-     * ツリー検索ダイアログを取得する
-     * @return		ツリー検索ダイアログ
+     * Get the tree search dialog
+     * @return Tree search dialog
      */
     public SearchTreeDialog getDialogSearchTree() {
         return this.dialogSearchTree;
     }
 
     /**
-     * プロファイラプレビューダイアログを取得する
-     * @return     プロファイラプレビューダイアログ
+     * Get profiler preview dialog
+     * @return Profiler preview dialog
      */
 	public ProfilerLegendDialog getDialogProfilerLegend() {
 		return dialogProfilerLegend;
 	}
 
     /**
-     * プロファイラプレビューダイアログを設定する
-     * @param   dialog     プロファイラプレビューダイアログ
+     * Set profiler preview dialog
+     * @param dialog Profiler preview dialog
      */
 	public void setDialogProfilerLegend(ProfilerLegendDialog dialog) {
 		this.dialogProfilerLegend = dialog;
 	}
 
 	/**
-	 * メインメニューの取得を行う.
-	 * @return		メインメニュー
-	 */
+* Get the main menu.
+* @return Main menu
+*/
     public MainMenu getMenuMain() {
 		return menuMain;
 	}

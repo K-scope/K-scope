@@ -19,12 +19,12 @@ package jp.riken.kscope.exception;
 import jp.riken.kscope.utils.Logger;
 
 /**
- * XcodeMLのXMLファイルの解析エラー
+ * XcodeML XML file parsing error
  * @author RIKEN
  */
 public class XcodeMLException extends Exception {
 
-    /** シリアル番号 */
+    /** Serial number */
     private static final long serialVersionUID = 1L;
 
     /**
@@ -66,14 +66,14 @@ public class XcodeMLException extends Exception {
     }
 
     /**
-     * エラー発生のスタックトレースを出力する。 標準エラー出力とログ出力を行う。
+     * Output the stack trace of the error occurrence. Outputs standard error and log.
      */
     @Override
     public void printStackTrace() {
-        // ログ出力
+        // Log output
         Logger.error(this);
 
-        // 標準出力
+        // Standard output
         super.printStackTrace();
     }
 }

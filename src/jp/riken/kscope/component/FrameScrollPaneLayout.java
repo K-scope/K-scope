@@ -22,46 +22,46 @@ import javax.swing.border.Border;
 import java.awt.*;
 
 /**
- * FrameScrollPaneのレイアウトマネージャ
+ * FrameScrollPane layout manager
  * @author RIKEN
  */
 public class FrameScrollPaneLayout extends ScrollPaneLayout  {
-    /** シリアル番号 */
+    /** Serial number */
     private static final long serialVersionUID = 1L;
 
-    /** 行フッタービューポート */
+    /** Row footer viewport */
     protected JViewport rowFooter;
-    /** 列フッタービューポート */
+    /** Column footer viewport */
     protected JViewport columnFooter;
 
-    /** 左側角コンポーネント  */
+    /** Left corner component */
     protected Component horizontalCornerLeft;
-    /** 右側角コンポーネント  */
+    /** Right corner component */
     protected Component horizontalCornerRight;
-    /** 上側角コンポーネント */
+    /** Upper corner component */
     protected Component verticalCornerTop;
-    /** 下側角コンポーネント */
+    /** Bottom corner component */
     protected Component verticalCornerBottom;
-    /** ビュー識別文字列:行フッター */
+    /** View identification string: line footer */
     public static final String ROW_FOOTER = "ROW_FOOTER";
-    /** ビュー識別文字列:列フッター */
+    /** View identification string: Column footer */
     public static final String COLUMN_FOOTER = "COLUMN_FOOTER";
-    /** 位置識別文字列:水平方向左 */
+    /** Position identification string: Horizontal left */
     public static final String HORIZONTAL_LEFT = "HORIZONTAL_LEFT";
-    /** 位置識別文字列:水平方向右 */
+    /** Position identification string: Horizontal right */
     public static final String HORIZONTAL_RIGHT = "HORIZONTAL_RIGHT";
-    /** 位置識別文字列:水平方向前方 */
+    /** Position identification string: Horizontal forward */
     public static final String HORIZONTAL_LEADING = "HORIZONTAL_LEADING";
-    /** 位置識別文字列:水平方向後方 */
+    /** Positioning string: Horizontally backward */
     public static final String HORIZONTAL_TRAILING = "HORIZONTAL_TRAILING";
-    /** 位置識別文字列:垂直方向上 */
+    /** Position identification string: Vertically */
     public static final String VERTICAL_TOP = "VERTICAL_TOP";
-    /** 位置識別文字列:垂直方向下 */
+    /** Positioning string: Vertical down */
     public static final String VERTICAL_BOTTOM = "VERTICAL_BOTTOM";
 
     /**
-     * addLayoutComponent() によって設定される内部フィールドをすべて初期化します。
-     * @param sp   スクロールパイン
+     * Initializes all internal fields set by addLayoutComponent ().
+     * @param sp scroll pine
      */
     @Override
     public void syncWithScrollPane(JScrollPane sp) {
@@ -77,9 +77,9 @@ public class FrameScrollPaneLayout extends ScrollPaneLayout  {
     }
 
     /**
-     * 横スクロールバーの全体表示フラグを取得する。
-     * @param sp		スクロールパイン
-     * @return			横スクロールバーの全体表示フラグ
+     * Get the full display flag of the horizontal scroll bar.
+     * @param sp scroll pine
+     * @return Horizontal scroll bar full display flag
      */
     protected boolean isHorizontalScrollBarCoversWhole(JScrollPane sp) {
         if (sp instanceof FrameScrollPane) {
@@ -91,9 +91,9 @@ public class FrameScrollPaneLayout extends ScrollPaneLayout  {
     }
 
     /**
-     * 縦スクロールバーの全体表示フラグを取得する。
-     * @param sp		スクロールパイン
-     * @return		縦スクロールバーの全体表示フラグ
+     * Get the full display flag of the vertical scroll bar.
+     * @param sp scroll pine
+     * @return Full display flag of vertical scroll bar
      */
     protected boolean isVerticalScrollBarCoversWhole(JScrollPane sp) {
         if (sp instanceof FrameScrollPane) {
@@ -105,9 +105,9 @@ public class FrameScrollPaneLayout extends ScrollPaneLayout  {
     }
 
     /**
-     * 左上角と右上角を同一高さにするフラグを取得する
-     * @param sp		スクロールパイン
-     * @return true=左上角と右上角を同一高さにする
+     * Get the flag to make the upper left corner and the upper right corner the same height
+     * @param sp scroll pine
+     * @return true = Make the upper left corner and the upper right corner the same height
      */
     protected boolean isColumnHeadersUnified(JScrollPane sp) {
         if (sp instanceof FrameScrollPane) {
@@ -119,9 +119,9 @@ public class FrameScrollPaneLayout extends ScrollPaneLayout  {
     }
 
     /**
-     * 左下角と右下角を同一高さにするフラグを取得する
-     * @param sp		スクロールパイン
-     * @return true=左下角と右下角を同一高さにする
+     * Get the flag to make the lower left corner and the lower right corner the same height
+     * @param sp scroll pine
+     * @return true = Make the lower left and lower right corners the same height
      */
     protected boolean isColumnFootersUnified(JScrollPane sp) {
         if (sp instanceof FrameScrollPane) {
@@ -183,26 +183,26 @@ public class FrameScrollPaneLayout extends ScrollPaneLayout  {
     }
 
     /**
-     * 行ヘッダービューポートを取得する
-     * @return 行ヘッダービューポート
+     * Get row header viewport
+     * @return row header viewport
      */
     public JViewport getRowFooter() {
         return this.rowFooter;
     }
 
     /**
-     * 列フッタービューポートを取得する
-     * @return		列フッタービューポート
+     * Get column footer viewport
+     * @return Column footer viewport
      */
     public JViewport getColumnFooter() {
         return this.columnFooter;
     }
 
     /**
-     * 角コンポーネントを取得する
+     * Get the corner component
      *
-     * @param key  位置識別文字列
-     * @return 角コンポーネント
+     * @param key Position identification string
+     * @return corner component
      */
     public Component getScrollBarCorner(String key) {
         if (key.equals(HORIZONTAL_LEFT)) {
@@ -310,8 +310,8 @@ public class FrameScrollPaneLayout extends ScrollPaneLayout  {
     }
 
     /**
-     * 行ヘッダーの高さを取得する
-     * @return		行ヘッダーの高さ
+     * Get the height of the row header
+     * @return Row header height
      */
     private int getUpperHeight() {
         int upperHeight = 0;
@@ -330,8 +330,8 @@ public class FrameScrollPaneLayout extends ScrollPaneLayout  {
     }
 
     /**
-     * 行フッターの高さを取得する
-     * @return		行フッターの高さ
+     * Get the height of the line footer
+     * @return Line footer height
      */
     private int getLowerHeight() {
         int lowerHeight = 0;
@@ -779,11 +779,11 @@ public class FrameScrollPaneLayout extends ScrollPaneLayout  {
     }
 
     /**
-     * ボーダサイズを取得する
-     * @param container			コンテナ
-     * @param rect				サイズ
-     * @param ltr				方向
-     * @return		ボーダサイズ
+     * Get border size
+     * @param container container
+     * @param rect size
+     * @param ltr direction
+     * @return Border size
      */
     private Rectangle adjustBounds(Container container, Rectangle rect, boolean ltr) {
         if (ltr) {
@@ -798,12 +798,12 @@ public class FrameScrollPaneLayout extends ScrollPaneLayout  {
     }
 
     /**
-     * 垂直方向スクロールバーのサイズを設定する
-     * @param wantsVSB			垂直方向スクロールバーフラグ
-     * @param available			サイズ
-     * @param vsbR				スクロールバーサイズ
-     * @param vpbInsets			余白
-     * @param leftToRight		左右フラグ
+     * Set the size of the vertical scrollbar
+     * @param wantsVSB Vertical scrollbar flag
+     * @param available size
+     * @param vsbR Scrollbar size
+     * @param vpbInsets Margins
+     * @param leftToRight Left and right flags
      */
     private void adjustForVSB(boolean wantsVSB, Rectangle available,
                               Rectangle vsbR, Insets vpbInsets,
@@ -829,11 +829,11 @@ public class FrameScrollPaneLayout extends ScrollPaneLayout  {
     }
 
     /**
-     * 水平方向スクロールバーのサイズを設定する
-     * @param wantsHSB			水平方向スクロールバーフラグ
-     * @param available			サイズ
-     * @param hsbR				スクロールバーサイズ
-     * @param vpbInsets			余白
+     * Set the size of the horizontal scrollbar
+     * @param wantsHSB Horizontal scrollbar flag
+     * @param available size
+     * @param hsbR Scrollbar size
+     * @param vpbInsets Margins
      */
     private void adjustForHSB(boolean wantsHSB, Rectangle available,
                               Rectangle hsbR, Insets vpbInsets) {
@@ -851,11 +851,11 @@ public class FrameScrollPaneLayout extends ScrollPaneLayout  {
     }
 
     /**
-     * ScrollPaneLayout の UI リソースバージョン
+     * UI resource version of ScrollPaneLayout
      * @author RIKEN
      */
     static class UIResource extends FrameScrollPaneLayout implements javax.swing.plaf.UIResource {
-        /** シリアル番号 */
+        /** Serial number */
         private static final long serialVersionUID = 1L;
     }
 }

@@ -35,44 +35,44 @@ import jp.riken.kscope.profiler.ProfilerMeasureInfo;
 import jp.riken.kscope.utils.SwingUtils;
 
 /**
- * 測定タイマ情報テーブルモデル
+ * Measurement timer information table model
  * @author RIKEN
  *
  */
 public class ProfilerMeasureModel extends Observable {
 
-    /** テーブルヘッダーリスト */
+    /** Table header list */
     private String[] HEADER_COLUMNS = {"",
-    		Message.getString("eprofstatementdialog.dialog.desc"), //測定区間設定
-    		Message.getString("profilercosttablemodel.header_columns.filename"), //ファイル名
-    		Message.getString("profilercosttablemodel.header_columns.linenumber")}; //行番号
+    		Message.getString("eprofstatementdialog.dialog.desc"), // Measurement interval setting
+    		Message.getString("profilercosttablemodel.header_columns.filename"), //file name
+    		Message.getString("profilercosttablemodel.header_columns.linenumber")}; //line number
 
     /**
-     * テーブル列サイズ
-     * -1=非表示とする
+     * Table column size
+     * -1 = Hide
      */
     private int[] HEADER_COLUMNS_PREFERREDWIDTH = { -1, 240, 300, 80 };
     /**
-     * テーブル列最小サイズ.<br/>
-     * -1=非表示とする
+     * Minimum table column size. <br/>
+     * -1 = Hide
      */
     private int[] HEADER_COLUMNS_MINWIDTH = {-1, 80, 80, 40};
 
-    /** タイトル */
+    /** Title */
     private String title;
 
-    /** 測定区間情報 */
+    /** Measurement section information */
     private ProfilerMeasureInfo measureInfo;
 
     /**
-     * コンストラクタ
+     * Constructor
      */
     public ProfilerMeasureModel() {
         super();
     }
 
     /**
-     * モデルの変更を通知する
+     * Notify model changes
      */
     private void notifyModel() {
         this.setChanged();
@@ -82,12 +82,12 @@ public class ProfilerMeasureModel extends Observable {
 
 
     /**
-     * 変数有効域デフォルトテーブルモデルを取得する
-     * @return		変数有効域デフォルトテーブルモデル
+     * Get variable effective area default table model
+     * @return Variable scope default table model
      */
     public DefaultTableModel getScopeDefaultTableModel() {
-        // テーブルモデルの作成
-        // テーブルモデルの作成
+        // Create a table model
+        // Create a table model
         DefaultTableModel tableModel = new DefaultTableModel();
         tableModel.setColumnIdentifiers(HEADER_COLUMNS);
         return tableModel;
@@ -95,51 +95,51 @@ public class ProfilerMeasureModel extends Observable {
 
 
     /**
-     * 測定区間情報を設定する
-     * @param info   測定区間情報
+     * Set measurement section information
+     * @param info Measurement section information
      */
     public void setMeasureInfo(ProfilerMeasureInfo info) {
         this.measureInfo = info;
 
-        // モデルの変更を通知
+        // Notify model changes
         notifyModel();
     }
 
 
     /**
-     * 測定区間情報を取得する
-     * @return  測定区間情報
+     * Get measurement section information
+     * @return Measurement section information
      */
     public ProfilerMeasureInfo getMeasureInfo() {
         return this.measureInfo;
     }
 
     /**
-     * テーブルモデルをクリアする。
+     * Clear the table model.
      */
     public void clearModel() {
-        // テーブルモデルのクリア
+        // Clear table model
         if (this.measureInfo != null) {
             this.measureInfo.clearMeasureInfo();
         }
         this.measureInfo = null;
         this.title = null;
 
-        // モデルの変更を通知
+        // Notify model changes
         notifyModel();
     }
 
     /**
-     * タイトルを取得する
-     * @return	タイトル
+     * Get the title
+     * @return title
      */
     public String getTitle() {
         return title;
     }
 
     /**
-     * タイトルを設定する
-     * @param title		タイトル
+     * Set the title
+     * @param title Title
      */
     public void setTitle(String title) {
         this.title = title;
@@ -147,20 +147,20 @@ public class ProfilerMeasureModel extends Observable {
 
 
     /**
-     * テーブル情報をファイル出力する。
-     * @param file		出力ファイル
+     * Output table information to a file.
+     * @param file Output file
      */
     public void writeFile(File file) {
 
         try {
 
-            // タイマ情報
+            // Timer information
             if (this.measureInfo == null) return;
 
-            // ファイル出力
+            // File output
             PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(file)));
 
-            // テーブルを出力する
+            // Output the table
             String buf = SwingUtils.toCsv(getTableModel());
             pw.print(buf);
 
@@ -172,8 +172,8 @@ public class ProfilerMeasureModel extends Observable {
     }
 
     /**
-     * テーブルモデルを取得する
-     * @return		テーブルモデル
+     * Get the table model
+     * @return table model
      */
     public DefaultTableModel getTableModel() {
         return createTableModel();
@@ -181,18 +181,18 @@ public class ProfilerMeasureModel extends Observable {
 
 
     /**
-     * テーブルモデルを作成する
+     * Create a table model
      */
     private DefaultTableModel createTableModel() {
-        // テーブルモデルの作成
+        // Create a table model
         DefaultTableModel tableModel = getScopeDefaultTableModel();
         if (this.measureInfo == null) return tableModel;
 
-        // タイマデータの取得
+        // Get timer data
         List<ProfilerMeasureInfo.MeasureData> list = this.measureInfo.getMeasureList();
         if (list == null || list.size() <= 0) return tableModel;
         for (ProfilerMeasureInfo.MeasureData data : list) {
-            // テーブル行配列の作成
+            // Create table row array
             Object[] cols = new Object[HEADER_COLUMNS.length];
             cols[0] = data;
             cols[1] = data.toStringParam();
@@ -201,7 +201,7 @@ public class ProfilerMeasureModel extends Observable {
                 cols[2] = code.getSourceFile().getPath();
                 cols[3] = code.getLineno();
             }
-            // テーブル行追加
+            // Add table row
             tableModel.addRow(cols);
         }
 
@@ -209,12 +209,12 @@ public class ProfilerMeasureModel extends Observable {
     }
 
     /**
-     * 列幅を設定する
-     * @param columnModel		テーブル列モデル
+     * Set column width
+     * @param columnModel Table column model
      */
     public void setTableColumnWidth(DefaultTableColumnModel columnModel) {
         for (int i=0; i<columnModel.getColumnCount(); i++) {
-            // 列取得
+            // Get column
             TableColumn column = columnModel.getColumn(i);
             if (HEADER_COLUMNS_PREFERREDWIDTH.length >= i) {
                 if (HEADER_COLUMNS_PREFERREDWIDTH[i] >= 0) {
@@ -236,21 +236,21 @@ public class ProfilerMeasureModel extends Observable {
     }
 
     /**
-     * 測定区間データの削除
-     * @param data		削除測定区間データ
+     * Deletion of measurement interval data
+     * @param data Deleted measurement interval data
      */
     public void removeMeasureData(ProfilerMeasureInfo.MeasureData data) {
     	if (data == null) return;
         if (this.measureInfo == null) return;
         this.measureInfo.removeMeasureData(data);
 
-        // モデルの変更を通知
+        // Notify model changes
         notifyModel();
     }
 
     /**
-     * モデルが空か否か
-     * @return	空か否か（true: 空，false: データあり）
+     * Whether the model is empty
+     * @return Whether it is empty (true: empty, false: with data)
      */
     public boolean isEmpty() {
     	if (this.measureInfo == null) return true;

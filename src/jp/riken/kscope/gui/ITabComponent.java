@@ -19,34 +19,34 @@ package jp.riken.kscope.gui;
 //import jp.riken.kscope.common.ANALYSIS_PANEL;
 
 /**
- * タブコンポーネントインターフェイス.<br/>
- * タブパイン、子要素のテキストパイン等すべてのタブを構成するコンポーネントのインターフェイス
+ * Tab component interface. <br/>
+ * Interface of components that make up all tabs, such as tab pine and text pine of child elements
  * @author RIKEN
  */
 public interface ITabComponent {
 
     /**
-     * 親コンポーネントを取得する.<br/>
-     * this.parentCompornentを取得する
-     * @return	親コンポーネント
+     * Get the parent component. <br/>
+     * Get this.parentCompornent
+     * @return Parent component
      */
     public ITabComponent getParentComponent();
 
     /**
-     * 親コンポーネントを設定する.<br/>
-     * this.parentCompornentに設定する。
-     * @param component		親コンポーネント
+     * Set the parent component. <br/>
+     * Set to this.parentCompornent.
+     * @param component Parent component
      */
     public void setParentComponent(ITabComponent component);
 
     /**
-     * フォーカスリスナを設定する
-     * @param listener		フォーカスリスナ
+     * Set focus listener
+     * @param listener Focus listener
      */
     public void addTabFocusListener(TabFocusListener listener);
 
     /**
-     * タブを閉じる
+     * Close tab
      */
     public void closeTabComponent();
 

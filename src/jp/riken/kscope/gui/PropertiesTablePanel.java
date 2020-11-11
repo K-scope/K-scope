@@ -50,60 +50,60 @@ import jp.riken.kscope.utils.ResourceUtils;
 import jp.riken.kscope.utils.SwingUtils;
 
 /**
- * プロパティパネルクラス
+ * Property panel class
  * @author RIKEN
  *
  */
 public class PropertiesTablePanel extends AnalisysPanelBase implements Observer, IAnalisysComponent {
 
-    /** シリアル番号 */
+    /** Serial number */
     private static final long serialVersionUID = 1L;
-    /** プロパティテーブル */
+    /** Property table */
     private JTable tableProperties;
-    /** クリアボタン */
+    /** Clear button */
     private JButton btnClear;
-    /** エクスポートボタン */
+    /** Export button */
     private JButton btnExport;
-    /** プロパティラベル */
+    /** Property label */
     private JLabel label;
 
-    /** プロパティテーブルモデル */
+    /** Property table model */
     private PropertiesTableModel model;
 
     /**
-     * コンストラクタ
+     * Constructor
      */
     public PropertiesTablePanel() {
         super();
 
-        // モデルの生成を行う
+        // Generate a model
         model = new PropertiesTableModel();
-        // オブザーバを設定する。
+        // Set the observer.
         model.addObserver(this);
 
-        // GUI初期化を行う。
+        // Initialize the GUI.
         initGUI();
 
     }
 
     /**
-     * コンストラクタ
-     * @param proparties		分析情報パネル識別子
+     * Constructor
+     * @param proparties Analysis Information Panel Identifier
      */
     public PropertiesTablePanel(ANALYSIS_PANEL proparties) {
         super(proparties);
 
-        // モデルの生成を行う
+        // Generate a model
         model = new PropertiesTableModel();
-        // オブザーバを設定する。
+        // Set the observer.
         model.addObserver(this);
 
-        // GUI初期化を行う。
+        // Initialize the GUI.
         initGUI();
     }
 
     /**
-     * GUI初期化を行う。
+     * Initialize the GUI.
      */
     private void initGUI() {
         try {
@@ -111,7 +111,7 @@ public class PropertiesTablePanel extends AnalisysPanelBase implements Observer,
             this.setLayout(thisLayout);
 //            setPreferredSize(new Dimension(400, 64));
 
-            // 上部の情報ラベル、ボタンの配置パネル
+            // Information label at the top, button placement panel
             {
                 JPanel panelTop = new JPanel();
                 panelTop.setLayout(new BorderLayout());
@@ -119,14 +119,14 @@ public class PropertiesTablePanel extends AnalisysPanelBase implements Observer,
                 panelTop.setBorder(new CompoundBorder(
                                             new LineBorder(Color.BLACK, 1),
                                             BorderFactory.createEmptyBorder(0, 5, 0, 20)));
-                // ボタン配置パネル
+                // Button layout panel
                 {
                     JPanel panelButtons = new JPanel();
                     panelButtons.setLayout(new BoxLayout(panelButtons, BoxLayout.LINE_AXIS));
                     panelTop.add(panelButtons, BorderLayout.EAST);
 
                     java.awt.Dimension buttonSize = new java.awt.Dimension(24, 24);
-                    // クリアボタン
+                    // Clear button
                     {
                         Icon icon = ResourceUtils.getIcon("removeall.gif");
                         btnClear = new JButton(icon);
@@ -139,7 +139,7 @@ public class PropertiesTablePanel extends AnalisysPanelBase implements Observer,
                         btnClear.addActionListener( new ActionListener() {
                             @Override
                             public void actionPerformed(ActionEvent e) {
-                                // モデルクリア
+                                // Model clear
                                 clearModel();
                             }
                         });
@@ -156,7 +156,7 @@ public class PropertiesTablePanel extends AnalisysPanelBase implements Observer,
                     }
                 }
 
-                // ラベル配置
+                // Label placement
                 {
                     label = new JLabel();
                     panelTop.add(label, BorderLayout.CENTER);
@@ -165,33 +165,33 @@ public class PropertiesTablePanel extends AnalisysPanelBase implements Observer,
             }
             {
                 {
-                    // プロパティテーブル
+                    // Property table
                     tableProperties = new JStripeTable();
                     tableProperties.setModel(model.getTableModel());
                     tableProperties.setAutoCreateColumnsFromModel(false);
 
-                    // テーブル列モデル
+                    // Table column model
                     DefaultTableColumnModel columnModel = (DefaultTableColumnModel)tableProperties.getColumnModel();
                     TableColumn column = null;
-                    // 項目列
+                    // Item column
                     column = columnModel.getColumn(0);
                     column.setPreferredWidth(160);
                     column.setMinWidth(160);
-                    // 値列
+                    // Value column
                     column = columnModel.getColumn(1);
                     column.setPreferredWidth(520);
                     column.setMinWidth(520);
 
                     /*
-                    // ヘッダーの取得
-                    JTableHeader header = tableProperties.getTableHeader();
-                    TableColumnModel columnHeaderModel = header.getColumnModel();
-                    // ヘッダーの左寄せ
-                    DefaultTableCellRenderer headerRenderer = ( DefaultTableCellRenderer )header.getDefaultRenderer();
-                    headerRenderer.setHorizontalAlignment( SwingConstants.LEFT );
+                    // Get header
+                    JTableHeader header = tableProperties.getTableHeader ();
+                    TableColumnModel columnHeaderModel = header.getColumnModel ();
+                    // Header left justified
+                    DefaultTableCellRenderer headerRenderer = (DefaultTableCellRenderer) header.getDefaultRenderer ();
+                    headerRenderer.setHorizontalAlignment (SwingConstants.LEFT);
 */
 
-                    // スクロールパイン
+                    // Scroll pine
                     JScrollPane scrollTable = new JScrollPane();
                     scrollTable.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
                     scrollTable.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
@@ -203,9 +203,9 @@ public class PropertiesTablePanel extends AnalisysPanelBase implements Observer,
 
             }
 
-            // ツールチップ設定
-            btnClear.setToolTipText(Message.getString("informationdialog.button.clear.tooltip")); //クリア
-            btnExport.setToolTipText(Message.getString("mainmenu.file.export")); //エクスポート
+            // Tooltip settings
+            btnClear.setToolTipText(Message.getString("informationdialog.button.clear.tooltip")); //clear
+            btnExport.setToolTipText(Message.getString("mainmenu.file.export")); //export
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -213,24 +213,24 @@ public class PropertiesTablePanel extends AnalisysPanelBase implements Observer,
     }
 
     /**
-     * プロパティモデルの変更通知イベント
-     * @param o			通知元
-     * @param arg		通知項目
+     * Property model change notification event
+     * @param o Notification source
+     * @param arg Notification item
      */
     @Override
     public void update(Observable o, Object arg) {
-        // テーブルモデル
+        // Table model
         PropertiesTableModel observer = (PropertiesTableModel)o;
         tableProperties.setModel(observer.getTableModel());
 
-        // パネルタイトル
+        // Panel title
         this.label.setText(observer.getTitle());
 
     }
 
     /**
-     * プロパティテーブルモデルを取得する
-     * @return		プロパティテーブルモデル
+     * Get the property table model
+     * @return property table model
      */
     public PropertiesTableModel getModel() {
         return model;
@@ -238,13 +238,13 @@ public class PropertiesTablePanel extends AnalisysPanelBase implements Observer,
 
 
     /**
-     * フォーカスリスナを設定する
-     * @param listener		フォーカスリスナ
+     * Set focus listener
+     * @param listener Focus listener
      */
     @Override
     public void addTabFocusListener(TabFocusListener listener) {
         this.addFocusListener(listener);
-        // 子コンポーネントにもフォーカスリスナを設定する
+        // Set focus listener for child components as well
         if (this.tableProperties != null) {
             this.tableProperties.addFocusListener(listener);
             this.btnClear.addFocusListener(listener);
@@ -254,7 +254,7 @@ public class PropertiesTablePanel extends AnalisysPanelBase implements Observer,
 
 
     /**
-     * エクスポートを行う
+     * Export
      */
     @Override
     public void export(File file) {
@@ -264,35 +264,35 @@ public class PropertiesTablePanel extends AnalisysPanelBase implements Observer,
     }
 
     /**
-     * パネルにアクションリスナを設定する.<br/>
-     * メニューバーに作成済みのアクションリスナをパネルボタンに割り当てる。
-     * @param menu		メニューバー
+     * Set an action listener on the panel. <br/>
+     * Assign the created action listener to the menu bar to the panel button.
+     * @param menu Menu bar
      */
     @Override
     public void setActionListener(MainMenu menu) {
-        // 分析情報エクスポートアクション
+        // Analysis information export action
         this.btnExport.addActionListener(menu.getActionExportAnalysis());
 
     }
 
     /**
-     * モデルのクリアを行う。
+     * Clear the model.
      */
     @Override
     public void clearModel() {
-        // モデルクリア
+        // Model clear
         model.clearProperties();
     }
 
     /**
-     * タブのクローズを行う
+     * Close the tab
      */
     @Override
     public void closeTab() { }
 
     /**
-     * 選択ソースコード行情報を取得する
-     * @return		選択ソースコード行情報
+     * Get selected source code line information
+     * @return Selected source code line information
      */
     @Override
     public CodeLine getSelectedCodeLine() {
@@ -300,8 +300,8 @@ public class PropertiesTablePanel extends AnalisysPanelBase implements Observer,
     }
 
     /**
-     * 選択ブロックを取得する
-     * @return		選択ブロック
+     * Get the selected block
+     * @return selection block
      */
     @Override
     public IBlock getSelectedBlock() {
@@ -310,8 +310,8 @@ public class PropertiesTablePanel extends AnalisysPanelBase implements Observer,
 
 
     /**
-     * 選択付加情報を取得する
-     * @return		選択付加情報
+     * Get additional selection information
+     * @return Selectable additional information
      */
     @Override
     public IInformation getSelectedInformation() {
@@ -319,14 +319,14 @@ public class PropertiesTablePanel extends AnalisysPanelBase implements Observer,
     }
 
     /**
-     * ソースビュープロパティを設定する
-     * @param properties		ソースビュープロパティ
+     * Set source view properties
+     * @param properties Source view properties
      */
     @Override
     public void setSourceProperties(SourceProperties properties) {}
 
     /**
-     * 選択項目をクリップボードにコピーする.
+     * Copy the selection to the clipboard.
      */
     @Override
     public void copyClipboard() {
@@ -334,12 +334,12 @@ public class PropertiesTablePanel extends AnalisysPanelBase implements Observer,
         String text = SwingUtils.toCsvOfSeletedRows(this.tableProperties);
         if (text == null) return;
 
-        // クリップボードにコピーする
+        // copy to clipboard
         SwingUtils.copyClipboard(text);
     }
 
     /**
-     * エキスポートする情報があるか否か
+     * Whether there is information to export
      */
 	@Override
 	public boolean isExportable() {

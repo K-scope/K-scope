@@ -30,70 +30,70 @@ import jp.riken.kscope.data.SearchOption;
 import jp.riken.kscope.utils.StringUtils;
 
 /**
- * 検索ツリークラス
+ * Search tree class
  * @author RIKEN
  */
 public class SearchTree extends ObjectTree {
 
-    /** シリアル番号 */
+    /** Serial number */
     private static final long serialVersionUID = 1L;
 
-    /** 検索条件 */
+    /** Search criteria */
     private SearchOption searchOption;
-    /** 表示前景色 */
+    /** Foreground view */
     private Color forecolor;
-    /** 表示背景色 */
+    /** Display background color */
     private Color backcolor;
-    /** スタイル */
+    /** Style */
     private int fontstyle = Font.PLAIN;
 
     /**
-     * コンストラクタ
+     * Constructor
      */
     public SearchTree() {
         super();
-        // ツリーのノード描画クラスの設定
+        // Setting the node drawing class of the tree
         SearchTreeCellRenderer renderer = new SearchTreeCellRenderer();
         this.setCellRenderer( renderer);
     }
 
 
     /**
-     * 検索ツリーノードのレンダリングクラス
+     * Search tree node rendering class
      * @author RIKEN
      */
     public class SearchTreeCellRenderer extends ObjectTreeCellRenderer {
 
-        /** シリアル番号 */
+        /** Serial number */
         private static final long serialVersionUID = 1L;
 
         /**
-         * コンストラクタ
+         * Constructor
          */
         public SearchTreeCellRenderer() {
 
         }
 
         /**
-         * ツリー内のノードを描画方法を決定するメソッド
+         * Methods that determine how to draw the nodes in the tree
          *
          * @param t
-         *            ペイントしているツリー
+         * The tree you are painting
          * @param value
-         *            表示される値
+         * Displayed value
          * @param selected
-         *            ノードが選択された場合にtrue
+         * True if a node is selected
          * @param expanded
-         *            展開されている場合にtrue
+         * True if expanded
          * @param leaf
-         *            要素が葉の場合にtrue
+         * True if the element is a leaf
          * @param row
-         *            ノードのインデックス
+         * Node index
          * @param hasFocus
-         *            指定のノードにフォーカスがある場合にtrue
-         * @return 指定の値を描画するpaint()メソッドがあるコンポーネント
+         * True if the specified node has focus
+         * @return A component with a paint () method that draws the specified value
          * @see javax.swing.tree.TreeCellRenderer
-         * @see javax.swing.tree.DefaultTreeCellRenderer
+         * @ see javax.swing.tree.DefaultTreeCellRenderer
          */
         @Override
         public Component getTreeCellRendererComponent(JTree t, Object value,
@@ -104,7 +104,7 @@ public class SearchTree extends ObjectTree {
                     expanded, leaf, row, hasFocus);
 
             Object obj = ((DefaultMutableTreeNode) value).getUserObject();
-            // 検索条件が設定されているか, 検索対象ノードであるか？
+            // Are search conditions set or are the search target nodes?
             if (validateSearch(obj)) {
                 String text = getText();
                 String prefix = null;
@@ -114,7 +114,7 @@ public class SearchTree extends ObjectTree {
                     prefix = prefix + " : ";
                 }
                 if (SearchTree.this.searchOption.isVariable()) {
-                    // 変数(=トレース)検索
+                    // Variable (= trace) search
                     text = StringUtils.searchWordToHtml(
                                             text,
                                             SearchTree.this.searchOption.getSearchText(),
@@ -122,7 +122,7 @@ public class SearchTree extends ObjectTree {
                                             SearchTree.this.fontstyle);
                 }
                 else {
-                    // テキスト検索
+                    // Text search
                     text = StringUtils.searchTextToHtml(
                                             text,
                                             SearchTree.this.searchOption.getSearchText(),
@@ -149,91 +149,91 @@ public class SearchTree extends ObjectTree {
     }
 
     /**
-     * 表示前景色を取得する
-     * @return		表示前景色
+     * Get the foreground view
+     * @return Foreground view
      */
     public Color getForecolor() {
         return this.forecolor;
     }
 
     /**
-     * 表示前景色を設定する
-     * @param color		表示前景色
+     * Set the foreground view
+     * @param color Foreground view
      */
     public void setForecolor(Color color) {
         this.forecolor = color;
     }
 
     /**
-     * 表示背景色を取得する
-     * @return		表示背景色
+     * Get the display background color
+     * @return Display background color
      */
     public Color getBackcolor() {
         return this.backcolor;
     }
 
     /**
-     * 表示背景色を設定する
-     * @param color		表示背景色
+     * Set the display background color
+     * @param color Display background color
      */
     public void setBackcolor(Color color) {
         this.backcolor = color;
     }
 
     /**
-     * フォントスタイルを取得する
-     * @return	フォントスタイル
+     * Get font style
+     * @return font style
      */
     public int getFontstyle() {
         return fontstyle;
     }
 
     /**
-     * フォントスタイルを設定する
-     * @param fontstyle		フォントスタイル
+     * Set font style
+     * @param fontstyle Font style
      */
     public void setFontstyle(int fontstyle) {
         this.fontstyle = fontstyle;
     }
 
     /**
-     * ツリーモデルを設定する
-     * @param model		ツリーモデル
+     * Set up a tree model
+     * @param model Tree model
      */
     public void setModel(SearchTreeModel model) {
         super.setModel(model);
 
-        // 検索条件を設定する
+        // Set search conditions
         this.searchOption = model.getSearchOption();
     }
 
     /**
-     * 検索条件が設定されているかチェックする.
-     * @param    node		ノードユーザオブジェクト
-     * @return		true=検索条件設定済み
+     * Check if search conditions are set.
+     * @param node node user object
+     * @return true = Search conditions have been set
      */
     private boolean validateSearch(Object node) {
         if (this.searchOption == null) return false;
         if (this.searchOption.getSearchText() == null) return false;
         if (this.searchOption.getSearchText().isEmpty()) return false;
         if (this.searchOption.getSearchClass() != null) {
-            // 検索対象のノードオブジェクトであるかチェックする。
+            // Check if it is the node object to be searched.
             return (this.searchOption.getSearchClass().isInstance(node));
         }
         return true;
     }
 
     /**
-     * 検索条件を取得する
-     * @return		検索条件
+     * Get search criteria
+     * @return Search criteria
      */
     public SearchOption getSearchOption() {
         return searchOption;
     }
 
     /**
-     * 検索条件を設定する
-     * @param searchOption		検索条件
+     * Set search conditions
+     * @param searchOption Search criteria
      */
     public void setSearchOption(SearchOption searchOption) {
         this.searchOption = searchOption;

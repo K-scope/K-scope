@@ -22,48 +22,48 @@ import java.awt.*;
 import jp.riken.kscope.utils.SwingUtils;
 
 /**
- * フレームスクロールパインクラス.
- * 右側、下側にビューを設置可能なスクロールパイン
+ * Frame scroll pine class.
+ * Scroll pine with views on the right and bottom
  * @author RIKEN
  */
 public class FrameScrollPane extends JScrollPane {
 
-    /** シリアル番号 */
+    /** Serial number */
     private static final long serialVersionUID = 1L;
-    /** 行フッタービューポート */
+    /** Row footer viewport */
     protected JViewport rowFooter;
-    /** 列フッタービューポート */
+    /** Column footer viewport */
     protected JViewport columnFooter;
-    /** 左側角コンポーネント */
+    /** Left corner component */
     protected Component horizontalCornerLeft;
-    /** 右側角コンポーネント  */
+    /** Right corner component */
     protected Component horizontalCornerRight;
-    /** 上側角コンポーネント */
+    /** Upper corner component */
     protected Component verticalCornerTop;
-    /** 下側角コンポーネント */
+    /** Bottom corner component */
     protected Component verticalCornerBottom;
-    /** 横スクロールバーの全体表示フラグ */
+    /** Horizontal scroll bar full display flag */
     private boolean horizontalScrollBarCoversWhole;
-    /** 縦スクロールバーの全体表示フラグ */
+    /** Vertical scroll bar full display flag */
     private boolean verticalScrollBarCoversWhole;
-    /** プロパティ変更通知キー：横スクロールバーの全体表示変更 */
+    /** Property change notification key: Change the entire display of the horizontal scroll bar */
     public static final String PROPERTY_HORIZONTAL_SCROLL_BAR_COVERS_WHOLE = "horizontalScrollBarCoversWhole";
-    /** プロパティ変更通知キー：縦スクロールバーの全体表示変更 */
+    /** Property change notification key: Change the entire display of the vertical scroll bar */
     public static final String PROPERTY_VERTICAL_SCROLL_BAR_COVERS_WHOLE = "verticalScrollBarCoversWhole";
-    /** 左上角と右上角を同一高さにするフラグ */
+    /** Flag that makes the upper left corner and the upper right corner the same height */
     private boolean columnHeadersUnified;
-    /** 左下角と右下角を同一高さにするフラグ */
+    /** Flag that makes the lower left corner and the lower right corner the same height */
     private boolean columnFootersUnified;
-    /** プロパティ変更通知キー：左上角と右上角を同一高さにするフラグ変更 */
+    /** Property change notification key: Flag change to make the upper left corner and the upper right corner the same height */
     public static final String PROPERTY_COLUMN_HEADERS_UNIFIED = "columnHeadersUnified";
-    /** プロパティ変更通知キー：左下角と右下角を同一高さにするフラグ変更 */
+    /** Property change notification key: Flag change to make the lower left corner and the lower right corner the same height */
     public static final String PROPERTY_COLUMN_FOOTERS_UNIFIED = "columnFootersUnified";
 
     /**
-     * コンストラクタ
-     * @param view      スクロールペイン内のビューポートに配置するコンポーネント
-     * @param verticalPolicy    縦スクロールバー表示条件
-     * @param horizontalPolicy  横スクロールバー表示条件
+     * Constructor
+     * @param view Component to place in the viewport in the scroll pane
+     * @param verticalPolicy Vertical scroll bar display condition
+     * @param horizontalPolicy Horizontal scroll bar display condition
      */
     public FrameScrollPane(Component view, int verticalPolicy, int horizontalPolicy) {
         setLayout(new FrameScrollPaneLayout.UIResource());
@@ -85,8 +85,8 @@ public class FrameScrollPane extends JScrollPane {
 
 
     /**
-     * コンストラクタ
-     * @param view      スクロールペイン内のビューポートに配置するコンポーネント
+     * Constructor
+     * @param view Component to place in the viewport in the scroll pane
      */
     public FrameScrollPane(Component view) {
         this(view, VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_SCROLLBAR_AS_NEEDED);
@@ -94,9 +94,9 @@ public class FrameScrollPane extends JScrollPane {
 
 
     /**
-     * コンストラクタ
-     * @param verticalPolicy    縦スクロールバー表示条件
-     * @param horizontalPolicy  横スクロールバー表示条件
+     * Constructor
+     * @param verticalPolicy Vertical scroll bar display condition
+     * @param horizontalPolicy Horizontal scroll bar display condition
      */
     public FrameScrollPane(int verticalPolicy, int horizontalPolicy) {
         this(null, verticalPolicy, horizontalPolicy);
@@ -104,15 +104,15 @@ public class FrameScrollPane extends JScrollPane {
 
 
     /**
-     * コンストラクタ
+     * Constructor
      */
     public FrameScrollPane() {
         this(null, VERTICAL_SCROLLBAR_AS_NEEDED, HORIZONTAL_SCROLLBAR_AS_NEEDED);
     }
 
     /**
-     * 行フッタービューポートを取得する。
-     * @return 行フッタービューポート
+     * Get the row footer viewport.
+     * @return line footer viewport
      */
     public JViewport getRowFooter() {
         return this.rowFooter;
@@ -120,8 +120,8 @@ public class FrameScrollPane extends JScrollPane {
 
 
     /**
-     * 行フッタービューポートを設定する
-     * @param footer 行フッタービューポート
+     * Set the row footer viewport
+     * @param footer row footer viewport
      */
     public void setRowFooter(JViewport footer) {
         JViewport old = getRowFooter();
@@ -136,14 +136,14 @@ public class FrameScrollPane extends JScrollPane {
         revalidate();
         repaint();
 
-        // コストバー表示:ONにてSourceCodePanelのViewportが先頭に移動してしまう対策 at 2013/05/15 by @hira
+        // Cost bar display: Measures to move the Viewport of SourceCodePanel to the top when ON at 2013/05/15 by @hira
         // SwingUtils.synchronizeView(footer, getViewport(), SwingConstants.VERTICAL);
         SwingUtils.synchronizeView(getViewport(), footer, SwingConstants.VERTICAL);
     }
 
     /**
-     * 行ヘッダービューポートを設定する
-     * @param rowHeader 行ヘッダービューポート
+     * Set the row header viewport
+     * @param rowHeader Row header viewport
      */
     @Override
     public void setRowHeader(JViewport rowHeader) {
@@ -152,8 +152,8 @@ public class FrameScrollPane extends JScrollPane {
     }
 
     /**
-     * 行フッターコンポーネントを設定する
-     * @param view 行フッターコンポーネント
+     * Set the line footer component
+     * @param view Row footer component
      */
     public void setRowFooterView(Component view) {
         if (null == getRowFooter()) {
@@ -164,8 +164,8 @@ public class FrameScrollPane extends JScrollPane {
 
 
     /**
-     * 列フッタービューポートを取得する
-     * @return 列フッタービューポート
+     * Get column footer viewport
+     * @return Column footer viewport
      */
     public JViewport getColumnFooter() {
         return this.columnFooter;
@@ -173,8 +173,8 @@ public class FrameScrollPane extends JScrollPane {
 
 
     /**
-     * 列フッタービューポートを設定する
-     * @param footer 列フッタービューポート
+     * Set column footer viewport
+     * @param footer Column footer viewport
      */
     public void setColumnFooter(JViewport footer) {
         JViewport old = getColumnFooter();
@@ -190,14 +190,14 @@ public class FrameScrollPane extends JScrollPane {
         revalidate();
         repaint();
         
-        // コストバー表示:ONにてSourceCodePanelのViewportが先頭に移動してしまう対策 at 2013/05/15 by @hira
+        // Cost bar display: Measures to move the Viewport of SourceCodePanel to the top when ON at 2013/05/15 by @hira
         // SwingUtils.synchronizeView(footer, getViewport(), SwingConstants.HORIZONTAL);
         SwingUtils.synchronizeView(getViewport(), footer, SwingConstants.HORIZONTAL);
     }
 
     /**
-     * 列ヘッダービューポートを設定する
-     * @param columnHeader		列ヘッダービューポート
+     * Set column header viewport
+     * @param columnHeader Column header viewport
      */
     @Override
     public void setColumnHeader(JViewport columnHeader) {
@@ -206,8 +206,8 @@ public class FrameScrollPane extends JScrollPane {
     }
 
     /**
-     * 列フッターコンポーネントを設定する     *
-     * @param view 列フッターコンポーネント
+     * Set the column footer component *
+     * @param view Column footer component
      */
     public void setColumnFooterView(Component view) {
         if (null == getColumnFooter()) {
@@ -217,9 +217,9 @@ public class FrameScrollPane extends JScrollPane {
     }
 
     /**
-     * 角のコンポーネントを取得する
-     * @param key   角の識別文字列
-     * @return  角のコンポーネント
+     * Get the corner component
+     * @param key Corner identification string
+     * @return corner component
      */
     public Component getScrollBarCorner(String key) {
         boolean isLeftToRight = getComponentOrientation().isLeftToRight();
@@ -249,10 +249,10 @@ public class FrameScrollPane extends JScrollPane {
 
 
     /**
-     * 角のコンポーネントを設定する
+     * Set the corner component
      *
-     * @param key    角の識別文字列
-     * @param corner 角のコンポーネント
+     * @param key Corner identification string
+     * @param corner Corner component
      */
     public void setScrollBarCorner(String key, Component corner) {
         Component old;
@@ -297,7 +297,7 @@ public class FrameScrollPane extends JScrollPane {
     }
 
     /**
-     * 再描画を行う。
+     * Redraw.
      */
     @Override
     public void updateUI() {
@@ -307,16 +307,16 @@ public class FrameScrollPane extends JScrollPane {
     }
 
     /**
-     * 縦スクロールバーの全体表示フラグを取得する。
-     * @return		縦スクロールバーの全体表示フラグ
+     * Get the full display flag of the vertical scroll bar.
+     * @return Full display flag of vertical scroll bar
      */
     public boolean isVerticalScrollBarCoversWhole() {
         return this.verticalScrollBarCoversWhole;
     }
 
     /**
-     * 横スクロールバーの全体表示フラグを設定する。
-     * @param whole		横スクロールバーの全体表示フラグ
+     * Set the full display flag of the horizontal scroll bar.
+     * @param whole Horizontal scroll bar full display flag
      */
     public void setHorizontalScrollBarCoversWhole(boolean whole) {
         boolean old = this.horizontalScrollBarCoversWhole;
@@ -332,16 +332,16 @@ public class FrameScrollPane extends JScrollPane {
     }
 
     /**
-     * 横スクロールバーの全体表示フラグを取得する。
-     * @return		横スクロールバーの全体表示フラグ
+     * Get the full display flag of the horizontal scroll bar.
+     * @return Horizontal scroll bar full display flag
      */
     public boolean isHorizontalScrollBarCoversWhole() {
         return this.horizontalScrollBarCoversWhole;
     }
 
     /**
-     * 縦スクロールバーの全体表示フラグを設定する。
-     * @param whole		縦スクロールバーの全体表示フラグ
+     * Set the full display flag of the vertical scroll bar.
+     * @param whole Vertical scroll bar full display flag
      */
     public void setVerticalScrollBarCoversWhole(boolean whole) {
         boolean old = this.verticalScrollBarCoversWhole;
@@ -357,16 +357,16 @@ public class FrameScrollPane extends JScrollPane {
     }
 
     /**
-     * 左上角と右上角を同一高さにするフラグを取得する
-     * @return true=左上角と右上角を同一高さにする
+     * Get the flag to make the upper left corner and the upper right corner the same height
+     * @return true = Make the upper left corner and the upper right corner the same height
      */
     public boolean isColumnHeadersUnified() {
         return this.columnHeadersUnified;
     }
 
     /**
-     * 左上角と右上角を同一高さにするフラグを設定する
-     * @param  unified     true=左上角と右上角を同一高さにする
+     * Set a flag to make the upper left corner and the upper right corner the same height
+     * @param unified true = Make the upper left corner and the upper right corner the same height
      */
     public void setColumnHeadersUnified(boolean unified) {
         boolean old = this.columnHeadersUnified;
@@ -379,16 +379,16 @@ public class FrameScrollPane extends JScrollPane {
     }
 
     /**
-     * 左下角と右下角を同一高さにするフラグを取得する
-     * @return true=左下角と右下角を同一高さにする
+     * Get the flag to make the lower left corner and the lower right corner the same height
+     * @return true = Make the lower left and lower right corners the same height
      */
     public boolean isColumnFootersUnified() {
         return this.columnFootersUnified;
     }
 
     /**
-     * 左下角と右下角を同一高さにするフラグを設定する
-     * @param unified true=左下角と右下角を同一高さにする
+     * Set a flag to make the lower left corner and the lower right corner the same height
+     * @param unified true = Make the lower left and lower right corners the same height
      */
     public void setColumnFootersUnified(boolean unified) {
         boolean old = this.columnFootersUnified;

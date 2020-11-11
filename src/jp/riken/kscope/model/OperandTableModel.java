@@ -35,53 +35,53 @@ import jp.riken.kscope.language.IBlock;
 import jp.riken.kscope.utils.SwingUtils;
 
 /**
- * 演算カウントモデル
+ * Calculation count model
  * @author RIKEN
  *
  */
 public class OperandTableModel extends Observable {
 
     /**
-     * ブロック演算カウントテーブルヘッダーリスト
-     * 1列目はBlock情報とする。
+     * Block operation count table header list
+     * The first column is Block information.
      */
     //private String[] HEADER_COLUMNS = {"", "Block", "(Ld+St)/FLOP", "Load(F)", "Store(F)", "FLOP", "add(F)", "mul(F)", "intrinsic(F)"};
 	private String[] HEADER_COLUMNS = {"", "Block", "FLOP", "add(F)", "sub(F)", "mul(F)", "div(F)", "intrinsic(F)"};
 
     /**
-     * ブロック演算カウントテーブル列サイズ
-     * -1=非表示とする
+     * Block operation count table column size
+     * -1 = Hide
      */
     private int[] HEADER_COLUMNS_PREFERREDWIDTH = {-1, 160, 80, 80, 80, 80, 80, 80};
 
-    /** タイトル */
+    /** Title */
     private String title;
 
     /**
-     * ブロック演算カウント情報リスト
+     * Block operation count information list
      */
     private List<OperandBlock> listOperandBlock;
 
 
     /**
-     * ブロック演算カウント情報クラス
+     * Block operation count information class
      * @author RIKEN
      */
     public class OperandBlock {
-        /** ブロックノード */
+        /** Block node */
         private IBlock block;
-        /** 演算カウント */
+        /** Calculation count */
         private OperationCount count;
 
         /**
-         * コンストラクタ
+         * Constructor
          */
         public OperandBlock() {
         }
 
         /**
-         * コンストラクタ
-         * @param block			ブロック
+         * Constructor
+         * @param block block
          */
         public OperandBlock(IBlock block) {
             this.block = block;
@@ -89,9 +89,9 @@ public class OperandTableModel extends Observable {
 
 
         /**
-         * コンストラクタ
-         * @param block			ブロック
-         * @param count		演算カウント
+         * Constructor
+         * @param block block
+         * @param count Operation count
          */
         public OperandBlock(IBlock block, OperationCount count) {
             this.block = block;
@@ -99,32 +99,32 @@ public class OperandTableModel extends Observable {
         }
 
         /**
-         * ブロックを取得する
-         * @return		ブロック
+         * Get a block
+         * @return block
          */
         public IBlock getBlock() {
             return this.block;
         }
 
         /**
-         * 演算カウントを取得する
-         * @return		演算カウント
+         * Get the operation count
+         * @return operation count
          */
         public OperationCount getCount() {
             return count;
         }
 
         /**
-         * 演算カウントを設定する
-         * @param count		演算カウント
+         * Set the operation count
+         * @param count Operation count
          */
         public void setCount(OperationCount count) {
             this.count = count;
         }
 
         /**
-         * ブロックノードを設定する
-         * @param block		ブロックノード
+         * Set block node
+         * @param block block node
          */
         public void setBlock(IBlock block) {
             this.block = block;
@@ -133,14 +133,14 @@ public class OperandTableModel extends Observable {
     }
 
     /**
-     * コンストラクタ
+     * Constructor
      */
     public OperandTableModel() {
         super();
     }
 
     /**
-     * モデルの変更を通知する
+     * Notify model changes
      */
     private void notifyModel() {
         this.setChanged();
@@ -149,8 +149,8 @@ public class OperandTableModel extends Observable {
     }
 
     /**
-     * ブロック演算カウント情報リスト数を取得する
-     * @return		ブロック演算カウント情報リスト数
+     * Get the number of block operation count information list
+     * @return Number of block operation count information list
      */
     public int getListOperandBlockCount() {
         if (this.listOperandBlock == null) {
@@ -161,9 +161,9 @@ public class OperandTableModel extends Observable {
 
 
     /**
-     * ブロック演算カウント情報を取得する
-     * @param   index    リストインデックス
-     * @return		ブロック演算カウント情報
+     * Get block calculation count information
+     * @param index List index
+     * @return Block operation count information
      */
     public OperandBlock getOperandBlock(int index) {
         if (this.listOperandBlock == null) {
@@ -176,24 +176,24 @@ public class OperandTableModel extends Observable {
 
 
     /**
-     * ブロック演算カウントテーブルモデルを取得する
-     * @return		ブロック演算カウントテーブルモデル
+     * Get block operation count table model
+     * @return block operation count table model
      */
     public DefaultTableModel getBlockDefaultTableModel() {
-        // テーブルモデルの作成
+        // Create a table model
         DefaultTableModel tableModel = new DefaultTableModel(HEADER_COLUMNS, 0);
         return tableModel;
     }
 
 
     /**
-     * ブロック演算カウントテーブル列幅を設定する.<br/>
-     * 演算カウントテーブルはすべて固定列幅とする
-     * @param columnModel		テーブル列モデル
+     * Set the block operation count table column width. <br/>
+     * All arithmetic count tables have a fixed column width
+     * @param columnModel Table column model
      */
     public void setTableColumnWidth(DefaultTableColumnModel columnModel) {
         for (int i=0; i<columnModel.getColumnCount(); i++) {
-            // 列取得
+            // Get column
             TableColumn column = columnModel.getColumn(i);
             if (HEADER_COLUMNS_PREFERREDWIDTH.length >= i) {
                 if (HEADER_COLUMNS_PREFERREDWIDTH[i] >= 0) {
@@ -214,16 +214,16 @@ public class OperandTableModel extends Observable {
 
 
     /**
-     * ブロック演算カウントテーブル行を追加する
-     * @param block		ブロック
-     * @param count	ブロック演算カウント
+     * Add block operation count table row
+     * @param block block
+     * @param count Block operation count
      */
     public void addOperandBlock(IBlock block, OperationCount count) {
 
         if (block == null) return;
         if (count == null) return;
 
-        // ブロック演算カウント情報の生成
+        // Generate block operation count information
         OperandBlock info = new OperandBlock(block, count);
 
         if (this.listOperandBlock == null) {
@@ -231,35 +231,35 @@ public class OperandTableModel extends Observable {
         }
         this.listOperandBlock.add(info);
 
-        // モデルの変更を通知
+        // Notify model changes
         notifyModel();
     }
 
 
     /**
-     * テーブルモデルをクリアする。
+     * Clear the table model.
      */
     public void clearOperand() {
-        // テーブルモデルのクリア
+        // Clear table model
         this.listOperandBlock = new ArrayList<OperandBlock>();
-        // タイトルのクリア
+        // Clear title
         title = null;
 
-        // モデルの変更を通知
+        // Notify model changes
         notifyModel();
     }
 
     /**
-     * タイトルを取得する
-     * @return	タイトル
+     * Get the title
+     * @return title
      */
     public String getTitle() {
         return title;
     }
 
     /**
-     * タイトルを設定する
-     * @param title		タイトル
+     * Set the title
+     * @param title Title
      */
     public void setTitle(String title) {
         this.title = title;
@@ -267,20 +267,20 @@ public class OperandTableModel extends Observable {
 
 
     /**
-     * テーブル情報をファイル出力する。
-     * @param file		出力ファイル
+     * Output table information to a file.
+     * @param file Output file
      */
     public void writeFile(File file) {
 
         try {
 
-            // ブロック演算カウント
+            // Block operation count
             if (this.listOperandBlock == null || this.listOperandBlock.size() <= 0) return;
 
-            // ファイル出力
+            // File output
             PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(file)));
 
-            // テーブルを出力する
+            // Output the table
             String buf = SwingUtils.toCsv(getTableModel());
             pw.print(buf);
 
@@ -292,8 +292,8 @@ public class OperandTableModel extends Observable {
     }
 
     /**
-     * テーブルモデルを取得する
-     * @return		テーブルモデル
+     * Get the table model
+     * @return table model
      */
     public DefaultTableModel getTableModel() {
         return createTableModel();
@@ -301,24 +301,24 @@ public class OperandTableModel extends Observable {
 
 
     /**
-     * テーブルモデルを作成する
+     * Create a table model
      */
     private DefaultTableModel createTableModel() {
-        // テーブルモデルの作成
+        // Create a table model
         DefaultTableModel tableModel = new DefaultTableModel();
         tableModel.setColumnIdentifiers(HEADER_COLUMNS);
 
-        // 演算カウントリストからテーブルモデルの作成を行う。
+        // Create a table model from the arithmetic count list.
         if (listOperandBlock == null) return tableModel;
 
         for (OperandBlock opblock : this.listOperandBlock) {
-            // テーブル行配列の作成
+            // Create table row array
             Object[] row = new Object[HEADER_COLUMNS.length];
 
-            // 演算カウントブロック
+            // Arithmetic count block
             int col = 0;
             row[col++] = opblock.getBlock();;
-            // ループ名
+            // Loop name
             row[col++] = opblock.getCount().getName();
             // F
             row[col++] = opblock.getCount().getF();
@@ -333,7 +333,7 @@ public class OperandTableModel extends Observable {
             // Intrinsic
             row[col++] = opblock.getCount().getIntrinsic();
 
-            // テーブル行追加
+            // Add table row
             tableModel.addRow(row);
         }
 
@@ -341,8 +341,8 @@ public class OperandTableModel extends Observable {
     }
 
     /**
-     * モデルが空か否か
-     * @return	空か否か（true: 空，false: データあり）
+     * Whether the model is empty
+     * @return Whether it is empty (true: empty, false: with data)
      */
     public boolean isEmpty() {
     	if (this.listOperandBlock == null) return true;

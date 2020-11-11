@@ -29,123 +29,123 @@ import jp.riken.kscope.utils.SwingUtils;
 
 
 /**
- * 検索フィルタノードクラス
+ * Search filter node class
  * @author RIKEN
  */
 public class SearchTreeNode extends FilterTreeNode {
 
-    /** シリアル番号 */
+    /** Serial number */
     private static final long serialVersionUID = 1L;
 
-    /** 検索条件 */
+    /** Search criteria */
     private SearchOption searchOption;
-    /** 検索ノード */
+    /** Search node */
     private TreeNode[] searchNodes;
-    /** フィルタ適用フラグ */
+    /** Filter application flag */
     private boolean applyFilter;
 
     /**
-     * ノードの追加フラグ
-     * true=ノードを親ノードに追加する。ノードが検索一致、又は、子ノードが存在する場合
+     * Add node flag
+     * true = Add node to parent node. If the node is a search match or if there are child nodes
      */
     private boolean passed = true;
 
-    /** 検索一致子ノードリスト */
+    /** Search matcher node list */
     private List<SearchTreeNode> filteredChildren = new ArrayList<SearchTreeNode>();
 
     /**
-     * ノードの検索結果フラグ
-     * true=ノードが検索結果に一致
+     * Node search result flag
+     * true = node matches search results
      */
     private boolean match = false;
 
     /**
-     * コンストラクタ
-     * @param userObject		ノードユーザオブジェクト
+     * Constructor
+     * @param userObject Node user object
      */
     public SearchTreeNode(Object userObject) {
         super(userObject);
     }
 
     /**
-     * コンストラクタ
-     * @param node		ツリーノード
+     * Constructor
+     * @param node Tree node
      */
     public SearchTreeNode(DefaultMutableTreeNode node) {
         this(node.getUserObject());
         for (int i=0; i<node.getChildCount(); i++) {
             DefaultMutableTreeNode child = (DefaultMutableTreeNode)node.getChildAt(i);
             SearchTreeNode searchChild = new SearchTreeNode(child);
-            // 検索条件を設定する。
+            // Set search conditions.
             searchChild.setSearchOption(this);
-            // 子ノードの追加
+            // Add child node
             this.add(searchChild);
         }
     }
 
     /**
-     * コンストラクタ
+     * Constructor
      */
     public SearchTreeNode() {
         super();
     }
 
     /**
-     * ノード検索を行う
+     * Perform node search
      */
     @Override
     public void find() {
         passed = false;
         filteredChildren.clear();
         if (!validateSearch()) {
-            // 検索条件無しであるので、無条件追加
+            // Since there are no search conditions, add unconditionally
             passed = true;
-            // 子ノード検索
+            // Child node search
             passFilterDown();
         } else if (pass(this)) {
-            // 検索一致によるノード追加
+            // Add node by search match
             passed = true;
-            // 子ノード検索
+            // Child node search
             passFilterDown();
         } else {
-            // 子ノード検索
+            // Child node search
             passFilterDown();
             passed = filteredChildren.size() != 0;
         }
     }
 
     /**
-     * 追加ノードであるかチェックする.<br/>
-     * true=検索一致ノードである.<br/>
-     * true=検索条件がない.<br/>
-     * @param node		ノード
-     * @return			true=追加ノード
+     * Check if it is an additional node. <br/>
+     * true = Search match node. <br/>
+     * true = No search criteria. <br/>
+     * @param node node
+     * @return true = additional node
      */
     protected boolean pass(SearchTreeNode node) {
 
     	if (this.applyFilter) {
-    		// ノードフィルタチェック
+    		// Node filter check
 	    	if (!this.pass((FilterTreeNode)node)) {
 	    		return false;
 	    	}
     	}
 
-        // 検索条件チェック
+        // Search condition check
         if (!validateSearch()) {
             return true;
         }
 
-        // 検索対象ノードであるかチェックする
+        // Check if it is a search target node
         if (!isSearchNode(node)) {
             return false;
         }
 
-        // 検索対象ノードクラスであるかチェックする
+        // Check if it is the node class to be searched
         Object obj = node.getUserObject();
         if (!isSearchClass(obj)) {
             return false;
         }
-        // ノード文字列
+        // node string
         String nodeText = obj.toString();
         if (obj instanceof File) {
             File file = (File)obj;
@@ -160,11 +160,11 @@ public class SearchTreeNode extends FilterTreeNode {
 
         boolean result = false;
         if (this.searchOption.isVariable()) {
-            // 変数(=トレース)検索
+            // Variable (= trace) search
             result = StringUtils.existsSearchWord(nodeText, this.searchOption.getSearchText());
         }
         else {
-            // テキスト検索
+            // Text search
             result = StringUtils.existsSearchText(
                                     nodeText,
                                     this.searchOption.getSearchText(),
@@ -172,23 +172,23 @@ public class SearchTreeNode extends FilterTreeNode {
                                     this.searchOption.isRegex(),
                                     this.searchOption.isWord());
         }
-        // ノードの検索結果
+        // Node search results
         this.match = result;
 
         return result;
     }
 
     /**
-     * 検索対象ノードであるかチェックする.<br/>
-     * 検索ノードが設定されていなければ、すべてtrueとする.<br/>
-     * 検索ノードと同じノードか、子ノードを検索対象ノードとする
-     * @param node		検索対象ノード
-     * @return			true=検索対象ノードである
+     * Check if it is a search target node. <br/>
+     * If no search node is set, all are true. <br/>
+     * Set the same node as the search node or a child node as the search target node
+     * @param node Search target node
+     * @return true = Search target node
      */
     private boolean isSearchNode(SearchTreeNode node) {
         if (searchNodes == null) return true;
 
-        // 検索ノードであるか
+        // Is it a search node?
         for (TreeNode searchNode : this.searchNodes) {
             if (!(searchNode instanceof DefaultMutableTreeNode)) {
                 continue;
@@ -205,17 +205,17 @@ public class SearchTreeNode extends FilterTreeNode {
     }
 
     /**
-     * 子ノードの検索を行う.
+     * Search for child nodes.
      */
     private void passFilterDown() {
         int realChildCount = super.getChildCount();
         for (int i = 0; i < realChildCount; i++) {
             SearchTreeNode realChild = (SearchTreeNode) super.getChildAt(i);
-            // 検索条件を設定する。
+            // Set search conditions.
             realChild.setSearchOption(this);
             realChild.setApplyFilter(this.applyFilter);
             if (this.applyFilter) {
-	            // フィルタを設定
+	            // Set filter
 	            realChild.setListFilter(this.getListFilter());
             }
 
@@ -227,8 +227,8 @@ public class SearchTreeNode extends FilterTreeNode {
     }
 
     /**
-     * 子ノードを追加する
-     * @param node		追加子ノード
+     * Add a child node
+     * @param node Add-on node
      */
     public void add(SearchTreeNode node) {
         super.add(node);
@@ -239,12 +239,12 @@ public class SearchTreeNode extends FilterTreeNode {
     }
 
     /**
-     * 子ノードを削除する
-     * @param childIndex		子ノードインデックス
+     * Delete child node
+     * @param childIndex Child node index
      */
     @Override
     public void remove(int childIndex) {
-        // 検索条件チェック
+        // Search condition check
         if (!validateSearch()) {
             // as child indexes might be inconsistent..
             throw new IllegalStateException(
@@ -254,12 +254,12 @@ public class SearchTreeNode extends FilterTreeNode {
     }
 
     /**
-     * 子ノード数を取得する
-     * @return		子ノード数
+     * Get the number of child nodes
+     * @return Number of child nodes
      */
     @Override
     public int getChildCount() {
-        // 検索条件チェック
+        // Search condition check
         if (!validateSearch()) {
             return super.getChildCount();
         }
@@ -268,12 +268,12 @@ public class SearchTreeNode extends FilterTreeNode {
 
 
     /**
-     * 子ノードを取得する
-     * @return		子ノードインデックス
+     * Get a child node
+     * @return Child node index
      */
     @Override
     public SearchTreeNode getChildAt(int index) {
-        // 検索条件チェック
+        // Search condition check
         if (!validateSearch()) {
             return (SearchTreeNode) super.getChildAt(index);
         }
@@ -281,8 +281,8 @@ public class SearchTreeNode extends FilterTreeNode {
     }
 
     /**
-     * 親ノードへ追加ノードであるか取得する.
-     * @return			true=追加ノード
+     * Get whether it is an additional node to the parent node.
+     * @return true = additional node
      */
     public boolean isPassed() {
         return passed;
@@ -290,55 +290,55 @@ public class SearchTreeNode extends FilterTreeNode {
 
 
     /**
-     * 検索ノードを取得する
-     * @return searchNodes		検索ノード
+     * Get search node
+     * @return searchNodes Search nodes
      */
     public TreeNode[] getSearchNodes() {
         return searchNodes;
     }
 
     /**
-     * 検索ノードを設定する
-     * @param searchNodes 		検索ノード
+     * Set search node
+     * @param searchNodes Search nodes
      */
     public void setSearchNodes(TreeNode[] searchNodes) {
         this.searchNodes = searchNodes;
     }
 
     /**
-     * 検索条件を設定する
-     * @param node		検索ノード
+     * Set search conditions
+     * @param node Search node
      */
     public void setSearchOption(SearchTreeNode node) {
 
-        // 検索条件を設定
+        // Set search conditions
         this.searchOption = node.searchOption;
-        // 検索ノードを設定する
+        // Set the search node
         this.setSearchNodes(node.searchNodes);
     }
 
     /**
-     * 検索条件を設定する
-     * @param model		検索モデル
+     * Set search conditions
+     * @param model Search model
      */
     public void setSearchOption(SearchTreeModel model) {
-        // 検索条件を設定
+        // Set search conditions
         this.searchOption = model.getSearchOption();
-        // 検索ノードを設定する
+        // Set the search node
         this.setSearchNodes(model.getSearchNodes());
     }
 
     /**
-     * ノードの検索結果を取得する
-     * @return		ノードの検索結果
+     * Get node search results
+     * @return node search results
      */
     public boolean isMatch() {
         return match;
     }
 
     /**
-     * 検索条件が設定されているかチェックする.
-     * @return		true=検索条件設定済み
+     * Check if search conditions are set.
+     * @return true = Search conditions have been set
      */
     private boolean validateSearch() {
         if (this.searchOption == null) return false;
@@ -346,32 +346,32 @@ public class SearchTreeNode extends FilterTreeNode {
         if (this.searchOption.getSearchText().isEmpty()) return false;
 
         if (this.applyFilter) {
-	        // フィルタの適用チェック
+	        // Filter application check
 	        return this.validateFilter();
         }
         else {
-        	// フィルタ未設定
+        	// Filter not set
         	return true;
         }
     }
 
     /**
-     * 検索対象のノードオブジェクトであるかチェックする。
-     * @param    node		ノードユーザオブジェクト
-     * @return		true=検索対象
+     * Check if it is the node object to be searched.
+     * @param node node user object
+     * @return true = Search target
      */
     private boolean isSearchClass(Object node) {
         if (this.searchOption == null) return false;
         if (this.searchOption.getSearchClass() != null) {
-            // 検索対象のノードオブジェクトであるかチェックする。
+            // Check if it is the node object to be searched.
             return (this.searchOption.getSearchClass().isInstance(node));
         }
         return true;
     }
 
     /**
-     * ノードフィルタを適用する
-     * @param filter	true=ノードフィルタを適用する
+     * Apply node filter
+     * @param filter true = Apply node filter
      */
     public void setApplyFilter(boolean filter) {
     	applyFilter = filter;

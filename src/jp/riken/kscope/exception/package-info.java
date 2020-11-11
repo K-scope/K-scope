@@ -16,6 +16,6 @@
  */
 
 /**
- * 例外処理を提供します.<br/>
+ * Provides exception handling. <br/>
  */
 package jp.riken.kscope.exception;

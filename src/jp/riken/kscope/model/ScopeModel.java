@@ -32,32 +32,32 @@ import jp.riken.kscope.Message;
 import jp.riken.kscope.utils.SwingUtils;
 
 /**
- * 変数有効域モデル
+ * Variable scope model
  * @author RIKEN
  *
  */
 public class ScopeModel extends Observable {
 
-    /** テーブルヘッダーリスト */
-    private String[] HEADER_COLUMNS = {Message.getString("mainmenu.analysis.valiablescope")}; //変数有効域
+    /** Table header list */
+    private String[] HEADER_COLUMNS = {Message.getString("mainmenu.analysis.valiablescope")}; // Variable valid area
 
-    /** タイトル */
+    /** Title */
     private String title;
 
     /**
-     * 変数有効域情報
+     * Variable scope information
      */
     private List<String> listScope;
 
     /**
-     * コンストラクタ
+     * Constructor
      */
     public ScopeModel() {
         super();
     }
 
     /**
-     * モデルの変更を通知する
+     * Notify model changes
      */
     private void notifyModel() {
         this.setChanged();
@@ -67,12 +67,12 @@ public class ScopeModel extends Observable {
 
 
     /**
-     * 変数有効域デフォルトテーブルモデルを取得する
-     * @return		変数有効域デフォルトテーブルモデル
+     * Get variable effective area default table model
+     * @return Variable scope default table model
      */
     public DefaultTableModel getScopeDefaultTableModel() {
-        // テーブルモデルの作成
-        // テーブルモデルの作成
+        // Create a table model
+        // Create a table model
         DefaultTableModel tableModel = new DefaultTableModel();
         tableModel.setColumnIdentifiers(HEADER_COLUMNS);
         return tableModel;
@@ -80,45 +80,45 @@ public class ScopeModel extends Observable {
 
 
     /**
-     * 変数有効域データを設定する
-     * @param list		変数有効域データ
+     * Set variable effective area data
+     * @param list Variable scope data
      */
     public void setScope(String[] list) {
-        // テーブルモデルのクリア
+        // Clear table model
         this.listScope = new ArrayList<String>();
 
         if (list != null) {
             this.listScope.addAll(java.util.Arrays.asList(list));
         }
 
-        // モデルの変更を通知
+        // Notify model changes
         notifyModel();
     }
 
 
     /**
-     * テーブルモデルをクリアする。
+     * Clear the table model.
      */
     public void clear() {
-        // テーブルモデルのクリア
+        // Clear table model
         this.listScope = new ArrayList<String>();
         this.title = null;
         
-        // モデルの変更を通知
+        // Notify model changes
         notifyModel();
     }
 
     /**
-     * タイトルを取得する
-     * @return	タイトル
+     * Get the title
+     * @return title
      */
     public String getTitle() {
         return title;
     }
 
     /**
-     * タイトルを設定する
-     * @param title		タイトル
+     * Set the title
+     * @param title Title
      */
     public void setTitle(String title) {
         this.title = title;
@@ -126,20 +126,20 @@ public class ScopeModel extends Observable {
 
 
     /**
-     * テーブル情報をファイル出力する。
-     * @param file		出力ファイル
+     * Output table information to a file.
+     * @param file Output file
      */
     public void writeFile(File file) {
 
         try {
 
-            // ブロック演算カウント
+            // Block operation count
             if (this.listScope == null || this.listScope.size() <= 0) return;
 
-            // ファイル出力
+            // File output
             PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(file)));
 
-            // テーブルを出力する
+            // Output the table
             String buf = SwingUtils.toCsv(getTableModel());
             pw.print(buf);
 
@@ -151,8 +151,8 @@ public class ScopeModel extends Observable {
     }
 
     /**
-     * テーブルモデルを取得する
-     * @return		テーブルモデル
+     * Get the table model
+     * @return table model
      */
     public DefaultTableModel getTableModel() {
         return createTableModel();
@@ -160,18 +160,18 @@ public class ScopeModel extends Observable {
 
 
     /**
-     * テーブルモデルを作成する
+     * Create a table model
      */
     private DefaultTableModel createTableModel() {
-        // テーブルモデルの作成
+        // Create a table model
         DefaultTableModel tableModel = getScopeDefaultTableModel();
         if (this.listScope == null) return tableModel;
 
         for (String area : this.listScope) {
-            // テーブル行配列の作成
+            // Create table row array
             Object[] row = new Object[HEADER_COLUMNS.length];
             row[0] = area;
-            // テーブル行追加
+            // Add table row
             tableModel.addRow(row);
         }
 
@@ -179,8 +179,8 @@ public class ScopeModel extends Observable {
     }
 
     /**
-     * モデルが空か否か
-     * @return	空か否か（true: 空，false: データあり）
+     * Whether the model is empty
+     * @return Whether it is empty (true: empty, false: with data)
      */
     public boolean isEmpty() {
     	if (this.listScope == null) return true;

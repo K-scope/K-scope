@@ -23,36 +23,36 @@ import jp.riken.kscope.data.SourceFile;
 import jp.riken.kscope.utils.Logger;
 
 /**
- * データベース例外クラス データベース部(jp.go.riken.ppa.language)の例外クラス
- * データベース例外は、例外発生箇所、又は呼出側にて例外処理を行う必要はないが 最上位の呼出側では例外発生をcatchし、適切な例外処理を行う必要がある。
+ * Database exception class Exception class of database part (jp.go.riken.ppa.language)
+ * For database exceptions, it is not necessary for the exception occurrence location or caller to handle the exception, but the highest-level caller must catch the exception and handle the exception appropriately.
  *
  * @author hira
  *
  */
 public class LanguageException extends RuntimeException {
 
-    /** シリアル番号 */
+    /** Serial number */
     private static final long serialVersionUID = 1L;
-    /** コード行情報 */
+    /** Code line information */
     private CodeLine m_errorCode;
-    /** エラーファイル */
+    /** Error file */
     private SourceFile errorFile;
 
     /**
-     * コンストラクタ（エラーメッセージ）
-     * @param msg        エラーメッセージ
+     * Constructor (error message)
+     * @param msg error message
      */
     public LanguageException(String msg) {
         super(msg);
     }
 
     /**
-     * コンストラクタ（エラーメッセージ）
+     * Constructor (error message)
      *
      * @param msg
-     *            エラーメッセージ
+     *            Error message
      * @param line
-     *            エラーコード行
+     * Error code line
      */
     public LanguageException(String msg, CodeLine line) {
         super(msg);
@@ -60,12 +60,12 @@ public class LanguageException extends RuntimeException {
     }
 
     /**
-     * コンストラクタ（エラーメッセージ）
+     * Constructor (error message)
      *
      * @param msg
-     *            エラーメッセージ
+     *            Error message
      * @param line
-     *            コード行文字列
+     * Code line string
      */
     public LanguageException(String msg, String line) {
         super(msg);
@@ -73,12 +73,12 @@ public class LanguageException extends RuntimeException {
     }
 
     /**
-     * コンストラクタ（例外）
+     * Constructor (exception)
      *
      * @param ex
-     *            例外クラス
+     * Exception class
      * @param line
-     *            エラーコード行
+     * Error code line
      */
     public LanguageException(Exception ex, CodeLine line) {
         super(ex);
@@ -86,9 +86,9 @@ public class LanguageException extends RuntimeException {
     }
 
     /**
-     * コンストラクタ（例外）
-     * @param ex		例外クラス
-     * @param file		エラーファイル
+     * Constructor (exception)
+     * @param ex exception class
+     * @param file Error file
      */
     public LanguageException(Exception ex, SourceFile file) {
         super(ex);
@@ -96,9 +96,9 @@ public class LanguageException extends RuntimeException {
     }
 
     /**
-     * コンストラクタ（例外）
-     * @param ex		例外クラス
-     * @param file		エラーファイル
+     * Constructor (exception)
+     * @param ex exception class
+     * @param file Error file
      */
     public LanguageException(XMLStreamException ex, SourceFile file) {
         super(ex);
@@ -106,38 +106,38 @@ public class LanguageException extends RuntimeException {
     }
 
     /**
-     * コード行情報を設定する。
+     * Set code line information.
      *
      * @param line
-     *            コード行情報
+     * Code line information
      */
     public void setCodeLine(CodeLine line) {
         this.m_errorCode = line;
     }
 
     /**
-     * コード行文字列を設定する。
+     * Set the code line string.
      *
      * @param line
-     *            コード行文字列
+     * Code line string
      */
     public void setCodeLine(String line) {
         this.m_errorCode = new CodeLine(line);
     }
 
     /**
-     * エラー発生コード行情報クラスを取得する。
+     * Get the error occurrence code line information class.
      *
-     * @return エラー発生コード行情報
+     * @return Error occurrence code line information
      */
     public CodeLine getCodeLine() {
         return m_errorCode;
     }
 
     /**
-     * エラー発生コード（文字列）を取得する。
+     * Get the error occurrence code (character string).
      *
-     * @return エラー発生コード（文字列）
+     * @return Error occurrence code (character string)
      */
     public String getCodeInfo() {
         if (m_errorCode == null)
@@ -148,9 +148,9 @@ public class LanguageException extends RuntimeException {
     }
 
     /**
-     * エラーメッセージを取得する。
+     * Get error messages.
      *
-     * @return エラーメッセージ
+     * @return error message
      */
     @Override
     public String toString() {
@@ -158,36 +158,36 @@ public class LanguageException extends RuntimeException {
     }
 
     /**
-     * エラー発生のスタックトレースを出力する。 標準エラー出力とログ出力を行う。
+     * Output the stack trace of the error occurrence. Outputs standard error and log.
      */
     @Override
     public void printStackTrace() {
-        // ログ出力
+        // Log output
         Logger.error(this);
 
-        // 標準出力
+        // Standard output
         super.printStackTrace();
     }
 
     /**
-     * エラー発生ファイルを取得する
-     * @return		エラー発生ファイル
+     * Get the error file
+     * @return Error occurrence file
      */
     public SourceFile getErrorFile() {
         return errorFile;
     }
 
     /**
-     * エラー発生ファイルを設定する
-     * @param errorFile		エラー発生ファイル
+     * Set the error occurrence file
+     * @param errorFile Error file
      */
     public void setErrorFile(SourceFile errorFile) {
         this.errorFile = errorFile;
     }
 
     /**
-     * エラーメッセージを取得する
-     * @return		エラーメッセージ
+     * Get error messages
+     * @return error message
      */
     @Override
     public String getMessage() {
