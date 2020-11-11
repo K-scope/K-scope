@@ -23,31 +23,31 @@ import java.util.ArrayList;
 import jp.riken.kscope.utils.LanguageTokenizer;
 
 /**
- * ソースコードを文字列分解するクラス
+ * A class that decomposes source code into strings
  * @author RIKEN
  *
  */
 public class LineSpliter {
-    /** ソースコード文字列 */
+    /** Source code string */
     private String m_line;
 
     /**
-     * 分解して返すリストに分解文字も含めるかのフラグ 但し、空白は追加しない。 true:リストに分解文字を追加する。
+     * Flag to include decomposed characters in the list to be decomposed and returned However, do not add spaces. true: Add decomposition characters to the list.
      */
     private boolean m_listDelimiter = false;
-    /** 文字列分解ユーティリティクラス */
+    /** String decomposition utility class */
     private LanguageTokenizer m_token;
 
     /**
-     * コンストラクタ
-     * @param line		コード行文字列
+     * Constructor
+     * @param line Code line String
      */
     public LineSpliter(String line) {
         m_line = line;
         m_token = new LanguageTokenizer(line);
 
-        // デフォルト設定
-        // 区切り文字:'[' ']' ',' 'SPACE'
+        // Default configuration
+        // Delimiter:'['']'',''SPACE'
         m_token.useDelimiter("[");
         m_token.useDelimiter("]");
         m_token.useDelimiter(",");
@@ -55,17 +55,17 @@ public class LineSpliter {
         m_token.useDelimiter("::");
         m_token.useDelimiter(":");
 
-        // 連続したSPACEは1文字とする。
+        // Consecutive SPACE is one character.
         m_token.whitespaceChar(' ');
 
-        // 小括弧を対の区切り文字とする。
+        // Use parentheses as a pair delimiter.
         m_token.setParenthesisQuote(true);
     }
 
     /**
-     * コード行を分解する。
+     * Decompose lines of code.
      *
-     * @return 分解文字列リスト
+     * @return Decomposition string list
      */
     public String[] split() {
 
@@ -94,7 +94,7 @@ public class LineSpliter {
                     break;
                 case LanguageTokenizer.LT_DELIM:
                     if (m_listDelimiter) {
-                        // デリミタもリストに追加する。（SPACEは除外する）
+                        // Add the delimiter to the list as well. (Excludes SPACE)
                         if (m_token.sval != null
                                 && !m_token.sval.trim().isEmpty()) {
                             list.add(m_token.sval.trim().trim());
@@ -122,54 +122,54 @@ public class LineSpliter {
     }
 
     /**
-     * 分解して返すリストに分解文字も含めるかのフラグを設定する。
+     * Set a flag to include decomposed characters in the decomposed and returned list.
      *
      * @param delim
-     *            true:リストに分解文字を追加する。
+     * true: Add decomposition characters to the list.
      */
     public void setListDelimiter(boolean delim) {
         m_listDelimiter = delim;
     }
 
     /**
-     * デリミタを追加する。
+     * Add a delimiter.
      *
      * @param delim
-     *            デリミタ
+     * Delimiter
      */
     public void useDelimiter(String delim) {
         m_token.useDelimiter(delim);
     }
 
     /**
-     * デリミタを削除する。
+     * Delete the delimiter.
      *
      * @param delim
-     *            デリミタ
+     * Delimiter
      */
     public void unusedDelimiter(String delim) {
         m_token.unusedDelimiter(delim);
     }
 
     /**
-     * 小括弧を対の区切り文字とする。
-     * @param flag		true=小括弧を対の区切り文字とする。
+     * Use parentheses as a pair delimiter.
+     * @param flag true = Use parentheses as a pair delimiter.
      */
     public void setParenthesisQuote(boolean flag) {
         m_token.setParenthesisQuote(flag);
     }
 
     /**
-     * ソースコード文字列を取得する
-     * @return m_line		ソースコード文字列
+     * Get the source code string
+     * @return m_line Source code string
      */
     public String getLine() {
         return m_line;
     }
 
     /**
-     * ソースコード文字列を設定する
-     * @param line ソースコード文字列
+     * Set the source code string
+     * @param line Source code string
      */
     public void setLine(String line) {
         this.m_line = line;

@@ -22,29 +22,29 @@ import java.io.Serializable;
 import jp.riken.kscope.data.CodeLine;
 import jp.riken.kscope.data.SourceFile;
 /**
- * ソースコード中の行情報を保持するクラス。
+ * A class that holds line information in source code.
  *
  * @author RIKEN
  *
  */
 public class Statement implements Serializable {
-	/** シリアル番号 */
+	/** Serial number */
 	private static final long serialVersionUID = 6565980998601169008L;
-    /** コード行ラベルデフォルト値 */
+    /** Code line label default value */
     public final static String NO_LABEL = "no_label";
-    /** コード行ラベル */
+    /** Code line label */
     private String label = NO_LABEL;
 
     /**
-     * コード行情報 ソースコード行文字列、ファイル開始・終了行番号、ソースファイルの情報を持つ。
+     * Code line information Contains source code line character strings, file start / end line numbers, and source file information.
      */
     CodeLine lineInfo;
 
     /**
-     * コンストラクタ
+     * Constructor
      *
      * @param lineInfo
-     *            コード行情報
+     * Code line information
      */
     public Statement(CodeLine lineInfo) {
         this.lineInfo = lineInfo;
@@ -58,63 +58,63 @@ public class Statement implements Serializable {
     // ++++++++++++++++++++++++++++++++++++++++++++
 
     /**
-     * コード行文字列を取得する。
+     * Get the code line string.
      *
-     * @return コード行文字列
+     * @return code line string
      */
     public String get_statement() {
         return this.lineInfo.getStatement();
     }
 
     /**
-     * コード行開始ファイル行番号を取得する。
+     * Get the code line start file line number.
      *
-     * @return コード行開始ファイル行番号
+     * @return code line start file line number
      */
     public Integer get_pos() {
         return this.lineInfo.getStartLine();
     }
 
     /**
-     * コード行開始ファイル行番号を取得する。
+     * Get the code line start file line number.
      *
-     * @return コード行開始ファイル行番号
+     * @return code line start file line number
      */
     public Integer get_start_pos() {
         return this.lineInfo.getStartLine();
     }
 
     /**
-     * コード行終了ファイル行番号を取得する。
+     * Get the code line end file line number.
      *
-     * @return コード行終了ファイル行番号
+     * @return Code line end file line number
      */
     public Integer get_end_pos() {
         return this.lineInfo.getEndLine();
     }
 
     /**
-     * ソースファイルを取得する。
+     * Get the source file.
      *
-     * @return ソースファイル
+     * @return source file
      */
     public SourceFile get_sourcefile() {
         return this.lineInfo.getSourceFile();
     }
 
     /**
-     * 行ラベルを取得する
+     * Get row label
      *
-     * @return 行ラベル
+     * @return line label
      */
     public String get_label() {
         return label;
     }
 
     /**
-     * 行ラベルが存在しているかチェックする。
+     * Check if the row label exists.
      *
-     * @return true:行ラベルあり/false:行ラベルなし
+     * @return true: with line label / false: without line label
      */
     protected boolean is_labeled() {
         if (label == null) return false;
@@ -122,9 +122,9 @@ public class Statement implements Serializable {
     }
 
 	/**
-	 * コード行情報を取得する.
-	 * @return lineInfo		コード行情報
-	 */
+* Get code line information.
+* @return lineInfo Code line information
+*/
 	public CodeLine getLineInfo() {
 		return this.lineInfo;
 	}

@@ -30,37 +30,37 @@ import jp.riken.kscope.information.InformationBlock;
 import jp.riken.kscope.information.InformationBlocks;
 import jp.riken.kscope.information.TextInfo;
 /**
- * 変数・構造体の宣言を表現するクラス。
+ * A class that expresses the declaration of variables and structures.
  */
 public class VariableDefinition implements Serializable, IInformation, IBlock {
-	/** シリアル番号 */
+	/** Serial number */
 	private static final long serialVersionUID = 8694203337559301954L;
-    /** 変数名. */
+    /** Variable name. */
     private String name;
-    /** データ型. */
+    /** Data type. */
     private IVariableType type;
-    /** 属性. */
+    /** Attribute. */
     private IVariableAttribute attribute;
-    /** 配列要素. */
+    /** Array elements. */
     private VariableDimension dimension;
-    /** 初期値. */
+    /** initial value. */
     private String initValue;
-    /** 型宣言の開始位置情報. */
+    /** Start position information of type declaration. */
     private Statement start;
-    /** 型宣言の終了位置情報. */
+    /** End position information of type declaration. */
     private Statement end;
-    /** 付加情報. */
+    /** Additional information. */
     private TextInfo information = null;
-    /** USE文によって自身を参照・定義しているプログラム単位の集合. */
+    /** A set of program units that refer to and define themselves by the USE statement. */
     private transient Set<ProgramUnit> referMembers = new HashSet<ProgramUnit>();
-    /** 本宣言を保持しているプログラム単位. */
+    /** Program unit that holds this declaration. */
     private ProgramUnit mother;
 
     /**
-     * コンストラクタ。
+     * Constructor.
      *
      * @param line
-     *            行情報
+     * Row information
      */
     public VariableDefinition(CodeLine line) {
         start = new Statement(line);
@@ -68,31 +68,31 @@ public class VariableDefinition implements Serializable, IInformation, IBlock {
     }
 
     /**
-     * コンストラクタ
+     * Constructor
      *
-     * VariableDefinition(String nm, VariableType typ, VariableAttribute
-     * attrbts)<br>
-     * あるいは<br>
-     * VariableDefinition(String nm, VariableType typ, VariableAttribute
-     * attrbts, VariableDimension dmnsn)<br>
-     * を使用するようにしてください。
+     * VariableDefinition (String nm, VariableType typ, VariableAttribute
+     * attrbts) <br>
+     * Or <br>
+     * VariableDefinition (String nm, VariableType typ, VariableAttribute
+     * attrbts, VariableDimension dmnsn) <br>
+     Be sure to use *.
      *
      * @param varnm
-     *            変数名
+     *            Variable name
      */
     public VariableDefinition(String varnm) {
         name = varnm;
     }
 
     /**
-     * コンストラクタ.
+     * Constructor.
      *
      * @param nm
-     *            変数名
+     *            Variable name
      * @param typ
-     *          型
+     * Type
      * @param attrbts
-     *          属性
+     * Attributes
      */
     public VariableDefinition(String nm, IVariableType typ,
             IVariableAttribute attrbts) {
@@ -102,16 +102,16 @@ public class VariableDefinition implements Serializable, IInformation, IBlock {
     }
 
     /**
-     * コンストラクタ.
+     * Constructor.
      *
      * @param nm
-     *          変数名
+     *          Variable name
      * @param typ
-     *          型
+     * Type
      * @param attrbts
-     *          属性
+     * Attributes
      * @param dmnsn
-     *          配列情報
+     * Sequence information
      */
     public VariableDefinition(String nm, IVariableType typ,
             IVariableAttribute attrbts, VariableDimension dmnsn) {
@@ -119,7 +119,7 @@ public class VariableDefinition implements Serializable, IInformation, IBlock {
         this.dimension = dmnsn;
     }
     /**
-     * ブロックタイプの取得。
+     * Get block type.
      *
      * @return BlockType.VARIABLEDEFINITION
      */
@@ -129,34 +129,34 @@ public class VariableDefinition implements Serializable, IInformation, IBlock {
     }
 
     /**
-     * データ型を設定する。
+     * Set the data type.
      *
      * @param tp
-     *            データ型
+     * Data type
      */
     public void setVariableType(IVariableType tp) {
         type = tp;
     }
 
     /**
-     * 属性をセットする。
+     * Set attributes.
      *
      * @param att
-     *            属性
+     * Attributes
      */
     public void setVariableAttributes(IVariableAttribute att) {
         attribute = att;
     }
 
     /**
-     * 配列要素の下限、上限を設定する。
+     * Set the lower and upper limits of array elements.
      *
      * @param i
-     *            次元
+     *            dimension
      * @param startIndex
-     *            下限
+     * Lower limit
      * @param endIndex
-     *            上限
+     * Upper limit
      */
     public void setDimensionIndex(int i, Expression startIndex, Expression endIndex) {
         setStartIndex(i, startIndex);
@@ -164,34 +164,34 @@ public class VariableDefinition implements Serializable, IInformation, IBlock {
     }
 
     /**
-     * 配列要素の下限を設定する。
+     * Set the lower limit of array elements.
      *
      * @param i
-     *            次元
+     *            dimension
      * @param startIndex
-     *            下限
+     * Lower limit
      */
     public void setStartIndex(int i, Expression startIndex) {
         dimension.getIndex(i).set_start(startIndex);
     }
 
     /**
-     * 配列要素の上限を設定する。
+     * Set the upper limit of array elements.
      *
      * @param i
-     *            次元
+     *            dimension
      * @param indexEnd
-     *            上限
+     * Upper limit
      */
     public void setEndIndex(int i, Expression indexEnd) {
         dimension.getIndex(i).set_end(indexEnd);
     }
 
     /**
-     * 自身を参照しているプログラム単位を追加する.<br>
+     * Add a program unit that references itself. <br>
      *
      * @param proc
-     *            手続き
+     * Procedure
      */
     public void addReferMember(ProgramUnit proc) {
         if (proc == null) {
@@ -201,9 +201,9 @@ public class VariableDefinition implements Serializable, IInformation, IBlock {
     }
 
     /**
-     * 自身を参照しているプログラム単位の集合を返す。
+     * Returns a set of program units that reference itself.
      *
-     * @return 手続きの集合。存在しない場合は空の集合を返す。
+     * @return A set of procedures. If it does not exist, it returns an empty set.
      */
     public Set<ProgramUnit> getReferMember() {
         if (this.referMembers == null) {
@@ -213,36 +213,36 @@ public class VariableDefinition implements Serializable, IInformation, IBlock {
     }
 
     /**
-     * 変数名を取得する。
+     * Get the variable name.
      *
-     * @return 変数名
+     * @return variable name
      */
     public String get_name() {
         return (name);
     }
 
     /**
-     * データ型を取得する。
+     * Get the data type.
      *
-     * @return データ型
+     * @return data type
      */
     public IVariableType getType() {
         return type;
     }
 
     /**
-     * 属性を取得する
+     * Get attributes
      *
-     * @return 属性
+     * @return attribute
      */
     public IVariableAttribute getAttribute() {
         return attribute;
     }
 
     /**
-     * 配列要素の次元数を取得する
+     * Get the number of dimensions of an array element
      *
-     * @return 配列要素次元数
+     * @return Number of array element dimensions
      */
     public int get_dimension_size() {
         if (dimension == null || dimension.getIndex() == null)
@@ -251,51 +251,51 @@ public class VariableDefinition implements Serializable, IInformation, IBlock {
     }
 
     /**
-     * 配列要素から指定次元の下限を取得する
+     * Get the lower limit of the specified dimension from the array element
      *
      * @param i
-     *            次元数
-     * @return 次元下限
+     * Number of dimensions
+     * @return lower dimension
      */
     public Expression get_index_start(int i) {
         return (dimension.getIndex(i).get_start());
     }
 
     /**
-     * 配列要素から指定次元の上限を取得する
+     * Get the upper limit of the specified dimension from the array element
      *
      * @param i
-     *            次元数
-     * @return 次元上限
+     * Number of dimensions
+     * @return Dimensional upper limit
      */
     public Expression get_index_end(int i) {
         return (dimension.getIndex(i).get_end());
     }
 
     /**
-     * 配列要素を設定する。
+     * Set array elements.
      *
      * @param dimension
-     *            配列要素
+     * Array elements
      */
     public void setDimension(VariableDimension dimension) {
         this.dimension = dimension;
     }
 
     /**
-     * 初期値を設定する。
+     * Set the initial value.
      *
      * @param value
-     *            初期値
+     *            initial value
      */
     public void setInitValue(String value) {
         this.initValue = value;
     }
 
     /**
-     * 初期値を取得する
+     * Get the initial value
      *
-     * @return 初期値
+     * @return Initial value
      */
     public String getInitValue() {
         return this.initValue;
@@ -314,15 +314,15 @@ public class VariableDefinition implements Serializable, IInformation, IBlock {
     }
 
     /**
-     * 変数宣言の文字列表現を返す。
+     * Returns a string representation of the variable declaration.
      *
-     * @return 変数宣言の文字列表現
+     * @return String representation of variable declaration
      */
     protected String toStringBase() {
         StringBuilder var = new StringBuilder();
 
         if (type != null) {
-            // データ型
+            // Data type
             var.append(type.toString());
         }
 
@@ -347,7 +347,7 @@ public class VariableDefinition implements Serializable, IInformation, IBlock {
             var.append(")");
         }
 
-        // 属性
+        // Attribute
         if (attribute != null) {
           Iterator<String> itr = attribute.getAttributes().iterator();
             while (itr.hasNext()) {
@@ -358,11 +358,11 @@ public class VariableDefinition implements Serializable, IInformation, IBlock {
         }
         var.append(" ");
 
-        // 変数名
+        // Variable name
         var.append("::");
         var.append(name);
 
-        // 初期値
+        // initial value
         if (initValue != null) {
             var.append("=");
             var.append(initValue);
@@ -371,16 +371,16 @@ public class VariableDefinition implements Serializable, IInformation, IBlock {
     }
 
     /**
-     * 型が適合しているかどうか。<br>
+     * Whether the type is compatible. <br>
      *
-     * 多重定義されている関数群の中から対応する関数を探索する際に、<br>
-     * 仮引数と実引数の型チェックをする必要がある。<br>
-     * 「適合している」とは、この型チェックで、同一の型と判定される 事を意味している。
+     * When searching for the corresponding function from the overloaded function group, <br>
+     * It is necessary to check the type of formal and actual arguments. <br>
+     * "Matching" means that this type check determines that the type is the same.
      *
      * @param actualArgument
      *
-     * @return true : 適合している<br>
-     *         false: 適合していない
+     * @return true: Conforms <br>
+     * false: Not compatible
      *
      */
     public boolean matches(Expression actualArgument) {
@@ -396,10 +396,10 @@ public class VariableDefinition implements Serializable, IInformation, IBlock {
         return actualArgument.getType().matches(this.getType());
     }
     /**
-     * 付加情報を設定する
+     * Set additional information
      *
      * @param info
-     *            付加情報
+     *            Additional information
      */
     @Override
     public void setInformation(TextInfo info) {
@@ -407,9 +407,9 @@ public class VariableDefinition implements Serializable, IInformation, IBlock {
     }
 
     /**
-     * 付加情報を取得する
+     * Get additional information
      *
-     * @return 付加情報
+     * @return Additional information
      */
     @Override
     public TextInfo getInformation() {
@@ -418,8 +418,8 @@ public class VariableDefinition implements Serializable, IInformation, IBlock {
 
 
     /**
-     * 開始行番号情報を取得する
-     * @return      開始行番号情報
+     * Get start line number information
+     * @return Start line number information
      */
     @Override
     public CodeLine getStartCodeLine() {
@@ -427,8 +427,8 @@ public class VariableDefinition implements Serializable, IInformation, IBlock {
         return start.lineInfo;
     }
     /**
-     * 終了行番号情報を取得する
-     * @return      終了行番号情報
+     * Get end line number information
+     * @return End line number information
      */
     @Override
     public CodeLine getEndCodeLine() {
@@ -438,10 +438,10 @@ public class VariableDefinition implements Serializable, IInformation, IBlock {
 
 
     /**
-     * 行情報を設定する.
+     * Set line information.
      *
      * @param line
-     *            行情報
+     * Row information
      */
     public void setCodeLine(CodeLine line) {
         start = new Statement(line);
@@ -449,27 +449,27 @@ public class VariableDefinition implements Serializable, IInformation, IBlock {
     }
 
     /**
-     * データ型を取得する。
+     * Get the data type.
      *
-     * @return データ型
+     * @return data type
      */
     public IVariableType getVariableType() {
         return type;
     }
 
     /**
-     * 配列情報を取得する。
+     * Get sequence information.
      *
-     * @return 配列情報
+     * @return Array information
      */
     public VariableDimension getVariableDimension() {
         return this.dimension;
     }
 
     /**
-     * スカラーならば真を返す。
+     * Returns true if it is a scalar.
      *
-     * @return 真偽値：スカラーならば真
+     * @return Boolean: true if scalar
      */
     public boolean isScalar() {
         if (this.dimension == null) {
@@ -480,25 +480,25 @@ public class VariableDefinition implements Serializable, IInformation, IBlock {
 
 
     /**
-     * 親プログラムをセットする。
-     * @param mother 親プログラム
+     * Set the parent program.
+     * @param mother parent program
      */
     public void setMother(ProgramUnit mother) {
         this.mother = mother;
     }
 
     /**
-     * 親プログラム単位を習得する。
+     * Acquire parent program units.
      *
-     * @return 親プログラム単位
+     * @return Parent program unit
      */
     public ProgramUnit getMother() {
         return this.mother;
     }
     /**
-     * 名前空間（モジュール名.ルーチン名）を取得する。
+     * Get the namespace (module name.routine name).
      *
-     * @return 名前空間（モジュール名.ルーチン名）
+     * @return namespace (module name.routine name)
      */
     @Override
     public String getNamespace() {
@@ -510,19 +510,19 @@ public class VariableDefinition implements Serializable, IInformation, IBlock {
     }
 
     /**
-     * 開始位置を取得する。
+     * Get the start position.
      *
-     * @return 開始位置
+     * @return start position
      */
     @Override
     public int getStartPos() {
         return this.getStartCodeLine().getStartLine();
     }
     /**
-     * 開始位置を設定する。
+     * Set the start position.
      *
      * @param pos
-     *         開始位置
+     * Starting position
      */
     @Override
     public void setStartPos(int pos) {
@@ -530,26 +530,26 @@ public class VariableDefinition implements Serializable, IInformation, IBlock {
     }
 
     /*
-     * TODO: 暫定対応。
-     *       本当はプログラムの終了はprogram.getEndCodeLine.getEndLineで
-     *       取得するか、programのEndCodeLineを削除し、StartCodeLineを
-     *       CodeLineと名称変更すべき。要検討。
+     * TODO: Temporary support.
+     * Actually, the end of the program is program.getEndCodeLine.getEndLine
+     * Get or delete EndCodeLine of program and StartCodeLine
+     * Should be renamed to CodeLine. Suspect.
      */
 
     /**
-     * 終了位置を取得する。
+     * Get the end position.
      *
-     * @return 終了位置
+     * @return end position
      */
     @Override
     public int getEndPos() {
         return this.getStartCodeLine().getEndLine();
     }
     /**
-     * 終了位置を設定する。
+     * Set the end position.
      *
      * @param pos
-     *         終了位置
+     * End position
      */
     @Override
     public void setEndPos(int pos) {
@@ -557,10 +557,10 @@ public class VariableDefinition implements Serializable, IInformation, IBlock {
     }
 
     /**
-     * idにマッチした情報ブロックを検索する。
+     * Search for information blocks that match id.
      * @param id
-     *          ID
-     * @return 見つかった情報ブロック。見つからなかった場合はnullが返ります。
+     * ID
+     * @return The information block found. If not found, null is returned.
      */
     public IInformation findInformationBlockBy(String id) {
         IInformation result = null;
@@ -573,7 +573,7 @@ public class VariableDefinition implements Serializable, IInformation, IBlock {
     }
 
     /**
-     * 付加情報をすべて削除する。
+     * Delete all additional information.
      */
     @Override
     public void clearInformation() {
@@ -581,9 +581,9 @@ public class VariableDefinition implements Serializable, IInformation, IBlock {
     }
 
     /**
-     * 付加情報コンテナコレクションを生成する。
+     * Generate an additional information container collection.
      *
-     * @return 付加情報コンテナコレクション
+     * @return Additional information container collection
      */
     public InformationBlocks createInformationBlocks() {
         InformationBlocks result = new InformationBlocks();
@@ -597,7 +597,7 @@ public class VariableDefinition implements Serializable, IInformation, IBlock {
     }
 
     /**
-     * IDを取得する。
+     * Get an ID.
      *
      * @return ID
      */
@@ -614,8 +614,8 @@ public class VariableDefinition implements Serializable, IInformation, IBlock {
         return result;
     }
     /**
-     * 親ブロックを取得する
-     * @return        親ブロック
+     * Get the parent block
+     * @return Parent block
      */
     @Override
     public IBlock getMotherBlock() {
@@ -623,13 +623,13 @@ public class VariableDefinition implements Serializable, IInformation, IBlock {
     }
 
 	/**
-	 * 同一VariableDefinitionであるかチェックする.
-	 * 変数宣言の文字列表現にて同一かチェックする.
-	 * @param definition		変数・構造体の宣言
-	 * @return		true=一致
-	 */
+* Check if they are the same Variable Definition.
+* Check if they are the same in the character string representation of the variable declaration.
+* @param definition Variable / structure declaration
+* @return true = match
+*/
 	public boolean equalsBlocks(VariableDefinition definition) {
-	     // 変数宣言の文字列表現にて同一かチェックする.
+	     // Check if they are the same in the character string representation of the variable declaration.
 		String thisVar = toStringBase();
 		String destVar = definition.toStringBase();
 		if (thisVar == null && destVar == null) {
@@ -643,10 +643,10 @@ public class VariableDefinition implements Serializable, IInformation, IBlock {
 
 
     /**
-     * 同一ブロックを検索する
+     * Search for the same block
      *
-     * @param block    IInformationブロック
-     * @return 同一ブロック
+     * @param block IInformation block
+     * @return Same block
      */
     public IInformation[] searchInformationBlocks(IInformation block) {
         List<IInformation> list = new ArrayList<IInformation>();
@@ -662,9 +662,9 @@ public class VariableDefinition implements Serializable, IInformation, IBlock {
     }
 
     /**
-     * 構造IDを取得する.
-     * 構造IDは不要であるので、nullを返す.
-     * @return 構造ID
+     * Get the structure ID.
+     * Returns null as no structure ID is needed.
+     * @return Structure ID
      */
     @Override
     public String getLayoutID() {
@@ -673,10 +673,10 @@ public class VariableDefinition implements Serializable, IInformation, IBlock {
 
 
 	/**
-	 * 行番号のブロックを検索する
-	 * @param line			行番号
-	 * @return		行番号のブロック
-	 */
+* Search for blocks of line numbers
+* @param line line number
+* @return Line number block
+*/
 	public IBlock[] searchCodeLine(CodeLine line) {
 		if (line == null) return null;
 		if (line.getSourceFile() == null) return null;
@@ -698,8 +698,8 @@ public class VariableDefinition implements Serializable, IInformation, IBlock {
 	}
 
  	/**
- 	 * 変数リストを取得する.
- 	 */
+ * Get the variable list.
+ */
  	@Override
  	public Set<Variable> getAllVariables() {
  		return null;

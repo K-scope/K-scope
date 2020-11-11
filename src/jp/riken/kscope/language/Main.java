@@ -18,19 +18,19 @@
 package jp.riken.kscope.language;
 
 /**
- * 主プログラム単位を表現するクラス。
- * 
+ * A class that represents the main program unit.
+ *
  * @author RIKEN
- * 
+ *
  */
 public class Main extends Procedure {
-	/** シリアル番号 */
+	/** Serial number */
 	private static final long serialVersionUID = 990753709114089611L;
     /**
-     * コンストラクタ。
-     * 
+     * Constructor.
+     *
      * @param name
-     *            メイン名
+     * Main name
      */
     public Main(String name) {
         super("main", name);

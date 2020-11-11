@@ -24,13 +24,13 @@ import java.util.Set;
 
 
 /**
- * モジュールへの参照を表現するクラス。 FortranにおけるUSE文に対応。
+ * A class that represents a reference to a module. Supports USE statements in Fortran.
  *
  * @author RIKEN
  *
  */
 public class UseState extends Block {
-	/** シリアル番号 */
+	/** Serial number */
 	private static final long serialVersionUID = 4969852934134083633L;
     private String moduleName;
     private Set<String> onlyMember;
@@ -49,16 +49,16 @@ public class UseState extends Block {
         return st.toString();
     }
     /**
-     * 変数名の変換マップを返す。
-     * @return 変数名の変換マップ＜変換後の変数名、モジュールでの変数名＞.ない場合はnullを返す。
+     * Returns a conversion map of variable names.
+     * @return Variable name conversion map <Variable name after conversion, variable name in module>. If not, null is returned.
      */
     public Map<String, String> getTranslationName() {
         return translationName;
     }
     /**
-     * 変換後の名前に対応する元の変数名を返す。
-     * @param nm 変換後の名前
-     * @return 元の変数名。見つからなければnullを返す。
+     * Returns the original variable name corresponding to the converted name.
+     * @param nm Converted name
+     * @return Original variable name. Returns null if not found.
      */
     public String getTranslationName(String nm) {
         if (this.translationName == null) {
@@ -68,16 +68,16 @@ public class UseState extends Block {
         }
     }
     /**
-     * 変数名の変換マップを取得する（逆）。
-     * @return 変数名の変換マップ＜モジュールでの変数名、変換後の変数名＞
+     * Get the conversion map of variable names (reverse).
+     * @return Variable name conversion map <Variable name in module, variable name after conversion>
      */
     public Map<String, String> getTranslationNameReverse() {
         return translationNameReverse;
     }
 
     /**
-     * 変数名の変換マップをセットする。
-     * @param transName 変数名の変換マップ＜変換後の変数名、モジュールでの変数名＞
+     * Set the conversion map of variable names.
+     * @param transName Variable name conversion map <Variable name after conversion, variable name in module>
      */
     @Deprecated
     public void setTranslationName(Map<String, String> transName) {
@@ -85,9 +85,9 @@ public class UseState extends Block {
     }
 
     /**
-     * 変数名の変換対応を追加する。
-     * @param transName 変換後の名前
-     * @param orgName モジュール内での名前
+     * Add conversion support for variable names.
+     * @param transName Converted name
+     * @param orgName Name in the module
      *
      */
     public void addTranslationName(String transName, String orgName) {
@@ -101,29 +101,29 @@ public class UseState extends Block {
     }
 
     /**
-     * 参照するモジュールの名前をセットする。
+     * Set the name of the referenced module.
      *
      * @param name
-     *            モジュール名
+     *            Module name
      */
     public void setModuleName(String name) {
         moduleName = name.toLowerCase();
     }
 
     /**
-     * 参照するモジュールの名前を取得する。
+     * Get the name of the referenced module.
      *
-     * @return モジュール名
+     * @return module name
      */
     public String getModuleName() {
         return moduleName;
     }
 
     /**
-     * 参照する変数・サブルーチンが限定される場合に、その名前を追加する。
+     * If the variables / subroutines to be referenced are limited, add their names.
      *
      * @param member
-     *            変数・サブルーチン名
+     * Variable / subroutine name
      */
     public void addOnlyMember(String member) {
         if (this.onlyMember == null) {
@@ -133,9 +133,9 @@ public class UseState extends Block {
     }
 
     /**
-     * 参照する変数・サブルーチン名を取得する。
+     * Get the variable / subroutine name to be referenced.
      *
-     * @return 変数・サブルーチン名のリスト。無ければ空のセットを返す。
+     * @return List of variable / subroutine names. If not, it returns an empty set.
      */
     public Set<String> getOnlyMember() {
         if (this.onlyMember == null) {
@@ -145,9 +145,9 @@ public class UseState extends Block {
     }
 
     /**
-     * 参照する変数・サブルーチン名を保持しているか判定する。
-     * @param name 変数・サブルーチン名
-     * @return 名前を保持していれば真
+     * Determine if the variable / subroutine name to be referenced is held.
+     * @param name Variable / subroutine name
+     * @return True if you keep the name
      */
     public boolean hasOnlyMember(String name) {
         if (onlyMember != null) {
@@ -158,8 +158,8 @@ public class UseState extends Block {
         return false;
     }
     /**
-     * only句を持つか判定する。
-     * @return only句を持つ場合：真
+     * Determine if it has a only clause.
+     * With @return only clause: true
      */
     public boolean hasOnlyMember() {
         if (onlyMember == null) return false;
@@ -170,11 +170,11 @@ public class UseState extends Block {
     }
 
     /**
-     * 与えられた変数を変換するルールがある場合、変換後の名前を返す。
+     * If there is a rule to convert a given variable, return the converted name.
      *
      * @param var
-     *            変換前の変数（モジュールで宣言されている変数）
-     * @return 変数名。ルールが無ければ変換前の変数名を返す。
+     * Variable before conversion (variable declared in the module)
+     * @return Variable name. If there is no rule, the variable name before conversion is returned.
      */
     public String translation(VariableDefinition var) {
         if (var.getMother().get_name().equalsIgnoreCase(this.getModuleName())) {
@@ -189,11 +189,11 @@ public class UseState extends Block {
     }
 
     /**
-     * 与えられた変数名に変換するルールがある場合、変換前の変数名を返す。
+     * If there is a rule to convert to the given variable name, the variable name before conversion is returned.
      *
      * @param name
-     *            変換後の変数名
-     * @return 変換前の変数名（モジュールで宣言されている名前)。ルールが無ければ元の名前を返す。
+     * Variable name after conversion
+     * @return Variable name before conversion (name declared in the module). If there is no rule, the original name is returned.
      */
     public String translationReverse(String name) {
         if (this.translationName != null) {
@@ -205,9 +205,9 @@ public class UseState extends Block {
         return name;
     }
     /**
-     * ブロックタイプの取得。
+     * Get block type.
      *
-     * @return BlockType.USE
+     * @ return BlockType.USE
      */
     public BlockType getBlockType() {
         return BlockType.USE;

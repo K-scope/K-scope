@@ -23,30 +23,30 @@ import jp.riken.kscope.Message;
 import jp.riken.kscope.service.AppController;
 
 /**
- * ツリーの選択ノード配下のみすべて展開アクションイベント
+ * Expand all under the selected node of the tree Action event
  * @author RIKEN
  *
  */
 public class TreeExpandSelectAction extends ActionBase {
 
     /**
-     * コンストラクタ
-     * @param controller	アプリケーションコントローラ
+     * Constructor
+     * @param controller Application controller
      */
     public TreeExpandSelectAction(AppController controller) {
         super(controller);
     }
 
     /**
-     * アクション発生イベント
-     * @param event		イベント情報
+     * Action occurrence event
+     * @param event Event information
      */
     @Override
     public void actionPerformed(ActionEvent event) {
-    	// ステータスバー
+    	// Status bar
     	Application.status.setMessageMain(
-    			Message.getString("mainmenu.view.collapse-expand.selective")); //選択展開
-        // ツリーの選択ノード配下のみすべて展開する
+    			Message.getString("mainmenu.view.collapse-expand.selective")); // Selective expansion
+        // Expand all under the selected node of the tree
         this.controller.getMainframe().getPanelExplorerView().expandTreeSelect();
     }
 

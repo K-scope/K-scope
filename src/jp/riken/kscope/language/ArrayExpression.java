@@ -18,22 +18,22 @@
 package jp.riken.kscope.language;
 
 /**
- * 配列式を表現するクラス
+ * A class that represents an array expression
  * @author RIKEN
  *
  */
 public class ArrayExpression extends Substitution {
-    /** シリアル番号 */
+    /** Serial number */
     private static final long serialVersionUID = -8525500860227966833L;
     /**
-     * コンストラクタ。
+     * Constructor.
      */
     public ArrayExpression() {
         super();
     }
     /**
-     * コンストラクタ。
-     * @param mama 親ブロック
+     * Constructor.
+     * @param mama Parent block
      */
     public ArrayExpression(Block mama) {
         super(mama);

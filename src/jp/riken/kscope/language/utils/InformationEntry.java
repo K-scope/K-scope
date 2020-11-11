@@ -27,28 +27,28 @@ import jp.riken.kscope.language.fortran.*;
 import jp.riken.kscope.language.generic.*;
 
 /**
- * 付加情報探索クラス.
- * 指定ブロック配下のすべての付加情報を取得する.
+ * Additional information retrieval class.
+ * Get all additional information under the specified block.
  * @author RIKEN
  */
 public class InformationEntry implements ILanguageEntry {
-	/** 付加情報リスト */
+	/** Additional information list */
 	private List<IInformation> listInformation;
-	/** Fortranデータベース */
+	/** Fortran database */
 	private Fortran language;
 
 	/**
-	 * コンストラクタ
-	 * @param   language    Fortranデータベース
-	 */
+* Constructor
+* @param language Fortran database
+*/
 	public InformationEntry(Fortran language) {
 		this.language = language;
 		this.listInformation = new ArrayList<IInformation>();
 	}
 
 	/**
-	 * アクセス先メモリ設定変数を追加する.
-	 */
+* Add the access destination memory setting variable.
+*/
 	@Override
 	public void entry(Variable entry) { }
 
@@ -231,9 +231,9 @@ public class InformationEntry implements ILanguageEntry {
 	}
 
 	/**
-	 * 付加情報を取得する.
-	 * @return  付加情報リスト
-	 */
+* Get additional information.
+* @return Additional information list
+*/
 	public IInformation[] getListInformation() {
 		if (this.listInformation == null || this.listInformation.size() <= 0) {
 			return null;
@@ -242,9 +242,9 @@ public class InformationEntry implements ILanguageEntry {
 	}
 
 	/**
-	 * 付加情報(InformationBlocks)を取得する.
-	 * @return  付加情報リスト
-	 */
+* Get additional information (Information Blocks).
+* @return Additional information list
+*/
 	public InformationBlocks getInformationBlocks() {
 		if (this.listInformation == null || this.listInformation.size() <= 0) {
 			return null;
@@ -265,9 +265,9 @@ public class InformationEntry implements ILanguageEntry {
 
 
 	/**
-	 * 付加情報を追加する.
-	 * @param info		付加情報ブロック
-	 */
+* Add additional information.
+* @param info Additional information block
+*/
 	private void addInformation(IInformation info) {
 		if (info == null) return;
 		IInformation block = getInfoamationBlock(info);
@@ -284,11 +284,11 @@ public class InformationEntry implements ILanguageEntry {
 	}
 
 	/**
-	 * 付加情報を取得する.
-	 * 付加情報ブロックから開始ブロックと一致する付加情報を取得する.
-	 * @param info		付加情報ブロック
-	 * @return 付加情報
-	 */
+* Get additional information.
+* Get additional information that matches the start block from the additional information block.
+* @param info Additional information block
+* @return Additional information
+*/
 	private IInformation getInfoamationBlock(IInformation info) {
 		if (info == null) return null;
 		InformationBlocks blocks = this.language.getInformationBlocks();
@@ -304,8 +304,8 @@ public class InformationEntry implements ILanguageEntry {
 	}
 
 	/**
-	 * 付加情報リストをクリアする.
-	 */
+* Clear the additional information list.
+*/
 	public void clearListInformation() {
 		this.listInformation = new ArrayList<IInformation>();
 	}

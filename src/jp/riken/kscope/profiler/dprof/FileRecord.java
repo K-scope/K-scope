@@ -20,33 +20,33 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * ファイル情報レコード
+ * File information record
  * @author RIKEN
  */
 public class FileRecord {
 	
-	/** ファイル情報リスト */
+	/** File information list */
     private List<FileInfo> fileInfoList;
 	
     /**
-     * コンストラクタ
+     * Constructor
      */
     public FileRecord() {
     	this.fileInfoList = new ArrayList<FileInfo>();
     }
     
     /**
-     * ファイル情報を追加する
-     * @param info		ファイル情報
-     * @return		true=success
+     * Add file information
+     * @param info File information
+     * @return true = success
      */
     public boolean addFileInfo(FileInfo info) {
     	return this.fileInfoList.add(info);
     }
     
     /**
-     * ファイル情報数を取得する
-     * @return		ファイル情報数
+     * Get the number of file information
+     * @return Number of file information
      */
     public int getFileInfoCount() {
     	if (fileInfoList == null) return 0;
@@ -55,9 +55,9 @@ public class FileRecord {
     
     
     /**
-     * ファイル情報を取得する
-     * @param index			ファイルインデックス
-     * @return		ファイル情報
+     * Get file information
+     * @param index File index
+     * @return File information
      */
     public FileInfo getFileInfo(int index) {
     	if (fileInfoList == null) return null;

@@ -17,32 +17,32 @@
 package jp.riken.kscope.profiler.eprof;
 
 /**
- * MPI情報:MPI関数
+ * MPI information: MPI function
  * @author RIKEN
  */
 public class MpiFunction {
 
-    /** MPI関数のIndex	int */
+    /** Index int of MPI function */
     private int mpiIndex;
-    /** 呼び出し回数	int */
+    /** Number of calls int */
     private int callCount;
-    /** 経過時間	float */
+    /** Elapsed time float */
     private float elapsTime;
-    /** 待ち時間	float */
+    /** Wait time float */
     private float waitTime;
-    /** メッセージ長	long */
+    /** Message length long */
     private long messageLength;
-    /** メッセージ長が 0byte以上～4Kbyte未満の回数	int */
+    /** Number of times the message length is 0 bytes or more and less than 4 Kbytes int */
     private int countMessage4k;
-    /** メッセージ長が 4Kbyte以上～64Kbyte未満の回数	int */
+    /** Number of times the message length is 4Kbyte or more and less than 64Kbyte int */
     private int countMessage64k;
-    /** メッセージ長が 64Kbyte以上～1024Kbyte未満の回数	int */
+    /** Number of times the message length is 64Kbyte or more and less than 1024Kbyte int */
     private int countMessage1024k;
-    /** メッセージ長が 1024Kbyte以上の場合の回数	int */
+    /** Number of times when the message length is 1024Kbyte or more int */
     private int countMessage1024kOver;
 
     /**
-     * コンストラクタ
+     * Constructor
      */
     public MpiFunction() {
 
@@ -50,136 +50,136 @@ public class MpiFunction {
 
 
     /**
-     * MPI関数のIndex
-     * @return		MPI関数のIndex
+     * Index of MPI function
+     * @return Index of MPI function
      */
     public int getMpiIndex() {
         return mpiIndex;
     }
 
     /**
-     * MPI関数のIndex
-     * @param index		MPI関数のIndex
+     * Index of MPI function
+     * @param index Index of MPI function
      */
     public void setMpiIndex(int index) {
         this.mpiIndex = index;
     }
 
     /**
-     * 呼び出し回数
-     * @return		呼び出し回数
+     * Number of calls
+     * @return Number of calls
      */
     public int getCallCount() {
         return callCount;
     }
 
     /**
-     * 呼び出し回数
-     * @param count		呼び出し回数
+     * Number of calls
+     * @param count number of calls
      */
     public void setCallCount(int count) {
         this.callCount = count;
     }
 
     /**
-     * 経過時間
-     * @return		経過時間
+     * elapsed time
+     * @return elapsed time
      */
     public float getElapsTime() {
         return elapsTime;
     }
 
     /**
-     * 経過時間
-     * @param time		経過時間
+     * elapsed time
+     * @param time elapsed time
      */
     public void setElapsTime(float time) {
         this.elapsTime = time;
     }
 
     /**
-     * 待ち時間
-     * @return		待ち時間
+     * Waiting time
+     * @return Waiting time
      */
     public float getWaitTime() {
         return waitTime;
     }
 
     /**
-     * 待ち時間
-     * @param time		待ち時間
+     * Waiting time
+     * @param time Wait time
      */
     public void setWaitTime(float time) {
         this.waitTime = time;
     }
 
     /**
-     * メッセージ長
-     * @return		メッセージ長
+     * Message length
+     * @return Message length
      */
     public long getMessageLength() {
         return messageLength;
     }
 
     /**
-     * メッセージ長
-     * @param length		メッセージ長
+     * Message length
+     * @param length Message length
      */
     public void setMessageLength(long length) {
         this.messageLength = length;
     }
 
     /**
-     * メッセージ長が 0byte以上～4Kbyte未満の回数
-     * @return	メッセージ長が 0byte以上～4Kbyte未満の回数
+     * Number of times the message length is 0 bytes or more and less than 4 Kbytes
+     * @return Number of times the message length is 0 bytes or more and less than 4 Kbytes
      */
     public int getCountMessage4k() {
         return countMessage4k;
     }
 
     /**
-     * メッセージ長が 0byte以上～4Kbyte未満の回数
-     * @param count		メッセージ長が 0byte以上～4Kbyte未満の回数
+     * Number of times the message length is 0 bytes or more and less than 4 Kbytes
+     * @param count Number of times the message length is 0 bytes or more and less than 4 Kbytes
      */
     public void setCountMessage4k(int count) {
         this.countMessage4k = count;
     }
 
     /**
-     * メッセージ長が 4Kbyte以上～64Kbyte未満の回数
-     * @return		メッセージ長が 4Kbyte以上～64Kbyte未満の回数
+     * Number of times the message length is 4Kbyte or more and less than 64Kbyte
+     * @return Number of times the message length is 4Kbyte or more and less than 64Kbyte
      */
     public int getCountMessage64k() {
         return countMessage64k;
     }
 
     /**
-     * メッセージ長が 4Kbyte以上～64Kbyte未満の回数
-     * @param count			メッセージ長が 4Kbyte以上～64Kbyte未満の回数
+     * Number of times the message length is 4Kbyte or more and less than 64Kbyte
+     * @param count Number of times the message length is 4Kbyte or more and less than 64Kbyte
      */
     public void setCountMessage64k(int count) {
         this.countMessage64k = count;
     }
 
     /**
-     * メッセージ長が 64Kbyte以上～1024Kbyte未満の回数
-     * @return		メッセージ長が 64Kbyte以上～1024Kbyte未満の回数
+     * Number of times the message length is 64Kbyte or more and less than 1024Kbyte
+     * @return Number of times the message length is 64Kbyte or more and less than 1024Kbyte
      */
     public int getCountMessage1024k() {
         return countMessage1024k;
     }
 
     /**
-     * メッセージ長が 64Kbyte以上～1024Kbyte未満の回数
-     * @param count		メッセージ長が 64Kbyte以上～1024Kbyte未満の回数
+     * Number of times the message length is 64Kbyte or more and less than 1024Kbyte
+     * @param count Number of times message length is 64Kbyte or more and less than 1024Kbyte
      */
     public void setCountMessage1024k(int count) {
         this.countMessage1024k = count;
     }
 
     /**
-     * メッセージ長が 1024Kbyte以上の場合の回数
-     * @return		メッセージ長が 1024Kbyte以上の場合の回数
+     * Number of times when the message length is 1024Kbyte or more
+     * @return Number of times when the message length is 1024Kbyte or more
      */
     public int getCountMessage1024kOver() {
         return countMessage1024kOver;
@@ -187,8 +187,8 @@ public class MpiFunction {
 
 
     /**
-     * メッセージ長が 1024Kbyte以上の場合の回数
-     * @param count		メッセージ長が 1024Kbyte以上の場合の回数
+     * Number of times when the message length is 1024Kbyte or more
+     * @param count Number of times when the message length is 1024Kbyte or more
      */
     public void setCountMessage1024kOver(int count) {
         this.countMessage1024kOver = count;

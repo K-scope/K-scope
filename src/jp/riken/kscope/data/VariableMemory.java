@@ -26,61 +26,61 @@ import jp.riken.kscope.properties.KscopeProperties;
 import jp.riken.kscope.utils.StringUtils;
 
 /**
- * ソースコードの変数メモリデータクラス
+ * Source code variable memory data class
  * @author RIKEN
  *
  */
 public class VariableMemory extends Keyword {
 
-	/** 変数 */
+	/** Variables */
 	private Variable variable;
-	/** アクセス先メモリ */
+	/** Access memory */
 	private RequiredBF reqbf;
 
     /**
-     * コンストラクタ
-     * @param variable		変数
-     * @param reqbf    アクセス先メモリ
+     * Constructor
+     * @param variable variable
+     * @param reqbf Access memory
      */
     public VariableMemory(Variable variable, RequiredBF reqbf) {
     	super(KEYWORD_TYPE.VARIABLE);
         this.variable = variable;
         this.reqbf = reqbf;
-        // 大文字・小文字の区別を設定する
+        // Set case sensitivity
         setCaseSensitive(false);
-        // 正規表現を設定する
+        // Set the regular expression
         setRegex(true);
-        // 単語検索を設定する
+        // Set up word search
         setSearchWord(false);
-        // 変数検索を設定する
+        // Set variable search
         setSearchVariable(true);
-        // 変数の正規表現
+        // Variable regular expression
         String regex = createRegexPattern(variable);
         setKeyword(regex);
     }
 
 	/**
-	 * 変数を取得する.
-	 * @return 変数
-	 */
+* Get variables.
+* @return variable
+*/
 	public Variable getVariable() {
 		return variable;
 	}
 
 	/**
-	 * 変数を設定する
-	 * @param variable 変数
-	 */
+* Set variables
+* @param variable variable
+*/
 	public void setVariable(Variable variable) {
 		this.variable = variable;
 	}
 
 	/**
-	 * 変数の文字列表現を正規表現に変換する.
-	 * 変数の文字列表現に空白正規表現を追加する.
-	 * @param variable		変数
-	 * @return		変数の正規表現
-	 */
+* Convert the string representation of a variable to a regular expression.
+* Add a blank regular expression to the string representation of the variable.
+* @param variable variable
+* @return Variable regular expression
+*/
 	private String createRegexPattern(Variable variable) {
 		if (variable == null) return null;
 		String statement = variable.getVariableString();
@@ -102,8 +102,8 @@ public class VariableMemory extends Keyword {
 	}
 
 	/**
-	 * 変数の背景色を取得する
-	 */
+* Get the background color of the variable
+*/
 	@Override
 	public Color getBackgroundcolor() {
 		if (reqbf == null) return null;
@@ -111,8 +111,8 @@ public class VariableMemory extends Keyword {
 	}
 
 	/**
-	 * 変数のコード行情報を取得する.
-	 */
+* Get code line information for variables.
+*/
 	@Override
 	public CodeLine getSearchLine() {
 		if (this.variable == null) return null;
@@ -125,17 +125,17 @@ public class VariableMemory extends Keyword {
 	}
 
 	/**
-	 * アクセス先メモリを取得する.
-	 * @return アクセス先メモリ
-	 */
+* Get access memory.
+* @return Access memory
+*/
 	public RequiredBF getRequiredBF() {
 		return reqbf;
 	}
 
 	/**
-	 * アクセス先メモリを設定する
-	 * @param reqbf    アクセス先メモリ
-	 */
+* Set the access destination memory
+* @param reqbf Access memory
+*/
 	public void setRequiredBF(RequiredBF reqbf) {
 		this.reqbf = reqbf;
 	}

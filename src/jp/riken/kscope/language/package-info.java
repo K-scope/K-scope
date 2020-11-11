@@ -16,6 +16,6 @@
  */
 
 /**
- * プログラムの構文を表現するためのクラスを提供します. <br/>
+ * Provides a class for expressing the syntax of a program. <br/>
  */
 package jp.riken.kscope.language;

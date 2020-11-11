@@ -19,42 +19,42 @@ package jp.riken.kscope.language;
 
 
 /**
- * キーワード引数を表現するためのクラス。
+ * A class for expressing keyword arguments.
  * @author RIKEN
  *
  */
 public class KeywordArgument extends Expression {
-	/** シリアル番号 */
+	/** Serial number */
 	private static final long serialVersionUID = 7613378389238504275L;
     private String keyword = "";
 
     /**
-     * コンストラクタ。
+     * Constructor.
      */
     public KeywordArgument() {
         super();
     }
 
     /**
-     * キーワードを取得する。
-     * @return キーワード
+     * Get keywords.
+     * @return keyword
      */
     public String getKeyword() {
         return keyword;
     }
 
     /**
-     * キーワードをセットする。
-     * @param key キーワード
+     * Set keywords.
+     * @param key keyword
      */
     public void setKeyword(String key) {
         this.keyword = key;
     }
 
     /**
-     * コンストラクタ
-     * @param key		キーワード
-     * @param expr		コピー元式クラス
+     * Constructor
+     * @param key keyword
+     * @param expr Copy source expression class
      */
     public KeywordArgument(String key, Expression expr) {
         this.keyword = key;

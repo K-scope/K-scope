@@ -16,6 +16,6 @@
  */
 
 /**
- * プロファイラユーティリティクラスを提供します.<br/>
+ * Provides profiler utility classes. <br/>
  */
 package jp.riken.kscope.profiler.utils;

@@ -23,7 +23,7 @@ import jp.riken.kscope.language.Expression;
 import jp.riken.kscope.language.Procedure;
 
 /**
- * 関数名の総称定義に対応したクラス。
+ * Class corresponding to the generic definition of function names.
  *
  * @author RIKEN
  *
@@ -31,30 +31,30 @@ import jp.riken.kscope.language.Procedure;
 public interface IProcedureItem {
 
     /**
-     * 候補対象となる関数が自分の情報と適合しているかどうかを<br>
-     * 調べるメソッド。
+     * Whether the candidate function matches your information <br>
+     * Method to check.
      *
      * @param target
-     *            候補対象関数
+     * Candidate function
      * @param actualArguments
-     *            実引数リスト
+     * List of actual arguments
      *
-     * @return true:  適合している
-     *         false: 適合していない
+     * @return true: Conforms
+     * false: Not compatible
      */
     boolean matches(Procedure target, List<Expression> actualArguments);
     
     /**
-     * 手続き引用仕様の個別名を返す。
-     * @return 手続き引用仕様の個別名
+     * Returns the individual name of the procedure citation specification.
+     * @return Individual name of procedure citation specification
      */
     String getName();
 
     /**
-     * 対象となる実引数リストが自分の情報と適合しているかどうかを調べるメソッド。
-     * @param arguments 実引数リスト
-     * @return true:  適合している
-     *         false: 適合していない
+     * A method to check whether the target argument list matches your information.
+     * @param arguments Actual argument list
+     * @return true: Conforms
+     * false: Not compatible
      */
     boolean matches(List<Expression> arguments);
 }

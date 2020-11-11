@@ -27,107 +27,107 @@ import jp.riken.kscope.Message;
 import jp.riken.kscope.service.AppController;
 
 /**
- * 終了アクション
+ * End action
  * @author RIKEN
  */
 public class FileExitAction extends ActionBase implements WindowListener {
 
     /**
-     * コンストラクタ
-     * @param controller	アプリケーションコントローラ
+     * Constructor
+     * @param controller Application controller
      */
     public FileExitAction(AppController controller) {
         super(controller);
     }
 
     /**
-     * アクション発生イベント
-     * @param event		イベント情報
+     * Action occurrence event
+     * @param event Event information
      */
     @Override
     public void actionPerformed(ActionEvent event) {
 
-        // 親Frameの取得を行う。
+        // Get the parent Frame.
         Frame frame = getWindowAncestor( event );
 
-        // 確認メッセージを表示し、アプリケーションを終了する。
+        // Display a confirmation message and exit the application.
         exitApplication(frame);
 
     }
 
     /**
-     * 確認メッセージを表示し、アプリケーションを終了する。
-     * @param frame			親フレーム
+     * Display a confirmation message and exit the application.
+     * @param frame Parent frame
      */
     public void exitApplication(Frame frame) {
 
-        // 確認メッセージを表示する。
+        // Display a confirmation message.
         int option = JOptionPane.showConfirmDialog(
                 frame,
-                Message.getString("fileexitaction.exit.dialog.message"), //K-scopeを終了しますか？
-                Message.getString("fileexitaction.exit.dialog.title"), //K-scopeの終了
+                Message.getString("fileexitaction.exit.dialog.message"), // Do you want to quit K-scope?
+                Message.getString("fileexitaction.exit.dialog.title"), // End of K-scope
                 JOptionPane.OK_CANCEL_OPTION,
                 JOptionPane.WARNING_MESSAGE);
         if (option != JOptionPane.OK_OPTION) {
             return;
         }
 
-        // アプリケーションの終了
+        // Exit the application
         System.exit(0);
     }
 
 
     /**
-     * ウィンドウの終了前イベント
-     * @param event		イベント情報
+     * Pre-window event
+     * @param event Event information
      */
     @Override
     public void windowClosing(WindowEvent event) {
 
         Frame frame = (Frame)event.getWindow();
 
-        // 確認メッセージを表示し、アプリケーションを終了する。
+        // Display a confirmation message and exit the application.
         exitApplication(frame);
     }
 
     /**
-     * ウィンドウのオープンイベント
-     * @param event		イベント情報
+     * Window open event
+     * @param event Event information
      */
     @Override
     public void windowOpened(WindowEvent event) {}
 
     /**
-     * ウィンドウの終了イベント
-     * @param event		イベント情報
+     * Window exit event
+     * @param event Event information
      */
     @Override
     public void windowClosed(WindowEvent event) {}
 
     /**
-     * ウィンドウのアイコン化イベント
-     * @param event		イベント情報
+     * Window iconization event
+     * @param event Event information
      */
     @Override
     public void windowIconified(WindowEvent event) {}
 
     /**
-     * ウィンドウのアイコン化イベント
-     * @param event		イベント情報
+     * Window iconization event
+     * @param event Event information
      */
     @Override
     public void windowDeiconified(WindowEvent event) {}
 
     /**
-     * ウィンドウのアクティブイベント
-     * @param event		イベント情報
+     * Window active event
+     * @param event Event information
      */
     @Override
     public void windowActivated(WindowEvent event) {}
 
     /**
-     * ウィンドウの非アクティブイベント
-     * @param event		イベント情報
+     * Window inactivity event
+     * @param event Event information
      */
     @Override
     public void windowDeactivated(WindowEvent event) {}
