@@ -28,58 +28,58 @@ import jp.riken.kscope.gui.IAnalisysComponent;
 import jp.riken.kscope.service.AppController;
 
 /**
- * 分析タブ変更アクションクラス
+ * Analysis tab change action class
  * @author RIKEN
  */
 public class AnalysisTabChangeAction extends ActionBase implements ChangeListener {
 
     /**
-     * コンストラクタ
-     * @param controller	アプリケーションコントローラ
+     * Constructor
+     * @param controller Application controller
      */
     public AnalysisTabChangeAction(AppController controller) {
         super(controller);
     }
 
     /**
-     * アクション発生イベント
-     * @param event		イベント情報
+     * Action occurrence event
+     * @param event Event information
      */
     @Override
     public void actionPerformed(ActionEvent event) {
-        // 選択されている分析タブのキーワードをソースビューに表示する
+        // Display the keywords of the selected analysis tab in the source view
     	changeAnalisysTab();
     }
 
     /**
-     * タブの選択変更イベント
-     * @param event			イベント情報
+     * Tab selection change event
+     * @param event Event information
      */
     @Override
     public void stateChanged(ChangeEvent event) {
-        // 選択されているツリーノードの情報を表示する
+        // Display information for the selected tree node
     	changeAnalisysTab();
     }
 
     /**
-     * 選択分析ビューの変更イベント.
+     * Selective analysis view change event.
      * <p>
-     * 選択されている分析タブのキーワードをソースビューに表示する.<br/>
-     * プロファイラバーグラフをソースビューに設定する.<br/>
-     * 付加情報の表示を行う.
-     * </p>
+     * Display the keywords of the selected analysis tab in the source view. <br/>
+     * Set profile bar graph to source view. <br/>
+     * Display additional information.
+     * </ p>
      */
     public void changeAnalisysTab() {
-        // 選択されている分析タブのキーワードをソースビューに表示する
+        // Display the keywords of the selected analysis tab in the source view
         viewKeywardSource();
-        // プロファイラバーグラフをソースビューに設定する
+        // Set profile bar graph to source view
         setProfilerBargraph();
-        // 付加情報の表示を行う。
+        // Display additional information.
         setInformation();
     }
 
     /**
-     * 分析タブのキーワードをソースビューに設定する
+     * Set keywords on the Analysis tab to Source View
      */
     public void viewKeywardSource() {
         IAnalisysComponent panel = this.controller.getMainframe().getPanelAnalysisView().getSelectedPanel();
@@ -87,17 +87,17 @@ public class AnalysisTabChangeAction extends ActionBase implements ChangeListene
             return;
         }
         if (panel.getEnumPanel() == ANALYSIS_PANEL.SEARCHRESULT) {
-            // 検索キーワードを設定する
+            // Set search keywords
             this.controller.setSearchKeywords();
         }
         else if (panel.getEnumPanel() == ANALYSIS_PANEL.TRACE) {
-        	// トレースキーワードを設定する
+        	// Set the trace keyword
         	this.controller.setTraceKeywords();
         }
     }
 
     /**
-     * プロファイラバーグラフをソースビューに設定する
+     * Set profile bar graph to source view
      */
     public void setProfilerBargraph() {
         this.controller.setProfilerBargraph();
@@ -106,7 +106,7 @@ public class AnalysisTabChangeAction extends ActionBase implements ChangeListene
     }
 
     /**
-     * 付加情報の表示を行う。
+     * Display additional information.
      */
     public void setInformation() {
 
@@ -119,7 +119,7 @@ public class AnalysisTabChangeAction extends ActionBase implements ChangeListene
         }
 
 
-        // エクスプローラツリー変更アクションクラス
+        // Explorer tree change action class
         ExploreTreeChangeAction action = new ExploreTreeChangeAction(this.controller);
         action.setInformation();
     }

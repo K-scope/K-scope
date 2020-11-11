@@ -25,22 +25,22 @@ import java.util.Set;
 import jp.riken.kscope.information.InformationBlocks;
 
 /**
- * 異なるプログラム単位で同じ記憶領域を共有する変数を表現するクラス。FortranにおけるCommon文を表す。
+ * A class that represents variables that share the same storage area in different program units. Represents a Common statement in Fortran.
  *
  * @author RIKEN
  *
  */
 public class Common extends jp.riken.kscope.language.Block {
-    /** シリアル番号 */
+    /** Serial number */
     private static final long serialVersionUID = -1820258032815507624L;
-    /** 共通ブロックの名前 */
+    /** Common block name */
     private String name = "NO_NAME";
-    /** スカラの変数、配列、記録、構造体の並び */
+    /** Scalar variables, arrays, records, structs */
     private List<Variable> variables = new ArrayList<Variable>();
 
 
     /**
-     * コンストラクタ。
+     * Constructor.
      */
     public Common() {
         super();
@@ -56,55 +56,55 @@ public class Common extends jp.riken.kscope.language.Block {
         return st.toString();
     }
     /**
-     * ブロックタイプの取得。
+     * Get block type.
      *
-     * @return BlockType.COMMON
+     * @ return BlockType.COMMON
      */
     public BlockType getBlockType() {
         return BlockType.COMMON;
     }
 
     /**
-     * COMMON名をセットする。
+     * Set the COMMON name.
      *
      * @param nm
-     *            COMMON名
+     * COMMON name
      */
     public void setName(String nm) {
         this.name = nm;
     }
 
     /**
-     * COMMON名を返す。
+     * Returns the COMMON name.
      *
-     * @return COMMON名
+     * @return COMMON name
      */
     public String getName() {
         return this.name;
     }
 
     /**
-     * 変数のリストをセットする
+     * Set a list of variables
      *
      * @param vars
-     *            変数のリスト
+     * List of variables
      */
     public void setVariables(List<Variable> vars) {
         this.variables = vars;
     }
 
     /**
-     * 変数のリストを取得する。
+     * Get a list of variables.
      *
-     * @return variables 変数のリスト.無ければ空のリストを返す。
+     * @return variables List of variables. If not, returns an empty list.
      */
     public List<Variable> getVariables() {
         return variables;
     }
     /**
-     * COMMONリストに指定した変数名が含まれていれば真を返す。
-     * @param nm 変数名
-     * @return 含まれていれば真
+     * COMMON Returns true if the list contains the specified variable name.
+     * @param nm variable name
+     * @return True if included
      */
     public boolean contains(String nm) {
         for (Variable var:this.variables) {
@@ -116,9 +116,9 @@ public class Common extends jp.riken.kscope.language.Block {
     }
 
     /**
-     * 付加情報ブロックコレクションを生成する。
+     * Generate an additional information block collection.
      *
-     * @return 付加情報ブロックコレクション
+     * @return Additional information block collection
      */
     @Override
     public InformationBlocks createInformationBlocks() {
@@ -133,10 +133,10 @@ public class Common extends jp.riken.kscope.language.Block {
     }
 
     /**
-     * idにマッチした情報ブロックを検索する。
+     * Search for information blocks that match id.
      * @param id
-     *          ID
-     * @return 見つかった情報ブロック。見つからなかった場合はnullが返ります。
+     * ID
+     * @return The information block found. If not found, null is returned.
      */
     @Override
     public IInformation findInformationBlockBy(String id) {
@@ -157,9 +157,9 @@ public class Common extends jp.riken.kscope.language.Block {
     }
 
     /**
-     * 同一ブロックであるかチェックする.
-     * @param block		ブロック
-	 * @return		true=一致
+     * Check if they are the same block.
+     * @param block block
+* @return true = match
      */
     @Override
 	public boolean equalsBlocks(Block block) {
@@ -195,10 +195,10 @@ public class Common extends jp.riken.kscope.language.Block {
 	}
 
 	/**
-	 * 同一ブロックを検索する
-	 * @param block			IInformationブロック
-	 * @return		同一ブロック
-	 */
+* Search for the same block
+* @param block IInformation block
+* @return Same block
+*/
     @Override
 	public IInformation[] searchInformationBlocks(IInformation block) {
 		List<IInformation> list = new ArrayList<IInformation>();
@@ -224,8 +224,8 @@ public class Common extends jp.riken.kscope.language.Block {
 	}
 
 	/**
-	 * 変数リストを取得する.
-	 */
+* Get the variable list.
+*/
 	@Override
 	public Set<Variable> getAllVariables() {
 		return null;

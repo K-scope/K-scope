@@ -40,73 +40,73 @@ import jp.riken.kscope.language.VariableDefinition;
 import jp.riken.kscope.model.ReferenceModel;
 
 /**
- * 宣言・定義・参照サービスクラス.<br/>
- * 宣言・定義・参照一覧を作成する
+ * Declaration / definition / reference service class. <br/>
+ * Create a declaration / definition / reference list
  *
  * @author RIKEN
  */
 public class AnalysisReferenceService extends AnalysisBaseService {
 
-    /** 参照一覧モデル. */
+    /** Reference list model. */
     private ReferenceModel modelReference;
 
     /**
-     * コンストラクタ.
+     * Constructor.
      *
      * @param fortran
-     *            フォートランデータベース
+     * Fortran database
      */
     public AnalysisReferenceService(Fortran fortran) {
         super(fortran);
     }
 
     /**
-     * 参照一覧モデルを設定する.
+     * Set the reference list model.
      *
      * @param model
-     *            参照一覧モデル
+     * Reference list model
      */
     public void setModelReference(ReferenceModel model) {
         this.modelReference = model;
     }
 
     /**
-     * 参照一覧を作成する.
+     * Create a reference list.
      *
      * @param variable
-     *            参照一覧
+     * Reference list
      */
     public void analysisReference(VariableDefinition variable) {
         if (variable == null) {
             return;
         }
 
-        // 参照一覧モデルに設定する
+        // Set to reference list model
         DefaultMutableTreeNode root = new DefaultMutableTreeNode(variable);
-        DefaultMutableTreeNode decNode = new DefaultMutableTreeNode(Message.getString("analysisreferenceservice.reference.declaration")); //宣言
-        DefaultMutableTreeNode refNode = new DefaultMutableTreeNode(Message.getString("analysisreferenceservice.reference.reference")); //参照
-        DefaultMutableTreeNode defNode = new DefaultMutableTreeNode(Message.getString("analysisreferenceservice.reference.definition")); //定義
+        DefaultMutableTreeNode decNode = new DefaultMutableTreeNode(Message.getString("analysisreferenceservice.reference.declaration")); // Declaration
+        DefaultMutableTreeNode refNode = new DefaultMutableTreeNode(Message.getString("analysisreferenceservice.reference.reference")); //reference
+        DefaultMutableTreeNode defNode = new DefaultMutableTreeNode(Message.getString("analysisreferenceservice.reference.definition")); // Definition
         root.add(decNode);
         root.add(refNode);
         root.add(defNode);
 
-        // 宣言ノードの作成
+        // Create a declaration node
         DefaultMutableTreeNode dec = new DefaultMutableTreeNode(variable);
         DefaultMutableTreeNode mother = new DefaultMutableTreeNode(variable.getMother());
         dec.setAllowsChildren(false);
         mother.add(dec);
         decNode.add(mother);
 
-        Set<ProgramUnit> refdefUnit = new HashSet<ProgramUnit>();// 参照・定義しているプログラム単位のセット
-        // 宣言が属するプログラム単位、および副プログラム単位による参照・定義の一覧を作成する
+        Set<ProgramUnit> refdefUnit = new HashSet<ProgramUnit>();// Set of program units referenced / defined
+        // Create a list of references / definitions by program unit to which the declaration belongs and subprogram units
         refdefUnit.addAll(this.searchChildrenWithScope(variable));
 
-        // USE文による参照・定義の一覧を作成する
+        // Create a list of references / definitions by USE statement
         refdefUnit.addAll(variable.getReferMember());
 
         for (ProgramUnit pu : refdefUnit) {
             String name = variable.get_name();
-            // USE文による名前の変換が無いかチェック
+            // Check for name conversion by USE statement
             List<UseState> uses = pu.getUseList();
             for (UseState use : uses) {
                 name = use.translation(variable);
@@ -115,7 +115,7 @@ public class AnalysisReferenceService extends AnalysisBaseService {
                 }
             }
 
-            // 参照一覧を作成する
+            // Create a reference list
             Map<String, Set<IBlock>> refs = pu.getRefVariableNames();
             Set<IBlock> blk = refs.get(name);
             if (blk != null) {
@@ -127,7 +127,7 @@ public class AnalysisReferenceService extends AnalysisBaseService {
                 refNode.add(pr);
             }
 
-            // 定義一覧を作成する
+            // Create a definition list
             Map<String, Set<IBlock>> defs = pu.getDefVariableNames();
             blk = defs.get(name);
             if (blk != null) {
@@ -140,7 +140,7 @@ public class AnalysisReferenceService extends AnalysisBaseService {
             }
         }
 
-        // COMMON属性の場合の一覧
+        // List for COMMON attribute
         if (this.fortranDb.getCommonMap() != null) {
             ProgramUnit motherUnit = variable.getMother();
             List<Common> comList = motherUnit.getCommonList();
@@ -173,7 +173,7 @@ public class AnalysisReferenceService extends AnalysisBaseService {
                     }
                     VariableDefinition def = pu.getVariableMap(localName);
                     if (def != null) {
-                        // 宣言
+                        // Declaration
                         DefaultMutableTreeNode defCom = new DefaultMutableTreeNode(
                                 def);
                         DefaultMutableTreeNode motherCom = new DefaultMutableTreeNode(
@@ -181,7 +181,7 @@ public class AnalysisReferenceService extends AnalysisBaseService {
                         defCom.setAllowsChildren(false);
                         motherCom.add(defCom);
                         decNode.add(motherCom);
-                        // 参照一覧を作成する
+                        // Create a reference list
                         Map<String, Set<IBlock>> refs = pu.getRefVariableNames();
                         Set<IBlock> blk = refs.get(localName);
                         if (blk != null) {
@@ -193,7 +193,7 @@ public class AnalysisReferenceService extends AnalysisBaseService {
                             refNode.add(pr);
                         }
 
-                        // 定義一覧を作成する
+                        // Create a definition list
                         Map<String, Set<IBlock>> defs = pu.getDefVariableNames();
                         blk = defs.get(localName);
                         if (blk != null) {
@@ -209,25 +209,25 @@ public class AnalysisReferenceService extends AnalysisBaseService {
             }
         }
 
-        // ツリーの生成
+        // Tree generation
         DefaultTreeModel tree = new DefaultTreeModel(root);
 
-        // ツリーの設定
+        // Tree settings
         this.modelReference.setTreeModel(tree);
     }
 
     /**
-     * 指定した変数宣言の属するプログラム単位内において、有効域となるプログラム単位のセットを返す。
+     * Returns a set of program units that are valid areas within the program unit to which the specified variable declaration belongs.
      *
      * @param var
-     *            変数宣言
-     * @return プログラム単位のセット。少なくとも宣言が属するモジュールを要素に持つ。
+     *            Variable declaration
+     * @return A set of program units. It has at least the module to which the declaration belongs.
      */
     private Set<ProgramUnit> searchChildrenWithScope(VariableDefinition var) {
         Set<ProgramUnit> pus = new HashSet<ProgramUnit>();
         pus.add(var.getMother());
         for (Procedure child : var.getMother().getChildren()) {
-            // 副プログラムに同一の名前の宣言が無ければ追加
+            // Add if the subprogram does not have the same name declaration
             if (child.get_variable(var.get_name()) == null) {
                 pus.add(child);
             }
@@ -242,50 +242,50 @@ public class AnalysisReferenceService extends AnalysisBaseService {
     }
 
     /**
-     * ソースコード上で選択された文字列から参照一覧を作成する.
+     * Create a reference list from the character string selected on the source code.
      *
      * @param line
-     *            選択行
+     * Selected line
      */
     public void analysisReference(CodeLine line) {
         if (line == null) return;
-        // 選択変数
+        // Select variable
         String varName = line.getStatement().toLowerCase();
 
-        // CodeLineの情報から、対応するプログラム単位を探索する。
+        // Search for the corresponding program unit from the CodeLine information.
         ProgramUnit currentProc = this.getCurrentProcedure(line);
 
         if (currentProc == null) {
             return;
         }
 
-        // 変数宣言を取得する
+        // Get the variable declaration
         VariableDefinition varDef = null;
-        // TODO モジュールを対象とするか要検討
+        // Consider whether to target the TODO module
         if (currentProc instanceof Procedure) {
             varDef = ((Procedure) currentProc).getVariableMap(varName);
         } else {
             varDef = currentProc.get_variable(varName);
         }
-        // 参照一覧モデルを作成する
+        // Create a reference list model
         this.analysisReference(varDef);
         return;
     }
 
     /**
-     * コードラインが属するプログラム単位を返す。
+     * Returns the program unit to which the codeline belongs.
      *
      * @param line
-     *            コード行情報
-     * @return プログラム単位。無ければnullを返す。
+     * Code line information
+     * @return Program unit. If not, it returns null.
      */
     private ProgramUnit getCurrentProcedure(CodeLine line) {
         SourceFile file = line.getSourceFile();
         int lineNo = line.getStartLine();
         // System.out.println("lineNo " + lineNo);
-        // fileにあるプログラム単位のリストを取得
+        // Get the list of program units in file
         List<ProgramUnit> pus = this.fortranDb.getProgramUnits(file);
-        // lineNoを含むプログラム単位を習得
+        // Learn program units including lineNo
         ProgramUnit punit = null;
         for (ProgramUnit pu : pus) {
             int sPos = pu.getStartPos();

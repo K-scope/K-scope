@@ -35,14 +35,14 @@ import jp.riken.kscope.data.SourceFile;
 import jp.riken.kscope.service.AppController;
 
 /**
- * ファイルを開くアクションクラス
+ * Action class to open a file
  * @author RIKEN
  */
 public class ViewOpenExploreBlockAction extends ActionBase implements MouseListener {
 
     /**
-     * コンストラクタ
-     * @param controller	アプリケーションコントローラ
+     * Constructor
+     * @param controller Application controller
      */
     public ViewOpenExploreBlockAction(AppController controller) {
         super(controller);
@@ -50,13 +50,13 @@ public class ViewOpenExploreBlockAction extends ActionBase implements MouseListe
 
 
     /**
-     * アクションが実行可能であるかチェックする.<br/>
-     * アクションの実行前チェック、メニューのイネーブルの切替を行う。<br/>
-     * @return		true=アクションが実行可能
+     * Check if the action is executable. <br/>
+     * Check before executing the action and switch the menu enable. <br/>
+     * @return true = Action can be executed
      */
     @Override
     public boolean validateAction() {
-        // 選択ソースコード行情報を取得する
+        // Get selected source code line information
         CodeLine[] line = this.controller.getMainframe().getPanelExplorerView().getSelectedCodeLines();
         if (line == null) return false;
 
@@ -65,22 +65,22 @@ public class ViewOpenExploreBlockAction extends ActionBase implements MouseListe
 
 
     /**
-     * 選択ファイルを開く
-     * AllAnalysisMemoryActionクラスのためにprivateからpublicに変更(2014/4/8 ohichi)
+     * Open selected file
+     * Changed from private to public for AllAnalysisMemoryAction class (2014/4/8 ohichi)
      */
     public void openFile() {
 
-        // 選択ソースコード行情報を取得する
+        // Get selected source code line information
         CodeLine[] line = this.controller.getMainframe().getPanelExplorerView().getSelectedCodeLines();
         if (line == null) return;
 
-        // 選択ソースコード行情報からファイルを開く
+        // Open the file from the selected source code line information
         for (int i=0; i<line.length; i++) {
             if (line[i].getSourceFile() == null || line[i].getSourceFile().getFile() == null) {
             	Frame frame = this.controller.getMainframe();
             	JOptionPane.showMessageDialog(frame,
-            			Message.getString("viewopenexploreblockaction.errdialog.notsetsource.message", line[i].getStatement()), //のソースファイルが設定されていません。
-            			Message.getString("dialog.common.error"), //エラー
+            			Message.getString("viewopenexploreblockaction.errdialog.notsetsource.message", line[i].getStatement()), The source file for // is not set.
+            			Message.getString("dialog.common.error"), //error
             			JOptionPane.ERROR_MESSAGE);
             	continue;
             }
@@ -93,8 +93,8 @@ public class ViewOpenExploreBlockAction extends ActionBase implements MouseListe
             }
         }
 
-        // 選択コード行を選択状態にする
-        // ソースファイルの一覧作成
+        // Select the selection code line
+        // Create a list of source files
         List<SourceFile> files = new ArrayList<SourceFile>();
         for (int i=0; i<line.length; i++) {
             if (line[i].getSourceFile() == null) continue;
@@ -105,7 +105,7 @@ public class ViewOpenExploreBlockAction extends ActionBase implements MouseListe
             }
         }
 
-        // 選択コード行リストの作成
+        // Create a selection code line list
         for (SourceFile file : files) {
             List<CodeLine> lines = new ArrayList<CodeLine>();
             for (int i=0; i<line.length; i++) {
@@ -115,7 +115,7 @@ public class ViewOpenExploreBlockAction extends ActionBase implements MouseListe
                 }
             }
             if (lines.size() > 0) {
-                // 選択コード行を選択状態にする
+                // Select the selection code line
                 this.controller.setSelectedBlock(lines.toArray(new CodeLine[0]));
             }
         }
@@ -124,56 +124,56 @@ public class ViewOpenExploreBlockAction extends ActionBase implements MouseListe
     }
 
     /**
-     * アクション発生イベント
-     * @param event		イベント情報
+     * Action occurrence event
+     * @param event Event information
      */
     @Override
     public void actionPerformed(ActionEvent event) {
-    	// ステータスバー
-    	Application.status.setMessageMain(Message.getString("mainmenu.view.openfile")); //ファイルを開く
-        // 選択ファイルを開く
+    	// Status bar
+    	Application.status.setMessageMain(Message.getString("mainmenu.view.openfile")); // open the file
+        // open the selected file
         openFile();
     }
 
     /**
-     * マウスクリックイベント
-     * @param event			イベント情報
+     * Mouse click event
+     * @param event Event information
      */
     @Override
     public void mouseClicked(MouseEvent event) {
-        // ダブルクリックチェック
+        // Double click check
         if (SwingUtilities.isLeftMouseButton(event) && event.getClickCount() == 2) {
             if (event.getSource() instanceof JTree) {
-                // 選択ファイルを開く
+                // open the selected file
                 openFile();
             }
         }
     }
 
     /**
-     * マウスボタンダウンイベント
-     * @param e		マウスイベント情報
+     * Mouse button down event
+     * @param e Mouse event information
      */
     @Override
     public void mousePressed(MouseEvent e) { }
 
     /**
-     * マウスボタンアップイベント
-     * @param e		マウスイベント情報
+     * Mouse button up event
+     * @param e Mouse event information
      */
     @Override
     public void mouseReleased(MouseEvent e) {}
 
     /**
-     * マウスオーバーイベント
-     * @param e		マウスイベント情報
+     * Mouseover event
+     * @param e Mouse event information
      */
     @Override
     public void mouseEntered(MouseEvent e) {}
 
     /**
-     * マウスアウトイベント
-     * @param e		マウスイベント情報
+     * Mouse out event
+     * @param e Mouse event information
      */
     @Override
     public void mouseExited(MouseEvent e) {}

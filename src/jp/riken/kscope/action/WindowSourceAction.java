@@ -24,18 +24,18 @@ import jp.riken.kscope.data.SourceFile;
 import jp.riken.kscope.service.AppController;
 
 /**
- * ソースパネルを表示する.
+ * Display the source panel.
  * @author RIKEN
  */
 public class WindowSourceAction extends ActionBase {
 
-    /** 表示を行うソースファイル */
+    /** Source file to display */
     private SourceFile source;
 
     /**
-     * コンストラクタ
-     * @param controller	アプリケーションコントローラ
-     * @param source		表示ソースファイル
+     * Constructor
+     * @param controller Application controller
+     * @param source Display source file
      */
     public WindowSourceAction(AppController controller, SourceFile source) {
         super(controller);
@@ -43,14 +43,14 @@ public class WindowSourceAction extends ActionBase {
     }
 
     /**
-     * アクション発生イベント
-     * @param event		イベント情報
+     * Action occurrence event
+     * @param event Event information
      */
     @Override
     public void actionPerformed(ActionEvent event) {
 
         try {
-            // 指定されたソースファイルを表示する。
+            // Display the specified source file.
             this.controller.getMainframe().getPanelSourceView().viewSource(this.source);
         } catch (Exception ex) {
             ex.printStackTrace();

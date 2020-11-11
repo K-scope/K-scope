@@ -76,77 +76,77 @@ import jp.riken.kscope.properties.SourceProperties;
 import jp.riken.kscope.properties.VariableMemoryProperties;
 
 /**
- * アプリケーションコントローラクラス
+ * Application controller class
  * @author RIKEN
  *
  */
 public class AppController implements PropertyChangeListener {
 	
-    /** メインフレーム */
+    /** main frame */
     private MainFrame mainframe;
 
-    /** プロジェクト情報 */
+    /** Project information */
     private ProjectModel projectModel;
 
-    /** プロジェクト設定 */
+    /** Project settings */
     private ProjectProperties propertiesProject;
 
-    /** ソースビュー設定 */
+    /** Source view settings */
     private SourceProperties propertiesSource;
 
-    /** ハイライト設定 */
+    /** Highlight settings */
     private KeywordProperties propertiesKeyword;
 
-    /** 外部ツール設定プロパティ */
+    /** External tool settings properties */
     private ProgramProperties propertiesProgram;
 
-    /** 演算カウントプロパティ */
+    /** Arithmetic count property */
     private OperationProperties propertiesOperand;
 
-    /** プロファイラプロパティ */
+    /** Profiler Properties */
     private ProfilerProperties propertiesProfiler;
 
-    /** 要求Byte/FLOP設定プロパティ */
+    /** Request Byte / FLOP configuration property */
     private RequiredBFProperties propertiesMemory;
     
     // Remote build properties
     private RemoteBuildProperties rb_properties = null;
     
-    /** アプリケーションプロパティ */
+    /** Application Properties */
     private ApplicationProperties propertiesApplication;
 
-    /** 変数アクセス先メモリ設定 */
+    /** Variable access destination memory setting */
     private VariableMemoryProperties propertiesVariable;
 
-    /** フォートランデータベース */
+    /** Fortran database */
     private Fortran fortranLanguage;
 
-    /** スレッドタスク */
+    /** Thread task */
     private FutureService<Integer> threadFuture;
 
-    /** 構造ツリーフィルタ */
+    /** Structure tree filter */
     private List<FILTER_TYPE> listLanguageFilter;
 
-    /** 最終アクセスフォルダ */
+    /** Last access folder */
     private String lastAccessFolder;
 
-    /** プロファイラ情報クラス */
+    /** Profiler information class */
     private ProfilerInfo profilerInfo;
 
-    /** 最終変数特性一覧情報 ブロック */
+    /** Final variable characteristic list information block */
     private List<IBlock> lastBlocks;
 
-    /** 最終変数特性一覧情報 変数リスト */
+    /** Final variable characteristic list Information variable list */
     private List<VariableDefinition> lastVars;
 
-    /** 変数特性一覧アクション（更新用） */
+    /** Variable characteristic list action (for update) */
     private AnalysisVariableAction actionVariable = null;
 
     
 
     /**
-     * コンストラクタ
-     * @throws Exception 
+     * Constructor
+     * @throws Exception
      */
     public AppController() throws Exception {
     	if (this.rb_properties == null) {
@@ -156,36 +156,36 @@ public class AppController implements PropertyChangeListener {
 
     
      /**
-     * 初期化を行う。
+     * Initialize.
      *
-     * @throws Exception 初期起動エラー
+     * @throws Exception Initial startup error
      */
     public void initialize() throws Exception {
-        // 初期化を行う。
+        // Initialize.
         initialize(this.mainframe);
     }
 
     /**
-     * 初期化を行う。
-     * @param  frame		メインフレーム
-     * @throws Exception     初期起動エラー
+     * Initialize.
+     * @param frame mainframe
+     * @throws Exception Initial startup error
      */
     public void initialize(MainFrame frame) throws Exception {
         this.mainframe = frame;
 
-        // プロジェクト情報
+        // Project information
         projectModel = new ProjectModel();
 
-        /** プロパティ設定の生成：作成済みの場合はクリアしない. */
+        /** Generate property settings: Do not clear if created. */
     	createProperties(false);
 
-        /** プロパティ設定変更リスナの登録 */
-        // エクスプローラビュー：ソースビュー設定プロパティ
+        /** Register property setting change listener */
+        // Explorer View: Source View Settings Properties
         {
 	        ExploreView view = mainframe.getPanelExplorerView();
 	        propertiesSource.addPropertyChangeListener(view);
         }
-        // ソースビュー：ソースビュー設定プロパティ
+        // Source View: Source View Settings Properties
         {
 	        SourceView view = mainframe.getPanelSourceView();
 	        propertiesSource.addPropertyChangeListener(view);
@@ -195,52 +195,52 @@ public class AppController implements PropertyChangeListener {
 	        propertiesVariable.addPropertyChangeListener(view);
         }
 
-        // 付加情報モデル：外部ツール設定プロパティ
+        // Additional information model: External tool setting properties
         InformationModel modelInformation = this.getInformationModel();
         if (modelInformation != null) {
             propertiesProgram.addPropertyChangeListener(modelInformation);
             modelInformation.setPropertiesExtension(propertiesProgram);
         }
 
-        // トレースパネル：ソースビュー設定プロパティ
+        // Trace Panel: Source View Settings Properties
         AnalysisView analysis = mainframe.getPanelAnalysisView();
         propertiesSource.addPropertyChangeListener(analysis);
         propertiesSource.firePropertyChange();
-        // プロファイラパネル:プロファイラプロパティ
+        // Profiler Panel: Profiler Properties
         propertiesProfiler.addPropertyChangeListener(analysis);
         propertiesProfiler.firePropertyChange();
 
-        // 構造ツリーフィルタデフォルト設定
+        // Structure tree filter default settings
         FILTER_TYPE[] filters = KscopeProperties.LANGUGE_DEFAULTFILTERS;
         this.setListLanguageFilter(filters);
 
-        // フォートランデータベースの作成
+        // Create a Fortran database
         fortranLanguage = new Fortran();
-        // プロファイラ情報クラス
+        // Profiler information class
         profilerInfo = new ProfilerInfo();
 
-        // プロファイラ凡例ダイアログを閉じる
+        // Close the profiler legend dialog
     	ProfilerLegendDialog dialog = this.getMainframe().getDialogProfilerLegend();
     	if (dialog != null) {
     		dialog.setVisible(false);
     	}
 
-        // 最終変数特性一覧情報
+        // Final variable characteristic list information
         lastBlocks = null;
         lastVars = null;
     }
 
     /**
-     * プロパティ設定を生成する.
-     * @param   clear    true=プロパティ設定をクリアする
-     * @throws Exception		プロパティ読込エラー
+     * Generate property settings.
+     * @param clear true = Clear property settings
+     * @throws Exception Property read error
      */
     private void createProperties(boolean clear) throws Exception {
-    	// プロパティ設定をクリアする
+    	// Clear property settings
     	if (clear) {
     		clearProperties();
     	}
-        /** プロパティ設定 */
+        /** Property settings */
         if (this.propertiesProject == null) {
         	this.propertiesProject = new ProjectProperties();
         }
@@ -260,7 +260,7 @@ public class AppController implements PropertyChangeListener {
         	this.propertiesApplication = new ApplicationProperties();
         }
         
-        // メニュー表示選択をコピーする
+        // Copy the menu display selection
         this.mainframe.getMenuMain().clearSelectedMenu();
         if (this.propertiesProfiler == null) {
         	this.propertiesProfiler = new ProfilerProperties(this.propertiesProfiler);
@@ -268,48 +268,48 @@ public class AppController implements PropertyChangeListener {
         else {
         	this.propertiesProfiler.setVisibleProperties(this.propertiesProfiler);
         }
-        // バーグラフの色設定
+        // Bar graph color settings
         PROFILERINFO_TYPE.setProfilerProperties(this.propertiesProfiler);
-        // 要求Byte/FLOP設定プロパティ:デフォルト設定を保持する為に生成済みの場合は、newしない。
+        // Request Byte / FLOP setting property: If it has been generated to keep the default setting, do not new.
         if (this.propertiesMemory == null) {
         	this.propertiesMemory = new RequiredBFProperties();
-        	// デフォルト設定を設定する.
+        	// Set the default settings.
         	RequiredBFProperties defaultProperties = new RequiredBFProperties();
         	this.propertiesMemory.setDefaultProperties(defaultProperties);
         }
-        // 要求Byte/FLOP変数設定データ
+        // Request Byte / FLOP variable setting data
         this.propertiesVariable = new VariableMemoryProperties(this.propertiesMemory);
 
     }
     
     
     /**
-     * メインフレームを取得する
-     * @return mainframe		メインフレーム
+     * Get the mainframe
+     * @return mainframe mainframe
      */
     public MainFrame getMainframe() {
         return mainframe;
     }
 
     /**
-     * プロジェクト設定を取得する
-     * @return	プロジェクト設定
+     * Get project settings
+     * @return Project settings
      */
     public ProjectProperties getPropertiesProject() {
     	return propertiesProject;
     }
 
     /**
-     * ソースビュー設定を取得する。
-     * @return		ソースビュー設定
+     * Get source view settings.
+     * @return Source view settings
      */
     public SourceProperties getPropertiesSource() {
         return propertiesSource;
     }
 
     /**
-     * ハイライト設定を取得する
-     * @return		ハイライト設定
+     * Get highlight settings
+     * @return highlight settings
      */
     public KeywordProperties getPropertiesKeyword() {
         return propertiesKeyword;
@@ -317,48 +317,48 @@ public class AppController implements PropertyChangeListener {
 
 
     /**
-     * 外部ツール設定プロパティを取得する
-     * @return		外部ツール設定プロパティ
+     * Get external tool settings properties
+     * @return External tool settings properties
      */
     public ProgramProperties getPropertiesExtension() {
         return propertiesProgram;
     }
 
     /**
-     * 演算カウントプロパティを取得する
-     * @return		演算カウントプロパティ
+     * Get the operation count property
+     * @return operation count property
      */
     public OperationProperties getPropertiesOperation() {
         return this.propertiesOperand;
     }
 
     /**
-     * プロファイラカウントプロパティを取得する
-     * @return		プロファイラプロパティ
+     * Get profiler count property
+     * @return Profiler properties
      */
     public ProfilerProperties getPropertiesProfiler() {
         return this.propertiesProfiler;
     }
 
     /**
-     * 要求Byte/FLOP設定プロパティを取得する
-     * @return		要求Byte/FLOP設定プロパティ
+     * Get the request Byte / FLOP configuration property
+     * @return Request Byte / FLOP configuration property
      */
     public RequiredBFProperties getPropertiesMemory() {
         return this.propertiesMemory;
     }
 
     /**
-     * アプリケーションプロパティを取得する
-     * @return		アプリケーションプロパティ
+     * Get application properties
+     * @return application properties
      */
     public ApplicationProperties getPropertiesApplication() {
     	return this.propertiesApplication;
     }
 
     /**
-     * 変数アクセス先メモリを取得する
-     * @return		変数アクセス先メモリ
+     * Get variable access destination memory
+     * @return Variable access destination memory
      */
     public VariableMemoryProperties getPropertiesVariable() {
         return propertiesVariable;
@@ -373,38 +373,38 @@ public class AppController implements PropertyChangeListener {
     }
     
     /**
-     * プロジェクト情報を取得する
-     * @return projectModel		プロジェクト情報
+     * Get project information
+     * @return projectModel Project information
      */    
     public ProjectModel getProjectModel() {
         return projectModel;
     }
 
     /**
-     * プロパティ設定を更新する。
+     * Update property settings.
      */
     public void updateProperties() {
-    	// プロジェクト設定
+    	// Project settings
     	propertiesProject.firePropertyChange();
-        // ソースビュー設定
+        // Source view settings
         propertiesSource.firePropertyChange();
-        // ハイライト設定
+        // Highlight settings
         propertiesKeyword.firePropertyChange();
-        // 外部ツール設定プロパティ
+        // External tool settings properties
         propertiesProgram.firePropertyChange();
-        // プロファイラ設定プロパティ
+        // Profiler configuration properties
         propertiesProfiler.firePropertyChange();
-        // 要求Byte/FLOP設定プロパティ
+        // Request Byte / FLOP configuration property
         propertiesMemory.firePropertyChange();
-        // 変数アクセス先メモリ設定
+        // Variable access destination memory setting
         propertiesVariable.firePropertyChange();
 
         return;
     }
 
     /**
-     * 付加情報モデルを取得する
-     * @return		付加情報モデル
+     * Get additional information model
+     * @return Additional information model
      */
     public InformationModel getInformationModel() {
         if (this.mainframe.getPanelAnalysisView() == null) return null;
@@ -414,8 +414,8 @@ public class AppController implements PropertyChangeListener {
 
 
     /**
-     * プロパティテーブルモデルを取得する
-     * @return		プロパティテーブルモデル
+     * Get the property table model
+     * @return property table model
      */
     public PropertiesTableModel getPropertiesTableModel() {
         if (this.mainframe.getPanelAnalysisView() == null) return null;
@@ -425,17 +425,17 @@ public class AppController implements PropertyChangeListener {
 
 
     /**
-     * エラー情報モデルを取得する
-     * @return		エラー情報モデル
+     * Get the error information model
+     * @return Error information model
      */
     public ErrorInfoModel getErrorInfoModel() {
         if (this.mainframe.getPanelAnalysisView() == null) return null;
         if (this.mainframe.getPanelAnalysisView().getPanelError() == null) return null;
-        // エラー情報モデル
+        // Error information model
         ErrorInfoModel model = this.mainframe.getPanelAnalysisView().getPanelError().getModel();
         if (model == null) return null;
 
-        // プロジェクトフォルダを設定する
+        // Set the project folder
         if (this.getProjectModel() != null) {
             model.setProjectFolder(this.getProjectModel().getProjectFolder());
         }
@@ -443,67 +443,67 @@ public class AppController implements PropertyChangeListener {
     }
 
     /**
-     * 変数特性情報一覧モデルを取得する
-     * @return		変数特性情報一覧モデル
+     * Get variable characteristic information list model
+     * @return Variable characteristic information list model
      */
     public VariableTableModel getVariableTableModel() {
-        // 変数特性情報一覧モデル
+        // Variable characteristic information list model
         VariableTableModel model = this.mainframe.getPanelAnalysisView().getPanelVariable().getModel();
         return model;
     }
 
     /**
-     * 参照一覧モデルを取得する
-     * @return		参照一覧モデル
+     * Get reference list model
+     * @return Reference list model
      */
     public ReferenceModel getReferenceModel() {
-        // 参照一覧モデル
+        // Reference list model
         ReferenceModel model = this.mainframe.getPanelAnalysisView().getPanelReference().getModel();
         return model;
     }
 
     /**
-     * 検索結果モデルを取得する
-     * @return		検索結果モデル
+     * Get the search result model
+     * @return Search result model
      */
     public SearchResultModel getSearchResultModel() {
-        // 検索一覧モデル
+        // Search list model
         SearchResultModel model = this.mainframe.getPanelAnalysisView().getPanelSearchResult().getModel();
         return model;
     }
 
 
     /**
-     * 変数有効域モデルを取得する
-     * @return		変数有効域モデル
+     * Get the variable scope model
+     * @return Variable scope model
      */
     public ScopeModel getScopeModel() {
-        // 変数有効域モデル
+        // Variable scope model
         ScopeModel model = this.mainframe.getPanelAnalysisView().getPanelScope().getModel();
         return model;
     }
 
 
     /**
-     * フォートランデータベースを取得する
-     * @return		フォートランデータベース
+     * Get the Fortran database
+     * @return Fortran database
      */
     public Fortran getFortranLanguage() {
         return fortranLanguage;
     }
 
     /**
-     * フォートランデータベースを設定する
-     * @param  value		フォートランデータベース
+     * Set up a Fortran database
+     * @param value Fortran database
      */
     public void setFortranLanguage(Fortran value) {
         this.fortranLanguage = value;
     }
 
     /**
-     * ソースファイルビューにソースファイルを表示する
-     * @param file		ソースファイル
-     * @throws Exception  		ファイルオープンエラー
+     * View source files in Source Files view
+     * @param file Source file
+     * @throws Exception File open error
      */
     public void openSourceFile(SourceFile file) throws Exception {
         openSourceFile(new CodeLine(file, file.getPath()));
@@ -511,70 +511,70 @@ public class AppController implements PropertyChangeListener {
     
 
     /**
-     * ソースファイルビューにソースファイルを表示する
-     * @param line		ソースファイル
-     * @throws Exception  		ファイルオープンエラー
+     * View source files in Source Files view
+     * @param line source file
+     * @throws Exception File open error
      */
     public void openSourceFile(CodeLine line) throws Exception {
 
-        // ソースファイルを開く
+        // open the source file
         this.getMainframe().getPanelSourceView().viewSource(line);
 
-        // キーワード設定等のプロパティ設定を適用する。
+        // Apply property settings such as keyword settings.
         this.updateProperties();
 
-        // プロファイラバーグラフをソースビューに設定する
+        // Set profile bar graph to source view
         setProfilerBargraph();
     }
 
     /**
-     * ソースファイルビュー指定行を選択表示する
-     * @param lines		選択表示行情報
+     * Select and display the specified line in the source file view
+     * @param lines Select display line information
      */
     public void setSelectedBlock(CodeLine[] lines) {
-        // ソースファイルを開く
+        // open the source file
         this.getMainframe().getPanelSourceView().setSelectedBlock(lines);
     }
 
     /**
-     * 構造ツリーモデルを取得する
-     * @return		構造ツリーモデル
+     * Get the structure tree model
+     * @return Structural tree model
      */
     public LanguageTreeModel getLanguageTreeModel() {
-        // 構造パネル
+        // Structural panel
         LanguageTreePanel panel = this.mainframe.getPanelExplorerView().getPanelLanguageTree();
         if (panel == null) {
-            // 構造パネルが存在しないので作成する
+            // Create a structure panel because it does not exist
             this.mainframe.getPanelExplorerView().createLanguageTreePanel();
-            // フィルタを適用する
+            // Apply the filter
             applyLanguageTreeFilter();
         }
-        // 構造ツリーモデル
+        // Structural tree model
         LanguageTreeModel model = this.mainframe.getPanelExplorerView().getPanelLanguageTree().getModel();
 
         return model;
     }
 
     /**
-     * モジュールツリーモデルを取得する
-     * @return		モジュールツリーモデル
+     * Get the module tree model
+     * @return Module tree model
      */
     public ModuleTreeModel getModuleTreeModel() {
-        // モジュールツリーモデル
+        // Module tree model
         ModuleTreeModel model = this.mainframe.getPanelExplorerView().getPanelModuleTree().getModel();
 
         return model;
     }
 
     /**
-     * ソースツリーモデルを取得する
-     * @return		ソースツリーモデル
+     * Get the source tree model
+     * @return Sourcetree model
      */
     public FileTreeModel getSourceTreeModel() {
-        // エラー情報モデル
+        // Error information model
         FileTreeModel model = this.mainframe.getPanelExplorerView().getPanelSourceTree().getModel();
 
-        // プロジェクトフォルダを設定する
+        // Set the project folder
         if (this.getProjectModel() != null) {
             model.setProjectFolder(this.getProjectModel().getProjectFolder());
         }
@@ -583,14 +583,14 @@ public class AppController implements PropertyChangeListener {
 
 
     /**
-     * XMLツリーモデルを取得する
-     * @return		Xmlツリーモデル
+     * Get the XML tree model
+     * @return Xml tree model
      */
     public FileTreeModel getXmlTreeModel() {
-        // エラー情報モデル
+        // Error information model
         FileTreeModel model = this.mainframe.getPanelExplorerView().getPanelXmlTree().getModel();
 
-        // プロジェクトフォルダを設定する
+        // Set the project folder
         if (this.getProjectModel() != null) {
             model.setProjectFolder(this.getProjectModel().getProjectFolder());
         }
@@ -598,33 +598,33 @@ public class AppController implements PropertyChangeListener {
     }
 
     /**
-     * フォートランデータベースをクリアする
+     * Clear the Fortran database
      */
     public void clearFortranLanguage() {
         this.fortranLanguage = new Fortran();
-        // 変数アクセス先メモリプロパティクリア
+        // Clear variable access destination memory property
         this.propertiesVariable.clearVariableMemory();
     }
 
     /**
-     * スレッドタスクの終了通知を受け取り、メッセージボックスを表示する.<br/>
+     * Receive a notification of the end of the thread task and display a message box. <br/>
      * <pre>
-     * 終了コード : SUCCESS_RESULT = 正常終了
-     *            CANCEL_RESULT = キャンセルによる中断
-     *            CANCEL_RESULT = 異常終了
-     *            null = メッセージボックスなし終了
-     * </pre>
-     * @param result		終了コード
+     * Exit code: SUCCESS_RESULT = Normal termination
+     * CANCEL_RESULT = Interruption due to cancellation
+     * CANCEL_RESULT = Abnormal termination
+     * null = end without message box
+     * </ pre>
+     * @param result Exit code
      */
     public void finishThreadFuture(Integer result) {
 
-        // プログレスダイアログを閉じる
+        // Close the progress dialog
         WindowProgressAction progress = new WindowProgressAction(this);
         progress.closeProgressDialog();
-        // プログレスバーのクリア
+        // Clear the progress bar
         Application.status.setProgressStart(false);
 
-		// コンソール
+		// console
 		ConsolePanel console = this.getMainframe().getPanelAnalysisView().getPanelConsole();
 		if (console != null) {
 			console.flush();
@@ -639,26 +639,26 @@ public class AppController implements PropertyChangeListener {
         	if (this.threadFuture != null) {
         		errmsg = this.threadFuture.getMessage();
         	}
-        	//エラーにより終了しました。
+        	// Exited due to an error.
         	String msg = Message.getString("appcontroller.thread.message.error");
         	if (errmsg != null) {
         		msg += "\n[" + errmsg + "]";
         	}
             JOptionPane.showMessageDialog(this.mainframe,
             		msg,
-                    Message.getString("appcontroller.thread.title"), // 処理メッセージ
+                    Message.getString("appcontroller.thread.title"), // Processing message
                     JOptionPane.INFORMATION_MESSAGE);
         }
         else if (result == Constant.CANCEL_RESULT) {
             JOptionPane.showMessageDialog(this.mainframe,
-            		Message.getString("appcontroller.thread.message.cancel"), //キャンセルにより中断しました。
-                    Message.getString("appcontroller.thread.title"), // 処理メッセージ
+            		Message.getString("appcontroller.thread.message.cancel"), // It was interrupted due to cancellation.
+                    Message.getString("appcontroller.thread.title"), // Processing message
                     JOptionPane.INFORMATION_MESSAGE);
         }
         else if (result != null) {
             JOptionPane.showMessageDialog(this.mainframe,
-            		Message.getString("appcontroller.thread.message.success"), //実行終了しました。
-                    Message.getString("appcontroller.thread.title"), // 処理メッセージ
+            		Message.getString("appcontroller.thread.message.success"), // Execution finished.
+                    Message.getString("appcontroller.thread.title"), // Processing message
                     JOptionPane.INFORMATION_MESSAGE);
         }
 
@@ -666,8 +666,8 @@ public class AppController implements PropertyChangeListener {
 
 
     /**
-     * スレッドタスクを取得する
-     * @return threadFuture		スレッドタスク
+     * Get a thread task
+     * @return threadFuture Thread task
      */
     public FutureService<Integer> getThreadFuture() {
         return threadFuture;
@@ -675,8 +675,8 @@ public class AppController implements PropertyChangeListener {
 
 
     /**
-     * スレッドタスクを設定する
-     * @param threadFuture 	スレッドタスク
+     * Set up a thread task
+     * @param threadFuture Thread task
      */
     public void setThreadFuture(FutureService<Integer> threadFuture) {
         this.threadFuture = threadFuture;
@@ -684,25 +684,25 @@ public class AppController implements PropertyChangeListener {
 
 
     /**
-     * プロパティ変更通知.<br/>
-     * スレッドタスクの終了通知をPropertyChangeSupportによって通知、受信する
-     * @param  event		イベント情報
+     * Property change notification. <br/>
+     * Notify and receive thread task end notification by PropertyChangeSupport
+     * @param event Event information
      */
     @Override
     public void propertyChange(PropertyChangeEvent event) {
 
         if (Constant.PROPERTYNAME_THREADDONE.equals(event.getPropertyName())) {
-            // スレッド終了イベント
+            // Thread end event
             Integer result = (Integer)event.getNewValue();
 
-            // スレッドタスクの終了通知を受け取り、メッセージボックスを表示する
+            // Receive the thread task end notification and display a message box
             finishThreadFuture(result);
         }
     }
 
     /**
-     * スレッドタスクの終了状態をチェックする
-     * @return		true=スレッドタスク終了
+     * Check the end status of thread tasks
+     * @return true = thread task finished
      */
     public boolean isThreadTaskDone() {
         if (this.threadFuture == null) { return true; }
@@ -710,8 +710,8 @@ public class AppController implements PropertyChangeListener {
     }
 
     /**
-     * 分析ビューの指定タブをアクティブにする
-     * @param panel			選択タブ
+     * Activate the Analyze View Specify tab
+     * @param panel Selection tab
      */
     public void setSelectedAnalysisPanel(ANALYSIS_PANEL panel) {
         this.getMainframe().getPanelAnalysisView().setSelectedPanel(panel);
@@ -719,50 +719,50 @@ public class AppController implements PropertyChangeListener {
 
 
     /**
-     * 演算カウントテーブルモデルを取得する
-     * @return		演算カウントテーブルモデル
+     * Get the arithmetic count table model
+     * @return Arithmetic count table model
      */
     public OperandTableModel getOperandTableModel() {
-        // 演算カウントテーブルモデル
+        // Arithmetic count table model
         OperandTableModel model = this.mainframe.getPanelAnalysisView().getPanelOperand().getModel();
 
         return model;
     }
 
     /**
-     * 要求Byte/FLOP算出結果モデルを取得する
-     * @return		要求Byte/FLOP算出結果モデル
+     * Get the request Byte / FLOP calculation result model
+     * @return Request Byte / FLOP calculation result model
      */
     public RequiredBFModel getRequiredByteFlopModel() {
-        // 要求Byte/FLOP算出結果モデル
+        // Request Byte / FLOP calculation result model
     	RequiredBFModel model = this.mainframe.getPanelAnalysisView().getPanelRequiredByteFlop().getModel();
 
         return model;
     }
 
     /**
-     * プロジェクトをクリアする
-     * @throws Exception     プロジェクトクリアエラー
+     * Clear the project
+     * @throws Exception Project clear error
      */
     public void clearProject() throws Exception {
-        // プロパティ設定の生成
+        // Generate property settings
     	boolean clear = false;
     	
-    	//　TODO Project Open の時にclearはfalseに設定されるので、defaultプロパティは消去されない。
-    	// Default（K-scopeは起動された時にdefaultパラメターを読み込む）でproject_folderはnullであるため、isValidProjectはfalseになる。
+    	// Since clear is set to false when TODO Project Open, the default property is not deleted.
+    	// IsValidProject is false because project_folder is null in Default (K-scope reads default parameter when started).
     	if (this.projectModel != null && this.projectModel.isVaildProject()) {
     		clear = true;
     	}
     	createProperties(clear);
-        // 初期化を行う
+        // Initialize
         initialize();
     }
 
     /**
-     * プロパティをクリアする
+     * Clear properties
      */
     private void clearProperties() {
-        /** プロパティ設定をクリアする:initializeで生成*/
+        /** Clear property settings: Generate with initialize */
         this.propertiesProject = null;
         this.propertiesSource = null;
         this.propertiesKeyword = null;
@@ -780,49 +780,49 @@ public class AppController implements PropertyChangeListener {
     }
     
     /**
-     * トレースキーワードを設定する
+     * Set trace keywords
      */
     public void setTraceKeywords() {
-        // キーワードリストを取得する
+        // Get the keyword list
         Keyword[] words = this.getMainframe().getPanelAnalysisView().getTraceKeywords();
-        // キーワードを設定する
+        // Set keywords
         this.getMainframe().getPanelSourceView().setSearchWords(words);
     }
 
     /**
-     * 検索キーワードを設定する
+     * Set search keywords
      */
     public void setSearchKeywords() {
-        // キーワードリストを取得する
+        // Get the keyword list
         Keyword[] words = this.getMainframe().getPanelAnalysisView().getSearchKeywords();
-        // キーワードを設定する
+        // Set keywords
         this.getMainframe().getPanelSourceView().setSearchWords(words);
     }
    
 
     /**
-     * 構造ツリーフィルタリストを取得する
-     * @return		構造ツリーフィルタリスト
+     * Get the structure tree filter list
+     * @return Structure tree filter list
      */
     public List<FILTER_TYPE> getListLanguageFilter() {
         return listLanguageFilter;
     }
 
     /**
-     * 構造ツリーフィルタリストを設定する
-     * @param list			構造ツリーフィルタリスト
+     * Set the structure tree filter list
+     * @param list Structure tree filter list
      */
     public void setListLanguageFilter(FILTER_TYPE[] list) {
         this.listLanguageFilter = new ArrayList<FILTER_TYPE>();
         this.listLanguageFilter.addAll(java.util.Arrays.asList(list));
 
-        // 構造ツリーにフィルタを設定する
+        // Set a filter in the structure tree
         applyLanguageTreeFilter();
     }
 
     /**
-     * 構造ツリーフィルタを追加する
-     * @param filter			構造ツリーフィルタ
+     * Add a structure tree filter
+     * @param filter Structure tree filter
      */
     public void addListLanguageFilter(FILTER_TYPE filter) {
         if (filter == null) return;
@@ -832,28 +832,28 @@ public class AppController implements PropertyChangeListener {
         if (this.listLanguageFilter.contains(filter)) return;
         this.listLanguageFilter.add(filter);
 
-        // 構造ツリーにフィルタを設定する
+        // Set a filter in the structure tree
         applyLanguageTreeFilter();
     }
 
     /**
-     * 構造ツリーフィルタを削除する
-     * @param filter			構造ツリーフィルタ
+     * Remove the structure tree filter
+     * @param filter Structure tree filter
      */
     public void removeListLanguageFilter(FILTER_TYPE filter) {
         if (filter == null) return;
         if (this.listLanguageFilter == null) return;
         if (this.listLanguageFilter.size() <= 0) return;
 
-        // フィルタ削除
+        // Delete filter
         this.listLanguageFilter.remove(filter);
 
-        // 構造ツリーにフィルタを設定する
+        // Set a filter in the structure tree
         applyLanguageTreeFilter();
     }
 
     /**
-     * 構造ツリーにフィルタを適用する
+     * Apply a filter to the structure tree
      */
     public void applyLanguageTreeFilter() {
         FILTER_TYPE[] filters = null;
@@ -864,23 +864,23 @@ public class AppController implements PropertyChangeListener {
     }
 
     /**
-     * 最終アクセスフォルダを取得する
-     * @return		最終アクセスフォルダ
+     * Get the last access folder
+     * @return Last access folder
      */
     public String getLastAccessFolder() {
         return lastAccessFolder;
     }
 
     /**
-     * 最終アクセスフォルダを設定する
-     * @param folder		最終アクセスフォルダ
+     * Set the last access folder
+     * @param folder Last access folder
      */
     public void setLastAccessFolder(File folder) {
         if (folder == null) {
             this.lastAccessFolder = null;
             return;
         }
-        // フォルダであるかチェックする
+        // Check if it is a folder
         if (folder.isDirectory()) {
             this.lastAccessFolder = folder.getAbsolutePath();
         }
@@ -890,24 +890,24 @@ public class AppController implements PropertyChangeListener {
     }
 
     /**
-     * 最終アクセスフォルダを設定する
-     * @param folder		最終アクセスフォルダ
+     * Set the last access folder
+     * @param folder Last access folder
      */
     public void setLastAccessFolder(String folder) {
         this.lastAccessFolder = folder;
     }
 
     /**
-     * プロファイラ情報クラス
-     * @return プロファイラ情報クラス
+     * Profiler information class
+     * @return Profiler information class
      */
     public ProfilerInfo getProfilerInfo() {
         return profilerInfo;
     }
 
     /**
-     * プロファイラ情報クラス
-     * @param info プロファイラ情報クラス
+     * Profiler information class
+     * @param info Profiler information class
      */
     public void setProfilerInfo(ProfilerInfo info) {
         this.profilerInfo = info;
@@ -915,11 +915,11 @@ public class AppController implements PropertyChangeListener {
 
 
     /**
-     * プロファイラバーグラフをソースビューに設定する
+     * Set profile bar graph to source view
      */
     public void setProfilerBargraph() {
         PROFILERINFO_TYPE type = null;
-        // 表示タブから表示プロファイラ情報タイプを取得する
+        // Get the display profiler information type from the View tab
         IAnalisysComponent panel = this.getMainframe().getPanelAnalysisView().getSelectedPanel();
         if (panel == null) return;
         if (panel.getEnumPanel() == ANALYSIS_PANEL.COST_PROCEDURE) {
@@ -939,8 +939,8 @@ public class AppController implements PropertyChangeListener {
     }
 
     /**
-     * プロファイラバーグラフをソースビューに設定する
-     * @param type    プロファイラ情報タイプ
+     * Set profile bar graph to source view
+     * @param type Profiler information type
      */
     public void setProfilerBargraph(PROFILERINFO_TYPE type) {
         if (type == null) return;
@@ -955,7 +955,7 @@ public class AppController implements PropertyChangeListener {
     }
 
     /**
-     * プロファイラ情報をクリアする
+     * Clear profiler information
      */
     public void clearProfilerInfo() {
         if (this.profilerInfo != null) {
@@ -966,25 +966,25 @@ public class AppController implements PropertyChangeListener {
     }
 
     /**
-     * 最終変数特性一覧情報を取得する
-     * @return 選択ツリーのブロック
+     * Get final variable characteristic list information
+     * @return Block of selection tree
      */
     public List<IBlock> getLastVariableBlocks() {
     	return lastBlocks;
     }
 
     /**
-     * 最終変数特性一覧情報を取得する
-     * @return 変数リスト
+     * Get final variable characteristic list information
+     * @return Variable list
      */
     public List<VariableDefinition> getLastVariableVars() {
     	return lastVars;
     }
 
     /**
-     * 最終変数特性一覧をセットする
-     * @param blocks      最終変数特性一覧:ブロック
-     * @param vars        最終変数特性一覧:変数リスト
+     * Set the final variable characteristic list
+     * @param blocks List of final variable characteristics: blocks
+     * @param vars Final variable characteristic list: Variable list
      */
     public void setLastVariable(List<IBlock> blocks, List<VariableDefinition> vars) {
     	lastBlocks = blocks;
@@ -992,34 +992,34 @@ public class AppController implements PropertyChangeListener {
     }
 
     /**
-     * 変数特性一覧アクションを設定する
-     * @param actionVar		変数特性一覧アクション
+     * Set variable characteristic list action
+     * @param actionVar Variable characteristic list Action
      */
     public void setActionVariable(AnalysisVariableAction actionVar) {
     	this.actionVariable = actionVar;
     }
 
     /**
-     * 付加情報の編集により付加情報表示の分析ビューを更新する.
-     * 変数特性情報一覧を更新する.
+     * Update the analysis view of the additional information display by editing the additional information.
+     * Update the variable characteristic information list.
      */
     public void refreshInformation() {
     	if (this.actionVariable != null) {
     		this.actionVariable.refresh();
     	}
-    	// 要求Byte/FLOP算出結果モデル
+    	// Request Byte / FLOP calculation result model
     	RequiredBFModel requiredModel = this.getRequiredByteFlopModel();
     	requiredModel.notifyModel();
 
     }
 
     /**
-     * エラー情報を設定する
+     * Set error information
      *
-     * @param error エラー情報
+     * @param error Error information
      */
     public void setErrorInfo(ErrorInfo error) {
-        // エラー情報モデル
+        // Error information model
         ErrorInfoModel errorModel = this.getErrorInfoModel();
         errorModel.addErrorInfo(error);
     }

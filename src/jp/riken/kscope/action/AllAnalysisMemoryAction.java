@@ -39,33 +39,33 @@ import jp.riken.kscope.service.AnalysisMemoryService;
 import jp.riken.kscope.service.AppController;
 
 /**
- * 一括要求Byte/FLOPアクションクラス
+ * Bulk request Byte / FLOP action class
  * @author ohichi
  */
 public class AllAnalysisMemoryAction extends ActionBase {
-	/**解析サービス**/
+	/** Analysis service **/
 	private AnalysisMemoryService serviceMemory;
-	/**算出結果一覧**/
+	/** List of calculation results **/
 	private List<RequiredBFResult> list;
-    /** ツリーにおいて既に追加されたプログラム単位を格納する作業用セット */
+    /** Working set to store program units already added in the tree */
     private HashSet<Procedure> checkList = new HashSet<Procedure>();
     /**
-     * コンストラクタ
-     * @param controller	アプリケーションコントローラ
+     * Constructor
+     * @param controller Application controller
      */
     public AllAnalysisMemoryAction(AppController controller) {
         super(controller);
     }
 
     /**
-     * アクションが実行可能であるかチェックする.<br/>
-     * アクションの実行前チェック、メニューのイネーブルの切替を行う。<br/>
-     * @return		true=アクションが実行可能
+     * Check if the action is executable. <br/>
+     * Check before executing the action and switch the menu enable. <br/>
+     * @return true = Action can be executed
      */
     @Override
     public boolean validateAction() {
 
-        // 選択ツリーモデルを取得する
+        // Get the selection tree model
         TreeModel modelTree = this.controller.getMainframe().getPanelExplorerView().getTreeModel();
         if (modelTree == null) {
             return false;
@@ -83,25 +83,25 @@ public class AllAnalysisMemoryAction extends ActionBase {
     }
 
     /**
-     * アクション発生イベント
-     * @param event		イベント情報
+     * Action occurrence event
+     * @param event Event information
      */
     @Override
     public void actionPerformed(ActionEvent event) {
 
-        // 実行チェック
+        // Execution check
         if (!validateAction()) return;
 
-        // ステータスメッセージ
+        // Status message
         final String message = Message.getString("mainmenu.analysis.allcalculate");
         Application.status.setMessageMain(message);
 
-        // 選択ツリーモデルを取得する
+        // Get the selection tree model
         TreeModel modelTree = this.controller.getMainframe().getPanelExplorerView().getTreeModel();
-        //ルートノードの取得
+        // Get the root node
         FilterTreeNode root = (FilterTreeNode)modelTree.getRoot();
         if(root != null){
-        	//プロパティの設定
+        	// Property settings
         	setService();
         	this.checkList.clear();
         	list = new ArrayList<RequiredBFResult>();
@@ -114,8 +114,8 @@ public class AllAnalysisMemoryAction extends ActionBase {
      }
 
     /**
-     * ノード検索
-     * @param parent		親ノード
+     * Node search
+     * @param parent parent node
      */
     private void searchProcedure(FilterTreeNode parent){
     	int i;
@@ -133,13 +133,13 @@ public class AllAnalysisMemoryAction extends ActionBase {
     }
 
     /**
-     * メモリ性能算出機能のプロパティ設定
-     * 
+     * Property setting of memory performance calculation function
+     *
      */   
     private void setService(){
-       // 要求Byte/FLOP設定プロパティ
+       // Request Byte / FLOP configuration property
         RequiredBFProperties properitiesMemory = this.controller.getPropertiesMemory();
-        // 変数アクセス先メモリ設定
+        // Variable access destination memory setting
         VariableMemoryProperties properitiesVariable = this.controller.getPropertiesVariable();
         RequiredBFModel modelRequired = this.controller.getRequiredByteFlopModel(); 
         LanguageTreeModel modelLanguage = this.controller.getLanguageTreeModel();
@@ -153,8 +153,8 @@ public class AllAnalysisMemoryAction extends ActionBase {
     }
     
     /**
-     * 計算実行
-     * @param block		対象ブロック
+     * Calculation execution
+     * @param block Target block
      */      
     private RequiredBFResult cal(IBlock block){
     	RequiredBFResult result = this.serviceMemory.calcRequiredBF(block);

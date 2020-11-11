@@ -24,34 +24,34 @@ import javax.swing.JCheckBoxMenuItem;
 import jp.riken.kscope.service.AppController;
 
 /**
- * プロファイラのソースコストグラフ表示切替アクションクラス
+ * Profiler source cost graph display switching action class
  * @author RIKEN
  */
 public class ProfilerViewBargraphAction extends ActionBase {
 
     /**
-     * コンストラクタ
-     * @param controller	アプリケーションコントローラ
+     * Constructor
+     * @param controller Application controller
      */
     public ProfilerViewBargraphAction(AppController controller) {
         super(controller);
     }
 
     /**
-     * アクション発生イベント
-     * @param event		イベント情報
+     * Action occurrence event
+     * @param event Event information
      */
     @Override
     public void actionPerformed(ActionEvent event) {
         if (!(event.getSource() instanceof JCheckBoxMenuItem)) return;
 
         boolean checked = false;
-        // チェックボックスメニュー
+        // Checkbox menu
         JCheckBoxMenuItem item = (JCheckBoxMenuItem)event.getSource();
         checked = item.isSelected();
         this.controller.getPropertiesProfiler().setVisibleBargraph(checked);
 
-        // 変更イベントを発生
+        // Fire a change event
         this.controller.getPropertiesProfiler().firePropertyChange();
     }
 

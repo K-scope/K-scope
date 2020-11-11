@@ -25,25 +25,25 @@ import java.util.Set;
 import jp.riken.kscope.information.InformationBlocks;
 
 /**
- * プログラム単位内で同じ記憶領域を共有する変数を表現するクラス。FortranにおけるEquivalence文を表す。
+ * A class that represents variables that share the same storage area within a program unit. Represents an Equivalence statement in Fortran.
  *
  * @author RIKEN
  *
  */
 public class Equivalence extends jp.riken.kscope.language.Block {
-    /** シリアル番号 */
+    /** Serial number */
     private static final long serialVersionUID = 2994603726150733660L;
     private List<Variable> variables = new ArrayList<Variable>();
 
     /**
-     * コンストラクタ。
+     * Constructor.
      */
     public Equivalence() {
         super();
     }
 
     /**
-     * ブロックタイプの取得。
+     * Get block type.
      *
      * @return BlockType.EQUIVALENCE
      */
@@ -52,28 +52,28 @@ public class Equivalence extends jp.riken.kscope.language.Block {
     }
 
     /**
-     * 変数のリストをセットする
+     * Set a list of variables
      *
      * @param vars
-     *            変数のリスト
+     * List of variables
      */
     public void setVariables(List<Variable> vars) {
         this.variables = vars;
     }
 
     /**
-     * 変数のリストを取得する。
+     * Get a list of variables.
      *
-     * @return variables 変数のリスト
+     * @return variables List of variables
      */
     public List<Variable> getVariables() {
         return variables;
     }
 
     /**
-     * 付加情報ブロックコレクションを生成する。
+     * Generate an additional information block collection.
      *
-     * @return 付加情報ブロックコレクション
+     * @return Additional information block collection
      */
     @Override
     public InformationBlocks createInformationBlocks() {
@@ -88,10 +88,10 @@ public class Equivalence extends jp.riken.kscope.language.Block {
     }
 
     /**
-     * idにマッチした情報ブロックを検索する。
+     * Search for information blocks that match id.
      * @param id
-     *          ID
-     * @return 見つかった情報ブロック。見つからなかった場合はnullが返ります。
+     * ID
+     * @return The information block found. If not found, null is returned.
      */
      @Override
     public IInformation findInformationBlockBy(String id) {
@@ -113,9 +113,9 @@ public class Equivalence extends jp.riken.kscope.language.Block {
 
 
      /**
-      * 同一ブロックであるかチェックする.
-      * @param block		ブロック
-      * @return		true=一致
+      * Check if they are the same block.
+      * @param block block
+      * @return true = match
       */
      @Override
     public boolean equalsBlocks(Block block) {
@@ -148,11 +148,11 @@ public class Equivalence extends jp.riken.kscope.language.Block {
     }
 
     /**
-     * 同一ブロックを検索する
+     * Search for the same block
      *
      * @param block
-     *            IInformationブロック
-     * @return 同一ブロック
+     * IInformation block
+     * @return Same block
      */
     @Override
     public IInformation[] searchInformationBlocks(IInformation block) {
@@ -179,8 +179,8 @@ public class Equivalence extends jp.riken.kscope.language.Block {
     }
 
  	/**
- 	 * 変数リストを取得する.
- 	 */
+ * Get the variable list.
+ */
  	@Override
  	public Set<Variable> getAllVariables() {
  		return null;

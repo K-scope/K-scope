@@ -46,31 +46,31 @@ import jp.riken.kscope.utils.FileUtils;
 import jp.riken.kscope.utils.StringUtils;
 
 /**
- * 検索アクション
+ * Search action
  * @author RIKEN
  */
 public class SearchGrepAction extends ActionBase {
 
-    /** 検索サービス */
+    /** Search service */
     private AnalysisSearchService service;
 
     /**
-     * コンストラクタ
-     * @param controller	アプリケーションコントローラ
+     * Constructor
+     * @param controller Application controller
      */
     public SearchGrepAction(AppController controller) {
         super(controller);
     }
 
     /**
-     * アクションが実行可能であるかチェックする.<br/>
-     * アクションの実行前チェック、メニューのイネーブルの切替を行う。<br/>
-     * @return		true=アクションが実行可能
+     * Check if the action is executable. <br/>
+     * Check before executing the action and switch the menu enable. <br/>
+     * @return true = Action can be executed
      */
     @Override
     public boolean validateAction() {
 
-        // ツリー上のファイル
+        // Files on the tree
         SourceFile[] files = this.controller.getMainframe().getPanelExplorerView().getPanelSourceTree().getAllSourceFiles();
         if (files == null) return false;
 
@@ -78,67 +78,67 @@ public class SearchGrepAction extends ActionBase {
     }
 
     /**
-     * アクション発生イベント
-     * @param event		イベント情報
+     * Action occurrence event
+     * @param event Event information
      */
     @Override
     public void actionPerformed(ActionEvent event) {
 
-        // 実行チェック
+        // Execution check
         if (!validateAction()) return;
 
-        // ステータスメッセージ
-        final String message = Message.getString("mainmenu.search.file"); //ファイル検索
+        // Status message
+        final String message = Message.getString("mainmenu.search.file"); // File search
         Application.status.setMessageMain(message);
 
-        // 選択文字列
+        // Selected string
         String text = null;
-        // ソースコードの選択行を取得する
+        // Get the selected line of source code
         CodeLine line = this.controller.getMainframe().getPanelSourceView().getSelectedCodeLine();
         if (line != null) {
-            // 選択文字列
+            // Selected string
             text = line.getStatement();
         }
 
-        // ソースツリーモデルを取得する
+        // Get the source tree model
         TreeModel modelTree = this.controller.getMainframe().getPanelExplorerView().getPanelSourceTree().getTreeModel();
         if (line == null) {
             if (this.controller.getMainframe().getPanelExplorerView().getSelectedEnumPanel() == EXPLORE_PANEL.XML) {
-                // XMLツリーが表示されている時は、XMLツリーを取得する
+                // Get the XML tree when the XML tree is displayed
                 modelTree = this.controller.getMainframe().getPanelExplorerView().getPanelXmlTree().getTreeModel();
             }
         }
         else if (FILE_TYPE.isXcodemlFile(line.getSourceFile().getFile())) {
-            // XMLファイルが表示されている時は、XMLツリーを取得する
+            // Get the XML tree when the XML file is displayed
             modelTree = this.controller.getMainframe().getPanelExplorerView().getPanelXmlTree().getTreeModel();
         }
 
-        // ファイル検索ダイアログを取得する。
+        // Get the file search dialog.
         SearchGrepDialog dialog = this.controller.getMainframe().getDialogSearchGrep();
         if (text != null && !text.isEmpty()) {
-            // 検索文字列
+            // Search string
             dialog.setSearchText(text);
         }
-        // ソースツリーモデル
+        // Sourcetree model
         dialog.setReferenceTreeModel(modelTree);
 
-        // ファイル検索ダイアログを表示する。
+        // Display the file search dialog.
         int result = dialog.showDialog();
         if (result != Constant.OK_DIALOG) return;
 
-        // 検索文字列
+        // Search string
         String searchText = dialog.getSearchText();
-        // オプション
+        // Optional
         boolean regex = dialog.isRegex();
         boolean word = dialog.isWord();
         boolean sensitivecase = dialog.isSensitivecase();
         TreeNode[] nodes  = dialog.getSelectedTreeNodes();
-        // 選択ノードから検索ソースファイル一覧を取得する
+        // Get the search source file list from the selected node
         SourceFile[] files = getSearchFiles((DefaultMutableTreeNode)modelTree.getRoot(), nodes);
 
-        // 検索サービス
+        // Search service
         service = new AnalysisSearchService();
-        // エラー情報モデル
+        // Error information model
         ErrorInfoModel errorModel = this.controller.getErrorInfoModel();
         service.setErrorInfoModel(errorModel);
         SearchResultModel model = this.controller.getSearchResultModel();
@@ -148,24 +148,24 @@ public class SearchGrepAction extends ActionBase {
         service.setWord(word);
         service.setSensitivecase(sensitivecase);
         service.setExploreTreeNode((DefaultMutableTreeNode) modelTree.getRoot());
-        // 検索ファイル
+        // Search file
         service.setSearchFiles(files);
 
-        // スレッドタスクサービスの生成を行う。
+        // Create a thread task service.
         FutureService<Integer> future = new FutureService<Integer>(
             /**
-             * スレッド呼出クラス
+             * Thread call class
              */
             new Callable<Integer>() {
                 /**
-                 * スレッド実行を行う
+                 * Perform thread execution
                  */
                 @Override
 				public Integer call() {
                     try {
-                        // 検索実行
+                        // Search execution
                         service.searchFile();
-                        // エラーメッセージ
+                        // Error message
                         String errorMessage = service.getErrorMessage();
                         if (!StringUtils.isNullOrEmpty(errorMessage)) {
                         	return Constant.ERROR_RESULT;
@@ -179,24 +179,24 @@ public class SearchGrepAction extends ActionBase {
             }
             ) {
                 /**
-                 * スレッド実行完了.<br/>
-                 * キャンセルされた時の後処理を行う。
+                 * Thread execution completed. <br/>
+                 * Perform post-processing when canceled.
                  */
                 @Override
                 protected void done() {
-                    // キャンセルによる終了であるかチェックする。
+                    // Check if the end is due to cancellation.
                     String errorMessage = service.getErrorMessage();
                     if (!StringUtils.isNullOrEmpty(errorMessage)) {
                     	this.setMessage(errorMessage);
-                    	Application.status.setMessageMain(message + Message.getString("action.common.error.status")); //エラー
+                    	Application.status.setMessageMain(message + Message.getString("action.common.error.status")); //error
                     }
                     else if (this.isCancelled()) {
-                        Application.status.setMessageMain(message + Message.getString("action.common.cancel.status")); //:キャンセル
+                        Application.status.setMessageMain(message + Message.getString("action.common.cancel.status")); //:Cancel
                     }
                     else {
-                        Application.status.setMessageMain(message + Message.getString("action.common.done.status")); //:完了
+                        Application.status.setMessageMain(message + Message.getString("action.common.done.status")); //: Done
                     }
-                    // サービス実行の停止
+                    // Stop service execution
                     if (service != null) {
                         service.cancelRunning();
                     }
@@ -204,41 +204,41 @@ public class SearchGrepAction extends ActionBase {
                 }
         };
 
-        // ステータスメッセージクリア
+        // Clear status message
         Application.status.setMessageStatus(null);
 
-        // スレッドタスクにコントローラをリスナ登録する：スレッド完了時の呼出の為
+        // Register the controller as a listener in the thread task: To call when the thread is completed
         future.addPropertyChangeListener(this.controller);
         this.controller.setThreadFuture(future);
 
-        // プログレスダイアログを表示する
+        // Display the progress dialog
         WindowProgressAction progress = new WindowProgressAction(this.controller);
         progress.showProgressDialog();
 
-        // スレッド起動
+        // Thread start
         new Thread(future).start();
 
-        // 検索結果タブをアクティブにする
+        // Activate the search results tab
         this.controller.setSelectedAnalysisPanel(ANALYSIS_PANEL.SEARCHRESULT);
-        // ソースビューで検索文字列をハイライトする
+        // Highlight the search string in Source view
         this.controller.setSearchKeywords();
     }
 
     /**
-     * 選択ノードから検索ソースファイル一覧を取得する
-     * @param  root     ルートノード
-     * @param nodes		選択ノード
-     * @return			選択ソースファイル一覧
+     * Get a list of search source files from the selected node
+     * @param root root node
+     * @param nodes Selected nodes
+     * @return List of selected source files
      */
     private SourceFile[] getSearchFiles(DefaultMutableTreeNode root, TreeNode[] nodes) {
         List<SourceFile> list = new ArrayList<SourceFile>();
 
-        // ツリーノードを順方向で列挙
+        // List tree nodes in the forward direction
         Enumeration<?> depth = root.preorderEnumeration();
         while(depth.hasMoreElements()) {
             DefaultMutableTreeNode treeNode = (DefaultMutableTreeNode)depth.nextElement();
 
-            // ノード検索を行う
+            // Do a node search
             if (treeNode == null || treeNode.getUserObject() == null) {
                 continue;
             }
@@ -253,14 +253,14 @@ public class SearchGrepAction extends ActionBase {
     }
 
     /**
-     * 選択ノードのファイルであるかチェックする
-     * @param nodes			選択ノード
-     * @param nodeFile		チェックファイル
-     * @return		true=選択ファイル
+     * Check if it is a file of the selected node
+     * @param nodes Selected nodes
+     * @param nodeFile Check file
+     * @return true = Selected file
      */
     private boolean isSelectedFile(TreeNode[] nodes, SourceFile nodeFile) {
         if (nodeFile == null) return false;
-        // 選択ノードがない場合は、すべて追加
+        // Add all if there are no selected nodes
         if (nodes == null) return true;
 
         for (TreeNode node : nodes) {
@@ -270,16 +270,16 @@ public class SearchGrepAction extends ActionBase {
             if (obj instanceof SourceFile) {
                 SourceFile file = (SourceFile) ((DefaultMutableTreeNode)node).getUserObject();
                 if (nodeFile.equals(file)) {
-                    // 選択ファイル
+                    // Selected file
                     return true;
                 }
             }
             else if (obj instanceof File) {
                 File file = (File)obj;
                 if (!file.isDirectory()) continue;
-                // フォルダ配下の子・孫ファイルであるかチェックする
+                // Check if it is a child / grandchild file under the folder
                 if (FileUtils.isChildsFile(nodeFile.getFile(), file)) {
-                    // 子・孫ファイル
+                    // Child / grandchild files
                     return true;
                 }
             }

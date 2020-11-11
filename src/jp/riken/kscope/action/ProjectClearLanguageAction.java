@@ -26,72 +26,72 @@ import jp.riken.kscope.common.ANALYSIS_PANEL;
 import jp.riken.kscope.service.AppController;
 
 /**
- * 構造解析クリアアクション
+ * Structural analysis clear action
  * @author RIKEN
  */
 public class ProjectClearLanguageAction extends ActionBase {
 
     /**
-     * コンストラクタ
-     * @param controller	アプリケーションコントローラ
+     * Constructor
+     * @param controller Application controller
      */
     public ProjectClearLanguageAction(AppController controller) {
         super(controller);
     }
 
     /**
-     * コンストラクタ
+     * Constructor
      */
     public ProjectClearLanguageAction() {
         super();
     }
 
     /**
-     * アクション発生イベント
-     * @param event		イベント情報
+     * Action occurrence event
+     * @param event Event information
      */
     @Override
     public void actionPerformed(ActionEvent event) {
-        // ステータスメッセージ
-        final String message = Message.getString("mainmenu.project.clearanalysis"); //構造解析クリア
+        // Status message
+        final String message = Message.getString("mainmenu.project.clearanalysis"); // Clear structural analysis
         Application.status.setMessageMain(message);
 
-        // 確認メッセージを表示する。
+        // Display a confirmation message.
         int option = JOptionPane.showConfirmDialog(this.controller.getMainframe(),
-                  Message.getString("projectclearlanguageaction.clear.confirmdialog.message"), //解析結果、分析結果をクリアしますが、よろしいですか？
-                  Message.getString("projectclearlanguageaction.clear.confirmdialog.title"), //構造情報のクリア
+                  Message.getString("projectclearlanguageaction.clear.confirmdialog.message"), // Clear the analysis result and analysis result, is that okay?
+                  Message.getString("projectclearlanguageaction.clear.confirmdialog.title"), // Clear structural information
                   JOptionPane.OK_CANCEL_OPTION,
                   JOptionPane.WARNING_MESSAGE);
         if (option != JOptionPane.OK_OPTION) {
         	Application.status.setMessageMain(message +
-        			Message.getString("action.common.cancel.status")); //キャンセル
+        			Message.getString("action.common.cancel.status")); //Cancel
             return;
         }
 
-        // フォートランデータベースクリアを行う。
+        // Clear the Fortran database.
         clearFortranLanguage();
     	Application.status.setMessageMain(message +
-    			Message.getString("action.common.done.status")); //完了
+    			Message.getString("action.common.done.status")); // Done
     }
 
     /**
-     * フォートランデータベースクリアを行う。
+     * Clear the Fortran database.
      */
     public void clearFortranLanguage() {
 
-        // クリア
-        // フォートランデータベース
+        // clear
+        // Fortran database
         this.controller.clearFortranLanguage();
 
-        // ツリーモデル
+        // Tree model
         this.controller.getMainframe().getPanelExplorerView().clearTreeModel();
 
-        // 分析情報クリア
+        // Clear analysis information
         this.controller.getMainframe().getPanelAnalysisView().clearModels();
-        // コンソールタブを閉じる
+        // Close the console tab
         this.controller.getMainframe().getPanelAnalysisView().closeTab(ANALYSIS_PANEL.CONSOLE);
 
-        // ソースビュークリア
+        // Clear Source View
         this.controller.getMainframe().getPanelSourceView().closeAllTabs();
     }
 }

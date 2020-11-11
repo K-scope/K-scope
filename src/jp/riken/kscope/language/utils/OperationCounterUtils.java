@@ -33,52 +33,52 @@ import jp.riken.kscope.language.Variable;
 import jp.riken.kscope.properties.OperationProperties;
 
 /**
- * 演算数カウントユーティリティクラス
+ * Calculation count utility class
  * @author RIKEN
  */
 public class OperationCounterUtils {
 
-    /** 組込み関数演算カウントプロパティ */
+    /** Built-in function operation count property */
     private OperationProperties propertiesOperation;
-    /** 演算カウント結果 */
+    /** Calculation count result */
     private OperandCountResult result;
 
 	/**
-	 * コンストラクタ
-	 */
+* Constructor
+*/
 	public OperationCounterUtils() {
 	}
 
 	/**
-	 * コンストラクタ
-	 * @param   properties    組込み関数演算カウントプロパティ
-	 */
+* Constructor
+* @param properties Built-in function arithmetic count property
+*/
 	public OperationCounterUtils(OperationProperties properties) {
 		this.propertiesOperation = properties;
 	}
 
 	/**
-	 * 左辺変数リストを取得する.
-	 * @return		左辺変数リスト
-	 */
+* Get the left-hand variable list.
+* @return Left side variable list
+*/
 	public List<Variable> getLeftVariables() {
 		if (this.result == null) return null;
 		return this.result.getLeftVar();
 	}
 
 	/**
-	 * 右辺変数リストを取得する.
-	 * @return		右辺変数リスト
-	 */
+* Get the right-hand variable list.
+* @return Right-hand variable list
+*/
 	public List<Variable> getRightVariables() {
 		if (this.result == null) return null;
 		return this.result.getRightVar();
 	}
 
 	/**
-	 * 左辺変数リスト数を取得する.
-	 * @return		左辺変数リスト数
-	 */
+* Get the number of left-hand variable lists.
+* @return Number of left-side variable lists
+*/
 	public int getLeftVariableCount() {
 		if (this.result == null) return 0;
 		if (this.result.getLeftVar() == null) return 0;
@@ -86,9 +86,9 @@ public class OperationCounterUtils {
 	}
 
 	/**
-	 * 右辺変数リスト数を取得する.
-	 * @return		右辺変数リスト数
-	 */
+* Get the number of right-hand side variable lists.
+* @return Number of variable lists on the right side
+*/
 	public int getRightVariableCount() {
 		if (this.result == null) return 0;
 		if (this.result.getRightVar() == null) return 0;
@@ -96,46 +96,46 @@ public class OperationCounterUtils {
 	}
 
 	/**
-	 * 加算演算数を取得する.
-	 * @return		加算演算数
-	 */
+* Get the number of addition operations.
+* @return Number of addition operations
+*/
 	public int getAddCount() {
 		if (this.result == null) return 0;
 		return this.result.getCountAdd();
 	}
 
 	/**
-	 * 減算演算数を取得する.
-	 * @return		減産演算数
-	 */
+* Get the number of subtraction operations.
+* @return Number of production reduction operations
+*/
 	public int getSubCount() {
 		if (this.result == null) return 0;
 		return this.result.getCountSub();
 	}
 
 	/**
-	 * 乗算演算数を取得する.
-	 * @return		乗算演算数
-	 */
+* Get the number of multiplication operations.
+* @return Number of multiplication operations
+*/
 	public int getMulCount() {
 		if (this.result == null) return 0;
 		return this.result.getCountMul();
 	}
 
 	/**
-	 * 除算演算数を取得する.
-	 * @return		除算演算数
-	 */
+* Get the number of division operations.
+* @return Number of division operations
+*/
 	public int getDivCount() {
 		if (this.result == null) return 0;
 		return this.result.getCountDiv();
 	}
 
 	/**
-	 * べき算演算数を取得する.
-	 * べき算数 * pow(加算+乗算)とする.
-	 * @return		べき算演算数
-	 */
+* Get the number of arithmetic operations to be performed.
+* Arithmetic * pow (addition + multiplication).
+* @return Number of arithmetic operations to be performed
+*/
 	public int getPowCount() {
 		if (this.result == null) return 0;
 		int count = this.result.getCountPow();
@@ -149,10 +149,10 @@ public class OperationCounterUtils {
 	}
 
 	/**
-	 * 組込関数演算数を取得する.
-	 * 組込関数(加算+乗算)とする.
-	 * @return		関数演算数
-	 */
+* Get the number of built-in function operations.
+* Built-in function (addition + multiplication).
+* @return Function operation number
+*/
 	public int getFunctionCount() {
 		if (this.result == null) return 0;
 		if (this.result.getFunctions() == null) return 0;
@@ -171,17 +171,17 @@ public class OperationCounterUtils {
 	}
 
 	/**
-	 * べき乗+関数演算数を取得する.
-	 * @return		べき乗+関数演算数
-	 */
+* Get power + number of function operations.
+* @return Exponentiation + number of function operations
+*/
 	public int getIntrinsicCount() {
 		return this.getPowCount() + getFunctionCount();
 	}
 
 	/**
-	 * 加算演算FLOPを取得する.
-	 * @return		加算演算FLOP
-	 */
+* Get the addition operation FLOP.
+* @return Addition operation FLOP
+*/
 	public int getAddFlop() {
 		int count = this.getAddCount();
 		if (this.propertiesOperation == null) return count;
@@ -190,9 +190,9 @@ public class OperationCounterUtils {
 	}
 
 	/**
-	 * 減算演算FLOPを取得する.
-	 * @return		減産演算FLOP
-	 */
+* Get the subtraction operation FLOP.
+* @return Production reduction calculation FLOP
+*/
 	public int getSubFlop() {
 		int count = this.getSubCount();
 		if (this.propertiesOperation == null) return count;
@@ -201,9 +201,9 @@ public class OperationCounterUtils {
 	}
 
 	/**
-	 * 乗算演算FLOPを取得する.
-	 * @return		乗算演算FLOP
-	 */
+* Get multiplication operation FLOP.
+* @return Multiplication operation FLOP
+*/
 	public int getMulFlop() {
 		int count = this.getMulCount();
 		if (this.propertiesOperation == null) return count;
@@ -212,9 +212,9 @@ public class OperationCounterUtils {
 	}
 
 	/**
-	 * 除算演算FLOPを取得する.
-	 * @return		除算演算FLOP
-	 */
+* Get the division operation FLOP.
+* @return Division operation FLOP
+*/
 	public int getDivFlop() {
 		int count = this.getDivCount();
 		if (this.propertiesOperation == null) return count;
@@ -223,9 +223,9 @@ public class OperationCounterUtils {
 	}
 
 	/**
-	 * べき算演算FLOPを取得する.
-	 * @return		べき算演算FLOP
-	 */
+* Get the power arithmetic FLOP.
+* @return Calculator FLOP
+*/
 	public int getPowFlop() {
 		if (this.result == null) return 0;
 		int count = this.result.getCountPow();
@@ -241,9 +241,9 @@ public class OperationCounterUtils {
 	}
 
 	/**
-	 * 関数リストFLOPを取得する.
-	 * @return		関数リストFLOP
-	 */
+* Get the function list FLOP.
+* @return function list FLOP
+*/
 	public int getFunctionFlop() {
 		int count = this.getFunctionCount();
 		if (count <= 0) return 0;
@@ -262,25 +262,25 @@ public class OperationCounterUtils {
 	}
 
 	/**
-	 * べき乗+関数演算FLOPを取得する.
-	 * @return		べき乗+関数演算FLOP
-	 */
+* Get power + function operation FLOP.
+* @return Exponentiation + function operation FLOP
+*/
 	public int getIntrinsicFlop() {
 		return this.getPowFlop() + getFunctionFlop();
 	}
 
 	/**
-	 * すべての演算FLOPの合計を取得する
-	 * @return	演算FLOP合計
-	 */
+* Get the sum of all arithmetic FLOPs
+* @return operation FLOP total
+*/
 	public int getOperandFlop() {
 		return getAddFlop() + getSubFlop() + getMulFlop() + getDivFlop() + getIntrinsicFlop();
 	}
 
     /**
-     * Blockの演算数をカウントする.
-     * @param block 処理ブロック
-     * @return カウント結果
+     * Count the number of operations in Block.
+     * @param block Processing block
+     * @return Count result
      */
     public OperandCountResult countBlock(IBlock block) {
     	if (block == null) return null;
@@ -290,9 +290,9 @@ public class OperationCounterUtils {
     }
 
     /**
-     * ブロックの子要素に対して演算数をカウントする。
-     * @param block ブロック
-     * @return カウント結果
+     * Count the number of operations for the child elements of the block.
+     * @param block block
+     * @return Count result
      */
     private OperandCountResult countChildren(IBlock block) {
     	if (block == null) return null;
@@ -308,7 +308,7 @@ public class OperationCounterUtils {
             Expression right = ((Substitution) block).getRightValue();
             Set<Variable> rightVariables = right.getAllVariables();
             for (Variable vr : rightVariables) {
-                //配列ならばロードに数える
+                // If it is an array, count it as a load
                 if (vr.isMemoryAccess()) {
                 	result.addRightVariable(vr);
                 }
@@ -352,29 +352,29 @@ public class OperationCounterUtils {
     }
 
     /**
-     * 演算カウント結果クラス
+     * Operation count result class
      * @author RIKEN
      */
     public class OperandCountResult {
-    	/** 演算カウント:加算 */
+    	/** Calculation count: Addition */
         private int countAdd;
-    	/** 演算カウント:減算 */
+    	/** Calculation count: Subtraction */
         private int countSub;
-        /** 演算カウント:乗算 */
+        /** Calculation count: Multiplication */
         private int countMul;
-        /** 演算カウント:除算 */
+        /** Calculation count: Division */
         private int countDiv;
-        /** 演算カウント:べき算 */
+        /** Calculation count: Power calculation */
         private int countPow;
-        /** 左辺変数表現文字列リスト */
+        /** Left-side variable representation string list */
         private List<Variable> leftVars;
-        /** 右辺変数表現文字列リスト */
+        /** Right-hand side variable representation string list */
         private List<Variable> rightVars;
-        /** 関数呼出リスト */
+        /** Function call list */
         private List<ProcedureUsage> rightFunctions;
 
         /**
-         * コンストラクタ
+         * Constructor
          */
         public OperandCountResult() {
         	this.countAdd = 0;
@@ -389,8 +389,8 @@ public class OperationCounterUtils {
         }
 
         /**
-         * 演算カウント結果を追加する
-         * @param result		演算カウント結果
+         * Add operation count result
+         * @param result Operation count result
          */
         public void addCount(OperandCountResult result) {
         	if (result == null) return;
@@ -417,49 +417,49 @@ public class OperationCounterUtils {
 		}
 
 		/**
-         * 加算演算数を取得する.
-         * @return		加算演算数
+         * Get the number of addition operations.
+         * @return Number of addition operations
          */
         public int getCountAdd() {
         	return this.countAdd;
         }
 
         /**
-         * 減算演算数を取得する.
-         * @return		減算演算数
+         * Get the number of subtraction operations.
+         * @return Number of subtraction operations
          */
         public int getCountSub() {
         	return this.countSub;
         }
 
         /**
-         * 乗算演算数を取得する.
-         * @return		乗算演算数
+         * Get the number of multiplication operations.
+         * @return Number of multiplication operations
          */
         public int getCountMul() {
         	return this.countMul;
         }
 
         /**
-         * 除算演算数を取得する.
-         * @return		除算演算数
+         * Get the number of division operations.
+         * @return Number of division operations
          */
         public int getCountDiv() {
         	return this.countDiv;
         }
 
         /**
-         * べき乗演算数を取得する.
-         * @return		べき乗演算数
+         * Get the number of power operations.
+         * @return Exponentiation number
          */
         public int getCountPow() {
         	return this.countPow;
         }
 
         /**
-         * 加算演算数を加算する.
-         * @param count		加算演算数
-         * @return    加算演算数
+         * Add the number of addition operations.
+         * @param count Number of addition operations
+         * @return Number of addition operations
          */
         public int incrementAdd(int count) {
         	this.countAdd += count;
@@ -467,9 +467,9 @@ public class OperationCounterUtils {
         }
 
         /**
-         * 減算演算数を加算する.
-         * @param count		加算演算数
-         * @return    減算演算数
+         * Add the number of subtraction operations.
+         * @param count Number of addition operations
+         * @return Number of subtraction operations
          */
         public int incrementSub(int count) {
         	this.countSub += count;
@@ -477,9 +477,9 @@ public class OperationCounterUtils {
         }
 
         /**
-         * 乗算演算数を加算する.
-         * @param count		加算演算数
-         * @return    乗算演算数
+         * Add the number of multiplication operations.
+         * @param count Number of addition operations
+         * @return Number of multiplication operations
          */
         public int incrementMul(int count) {
         	this.countMul += count;
@@ -487,9 +487,9 @@ public class OperationCounterUtils {
         }
 
         /**
-         * 除算演算数を加算する.
-         * @param count		加算演算数
-         * @return    除算演算数
+         * Add the number of division operations.
+         * @param count Number of addition operations
+         * @return Number of division operations
          */
         public int incrementDiv(int count) {
         	this.countDiv += count;
@@ -497,9 +497,9 @@ public class OperationCounterUtils {
         }
 
         /**
-         * べき乗演算数を加算する.
-         * @param count		加算演算数
-         * @return    べき乗演算数
+         * Add the number of power operations.
+         * @param count Number of addition operations
+         * @return Exponentiation number
          */
         public int incrementPow(int count) {
         	this.countPow += count;
@@ -507,71 +507,71 @@ public class OperationCounterUtils {
         }
 
         /**
-         * 演算カウント:加算を設定する.
-         * @param count		演算カウント:加算
+         * Calculation count: Set addition.
+         * @param count Operation count: Add
          */
         public void setCountAdd(int count) {
             this.countAdd = count;
         }
         /**
-         * 演算カウント:減算を設定する.
-         * @param count		演算カウント:減算
+         * Operation count: Set subtraction.
+         * @param count Operation count: Subtraction
          */
         public void setCountSub(int count) {
             this.countSub = count;
         }
 
         /**
-         * 演算カウント:乗算を設定する.
-         * @param count		演算カウント:乗算
+         * Operation count: Set multiplication.
+         * @param count Operation count: Multiplication
          */
         public void setCountMul(int count) {
             this.countMul = count;
         }
 
         /**
-         * 演算カウント:除算を設定する.
-         * @param count		演算カウント:除算
+         * Calculation count: Set division.
+         * @param count Operation count: Division
          */
         public void setCountDiv(int count) {
             this.countDiv = count;
         }
 
         /**
-         * 演算カウント:べき算を設定する.
-         * @param count		演算カウント:べき算
+         * Operation count: Set the power calculation.
+         * @param count Operation count: Power calculation
          */
         public void setCountPow(int count) {
             this.countPow = count;
         }
 
         /**
-         * 関数呼出リストを取得する.
-         * @return		関数呼出リスト
+         * Get the function call list.
+         * @return Function call list
          */
         public List<ProcedureUsage> getFunctions() {
             return this.rightFunctions;
         }
 
         /**
-         * 右辺変数リストを取得する.
-         * @return		右辺変数リスト
+         * Get the right-hand variable list.
+         * @return Right-hand variable list
          */
         public List<Variable> getRightVar() {
             return this.rightVars;
         }
 
         /**
-         * 左辺変数表現文字列リストを取得する.
-         * @return		左辺変数表現文字列リスト
+         * Get the left-hand variable representation string list.
+         * @return Left-hand side variable representation string list
          */
         public List<Variable> getLeftVar() {
             return this.leftVars;
         }
 
         /**
-         * 左辺変数リストに追加する.
-         * @param  var		左辺変数
+         * Add to the left-hand variable list.
+         * @param var Left-hand side variable
          */
         public void addLeftVariable(Variable var) {
         	if (var == null) return;
@@ -582,8 +582,8 @@ public class OperationCounterUtils {
         }
 
         /**
-         * 右辺変数リストに追加する.
-         * @param  var		右辺変数
+         * Add to the right-hand variable list.
+         * @param var Right-hand side variable
          */
         public void addRightVariable(Variable var) {
         	if (var == null) return;
@@ -594,8 +594,8 @@ public class OperationCounterUtils {
         }
 
         /**
-         * 右辺関数呼出リストに追加する.
-         * @param  call		関数呼出
+         * Add to the right-hand side function call list.
+         * @param call Function call
          */
         public void addRightFunction(ProcedureUsage call) {
         	if (call == null) return;
@@ -603,10 +603,10 @@ public class OperationCounterUtils {
         }
 
         /**
-         * 変数リストから同一の変数が存在するかチェックする.
-         * @param list		変数リスト
-         * @param var		検索変数
-         * @return			true=同一変数が存在する
+         * Check if the same variable exists from the variable list.
+         * @param list Variable list
+         * @param var Search variable
+         * @return true = Same variable exists
          */
         private boolean containsVariable(List<Variable> list, Variable var) {
         	if (list == null || list.size() <= 0) return false;
@@ -619,11 +619,11 @@ public class OperationCounterUtils {
     }
 
 	/**
-	 * 変数リストから変数と同じ変数リストを取得する
-	 * @param listVar		変数リスト
-	 * @param value		変数
-	 * @return			true=変数リスト
-	 */
+* Get the same variable list as the variable from the variable list
+* @param listVar Variable list
+* @param value variable
+* @return true = variable list
+*/
 	public List<Variable> getVariables(List<Variable> listVar, Variable value) {
 		if (listVar == null || listVar.size() <= 0) return null;
 		if (value == null) return null;
@@ -631,7 +631,7 @@ public class OperationCounterUtils {
 		List<Variable> listEquals = new ArrayList<Variable>();
 		for (Variable var : listVar) {
 			if (var == null) continue;
-			// 定義が同じであること
+			// The definition is the same
 			if (value.getDefinition() != var.getDefinition()) continue;
 			if (value.equalsVariable(var)) {
 				listEquals.add(var);
@@ -644,9 +644,9 @@ public class OperationCounterUtils {
 	}
 
 	/**
-	 * 組込み関数演算カウントプロパティを設定する.
-	 * @param properties    組込み関数演算カウントプロパティ
-	 */
+* Set the built-in function operation count property.
+* @param properties Built-in function arithmetic count property
+*/
 	public void setPropertiesOperation(OperationProperties properties) {
 		this.propertiesOperation = properties;
 	}

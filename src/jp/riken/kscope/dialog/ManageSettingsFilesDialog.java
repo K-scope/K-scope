@@ -71,7 +71,7 @@ import jp.riken.kscope.properties.ProjectProperties;
 import jp.riken.kscope.properties.RemoteBuildProperties;
 
 public class ManageSettingsFilesDialog extends javax.swing.JDialog implements ActionListener {
-	/** シリアル番号 */
+	/** Serial number */
 	private static final long serialVersionUID = 1L;
 	private static boolean debug = (System.getenv("DEBUG")!= null); 
 	private static boolean debug_l2 = false;
@@ -366,7 +366,7 @@ public class ManageSettingsFilesDialog extends javax.swing.JDialog implements Ac
 				saveSettingsToFile(this.settings,selected_file);
 			}
 			this.result = Constant.CLOSE_DIALOG;
-             // ダイアログを閉じる。
+             // Close the dialog.
             dispose();            
         }
 		else if (target == this.btnPlus) {

@@ -35,36 +35,36 @@ import jp.riken.kscope.utils.FileUtils;
 import jp.riken.kscope.utils.StringUtils;
 
 /**
- * ソースファイルエクスポートアクション.
+ * Source file export action.
  * @author RIKEN
  */
 public class FileExportSourceFileAction extends ActionBase {
-	/** プロジェクトフォルダ */
+	/** Project folder */
 	private File prjFolder;
-	/** ソースフォルダ */
+	/** Source folder */
 	private File srcFolder;
-	/** 出力フォルダ */
+	/** Output folder */
 	private File outFolder;
-	/** ステータスメッセージ */
+	/** Status message */
 	private String message = "";
 
 	/**
-     * コンストラクタ
-     * @param controller	アプリケーションコントローラ
+     * Constructor
+     * @param controller Application controller
      */
 	public FileExportSourceFileAction(AppController controller) {
 		super(controller);
-		message = Message.getString("fileexportsourcefileaction.exportsource.status"); // ソースファイルエクスポート
+		message = Message.getString("fileexportsourcefileaction.exportsource.status"); // Source file export
 	}
 
     /**
-     * アクションが実行可能であるかチェックする.<br/>
-     * アクションの実行前チェック、メニューのイネーブルの切替を行う。<br/>
-     * @return		true=アクションが実行可能
+     * Check if the action is executable. <br/>
+     * Check before executing the action and switch the menu enable. <br/>
+     * @return true = Action can be executed
      */
     @Override
     public boolean validateAction() {
-        // プロジェクトが作成済みであること
+        // The project has been created
         ProjectModel model = this.controller.getProjectModel();
         if (model == null) return false;
         if (model.getProjectTitle() == null) return false;
@@ -75,7 +75,7 @@ public class FileExportSourceFileAction extends ActionBase {
 
 	@Override
 	public void actionPerformed(ActionEvent event) {
-		// 親Frameの取得を行う。
+		// Get the parent Frame.
         Frame frame = getWindowAncestor( event );
         Application.status.setMessageMain(message);
 
@@ -86,63 +86,63 @@ public class FileExportSourceFileAction extends ActionBase {
 		int res = dialog.showDialog();
 		if (res != Constant.OK_DIALOG) {
 			Application.status.setMessageMain(message +
-					Message.getString("action.common.cancel.status")); //:キャンセル
+					Message.getString("action.common.cancel.status")); //:Cancel
 			return;
 		}
 
-		// 出力フォルダ取得
+		// Get output folder
 		outFolder = new File(dialog.getOutputFolder());
-		// コピー先ディレクトリチェック
+		// Copy destination directory check
 		if (!outFolder.exists()) return;
 		if (!outFolder.isDirectory()) return;
 
-		// プロジェクトパス
+		// Project path
 		String prjRoot = this.controller.getProjectModel().getProjectFolder().getAbsolutePath();
-		// プロジェクトフォルダ
+		// Project folder
 		prjFolder = new File(prjRoot);
-		// ソースルートパス（プロジェクトフォルダの外にソースがある場合）
+		// Source root path (if the source is outside the project folder)
 		String sourceRoot = this.controller.getSourceTreeModel().getRootFolder();
-		// ソースルートフォルダ
+		// Source root folder
 		srcFolder = null;
 		if (!StringUtils.isNullOrEmpty(sourceRoot) && !FileUtils.isChildPath(prjRoot, sourceRoot)) {
 			srcFolder = new File(sourceRoot);
 		}
 
-		// 除外ファイルパターン文字列
+		// Excluded file pattern string
 		String exclude = dialog.getExcludeFilePattern();
 
-		// アプリケーションシステムの除外パスリスト
+		// Application system exclusion path list
 		String [] excludePaths = new String [] {
 				FileUtils.joinFilePath(prjFolder, KscopeProperties.SETTINGS_FOLDER).getAbsolutePath(),
 				FileUtils.joinFilePath(prjFolder, KscopeProperties.PROJECT_FILE).getAbsolutePath()
 		};
 
 		Application.status.setMessageMain(message +
-				Message.getString("action.common.process.status")); //:処理中
+				Message.getString("action.common.process.status")); //:processing
 
 		copyFiles(exclude, excludePaths, dialog.isExportOtherFile());
 
 	}
 
 	/**
-	 * ソースファイルをコピーする.
-	 * @param exclude			除外ファイル拡張子カンマ区切りリスト
-	 * @param excludePaths		除外ファイルパスリスト
-	 * @param other				true=ソースファイル以外をコピーする
-	 */
+* Copy the source file.
+* @param exclude Excluded file extension comma separated list
+* @param excludePaths Exclude file path list
+* @param other true = Copy other than the source file
+*/
     private void copyFiles(String exclude, String [] excludePaths, boolean other) {
         final String excludeStr = exclude;
         final String [] excludePathArr = excludePaths;
         final boolean otherFlag = other;
 
-        // スレッドタスクサービスの生成を行う。
+        // Create a thread task service.
         FutureService<Integer> future = new FutureService<Integer>(
                 /**
-                 * スレッド呼出クラス
+                 * Thread call class
                  */
                 new Callable<Integer>() {
                     /**
-                     * スレッド実行を行う
+                     * Perform thread execution
                      */
                     @Override
 					public Integer call() {
@@ -150,10 +150,10 @@ public class FileExportSourceFileAction extends ActionBase {
                         	Application.status.setProgressStart(true);
                         	File[] cpFiles = null;
                             if (otherFlag) {
-//                             	プロジェクトフォルダ配下を走査
+// Scan under the project folder
                     			File[] files = FileUtils.getChildren(prjFolder, excludeStr, excludePathArr);
 
-                    			// ソースフォルダがプロジェクトフォルダ配下に無い場合はソースフォルダ配下も走査
+                    			// If the source folder is not under the project folder, scan under the source folder as well
                     			if(srcFolder != null && !FileUtils.isChildPath(prjFolder.getAbsolutePath(), srcFolder.getAbsolutePath())) {
                     				File [] srcFiles = FileUtils.getChildren(srcFolder, excludeStr, excludePathArr);
                     				if (srcFiles != null && srcFiles.length > 0) {
@@ -186,7 +186,7 @@ public class FileExportSourceFileAction extends ActionBase {
                     			}
                             }
 
-                    		// コピー対象が存在しない場合は終了
+                    		// Exit if copy target does not exist
                     		if (cpFiles == null) return Constant.SUCCESS_RESULT;
                     		if (cpFiles.length < 1) return Constant.SUCCESS_RESULT;
 
@@ -195,7 +195,7 @@ public class FileExportSourceFileAction extends ActionBase {
                     			outPrj.mkdir();
                     		}
 
-                    		// ソースファイルフォルダコピー先のルート
+                    		// Source file folder Copy destination root
                     		File outSrc = null;
                     		if (srcFolder != null) {
                     			outSrc = FileUtils.joinFilePath(outFolder, srcFolder.getName());
@@ -239,41 +239,41 @@ public class FileExportSourceFileAction extends ActionBase {
                             return Constant.SUCCESS_RESULT;
                         } catch (Exception e) {
                             e.printStackTrace();
-                            Application.status.setMessageMain(message + Message.getString("action.common.error.status")); //:エラー
+                            Application.status.setMessageMain(message + Message.getString("action.common.error.status")); //:error
                             return Constant.ERROR_RESULT;
                         }
                     }
                 }
                 ) {
                     /**
-                     * スレッド実行完了.<br/>
-                     * キャンセルされた時の後処理を行う。
+                     * Thread execution completed. <br/>
+                     * Perform post-processing when canceled.
                      */
                     @Override
                     protected void done() {
-                        // キャンセルによる終了であるかチェックする。
+                        // Check if the end is due to cancellation.
                         if (this.isCancelled()) {
-                            Application.status.setMessageMain(message + Message.getString("action.common.cancel.status")); //:キャンセル
+                            Application.status.setMessageMain(message + Message.getString("action.common.cancel.status")); //:Cancel
                         }
                         else {
-                            Application.status.setMessageMain(message + Message.getString("action.common.done.status")); //:完了
+                            Application.status.setMessageMain(message + Message.getString("action.common.done.status")); //: Done
                         }
 
                         super.done();
                     }
         };
-        // ステータスメッセージクリア
+        // Clear status message
         Application.status.setMessageStatus(null);
 
-        // スレッドタスクにコントローラをリスナ登録する：スレッド完了時の呼出の為
+        // Register the controller as a listener in the thread task: To call when the thread is completed
         future.addPropertyChangeListener(this.controller);
         this.controller.setThreadFuture(future);
 
-        // プログレスダイアログを表示する
+        // Display the progress dialog
         WindowProgressAction progress = new WindowProgressAction(this.controller);
         progress.showProgressDialog();
 
-        // スレッド起動
+        // Thread start
         new Thread(future).start();
 
     }

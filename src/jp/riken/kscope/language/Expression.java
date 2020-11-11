@@ -28,47 +28,47 @@ import jp.riken.kscope.information.InformationBlocks;
 
 /**
  *
- * 式を表現するためのクラス.
+ * A class for expressing expressions.
  *
  * @author RIKEN
  *
  */
 public class Expression implements Serializable {
-    /** シリアル番号 */
+    /** Serial number */
     private static final long serialVersionUID = -9199930499046575735L;
-    /** 式の文字列表現 */
+    /** String representation of the expression */
     private String line;
-    /** データ型 */
+    /** Data type */
     private IVariableType type;
-    /** 変数リスト */
+    /** Variable list */
     private List<Variable> variables;
-    /** 呼出関数リスト */
+    /** Call function list */
     private List<ProcedureUsage> funcCalls;
-    /** 加算カウント */
+    /** Addition count */
     private int addCount = 0;
-    /** 減算カウント */
+    /** Subtraction count */
     private int subCount = 0;
-    /** 乗算カウント */
+    /** Multiplication count */
     private int mulCount = 0;
-    /** 除算カウント */
+    /** Division count */
     private int divCount = 0;
-    /** べき算カウント */
+    /** Power count */
     private int powCount = 0;
-    /** 変数の親ブロック : 変数が属する代入文(Substitution),構文 */
+    /** Parent block of variable: Substitution, syntax */ to which the variable belongs
     private IBlock parentStatement;
 
     /**
-     * コンストラクタ.
+     * Constructor.
      */
     public Expression() {
         variables = new ArrayList<Variable>();
         funcCalls = new ArrayList<ProcedureUsage>();
     }
     /**
-     * コンストラクタ.
+     * Constructor.
      *
      * @param val
-     *   対象となる式
+     * Target expression
      */
     public Expression(String val) {
         line = val;
@@ -78,49 +78,49 @@ public class Expression implements Serializable {
 
 
     /**
-     * 式の結果のデータ型をセットする。
+     * Set the data type of the result of the expression.
      *
-     * @param tp 結果の型
+     * @param tp Result type
      */
     public void setVariableType(IVariableType tp) {
         type = tp;
     }
     /**
-     * 式の結果のデータ型を返す。
-     * @return データ型
+     * Returns the data type of the result of the expression.
+     * @return data type
      */
     public IVariableType getType() {
         return type;
     }
 
     /**
-     * 式に現れる変数のリストをセットする。
-     * @param vars 変数のリスト
+     * Set the list of variables that appear in the expression.
+     * @param vars List of variables
      */
     public void setVariables(List<Variable> vars) {
         this.variables = vars;
     }
     /**
-     * 式に現れる変数を追加する。
-     * @param var 変数
+     * Add variables that appear in expressions.
+     * @param var variable
      */
     public void addVariable(Variable var) {
         variables.add(var);
     }
 
     /**
-     * 式に現れる変数のリストを返す。
+     * Returns a list of variables that appear in the expression.
      *
-     * @return 変数のリスト。無ければ空のリストを返す。
+     * @return A list of variables. If not, returns an empty list.
      */
     public List<Variable> getVariables() {
         return variables;
     }
 
     /**
-     * 式に含まれる全ての変数のセットを返す。変数の添字・手続呼出の添字も対象とする。 再帰呼出。
+     * Returns a set of all variables contained in an expression. Variable subscripts and procedure call subscripts are also included. Recursive call.
      *
-     * @return 変数のセット。無ければ空のセットを返す。
+     * @return A set of variables. If not, it returns an empty set.
      */
     public Set<Variable> getAllVariables() {
         Set<Variable> vars = new HashSet<Variable>(this.variables);
@@ -139,9 +139,9 @@ public class Expression implements Serializable {
         return vars;
     }
     /**
-     * 式に含まれる全ての手続呼出のセットを返す。変数および手続呼出の添字も対象とする。 再帰呼び出し。
+     * Returns the set of all procedure calls contained in the expression. It also covers variables and procedure call subscripts. Recursive call.
      *
-     * @return 手続呼出のセット。無ければ空のセットを返す。
+     * @return A set of procedure calls. If not, it returns an empty set.
      */
     public Set<ProcedureUsage> getAllFunctions() {
         Set<ProcedureUsage> pus = new HashSet<ProcedureUsage>();
@@ -162,149 +162,149 @@ public class Expression implements Serializable {
     }
 
     /**
-     * 式に現れる関数呼び出しのリストをセットする。
-     * @param fCalls 関数呼び出しのリスト
+     * Set the list of function calls that appear in the expression.
+     * @param fCalls List of function calls
      */
     public void setFuncCalls(List<ProcedureUsage> fCalls) {
         this.funcCalls = fCalls;
     }
     /**
-     * 式に現れる関数呼び出しを追加する。
-     * @param call 関数呼び出し
+     * Add a function call that appears in the expression.
+     * @param call Function call
      */
     public void addFuncCall(ProcedureUsage call) {
         funcCalls.add(call);
     }
 
     /**
-     * 右辺に含まれる関数呼び出しのリストを返す。
+     * Returns a list of function calls contained on the right-hand side.
      *
-     * @return 関数呼び出しのリスト。無ければ空のリストを返す。
+     * @return A list of function calls. If not, returns an empty list.
      */
     public List<ProcedureUsage> getFuncCalls() {
         return funcCalls;
     }
 
     /**
-     * 対象となる式を返す.
+     * Returns the expression of interest.
      *
      * @return
-     *   対象となる式
+     * Target expression
      */
     @Override
     public String toString() {
         return line;
     }
     /**
-     * 式の文字列表現を返す。
-     * @return 式の文字列表現
+     * Returns a string representation of the expression.
+     * String representation of @return expression
      */
     public String getLine() {
         return line;
     }
     /**
-     * 式の文字列表現をセットする。
-     * @param ln 式の文字列表現
+     * Set the string representation of the expression.
+     * @param ln String representation of an expression
      */
     public void setLine(String ln) {
         this.line = ln;
     }
 
 
-    /** 加算カウント. */
+    /** Addition count. */
     public void incrementAdd() {
         addCount++;
     }
-    /** 減算カウント. */
+    /** Subtraction count. */
     public void incrementSub() {
         subCount++;
     }
-    /** 乗算カウント. */
+    /** Multiply count. */
     public void incrementMul() {
         mulCount++;
     }
-    /** 除算カウント. */
+    /** Division count. */
     public void incrementDiv() {
         divCount++;
     }
-    /** 累算カウント. */
+    /** Cumulative count. */
     public void incrementPow() {
         powCount++;
     }
 
-    /** 加算カウントを返す。
-     * @return 加算カウント
+    /** Returns the addition count.
+     * @return Addition count
      */
     public int getAddCount() {
         return addCount;
     }
-    /** 減算カウントを返す。
-     * @return 減算カウント
+    /** Returns the subtraction count.
+     * @return Subtraction count
      */
     public int getSubCount() {
         return subCount;
     }
-    /** 乗算カウントを返す。
-     * @return 乗算カウント
+    /** Returns the multiplication count.
+     * @return multiplication count
      */
     public int getMulCount() {
         return mulCount;
     }
-    /** 除算カウントを返す。
-     * @return 除算カウント
+    /** Returns the division count.
+     * @return division count
      */
     public int getDivCount() {
         return divCount;
     }
-    /** 累算カウントを返す。
-     * @return 累算カウント
+    /** Returns the cumulative count.
+     * @return Cumulative count
      */
     public int getPowCount() {
         return powCount;
     }
 
     /**
-     * 加算カウントをセットする。
-     * @param add 加算カウント
+     * Set the addition count.
+     * @param add Addition count
      */
     public void setAddCount(int add) {
         this.addCount = add;
     }
     /**
-     * 減算カウントをセットする。
-     * @param sub 加算カウント
+     * Set the subtraction count.
+     * @param sub Addition count
      */
     public void setSubCount(int sub) {
         this.subCount = sub;
     }
     /**
-     * 乗算カウントをセットする。
-     * @param mul 乗算カウント
+     * Set the multiplication count.
+     * @param mul multiplication count
      */
     public void setMulCount(int mul) {
         this.mulCount = mul;
     }
     /**
-     * 除算カウントをセットする。
-     * @param div 除算カウント
+     * Set the division count.
+     * @param div division count
      */
     public void setDivCount(int div) {
         this.divCount = div;
     }
     /**
-     * 累算カウントをセットする。
-     * @param pow 累算カウント
+     * Set the cumulative count.
+     * @param pow Cumulative count
      */
     public void setPowCount(int pow) {
         this.powCount = pow;
     }
 
     /**
-     * 式に、ある変数が含まれるかを内部の関数呼び出しを含めて再帰的に判定し、真偽値を返す。
+     * Recursively determines whether a variable is included in the expression, including an internal function call, and returns a boolean value.
      *
      * @param name
-     *            変数名
-     * @return 変数が含まれれば真。それ以外は偽。
+     *            Variable name
+     * True if @return variable is included. Other than that, it is false.
      */
     public boolean hasVariable(String name) {
         List<Variable> vars = this.getVariables();
@@ -326,9 +326,9 @@ public class Expression implements Serializable {
     }
 
     /**
-     * 付加情報ブロックコレクションを生成する。
+     * Generate an additional information block collection.
      *
-     * @return 付加情報ブロックコレクション
+     * @return Additional information block collection
      */
     public InformationBlocks createInformationBlocks() {
         InformationBlocks result = new InformationBlocks();
@@ -340,10 +340,10 @@ public class Expression implements Serializable {
         return result;
     }
     /**
-     * idにマッチした情報ブロックを検索する。
+     * Search for information blocks that match id.
      * @param id
-     *          ID
-     * @return 見つかった情報ブロック。見つからなかった場合はnullが返ります。
+     * ID
+     * @return The information block found. If not found, null is returned.
      */
     public IInformation findInformationBlockBy(String id) {
         IInformation result = null;
@@ -356,8 +356,8 @@ public class Expression implements Serializable {
         return result;
     }
     /**
-     * 自身が配列式か判定する。
-     * @return 真偽値。配列式であれば真
+     * Determine if it is an array expression.
+     * @return Boolean value. True if it is an array formula
      */
     public boolean isArrayExpression() {
         List<Variable> vars = this.getVariables();
@@ -370,10 +370,10 @@ public class Expression implements Serializable {
     }
 
     /**
-     * 同一の式であるかチェックする.
-     * 式の文字列表現が同じかチェックする.
-     * @param destExp		式
-     * @return			true=同一
+     * Check if they are the same expression.
+     * Check if the string representation of the expression is the same.
+     * @param destExp expression
+     * @return true = same
      */
 	public boolean equalsExpression(Expression destExp) {
 		if (destExp == null) return false;
@@ -393,10 +393,10 @@ public class Expression implements Serializable {
 
 
 	/**
-	 * 同一ブロックを検索する
-	 * @param block			IInformationブロック
-	 * @return		同一ブロック
-	 */
+* Search for the same block
+* @param block IInformation block
+* @return Same block
+*/
 	public IInformation[] searchInformationBlocks(IInformation block) {
 
 		List<IInformation> list = new ArrayList<IInformation>();
@@ -417,22 +417,22 @@ public class Expression implements Serializable {
 
 
 	/**
-	 * 親ブロックを取得する.
-	 * 親ブロックは変数が属する代入文(Substitution),構文とする.
-	 * @return 親ブロック
-	 */
+* Get the parent block.
+* The parent block is the assignment statement (Substitution) and syntax to which the variable belongs.
+* @return Parent block
+*/
 	public IBlock getParentStatement() {
 		return parentStatement;
 	}
 
 	/**
-	 * 親ブロックを設定する.
-	 * 親ブロックは変数が属する代入文(Substitution),構文とする.
-	 * @param parent 親ブロック
-	 */
+* Set the parent block.
+* The parent block is the assignment statement (Substitution) and syntax to which the variable belongs.
+* @param parent parent block
+*/
 	public void setParentStatement(IBlock parent) {
 		this.parentStatement = parent;
-		// 子変数に対して設定する
+		// Set for child variables
 		if (this.variables != null) {
 			for (Variable var : this.variables) {
 				if (var == null) continue;
@@ -452,9 +452,9 @@ public class Expression implements Serializable {
 
 
     /**
-     * 加算カウントを返す.
-     * 子変数、添字、関数引数もカウントする.
-     * @return 加算カウント
+     * Returns the addition count.
+     * Also counts child variables, subscripts, and function arguments.
+     * @return Addition count
      */
     public int getOperandAddCount() {
     	int count = this.addCount;
@@ -475,9 +475,9 @@ public class Expression implements Serializable {
         return count;
     }
     /**
-     * 減算カウントを返す.
-     * 子変数、添字、関数引数もカウントする.
-     * @return 減算カウント
+     * Returns the subtraction count.
+     * Also counts child variables, subscripts, and function arguments.
+     * @return Subtraction count
      */
     public int getOperandSubCount() {
     	int count = this.subCount;
@@ -498,9 +498,9 @@ public class Expression implements Serializable {
         return count;
     }
     /**
-     * 乗算カウントを返す.
-     * 子変数、添字、関数引数もカウントする.
-     * @return 乗算カウント
+     * Returns the multiplication count.
+     * Also counts child variables, subscripts, and function arguments.
+     * @return multiplication count
      */
     public int getOperandMulCount() {
     	int count = this.mulCount;
@@ -522,9 +522,9 @@ public class Expression implements Serializable {
     }
 
     /**
-     * 除算カウントを返す.
-     * 子変数、添字、関数引数もカウントする.
-     * @return 除算カウント
+     * Returns the division count.
+     * Also counts child variables, subscripts, and function arguments.
+     * @return division count
      */
     public int getOperandDivCount() {
     	int count = this.divCount;
@@ -546,9 +546,9 @@ public class Expression implements Serializable {
     }
 
     /**
-     * 累算カウントを返す.
-     * 子変数、添字、関数引数もカウントする.
-     * @return 累算カウント
+     * Returns the cumulative count.
+     * Also counts child variables, subscripts, and function arguments.
+     * @return Cumulative count
      */
     public int getOperandPowCount() {
     	int count = this.powCount;

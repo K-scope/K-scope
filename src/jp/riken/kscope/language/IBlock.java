@@ -22,39 +22,39 @@ import java.util.Set;
 import jp.riken.kscope.data.CodeLine;
 
 /**
- * ブロックの行情報の取得を行うインターフェース。
+ * Interface to get the row information of the block.
  * @author RIKEN
  *
  */
 public interface IBlock {
 
     /**
-     * 開始行番号情報を取得する。
-     * @return 開始行番号情報
+     * Get the start line number information.
+     * @return Start line number information
      */
     CodeLine getStartCodeLine();
 
     /**
-     * 終了行番号情報を取得する。
-     * @return		終了行番号情報
+     * Get the end line number information.
+     * @return End line number information
      */
     CodeLine getEndCodeLine();
 
     /**
-     * ブロックタイプを返す。
-     * @return ブロックタイプ
+     * Returns the block type.
+     * @return block type
      */
     BlockType getBlockType();
 
     /**
-     * ブロックタイプを返す。
-     * @return ブロックタイプ
+     * Returns the block type.
+     * @return block type
      */
     IBlock getMotherBlock();
 
     /**
-     * 式の変数リストを取得する.
-     * @return		式の変数リスト
+     * Get the variable list of the expression.
+     * Variable list of @return expression
      */
 	Set<Variable> getAllVariables();
 

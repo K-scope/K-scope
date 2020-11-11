@@ -27,45 +27,45 @@ import jp.riken.kscope.properties.ProfilerProperties;
 import jp.riken.kscope.service.AppController;
 
 /**
- * プロファイラ設定アクションクラス
+ * Profiler settings action class
  * @author RIKEN
  */
 public class ProjectSettingProfilerAction extends ActionBase {
 
     /**
-     * コンストラクタ
-     * @param controller	アプリケーションコントローラ
+     * Constructor
+     * @param controller Application controller
      */
     public ProjectSettingProfilerAction(AppController controller) {
         super(controller);
     }
 
     /**
-     * アクション発生イベント
-     * @param event			イベント情報
+     * Action occurrence event
+     * @param event Event information
      */
     @Override
     public void actionPerformed(ActionEvent event) {
-        // ステータスメッセージ
-        final String message = Message.getString("projectsettingprofileraction.setup.status"); //プロファイラ設定
+        // Status message
+        final String message = Message.getString("projectsettingprofileraction.setup.status"); // Profiler settings
         Application.status.setMessageMain(message);
 
-        // 親Frameの取得を行う。
+        // Get the parent Frame.
         Frame frame = getWindowAncestor( event );
 
-        // プロファイラ設定ダイアログを表示する。
+        // Display the profiler setting dialog.
         ProfilerProperties properities = this.controller.getPropertiesProfiler();
 
         SettingProfilerDialog dialog = new SettingProfilerDialog(frame, true, properities);
         int result = dialog.showDialog();
         if (result != Constant.OK_DIALOG) {
         	Application.status.setMessageMain(message +
-        			Message.getString("action.common.cancel.status")); //キャンセル
+        			Message.getString("action.common.cancel.status")); //Cancel
         	return;
         }
 
     	Application.status.setMessageMain(message +
-    			Message.getString("action.common.done.status")); //完了
+    			Message.getString("action.common.done.status")); // Done
         return;
 
     }

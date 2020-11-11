@@ -40,19 +40,19 @@ import jp.riken.kscope.profiler.common.PaDiscrimInfo;
 import jp.riken.kscope.profiler.utils.ProfilerReaderUtil;
 
 /**
- * DProfileファイルを読み込み、情報を保持する
+ * Read the DProfile file and retain the information
  *
  * @author RIKEN
  *
  */
 public class DProfReader extends BaseReader implements IProfilerReader {
 
-    private final String FILE_ID_DPROF = "DPRF"; // DProfファイルを表すファイル識別文字
-    private final int FILE_ID_LENGTH = 4; // ファイル識別文字の長さ
-    private final int MEASURE_TIME_LENGTH = 32; // 測定時間情報文字列の長さ
+    private final String FILE_ID_DPROF = "DPRF"; // File identifier representing the DProf file
+    private final int FILE_ID_LENGTH = 4; // File identification character length
+    private final int MEASURE_TIME_LENGTH = 32; // Length of measurement time information string
     private final short PROFILER_VERSION = 0x412;
 
-    /* PAイベント指定値ごとのPA情報テーブルの大きさ */
+    /* Size of PA information table for each PA event specification value */
     private final Map<String, Integer> MAP_PA_INFO_LENGTH = new HashMap<String, Integer>() {
         private static final long serialVersionUID = 1L;
         {
@@ -74,24 +74,24 @@ public class DProfReader extends BaseReader implements IProfilerReader {
     private ArrayList<ArrayList<LoopInfo>> loopInfoList=null;
     private ArrayList<CallGraphInfo> callGraphInfoList = null;
 
-    /** 読み込み時のエンディアン設定 */
+    /** Endian settings when loading */
     private int endian;
-    /** 読込プロファイラファイル */
+    /** Read profiler file */
     private File profFile;
 
 
     /**
-     * 指定されたプロファイラファイルの情報を読み込む
+     * Read the information of the specified profiler file
      *
      * @param fDProf
-     *            読み込むプロファイラファイル
+     * Profiler file to read
      * @param endian
-     *            エンディアン設定　LITTLE_ENDIAN:0x00 BIG_ENDIAN:0x01;
-     * @throws Exception   読込例外
+     * Endian setting LITTLE_ENDIAN: 0x00 BIG_ENDIAN: 0x01;
+     * @throws Exception Read exception
      */
     @Override
     public void readFile(File fDProf, int endian) throws Exception {
-        // エンディアンを設定
+        // set endian
         this.endian = endian;
         this.profFile = fDProf;
 
@@ -118,124 +118,124 @@ public class DProfReader extends BaseReader implements IProfilerReader {
     }
 
     /**
-     * プロファイラファイルから読み込まれたマジックキー情報のインスタンスを返す。readProfile(File)が実行されていない場合、nullを返す
+     * Returns an instance of magic key information read from the profiler file. Returns null if readProfile (File) is not executed
      *
      * @return
-     *         マジックキー情報を格納したMagicKeyクラスのインスタンス。ただし、readProfile(File)が実行されていない場合はnull
+     * An instance of the MagicKey class that stores magic key information. However, it is null if readProfile (File) is not executed.
      */
     public MagicKey getMagicKey() {
         return magicKey;
     }
 
     /**
-     * プロファイラファイルから読み込まれた共通情報のインスタンスを返す。readProfile(File)が実行されていない場合、nullを返す
+     * Returns an instance of common information read from the profiler file. Returns null if readProfile (File) is not executed
      *
      * @return
-     *         共通情報を格納したCommonInfoクラスのインスタンス。ただし、readProfile(File)が実行されていない場合はnull
+     * An instance of the CommonInfo class that stores common information. However, it is null if readProfile (File) is not executed.
      */
     public CommonInfo getCommonInfo() {
         return commonInfo;
     }
 
     /**
-     * プロファイラファイルから読み込まれたスレッド情報のインスタンスのリストを返す。readProfile(File)が実行されていない場合、
-     * nullを返す
+     * Returns a list of instances of thread information read from the profiler file. If readProfile (File) is not executed
+     * Returns null
      *
-     * @return スレッド情報を格納したThreadInfoクラスのインスタンスのリスト。ただし、readProfile(File)
-     *         が実行されていない場合はnull
+     * @return A list of instances of the ThreadInfo class that contain thread information. However, readProfile (File)
+     Null if * is not running
      */
     public List<ThreadInfo> getThreadInfoList() {
         return threadInfoList;
     }
 
     /**
-     * プロファイラファイルから読み込まれたオフセット情報のインスタンスのリストを返す。readProfile(File)が実行されていない場合、
-     * nullを返す
+     * Returns a list of instances of offset information read from the profiler file. If readProfile (File) is not executed
+     * Returns null
      *
      * @return
-     *         オフセット情報を格納したOffSetInfoクラスのインスタンス。ただし、readProfile(File)が実行されていない場合はnull
+     * An instance of the OffSetInfo class that stores offset information. However, it is null if readProfile (File) is not executed.
      */
     public OffSetInfo getOffSetInfo() {
         return offSetInfo;
     }
 
     /**
-     * プロファイラファイルから読み込まれたシンボル情報のインスタンスのリストを返す。readProfile(File)が実行されていない場合、
-     * nullを返す
+     * Returns a list of instances of symbol information read from the profiler file. If readProfile (File) is not executed
+     * Returns null
      *
-     * @return シンボル情報を格納したSymbolInfoクラスのインスタンスのリスト。ただし、readProfile(File)
-     *         が実行されていない場合はnull
+     * @return A list of instances of the SymbolInfo class that contain symbol information. However, readProfile (File)
+     Null if * is not running
      */
     public SymbolRecord getSymbolInfoList() {
         return symbolInfoList;
     }
 
     /**
-     * プロファイラファイルから読み込まれたライン情報のインスタンスのリストを返す。readProfile(File)が実行されていない場合、
-     * nullを返す
+     * Returns a list of instances of line information read from the profiler file. If readProfile (File) is not executed
+     * Returns null
      *
-     * @return シンボル情報を格納したLineInfoクラスのインスタンスのリスト。ただし、readProfile(File)
-     *         が実行されていない場合はnull
+     * @return A list of instances of the LineInfo class that contain symbol information. However, readProfile (File)
+     Null if * is not running
      */
     public ArrayList<ArrayList<LineInfo>> getLineInfoList() {
         return lineInfoList;
     }
 
     /**
-     * プロファイラファイルから読み込まれたループ情報のインスタンスのリストを返す。readProfile(File)が実行されていない場合、
-     * nullを返す
+     * Returns a list of instances of loop information read from the profiler file. If readProfile (File) is not executed
+     * Returns null
      *
-     * @return シンボル情報を格納したLoopInfoクラスのインスタンスのリスト。ただし、readProfile(File)
-     *         が実行されていない場合はnull
+     * @return A list of instances of the LoopInfo class that contain symbol information. However, readProfile (File)
+     Null if * is not running
      */
     public ArrayList<ArrayList<LoopInfo>> getLoopInfoList() {
         return loopInfoList;
     }
 
     /**
-     * プロファイラファイルから読み込まれたファイル情報のインスタンスのリストを返す。readProfile(File)が実行されていない場合、
-     * nullを返す
+     * Returns a list of instances of file information read from the profiler file. If readProfile (File) is not executed
+     * Returns null
      *
      * @return
-     *         ファイル情報を格納したFilelInfoクラスのインスタンスのリスト。ただし、readProfile(File)が実行されていない場合はnull
+     * A list of instances of the FilelInfo class that contain file information. However, it is null if readProfile (File) is not executed.
      */
     public FileRecord getFileInfoList() {
         return fileInfoList;
     }
 
     /**
-     * プロファイラファイルから読み込まれたコールグラフ情報のインスタンスのリストを返す。readProfile(File)が実行されていない場合、
-     * nullを返す
+     * Returns a list of instances of call graph information read from the profiler file. If readProfile (File) is not executed
+     * Returns null
      *
-     * @return コールグラフ情報を格納したCallGraphlInfoクラスのインスタンスのリスト。ただし、readProfile(File)
-     *         が実行されていない場合はnull
+     * @return A list of instances of the CallGraphlInfo class that contains call graph information. However, readProfile (File)
+     Null if * is not running
      */
     public List<CallGraphInfo> getCallGraphInfo() {
         return callGraphInfoList;
     }
 
-    /*マジックキー情報の読み込み*/
+    /* Reading magic key information */
     private MagicKey readMagicKey(ByteBuffer byteBuf) throws Exception {
         MagicKey newMagicKey = new MagicKey();
         String fileID = getString(byteBuf, FILE_ID_LENGTH);
 
         if (!FILE_ID_DPROF.equals(fileID)) {
-        	throw new Exception(Message.getString("dialog.common.error") + //エラー
+        	throw new Exception(Message.getString("dialog.common.error") + //error
         			": " +
-        			Message.getString("dprofreader.exception.notvalid"));//有効なDProfファイルではありません。
+        			Message.getString("dprofreader.exception.notvalid"));// Not a valid DProf file.
         }
         newMagicKey.setId(fileID);
         newMagicKey.setAdd_mode(getShort(byteBuf));
         short version = getShort(byteBuf);
         if (version != PROFILER_VERSION) {
-        	throw new Exception(Message.getString("dialog.common.error") + //エラー
-        			": " + Message.getString("dprofreader.exception.outside", version, PROFILER_VERSION)); //サポート対象外のDProfバージョンです。 読込=%#04X サポート=%#04X
+        	throw new Exception(Message.getString("dialog.common.error") + //error
+        			": " + Message.getString("dprofreader.exception.outside", version, PROFILER_VERSION)); // This is an unsupported DProf version. Read =% # 04X Support =% # 04X
         }
         newMagicKey.setVer(version);
         return newMagicKey;
     }
 
-    /*共通情報の読み込み*/
+    /* Reading common information */
     private CommonInfo readCommonInfo(ByteBuffer byteBuf) {
         CommonInfo newCommonInfo = new CommonInfo();
         newCommonInfo.setProcessNum(getInt(byteBuf));
@@ -280,7 +280,7 @@ public class DProfReader extends BaseReader implements IProfilerReader {
         return newCommonInfo;
     }
 
-    /*スレッド情報の読み込み*/
+    /* Read thread information */
     private ArrayList<ThreadInfo> readThreadInfo(ByteBuffer byteBuf) {
         ArrayList<ThreadInfo> newThreadInfoList = new ArrayList<ThreadInfo>();
         int threadNum = this.commonInfo.getThreadNum();
@@ -311,7 +311,7 @@ public class DProfReader extends BaseReader implements IProfilerReader {
         return newThreadInfoList;
     }
 
-    /*オフセット情報の読み込み*/
+    /* Reading offset information */
     private OffSetInfo readOffSetInfo(ByteBuffer byteBuf) {
         OffSetInfo newOffsetInfo = new OffSetInfo();
         newOffsetInfo.setLineInfo(getInt(byteBuf));
@@ -323,7 +323,7 @@ public class DProfReader extends BaseReader implements IProfilerReader {
         return newOffsetInfo;
     }
 
-    /*ファイル情報の読み込み*/
+    /* Read file information */
     private FileRecord readFileInfo(ByteBuffer byteBuf) {
         FileRecord newFileInfoList = new FileRecord();
         int fileNameNum = getInt(byteBuf);
@@ -338,7 +338,7 @@ public class DProfReader extends BaseReader implements IProfilerReader {
         return newFileInfoList;
     }
 
-    /*シンボル情報の読み込み*/
+    /* Reading symbol information */
     private SymbolRecord readSymbolInfo(ByteBuffer byteBuf) {
         SymbolRecord newSymbolInfoList = new SymbolRecord();
         int threadNum = this.commonInfo.getThreadNum();
@@ -369,7 +369,7 @@ public class DProfReader extends BaseReader implements IProfilerReader {
         return newSymbolInfoList;
     }
 
-    /*ライン情報の読み込み*/
+    /* Reading line information */
     private ArrayList<ArrayList<LineInfo>> readLineInfo(ByteBuffer byteBuf) {
         ArrayList<ArrayList<LineInfo>> newLineInfoList = new ArrayList<ArrayList<LineInfo>>();
 
@@ -401,7 +401,7 @@ public class DProfReader extends BaseReader implements IProfilerReader {
         return newLineInfoList;
     }
 
-    /*ループ情報の読み込み*/
+    /* Reading loop information */
     private ArrayList<ArrayList<LoopInfo>> readLoopInfo(ByteBuffer byteBuf) {
         ArrayList<ArrayList<LoopInfo>> newLoopInfoList = new ArrayList<ArrayList<LoopInfo>>();
 
@@ -440,7 +440,7 @@ public class DProfReader extends BaseReader implements IProfilerReader {
         return newLoopInfoList;
     }
 
-    /*コールグラフ情報の読み込み*/
+    /* Reading call graph information */
     private ArrayList<CallGraphInfo> readCallGraphInfo(ByteBuffer byteBuf) {
         ArrayList<CallGraphInfo> newCallGraphInfoList = new ArrayList<CallGraphInfo>();
 
@@ -477,9 +477,9 @@ public class DProfReader extends BaseReader implements IProfilerReader {
     }
 
     /**
-     * プロファイラファイルから読み込みを行う
-     * @param profilerfile		プロファイラファイル
-     * @throws IOException		読込エラー
+     * Read from profiler file
+     * @param profilerfile Profiler file
+     * @throws IOException Read error
      */
     @Override
     public void readFile(File profilerfile) throws Exception {
@@ -487,8 +487,8 @@ public class DProfReader extends BaseReader implements IProfilerReader {
     }
 
     /**
-     * エンディアンを設定する
-     * @param endian		エンディアン設定
+     * Set endian
+     * @param endian Endian settings
      */
     @Override
     public void setEndian(int endian) {
@@ -496,7 +496,7 @@ public class DProfReader extends BaseReader implements IProfilerReader {
     }
 
     /**
-     * エンディアンを取得する
+     * Get endian
      */
     @Override
     public int getEndian() {
@@ -505,14 +505,14 @@ public class DProfReader extends BaseReader implements IProfilerReader {
 
 
     /**
-     * コスト情報リスト:ラインを取得する
-     * @return		コスト情報リスト:ライン
+     * Cost information list: Get the line
+     * @return Cost information list: Line
      */
     @Override
     public ProfilerDprofData[] getCostInfoLine() {
         if (this.lineInfoList == null) return null;
 
-        // スレッドの積算を行う
+        // Perform thread integration
         Map<CodeLine, ProfilerDprofData> listCost = new LinkedHashMap<CodeLine, ProfilerDprofData>();
         int threadid = 0;
         for (List<LineInfo> list : lineInfoList) {
@@ -522,20 +522,20 @@ public class DProfReader extends BaseReader implements IProfilerReader {
                 int symbolIndex = info.getSymbolIndex();
                 int fileIndex = info.getFileIndex();
 
-                // シンボル名を取得する
+                // Get the symbol name
                 SymbolInfo symbol = this.symbolInfoList.getSymbolInfo(threadid, symbolIndex);
                 String symbolname = symbol.getSymbolName();
 
-                // ファイル名を取得する
+                // get the file name
                 String filename = null;
                 if (fileIndex >= 0) {
                     FileInfo file = this.fileInfoList.getFileInfo(fileIndex);
                     filename = file.getFileName();
                 }
 
-                // コスト情報
+                // Cost information
                 ProfilerDprofData cost = createProfilerCostInfo(sampNum, symbolname, lineNo, lineNo, filename);
-                // コスト情報を追加する
+                // Add cost information
                 addProfilerCostInfo(listCost, cost);
             }
             threadid++;
@@ -546,15 +546,15 @@ public class DProfReader extends BaseReader implements IProfilerReader {
     }
 
     /**
-     * コスト情報リスト:ループを取得する
-     * @return		コスト情報リスト:ループ
+     * Cost information list: Get a loop
+     * @return Cost information list: Loop
      */
     @Override
     public ProfilerDprofData[] getCostInfoLoop() {
 
         if (this.loopInfoList == null) return null;
 
-        // スレッドの積算を行う
+        // Perform thread integration
         Map<CodeLine, ProfilerDprofData> listCost = new LinkedHashMap<CodeLine, ProfilerDprofData>();
         int threadid = 0;
         for (List<LoopInfo> list : loopInfoList) {
@@ -566,20 +566,20 @@ public class DProfReader extends BaseReader implements IProfilerReader {
                 int fileIndex = info.getFileIndex();
                 int nest = info.getNestLevel();
 
-                // シンボル名を取得する
+                // Get the symbol name
                 SymbolInfo symbol = this.symbolInfoList.getSymbolInfo(threadid, symbolIndex);
                 String symbolname = symbol.getSymbolName();
 
-                // ファイル名を取得する
+                // get the file name
                 String filename = null;
                 if (fileIndex >= 0) {
                     FileInfo file = this.fileInfoList.getFileInfo(fileIndex);
                     filename = file.getFileName();
                 }
 
-                // コスト情報
+                // Cost information
                 ProfilerDprofData cost = createProfilerCostInfo(sampNum, symbolname, linenoStart, linenoEnd, filename);
-                // コスト情報を追加する
+                // Add cost information
                 addProfilerCostInfo(listCost, cost);
             }
             threadid++;
@@ -591,20 +591,20 @@ public class DProfReader extends BaseReader implements IProfilerReader {
 
 
     /**
-     * コスト情報を生成する
-     * @param sampling		サンプリング回数
-     * @param symbolname	シンボル名
-     * @param linenostart	開始行番号
-     * @param linenoend		終了行番号
-     * @param filename		ファイル名
-     * @return				生成コスト情報
+     * Generate cost information
+     * @param sampling Number of samplings
+     * @param symbolname Symbol name
+     * @param linenostart Start line number
+     * @param linenoend End line number
+     * @param filename File name
+     * @return Generation cost information
      */
     private ProfilerDprofData createProfilerCostInfo(float sampling, String symbolname, int linenostart, int linenoend, String filename) {
-        // コスト情報
+        // Cost information
         ProfilerDprofData cost = new ProfilerDprofData();
         cost.setSampling(sampling);
         cost.setSymbol(symbolname);
-        // コード行
+        // Line of code
         CodeLine line = new CodeLine(null, linenostart, linenoend, filename);
         if (filename != null) {
         	line.setSourceFile(new SourceFile(filename));
@@ -615,16 +615,16 @@ public class DProfReader extends BaseReader implements IProfilerReader {
     }
 
     /**
-     * コスト情報を追加する.
-     * 追加済みの場合は、サンプリング回数を積算する
-     * @param listCost		追加コスト情報マップ
-     * @param costinfo		追加コスト情報
+     * Add cost information.
+     * If added, add up the number of samplings
+     * @param listCost Additional cost information map
+     * @param costinfo Additional cost information
      */
     private void addProfilerCostInfo(Map<CodeLine, ProfilerDprofData> listCost, ProfilerDprofData costinfo) {
         if (listCost == null) return;
         if (costinfo == null) return;
 
-        // コスト情報
+        // Cost information
         CodeLine line = costinfo.getCodeLine();
         String symbolname = costinfo.getSymbol();
         float sampling = costinfo.getSampling();
@@ -634,16 +634,16 @@ public class DProfReader extends BaseReader implements IProfilerReader {
         if (listCost.containsKey(line)) {
             ProfilerDprofData srccost = listCost.get(line);
             if (symbolname != null && symbolname.equals(srccost.getSymbol())) {
-                // 一致
+                // Match
                 find = true;
-                // サンプリング回数を積算する
+                // Accumulate the number of samplings
                 float srcsampling = srccost.getSampling();
                 srcsampling += sampling;
                 srccost.setSampling(srcsampling);
             }
         }
         if (!find) {
-            // 新規追加
+            // Add new
             listCost.put(line, costinfo);
         }
 
@@ -652,14 +652,14 @@ public class DProfReader extends BaseReader implements IProfilerReader {
 
 
     /**
-     * コスト情報リスト:手続を取得する
-     * @return		コスト情報リスト:手続
+     * Cost information list: Get the procedure
+     * @return Cost information list: Procedure
      */
     @Override
     public ProfilerDprofData[] getCostInfoProcedure() {
         if (this.symbolInfoList == null) return null;
 
-        // スレッドの積算を行う
+        // Perform thread integration
         Map<CodeLine, ProfilerDprofData> listCost = new LinkedHashMap<CodeLine, ProfilerDprofData>();
         int threadid = 0;
         for (SymbolList list : this.symbolInfoList.getSymbolRecord()) {
@@ -670,16 +670,16 @@ public class DProfReader extends BaseReader implements IProfilerReader {
                 int fileIndex = info.getFileIndex();
                 String symbolname = info.getSymbolName();
 
-                // ファイル名を取得する
+                // get the file name
                 String filename = null;
                 if (fileIndex >= 0) {
                     FileInfo file = this.fileInfoList.getFileInfo(fileIndex);
                     filename = file.getFileName();
                 }
 
-                // コスト情報
+                // Cost information
                 ProfilerDprofData cost = createProfilerCostInfo(sampNum, symbolname, linenoStart, linenoEnd, filename);
-                // コスト情報を追加する
+                // Add cost information
                 addProfilerCostInfo(listCost, cost);
             }
             threadid++;
@@ -691,34 +691,34 @@ public class DProfReader extends BaseReader implements IProfilerReader {
 
 
     /**
-     * コールグラフ情報を取得する
-     * @return		コールグラフ情報
+     * Get call graph information
+     * @return Call graph information
      */
     @Override
     public ProfilerDprofData[] getDprofCallGraphInfo() {
         if (this.callGraphInfoList == null) return null;
 
-        // スレッドのすべてのコールグラフを１つにする
+        // Bring all call graphs of a thread together
         List<ProfilerDprofData> listCall = new ArrayList<ProfilerDprofData>();
         for (CallGraphInfo list : this.callGraphInfoList) {
             List<ProfilerDprofData> listThread = new ArrayList<ProfilerDprofData>();
-            // スレッド毎に積算する
+            // Accumulate for each thread
             float sum = 0;
             for (StackInfo info : list.getStackInfo()) {
                 float sampling = info.getSampNum();
                 int nestLevel = info.getNestLevel();
                 String symbolname = info.getSymbolName();
                 sum += sampling;
-                // コールグラフ情報
+                // Call graph information
                 ProfilerDprofData callinfo = new ProfilerDprofData();
                 callinfo.setSymbol(symbolname);
                 callinfo.setSampling(sampling);
                 callinfo.setNestLevel(nestLevel);
 
-                // コスト情報を追加する
+                // Add cost information
                 listThread.add(callinfo);
             }
-            // 積算値をセットする
+            // Set the integrated value
             for (ProfilerDprofData data : listThread) {
                 data.setSumSampling(sum);
                 data.setRatio(data.getSampling()/sum);
@@ -732,8 +732,8 @@ public class DProfReader extends BaseReader implements IProfilerReader {
 
 
     /**
-     * EProf:イベントカウンタ情報を取得する
-     * @return		EProf:イベントカウンタ情報
+     * EProf: Get event counter information
+     * @return EProf: Event counter information
      */
     @Override
     public ProfilerEprofData[] getEprofEventCounterInfo() {
@@ -741,8 +741,8 @@ public class DProfReader extends BaseReader implements IProfilerReader {
     }
 
     /**
-     * 読込プロファイラファイル
-     * @return 読込プロファイラファイル
+     * Read profiler file
+     * @return Read profiler file
      */
     @Override
     public File getProfFile() {
@@ -750,8 +750,8 @@ public class DProfReader extends BaseReader implements IProfilerReader {
     }
 
     /**
-     * プロファイラマジックキーを取得する
-     * @return		マジックキー
+     * Get profiler magic key
+     * @return magic key
      */
     @Override
     public String getFileType() {
@@ -759,13 +759,13 @@ public class DProfReader extends BaseReader implements IProfilerReader {
     }
 
     /**
-     * PAイベント指定値(EPRFのみ)を取得する.
-     *     Cache
-     *     Instructions
-     *     MEM_access
-     *     Performance
-     *     Statistics
-     * @return 	PAイベント指定値(EPRFのみ)
+     * Get the PA event specification value (EPRF only).
+     * Cache
+     * Instructions
+     * MEM_access
+     * Performance
+     * Statistics
+     * @return PA event specification value (EPRF only)
      */
     @Override
     public String getPaEventName() {

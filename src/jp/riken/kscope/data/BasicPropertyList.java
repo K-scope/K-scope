@@ -53,17 +53,17 @@ public class BasicPropertyList {
         	try {
         		Node node = nodelist.item(i);
 
-        		// 属性の取得
+        		// Get attributes
         		NamedNodeMap attrs = node.getAttributes();
         		Node attrnode_key,attrnode_value;
         		String key = null;
         		String value = null;
-        		// プロパティ名
+        		// Property name
         		attrnode_key = attrs.getNamedItem("key");
         		if (attrnode_key != null) {
         			key = attrnode_key.getNodeValue();
         		}
-        		// プロパティ値
+        		// Property value
         		attrnode_value = attrs.getNamedItem("value");
         		if (attrnode_value != null) {
         			value = attrnode_value.getNodeValue();                    
@@ -79,10 +79,10 @@ public class BasicPropertyList {
 	}
 
 	/**
-	 * 検索Keyと一致するPropertyのvalueを取得する
-	 * @param key	Property key (name)
-	 * @return		Property value
-	 */
+* Get the value of the Property that matches the search Key
+* @param key Property key (name)
+* @return Property value
+*/
 	public String getPropertyValue(String key) {
 		if (key == null || key.isEmpty()) return null;
 

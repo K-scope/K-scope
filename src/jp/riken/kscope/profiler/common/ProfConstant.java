@@ -17,67 +17,67 @@
 package jp.riken.kscope.profiler.common;
 
 /**
- * プロファイラ定数クラス
+ * Profiler constant class
  * @author RIKEN
  */
 public class ProfConstant {
 
-    // 測定時オプションのビット列
-    // 測定時オプション:DPROF
-    /** 通信情報 */
+    // Optional bit string during measurement
+    // Measurement options: DPROF
+    /** Communication information */
     public static final int DPRF_COLL_OPT_COM = 0x00000001;
-    /** PA 測定 */
+    /** PA measurement */
     public static final int DPRF_COLL_OPT_PA = 0x00000002;
-    /** サンプリング */
+    /** Sampling */
     public static final int DPRF_COLL_OPT_SAMPLING = 0x00000004;
-    /** 時系列 */
+    /** Time series */
     public static final int DPRF_COLL_OPT_REALTIME = 0x00000010;
-    /** 指定区間 */
+    /** Designated section */
     public static final int DPRF_COLL_OPT_PA_RANGE = 0x00000080;
-    /** イベント指定(非公開) */
+    /** Event designation (private) */
     public static final int DPRF_COLL_OPT_PA_EVENT = 0x00000100;
-    /** コールグラフ */
+    /** Call graph */
     public static final int DPRF_COLL_OPT_CALLGRAPH = 0x00000200;
-    /** MPI経過時間 */
+    /** MPI elapsed time */
     public static final int DPRF_COLL_OPT_MPIELAPS = 0x00000400;
-    /** サンプリング指定区間(引数無し) */
+    /** Sampling specified section (no arguments) */
     public static final int DPRF_COLL_OPT_SAMP_RANGE = 0x00000800;
     /** USERFUNC ON */
     public static final int DPRF_COLL_OPT_USERFUNC = 0x00001000;
-    /** サンプリング指定区間(引数有り) */
+    /** Sampling specified section (with arguments) */
     public static final int DPRF_COLL_OPT_SAMP_RANGE_COST = 0x00002000;
-    /** 収集時に-Inompiall指定 */
+    /** At the time of collection-Specify Inompiall */
     public static final int DPRF_COLL_OPT_ST_COM = 0x00004000;
     /** SLEEP ON */
     public static final int DPRF_COLL_OPT_SLEEP = 0x00010000;
 
-    // 実行形態のビット列
-    /** 逐次 */
+    // Execution form bit string
+    /** Sequential */
     public static final int EXEC_KIND_SERIAL      =0x1000;
     /** MPI */
     public static final int EXEC_KIND_MPI         =0x2000;
     /** XPF */
     public static final int EXEC_KIND_XPF         =0x4000;
-    /** FULLモード */
+    /** FULL mode */
     public static final int EXEC_KIND_FULL        =0x0100;
-    /** LIMITEDモード */
+    /** LIMITED mode */
     public static final int EXEC_KIND_LIMITED     =0x0200;
-    /** 自動並列 */
+    /** Automatic parallel */
     public static final int EXEC_KIND_AUTO        =0x0010;
     /** OpenMP */
     public static final int EXEC_KIND_OMP         =0x0020;
-    /** 不明 */
+    /** Unknown */
     public static final int EXEC_KIND_UNKNOWN     =0x0000;
 
-    // 測定時オプションのビット列
-    // 測定時オプション:EPROF
-    /** MPI情報     */
+    // Optional bit string during measurement
+    // Measurement options: EPROF
+    /** MPI information */
     public static final int  EPRF_COLL_OPT_MPI         =    0x00000001;
-    /** MPI情報なし */
+    /** No MPI information */
     public static final int  EPRF_COUNTER_OPT_NOMPI    =    0x00000002;
-    /** PA 測定     */
+    /** PA measurement */
     public static final int  EPRF_COLL_OPT_PA          =    0x00000004;
-    /** イベント指定(非公開) */
+    /** Event designation (private) */
     public static final int  EPRF_COLL_OPT_PA_EVENT    =    0x00000100;
 
 }

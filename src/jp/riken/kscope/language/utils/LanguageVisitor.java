@@ -29,24 +29,24 @@ import jp.riken.kscope.language.fortran.*;
 import jp.riken.kscope.language.generic.*;
 
 /**
- * Fortranデータベース探索クラス
+ * Fortran database search class
  * @author RIKEN
  */
 public class LanguageVisitor implements ILanguageEntry {
 
-	/** Fortranデータベース */
+	/** Fortran database */
 	private Fortran language;
-	/** Entryインターフェイス */
+	/** Entry interface */
 	private ILanguageEntry visitor;
-	/** 探索履歴リスト */
+	/** Search history list */
 	private List<Object> listVisit;
-    /** 循環を判定するための作業用セット */
+    /** Working set for determining circulation */
     private ArrayList<Procedure> recursiveProcedures;
 
 	/**
-	 * コンストラクタ
-	 * @param visitor		Entryインターフェイス
-	 */
+* Constructor
+* @param visitor Entry interface
+*/
 	public LanguageVisitor(ILanguageEntry visitor) {
 		this.language = visitor.getLanguage();
 		this.visitor = visitor;
@@ -56,7 +56,7 @@ public class LanguageVisitor implements ILanguageEntry {
 
 
     /**
-     * データベースを探索する.
+     * Search the database.
      */
 	public void entry() {
 
@@ -89,9 +89,9 @@ public class LanguageVisitor implements ILanguageEntry {
 	}
 
 	/**
-	 * ProgramUnitを探索する.
-	 * @param program		ProgramUnit
-	 */
+* Explore ProgramUnit.
+* @param program ProgramUnit
+*/
 	public void entryProgramUnit(ProgramUnit program) {
 
         Collection<Procedure> procs = program.getChildren();
@@ -136,9 +136,9 @@ public class LanguageVisitor implements ILanguageEntry {
 	}
 
 	/**
-	 * サブルーチン,関数リストを探索する.
-	 * @param procedures	サブルーチン,関数リスト
-	 */
+* Search subroutines and function lists.
+* @param procedures Subroutine, function list
+*/
     private void entry(Procedure[] procedures) {
     	if (procedures == null || procedures.length <= 0) return;
         for (Procedure proc : procedures) {
@@ -178,11 +178,11 @@ public class LanguageVisitor implements ILanguageEntry {
     }
 
 	/**
-	 * サブルーチン、関数が再帰呼出リストに含まれているかチェックする.
-	 * 再帰呼出リストに含まれていない場合は、再帰呼出リストに追加する.
-	 * @param procedure		サブルーチン、関数
-	 * @return		true=再帰呼出リストに含まれている
-	 */
+* Check if the subroutine or function is included in the recursive call list.
+* If it is not included in the recursive call list, add it to the recursive call list.
+* @param procedure Subroutines, functions
+* @return true = included in recursive call list
+*/
     private boolean containsProcedure(Procedure procedure) {
     	if (this.recursiveProcedures == null || this.recursiveProcedures.size() <= 0) {
     		this.recursiveProcedures = new ArrayList<Procedure>();
@@ -190,28 +190,28 @@ public class LanguageVisitor implements ILanguageEntry {
     	if (this.recursiveProcedures.contains(procedure)) {
     		return true;
     	}
-    	// 再帰呼出リストに追加
+    	// Add to recursive call list
     	this.recursiveProcedures.add(procedure);
 
 		return false;
 	}
 
     /**
-     * 再帰呼出リストをクリアする.
+     * Clear the recursive call list.
      */
     private void clearProcedure() {
     	if (this.recursiveProcedures == null || this.recursiveProcedures.size() <= 0) {
     		return;
     	}
-    	// 循環リストクリア
+    	// Clear the circular list
     	this.recursiveProcedures.clear();
 
 		return;
 	}
 
     /**
-     * CALL文、関数呼出リストを探索する.
-     * @param calls		CALL文、関数呼出リスト
+     * CALL statement, search function call list.
+     * @param calls CALL statement, function call list
      */
 	private void entry(ProcedureUsage[] calls) {
     	if (calls == null || calls.length <= 0) return;
@@ -224,9 +224,9 @@ public class LanguageVisitor implements ILanguageEntry {
     }
 
 	/**
-	 * COMMON文リストを探索する.
-	 * @param commons		COMMON文リスト
-	 */
+* Search the COMMON statement list.
+* @param commons COMMON statement list
+*/
     private void entry(Common[] commons) {
     	if (commons == null || commons.length <= 0) return;
         for (Common com : commons) {
@@ -236,8 +236,8 @@ public class LanguageVisitor implements ILanguageEntry {
     }
 
     /**
-     * USE文リストを探索する.
-     * @param uses		USE文リスト
+     * Search the USE statement list.
+     * @param uses USE statement list
      */
     private void entry(UseState[] uses) {
     	if (uses == null || uses.length <= 0) return;
@@ -248,8 +248,8 @@ public class LanguageVisitor implements ILanguageEntry {
     }
 
     /**
-     * DATA文リストを探索する.
-     * @param datas		DATA文リスト
+     * Search the DATA statement list.
+     * @param datas DATA statement list
      */
     private void entry(Data[] datas) {
     	if (datas == null || datas.length <= 0) return;
@@ -260,8 +260,8 @@ public class LanguageVisitor implements ILanguageEntry {
     }
 
     /**
-     * 総称関数群(interface文)リストを探索する.
-     * @param inters		総称関数群(interface文)リスト
+     * Search the generic function group (interface statement) list.
+     * @param inters Generic function group (interface statement) list
      */
     private void entry(Procedures[] inters) {
     	if (inters == null || inters.length <= 0) return;
@@ -272,8 +272,8 @@ public class LanguageVisitor implements ILanguageEntry {
     }
 
     /**
-     * EQUIVALENCE文リストを探索する.
-     * @param equivalences		EQUIVALENCE文リスト
+     * Search the EQUIVALENCE statement list.
+     * @param equivalences EQUIVALENCE statement list
      */
     private void entry(Equivalence[] equivalences) {
     	if (equivalences == null || equivalences.length <= 0) return;
@@ -284,8 +284,8 @@ public class LanguageVisitor implements ILanguageEntry {
     }
 
     /**
-     * DIRECTIVE文リストを探索する.
-     * @param directives		DIRECTIVE文リスト
+     * Search the DIRECTIVE statement list.
+     * @param directives DIRECTIVE statement list
      */
     private void entry(Directive[] directives) {
     	if (directives == null || directives.length <= 0) return;
@@ -329,9 +329,9 @@ public class LanguageVisitor implements ILanguageEntry {
     }
 
 	/**
-	 * Blockリストを探索する.
-	 * @param blocks		Blockリスト
-	 */
+* Search the Block list.
+* @param blocks Block list
+*/
     private void entryBlocks(Block[] blocks) {
     	if (blocks == null || blocks.length <= 0) return;
     	for (Block children : blocks) {
@@ -343,8 +343,8 @@ public class LanguageVisitor implements ILanguageEntry {
     }
 
     /**
-     * Blockを探索する
-     * @param block		Blockクラスオブジェクト
+     * Search for Block
+     * @param block Block class object
      */
     private void entryBlock(Block block) {
     	if (block == null) return;
@@ -718,8 +718,8 @@ public class LanguageVisitor implements ILanguageEntry {
     }
 
     /**
-     * 変数宣言文リストを探索する.
-     * @param variables		変数宣言文リスト
+     * Search the variable declaration statement list.
+     * @param variables Variable declaration statement list
      */
     private void entry(Variable[] variables) {
     	if (variables == null || variables.length <= 0) return;
@@ -847,9 +847,9 @@ public class LanguageVisitor implements ILanguageEntry {
     }
 
 	/**
-	 * TYPE文リストを探索する.
-	 * @param types		TYPE文リスト
-	 */
+* Search the TYPE statement list.
+* @param types TYPE statement list
+*/
     private void entry(Type[]  types) {
     	if (types == null || types.length <= 0) return;
     	for (Type type : types) {
@@ -932,18 +932,18 @@ public class LanguageVisitor implements ILanguageEntry {
 	}
 
 	/**
-	 * 探索履歴リストに追加する.
-	 * @param block		探索履歴リスト
-	 */
+* Add to the search history list.
+* @param block Search history list
+*/
 	private void addVisitList(Object block) {
 		if (this.listVisit == null) return;
 		this.listVisit.add(block);
 	}
 
 	/**
-	 * 探索履歴リストから削除する.
-	 * @param block		探索履歴リスト
-	 */
+* Delete from the search history list.
+* @param block Search history list
+*/
 	private void removeVisitList(Object block) {
 		if (this.listVisit == null) return;
 		this.listVisit.remove(block);
@@ -973,9 +973,9 @@ public class LanguageVisitor implements ILanguageEntry {
 	}
 
 	/**
-	 * 付加情報ブロックの探索を行う
-	 * @param info		付加情報ブロック
-	 */
+* Search for additional information blocks
+* @param info Additional information block
+*/
 	public void entryInformation(IInformation info) {
     	if (info == null) return;
 		if (info instanceof Block) {

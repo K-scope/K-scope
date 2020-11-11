@@ -46,26 +46,26 @@ import jp.riken.kscope.properties.KscopeProperties;
 import jp.riken.kscope.utils.ResourceUtils;
 
 /**
- * バージョンダイアログ
+ * Version dialog
  *
  * @author RIKEN
  *
  */
 public class AboutDialog extends javax.swing.JDialog implements ActionListener, HyperlinkListener {
-    /** シリアル番号 */
+    /** Serial number */
     private static final long serialVersionUID = 1L;
-    /** 閉じるボタン */
+    /** Close button */
     private JButton btnClose;
-    /** ダイアログの戻り値 */
+    /** Dialog return value */
     private int result = Constant.CANCEL_DIALOG;
-    /** ダイアログサイズ */
+    /** Dialog size */
     private Dimension DIALOG_SIZE = new Dimension(320, 480);
 
     /**
-     * コンストラクタ
+     * Constructor
      *
-     * @param owner	親フレーム
-     * @param modal	true=モーダルダイアログを表示する
+     * @param owner parent frame
+     * @param modal true = Show modal dialog
      */
     public AboutDialog(Frame owner, boolean modal) {
         super(owner, modal);
@@ -73,9 +73,9 @@ public class AboutDialog extends javax.swing.JDialog implements ActionListener, 
     }
 
     /**
-     * コンストラクタ
+     * Constructor
      *
-     * @param frame 親フレーム
+     * @param frame Parent frame
      */
     public AboutDialog(JFrame frame) {
         super(frame);
@@ -83,7 +83,7 @@ public class AboutDialog extends javax.swing.JDialog implements ActionListener, 
     }
 
     /**
-     * GUI初期化を行う。
+     * Initialize the GUI.
      */
     private void initGUI() {
         try {
@@ -91,7 +91,7 @@ public class AboutDialog extends javax.swing.JDialog implements ActionListener, 
             this.setTitle(Message.getString("mainmenu.help.about")); //About
             this.getContentPane().setLayout(new BorderLayout());
 
-            // ボタンパネル
+            // Button panel
             {
                 JPanel panelButtons = new JPanel();
                 FlowLayout jPanel1Layout = new FlowLayout();
@@ -100,15 +100,15 @@ public class AboutDialog extends javax.swing.JDialog implements ActionListener, 
                 panelButtons.setLayout(jPanel1Layout);
                 getContentPane().add(panelButtons, BorderLayout.SOUTH);
 
-                // クローズボタン
+                // Close button
                 java.awt.Dimension buttonSize = new java.awt.Dimension(96, 22);
                 btnClose = new JButton();
                 panelButtons.add(btnClose);
-                btnClose.setText(Message.getString("dialog.common.button.close")); //閉じる
+                btnClose.setText(Message.getString("dialog.common.button.close")); //close
                 btnClose.setPreferredSize(buttonSize);
                 btnClose.addActionListener(this);
             }
-            //ロゴアイコン
+            // logo icon
             JLabel lblIcon = new JLabel();
             Icon icon1 = ResourceUtils.getIcon("logo.png");
             lblIcon.setHorizontalAlignment(JLabel.CENTER);
@@ -125,7 +125,7 @@ public class AboutDialog extends javax.swing.JDialog implements ActionListener, 
                 layoutTable.columnWidths = new int [] {7, 320, 7};
                 panelContent.setLayout(layoutTable);
 
-                //アプリケーション名＋ヴァージョン
+                // Application name + version
                 JLabel lblAppName = new JLabel();
                 lblAppName.setBounds(18, 110, 300, 15);
                 lblAppName.setText(KscopeProperties.APPLICATION_NAME
@@ -135,12 +135,12 @@ public class AboutDialog extends javax.swing.JDialog implements ActionListener, 
                         + ")");
                 panelContent.add(lblAppName, new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0, GridBagConstraints.EAST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
 
-                //テキストエリア(スクロール付き)
+                // Text area (with scroll)
                 // "This prototype software provides structure of source code to support tuning and analysis. <Disclaimer>: ... <Licence>: ..."
                 String text = Message.getString("kscope.license");
                 JTextPane textarea = new JTextPane();
                 textarea.setContentType("text/html");
-                textarea.putClientProperty(JTextPane.HONOR_DISPLAY_PROPERTIES, Boolean.TRUE);	//setFont()が有効になる
+                textarea.putClientProperty(JTextPane.HONOR_DISPLAY_PROPERTIES, Boolean.TRUE);	// setFont () is enabled
                 textarea.setText(text);
                 textarea.setCaretPosition(0);
                 textarea.setEditable(false);
@@ -148,7 +148,7 @@ public class AboutDialog extends javax.swing.JDialog implements ActionListener, 
                                                        ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
                                                        ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
                 panelContent.add(scroller, new GridBagConstraints(1, 1, 1, 1, 0.0, 0.0, GridBagConstraints.NORTHEAST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
-                // リンククリックイベント
+                // Link click event
                 textarea.addHyperlinkListener(this);
             }
 
@@ -161,46 +161,46 @@ public class AboutDialog extends javax.swing.JDialog implements ActionListener, 
     }
 
     /**
-     * ダイアログを表示する。
+     * Display a dialog.
      *
-     * @return ダイアログの閉じた時のボタン種別
+     * @return Button type when the dialog is closed
      */
     public int showDialog() {
 
-        // 親フレーム中央に表示する。
+        // Display in the center of the parent frame.
         this.setLocationRelativeTo(this.getOwner());
 
-        // ダイアログ表示
+        // Dialog display
         this.setVisible(true);
 
         return this.result;
     }
 
     /**
-     * ボタンクリックイベント
+     * Button click event
      *
-     * @param event	イベント情報
+     * @param event Event information
      */
     @Override
     public void actionPerformed(ActionEvent event) {
 
-        // 閉じる
+        // close
         if (event.getSource() == this.btnClose) {
             this.result = Constant.CLOSE_DIALOG;
-            // ダイアログを閉じる。
+            // Close the dialog.
             dispose();
             return;
         }
     }
 
     /**
-     * 説明文のリンクタグクリックイベント
+     * Descriptive link tag click event
      */
 	@Override
 	public void hyperlinkUpdate(HyperlinkEvent e) {
-		if (e.getEventType() == EventType.ACTIVATED) {	//クリックされた時
+		if (e.getEventType() == EventType.ACTIVATED) {	// when clicked
 			URL url = e.getURL();
-			//デフォルトのブラウザーを使ってリンク先を表示
+			// View the link using your default browser
 			Desktop dp = Desktop.getDesktop();
 			try {
 				dp.browse(url.toURI());

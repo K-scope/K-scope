@@ -22,44 +22,44 @@ import java.awt.Color;
 import jp.riken.kscope.common.KEYWORD_TYPE;
 
 /**
- * ソースコードのキーワードデータクラス
+ * Source code keyword data class
  * @author RIKEN
  *
  */
 public class Keyword {
 
-    /** キーワード名 */
+    /** Keyword name */
     private String name;
-    /** キーワード */
+    /** Keywords */
     private String keyword;
-    /** クラスモード（正規表現では表現できない特殊モード:未使用) */
+    /** Class mode (special mode that cannot be expressed by regular expression: unused) */
     private String classmode;
-    /** 文字色 */
+    /** Letter color */
     private Color forecolor;
-    /** 背景色 */
+    /** Background color */
     private Color backgroundcolor;
-    /** スタイル(Font.PLAIN, Font.BOLD, Font.ITALIC) */
+    /** Style (Font.PLAIN, Font.BOLD, Font.ITALIC) */
     private int style;
-    /** 有効 */
+    /** Effectiveness */
     private boolean enabled = true;
-    /** 大文字・小文字の区別(true=大文字・小文字の区別を行う) */
+    /** Case sensitive (true = case sensitive) */
     private boolean sensitivecase = false;
-    /** 正規表現 */
+    /** Regular expressions */
     private boolean regex = false;
-    /** 単語検索 : 引用符,コメントの中でも検索対象とする*/
+    /** Word search: Search in quotes and comments */
     private boolean searchWord = true;
-    /**  変数検索(=トレース):引用符,コメントの中は検索対象外をする */
+    /** Variable search (= trace): Excludes search in quotes and comments */
     private boolean searchVariable;
-    /** キーワード変更不可 */
+    /** Keywords cannot be changed */
     private boolean keywordlock = false;
-    /** 検索対象コード行 */
+    /** Search target code line */
     private CodeLine searchLine;
-    /** キーワードタイプ：予約語（デフォルト）、テキスト検索、トレース */
+    /** Keyword type: reserved word (default), text search, trace */
     private KEYWORD_TYPE type = KEYWORD_TYPE.KEYWORD;
 
     /**
-     * コンストラクタ
-     * @param type		キーワードタイプ
+     * Constructor
+     * @param type Keyword type
      */
     public Keyword(KEYWORD_TYPE type) {
         this.type = type;
@@ -67,91 +67,91 @@ public class Keyword {
 
 
     /**
-     * キーワード名を取得する
-     * @return		キーワード名
+     * Get keyword name
+     * @return keyword name
      */
     public String getName() {
         return name;
     }
 
     /**
-     * キーワード名を設定する
-     * @param name		キーワード名
+     * Set the keyword name
+     * @param name Keyword name
      */
     public void setName(String name) {
         this.name = name;
     }
 
     /**
-     * キーワードを取得する
-     * @return		キーワード
+     * Get keywords
+     * @return keyword
      */
     public String getKeyword() {
         return keyword;
     }
 
     /**
-     * キーワードを設定する
-     * @param keyword		キーワード
+     * Set keywords
+     * @param keyword keyword
      */
     public void setKeyword(String keyword) {
         this.keyword = keyword;
     }
 
     /**
-     * モードを取得する
-     * @return		モード
+     * Get mode
+     * @return mode
      */
     public String getClassmode() {
         return this.classmode;
     }
 
     /**
-     * モードを設定する
-     * @param mode		モード
+     * Set the mode
+     * @param mode mode
      */
     public void setClassmode(String mode) {
         this.classmode = mode;
     }
 
     /**
-     * ハイライト色を取得する
-     * @return		ハイライト色
+     * Get highlight color
+     * @return highlight color
      */
     public Color getForecolor() {
         return forecolor;
     }
 
     /**
-     * ハイライト色を設定する
-     * @param forecolor		ハイライト色
+     * Set the highlight color
+     * @param forecolor highlight color
      */
     public void setForecolor(Color forecolor) {
         this.forecolor = forecolor;
     }
 
     /**
-     * スタイルを取得する
-     * @return		スタイル
+     * Get style
+     * @return style
      */
     public int getStyle() {
         return style;
     }
 
     /**
-     * スタイルを設定する
-     * @param style		スタイル
+     * Set style
+     * @param style style
      */
     public void setStyle(int style) {
         this.style = style;
     }
 
     /**
-     * キーワードを設定する
-     * @param name			キーワード名
-     * @param keyword		キーワード
-     * @param forecolor		ハイライト色
-     * @param style			スタイル
+     * Set keywords
+     * @param name Keyword name
+     * @param keyword keyword
+     * @param forecolor highlight color
+     * @param style style
      */
     public void setKeyword(String name, String keyword, Color forecolor, int style) {
         this.name = name;
@@ -162,11 +162,11 @@ public class Keyword {
 
 
     /**
-     * モードを設定する
-     * @param classmode			モード
-     * @param keyword		キーワード
-     * @param forecolor		ハイライト色
-     * @param style			スタイル
+     * Set the mode
+     * @param classmode mode
+     * @param keyword keyword
+     * @param forecolor highlight color
+     * @param style style
      */
     public void setMode(String classmode, String keyword, Color forecolor, int style) {
         this.classmode = classmode;
@@ -176,148 +176,148 @@ public class Keyword {
     }
 
     /**
-     * キーワードの有効／無効を取得する
-     * @return enabled		true=有効
+     * Get keyword valid / invalid
+     * @return enabled true = enabled
      */
     public boolean isEnabled() {
         return enabled;
     }
 
     /**
-     * キーワードの有効／無効を設定する
-     * @param enabled    true=有効
+     * Enable / disable keywords
+     * @param enabled true = enabled
      */
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
     }
 
     /**
-     * 大文字・小文字の区別を取得する
-     * @return		大文字・小文字の区別(true=大文字・小文字の区別を行う)
+     * Get case sensitive
+     * @return Case sensitive (true = case sensitive)
      */
     public boolean isSensitivecase() {
         return sensitivecase;
     }
 
     /**
-     * 大文字・小文字の区別を設定する
-     * @param sensitivecase		大文字・小文字の区別(true=大文字・小文字の区別を行う)
+     * Set case sensitivity
+     * @param sensitivecase Case sensitive (true = case sensitive)
      */
     public void setCaseSensitive(boolean sensitivecase) {
         this.sensitivecase = sensitivecase;
     }
 
     /**
-     * 正規表現を取得する
-     * @return		正規表現
+     * Get a regular expression
+     * @return regular expression
      */
     public boolean isRegex() {
         return regex;
     }
 
     /**
-     * 正規表現を設定する
-     * @param regex		正規表現
+     * Set regular expression
+     * @param regex regular expression
      */
     public void setRegex(boolean regex) {
         this.regex = regex;
     }
 
     /**
-     * キーワード変更不可を取得する
-     * @return		キーワード変更不可
+     * Get keyword changeable
+     * @return Keyword cannot be changed
      */
     public boolean isKeywordlock() {
         return keywordlock;
     }
 
     /**
-     * キーワード変更不可を設定する
-     * @param keywordlock		キーワード変更不可
+     * Set keyword change not possible
+     * @param keywordlock Keyword cannot be changed
      */
     public void setKeywordlock(boolean keywordlock) {
         this.keywordlock = keywordlock;
     }
 
     /**
-     * 背景色を取得する。
-     * @return backgroundcolor		背景色
+     * Get the background color.
+     * @return backgroundcolor background color
      */
     public Color getBackgroundcolor() {
         return backgroundcolor;
     }
 
     /**
-     * 背景色を設定する
-     * @param backgroundcolor 背景色
+     * Set the background color
+     * @param backgroundcolor Background color
      */
     public void setBackgroundcolor(Color backgroundcolor) {
         this.backgroundcolor = backgroundcolor;
     }
 
     /**
-     * 単語検索を取得する.<br/>
-      * 引用符,コメントの中でも検索対象とする
-     * @return			true=単語検索
+     * Get a word search. <br/>
+      * Search in quotes and comments
+     * @return true = word search
      */
     public boolean isSearchWord() {
         return searchWord;
     }
 
     /**
-     * 単語検索を設定する.<br/>
-      * 引用符,コメントの中でも検索対象とする
-     * @param	searchWord			true=単語検索
+     * Set up word search. <br/>
+      * Search in quotes and comments
+     * @param searchWord true = word search
      */
     public void setSearchWord(boolean searchWord) {
         this.searchWord = searchWord;
     }
 
     /**
-     * 変数検索(=トレース)を取得する.<br/>
-     * 引用符,コメントの中は検索対象外をする
-     * @return		true=変数検索(=トレース)
+     * Get variable search (= trace). <br/>
+     * Exclude search in quotes and comments
+     * @return true = variable search (= trace)
      */
     public boolean isSearchVariable() {
         return searchVariable;
     }
 
     /**
-     * 変数検索(=トレース)を設定する.<br/>
-     * 引用符,コメントの中は検索対象外をする
-     * @param searchVariable		true=変数検索(=トレース)
+     * Set variable search (= trace). <br/>
+     * Exclude search in quotes and comments
+     * @param searchVariable true = Variable search (= trace)
      */
     public void setSearchVariable(boolean searchVariable) {
         this.searchVariable = searchVariable;
     }
 
     /**
-     * 検索対象コード行を取得する
-     * @return		検索対象コード行
+     * Get the line of code to search
+     * @return Search target code line
      */
     public CodeLine getSearchLine() {
         return searchLine;
     }
 
     /**
-     * 検索対象コード行を設定する
-     * @param searchLine		検索対象コード行
+     * Set the line of code to be searched
+     * @param searchLine Search target code line
      */
     public void setSearchLine(CodeLine searchLine) {
         this.searchLine = searchLine;
     }
 
     /**
-     * キーワードタイプを取得する
-     * @return type		キーワードタイプ
+     * Get keyword type
+     * @return type Keyword type
      */
     public KEYWORD_TYPE getType() {
         return type;
     }
 
     /**
-     * キーワードタイプを設定する
-     * @param type 		キーワードタイプ
+     * Set keyword type
+     * @param type Keyword type
      */
     public void setType(KEYWORD_TYPE type) {
         this.type = type;

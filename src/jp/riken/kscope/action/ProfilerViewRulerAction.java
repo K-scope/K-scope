@@ -22,34 +22,34 @@ import jp.riken.kscope.service.AppController;
 
 
 /**
- * プロファイラのソースコストルーラ表示切替アクションクラス
+ * Profiler source cost ruler display switching action class
  * @author RIKEN
  */
 public class ProfilerViewRulerAction extends ActionBase {
 
     /**
-     * コンストラクタ
-     * @param controller	アプリケーションコントローラ
+     * Constructor
+     * @param controller Application controller
      */
     public ProfilerViewRulerAction(AppController controller) {
         super(controller);
     }
 
     /**
-     * アクション発生イベント
-     * @param event		イベント情報
+     * Action occurrence event
+     * @param event Event information
      */
     @Override
     public void actionPerformed(ActionEvent event) {
         if (!(event.getSource() instanceof JCheckBoxMenuItem)) return;
 
         boolean checked = false;
-        // チェックボックスメニュー
+        // Checkbox menu
         JCheckBoxMenuItem item = (JCheckBoxMenuItem)event.getSource();
         checked = item.isSelected();
         this.controller.getPropertiesProfiler().setVisibleRuler(checked);
 
-        // 変更イベントを発生
+        // Fire a change event
         this.controller.getPropertiesProfiler().firePropertyChange();
     }
 }

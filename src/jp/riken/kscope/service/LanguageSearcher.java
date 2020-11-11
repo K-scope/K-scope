@@ -35,22 +35,22 @@ import jp.riken.kscope.language.ProcedureUsage;
 import jp.riken.kscope.language.Selection;
 
 /**
- * フォートランデータベース検索クラス
+ * Fortran database search class
  * @author RIKEN
  */
 public class LanguageSearcher {
 
-    /** フォートラン構文解析結果格納データベース. */
+    /** Fortran parsing result storage database. */
     private Fortran fortranDb;
-    /** 検索コード行 */
+    /** Search code line */
     private CodeLine searchCode;
-    /** 検索サブルーチン名 */
+    /** Search subroutine name */
     private String callname;
 
     /**
-     * コンストラクタ
-     * @param db		フォートラン構文解析結果格納データベース
-     * @param code		検索コード行
+     * Constructor
+     * @param db Fortran parsing result storage database
+     * @param code Search code line
      */
     public LanguageSearcher(Fortran db, CodeLine code) {
         this.fortranDb = db;
@@ -58,9 +58,9 @@ public class LanguageSearcher {
     }
 
     /**
-     * コンストラクタ
-     * @param db		フォートラン構文解析結果格納データベース
-     * @param callname	サブルーチン名
+     * Constructor
+     * @param db Fortran parsing result storage database
+     * @param callname Subroutine name
      */
     public LanguageSearcher(Fortran db, String callname) {
         this.fortranDb = db;
@@ -68,8 +68,8 @@ public class LanguageSearcher {
     }
 
     /**
-     * フォートラン構文解析結果格納データベースからコード行と一致するブロックの取得を行う。
-     * @return			一致ブロック
+     * Get the block that matches the line of code from the Fortran parsing result storage database.
+     * @return Match block
      */
     public IBlock searchCodeLine() {
         if (this.searchCode == null) return null;
@@ -80,7 +80,7 @@ public class LanguageSearcher {
             return null;
         }
 
-        // モジュール探索を行う
+        // Perform module search
         Set<String> keySet = modules.keySet();
         for (String key : keySet) {
             Module module = modules.get(key);
@@ -92,8 +92,8 @@ public class LanguageSearcher {
     }
 
     /**
-     * フォートラン構文解析結果格納データベースから検索サブルーチン名と一致するブロックの取得を行う。
-     * @return			一致サブルーチン
+     * Get the block that matches the search subroutine name from the Fortran parsing result storage database.
+     * @return Matching subroutine
      */
     public IBlock[] searchProcedureUsage() {
         if (this.callname == null) return null;
@@ -103,7 +103,7 @@ public class LanguageSearcher {
             return null;
         }
 
-        // モジュール探索を行う
+        // Perform module search
         List<IBlock> list = new ArrayList<IBlock>();
         Set<String> keySet = modules.keySet();
         for (String key : keySet) {
@@ -118,9 +118,9 @@ public class LanguageSearcher {
     }
 
     /**
-     * モジュールから検索サブルーチン名と一致するブロックの取得を行う。
-     * @param module		検索モジュール
-     * @return			検索結果ブロック
+     * Get the block that matches the search subroutine name from the module.
+     * @param module Search module
+     * @return Search result block
      */
     private IBlock[] selectProcedureUsage(Module module) {
 
@@ -128,7 +128,7 @@ public class LanguageSearcher {
         if (this.fortranDb == null) return null;
         if (module == null) return null;
 
-        // 副プログラム単位.
+        // Subprogram unit.
         List<IBlock> list = new ArrayList<IBlock>();
         Procedure[] childrens = module.get_children();
         if (childrens != null) {
@@ -144,9 +144,9 @@ public class LanguageSearcher {
     }
 
     /**
-     * 手続きから検索サブルーチン名と一致するブロックの取得を行う。
-     * @param procedure		検索プロシージャ
-     * @return			検索結果ブロック
+     * Get the block that matches the search subroutine name from the procedure.
+     * @param procedure Search procedure
+     * @return Search result block
      */
     private IBlock[] selectProcedureUsage(Procedure procedure) {
 
@@ -154,7 +154,7 @@ public class LanguageSearcher {
         if (this.fortranDb == null) return null;
         if (procedure == null) return null;
 
-        // 副プログラム単位.
+        // Subprogram unit.
         List<IBlock> list = new ArrayList<IBlock>();
         Procedure[] childrens = procedure.get_children();
         if (childrens != null) {
@@ -176,9 +176,9 @@ public class LanguageSearcher {
     }
 
     /**
-     * 手続きから検索サブルーチン名と一致するブロックを検索する。
-     * @param body		検索処理ブロック
-     * @return			検索結果ブロック
+     * Search from the procedure Search for the block that matches the subroutine name.
+     * @param body Search processing block
+     * @return Search result block
      */
     private IBlock[] selectProcedureUsage(ExecutableBody body) {
         if (this.callname == null) return null;
@@ -206,9 +206,9 @@ public class LanguageSearcher {
 
 
     /**
-     * 手続きから検索コード行と一致するブロックを検索する。
-     * @param block		検索ブロック
-     * @return			検索結果ブロック
+     * Search the procedure for blocks that match the search code line.
+     * @param block Search block
+     * @return Search result block
      */
     private IBlock[] selectProcedureUsage(Block block) {
         if (this.callname == null) return null;
@@ -216,7 +216,7 @@ public class LanguageSearcher {
         if (block == null) return null;
 
         List<IBlock> list = new ArrayList<IBlock>();
-        // ProcedureUsageクラスであるかチェックする
+        // Check if it is a ProcedureUsage class
         if (block instanceof ProcedureUsage) {
             String name = ((ProcedureUsage)block).getCallName();
             if (this.callname.equalsIgnoreCase(name)) {
@@ -237,19 +237,19 @@ public class LanguageSearcher {
     }
 
     /**
-     * モジュールから検索コード行と一致するブロックを検索する。
-     * @param module		検索モジュール
-     * @return			検索結果ブロック
+     * Search the module for blocks that match the search code line.
+     * @param module Search module
+     * @return Search result block
      */
     private IBlock selectCodeLine(Module module) {
         if (this.searchCode == null) return null;
         if (this.fortranDb == null) return null;
         if (module == null) return null;
 
-        // 検索ブロックが検索コード行と一致するかチェックする
+        // Check if the search block matches the search code line
         if (isMatchCodeLine(module)) return module;
 
-        // 副プログラム単位.
+        // Subprogram unit.
         Procedure[] childrens = module.get_children();
         if (childrens != null) {
             for (Procedure children : childrens) {
@@ -262,21 +262,21 @@ public class LanguageSearcher {
     }
 
     /**
-     * 手続きから検索コード行と一致するブロックを検索する。
-     * @param procedure		検索プロシージャ
-     * @return			検索結果ブロック
+     * Search the procedure for blocks that match the search code line.
+     * @param procedure Search procedure
+     * @return Search result block
      */
     private IBlock selectCodeLine(Procedure procedure) {
         if (this.searchCode == null) return null;
         if (this.fortranDb == null) return null;
         if (procedure == null) return null;
 
-        // 検索ブロックが検索コード行と一致するかチェックする
+        // Check if the search block matches the search code line
         if (isMatchCodeLine(procedure)) return procedure;
-        // 検索ブロックが検索コード行の範囲であるかチェックする
+        // Check if the search block is within the search code line
         if (!isBlockCodeLine(procedure)) return null;
 
-        // 副プログラム単位.
+        // Subprogram unit.
         Procedure[] childrens = procedure.get_children();
         if (childrens != null) {
             for (Procedure children : childrens) {
@@ -292,9 +292,9 @@ public class LanguageSearcher {
     }
 
     /**
-     * 手続きから検索コード行と一致するブロックを検索する。
-     * @param body		検索処理ブロック
-     * @return			検索結果ブロック
+     * Search the procedure for blocks that match the search code line.
+     * @param body Search processing block
+     * @return Search result block
      */
     private IBlock selectCodeLine(ExecutableBody body) {
         if (this.searchCode == null) return null;
@@ -319,18 +319,18 @@ public class LanguageSearcher {
 
 
     /**
-     * 手続きから検索コード行と一致するブロックを検索する。
-     * @param block		検索ブロック
-     * @return			検索結果ブロック
+     * Search the procedure for blocks that match the search code line.
+     * @param block Search block
+     * @return Search result block
      */
     private IBlock selectCodeLine(Block block) {
         if (this.searchCode == null) return null;
         if (this.fortranDb == null) return null;
         if (block == null) return null;
 
-        // 検索ブロックが検索コード行と一致するかチェックする
+        // Check if the search block matches the search code line
         if (isMatchCodeLine(block)) return block;
-        // 検索ブロックが検索コード行の範囲であるかチェックする
+        // Check if the search block is within the search code line
         if (!isBlockCodeLine(block)) return null;
 
         ArrayList<Block> list = block.getChildren();
@@ -345,20 +345,20 @@ public class LanguageSearcher {
     }
 
     /**
-     * 条件分岐文(IF, SELECT)と検索コード行が一致するかチェックする
-     * @param block		検索分岐ブロック
-     * @return			検索結果ブロック
+     * Check if the conditional branch statement (IF, SELECT) matches the search code line
+     * @param block Search branch block
+     * @return Search result block
      */
     private IBlock selectCodeLine(Selection block) {
         if (this.searchCode == null) return null;
         if (this.fortranDb == null) return null;
         if (block == null) return null;
 
-        // 検索ブロックが検索コード行と一致するかチェックする
+        // Check if the search block matches the search code line
         if (isMatchCodeLine(block)) return block;
-        // 検索ブロックが検索コード行の範囲であるかチェックする
+        // Check if the search block is within the search code line
         if (!isBlockCodeLine(block)) return null;
-        // 条件文
+        // Conditional statement
         List<Condition> list = block.getConditions();
         if (list != null) {
             for (Condition condition : list) {
@@ -366,14 +366,14 @@ public class LanguageSearcher {
                 if (result != null) return result;
             }
         }
-        // 子要素の検索を行う
+        // Search for child elements
         return selectCodeLine((Block)block);
     }
 
     /**
-     * 検索ブロックが検索コード行の範囲であるかチェックする
-     * @param block		検索ブロック
-     * @return			true=ブロック範囲
+     * Check if the search block is within the search code line
+     * @param block Search block
+     * @return true = block range
      */
     private boolean isBlockCodeLine(IBlock block) {
         if (this.searchCode == null) return false;
@@ -382,11 +382,11 @@ public class LanguageSearcher {
         CodeLine blockCode = block.getStartCodeLine();
         if (blockCode == null) return false;
 
-        // 検索ファイルが一致しているか
+        // Does the search file match?
         SourceFile file = this.searchCode.getSourceFile();
         if (!file.equals(blockCode.getSourceFile())) return false;
 
-        // 検索行番号がブロックの範囲内に存在するか？
+        // Does the search line number exist within the block?
         int searchStartno = this.searchCode.getStartLine();
         int searchEndno = this.searchCode.getEndLine();
         int blockStartno = block.getStartCodeLine().getStartLine();
@@ -400,9 +400,9 @@ public class LanguageSearcher {
     }
 
     /**
-     * 検索ブロックが検索コード行と一致するかチェックする
-     * @param block		検索ブロック
-     * @return			true=ブロック範囲
+     * Check if the search block matches the search code line
+     * @param block Search block
+     * @return true = block range
      */
     private boolean isMatchCodeLine(IBlock block) {
         if (this.searchCode == null) return false;
@@ -411,17 +411,17 @@ public class LanguageSearcher {
         CodeLine blockCode = block.getStartCodeLine();
         if (blockCode == null) return false;
 
-        // 検索ファイルが一致しているか
+        // Does the search file match?
         SourceFile file = this.searchCode.getSourceFile();
         if (!file.equals(blockCode.getSourceFile())) return false;
 
-        // 検索行番号がブロックのと一致するか？
+        // Does the search line number match that of the block?
         int searchStartno = this.searchCode.getStartLine();
         //int searchEndno = this.searchCode.getEndLine();
         int blockStartno = block.getStartCodeLine().getStartLine();
         //int blockEndno = block.getEndCodeLine().getEndLine();
 
-        // 開始行が一致したら、一致したと見なす。
+        // If the start line matches, it is considered to match.
         if (blockStartno != searchStartno) return false;
 
         return true;

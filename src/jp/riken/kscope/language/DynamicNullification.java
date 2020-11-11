@@ -24,46 +24,46 @@ import java.util.List;
 import jp.riken.kscope.information.InformationBlocks;
 
 /**
- * 動的にpointer参照を破棄（pointer変数にnullを設定）する処理に対応したクラス。
+ * A class that supports the process of dynamically discarding pointer references (setting the pointer variable to null).
  *
  * @author RIKEN
  *
  */
 public class DynamicNullification extends jp.riken.kscope.language.Block {
-    /** シリアル番号 */
+    /** Serial number */
     private static final long serialVersionUID = -2195173081670708420L;
     private DynamicDeallocation core;
 
     /**
-     * コンストラクタ。
+     * Constructor.
      *
      * @param parent
-     *           親ブロック
+     * Parent block
      * @param trgt
-     *           破棄対象となるpointer変数
+     * Pointer variable to be discarded
      */
     public DynamicNullification(Block parent, List<Variable> trgt) {
         core = new DynamicDeallocation(parent, trgt);
     }
 
     /**
-     * コンストラクタ。
+     * Constructor.
      */
     public DynamicNullification() {
         super();
     }
 
     /**
-     * ターゲットをセットする。
+     * Set the target.
      *
      * @param trgt
-     *            ターゲット
+     * Target
      */
     public void setTarget(List<Variable> trgt) {
         core = new DynamicDeallocation(trgt);
     }
     /**
-     * ブロックタイプの取得。
+     * Get block type.
      *
      * @return BlockType.DYNAMIC_NULLIFICATION
      */
@@ -73,18 +73,18 @@ public class DynamicNullification extends jp.riken.kscope.language.Block {
     }
 
     /**
-     * 破棄対象pointer変数の取得。
+     * Get the pointer variable to be discarded.
      *
-     * @return 破棄対象pointer変数
+     * @return pointer variable to be discarded
      */
     public List<Variable> getTarget() {
         return core.getTarget();
     }
 
     /**
-     * 付加情報ブロックコレクションを生成する。
+     * Generate an additional information block collection.
      *
-     * @return 付加情報ブロックコレクション
+     * @return Additional information block collection
      */
     @Override
     public InformationBlocks createInformationBlocks() {
@@ -92,10 +92,10 @@ public class DynamicNullification extends jp.riken.kscope.language.Block {
     }
 
     /**
-     * idにマッチした情報ブロックを検索する。
+     * Search for information blocks that match id.
      * @param id
-     *          ID
-     * @return 見つかった情報ブロック。見つからなかった場合はnullが返ります。
+     * ID
+     * @return The information block found. If not found, null is returned.
      */
     @Override
     public IInformation findInformationBlockBy(String id) {
@@ -103,9 +103,9 @@ public class DynamicNullification extends jp.riken.kscope.language.Block {
     }
 
     /**
-     * 同一ブロックであるかチェックする.
-     * @param block		ブロック
-	 * @return		true=一致
+     * Check if they are the same block.
+     * @param block block
+* @return true = match
      */
     @Override
 	public boolean equalsBlocks(Block block) {
@@ -119,9 +119,9 @@ public class DynamicNullification extends jp.riken.kscope.language.Block {
     }
 
     /**
-     * 同一ブロックを検索する
-     * @param block			IInformationブロック
-     * @return		同一ブロック
+     * Search for the same block
+     * @param block IInformation block
+     * @return Same block
      */
     @Override
     public IInformation[] searchInformationBlocks(IInformation block) {

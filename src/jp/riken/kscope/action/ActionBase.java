@@ -29,25 +29,25 @@ import javax.swing.SwingUtilities;
 import jp.riken.kscope.service.AppController;
 
 /**
- * 基底アクションクラス
+ * Base action class
  * @author RIKEN
  *
  */
 public abstract class ActionBase implements ActionListener {
 
-    /** アプリケーションコントローラ */
+    /** Application controller */
     protected AppController controller;
 
     /**
-     * コンストラクタ
+     * Constructor
      */
     public ActionBase() {
         super();
     }
 
     /**
-     * コンストラクタ
-     * @param controller	アプリケーションコントローラ
+     * Constructor
+     * @param controller Application controller
      */
     public ActionBase(AppController controller) {
         super();
@@ -55,9 +55,9 @@ public abstract class ActionBase implements ActionListener {
     }
 
     /**
-     * 最上位のJFrameを取得する。
-     * @param event		イベント情報
-     * @return          メインフレーム
+     * Get the top JFrame.
+     * @param event Event information
+     * @return mainframe
      */
     public Frame getWindowAncestor(ActionEvent event) {
 
@@ -78,9 +78,9 @@ public abstract class ActionBase implements ActionListener {
     }
 
     /**
-     * アクションが実行可能であるかチェックする.<br/>
-     * アクションの実行前チェック、メニューのイネーブルの切替を行う。<br/>
-     * @return		true=アクションが実行可能
+     * Check if the action is executable. <br/>
+     * Check before executing the action and switch the menu enable. <br/>
+     * @return true = Action can be executed
      */
     public boolean validateAction() {
         return true;

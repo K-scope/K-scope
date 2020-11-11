@@ -25,20 +25,20 @@ import jp.riken.kscope.data.CodeLine;
 import jp.riken.kscope.language.IBlock;
 
 /**
- * プロファイラデータ基底クラス
+ * Profiler data base class
  * @author RIKEN
  */
 public abstract class ProfilerBaseData {
 
-    /** コード行情報 */
+    /** Code line information */
     private CodeLine code;
-    /** ブロック情報 */
+    /** Block information */
     private List<IBlock[]> areas;
-    /** プロファイラ情報タイプ識別子 */
+    /** Profiler information type identifier */
     private PROFILERINFO_TYPE infoType;
 
     /**
-     * コンストラクタ
+     * Constructor
      */
     public ProfilerBaseData() {
         this.code = null;
@@ -47,32 +47,32 @@ public abstract class ProfilerBaseData {
 
 
     /**
-     * コード行情報を取得する
-     * @return		コード行情報
+     * Get code line information
+     * @return code line information
      */
     public CodeLine getCodeLine() {
         return code;
     }
 
     /**
-     * コード行情報を設定する
-     * @param code		コード行情報
+     * Set code line information
+     * @param code Code line information
      */
     public void setCodeLine(CodeLine code) {
         this.code = code;
     }
 
     /**
-     * ブロック情報を取得する
-     * @return		ブロック情報
+     * Get block information
+     * @return block information
      */
     public List<IBlock[]> getAreas() {
         return this.areas;
     }
 
     /**
-     * ブロック情報を設定する
-     * @param areas		ブロック情報
+     * Set block information
+     * @param areas Block information
      */
     public void setAreas(List<IBlock[]> areas) {
         this.areas = new ArrayList<IBlock[]>();
@@ -80,8 +80,8 @@ public abstract class ProfilerBaseData {
     }
 
     /**
-     * ブロック情報を取得する
-     * @return		ブロック情報
+     * Get block information
+     * @return block information
      */
     public IBlock[] getBlocks() {
         if (this.areas == null || this.areas.size() <= 0) return null;
@@ -90,8 +90,8 @@ public abstract class ProfilerBaseData {
     }
 
     /**
-     * ブロック情報を設定する
-     * @param blocks		ブロック情報
+     * Set block information
+     * @param blocks Block information
      */
     public void setBlocks(IBlock[] blocks) {
         if (blocks == null) return;
@@ -100,8 +100,8 @@ public abstract class ProfilerBaseData {
     }
 
     /**
-     * ブロック情報を取得する
-     * @return		ブロック情報
+     * Get block information
+     * @return block information
      */
     public IBlock getBlock() {
         if (this.areas == null || this.areas.size() <= 0) return null;
@@ -110,8 +110,8 @@ public abstract class ProfilerBaseData {
     }
 
     /**
-     * ブロック情報を設定する
-     * @param block		ブロック情報
+     * Set block information
+     * @param block Block information
      */
     public void setBlock(IBlock block) {
         if (block == null) return;
@@ -121,16 +121,16 @@ public abstract class ProfilerBaseData {
     }
 
     /**
-     * コスト情報タイプ識別子を取得する
-     * @param type コスト情報タイプ識別子
+     * Get cost information type identifier
+     * @param type Cost information type identifier
      */
     public void setInfoType(PROFILERINFO_TYPE type) {
         this.infoType = type;
     }
 
     /**
-     * コスト情報タイプ識別子を設定する
-     * @return コスト情報タイプ識別子
+     * Set cost information type identifier
+     * @return Cost information type identifier
      */
     public PROFILERINFO_TYPE getInfoType() {
         return this.infoType;

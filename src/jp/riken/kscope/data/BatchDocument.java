@@ -38,34 +38,34 @@ import jp.riken.kscope.properties.KeywordProperties;
 import jp.riken.kscope.utils.StringUtils;
 
 /**
- * スタイル付テキストモデル
+ * Styled text model
  * @author RIKEN
  *
  */
 public class BatchDocument extends DefaultStyledDocument {
 
-    /** シリアル番号 */
+    /** Serial number */
     private static final long serialVersionUID = 1L;
 
-    /** 行末キャラクタ */
+    /** End-of-line character */
     private static final char[] EOL_ARRAY = { '\n' };
 
-    /** 行文字列リスト */
+    /** Line string list */
     private ArrayList<ElementSpec> batch = null;
 
     private SimpleAttributeSet defualtAttributeSet = new SimpleAttributeSet();
 
     /**
-     * コンストラクタ
+     * Constructor
      */
     public BatchDocument() {
         batch = new ArrayList<ElementSpec>();
     }
 
     /**
-     * 文字列を追加する。
-     * @param   str		追加文字列
-     * @param   attr    スタイル情報
+     * Add a string.
+     * @param str Additional string
+     * @param attr Style information
      */
     public void appendBatchString(String str, AttributeSet attr) {
         attr = attr.copyAttributes();
@@ -75,9 +75,9 @@ public class BatchDocument extends DefaultStyledDocument {
     }
 
     /**
-     * 行を追加する。
-     * @param   str		追加行
-     * @param   attr    スタイル情報
+     * Add a line.
+     * @param str Additional line
+     * @param attr Style information
      */
     public void appendBatchLineString(String str, AttributeSet attr) {
         appendBatchString(str, attr);
@@ -85,11 +85,11 @@ public class BatchDocument extends DefaultStyledDocument {
     }
 
     /**
-     * 行末文字列を追加する。
-     * @param   attr    スタイル情報
+     * Add a line ending string.
+     * @param attr Style information
      */
     public void appendBatchLineFeed(AttributeSet attr) {
-        // 行末キャラクタを追加する。
+        // Add a line ending character.
         // batch.add(new ElementSpec(attr, ElementSpec.ContentType, EOL_ARRAY, 0, 1));
         addBachList(attr, ElementSpec.ContentType, EOL_ARRAY, 1);
 
@@ -102,25 +102,25 @@ public class BatchDocument extends DefaultStyledDocument {
     }
 
     /**
-     * 追加した要素(文字列+スタイル)をDefaultStyledDocumentにまとめて追加する。
-     * @param offs			追加オフセット
-     * @throws BadLocationException			ドキュメントモデル中の不正な位置エラー
+     * Add the added elements (string + style) to DefaultStyledDocument at once.
+     * @param offs Additional offset
+     * @throws BadLocationException Bad location error in document model
      */
     public void processBatchUpdates(int offs) throws BadLocationException {
-        // 追加済みの要素リストを配列に変換する。
+        // Convert the added element list to an array.
         ElementSpec[] inserts = new ElementSpec[batch.size()];
         batch.toArray(inserts);
 
-        // 要素リストを配列の追加
+        // Add an array of element lists
         super.insert(offs, inserts);
     }
 
     /**
-     * ドキュメントの要素リストに追加
-     * @param attr		スタイル属性
-     * @param type		タイプ
-     * @param txt		ドキュメントテキスト
-     * @param len		テキスト長
+     * Add to document element list
+     * @param attr Style attribute
+     * @param type type
+     * @param txt Document text
+     * @param len Text length
      */
     private void addBachList(AttributeSet attr, short type, char[] txt, int len) {
         if (len > 0) {
@@ -132,22 +132,22 @@ public class BatchDocument extends DefaultStyledDocument {
     }
 
     /**
-     * キーワードのハイライト設定をクリアする
-     * @param startline			ハイライト開始行インデックス
-     * @param endline			ハイライト終了行インデックス
+     * Clear keyword highlighting
+     * @param startline Highlight start line index
+     * @param endline Highlight end row index
      */
     public void clearKeywordAttributes(final int startline, final int endline)  {
 
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                // 開始、終了キャレット位置
+                // Start and end caret positions
                 Element root = getDefaultRootElement();
                 int startOffset   = root.getElement( startline-1 ).getStartOffset();
                 int endOffset   = root.getElement( endline-1 ).getEndOffset();
                 int lineLength  = endOffset - startOffset;
 
-                // 設定したスタイル属性をクリアする。
+                // Clear the set style attribute.
                 setCharacterAttributes(startOffset, lineLength, defualtAttributeSet, true);
             }
         });
@@ -155,15 +155,15 @@ public class BatchDocument extends DefaultStyledDocument {
 
 
     /**
-     * キーワードのハイライトを行う
-     * @param properties		キーワード設定
-     * @param startline			ハイライト開始行インデックス
-     * @param endline			ハイライト終了行インデックス
+     * Highlight keywords
+     * @param properties Keyword setting
+     * @param startline Highlight start line index
+     * @param endline Highlight end row index
      */
     public void applyHighlighting(final KeywordProperties properties, final int startline, final int endline)  {
         if (properties == null) return;
 
-        // 開始、終了キャレット位置
+        // Start and end caret positions
         Element root = getDefaultRootElement();
         int startOffset   = root.getElement( startline-1 ).getStartOffset();
         int endOffset   = root.getElement( endline-1 ).getEndOffset();
@@ -173,7 +173,7 @@ public class BatchDocument extends DefaultStyledDocument {
             try {
                 Keyword keyword = properties.getKeyword(i);
                 if (!keyword.isEnabled()) continue;
-                // キーワード検索を行う。
+                // Perform a keyword search.
                 applyKeyword(keyword, startOffset, endOffset);
 
             } catch (Exception e) {
@@ -183,10 +183,10 @@ public class BatchDocument extends DefaultStyledDocument {
     }
 
     /**
-     * 単語の開始位置の探索を行う
-     * @param properties		キーワード設定情報
-     * @param startOffset		開始ドキュメントキャレット位置
-     * @param endOffset			終了ドキュメントキャレット位置
+     * Search for the start position of a word
+     * @param properties Keyword setting information
+     * @param startOffset Start document caret position
+     * @param endOffset End document caret position
      * @throws Exception
      */
     @SuppressWarnings("unused")
@@ -197,9 +197,9 @@ public class BatchDocument extends DefaultStyledDocument {
         int endElement = endOffset;
         int start = 0;
         int end = endOffset-startOffset;
-        // 単語の検索
+        // Search for words
         while (start <= end) {
-            // 区切り文字の探索
+            // Search for delimiters
             while (isDelimiter(content.substring(start, start+1))) {
                 if (start < end) {
                     start++;
@@ -210,7 +210,7 @@ public class BatchDocument extends DefaultStyledDocument {
             start = getOtherToken(properties, content, start, end, startElement);
         }
 
-        // 正規表現による探索
+        // Regular expression search
         int count = properties.getKeywordCount();
         for (int i=0; i<count; i++ ) {
             Keyword keyword = properties.getKeyword(i);
@@ -221,20 +221,20 @@ public class BatchDocument extends DefaultStyledDocument {
             int flags = keyword.isSensitivecase() ? 0 : Pattern.CASE_INSENSITIVE;
             flags += Pattern.MULTILINE;
 
-            // キーワード情報からスタイル属性の作成を行う。
+            // Create style attributes from keyword information.
             MutableAttributeSet attr = createStyleAttributeSet(keyword);
 
-            // 正規表現検索
+            // Regular expression search
             Matcher m = Pattern.compile(regex, flags).matcher(content);
             while (m.find()) {
                 if (m.groupCount() == 0) {
-                    // スタイルの適用
+                    // Apply style
                     setCharacterAttributes(m.start() + startElement, m.end() - m.start(), attr, false);
                 }
                 else if (m.groupCount() >= 1) {
-                    // グループ化されている場合、最初(全体)は除外する。
+                    // If grouped, exclude the first (whole).
                     for (int j = 1; j <= m.groupCount(); j++){
-                        // スタイルの適用
+                        // Apply style
                         setCharacterAttributes(m.start(j) + startElement, m.end(j) - m.start(j), attr, false);
                     }
                 }
@@ -243,11 +243,11 @@ public class BatchDocument extends DefaultStyledDocument {
     }
 
     /**
-     * キーワード
-     * @param keyword		キーワード設定
-     * @param startOffset			開始オフセット値
-     * @param endOffset			終了オフセット値
-     * @throws Exception		キーワード設定エラー
+     * Keywords
+     * @param keyword keyword setting
+     * @param startOffset Start offset value
+     * @param endOffset End offset value
+     * @throws Exception Keyword setting error
      */
     public void applyKeyword(final Keyword keyword, final int startOffset, final int endOffset) throws Exception {
 
@@ -255,28 +255,28 @@ public class BatchDocument extends DefaultStyledDocument {
             @Override
             public void run() {
                 try {
-                    // 開始、終了キャレット位置
+                    // Start and end caret positions
                     int length = endOffset - startOffset;
                     String content = BatchDocument.this.getText(startOffset, length);
 
                     if (!keyword.isEnabled()) return;
                     if (keyword.getKeyword() == null || keyword.getKeyword().isEmpty()) return;
 
-                    // キーワード情報からスタイル属性の作成を行う。
+                    // Create style attributes from keyword information.
                     MutableAttributeSet attr = createStyleAttributeSet(keyword);
 
                     if (keyword.isRegex()) {
-                        // 正規表現
+                        // Regular expressions
                         setRegexAttributes(content, keyword.getKeyword(), startOffset, attr, keyword.isSensitivecase());
                     }
                     else if (keyword.isSearchVariable()) {
-                        // 変数・トレース検索
+                        // Variable / trace search
                         setVariableAttributes(content, keyword.getKeyword(), startOffset, attr, keyword.isSensitivecase());
                     }
                     else {
 //                        System.out.println("keyword=" + keyword.getKeyword() + ": word=" + keyword.isSearchWord()
 //                                           + ": bold=" + keyword.getStyle() + "color=" + keyword.getForecolor());
-                        // 文字列検索
+                        // String search
                         setFindAttributes(content, keyword.getKeyword(), startOffset, attr, keyword.isSensitivecase(), keyword.isSearchWord());
                     }
                 } catch (Exception ex) {
@@ -287,12 +287,12 @@ public class BatchDocument extends DefaultStyledDocument {
     }
 
     /**
-     * 正規表現による一致文字列に対して、ハイライト設定を行う.
-     * @param content		検索対象文字列
-     * @param regex			正規表現
-     * @param startOffset		開始オフセット値
-     * @param attr				適用ハイライト設定
-     * @param sensitivecase		true=大文字・小文字を区別する.
+     * Set the highlight for the matching string by regular expression.
+     * @param content Search target string
+     * @param regex regular expression
+     * @param startOffset Start offset value
+     * @param attr Applicable highlight settings
+     * @param sensitivecase true = Case sensitive.
      */
     private void setRegexAttributes(String content, String regex, int startOffset, MutableAttributeSet attr, boolean sensitivecase) {
         if (content == null || content.isEmpty()) return;
@@ -302,17 +302,17 @@ public class BatchDocument extends DefaultStyledDocument {
         int flags = sensitivecase ? 0 : Pattern.CASE_INSENSITIVE;
         flags += Pattern.MULTILINE;
 
-        // 正規表現検索
+        // Regular expression search
         Matcher m = Pattern.compile(regex, flags).matcher(content);
         while (m.find()) {
             if (m.groupCount() == 0) {
-                // スタイルの適用
+                // Apply style
                 setCharacterAttributes(m.start() + startOffset, m.end() - m.start(), attr, true);
             }
             else if (m.groupCount() >= 1) {
-                // グループ化されている場合、最初(全体)は除外する。
+                // If grouped, exclude the first (whole).
                 for (int j = 1; j <= m.groupCount(); j++){
-                    // スタイルの適用
+                    // Apply style
                     setCharacterAttributes(m.start(j) + startOffset, m.end(j) - m.start(j), attr, true);
                 }
             }
@@ -320,13 +320,13 @@ public class BatchDocument extends DefaultStyledDocument {
     }
 
     /**
-     * 文字検索による一致文字列に対して、ハイライト設定を行う.
-     * @param content		検索対象文字列
-     * @param find			検索文字列
-     * @param startOffset		開始オフセット値
-     * @param attr				適用ハイライト設定
-     * @param sensitivecase		true=大文字・小文字を区別する.
-     * @param word		    true=単語検索
+     * Set the highlight for the matching character string by character search.
+     * @param content Search target string
+     * @param find search string
+     * @param startOffset Start offset value
+     * @param attr Applicable highlight settings
+     * @param sensitivecase true = Case sensitive.
+     * @param word true = word search
 
      */
     private void setFindAttributes(String content, String find, int startOffset, MutableAttributeSet attr,  boolean sensitivecase, boolean word) {
@@ -337,19 +337,19 @@ public class BatchDocument extends DefaultStyledDocument {
         String contentText = content;
         String findText = find;
         if (!sensitivecase) {
-            // 大文字・小文字を区別しないので、すべて小文字に変換する
+            // It is not case sensitive, so convert it to all lowercase
             contentText = contentText.toLowerCase();
             findText = findText.toLowerCase();
         }
-        // 文字列検索を行う
+        // Perform a string search
         int fromIndex = 0;
         int start = -1;
         while ((start = contentText.indexOf(findText, fromIndex)) != -1) {
             int end = start + findText.length();
             fromIndex = end;
-            // 単語検索
+            // word search
             if (word) {
-                // 検索結果の前後の文字がデリミタであるかチェックする
+                // Check if the characters before and after the search result are delimiters
                 if (start > 0) {
                     if (!isDelimiter(contentText.substring(start-1, start))) {
                         continue;
@@ -365,19 +365,19 @@ public class BatchDocument extends DefaultStyledDocument {
                 }
             }
 
-            // スタイルの適用
+            // Apply style
             setCharacterAttributes(start + startOffset, findText.length(), attr, true);
         }
 
     }
 
     /**
-     * 変数・トレース検索による一致文字列に対して、ハイライト設定を行う.
-     * @param content		検索対象文字列
-     * @param name			変数名
-     * @param startOffset		開始オフセット値
-     * @param attr				適用ハイライト設定
-     * @param sensitivecase		true=大文字・小文字を区別する.
+     * Set the highlight for the matching character string by variable / trace search.
+     * @param content Search target string
+     * @param name Variable name
+     * @param startOffset Start offset value
+     * @param attr Applicable highlight settings
+     * @param sensitivecase true = Case sensitive.
      *
      */
     private void setVariableAttributes(String content, String name, int startOffset, MutableAttributeSet attr,  boolean sensitivecase) {
@@ -385,9 +385,9 @@ public class BatchDocument extends DefaultStyledDocument {
         if (name == null || name.isEmpty()) return;
         if (attr == null) return;
 
-        // 文字列をデリミタで分解する
+        // Decompose the string with the delimiter
         String[] unuseddelimiters = {"%"}; 
-        // 変数名に%が含まれていれば、デリミタから%を除外する。
+        // If the variable name contains%, exclude% from the delimiter.
         if (name.indexOf("%") < 0) {
         	unuseddelimiters = null;
         }
@@ -397,7 +397,7 @@ public class BatchDocument extends DefaultStyledDocument {
         int start = 0;
         for (String word : list) {
             if (word == null) {
-                // \r, \nはnullでセットされる。
+                // \ r and \ n are set as null.
                 start += 1;
                 continue;
             }
@@ -408,42 +408,42 @@ public class BatchDocument extends DefaultStyledDocument {
                 continue;
             }
 
-            // コメントチェック
+            // Comment check
             if ("!".equals(word)) {
-                // 行末までコメントであるので、以後適用無し
+                // Since it is a comment until the end of the line, it does not apply after that
                 break;
             }
 
             boolean match = false;
             if (!sensitivecase) {
-                // 大文字。小文字を区別しない
+                // uppercase letter. Insensitive to lowercase
                 match = word.equalsIgnoreCase(name);
             }
             else {
-                // 大文字。小文字を区別する
+                // uppercase letter. Case sensitive
                 match = word.equals(name);
             }
 
             if (match) {
-                // スタイルの適用
+                // Apply style
                 setCharacterAttributes(start + startOffset, len, attr, true);
             }
 
-            // 開始インデックス
+            // Start index
             start += len;
         }
     }
 
 
     /**
-     * 単語の開始位置からキーワード設定を行う単語の探索を行う
+     * Set keywords from the start position of words Search for words
      *
-     * @param properties		キーワード設定情報
-     * @param content			探索文字列
-     * @param start				探索文字列開始位置
-     * @param end				探索文字列終了位置
-     * @param startElement		開始ドキュメントキャレット位置
-     * @return					次回探索文字列開始位置
+     * @param properties Keyword setting information
+     * @param content Search string
+     * @param start Search string start position
+     * @param end Search string end position
+     * @param startElement Start document caret position
+     * @return Next search string start position
      */
     private int getOtherToken(KeywordProperties properties, String content, int start, int end, int startElement) {
         int endOfToken = start + 1;
@@ -456,20 +456,20 @@ public class BatchDocument extends DefaultStyledDocument {
         String token = content.substring(start, endOfToken);
         Keyword keyword = properties.getKeyword(token);
 
-        // キーワードが有効 AND 正規表現ではないこと
+        // Keyword is valid AND not a regular expression
         if (keyword != null && keyword.isEnabled() && !keyword.isRegex()) {
-            // キーワード情報からスタイル属性の作成を行う。
+            // Create style attributes from keyword information.
             MutableAttributeSet attr = createStyleAttributeSet(keyword);
-            // スタイルの適用
+            // Apply style
             setCharacterAttributes(start + startElement, endOfToken - start, attr, false);
         }
         return endOfToken + 1;
     }
 
     /**
-     * 文字が区切り文字であるかチェックする。
-     * @param character		チェック文字
-     * @return			true=区切り文字
+     * Check if the character is a delimiter.
+     * @param character Check character
+     * @return true = Delimiter
      */
     private boolean isDelimiter(String character) {
         if (character == null || character.isEmpty()) {
@@ -479,9 +479,9 @@ public class BatchDocument extends DefaultStyledDocument {
     }
 
     /**
-     * キーワード情報からスタイル属性の作成を行う。
-     * @param keyword		キーワード情報
-     * @return			スタイル属性
+     * Create style attributes from keyword information.
+     * @param keyword Keyword information
+     * @return style attribute
      */
     private MutableAttributeSet createStyleAttributeSet(Keyword keyword) {
         if (keyword == null) return null;
@@ -504,15 +504,15 @@ public class BatchDocument extends DefaultStyledDocument {
     }
 
     /**
-     * 行、列位置の単語を取得する
-     * @param rowIndex			キャレット行インデックス
-     * @param columnIndex		列インデックス
-     * @return		キャレット位置単語
+     * Get words in row and column positions
+     * @param rowIndex Caret row index
+     * @param columnIndex Column index
+     * @return Caret position word
      */
     public String getCaretWord(int rowIndex, int columnIndex) {
 
         try {
-            // 選択行の文字列の取得
+            // Get the string of the selected line
             Element root = getDefaultRootElement();
             int startOffset   = root.getElement( rowIndex ).getStartOffset();
             int endOffset   = root.getElement( rowIndex ).getEndOffset();
@@ -543,16 +543,16 @@ public class BatchDocument extends DefaultStyledDocument {
 
 
     /**
-     * キャレット位置の単語を取得する
-     * @param index			キャレットインデックス
-     * @return		キャレット位置単語
+     * Get the word for the caret position
+     * @param index Caret index
+     * @return Caret position word
      */
     public String getCaretWord(int index) {
 
-        // 選択行の文字列の取得
+        // Get the string of the selected line
         Element root = getDefaultRootElement();
 
-        /* キャレットの位置にある行番号を取得 */
+        /* Get the line number at the caret position */
         int rowIndex = root.getElementIndex(index);
 
         int startOffset   = root.getElement( rowIndex ).getStartOffset();

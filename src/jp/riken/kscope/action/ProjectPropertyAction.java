@@ -25,42 +25,42 @@ import jp.riken.kscope.service.AppController;
 import jp.riken.kscope.service.ProjectService;
 
 /**
- * プロジェクトプロパティアクション
+ * Project property action
  * @author RIKEN
  */
 public class ProjectPropertyAction extends ActionBase {
 
     /**
-     * コンストラクタ
-     * @param controller	アプリケーションコントローラ
+     * Constructor
+     * @param controller Application controller
      */
     public ProjectPropertyAction(AppController controller) {
         super(controller);
     }
 
     /**
-     * アクション発生イベント
-     * @param event		イベント情報
+     * Action occurrence event
+     * @param event Event information
      */
     @Override
     public void actionPerformed(ActionEvent event) {
 
-        // プロパティの設定を行う。
+        // Set the property.
         setProperties();
 
-        // プロパティタブをアクティブにする
+        // Activate the Properties tab
         this.controller.getMainframe().getPanelAnalysisView().setSelectedPanel(ANALYSIS_PANEL.PROPARTIES);
     }
 
     /**
-     * プロジェクトのプロパティの設定を行う。
+     * Set the project properties.
      */
     public void setProperties() {
 
-        // プロパティ設定モデルの取得する
+        // Get the property setting model
         PropertiesTableModel model = this.controller.getPropertiesTableModel();
 
-        // プロジェクトのプロパティの取得を行う
+        // Get project properties
         ProjectModel project = this.controller.getProjectModel();
         ProjectService service = new ProjectService(project);
         service.setProperties(model);

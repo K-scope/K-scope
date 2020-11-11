@@ -28,23 +28,23 @@ import jp.riken.kscope.properties.ProfilerProperties;
 import jp.riken.kscope.service.AppController;
 
 /**
- * プロファイラ凡例の表示アクションクラス
+ * View profiler legend Action class
  * @author RIKEN
  */
 public class WindowProfilerLegendAction extends ActionBase {
 
     /**
-     * コンストラクタ
-     * @param controller	アプリケーションコントローラ
+     * Constructor
+     * @param controller Application controller
      */
     public WindowProfilerLegendAction(AppController controller) {
         super(controller);
     }
 
     /**
-     * アクションが実行可能であるかチェックする.<br/>
-     * アクションの実行前チェック、メニューのイネーブルの切替を行う。<br/>
-     * @return		true=アクションが実行可能
+     * Check if the action is executable. <br/>
+     * Check before executing the action and switch the menu enable. <br/>
+     * @return true = Action can be executed
      */
     @Override
     public boolean validateAction() {
@@ -52,33 +52,33 @@ public class WindowProfilerLegendAction extends ActionBase {
     }
 
     /**
-     * アクション発生イベント
-     * @param event		イベント情報
+     * Action occurrence event
+     * @param event Event information
      */
     @Override
     public void actionPerformed(ActionEvent event) {
 
-        // 親Frameの取得を行う。
+        // Get the parent Frame.
         Frame frame = getWindowAncestor( event );
 
-        // プロファイラ凡例ダイアログを表示する。
+        // Display the profiler legend dialog.
     	showLegendWindow(frame);
     }
 
     /**
-     * プロファイラ凡例ダイアログを表示する。
-     * @param    frame    親フレーム
+     * Display the profiler legend dialog.
+     * @param frame Parent frame
      */
     public void showLegendWindow(Frame frame) {
 
-        // プロファイラプロパティ
+        // Profiler properties
         ProfilerProperties properties = this.controller.getPropertiesProfiler();
 
-        // プロファイラ凡例ダイアログを表示する。
+        // Display the profiler legend dialog.
     	ProfilerLegendDialog dialog = this.controller.getMainframe().getDialogProfilerLegend();
     	if (dialog == null) {
     		dialog = new ProfilerLegendDialog(frame, false);
-    		// 表示位置を設定する
+    		// Set the display position
     		Rectangle dialogRect = dialog.getBounds();
     		JComponent view = this.controller.getMainframe().getPanelSourceView();
         	Point location = view.getLocationOnScreen();
@@ -90,7 +90,7 @@ public class WindowProfilerLegendAction extends ActionBase {
     	}
     	dialog.setProperties(properties);
 
-        // ダイアログ表示
+        // Dialog display
         dialog.showDialog();
     }
 

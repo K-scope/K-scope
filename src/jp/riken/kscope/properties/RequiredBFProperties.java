@@ -42,85 +42,85 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 /**
- * 要求Byte/FLOP設定プロパティ
+ * Request Byte / FLOP configuration property
  * @author RIKEN
  */
 public class RequiredBFProperties  extends PropertiesBase {
-    /** シリアル番号 */
+    /** Serial number */
     private static final long serialVersionUID = 1L;
 
-	/** メモリスループット算出モード */
+	/** Memory throughput calculation mode */
 	public enum MEM_THROUGHPUT_CALC_MODE {
-		AUTO,		///< 自動判定：デフォルト
-		STORE,		///< ストアあり
-		NOSTORE	    ///< ストアなし
+		AUTO,		/// <Automatic judgment: Default
+		STORE,		/// <with store
+		NOSTORE	    /// <No store
 	}
 
-	/** 要求BFの算出単位 */
+	/** Calculation unit of request BF */
 	public enum BF_CALC_TYPE {
 		BYTE_FLOP,		///< Byte/FLOP
 		FLOP_BYTE		///< FLOP/Byte
 	}
 
-	/** デフォルトデータ型サイズ */
+	/** Default data type size */
 	public final int DEFUALT_DATASIZE = 4;
-    /* プロパティキー */
-    /** 要求Byte/FLOP要素 */
+    /* Property key */
+    /** Request Byte / FLOP element */
     private final String ELEM_REQUIRED_BF = "required_bf";
-    /** 演算性能 GFLOPS */
+    /** Computational performance GFLOPS */
     private final String KEY_FLOP_PERFORMANCE = "flop-performance";
-    /** メモリスループット算出モード（スループット算出時にストアを考慮するかの選択） */
+    /** Memory throughput calculation mode (selection to consider store when calculating throughput) */
     private final String KEY_MEM_THROUGHPUT_CALC_MODE = "mem-throughput-calc_mode";
-    /** 要求BF算出の単位 */
+    /** Unit of request BF calculation */
     private final String KEY_BF_CALC_TYPE = "calc-type";
-    /** デフォルトサイズ */
+    /** Default size */
     private final String KEY_DEFAULT_SIZE = "default-size";
-    /** アクセス先キー属性 */
+    /** Access key attribute */
     private final String ATTR_KEY = "key";
-    /** 値属性 */
+    /** Value attribute */
     private final String ATTR_VALUE = "value";
-    /** アクセス先名称属性 */
+    /** Access name attribute */
     private final String ATTR_NAME = "name";
-    /** アクセス先背景色 */
+    /** Access background color */
     private final String ATTR_BACKGROUND_COLOR = "background-color";
-    /** メモリスループット:ストアあり */
+    /** Memory Throughput: With Store */
     private final String ATTR_MEM_THROUGHPUT_STORE = "mem-throughput-store";
-    /** メモリスループット:ストアなし */
+    /** Memory Throughput: No Store */
     private final String ATTR_MEM_THROUGHPUT_NOSTORE = "mem-throughput-nostore";
-    /** 係数 */
+    /** Coefficient */
     private final String ATTR_COEFFICIENT = "coef";
-    /** 要求B/F算出 */
+    /** Request B / F calculation */
     private final String ATTR_REQUIRED_BF = "reqbf";
-    /** 律速 */
+    /** rate-determining */
     private final String ATTR_LIMITS = "limits";
-    /** 有効/無効 */
+    /** Enabled / Disabled */
     private final String ATTR_ENABLED = "enabled";
-    /** デフォルトサイズ：real */
+    /** Default size: real */
     private final String ATTR_SIZE_REAL = "size-real";
-    /** デフォルトサイズ：integer */
+    /** Default size: integer */
     private final String ATTR_SIZE_INTEGER = "size-integer";
 
-    /** 理論浮動小数点数演算性能 */
+    /** Theoretical floating point arithmetic performance */
     private float theoretical_flop_performance;
-    /** メモリスループット算出モード設定 */
+    /** Memory throughput calculation mode setting */
     private MEM_THROUGHPUT_CALC_MODE memThroughtputCalcMode;
-    /** BF算出単位 */
+    /** BF calculation unit */
     private BF_CALC_TYPE BFCalcType;
-    /** デフォルトサイズ:real (byte) */
+    /** Default size: real (byte) */
     private int defaultSizeReal;
-    /** デフォルトサイズ:integer (byte) */
+    /** Default size: integer (byte) */
     private int defaultSizeInteger;
-    /** 要求Byte/FLOP設定リスト */
+    /** Request Byte / FLOP setting list */
     private List<RequiredBF> listReqBF= new ArrayList<RequiredBF>();
-    /** デフォルト要求Byte/FLOP設定 */
+    /** Default request Byte / FLOP setting */
     private RequiredBFProperties defaultProperties;
 
     /**
-     * コンストラクタ
-     * @throws Exception     プロパティ読込エラー
+     * Constructor
+     * @throws Exception Property read error
      */
     public RequiredBFProperties() throws Exception {
-    	// デフォルト値
+    	// Default value
     	this.memThroughtputCalcMode = MEM_THROUGHPUT_CALC_MODE.AUTO;
     	this.BFCalcType = BF_CALC_TYPE.BYTE_FLOP;
     	this.defaultSizeReal = DEFUALT_DATASIZE;
@@ -129,43 +129,43 @@ public class RequiredBFProperties  extends PropertiesBase {
     }
 
     /**
-     * ソース設定プロパティをデフォルト設定ファイルから読み込む。
-     * @throws Exception     プロパティ読込エラー
+     * Read source configuration properties from the default configuration file.
+     * @throws Exception Property read error
      */
     public void loadProperties() throws Exception {
         InputStream is = null;
 
-        // リソースファイルの読込
+        // Read resource file
         is = ResourceUtils.getPropertiesFile(KscopeProperties.PROPERTIES_FILE);
 
         loadProperties(is);
     }
 
     /**
-     * 要求Byte/FLOP設定プロパティを設定ファイルから読み込む。
-     * @param  propertiesFile 		要求Byte/FLOP設定プロパティ設定ファイル
-     * @throws Exception     プロパティ読込エラー
+     * Read the request Byte / FLOP configuration property from the configuration file.
+     * @param propertiesFile Request Byte / FLOP configuration property configuration file
+     * @throws Exception Property read error
      */
     public void loadProperties(File propertiesFile) throws Exception {
 
         if (!propertiesFile.exists()) {
-            throw(new Exception(Message.getString("propertiesbase.exeption.notexist"))); //要求Byte/FLOPプロパティファイルが存在しません。
+            throw(new Exception(Message.getString("propertiesbase.exeption.notexist"))); // Request Byte / FLOP property file does not exist.
         }
 
-        // リソースファイルの読込
+        // Read resource file
         InputStream stream = new FileInputStream(propertiesFile);
 
-        // XMLファイルのパース
+        // Parsing the XML file
         loadProperties(stream);
     }
 
     /**
-     * 要求Byte/FLOP設定プロパティを設定ファイルから読み込む。
-     * @param   stream      設定ファイルストリーム
-     * @throws Exception     プロパティ読込エラー
+     * Read the request Byte / FLOP configuration property from the configuration file.
+     * @param stream Configuration file stream
+     * @throws Exception Property read error
      */
     public void loadProperties(InputStream stream ) throws Exception {
-        // XMLファイルのパース
+        // Parsing the XML file
     	List<RequiredBF> list = parseRequiredBF(stream, "//" + ELEM_REQUIRED_BF);
     	if (list != null && list.size() > 0) {
     		this.listReqBF = list;
@@ -173,10 +173,10 @@ public class RequiredBFProperties  extends PropertiesBase {
     }
 
     /**
-     * 要求Byte/FLOP設定を取得する
-     * @param stream		XML入力ストリーム
-     * @param path		要求Byte/FLOP設定XPATH
-     * @throws Exception 		要求Byte/FLOP設定パースエラー
+     * Get the request Byte / FLOP setting
+     * @param stream XML input stream
+     * @param path Request Byte / FLOP setting XPATH
+     * @throws Exception Request Byte / FLOP setting parsing error
      */
     public List<RequiredBF> parseRequiredBF(InputStream stream, String path) throws Exception {
 
@@ -190,7 +190,7 @@ public class RequiredBFProperties  extends PropertiesBase {
         XPathFactory factory = XPathFactory.newInstance();
         XPath xpath = factory.newXPath();
 
-        // 要求BF要素の取得
+        // Get the request BF element
         XPathExpression expr = xpath.compile(path);
 
         Object result = expr.evaluate(document, XPathConstants.NODESET);
@@ -203,15 +203,15 @@ public class RequiredBFProperties  extends PropertiesBase {
                 Node node = nodelist.item(i);
                 RequiredBF reqbf = null;
 
-                // 属性の取得
+                // Get attributes
                 NamedNodeMap attrs = node.getAttributes();
                 Node attrnode;
                 String value;
-                // キー
+                // Key
                 attrnode = attrs.getNamedItem(ATTR_KEY);
                 if (attrnode == null) continue;
                 String key = attrnode.getNodeValue();
-                // 浮動小数点数演算性能
+                // Floating point arithmetic performance
                 if (KEY_FLOP_PERFORMANCE.equalsIgnoreCase(key)) {
                     attrnode = attrs.getNamedItem(ATTR_VALUE);
                     value = attrnode.getNodeValue();
@@ -220,7 +220,7 @@ public class RequiredBFProperties  extends PropertiesBase {
                     }
                     continue;
                 }
-                // メモリスループット算出モード
+                // Memory throughput calculation mode
                 else if (KEY_MEM_THROUGHPUT_CALC_MODE.equalsIgnoreCase(key)) {
                     attrnode = attrs.getNamedItem(ATTR_VALUE);
                     value = attrnode.getNodeValue();
@@ -231,7 +231,7 @@ public class RequiredBFProperties  extends PropertiesBase {
 					}
                     continue;
                 }
-                // BF算出単位
+                // BF calculation unit
                 else if (KEY_BF_CALC_TYPE.equalsIgnoreCase(key)) {
                     attrnode = attrs.getNamedItem(ATTR_VALUE);
                     value = attrnode.getNodeValue();
@@ -242,7 +242,7 @@ public class RequiredBFProperties  extends PropertiesBase {
 					}
                     continue;
                 }
-                // デフォルトサイズ
+                // Default size
                 else if (KEY_DEFAULT_SIZE.equalsIgnoreCase(key)) {
                 	// real
                     attrnode = attrs.getNamedItem(ATTR_SIZE_REAL);
@@ -280,14 +280,14 @@ public class RequiredBFProperties  extends PropertiesBase {
                 }
                 if (reqbf == null) continue;
 
-                // アクセス先名称
+                // Access name
                 attrnode = attrs.getNamedItem(ATTR_NAME);
                 if (attrnode != null) {
                 	String res = attrnode.getNodeValue();
                     reqbf.setName(res);
                 }
 
-                // アクセス先背景色
+                // Access background color
                 attrnode = attrs.getNamedItem(ATTR_BACKGROUND_COLOR);
                 if (attrnode != null) {
                     value = attrnode.getNodeValue();
@@ -295,7 +295,7 @@ public class RequiredBFProperties  extends PropertiesBase {
                     reqbf.setBackColor(res);
                 }
 
-                // メモリスループット:ストアあり
+                // Memory Throughput: With Store
                 attrnode = attrs.getNamedItem(ATTR_MEM_THROUGHPUT_STORE);
                 if (attrnode != null) {
                     value = attrnode.getNodeValue();
@@ -304,7 +304,7 @@ public class RequiredBFProperties  extends PropertiesBase {
                     }
                 }
 
-                // メモリスループット:ストアなし
+                // Memory Throughput: No Store
                 attrnode = attrs.getNamedItem(ATTR_MEM_THROUGHPUT_NOSTORE);
                 if (attrnode != null) {
                     value = attrnode.getNodeValue();
@@ -313,7 +313,7 @@ public class RequiredBFProperties  extends PropertiesBase {
                     }
                 }
 
-                // 係数
+                // Coefficient
                 attrnode = attrs.getNamedItem(ATTR_COEFFICIENT);
                 if (attrnode != null) {
                     value = attrnode.getNodeValue();
@@ -322,7 +322,7 @@ public class RequiredBFProperties  extends PropertiesBase {
                     }
                 }
 
-                // 要求B/F算出フラグ
+                // Request B / F calculation flag
                 attrnode = attrs.getNamedItem(ATTR_REQUIRED_BF);
                 if (attrnode != null) {
                     value = attrnode.getNodeValue();
@@ -330,7 +330,7 @@ public class RequiredBFProperties  extends PropertiesBase {
                     reqbf.setRequiredBF(res);
                 }
 
-                // 律速フラグ
+                // rate-determining flag
                 attrnode = attrs.getNamedItem(ATTR_LIMITS);
                 if (attrnode != null) {
                     value = attrnode.getNodeValue();
@@ -338,7 +338,7 @@ public class RequiredBFProperties  extends PropertiesBase {
                     reqbf.setLimiting(res);
                 }
 
-                // 有効・無効
+                // Valid / Invalid
                 attrnode = attrs.getNamedItem(ATTR_ENABLED);
                 if (attrnode != null) {
                     value = attrnode.getNodeValue();
@@ -361,23 +361,23 @@ public class RequiredBFProperties  extends PropertiesBase {
     }
 
     /**
-     * プロパティをDOMノードに出力する
-     * @param node		出力ノード
+     * Output properties to DOM node
+     * @param node Output node
      */
     public void writeProperties(org.w3c.dom.Node node) {
 
-        // ドキュメントの取得
+        // Get documentation
         org.w3c.dom.Document document = node.getOwnerDocument();
 
-        // コメントを追加
+        // add comment
         {
-            org.w3c.dom.Comment comment = document.createComment(Message.getString("requiredbfproperties.document.comment")); //要求Byte/FLOPプロパティ
+            org.w3c.dom.Comment comment = document.createComment(Message.getString("requiredbfproperties.document.comment")); // Request Byte / FLOP property
             node.appendChild(comment);
         }
 
         if (this.listReqBF == null || this.listReqBF.size() <= 0) return;
 
-        // 浮動小数点数演算性能 GFLOPS
+        // Floating point arithmetic performance GFLOPS
         {
             org.w3c.dom.Element elem = document.createElement(ELEM_REQUIRED_BF);
             org.w3c.dom.Attr attrKey = document.createAttribute(ATTR_KEY);
@@ -389,10 +389,10 @@ public class RequiredBFProperties  extends PropertiesBase {
             attrValue.setNodeValue(String.valueOf(value));
             elem.setAttributeNode(attrValue);
 
-            // ノード追加
+            // Add node
             node.appendChild(elem);
         }
-        // メモリスループット算出モード
+        // Memory throughput calculation mode
         {
             org.w3c.dom.Element elem = document.createElement(ELEM_REQUIRED_BF);
             org.w3c.dom.Attr attrKey = document.createAttribute(ATTR_KEY);
@@ -404,10 +404,10 @@ public class RequiredBFProperties  extends PropertiesBase {
             attrValue.setNodeValue(value.toString().toLowerCase());
             elem.setAttributeNode(attrValue);
 
-            // ノード追加
+            // Add node
             node.appendChild(elem);
         }
-        // 要求BFの算出単位
+        // Calculation unit of request BF
         {
             org.w3c.dom.Element elem = document.createElement(ELEM_REQUIRED_BF);
             org.w3c.dom.Attr attrKey = document.createAttribute(ATTR_KEY);
@@ -419,10 +419,10 @@ public class RequiredBFProperties  extends PropertiesBase {
             attrValue.setNodeValue(value.toString().toLowerCase());
             elem.setAttributeNode(attrValue);
 
-            // ノード追加
+            // Add node
             node.appendChild(elem);
         }
-        // デフォルトサイズ
+        // Default size
         {
             org.w3c.dom.Element elem = document.createElement(ELEM_REQUIRED_BF);
             org.w3c.dom.Attr attrKey = document.createAttribute(ATTR_KEY);
@@ -439,21 +439,21 @@ public class RequiredBFProperties  extends PropertiesBase {
             attrInteger.setNodeValue(String.valueOf(integer));
             elem.setAttributeNode(attrInteger);
 
-            // ノード追加
+            // Add node
             node.appendChild(elem);
         }
-        // 要求Byte/FLOP設定
+        // Request Byte / FLOP setting
         for (RequiredBF bind : this.listReqBF) {
             org.w3c.dom.Element elem = document.createElement(ELEM_REQUIRED_BF);
 
-            // キー名
+            // key name
             {
                 org.w3c.dom.Attr attr;
                 attr = document.createAttribute(ATTR_KEY);
                 attr.setValue(bind.getType().getKey());
                 elem.setAttributeNode(attr);
             }
-            // アクセス先名称
+            // Access name
             {
                 org.w3c.dom.Attr attr;
                 attr = document.createAttribute(ATTR_NAME);
@@ -461,7 +461,7 @@ public class RequiredBFProperties  extends PropertiesBase {
                 elem.setAttributeNode(attr);
 
             }
-            // アクセス先背景色
+            // Access background color
             {
                 Color color = bind.getBackColor();
                 org.w3c.dom.Attr attr = document.createAttribute(ATTR_BACKGROUND_COLOR);
@@ -469,42 +469,42 @@ public class RequiredBFProperties  extends PropertiesBase {
                 elem.setAttributeNode(attr);
             }
 
-            // メモリスループット算出モード:ストアあり
+            // Memory throughput calculation mode: with store
             {
             	float value = bind.getMemThroughputStore();
                 org.w3c.dom.Attr attr = document.createAttribute(ATTR_MEM_THROUGHPUT_STORE);
                 attr.setNodeValue(String.valueOf(value));
                 elem.setAttributeNode(attr);
             }
-            // メモリスループット算出モード:ストアなし
+            // Memory throughput calculation mode: No store
             {
             	float value = bind.getMemThroughputNostore();
                 org.w3c.dom.Attr attr = document.createAttribute(ATTR_MEM_THROUGHPUT_NOSTORE);
                 attr.setNodeValue(String.valueOf(value));
                 elem.setAttributeNode(attr);
             }
-            // 係数
+            // Coefficient
             {
             	float value = bind.getCoef();
                 org.w3c.dom.Attr attr = document.createAttribute(ATTR_COEFFICIENT);
                 attr.setNodeValue(String.valueOf(value));
                 elem.setAttributeNode(attr);
             }
-            // 要求B/F算出（有効・無効）
+            // Request B / F calculation (valid / invalid)
             {
             	boolean value = bind.isRequiredBF();
                 org.w3c.dom.Attr attr = document.createAttribute(ATTR_REQUIRED_BF);
                 attr.setNodeValue(String.valueOf(value));
                 elem.setAttributeNode(attr);
             }
-            // 律速
+            // rate-determining
             {
             	boolean value = bind.isLimiting();
                 org.w3c.dom.Attr attr = document.createAttribute(ATTR_LIMITS);
                 attr.setNodeValue(String.valueOf(value));
                 elem.setAttributeNode(attr);
             }
-            // 有効/無効
+            // Enabled / disabled
             {
             	boolean value = bind.isEnabled();
                 org.w3c.dom.Attr attr = document.createAttribute(ATTR_ENABLED);
@@ -512,13 +512,13 @@ public class RequiredBFProperties  extends PropertiesBase {
                 elem.setAttributeNode(attr);
             }
 
-            // ノード追加
+            // Add node
             node.appendChild(elem);
         }
     }
 
     /**
-     * プロパティ変更イベントを通知する。
+     * Notify property change event.
      */
     @Override
     public void firePropertyChange() {
@@ -526,16 +526,16 @@ public class RequiredBFProperties  extends PropertiesBase {
     }
 
     /**
-     * 要求Byte/FLOP設定リストを取得する。
-     * @return		要求Byte/FLOP設定リスト
+     * Get the request Byte / FLOP setting list.
+     * @return Request Byte / FLOP setting list
      */
     public List<RequiredBF> getListRequiredBF() {
         return this.listReqBF;
     }
 
     /**
-     * 要求Byte/FLOP設定数を取得する。
-     * @return		要求Byte/FLOP設定数
+     * Get the number of requested Byte / FLOP settings.
+     * @return Request Byte / FLOP setting number
      */
     public int getRequiredBFCount() {
         if (listReqBF == null || listReqBF.size() <= 0) {return 0;}
@@ -543,9 +543,9 @@ public class RequiredBFProperties  extends PropertiesBase {
     }
 
     /**
-     * 要求Byte/FLOP設定を取得する。
-     * @param	index		インデックス
-     * @return		要求Byte/FLOP設定
+     * Get the request Byte / FLOP setting.
+     * @param index index
+     * @return Request Byte / FLOP setting
      */
     public RequiredBF getRequiredBF(int index) {
         if (listReqBF == null || listReqBF.size() <= 0) {return null;}
@@ -554,9 +554,9 @@ public class RequiredBFProperties  extends PropertiesBase {
     }
 
     /**
-     * 要求Byte/FLOP設定を設定する。
-     * @param	index		インデックス
-     * @param	keyword		要求Byte/FLOP設定
+     * Set the request Byte / FLOP setting.
+     * @param index index
+     * @param keyword Request Byte / FLOP setting
      */
     public void setRequiredBF(int index, RequiredBF reqbf) {
         if (listReqBF == null || listReqBF.size() <= 0) {return;}
@@ -565,8 +565,8 @@ public class RequiredBFProperties  extends PropertiesBase {
     }
 
     /**
-     * 要求Byte/FLOP設定を追加する。
-     * @param	keyword		要求Byte/FLOP設定
+     * Add request Byte / FLOP settings.
+     * @param keyword Request Byte / FLOP setting
      */
     public void addRequiredBF(RequiredBF reqbf) {
         if (listReqBF == null) {
@@ -576,8 +576,8 @@ public class RequiredBFProperties  extends PropertiesBase {
     }
 
     /**
-     * 要求Byte/FLOP設定を削除する。
-     * @param	keyword		要求Byte/FLOP設定
+     * Delete the request Byte / FLOP setting.
+     * @param keyword Request Byte / FLOP setting
      */
     public void removeRequiredBF(RequiredBF reqbf) {
         if (listReqBF == null) return;
@@ -585,8 +585,8 @@ public class RequiredBFProperties  extends PropertiesBase {
     }
 
     /**
-     * 要求Byte/FLOP設定を削除する。
-     * @param	index		インデックス
+     * Delete the request Byte / FLOP setting.
+     * @param index index
      */
     public void removeRequiredBF(int index) {
         if (listReqBF == null) return;
@@ -594,16 +594,16 @@ public class RequiredBFProperties  extends PropertiesBase {
     }
 
     /**
-     * 要求Byte/FLOP設定リストをクリアする。
+     * Clear the request Byte / FLOP setting list.
      */
     public void clearRequiredBF() {
     	listReqBF = new ArrayList<RequiredBF>();
     }
 
     /**
-     * 要求Byte/FLOP設定を取得する
-     * @param type		要求Byte/FLOPタイプ
-     * @return		Keyword情報
+     * Get the request Byte / FLOP setting
+     * @param type Request Byte / FLOP type
+     * @return Keyword information
      */
     public RequiredBF getRequiredBF(ACCESSMEMORY_TYPE type) {
         if (type == null) return null;
@@ -619,106 +619,106 @@ public class RequiredBFProperties  extends PropertiesBase {
     }
 
     /**
-     * 理論浮動小数点数演算性能を取得する
-     * @return		演算性能
+     * Get theoretical floating point arithmetic performance
+     * @return Computation performance
      */
 	public float getFlopPerformance() {
 		return this.theoretical_flop_performance;
 	}
 
 	/**
-	 * 理論浮動小数点数演算性能を設定する.
-	 * @param performance	演算性能
-	 */
+* Set theoretical floating point arithmetic performance.
+* @param performance Computational performance
+*/
 	public void setFlopPerformance(float performance) {
 		this.theoretical_flop_performance = performance;
 	}
 
 
     /**
-     * デフォルト要求Byte/FLOP設定を取得する.
-     * @return   デフォルト要求Byte/FLOP設定
+     * Get the default request Byte / FLOP setting.
+     * @return Default request Byte / FLOP setting
      */
     public RequiredBFProperties getDefaultProperties() {
     	return this.defaultProperties;
     }
 
     /**
-     * デフォルト要求Byte/FLOP設定を設定する.
-     * @return   デフォルト要求Byte/FLOP設定
+     * Set the default request Byte / FLOP setting.
+     * @return Default request Byte / FLOP setting
      */
     public void setDefaultProperties(RequiredBFProperties properties) {
     	this.defaultProperties = properties;
     }
 
 	/**
-	 * スループット算出モード設定を取得する.
-	 * @return		スループット算出モード設定
-	 */
+* Get the throughput calculation mode setting.
+* @return Throughput calculation mode setting
+*/
 	public MEM_THROUGHPUT_CALC_MODE getMemThroughputCalcMode() {
 		return memThroughtputCalcMode;
 	}
 
 	/**
-	 * スループット算出モードを設定する
-	 * @param memThroughputCalcMode		スループット算出モード設定
-	 */
+* Set the throughput calculation mode
+* @param memThroughputCalcMode Throughput calculation mode setting
+*/
 	public void setMemThroughputCalcMode(MEM_THROUGHPUT_CALC_MODE memThroughputCalcMode) {
 		this.memThroughtputCalcMode = memThroughputCalcMode;
 	}
 
 	/**
-	 * 要求BF算出の単位を取得する.
-	 * @return		算出単位
-	 */
+* Get the unit of request BF calculation.
+* @return Calculation unit
+*/
 	public BF_CALC_TYPE getBFCalcType() {
 		return BFCalcType;
 	}
 
 	/**
-	 * 要求BF算出の単位を設定する.
-	 * @param BFCalcType		算出単位
-	 */
+* Set the unit for calculating the request BF.
+* @param BFCalcType Calculation unit
+*/
 	public void setCalcType(BF_CALC_TYPE BFCalcType) {
 		this.BFCalcType = BFCalcType;
 	}
 
 	/**
-	 * デフォルトサイズ：realを取得する.
-	 * @return デフォルトサイズ：real
-	 */
+* Default size: Get real.
+* @return Default size: real
+*/
 	public int getDefaultSizeReal() {
 		return this.defaultSizeReal;
 	}
 
 	/**
-	 * デフォルトサイズ：realを設定する.
-	 * @param size デフォルトサイズ：real
-	 */
+* Default size: Set real.
+* @param size Default size: real
+*/
 	public void setDefaultSizeReal(int size) {
 		this.defaultSizeReal = size;
 	}
 
 	/**
-	 * デフォルトサイズ：integerを取得する.
-	 * @return デフォルトサイズ：integer
-	 */
+* Default size: Get integer.
+* @return Default size: integer
+*/
 	public int getDefaultSizeInteger() {
 		return this.defaultSizeInteger;
 	}
 
 	/**
-	 * デフォルトサイズ：integerを設定する.
-	 * @param size デフォルトサイズ：integer
-	 */
+* Default size: Set integer.
+* @param size Default size: integer
+*/
 	public void setDefaultSizeInteger(int size) {
 		this.defaultSizeInteger = size;
 	}
 
 	/**
-	 * スループット算出モード：ストア有りを取得する.
-	 * @return    スループット：ストア有り
-	 */
+* Throughput calculation mode: Get with store.
+* @return Throughput: With store
+*/
 	public float getMemThroughputStore() {
 		int count = getRequiredBFCount();
 		float value = 0.0F;
@@ -732,9 +732,9 @@ public class RequiredBFProperties  extends PropertiesBase {
 	}
 
 	/**
-	 * スループット算出モード：ストア有りを取得する.
-	 * @return    スループット：ストア有り
-	 */
+* Throughput calculation mode: Get with store.
+* @return Throughput: With store
+*/
 	public float getMemThroughputNostore() {
 		int count = getRequiredBFCount();
 		float value = 0.0F;

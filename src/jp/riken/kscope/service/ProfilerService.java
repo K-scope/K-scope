@@ -56,58 +56,58 @@ import jp.riken.kscope.utils.FileUtils;
 import jp.riken.kscope.utils.StringUtils;
 
 /**
- * プロファイラサービス
+ * Profiler service
  * @author RIKEN
  *
  */
 public class ProfilerService extends BaseService {
-    /** ソースファイル一覧 */
+    /** Source file list */
     private SourceFile[] sourceFiles;
-    /** プロファイラ情報クラス */
+    /** Profiler information class */
     private ProfilerInfo profilerInfo;
-    /** プロファイラモデルリスト */
+    /** Profiler model list */
     private ProfilerTableBaseModel[] profilerModels;
-    /** ファイルタイプ:DPRF, EPRF */
+    /** File types: DPRF, EPRF */
     private String fileType;
-    /** PAイベント指定値:EPRFのみ */
+    /** PA event specification value: EPRF only */
     private String paEventName;
-    /** フォートラン構文解析結果格納データベース. */
+    /** Fortran parsing result storage database. */
     private Fortran fortranDb;
-    /** 詳細プロファイラ測定区間情報モデル */
+    /** Detailed profiler measurement interval information model */
     private ProfilerMeasureModel measureModel;
-    /** プロジェクトフォルダ */
+    /** Project folder */
     private File projectFolder;
-    /** プロファイラプロパティ */
+    /** Profiler Properties */
     private ProfilerProperties properties;
-    /** 測定区間情報 */
+    /** Measurement section information */
     private ProfilerMeasureInfo measureInfo;
 
     /**
-     * プロファイラデータを読み込む。
-     * @param file  		プロファイラデータファイル
+     * Read profiler data.
+     * @param file Profiler data file
      */
     public void loadProfilerDataFile(File file) {
-        // プロファイラリーダーを生成する
+        // Generate a profiler reader
         IProfilerReader reader = factoryProfilerReader(file);
         if (reader == null) {
-            this.addErrorInfo(Message.getString("profilerservice.profilerdatafile.invalidfile")); //プロファイラファイルを特定できませんでした。
+            this.addErrorInfo(Message.getString("profilerservice.profilerdatafile.invalidfile")); // The profiler file could not be identified.
             return;
         }
 
-        // ファイルから読み込みを行う
+        // Read from a file
         try {
             reader.readFile(file);
 
-            // 読込データをモデルにセットする
+            // Set the read data in the model
             if (reader instanceof DProfReader) {
                 setDprofModel(reader);
             }
             else if (reader instanceof EProfReader) {
                 setEprofModel(reader);
             }
-            // ファイルタイプ
+            // File type
             fileType = reader.getFileType();
-            // PAイベント指定値:EPRFのみ
+            // PA event specification value: EPRF only
             paEventName = reader.getPaEventName();
 
         } catch (IOException ex) {
@@ -122,17 +122,17 @@ public class ProfilerService extends BaseService {
     }
 
     /**
-     * Dprofコスト情報をモデルにセットする
-     * @param reader		プロファイラリーダ
+     * Set Dprof cost information in the model
+     * @param reader Profiler reader
      */
     private void setDprofModel(IProfilerReader reader) {
-        // 読込ファイル名
+        // Read file name
         File file = reader.getProfFile();
         String key = file.getName();
-        // コスト情報:ラインを取得する
+        // Cost information: Get the line
         ProfilerDprofData[] costline = reader.getCostInfoLine();
         {
-            // コスト情報タイプ、全体に対する割合をセットし、ソートを行う。
+            // Set the cost information type and the ratio to the whole, and sort.
             PROFILERINFO_TYPE type = PROFILERINFO_TYPE.COST_LINE;
             setDprofInfo(costline, type);
             ProfilerTableBaseModel model = getProfilerModel(type);
@@ -141,10 +141,10 @@ public class ProfilerService extends BaseService {
             }
         }
 
-        // コスト情報:ループを取得する
+        // Cost info: Get the loop
         ProfilerDprofData[] costloop = reader.getCostInfoLoop();
         {
-            // コスト情報タイプ、全体に対する割合をセットし、ソートを行う。
+            // Set the cost information type and the ratio to the whole, and sort.
             PROFILERINFO_TYPE type = PROFILERINFO_TYPE.COST_LOOP;
             setDprofInfo(costloop, type);
             ProfilerTableBaseModel model = getProfilerModel(type);
@@ -153,10 +153,10 @@ public class ProfilerService extends BaseService {
             }
         }
 
-        // コスト情報:手続を取得する
+        // Cost information: Get the procedure
         ProfilerDprofData[] costprocedure = reader.getCostInfoProcedure();
         {
-            // コスト情報タイプ、全体に対する割合をセットし、ソートを行う。
+            // Set the cost information type and the ratio to the whole, and sort.
             PROFILERINFO_TYPE type = PROFILERINFO_TYPE.COST_PROCEDURE;
             setDprofInfo(costprocedure, type);
             ProfilerTableBaseModel model = getProfilerModel(type);
@@ -165,10 +165,10 @@ public class ProfilerService extends BaseService {
             }
         }
 
-        // コールグラフ情報を取得する
+        // Get call graph information
         ProfilerDprofData[] callgraph = reader.getDprofCallGraphInfo();
         {
-            // コスト情報タイプ
+            // Cost information type
             PROFILERINFO_TYPE type = PROFILERINFO_TYPE.CALLGRAPH;
             setDprofInfo(callgraph, type);
             ProfilerTableBaseModel model = getProfilerModel(type);
@@ -177,7 +177,7 @@ public class ProfilerService extends BaseService {
             }
         }
 
-        // Dprof情報を設定する
+        // Set Dprof information
         if (this.profilerInfo != null) {
             this.profilerInfo.putCostLine(key, costline);
             this.profilerInfo.putCostLoop(key, costloop);
@@ -190,23 +190,23 @@ public class ProfilerService extends BaseService {
 
 
     /**
-     * Eprofイベントカウンタ情報をモデルにセットする
-     * @param reader		プロファイラリーダ
+     * Set Eprof event counter information in the model
+     * @param reader Profiler reader
      */
     private void setEprofModel(IProfilerReader reader) {
-        // 読込ファイル名
+        // Read file name
         File file = reader.getProfFile();
         String key = file.getName();
 
-        // Eprofイベントカウンタ情報を取得する
+        // Get Eprof event counter information
         ProfilerEprofData[] eventInfo = reader.getEprofEventCounterInfo();
         if (eventInfo == null || eventInfo.length <= 0) return;
         if (eventInfo[0] == null) return;
 
-        // Eprofの測定区間を取得する。
+        // Get the measurement interval of Eprof.
         for (ProfilerEprofData data : eventInfo) {
             String groupname = data.getSymbol();
-            // サブルーチン名から、CALL文ブロックを探索し返す。
+            // Search and return the CALL statement block from the subroutine name.
             List<IBlock[]> areas = searchProcedureUsage(
                                     groupname,
                                     this.properties.getEprofFunctionStart(),
@@ -223,7 +223,7 @@ public class ProfilerService extends BaseService {
         }
 
 
-        // EProf情報を設定する
+        // Set EProf information
         if (this.profilerInfo != null) {
             this.profilerInfo.putEventCounter(key, eventInfo);
         }
@@ -232,29 +232,29 @@ public class ProfilerService extends BaseService {
 
 
     /**
-     * コスト情報リストにコスト情報タイプ、全体に対する割合をセットし、ソートを行う。
-     * @param costinfos		コスト情報リストにコスト
-     * @param type			コスト情報タイプ
+     * Set the cost information type and the ratio to the whole in the cost information list and sort.
+     * @param costinfos Costs in the cost information list
+     * @param type Cost information type
      */
     private void setDprofInfo(ProfilerDprofData[] costinfos, PROFILERINFO_TYPE type) {
 
         if (costinfos == null) return;
 
-        // コスト情報タイプを設定する
+        // Set the cost information type
         for (ProfilerDprofData info : costinfos) {
             info.setInfoType(type);
             CodeLine code = info.getCodeLine();
             if (code == null) continue;
-            // ソースファイルをセットする
+            // Set the source file
             SourceFile profsrcfile = info.getSourceFile();
             if (profsrcfile == null) continue;
-            // プロファイラ読込時点のソースファイルのパスはプロファイラ作成時のパスであるので、
-            // ツールのソースファイルをセットする
+            // Since the path of the source file at the time of reading the profiler is the path at the time of creating the profiler,
+            // Set the tool source file
             SourceFile toolfile = searchSourceFile(profsrcfile);
             if (toolfile == null) continue;
             info.getCodeLine().setSourceFile(toolfile);
 
-            // コード行情報から、それが属するプログラム単位を探索し返す。
+            // Search and return the program unit to which it belongs from the code line information.
             // IBlock block = searchCodeLine(code);
             // if (block != null) {
             //    info.setBlock(block);
@@ -262,31 +262,31 @@ public class ProfilerService extends BaseService {
         }
 
         if (type != PROFILERINFO_TYPE.CALLGRAPH) {
-            // 全体に対する割合を算出する. CALLGRAPFはDProfReader::getDprofCallGraphInfoでセット済み
+            // Calculate the ratio to the whole. CALLGRAPF is already set by DProfReader :: getDprofCallGraphInfo
             calculateRatio(costinfos);
-            // サンプリング回数でソートする
+            // Sort by sampling count
             sortCostInfo(costinfos);
         }
     }
 
 
     /**
-     * プロファイラ読込時点のソースファイルのパスはプロファイラ作成時のパスであるので、
-     * ツールのソースファイルをセットする
-     * @param profsrcfile			プロファイラソースファイル
-     * @return						ツールソースファイル
+     * Since the path of the source file at the time of reading the profiler is the path at the time of creating the profiler,
+     * Set the tool source file
+     * @param profsrcfile Profiler source file
+     * @return Tool source file
      */
     private SourceFile searchSourceFile(SourceFile profsrcfile) {
         if (this.sourceFiles == null || this.sourceFiles.length <= 0) return null;
         if (profsrcfile == null) return null;
         if (profsrcfile.getFile() == null) return null;
 
-        // ファイル名のみで検索する
+        // Search by file name only
         List<SourceFile> matchFiles = new ArrayList<SourceFile>();
         for (SourceFile file : this.sourceFiles) {
             String name = file.getFile().getName();
             String profname = profsrcfile.getFile().getName();
-            // ファイル名を大文字・小文字区別なしで比較する
+            // Compare filenames case-insensitive
             if (profname.equalsIgnoreCase(name)) {
                 matchFiles.add(file);
             }
@@ -294,8 +294,8 @@ public class ProfilerService extends BaseService {
         if (matchFiles.size() <= 0) return null;
         if (matchFiles.size() == 1) return matchFiles.get(0);
 
-        // 複数存在するので、パスの比較を行う
-        // パスを比較して最も一致しているファイルを返す。
+        // Since there are multiple, compare the paths
+        // Compare paths and return the best matching file.
         File[] profpathlist = FileUtils.getPathList(profsrcfile.getFile());
         SourceFile findFile = null;
         int maxmatchpath = 0;
@@ -320,8 +320,8 @@ public class ProfilerService extends BaseService {
     }
 
     /**
-     * 全体に対する割合を算出する
-     * @param costinfos		コスト情報リスト
+     * Calculate the ratio to the whole
+     * @param costinfos Cost information list
      */
     private void calculateRatio(ProfilerDprofData[] costinfos) {
         if (costinfos == null) return;
@@ -342,15 +342,15 @@ public class ProfilerService extends BaseService {
     }
 
     /**
-     * コスト情報をサンプリング回数でソースする.
-     * サンプリング回数を降順にソートする。
-     * @param costinfos		コスト情報
-     * @return   ソートコスト情報
+     * Source cost information by sampling count.
+     * Sort the number of samplings in descending order.
+     * @param costinfos Cost information
+     * @return Sort cost information
      */
     private ProfilerDprofData[] sortCostInfo(ProfilerDprofData[] costinfos) {
         if (costinfos == null) return null;
 
-        // ソースファイルリストのソート
+        // Sort the source file list
         java.util.Arrays.sort(costinfos,
             new java.util.Comparator<ProfilerDprofData>() {
                 public int compare(ProfilerDprofData o1, ProfilerDprofData o2) {
@@ -367,9 +367,9 @@ public class ProfilerService extends BaseService {
 
 
     /**
-     * ファイルの先頭を読み込み、読み込みを行うリーダーを作成する
-     * @param file		読み込みファイル
-     * @return			プロファイルリーダ
+     * Read the beginning of the file and create a reader to read
+     * @param file Read file
+     * @return Profile reader
      */
     private IProfilerReader factoryProfilerReader(File file) {
         FileInputStream fis = null;
@@ -431,33 +431,33 @@ public class ProfilerService extends BaseService {
     }
 
     /**
-     * ソースファイル一覧を設定する
-     * @param files		ソースファイル一覧
+     * Set the source file list
+     * @param files Source file list
      */
     public void setSourceFiles(SourceFile[] files) {
         this.sourceFiles = files;
     }
 
     /**
-     * プロファイラ情報クラス
-     * @param info プロファイラ情報クラス
+     * Profiler information class
+     * @param info Profiler information class
      */
     public void setProfilerInfo(ProfilerInfo info) {
         this.profilerInfo = info;
     }
 
     /**
-     * プロファイラモデルを設定する
-     * @param models		プロファイラモデルリスト
+     * Set profiler model
+     * @param models Profiler model list
      */
     public void setProfilerModels(ProfilerTableBaseModel[] models) {
         this.profilerModels = models;
     }
 
     /**
-     * プロファイラモデルを取得する
-     * @param type		プロファイラデータタイプ
-     * @return			プロファイラモデル
+     * Get profiler model
+     * @param type Profiler data type
+     * @return Profiler model
      */
     private ProfilerTableBaseModel getProfilerModel(PROFILERINFO_TYPE type) {
         if (this.profilerModels == null) return null;
@@ -470,8 +470,8 @@ public class ProfilerService extends BaseService {
     }
 
     /**
-     * ファイルタイプ:DPRF, EPRF
-     * @return fileType		ファイルタイプ:DPRF, EPRF
+     * File type: DPRF, EPRF
+     * @return fileType File type: DPRF, EPRF
      */
     public String getFileType() {
         return fileType;
@@ -479,11 +479,11 @@ public class ProfilerService extends BaseService {
 
 
     /**
-     * コード行情報から、それが属するプログラム単位を探索し返す。
+     * Searches back the program unit to which it belongs from the code line information.
      *
      * @param line
-     *            コード行情報
-     * @return プログラム単位。無ければnullを返す。
+     * Code line information
+     * @return Program unit. If not, it returns null.
      */
     @SuppressWarnings("unused")
     private IBlock searchCodeLine(CodeLine line) {
@@ -498,12 +498,12 @@ public class ProfilerService extends BaseService {
     }
 
     /**
-     * サブルーチン名からブロックを探索し返す。
+     * Search and return the block from the subroutine name.
      *
-     * @param groupname           グループ名
-     * @param callstart            開始サブルーチン名
-     * @param callend            終了サブルーチン名
-     * @return サブルーチンCALL文{開始サブルーチン,終了サブルーチン} 。無ければnullを返す。
+     * @param groupname Group name
+     * @param callstart Start subroutine name
+     * @param callend End subroutine name
+     * @return Subroutine CALL statement {start subroutine, end subroutine}. If not, it returns null.
      */
     private List<IBlock[]> searchProcedureUsage(String groupname, String callstart, String callend) {
         if (groupname == null) return null;
@@ -512,7 +512,7 @@ public class ProfilerService extends BaseService {
         if (this.fortranDb == null) return null;
 
         List<IBlock[]> list = new ArrayList<IBlock[]>();
-        // allの場合はプログラム全体
+        // If all, the whole program
         if ("all".equalsIgnoreCase(groupname)) {
             String mainname = fortranDb.getMainName();
             Procedure proc = fortranDb.search_subroutine(mainname);
@@ -530,7 +530,7 @@ public class ProfilerService extends BaseService {
             for (IBlock block : blocks) {
                 if (block == null) continue;
                 if (!(block instanceof ProcedureUsage)) continue;
-                // グループ名が実引数に存在するかチェックする
+                // Check if the group name exists in the actual argument
                 List<Expression> args = ((ProcedureUsage)block).getArguments();
                 if (args == null || args.size() <= 0) continue;
                 for (Expression arg : args) {
@@ -541,7 +541,7 @@ public class ProfilerService extends BaseService {
                             list.add(new IBlock[]{block, null});
                         }
                         else {
-                            // callendがnullにセットする
+                            // set callend to null
                             for (IBlock[] procs : list) {
                                 if (procs[1] == null) {
                                     procs[1] = block;
@@ -561,27 +561,27 @@ public class ProfilerService extends BaseService {
     }
 
     /**
-     * フォートラン構文解析結果格納データベースを設定する
-     * @param db		フォートラン構文解析結果格納データベース
+     * Set up the Fortran parsing result storage database
+     * @param db Fortran parsing result storage database
      */
     public void setFortranLanguage(Fortran db) {
         this.fortranDb = db;
     }
 
     /**
-     * 詳細プロファイラ測定区間情報モデルを設定する
-     * @param model		詳細プロファイラ測定区間情報モデル
+     * Set up a detailed profiler measurement interval information model
+     * @param model Detailed profiler measurement interval information model
      */
     public void setMeasureModel(ProfilerMeasureModel model) {
         this.measureModel = model;
     }
 
     /**
-     * 詳細プロファイラ測定区間を追加する
-     * @param code		測定区間行
-     * @param name		グループ名
-     * @param number	詳細番号
-     * @param level		プライオリティレベル
+     * Add detailed profiler measurement interval
+     * @param code Measurement interval line
+     * @param name Group name
+     * @param number Detail number
+     * @param level Priority level
      */
     public void addProfilerMeasureInfo(CodeLine code, String name, String number, String level) {
         ProfilerMeasureInfo info = this.profilerInfo.getMeasureInfo();
@@ -595,8 +595,8 @@ public class ProfilerService extends BaseService {
             String path = FileUtils.getRelativePath(file.getFile(), this.projectFolder);
             if (path == null) {
             	JOptionPane.showMessageDialog(null,
-            			Message.getString("profilerservice.profilermeasureinfo.notexists", file.getFile()), //は存在しないか、ファイルではありません。
-            			Message.getString("profilerservice.error"), //エラー
+            			Message.getString("profilerservice.profilermeasureinfo.notexists", file.getFile()), // does not exist or is not a file.
+            			Message.getString("profilerservice.error"), //error
             			JOptionPane.ERROR_MESSAGE);
             	return;
             }
@@ -607,11 +607,11 @@ public class ProfilerService extends BaseService {
     }
 
     /**
-     * 詳細プロファイラ測定区間を追加する
-     * @param blocks		測定区間{開始ブロック〜終了ブロック}
-     * @param name		グループ名
-     * @param number	詳細番号
-     * @param level		プライオリティレベル
+     * Add detailed profiler measurement interval
+     * @param blocks Measurement interval {start block to end block}
+     * @param name Group name
+     * @param number Detail number
+     * @param level Priority level
      */
     public void addProfilerMeasureInfo(IBlock[] blocks, String name, String number, String level) {
         ProfilerMeasureInfo info = this.profilerInfo.getMeasureInfo();
@@ -624,63 +624,63 @@ public class ProfilerService extends BaseService {
     }
 
     /**
-     * プロジェクトフォルダを設定する
-     * @param folder 	プロジェクトフォルダ
+     * Set the project folder
+     * @param folder Project folder
      */
     public void setProjectFolder(File folder) {
         this.projectFolder = folder;
     }
 
     /**
-     * PAイベント指定値(EPRFのみ)を取得する.
-     *     Cache
-     *     Instructions
-     *     MEM_access
-     *     Performance
-     *     Statistics
-     * @return 		PAイベント指定値(EPRFのみ)
+     * Get the PA event specification value (EPRF only).
+     * Cache
+     * Instructions
+     * MEM_access
+     * Performance
+     * Statistics
+     * @return PA event specification value (EPRF only)
      */
     public String getPaEventName() {
         return this.paEventName;
     }
 
     /**
-     * プロファイラプロパティを設定する
-     * @param properties プロファイラプロパティ
+     * Set profiler properties
+     * @param properties Profiler properties
      */
     public void setPropertiesProfiler(ProfilerProperties properties) {
         this.properties = properties;
     }
 
     /**
-     * 測定区間情報を設定する
-     * @param info 測定区間情報
+     * Set measurement section information
+     * @param info Measurement section information
      */
     public void setMeasureInfo(ProfilerMeasureInfo info) {
         this.measureInfo = info;
     }
 
     /**
-     * 測定区間を保存する
-     * @param saveFolder		保存フォルダ
-     * @return true=保存成功
-     * @throws Exception        ファイル入出力エラー
+     * Save the measurement interval
+     * @param saveFolder Save folder
+     * @return true = Saved successfully
+     * @throws Exception File I / O error
      */
     public boolean saveMeasureFile(File saveFolder) throws Exception {
         if (this.measureInfo == null) {
-            this.addErrorInfo(Message.getString("profilerservice.measurefile.measureline.empty")); //測定区間が設定されていません
+            this.addErrorInfo(Message.getString("profilerservice.measurefile.measureline.empty")); // Measurement interval is not set
             return false;
         }
         List<MeasureData> list = this.measureInfo.getMeasureList();
         if (list == null || list.size() <= 0) {
-            this.addErrorInfo(Message.getString("profilerservice.measurefile.measureline.empty")); //測定区間が設定されていません
+            this.addErrorInfo(Message.getString("profilerservice.measurefile.measureline.empty")); // Measurement interval is not set
             return false;
         }
 
-        // 測定区間のコード行を作成し、ソースファイル毎にまとめる。
+        // Create a line of code for the measurement section and organize it for each source file.
         Map<SourceFile, List<CodeLine>> mapLines = createMeasureLine(list);
         if (mapLines == null || mapLines.size() <= 0) {
-            this.addErrorInfo(Message.getString("profilerservice.measurefile.measureline.null")); //測定区間を取得できませんでした
+            this.addErrorInfo(Message.getString("profilerservice.measurefile.measureline.null")); // Could not get the measurement interval
             return false;
         }
         Set<SourceFile> keySet = mapLines.keySet();
@@ -688,22 +688,22 @@ public class ProfilerService extends BaseService {
             List<CodeLine> lines = mapLines.get(file);
             FileService service = new FileService(this.getErrorInfoModel());
 
-            // ソースコード行の読込
+            // Read source code line
             CodeLine[] codes = service.readSourceFile(file, this.projectFolder);
             if (codes == null) {
-                this.addErrorInfo(Message.getString("profilerservice.measurefile.sourcecode.invalidread") + //ソースコードの読込に失敗しました。
+                this.addErrorInfo(Message.getString("profilerservice.measurefile.sourcecode.invalidread") + // Failed to read the source code.
             "[file=" + file.getPath() + "]");
                 return false;
             }
-            // 読込コードリストに測定ステートメントの挿入
+            // Insert the measurement statement into the read code list
             List<CodeLine> sources = new ArrayList<CodeLine>();
             sources.addAll(Arrays.asList(codes));
-            // 末尾から挿入
+            // Insert from the end
             for (int i=lines.size()-1; i>=0; i--) {
                 sources.add(lines.get(i).getStartLine(), lines.get(i));
             }
 
-            // ファイル出力
+            // File output
             File outpath = null;
             if (saveFolder == null) {
                 outpath = file.getFile();
@@ -727,35 +727,35 @@ public class ProfilerService extends BaseService {
     }
 
     /**
-     * 測定区間のコード行を作成し、ソースファイル毎にまとめる。
-     * @param list		測定区間リスト
-     * @return			ソース毎の測定コード行
+     * Create a line of code for the measurement section and organize it for each source file.
+     * @param list Measurement interval list
+     * @return Measurement code line for each source
      */
     private Map<SourceFile, List<CodeLine>> createMeasureLine(List<MeasureData> list) {
         if (list == null || list.size() <= 0) return null;
 
         Map<SourceFile, List<CodeLine>> mapLines = new HashMap<SourceFile, List<CodeLine>>();
         for (MeasureData data : list) {
-            // 測定区間
+            // Measurement section
             CodeLine measureLine = data.getMeasureArea();
 
-            // 挿入測定ステートメント
+            // Insertion measurement statement
             SourceFile file = measureLine.getSourceFile();
             int start = measureLine.getStartLine();
             int end = measureLine.getEndLine();
             String groupname = data.getGroupname();
             String number = data.getNumber();
             String level = data.getLevel();
-            // グループ名、詳細番号、レベルから挿入測定構文の作成
+            // Create insertion measurement syntax from group name, detail number, level
             String startCode = this.properties.createEprofStatementStart(groupname, number, level);
             String endCode = this.properties.createEprofStatementEnd(groupname, number, level);
             String fn = null;
             if(file != null) {
             	fn = file.getPath();
             }
-            // 開始コード
+            // Start code
             CodeLine startline = new CodeLine(file, startCode, start-1, fn);
-            // 終了コード
+            // Exit code
             CodeLine endline = new CodeLine(file, endCode, end, fn);
 
             List<CodeLine> lines = null;
@@ -770,11 +770,11 @@ public class ProfilerService extends BaseService {
             lines.add(endline);
         }
 
-        // コード行を行番号でソートする
+        // Sort lines of code by line number
         Set<SourceFile> keySet = mapLines.keySet();
         for (SourceFile key : keySet) {
             List<CodeLine> lines = mapLines.get(key);
-            // ソート実行
+            // Sort execution
             Collections.sort(lines, new Comparator<CodeLine>(){
                 public int compare(CodeLine code1, CodeLine code2) {
                   return code1.getStartLine() - code2.getStartLine();

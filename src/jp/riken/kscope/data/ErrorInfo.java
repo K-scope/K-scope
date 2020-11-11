@@ -17,19 +17,19 @@
 package jp.riken.kscope.data;
 
 /**
- * エラー行情報クラス
+ * Error line information class
  * @author RIKEN
  */
 public class ErrorInfo {
-    /** エラー行情報 */
+    /** Error line information */
     private CodeLine codeLine;
-    /** エラーメッセージ */
+    /** Error message */
     private String message;
 
     /**
-     * コンストラクタ
-     * @param line			エラー行情報
-     * @param message		エラーメッセージ
+     * Constructor
+     * @param line Error line information
+     * @param message Error message
      */
     public ErrorInfo(CodeLine line, String message) {
         this.codeLine = line;
@@ -37,8 +37,8 @@ public class ErrorInfo {
     }
 
     /**
-     * コンストラクタ
-     * @param ex			例外情報
+     * Constructor
+     * @param ex Exception information
      */
     public ErrorInfo(Exception ex) {
         this.codeLine = null;
@@ -54,16 +54,16 @@ public class ErrorInfo {
 
 
     /**
-     * エラー行情報を取得する
-     * @return		エラー行情報
+     * Get error line information
+     * @return Error line information
      */
     public CodeLine getCodeLine() {
         return codeLine;
     }
 
     /**
-     * エラーメッセージを取得する
-     * @return		エラーメッセージ
+     * Get error messages
+     * @return error message
      */
     public String getMessage() {
         return message;

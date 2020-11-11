@@ -16,6 +16,6 @@
  */
 
 /**
- * プロファイラデータクラスを提供します.<br/>
+ * Provides profiler data class. <br/>
  */
 package jp.riken.kscope.profiler;

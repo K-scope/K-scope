@@ -17,7 +17,7 @@
 package jp.riken.kscope.profiler.dprof;
 
 /**
- * シンボル情報を保持する
+ * Hold symbol information
  *
  * @author RIKEN
  *
@@ -32,119 +32,119 @@ public class SymbolInfo {
     private String symbolName;
 
     /**
-     * MPIライブラリコスト数を取得する
-     * @return MPIライブラリコスト数
+     * Get the number of MPI library costs
+     * @return MPI library cost number
      */
     public float getMpiLibCostNum() {
         return mpiLibCostNum;
     }
 
     /**
-     * MPIライブラリコスト数を設定する
+     * Set the number of MPI library costs
      * @param mpiLibCostNum
-     *            設定するMPIライブラリコスト数
+     * Number of MPI library costs to set
      */
     public void setMpiLibCostNum(float mpiLibCostNum) {
         this.mpiLibCostNum = mpiLibCostNum;
     }
 
     /**
-     * サンプリング回数を取得する
-     * @return サンプリング回数
+     * Get the number of samplings
+     * @return Sampling count
      */
     public float getSampNum() {
         return sampNum;
     }
 
     /**
-     * バリア同期待ち数を取得する
-     * @return バリア同期待ち数
+     * Get the number of barrier synchronization waits
+     * @return Number of barrier synchronization waits
      */
     public float getBarrierSyncWaitNum() {
         return barrierSyncWaitNum;
     }
 
     /**
-     * シンボル開始行を取得する
-     * @return シンボル開始行
+     * Get the symbol start line
+     * @return Symbol start line
      */
     public int getLineSymbolStart() {
         return lineSymbolStart;
     }
 
     /**
-     * シンボル終了行を取得する
-     * @return シンボル終了行
+     * Get the symbol end line
+     * @return Symbol end line
      */
     public int getLineSymbolEnd() {
         return lineSymbolEnd;
     }
 
     /**
-     * ファイルのindexを取得する
-     * @return ファイルのindex
+     * Get the index of the file
+     * @return file index
      */
     public int getFileIndex() {
         return fileIndex;
     }
 
     /**
-     * シンボル名を取得する
-     * @return シンボル名
+     * Get the symbol name
+     * @return Symbol name
      */
     public String getSymbolName() {
         return symbolName;
     }
 
     /**
-     * サンプリング回数を設定する
+     * Set the number of samplings
      * @param sampNum
-     *            設定するサンプリング回数
+     * Number of samplings to set
      */
     public void setSampNum(float sampNum) {
         this.sampNum = sampNum;
     }
 
     /**
-     * バリア同期待ち数を設定する
+     * Set the number of barrier synchronization waits
      * @param barrierSyncWaitNum
-     *            設定するバリア同期待ち数
+     * Number of barrier synchronization waits to set
      */
     public void setBarrierSyncWaitNum(float barrierSyncWaitNum) {
         this.barrierSyncWaitNum = barrierSyncWaitNum;
     }
 
     /**
-     * シンボル開始行を設定する
+     * Set the symbol start line
      * @param lineSymbolStart
-     *            設定するシンボル開始行
+     * Symbol start line to set
      */
     public void setLineSymbolStart(int lineSymbolStart) {
         this.lineSymbolStart = lineSymbolStart;
     }
 
     /**
-     * シンボル終了行を設定する
+     * Set the symbol end line
      * @param lineSymbolEnd
-     *            設定するシンボル終了行
+     * Symbol end line to set
      */
     public void setLineSymbolEnd(int lineSymbolEnd) {
         this.lineSymbolEnd = lineSymbolEnd;
     }
 
     /**
-     * ファイルのindexを設定する
+     * Set the index of the file
      * @param fileIndex
-     *            設定するファイルのindex
+     * Index of the file to be set
      */
     public void setFileIndex(int fileIndex) {
         this.fileIndex = fileIndex;
     }
 
     /**
-     * シンボル名を設定する
+     * Set the symbol name
      * @param symbolName
-     *            設定するシンボル名
+     * Symbol name to set
      */
     public void setSymbolName(String symbolName) {
         this.symbolName = symbolName;

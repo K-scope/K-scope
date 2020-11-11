@@ -38,14 +38,14 @@ import jp.riken.kscope.service.AppController;
 import jp.riken.kscope.utils.SwingUtils;
 
 /**
- * 分析結果の該当箇所を開くアクションクラス
+ * Action class that opens the relevant part of the analysis result
  * @author RIKEN
  */
 public class ViewOpenAnalysisLineAction extends ActionBase implements MouseListener {
 
     /**
-     * コンストラクタ
-     * @param controller	アプリケーションコントローラ
+     * Constructor
+     * @param controller Application controller
      */
     public ViewOpenAnalysisLineAction(AppController controller) {
         super(controller);
@@ -53,20 +53,20 @@ public class ViewOpenAnalysisLineAction extends ActionBase implements MouseListe
 
 
     /**
-     * 分析結果の該当箇所を開く
+     * Open the relevant part of the analysis result
      */
     private void openAnalysisLine() {
-        // 選択ブロック情報を取得する
+        // Get selected block information
         IBlock block = this.controller.getMainframe().getPanelAnalysisView().getSelectedBlock();
-        // 選択ブロックの構造ツリー、ソースビューの該当個所を選択状態にする
+        // Select the relevant part of the structure tree and source view of the selected block.
         viewSelectedBlock(block);
 
         return;
     }
 
     /**
-     * 検索結果ツリーパスを開く
-     * @param  path			検索結果ツリーパス
+     * Open the search result tree path
+     * @param path Search result tree path
      */
     public void openSearchLine(TreePath path) {
         if (path == null) return;
@@ -75,77 +75,77 @@ public class ViewOpenAnalysisLineAction extends ActionBase implements MouseListe
         CodeLine line = null;
         SourceFile file = null;
         if (node.getUserObject() instanceof CodeLine) {
-            // ソースコード行
+            // Source code line
             line = (CodeLine)node.getUserObject();
-            // ファイル検索の場合、１つ上のノードがファイルノードパス
+            // For file search, the next higher node is the file node path
             node = (DefaultMutableTreeNode) node.getParent();
         }
         else if (node.getUserObject() instanceof SourceFile) {
-            // ノードがSourceFileの場合:エクスプローラノードを選択する
-            // ツリーパスを作成する
+            // If the node is SourceFile: Select Explorer node
+            // create a tree path
             TreePath searchPath = SwingUtils.getTreePath(node);
-            // ツリーパスを選択する
+            // Select a tree path
             this.controller.getMainframe().getPanelExplorerView().setSelectionPath(searchPath);
 
-            // ソースファイル
+            // source file
             file = (SourceFile)node.getUserObject();
         }
 
-        // ノードがコード行の場合
+        // If the node is a line of code
         if (line != null) {
-            // 選択コード行を選択状態にする
+            // Select the selection code line
             viewSourceLine(line);
         }
         else if (file != null) {
-            // 選択ファイルを開く
+            // open the selected file
             viewSourceFile(file);
         }
-        // ノードがブロックの場合
+        // If the node is a block
         else if (node.getUserObject() != null && node.getUserObject() instanceof IBlock) {
-            // 選択ノードを選択状態にする
+            // Put the selected node in the selected state
             viewSelectedPath(path);
         }
 
-        // ソースビューで検索文字列をハイライトする
+        // Highlight the search string in Source view
         this.controller.setSearchKeywords();
     }
 
 
     /**
-     * トレース結果該当個所を開く
-     * @param		block		トレース結果ブロック
+     * Open the relevant part of the trace result
+     * @param block Trace result block
      */
     public void openTraceBlock(IBlock block) {
-        // 選択ブロックの構造ツリー、ソースビューの該当個所を選択状態にする
+        // Select the relevant part of the structure tree and source view of the selected block.
         viewSelectedBlock(block);
 
-        // ソースビューでトレース変数をハイライトする
+        // Highlight trace variables in source view
         this.controller.setTraceKeywords();
     }
 
     /**
-     * 指定ブロックを構造ツリー、ソースビューの該当個所を選択状態にする
-     * @param block			選択ブロック
+     * Select the specified block in the structure tree and the corresponding part in the source view.
+     * @param block selection block
      */
     public void viewSelectedBlock(IBlock block) {
         if (block == null) return;
 
-/*********  元コード  at 2012/03/21 by @hira
+/********* Original code at 2012/03/21 by @hira
         if (block instanceof InformationBlock) {
-            IInformation info = ((InformationBlock) block).getStartBlock();
+            IInformation info = ((InformationBlock) block) .getStartBlock ();
             if (info instanceof IBlock) {
                 block = (IBlock) info;
             }
         }
 
-        // 構造ツリーを選択状態にする
-        this.controller.getMainframe().getPanelExplorerView().setSelectedNode(block);
+        // Select the structure tree
+        this.controller.getMainframe (). getPanelExplorerView (). setSelectedNode (block);
 
-        // 選択コード行を選択状態にする
-        viewSourceBlock(block);
+        // Select the selection code line
+        viewSourceBlock (block);
 **********************************************/
 
-/*********  暫定コード:start  at 2012/03/21 by @hira   **********/
+/********* Provisional code: start at 2012/03/21 by @hira **********/
         IBlock[] blocks = new IBlock[2];
         if (block instanceof InformationBlock) {
             IInformation info = ((InformationBlock) block).getStartBlock();
@@ -162,69 +162,69 @@ public class ViewOpenAnalysisLineAction extends ActionBase implements MouseListe
         }
 
         if (blocks == null) {
-            // 構造ツリーを選択状態にする
+            // Select the structure tree
             this.controller.getMainframe().getPanelExplorerView().setSelectedNode(block);
         }
         else {
-            // 構造ツリーを選択状態にする
+            // Select the structure tree
             this.controller.getMainframe().getPanelExplorerView().setSelectedNodeArea(blocks[0], blocks[1]);
         }
 
-        // 選択コード行を選択状態にする
+        // Select the selection code line
         viewSourceBlock(block);
 
-/*********  暫定コード:end  at 2012/03/21 by @hira   **********/
+/********* Provisional code: end at 2012/03/21 by @hira **********/
 
     }
 
     /**
-     * 指定ブロックをソースビューの該当個所を選択状態にする
-     * @param code			選択コード範囲
+     * Select the specified block in the source view.
+     * @param code Selection code range
      */
     public void viewSelectedSourceBlock(CodeLine code) {
-        // 選択ソースコード行情報からファイルを開く
+        // Open the file from the selected source code line information
         try {
             this.controller.openSourceFile(code);
         } catch (Exception ex) {
             this.controller.getErrorInfoModel().addErrorInfo(code, ex.getMessage());
         }
-        // 選択コード行を選択状態にする
+        // Select the selection code line
         CodeLine[] lines = {code};
         this.controller.getMainframe().getPanelSourceView().setSelectedBlock(lines);
     }
 
     /**
-     * 指定パスを構造ツリー、ソースビューの該当個所を選択状態にする
-     * @param path			指定パス
+     * Select the specified path in the structure tree and the corresponding part of the source view.
+     * @param path Specified path
      */
     public void viewSelectedPath(TreePath path) {
         if (path == null) return;
 
-        // 構造ツリーを選択状態にする
+        // Select the structure tree
         this.controller.getMainframe().getPanelExplorerView().setSelectionPath(path);
 
-        // ノードがブロックの場合
+        // If the node is a block
         DefaultMutableTreeNode node = (DefaultMutableTreeNode) path.getLastPathComponent();
         if (node.getUserObject() != null && node.getUserObject() instanceof IBlock) {
             IBlock block = (IBlock)node.getUserObject();
-            // 選択コード行を選択状態にする
+            // Select the selection code line
             viewSourceBlock(block);
         }
     }
 
     /**
-     * 指定ブロックのソースコード行を表示する
-     * @param block		ブロック
+     * Display the source code line of the specified block
+     * @param block block
      */
     public void viewSourceBlock(IBlock block) {
 
         if (block == null) return;
 
-        // 選択ソースコード行情報
+        // Selected source code line information
         CodeLine line = block.getStartCodeLine();
         if (line == null) return;
 
-        // 選択ソースコード行情報からファイルを開く
+        // Open the file from the selected source code line information
         try {
             this.controller.openSourceFile(line);
         } catch (Exception ex) {
@@ -236,14 +236,14 @@ public class ViewOpenAnalysisLineAction extends ActionBase implements MouseListe
             this.controller.getErrorInfoModel().addErrorInfo(line, msg);
         }
 
-/*********  元コード  at 2012/03/21 by @hira
-        // 選択コード行を選択状態にする
-        CodeLine[] lines = {line};
-        this.controller.getMainframe().getPanelSourceView().setSelectedBlock(lines);
+/********* Original code at 2012/03/21 by @hira
+        // Select the selection code line
+        CodeLine [] lines = {line};
+        this.controller.getMainframe (). getPanelSourceView (). setSelectedBlock (lines);
 *******************/
 
-/*********  暫定コード:start  at 2012/03/21 by @hira   **********/
-        // 選択コード行を選択状態にする
+/********* Provisional code: start at 2012/03/21 by @hira **********/
+        // Select the selection code line
         CodeLine[] lines = {line};
         if (block instanceof InformationBlock) {
             CodeLine infostartlines = null;
@@ -256,12 +256,12 @@ public class ViewOpenAnalysisLineAction extends ActionBase implements MouseListe
             if (info instanceof IBlock) {
                 infoendlines = ((IBlock) info).getStartCodeLine();
             }
-            // 同一ファイル、開始行 < 終了行であるなら、開始ブロックから終了ブロックを連続してハイライトする。
+            // If the same file, start line <end line, highlight the end block consecutively from the start block.
             CodeLine infoblock = null;
             if (infostartlines.getSourceFile() != null && infoendlines.getSourceFile() != null) {
                 if (infostartlines.getSourceFile().equals(infoendlines.getSourceFile())
                     && infostartlines.getStartLine() <= infoendlines.getEndLine()) {
-                    // ブロックハイライト用のCodeLine生成
+                    // CodeLine generation for block highlighting
                     infoblock = new CodeLine(infostartlines);
                     int endlineno = infostartlines.getEndLine();
                     if (endlineno < infoendlines.getStartLine()) {
@@ -277,18 +277,18 @@ public class ViewOpenAnalysisLineAction extends ActionBase implements MouseListe
                 lines = new CodeLine[] {infoblock};
             }
             else {
-                // 開始ブロックと終了ブロックを別々にハイライトする
+                // Highlight the start and end blocks separately
                 lines = new CodeLine[] {infostartlines, infoendlines};
             }
         }
         this.controller.getMainframe().getPanelSourceView().setSelectedBlock(lines);
 
-/*********  暫定コード:end  at 2012/03/21 by @hira   **********/
+/********* Provisional code: end at 2012/03/21 by @hira **********/
 
     }
 
     /**
-     * 指定ブロックのソースコード行をクリアする
+     * Clear the source code line of the specified block
      */
     public void clearSourceBlock() {
         this.controller.getMainframe().getPanelSourceView().clearSelectedBlock();
@@ -298,28 +298,28 @@ public class ViewOpenAnalysisLineAction extends ActionBase implements MouseListe
 
 
     /**
-     * 指定ブロックのソースコード行を表示する
-     * @param line		選択ソースコード行
+     * Display the source code line of the specified block
+     * @param line Selected source code line
      */
     public void viewSourceLine(CodeLine line) {
 
-        // 選択ソースコード行
+        // Selected source code line
         if (line == null) return;
 
-        // 選択ソースコード行情報からファイルを開く
+        // Open the file from the selected source code line information
         try {
             this.controller.openSourceFile(line);
         } catch (Exception ex) {
             this.controller.getErrorInfoModel().addErrorInfo(line, ex.getMessage());
         }
 
-        // 選択コード行を選択状態にする
+        // Select the selection code line
         this.controller.getMainframe().getPanelSourceView().setSelectedLine(line);
 
 		LanguageUtils utils = new LanguageUtils(this.controller.getFortranLanguage());
 	    IBlock[] blocks = utils.getCodeLineBlocks(line);
 	    if (blocks != null && blocks.length > 0) {
-            // 構造ツリーを選択状態にする
+            // Select the structure tree
             this.controller.getMainframe().getPanelExplorerView().setSelectedNode(blocks[blocks.length-1]);
 	    }
 
@@ -327,15 +327,15 @@ public class ViewOpenAnalysisLineAction extends ActionBase implements MouseListe
 
 
     /**
-     * 指定ソースファイルを表示する
-     * @param file		選択ソースファイル
+     * Display the specified source file
+     * @param file Selected source file
      */
     public void viewSourceFile(SourceFile file) {
 
-        // 選択ソースファイル
+        // Selected source file
         if (file == null) return;
 
-        // 選択ソースファイルを開く
+        // Open the selected source file
         try {
             this.controller.openSourceFile(file);
         } catch (Exception ex) {
@@ -344,86 +344,86 @@ public class ViewOpenAnalysisLineAction extends ActionBase implements MouseListe
     }
 
     /**
-     * アクション発生イベント
-     * @param event		イベント情報
+     * Action occurrence event
+     * @param event Event information
      */
     @Override
     public void actionPerformed(ActionEvent event) {
-        // 選択ファイルを開く
+        // open the selected file
         openAnalysisLine();
     }
 
     /**
-     * マウスクリックイベント
-     * @param event			イベント情報
+     * Mouse click event
+     * @param event Event information
      */
     @Override
     public void mouseClicked(MouseEvent event) {
-        // ダブルクリックチェック
+        // Double click check
         if (SwingUtilities.isLeftMouseButton(event) && event.getClickCount() == 2) {
             if (event.getSource() instanceof JTree) {
-                // 選択ファイルを開く
+                // open the selected file
                 openAnalysisLine();
             }
             else if (event.getSource() instanceof JTable) {
-                // 選択ファイルを開く
+                // open the selected file
                 openAnalysisLine();
             }
         }
     }
 
     /**
-     * マウスボタンダウンイベント
-     * @param e		マウスイベント情報
+     * Mouse button down event
+     * @param e Mouse event information
      */
     @Override
     public void mousePressed(MouseEvent e) { }
 
     /**
-     * マウスボタンアップイベント
-     * @param e		マウスイベント情報
+     * Mouse button up event
+     * @param e Mouse event information
      */
     @Override
     public void mouseReleased(MouseEvent e) {}
 
     /**
-     * マウスオーバーイベント
-     * @param e		マウスイベント情報
+     * Mouseover event
+     * @param e Mouse event information
      */
     @Override
     public void mouseEntered(MouseEvent e) {}
 
     /**
-     * マウスアウトイベント
-     * @param e		マウスイベント情報
+     * Mouse out event
+     * @param e Mouse event information
      */
     @Override
     public void mouseExited(MouseEvent e) {}
 
 
     /**
-     * トレース結果該当個所を開く
-     * @param		blocks		トレース結果ブロックリスト
+     * Open the relevant part of the trace result
+     * @param blocks Trace result block list
      */
     public void openTraceBlocks(IBlock[] blocks) {
         if (blocks == null || blocks.length <= 0) return;
 
-        // 構造ツリーを選択状態にする
+        // Select the structure tree
         this.controller.getMainframe().getPanelExplorerView().setSelectedBlocks(blocks);
 
-        // 選択コード行を選択状態にする
+        // Select the selection code line
         IBlock block = blocks[blocks.length-1];
         viewSourceBlock(block);
     }
 
     /**
-     * 複数の指定ブロックを構造ツリー、ソースビューの該当個所を選択状態にする
-     * @param blocks			選択ブロック
+     * Select multiple specified blocks in the structure tree and the corresponding part of the source view.
+     * @param blocks selection blocks
      */
     public void viewSelectedArea(IBlock[] blocks) {
         if (blocks == null) return;
 
-        // 構造ツリーを選択状態にする
+        // Select the structure tree
         if (blocks.length > 1) {
             this.controller.getMainframe().getPanelExplorerView().setSelectedNodeArea(blocks[0], blocks[blocks.length-1]);
         }
@@ -438,13 +438,13 @@ public class ViewOpenAnalysisLineAction extends ActionBase implements MouseListe
             blockcode = new CodeLine(start, end);
         }
         if (blockcode != null) {
-            // 選択ソースコード行情報からファイルを開く
+            // Open the file from the selected source code line information
             try {
                 this.controller.openSourceFile(blockcode);
             } catch (Exception ex) {
                 this.controller.getErrorInfoModel().addErrorInfo(blockcode, ex.getMessage());
             }
-            // 選択ファイルのブロックを選択状態にする
+            // Select the block of the selected file
             CodeLine[] codes = {blockcode};
             this.controller.getMainframe().getPanelSourceView().setSelectedBlock(codes);
         }
@@ -453,13 +453,13 @@ public class ViewOpenAnalysisLineAction extends ActionBase implements MouseListe
     }
 
     /**
-     * 複数の指定ブロックを構造ツリー、ソースビューの該当個所を選択状態にする
-     * @param areas			選択ブロック
+     * Select multiple specified blocks in the structure tree and the corresponding part of the source view.
+     * @param areas selection block
      */
     public void viewSelectedAreas(List<IBlock[]> areas) {
         if (areas == null) return;
 
-        // 構造ツリーを選択状態にする
+        // Select the structure tree
         for (int i=0; i<areas.size(); i++) {
             IBlock[] blocks = areas.get(i);
             if (i == 0) {
@@ -480,7 +480,7 @@ public class ViewOpenAnalysisLineAction extends ActionBase implements MouseListe
             }
         }
 
-        // ソースビューのハイライトを行う。
+        // Highlight the source view.
         List<CodeLine> listcode = new ArrayList<CodeLine>();
         for (IBlock[] blocks : areas) {
             CodeLine blockcode = null;
@@ -498,14 +498,14 @@ public class ViewOpenAnalysisLineAction extends ActionBase implements MouseListe
 
         if (listcode.size() > 0) {
             for (CodeLine code : listcode) {
-                // 選択ソースコード行情報からファイルを開く
+                // Open the file from the selected source code line information
                 try {
                     this.controller.openSourceFile(code);
                 } catch (Exception ex) {
                     this.controller.getErrorInfoModel().addErrorInfo(code, ex.getMessage());
                 }
             }
-            // 選択ファイルのブロックを選択状態にする
+            // Select the block of the selected file
             CodeLine[] codes = listcode.toArray(new CodeLine[0]);
             this.controller.getMainframe().getPanelSourceView().setSelectedBlock(codes);
         }

@@ -34,28 +34,28 @@ import jp.riken.kscope.service.AppController;
 import jp.riken.kscope.service.ProfilerService;
 
 /**
- * プロファイラ測定区間上書き保存アクションクラス
+ * Profiler measurement interval overwrite save action class
  * @author RIKEN
  *
  */
 public class ProfilerSaveFileAction extends ActionBase {
 
     /**
-     * コンストラクタ
-     * @param controller	アプリケーションコントローラ
+     * Constructor
+     * @param controller Application controller
      */
     public ProfilerSaveFileAction(AppController controller) {
         super(controller);
     }
 
     /**
-     * アクションが実行可能であるかチェックする.<br/>
-     * アクションの実行前チェック、メニューのイネーブルの切替を行う。<br/>
-     * @return		true=アクションが実行可能
+     * Check if the action is executable. <br/>
+     * Check before executing the action and switch the menu enable. <br/>
+     * @return true = Action can be executed
      */
     @Override
     public boolean validateAction() {
-        // プロジェクト情報
+        // Project information
         ProjectModel project = this.controller.getProjectModel();
         String projectFolder = null;
         if (project.getProjectFolder() != null) {
@@ -64,7 +64,7 @@ public class ProfilerSaveFileAction extends ActionBase {
         if (projectFolder == null) {
             return false;
         }
-        // 測定区間情報
+        // Measurement section information
         if (this.controller.getProfilerInfo() == null) {
             return false;
         }
@@ -80,21 +80,21 @@ public class ProfilerSaveFileAction extends ActionBase {
     }
 
     /**
-     * アクション発生イベント
-     * @param event		イベント情報
+     * Action occurrence event
+     * @param event Event information
      */
     @Override
     public void actionPerformed(ActionEvent event) {
-        // ステータスメッセージ
-        final String message = Message.getString("mainmenu.profiler.save-mesuermentrange"); //"測定区間:上書き保存"
+        // Status message
+        final String message = Message.getString("mainmenu.profiler.save-mesuermentrange"); // "Measurement interval: Overwrite"
         Application.status.setMessageMain(message);
 
-        // メインフレーム
+        // main frame
         Frame frame = this.controller.getMainframe();
-        // 確認メッセージを表示する。
+        // Display a confirmation message.
         int option = JOptionPane.showConfirmDialog(frame, 
-        		  Message.getString("profilersavefileaction.rangesave.confirmdialog.message"), //"測定区間を上書き保存しますが、よろしいですか？"
-                  Message.getString("profilersavefileaction.rangesave.confirmdialog.title"), //"上書き確認"
+        		  Message.getString("profilersavefileaction.rangesave.confirmdialog.message"), // "I want to overwrite the measurement section, is that okay?"
+                  Message.getString("profilersavefileaction.rangesave.confirmdialog.title"), // "Overwrite confirmation"
                   JOptionPane.OK_CANCEL_OPTION,
                   JOptionPane.WARNING_MESSAGE);
         if (option != JOptionPane.OK_OPTION) {
@@ -104,28 +104,28 @@ public class ProfilerSaveFileAction extends ActionBase {
         }
 
         ErrorInfoModel errorModel = this.controller.getErrorInfoModel();
-        // プロジェクト情報
+        // Project information
         ProjectModel project = this.controller.getProjectModel();
         File projectFolder = project.getProjectFolder();
-        // 測定区間情報
+        // Measurement section information
         ProfilerMeasureInfo measureInfo = this.controller.getProfilerInfo().getMeasureInfo();
-        // プロファイラサービス
+        // Profiler service
         ProfilerService service = new ProfilerService();
         service.setErrorInfoModel(errorModel);
         service.setMeasureInfo(measureInfo);
         service.setProjectFolder(projectFolder);
-        // プロファイラプロパティ
+        // Profiler properties
         service.setPropertiesProfiler(this.controller.getPropertiesProfiler());
 
         MeasureData data =  measureInfo.getMeasureData(0);
         if (data == null || data.getMeasureArea() == null) {
-            errorModel.addErrorInfo(Message.getString("profilersavefileaction.rangesave.errorinfo.nodata.message")); //測定区間データがありません。
+            errorModel.addErrorInfo(Message.getString("profilersavefileaction.rangesave.errorinfo.nodata.message")); // There is no measurement interval data.
             return;
         }
         CodeLine code = data.getMeasureArea();
         SourceFile file = code.getSourceFile();
         if (file == null || file.getFile() == null) {
-            errorModel.addErrorInfo(Message.getString("profilersavefileaction.rangesave.errorinfo.nosettingfile.message")); //測定区間設定ファイルがありません。
+            errorModel.addErrorInfo(Message.getString("profilersavefileaction.rangesave.errorinfo.nosettingfile.message")); // There is no measurement interval setting file.
             return;
         }
         if (file.getFile().isAbsolute()) {
@@ -133,18 +133,18 @@ public class ProfilerSaveFileAction extends ActionBase {
         }
 
         try {
-            // 上書き保存実行
+            // Overwrite save execution
             service.saveMeasureFile(projectFolder);
         } catch (Exception ex) {
             ex.printStackTrace();
             Application.status.setMessageMain(message+
-            		Message.getString("action.common.failed.status") //:失敗
+            		Message.getString("action.common.failed.status") //: Failure
             		);
             return;
         }
 
         Application.status.setMessageMain(message+
-        		Message.getString("action.common.done.status") //:完了
+        		Message.getString("action.common.done.status") //: Done
         		);
 
         return;

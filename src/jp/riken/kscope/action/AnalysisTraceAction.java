@@ -43,19 +43,19 @@ import jp.riken.kscope.service.AppController;
 import jp.riken.kscope.utils.FileUtils;
 
 /**
- * トレースアクション
+ * Trace action
  * @author RIKEN
  *
  */
 public class AnalysisTraceAction extends ActionBase {
 
-    /** トレース方向 */
+    /** Trace direction */
     private TRACE_DIR tracedir;
 
     /**
-     * コンストラクタ
-     * @param controller	アプリケーションコントローラ
-     * @param dir			トレース方向
+     * Constructor
+     * @param controller Application controller
+     * @param dir Trace direction
      */
     public AnalysisTraceAction(AppController controller, TRACE_DIR dir) {
         super(controller);
@@ -63,20 +63,20 @@ public class AnalysisTraceAction extends ActionBase {
     }
 
     /**
-     * アクションが実行可能であるかチェックする.<br/>
-     * アクションの実行前チェック、メニューのイネーブルの切替を行う。<br/>
-     * @return		true=アクションが実行可能
+     * Check if the action is executable. <br/>
+     * Check before executing the action and switch the menu enable. <br/>
+     * @return true = Action can be executed
      */
     @Override
     public boolean validateAction() {
 
         if (tracedir == TRACE_DIR.START) {
-            // トレース開始
-            // ソースコードの選択行を取得する
+            // Start tracing
+            // Get the selected line of source code
             CodeLine line = this.controller.getMainframe().getPanelSourceView().getSelectedCodeLine();
             if (line == null) return false;
 
-            // 選択文字列
+            // Selected string
             String statement = line.getStatement();
             if (statement == null || statement.isEmpty()) return false;
         }
@@ -84,7 +84,7 @@ public class AnalysisTraceAction extends ActionBase {
                 || tracedir == TRACE_DIR.IN || tracedir == TRACE_DIR.OUT
                 || tracedir == TRACE_DIR.FORWARD
                 || tracedir == TRACE_DIR.END || tracedir == TRACE_DIR.REFRESH) {
-            // トレース
+            // Trace
             TraceResultModel[] models = this.controller.getMainframe().getPanelAnalysisView().getTraceResultModels();
             if (models == null || models.length <= 0) return false;
             for (TraceResultModel model : models) {
@@ -98,93 +98,93 @@ public class AnalysisTraceAction extends ActionBase {
     }
 
     /**
-     * アクション発生イベント
-     * @param event		イベント情報
+     * Action occurrence event
+     * @param event Event information
      */
     @Override
     public void actionPerformed(ActionEvent event) {
 
-        // ステータスメッセージ
-        final String message = Message.getString("mainmenu.window.analysis.trace"); //トレース
+        // Status message
+        final String message = Message.getString("mainmenu.window.analysis.trace"); //trace
 
         if (tracedir == TRACE_DIR.START) {
-            // ステータスメッセージ
-            Application.status.setMessageMain(message + Message.getString("analysistraceaction.trace-start.status")); //:開始
+            // Status message
+            Application.status.setMessageMain(message + Message.getString("analysistraceaction.trace-start.status")); //:start
 
-            // 選択文字列からトレースを開始する.
+            // Start tracing from the selected string.
             startTrace();
         }
         else if (tracedir == TRACE_DIR.UP) {
-            // ステータスメッセージ
-            Application.status.setMessageMain(message + Message.getString("analysistraceaction.trace-up.satatus")); //:アップ
+            // Status message
+            Application.status.setMessageMain(message + Message.getString("analysistraceaction.trace-up.satatus")); //:up
 
-            // トレース:アップを行う
+            // Trace: Up
             traceUp();
         }
         else if (tracedir == TRACE_DIR.DOWN) {
-            // ステータスメッセージ
-            Application.status.setMessageMain(message + Message.getString("analysistraceaction.trace-down.status"));//:ダウン
+            // Status message
+            Application.status.setMessageMain(message + Message.getString("analysistraceaction.trace-down.status"));//:down
 
-            // トレース:ダウンを行う
+            // Trace: Go down
             traceDown();
         }
         else if (tracedir == TRACE_DIR.IN) {
-            // ステータスメッセージ
-            Application.status.setMessageMain(message + Message.getString("analysistraceaction.trace-in.status"));//:イン
+            // Status message
+            Application.status.setMessageMain(message + Message.getString("analysistraceaction.trace-in.status"));//: Inn
 
-            // トレース:インを行う
+            // Trace: Do an in
             traceIn();
         }
         else if (tracedir == TRACE_DIR.OUT) {
-            // ステータスメッセージ
-            Application.status.setMessageMain(message + Message.getString("analysistraceaction.trace-out.status"));//:アウト
+            // Status message
+            Application.status.setMessageMain(message + Message.getString("analysistraceaction.trace-out.status"));//:out
 
-            // トレース:アウトを行う
+            // Trace: Do out
             traceOut(false);
         }
         else if (tracedir == TRACE_DIR.FORWARD) {
-            // ステータスメッセージ
-            Application.status.setMessageMain(message + Message.getString("analysistraceaction.trace-forword.status"));//:フォワード
+            // Status message
+            Application.status.setMessageMain(message + Message.getString("analysistraceaction.trace-forword.status"));//:forward
 
-            // トレース:フォワードを行う
+            // Trace: Forward
             traceOut(true);
         }
         else if (tracedir == TRACE_DIR.REFRESH) {
-            // ステータスメッセージ
-            Application.status.setMessageMain(message + Message.getString("analysistraceaction.trace-refresh.status"));//:リフレッシュ
+            // Status message
+            Application.status.setMessageMain(message + Message.getString("analysistraceaction.trace-refresh.status"));//:refresh
 
-            // トレースタブをアクティブにする
+            // Activate the Trace tab
             if (this.controller.getMainframe().getPanelAnalysisView().getSelectedTracePanel() == null) {
                 this.controller.getMainframe().getPanelAnalysisView().setSelectedPanel(ANALYSIS_PANEL.TRACE);
             }
         }
 
         if (tracedir != TRACE_DIR.END) {
-            // キーワードリストを取得する
+            // Get the keyword list
             setTraceKeywords();
         }
         else {
-            // ステータスメッセージ
-            Application.status.setMessageMain(message + Message.getString("analysistraceaction.trace-clear.status"));//:クリア
+            // Status message
+            Application.status.setMessageMain(message + Message.getString("analysistraceaction.trace-clear.status"));//:clear
 
-            // トレース結果をクリアする
+            // Clear the trace result
             clearTrace();
-            // ソースビューからトレースキーワードの削除
+            // Remove trace keywords from source view
             this.controller.getMainframe().getPanelSourceView().clearSearchWords(KEYWORD_TYPE.TRACE);
         }
 
     }
 
     /**
-     * 選択文字列からトレースを開始する.
+     * Start tracing from the selected string.
      */
     private void startTrace() {
 
-        // ソースコードの選択行を取得する
+        // Get the selected line of source code
         CodeLine line = this.controller.getMainframe().getPanelSourceView().getSelectedCodeLine();
         if (line == null) return;
 
-        // ソースファイルをプロジェクトフォルダの相対パスに変更する
+        // Change the source file to the relative path of the project folder
         SourceFile srcfile = line.getSourceFile();
         if (srcfile.getFile().isAbsolute()) {
             File projectfolder = this.controller.getProjectModel().getProjectFolder();
@@ -197,116 +197,116 @@ public class AnalysisTraceAction extends ActionBase {
             }
         }
 
-        // 選択文字列
+        // Selected string
         String statement = line.getStatement();
         if (statement == null || statement.isEmpty()) return;
 
-        // フォートランデータベース
+        // Fortran database
         Fortran fortran = this.controller.getFortranLanguage();
-        // エラー情報モデル
+        // Error information model
         ErrorInfoModel errorModel = this.controller.getErrorInfoModel();
 
-        // 分析:トレースサービス
+        // Analysis: Trace service
         AnalysisTraceService service = new AnalysisTraceService(fortran);
         service.setErrorInfoModel(errorModel);
-        // トレース対象変数名を設定する
+        // Set the trace target variable name
         service.setTraceWord(statement);
 
-        // トレース結果を取得する
+        // Get the trace result
         TraceResultModel modelTrace = service.analysisTraceStart(line);
         if (modelTrace == null) {
-            // ステータスメッセージ
-            Application.status.setMessageMain(Message.getString("analysistraceaction.trace-start-no-target.status"));//トレース:開始[対象なし]
+            // Status message
+            Application.status.setMessageMain(Message.getString("analysistraceaction.trace-start-no-target.status"));// Trace: Start [Not Target]
             return;
         }
 
-        // トレースパスを追加する
+        // Add a trace path
         IBlock[] paths = {getRootBlock(modelTrace)};
         modelTrace.setTracePath(paths);
 
-        // トレース結果を表示する
+        // Display the trace result
         this.controller.getMainframe().getPanelAnalysisView().viewAnalysisTrace(modelTrace);
 
     }
 
 
     /**
-     * トレース結果をクリアする
+     * Clear the trace result
      */
     private void clearTrace() {
-        // トレース結果をクリアする
-        // トレースタブすべてを閉じる。
+        // Clear the trace result
+        // Close all trace tabs.
         this.controller.getMainframe().getPanelAnalysisView().clearTrace();
     }
 
     /**
-     * トレース:アップを行う
+     * Trace: Up
      */
     private void traceUp() {
-        // トレースパネルで上のノード探索を行う
+        // Search for the above node in the trace panel
         TraceResultPanel panel = this.controller.getMainframe().getPanelAnalysisView().getSelectedTracePanel();
         if (panel == null) return;
 
-        // トレース:アップを行う
+        // Trace: Up
         panel.traceUp();
     }
 
 
     /**
-     * トレース:ダウンを行う
+     * Trace: Go down
      */
     private void traceDown() {
-        // トレースパネルで上のノード探索を行う
+        // Search for the above node in the trace panel
         TraceResultPanel panel = this.controller.getMainframe().getPanelAnalysisView().getSelectedTracePanel();
         if (panel == null) return;
 
-        // トレース:ダウンを行う
+        // Trace: Go down
         panel.traceDown();
     }
 
     /**
-     * トレース:インを行う
+     * Trace: Do an in
      */
     private void traceIn() {
-        // 選択トレースパネル
+        // Select trace panel
         TraceResultPanel panel = this.controller.getMainframe().getPanelAnalysisView().getSelectedTracePanel();
         if (panel == null) return;
-        // 選択トレースモデル
+        // Select trace model
         TraceResultModel model = panel.getModel();
-        // トレース変数
+        // Trace variable
         String statement = model.getTraceWord();
-        // 現在の選択ブロック
+        // Current selection block
         IBlock selectedBlock = model.getSelectedBlock();
         if (statement == null || selectedBlock == null) return;
 
-        // フォートランデータベース
+        // Fortran database
         Fortran fortran = this.controller.getFortranLanguage();
-        // エラー情報モデル
+        // Error information model
         ErrorInfoModel errorModel = this.controller.getErrorInfoModel();
 
-        // 分析:トレースサービス
+        // Analysis: Trace service
         AnalysisTraceService service = new AnalysisTraceService(fortran);
         service.setErrorInfoModel(errorModel);
-        // トレース対象変数名を設定する
+        // Set the trace target variable name
         service.setTraceWord(statement);
 
-        // トレース:イン結果を取得する
+        // Trace: Get in result
         TraceResultModel[] modelTraces = service.analysisTraceIn(selectedBlock);
         if (modelTraces == null || modelTraces.length <= 0 || modelTraces[0] == null) {
-            // ステータスメッセージ
-            Application.status.setMessageMain(Message.getString("analysistraceaction.trace-in-no-target.status"));//トレース:イン[対象なし]
+            // Status message
+            Application.status.setMessageMain(Message.getString("analysistraceaction.trace-in-no-target.status"));// Trace: In [Not Target]
             return;
         }
 
-        // トレース先
+        // Trace destination
         TraceResultModel selectTrace = modelTraces[0];
         if (modelTraces.length > 1) {
-            // トレース先選択ダイアログを表示して、トレース先を選択する。
+            // Display the trace destination selection dialog and select the trace destination.
             selectTrace = showTraceChooserDialog(modelTraces);
         }
         if (selectTrace == null) return;
 
-        // トレースパスを追加する
+        // Add a trace path
         List<IBlock> list = new ArrayList<IBlock>();
         IBlock[] paths = model.getTracePath();
         if (paths != null && paths.length > 0) {
@@ -316,71 +316,71 @@ public class AnalysisTraceAction extends ActionBase {
         list.add(getRootBlock(selectTrace));
         selectTrace.setTracePath(list.toArray(new IBlock[0]));
 
-        // トレース結果を表示する
+        // Display the trace result
         this.controller.getMainframe().getPanelAnalysisView().viewAnalysisTrace(selectTrace);
 
     }
 
 
     /**
-     * トレース:アウトを行う
-     * @param  forward		フォワードを行う。
+     * Trace: Do out
+     * @param forward Perform a forward.
      */
     private void traceOut(boolean forward) {
 
-        // 選択トレースパネル
+        // Select trace panel
         TraceResultPanel panel = this.controller.getMainframe().getPanelAnalysisView().getSelectedTracePanel();
         if (panel == null) return;
-        // 選択トレースモデル
+        // Select trace model
         TraceResultModel model = panel.getModel();
-        // トレース変数
+        // Trace variable
         String statement = model.getTraceWord();
-        // 現在のルートブロック
+        // Current root block
         IBlock rootBlock = model.getRootBlock();
         if (statement == null || rootBlock == null) return;
-        // トレースパス
+        // Trace path
         IBlock[] tracePath = null;
         if (forward) {
-            // トレース：フォワード
+            // Trace: Forward
             tracePath = model.getTracePath();
         }
 
-        // フォートランデータベース
+        // Fortran database
         Fortran fortran = this.controller.getFortranLanguage();
-        // エラー情報モデル
+        // Error information model
         ErrorInfoModel errorModel = this.controller.getErrorInfoModel();
 
-        // 分析:トレースサービス
+        // Analysis: Trace service
         AnalysisTraceService service = new AnalysisTraceService(fortran);
         service.setErrorInfoModel(errorModel);
-        // トレース対象変数名を設定する
+        // Set the trace target variable name
         service.setTraceWord(statement);
 
-        // トレース:アウト結果を取得する
+        // Trace: Get out result
         TraceResultModel[] modelTraces = service.analysisTraceOut(rootBlock, tracePath);
         if (modelTraces == null || modelTraces.length <= 0 || modelTraces[0] == null) {
-            // ステータスメッセージ
-            Application.status.setMessageMain(Message.getString("analysistraceaction.trace-out-no-target.status"));//トレース:アウト[対象なし]
+            // Status message
+            Application.status.setMessageMain(Message.getString("analysistraceaction.trace-out-no-target.status"));// Trace: Out [Not applicable]
             return;
         }
 
-        // トレース先
+        // Trace destination
         TraceResultModel selectTrace = modelTraces[0];
         if (modelTraces.length > 1) {
-            // トレース先選択ダイアログを表示して、トレース先を選択する。
+            // Display the trace destination selection dialog and select the trace destination.
             selectTrace = showTraceChooserDialog(modelTraces);
         }
         if (selectTrace == null) return;
 
-        // トレースパスを追加する
+        // Add a trace path
         List<IBlock> list = new ArrayList<IBlock>();
         if (forward) {
-            // トレース：フォワード
+            // Trace: Forward
             tracePath = model.getTracePath();
             if (tracePath != null && tracePath.length > 0) {
                 list.addAll(Arrays.asList(tracePath));
                 if (list.size() > 2) {
-                    // 最後ノードの削除
+                    // Delete the last node
                     list.remove(list.size()-1);
                     list.remove(list.size()-1);
                 }
@@ -392,24 +392,24 @@ public class AnalysisTraceAction extends ActionBase {
         //list.add(getRootBlock(selectTrace));
         selectTrace.setTracePath(list.toArray(new IBlock[0]));
 
-        // トレース結果を表示する
+        // Display the trace result
         this.controller.getMainframe().getPanelAnalysisView().viewAnalysisTrace(selectTrace);
 
     }
 
 
     /**
-     * トレース先選択ダイアログを表示する
-     * @return		トレース結果モデル
+     * Display the trace destination selection dialog
+     * @return Trace result model
      */
     private TraceResultModel showTraceChooserDialog(TraceResultModel[] traces) {
         TraceChooserDialog dialog = new TraceChooserDialog(this.controller.getMainframe(), true);
         dialog.setTraceResultModel(traces);
 
-        // 該当個所を開くアクションの設定
+        // Setting the action to open the relevant part
         dialog.setViewOpenAnalysisLineAction(new ViewOpenAnalysisLineAction(this.controller));
 
-        // トレース選択ダイアログを開く
+        // Open the trace selection dialog
         int result = dialog.showDialog();
         if (result == Constant.CANCEL_DIALOG) return null;
 
@@ -417,18 +417,18 @@ public class AnalysisTraceAction extends ActionBase {
     }
 
     /**
-     * トレースキーワードを設定する
+     * Set trace keywords
      */
     public void setTraceKeywords() {
-        // キーワードリストを取得する
+        // Get the keyword list
         this.controller.setTraceKeywords();
     }
 
 
     /**
-     * ルートブロックを取得する
-     * @param modelTrace		トレースモデル
-     * @return   ルートブロック
+     * Get the root block
+     * @param modelTrace Trace model
+     * @return Root block
      */
     private IBlock getRootBlock(TraceResultModel modelTrace) {
         if (modelTrace == null) return null;

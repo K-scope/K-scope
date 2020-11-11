@@ -16,6 +16,6 @@
  */
 
 /**
- * ダイアログコンポーネントを提供します.<br/>
+ * Provides dialog components. <br/>
  */
 package jp.riken.kscope.dialog;

@@ -21,8 +21,8 @@ import java.util.Set;
 
 /**
 *
-* 変数の属性（修飾子）を示すインターフェース.<br>
-* 各言語に対応したVariableAttributeクラスが、このインターフェースを実装して使用する。
+* Interface showing variable attributes (qualifiers). <br>
+* VariableAttribute class corresponding to each language implements and uses this interface.
 *
 * @author RIKEN
 *
@@ -30,66 +30,66 @@ import java.util.Set;
 public interface IVariableAttribute {
 
     /**
-     * 属性の設定.
+     * Attribute settings.
      *
      * @param attrbts
-     *            設定すべき全属性
+     * All attributes to set
      */
     void setAttributes(Set<String> attrbts);
 
     /**
-     * 属性の設定.
+     * Attribute settings.
      *
      * @param attrbts
-     *            設定すべき全属性
+     * All attributes to set
      */
     void setAttributes(String[] attrbts);
 
     /**
-     * 属性の取得.
+     * Get attributes.
      *
-     * @return 全属性
+     * @return All attributes
      */
     Set<String> getAttributes();
 
     /**
-     * 属性の追加.
+     * Add attributes.
      *
      * @param attrbt
-     *           追加すべき属性
+     * Attributes to add
      */
     void addAttribute(String attrbt);
 
     /**
-     * 対象文字列が属性内に含まれているかどうか。<br>
-     * ただし、対象文字列の大文字小文字は無視する。<br>
+     * Whether the target string is included in the attribute. <br>
+     * However, the case of the target character string is ignored. <br>
      *
      * @param keyword
-     *               対象文字列
-     * @return true : 対象文字列が含まれる
+     * Target string
+     * @return true: The target string is included
      */
     boolean contains(String keyword);
 
     /**
-     * 変数の属性（修飾子）文字列を返す.
+     * Returns a variable attribute (qualifier) string.
      *
-     * @return 属性（修飾子）文字列
+     * @return attribute (modifier) string
      */
     String toString();
 
     /**
-     * 属性が適合しているかどうか。<br>
+     * Whether the attributes match. <br>
      *
-     * 多重定義されている関数群の中から対応する関数を探索する際に、<br>
-     * 仮引数と実引数の属性チェックをする必要がある。<br>
-     * 「適合している」とは、この属性チェックで、同一の属性と判定される
-     * 事を意味している。
+     * When searching for the corresponding function from the overloaded function group, <br>
+     * It is necessary to check the attributes of formal and actual arguments. <br>
+     * "Matching" is judged to be the same attribute by this attribute check.
+     * Means a thing.
      *
      * @param value
-     *          属性
+     * Attributes
      *
-     * @return true : 適合している<br>
-     *         false: 適合していない
+     * @return true: Conforms <br>
+     * false: Not compatible
      *
      */
     boolean matches(IVariableAttribute value);

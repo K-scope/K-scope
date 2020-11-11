@@ -25,27 +25,27 @@ import jp.riken.kscope.model.TraceResultModel;
 import jp.riken.kscope.service.AppController;
 
 /**
- * タブパネルを表示する.
+ * Show tab panel.
  * @author RIKEN
  */
 public class WindowViewAction extends ActionBase {
 
-    /** 表示を行うエクスプローラパネル */
+    /** Explorer panel to display */
     private EXPLORE_PANEL panelExplore;
 
-    /** 表示を行う分析パネル */
+    /** Analysis panel for display */
     private ANALYSIS_PANEL panelAnalysis;
 
-    /** 表示を行う構造パネルモデル */
+    /** Structural panel model for display */
     private LanguageTreeModel modelLanguage;
 
-    /** 表示を行うトレースパネルモデル */
+    /** Trace panel model to display */
     private TraceResultModel modelTrace;
 
     /**
-     * コンストラクタ
-     * @param controller	アプリケーションコントローラ
-     * @param panel			表示分析パネル
+     * Constructor
+     * @param controller Application controller
+     * @param panel Display analysis panel
      */
     public WindowViewAction(AppController controller, ANALYSIS_PANEL panel) {
         super(controller);
@@ -54,9 +54,9 @@ public class WindowViewAction extends ActionBase {
     }
 
     /**
-     * コンストラクタ
-     * @param controller	アプリケーションコントローラ
-     * @param panel			表示エクスプローラパネル
+     * Constructor
+     * @param controller Application controller
+     * @param panel Display explorer panel
      */
     public WindowViewAction(AppController controller, EXPLORE_PANEL panel) {
         super(controller);
@@ -65,9 +65,9 @@ public class WindowViewAction extends ActionBase {
     }
 
     /**
-     * コンストラクタ
-     * @param controller	アプリケーションコントローラ
-     * @param model			表示を行う構造パネルモデル
+     * Constructor
+     * @param controller Application controller
+     * @param model Structural panel model to display
      */
     public WindowViewAction(AppController controller, LanguageTreeModel model) {
         super(controller);
@@ -76,9 +76,9 @@ public class WindowViewAction extends ActionBase {
     }
 
     /**
-     * コンストラクタ
-     * @param controller	アプリケーションコントローラ
-     * @param model			表示を行うトレースパネルモデル
+     * Constructor
+     * @param controller Application controller
+     * @param model Trace panel model to display
      */
     public WindowViewAction(AppController controller, TraceResultModel model) {
         super(controller);
@@ -88,25 +88,25 @@ public class WindowViewAction extends ActionBase {
 
 
     /**
-     * アクション発生イベント
-     * @param event		イベント情報
+     * Action occurrence event
+     * @param event Event information
      */
     @Override
     public void actionPerformed(ActionEvent event) {
 
-        // 構造パネルを表示する
+        // Display the structure panel
         if (this.modelLanguage != null) {
             this.controller.getMainframe().getPanelExplorerView().viewLanguageTree(this.modelLanguage);
         }
-        // トレースパネルを表示する
+        // Show the trace panel
         else if (this.modelTrace != null) {
             this.controller.getMainframe().getPanelAnalysisView().viewAnalysisTrace(this.modelTrace);
         }
-        // エクスプローラパネルを表示する
+        // Display the explorer panel
         else if (this.panelExplore != null) {
             this.controller.getMainframe().getPanelExplorerView().setSelectedPanel(this.panelExplore);
         }
-        // 分析パネルを表示する
+        // Display the analysis panel
         else if (this.panelAnalysis != null) {
             this.controller.getMainframe().getPanelAnalysisView().setSelectedPanel(this.panelAnalysis);
         }

@@ -23,21 +23,21 @@ import java.util.List;
 import jp.riken.kscope.language.IInformation;
 
 /**
- * 情報ブロックのコレクションクラス
+ * Information block collection class
  * @author RIKEN
  *
  */
 public class InformationBlocks extends ArrayList<InformationBlock> {
 
-    /** シリアル番号 */
+    /** Serial number */
 	private static final long serialVersionUID = 4740835139890184660L;
 
 	/**
-     * 要素を追加する。ただし、要素内容が重複している場合は、追加しない。
+     * Add an element. However, if the element contents are duplicated, they are not added.
      *
      * @param e
-     *         追加対象要素
-     * @return true: 追加に成功。false: 追加に失敗
+     * Elements to be added
+     * @return true: Successful addition. false: Failed to add
      */
     @Override
     public boolean add(InformationBlock e) {
@@ -51,11 +51,11 @@ public class InformationBlocks extends ArrayList<InformationBlock> {
     }
 
     /**
-     * 要素群を追加する。ただし、内容が重複している要素は、追加しない。
+     * Add elements. However, elements with duplicate contents are not added.
      *
      * @param c
-     *         追加対象要素群
-     * @return true: 追加に成功。false: 追加に失敗
+     * Elements to be added
+     * @return true: Successful addition. false: Failed to add
      */
     @Override
     public boolean addAll(Collection<? extends InformationBlock> c) {
@@ -68,16 +68,16 @@ public class InformationBlocks extends ArrayList<InformationBlock> {
     }
 
     /**
-     * 対象となる情報ブロックが含まれているかどうか。
+     * Whether the target information block is included.
      *
      * @param info
-     *          情報
+     * Information
      * @param startBlock
-     *          開始ブロック
+     * Start block
      * @param endBlock
-     *          終了ブロック
-     * @return true : 対象となる情報ブロックが含まれている。
-     *         false: 対象となる情報ブロックが含まれていない。
+     * End block
+     * @return true: The target information block is included.
+     * false: The target information block is not included.
      */
     public boolean contains(InformationBase info,
             IInformation startBlock, IInformation endBlock) {
@@ -92,13 +92,13 @@ public class InformationBlocks extends ArrayList<InformationBlock> {
     }
 
     /**
-     * 対象となる情報ブロックを検索する。
+     * Search for the target information block.
      *
      * @param startBlock
-     *          開始ブロック
+     * Start block
      * @param endBlock
-     *          終了ブロック
-     * @return 見つかった情報ブロック。見つからなかった場合はnullが返る
+     * End block
+     * @return The information block found. Returns null if not found
      */
     public InformationBlock findObjectBy(
             IInformation startBlock, IInformation endBlock) {
@@ -116,9 +116,9 @@ public class InformationBlocks extends ArrayList<InformationBlock> {
     }
 
     /**
-     * 指定したブロックを開始に持つInformationBlockのリストを返す。
-     * @param start 開始ブロック
-     * @return 付加情報領域のリスト。無ければ空のリストを返す。
+     * Returns a list of Information Blocks starting with the specified block.
+     * @param start Start block
+     * @return A list of additional information areas. If not, returns an empty list.
      */
     public List<InformationBlock> getStartWith(IInformation start) {
         List<InformationBlock> blocks = new ArrayList<InformationBlock>();
@@ -131,13 +131,13 @@ public class InformationBlocks extends ArrayList<InformationBlock> {
     }
 
     /**
-     * 対象となる情報ブロックを削除する。
+     * Delete the target information block.
      *
      * @param startBlock
-     *          開始ブロック
+     * Start block
      * @param endBlock
-     *          終了ブロック
-     * @return true: 削除された。false: 削除に失敗した
+     * End block
+     * @return true: Deleted. false: Delete failed
      */
     public boolean remove(
             IInformation startBlock, IInformation endBlock) {

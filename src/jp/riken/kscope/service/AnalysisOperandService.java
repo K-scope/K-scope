@@ -43,51 +43,51 @@ import jp.riken.kscope.model.OperandTableModel;
 import jp.riken.kscope.properties.OperationProperties;
 
 /**
- * 分析：演算カウントを行う
+ * Analysis: Perform calculation count
  * @author RIKEN
  */
 public class AnalysisOperandService extends AnalysisBaseService {
 
-    /** 演算カウントテーブルモデル */
+    /** Arithmetic count table model */
     private OperandTableModel modelOperand;
 
-    /** 組込み関数演算カウントプロパティ */
+    /** Built-in function operation count property */
     private OperationProperties propertiesOperand;
 
     /**
-     * コンストラクタ
-     * @param fortran            フォートランデータベース
+     * Constructor
+     * @param fortran Fortran database
      */
     public AnalysisOperandService(Fortran fortran) {
         super(fortran);
     }
 
     /**
-     * 演算カウントテーブルモデルを設定する
-     * @param modelOperand		演算カウントテーブルモデル
+     * Set the arithmetic count table model
+     * @param modelOperand Arithmetic count table model
      */
     public void setModelOperand(OperandTableModel modelOperand) {
         this.modelOperand = modelOperand;
     }
 
     /**
-     * 組込み関数演算カウントプロパティを取得する
-     * @param propertiesOperand		組込み関数演算カウントプロパティ
+     * Get the built-in function operation count property
+     * @param propertiesOperand Built-in function arithmetic count property
      */
     public void setPropertiesOperand(OperationProperties propertiesOperand) {
         this.propertiesOperand = propertiesOperand;
     }
 
     /**
-     * 演算カウントを取得する
-     * @param   blocks         ブロックリスト
+     * Get the operation count
+     * @param blocks block list
      */
     public void analysisOperand(IBlock[] blocks) {
         if (blocks == null) {
             return;
         }
         Collection<IBlock> blockList = java.util.Arrays.asList(blocks);
-        // 変数宣言であればブロックのセットを取得
+        // Get the set of blocks if it is a variable declaration
         if (blocks[0] instanceof VariableDefinition) {
             blockList = this.getBlocks((VariableDefinition) blocks[0]);
         }
@@ -95,7 +95,7 @@ public class AnalysisOperandService extends AnalysisBaseService {
         this.modelOperand.setTitle(blocks[0].toString());
         for (IBlock block: blockList) {
 
-            // ブロック名の取得
+            // Get block name
             StringBuilder loopName = new StringBuilder();
             IBlock nameBlock = block;
             BlockType bkType = nameBlock.getBlockType();
@@ -128,11 +128,11 @@ public class AnalysisOperandService extends AnalysisBaseService {
                 }
             }
 
-            // ブロックのカウント取得
+            // Get block count
             OperationCounterUtils utils = new OperationCounterUtils(this.propertiesOperand);
             utils.countBlock(block);
 
-            // 結果のセット
+            // Result set
             OperationCount loop = new OperationCount();
             loop.setName(loopName.toString());
             loop.setF(utils.getOperandFlop());
@@ -146,9 +146,9 @@ public class AnalysisOperandService extends AnalysisBaseService {
     }
 
     /**
-     * 指定した変数宣言が参照・定義されている制御ブロックのセットを返す。
-     * @param varDef 変数宣言
-     * @return 制御ブロックのセット。無ければ空のリストを返す。
+     * Returns the set of control blocks in which the specified variable declaration is referenced / defined.
+     * @param varDef Variable declaration
+     * @return A set of control blocks. If not, returns an empty list.
      */
     private Collection<IBlock> getBlocks(VariableDefinition varDef) {
         Set<IBlock> set = new LinkedHashSet<IBlock>();
@@ -165,12 +165,12 @@ public class AnalysisOperandService extends AnalysisBaseService {
                 if (!(sub.get_mother() instanceof ExecutableBody)) {
                     set.add(sub.get_mother());
                 } else {
-                    //TODO 他のどのブロックにも属さない代入文は個別にセットする。プログラムによっては非常に多くなる恐れがある。
+                    // TODO Assignment statements that do not belong to any other block are set individually. It can be very large depending on the program.
                     set.add(sub);
                 }
             }
         }
-        // 内部副プログラムに対する処理
+        // Processing for internal subprograms
         Collection<Procedure> pus = proc.getChildren();
         for (Procedure pr: pus) {
             if (!(pr.getVariables().containsKey(varName))) {
@@ -181,7 +181,7 @@ public class AnalysisOperandService extends AnalysisBaseService {
                         if (!(sub.get_mother() instanceof ExecutableBody)) {
                             set.add(sub.get_mother());
                         } else {
-                            //TODO 他のどのブロックにも属さない代入文は個別にセットする。プログラムによっては非常に多くなる恐れがある。
+                            // TODO Assignment statements that do not belong to any other block are set individually. It can be very large depending on the program.
                             set.add(sub);
                         }
                     }
@@ -192,10 +192,10 @@ public class AnalysisOperandService extends AnalysisBaseService {
     }
 
     /**
-     * Blockの演算数をカウントする。
+     * Count the number of Block operations.
      *
-     * @param block 処理ブロック
-     * @return カウント情報の整数配列
+     * @param block Processing block
+     * @return Integer array of count information
      */
     @SuppressWarnings("unused")
     private CountResult countBlock(IBlock block) {
@@ -205,9 +205,9 @@ public class AnalysisOperandService extends AnalysisBaseService {
     }
 
     /**
-     * ブロックの子要素に対して演算数をカウントする。
-     * @param block ブロック
-     * @param result カウント結果
+     * Count the number of operations for the child elements of the block.
+     * @param block block
+     * @param result Count result
      */
     private void countChildren(IBlock block, CountResult result) {
         int[] count = result.getCount();
@@ -220,8 +220,8 @@ public class AnalysisOperandService extends AnalysisBaseService {
             //(2012/5/9) modified by teraim, tomiyama
             //leftVar.add(((Substitution) block).getLeftValue().getVariableString());
             //
-            // 左辺の結果を追加する前にgetDimensionIndexValue()が存在するかどうかを判定し、
-            // 存在した場合には配列であるとみなして結果に追加する
+            // Determine if getDimensionIndexValue () exists before adding the result on the left side,
+            // If it exists, consider it as an array and add it to the result
             if (((Substitution)block).getLeftValue().getDimensionIndexValue() != null) {
                 leftVar.add(((Substitution) block).getLeftValue().getVariableString());
             }
@@ -229,7 +229,7 @@ public class AnalysisOperandService extends AnalysisBaseService {
             Expression right = ((Substitution) block).getRightValue();
             List<Variable> rightVariables = right.getVariables();
             for (Variable vr : rightVariables) {
-                //配列ならばロードに数える
+                // If it is an array, count it as a load
                 if (vr.getDimensionIndexValue() != null) {
                     rightVar.add(vr.getVariableString());
                 }

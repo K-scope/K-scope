@@ -36,19 +36,19 @@ import jp.riken.kscope.service.AppController;
 
 
 /**
- * 付加情報編集アクションクラス
+ * Additional information editing action class
  * @author RIKEN
  *
  */
 public class EditInformationEditAction extends ActionBase {
 
-    /** 付加情報取得先ビュー */
+    /** Additional information acquisition destination view */
     private FRAME_VIEW view;
 
     /**
-     * コンストラクタ
-     * @param controller	アプリケーションコントローラ
-     * @param view 			付加情報取得先ビュー
+     * Constructor
+     * @param controller Application controller
+     * @param view Additional information acquisition destination view
      */
     public EditInformationEditAction(AppController controller, FRAME_VIEW view) {
         super(controller);
@@ -56,9 +56,9 @@ public class EditInformationEditAction extends ActionBase {
     }
 
     /**
-     * アクションが実行可能であるかチェックする.<br/>
-     * アクションの実行前チェック、メニューのイネーブルの切替を行う。<br/>
-     * @return		true=アクションが実行可能
+     * Check if the action is executable. <br/>
+     * Check before executing the action and switch the menu enable. <br/>
+     * @return true = Action can be executed
      */
     @Override
     public boolean validateAction() {
@@ -69,41 +69,41 @@ public class EditInformationEditAction extends ActionBase {
     }
 
     /**
-     * 付加情報編集イベント
-     * @param event		イベント情報
+     * Additional information editing event
+     * @param event Event information
      */
     @Override
     public void actionPerformed(ActionEvent event) {
 
-        // 実行チェック
+        // Execution check
         if (!validateAction()) return;
 
-        // ステータスメッセージ
-        final String message = Message.getString("mainmenu.edit.info"); //付加情報編集
+        // Status message
+        final String message = Message.getString("mainmenu.edit.info"); // Edit additional information
         Application.status.setMessageMain(message);
 
-        // 選択付加情報を取得する
+        // Get additional selection information
         IInformation infoNode = getSelectedInformation();
         if (infoNode == null) return;
 
-        // 付加情報の編集を行う
+        // Edit additional information
         if (!editInformation(infoNode)) {
-            // 付加情報の編集のキャンセル
+            // Cancel editing of additional information
         	Application.status.setMessageMain(message +
-        			Message.getString("action.common.cancel.status")); //:キャンセル
+        			Message.getString("action.common.cancel.status")); //:Cancel
             return;
         }
 
-        // 付加情報パネルをアクティブにする
+        // Activate the additional information panel
         this.controller.getMainframe().getPanelAnalysisView().setSelectedPanel(ANALYSIS_PANEL.INFORMATION);
         Application.status.setMessageMain(message +
-        		Message.getString("action.common.done.status")); //:完了
+        		Message.getString("action.common.done.status")); //: Done
         return;
     }
 
     /**
-     * 選択付加情報を取得する
-     * @return		選択付加情報
+     * Get additional selection information
+     * @return Selectable additional information
      */
     private IInformation getSelectedInformation() {
         IInformation info = null;
@@ -119,7 +119,7 @@ public class EditInformationEditAction extends ActionBase {
             } else {
                 if (sobj != null && eobj != null) {
                     if (sobj instanceof IInformation && eobj instanceof IInformation) {
-                        // 複数範囲の付加情報から付加情報クラスを取得する.
+                        // Get the additional information class from multiple ranges of additional information.
                         info = getProgramInformation(new IInformation[]{(IInformation) sobj, (IInformation)eobj});
                         /*Program fortran = this.controller.getFortranLanguage();
                         if (fortran != null) {
@@ -138,8 +138,8 @@ public class EditInformationEditAction extends ActionBase {
 
 
     /**
-     * 選択付加情報を取得する
-     * @return		選択付加情報
+     * Get additional selection information
+     * @return Selectable additional information
      */
     private boolean isSelectedInformation() {
         if (this.view == FRAME_VIEW.EXPLORE_VIEW) {
@@ -169,19 +169,19 @@ public class EditInformationEditAction extends ActionBase {
     }
 
     /**
-     * 付加情報の編集を行う
-     * @param infoNode		付加情報
-     * @return    付加情報の編集の可否
+     * Edit additional information
+     * @param infoNode Additional information
+     * @return Whether to edit additional information
      */
     public boolean editInformation(IInformation infoNode) {
         return editInformation(infoNode, null, true);
     }
 
     /**
-     * 付加情報の編集を行う
-     * @param infoNode		付加情報
-     * @param editable		付加情報編集の可否
-     * @return    付加情報の編集の可否
+     * Edit additional information
+     * @param infoNode Additional information
+     * @param editable Whether additional information can be edited
+     * @return Whether to edit additional information
      */
     /*
     public boolean editInformation(IInformation infoNode, boolean editable) {
@@ -190,41 +190,41 @@ public class EditInformationEditAction extends ActionBase {
      */
 
     /**
-     * 付加情報の編集を行う
-     * @param infoNode		付加情報
-     * @param addinfo		追加情報
-     * @return    付加情報の編集の可否
+     * Edit additional information
+     * @param infoNode Additional information
+     * @param addinfo Additional information
+     * @return Whether to edit additional information
      */
     public boolean editInformation(IInformation infoNode, String addinfo) {
         return editInformation(infoNode, addinfo, true);
     }
 
     /**
-     * 付加情報の編集を行う
-     * @param infoNode		付加情報
-     * @param addinfo		追加情報
-     * @param editable		付加情報編集の可否
-     * @return    付加情報の編集の可否
+     * Edit additional information
+     * @param infoNode Additional information
+     * @param addinfo Additional information
+     * @param editable Whether additional information can be edited
+     * @return Whether to edit additional information
      */
     public boolean editInformation(IInformation infoNode, String addinfo, boolean editable) {
         if (infoNode == null) return false;
 
-        // ステータスメッセージ
-        final String message = Message.getString("mainmenu.edit.info"); //付加情報編集
+        // Status message
+        final String message = Message.getString("mainmenu.edit.info"); // Edit additional information
         Application.status.setMessageMain(message);
 
-        // メインフレーム
+        // main frame
         Frame frame = this.controller.getMainframe();
 
-        // プロジェクトフォルダ
+        // Project folder
         File projectFolder = this.controller.getProjectModel().getProjectFolder();
 
-        // 付加情報
+        // Additional information
         TextInfo info = infoNode.getInformation();
         if (info == null) {
             info = new TextInfo();
         }
-        // 付加情報
+        // Additional information
         String content = info.getContent();
         if (content == null) {
             content = "";
@@ -235,64 +235,64 @@ public class EditInformationEditAction extends ActionBase {
             }
             content += addinfo;
         }
-        // 付加情報編集ダイアログの表示を行う。
+        // Display the additional information edit dialog.
         InformationDialog dialog = new InformationDialog(frame, true);
         dialog.setProjectFolder(projectFolder);
         dialog.setInformation(content);
         dialog.setBlockName(infoNode.toString());
         dialog.setEditable(editable);
 
-        // ダイアログを表示する
+        // Display a dialog
         int result = dialog.showDialog();
         if (result == Constant.CANCEL_DIALOG) {
-            // 付加情報の編集のキャンセル
-        	Application.status.setMessageMain(message + Message.getString("action.common.cancel.status")); //:キャンセル
+            // Cancel editing of additional information
+        	Application.status.setMessageMain(message + Message.getString("action.common.cancel.status")); //:Cancel
         	return false;
         }
 
-        // 更新された付加情報を設定する
+        // Set the updated additional information
         content = dialog.getInformation();
         info.setContent(content);
-        // ノードに付加情報の設定
+        // Set additional information on the node
         infoNode.setInformation(info);
 
-        // 付加情報パネルモデルの設定
+        // Additional information panel model settings
         InformationModel infoModel = this.controller.getMainframe().getPanelAnalysisView().getPanelInformation().getModel();
-        // プロジェクトフォルダの設定
+        // Project folder settings
         infoModel.setProjectFolder(projectFolder);
 
-        // 付加情報の設定
+        // Additional information settings
         infoModel.setTitle(infoNode.toString());
         infoModel.setInformation(infoNode, info);
 
-        // エクスプローラビューの再描画を行う
+        // Redraw the explorer view
         this.controller.getMainframe().getPanelExplorerView().fireSelectNodeChanged();
 
-        // 変数特性一覧情報を更新する
+        // Update variable characteristic list information
         this.controller.refreshInformation();
 
-        Application.status.setMessageMain(message + Message.getString("action.common.done.status")); //:完了
+        Application.status.setMessageMain(message + Message.getString("action.common.done.status")); //: Done
         return true;
     }
 
 
     /**
-     * 複数範囲の付加情報から付加情報クラスを取得する.
-     * Programクラスにて付加情報範囲のInformationBlockを生成して返す. <br/>
-     * 付加情報範囲が１つだけの場合は、先頭の付加情報を返す.
-     * @param infos		付加情報範囲
-     * @return			付加情報
+     * Get the additional information class from multiple ranges of additional information.
+     * Generate and return InformationBlock of additional information range in Program class. <br/>
+     * If there is only one additional information range, the first additional information is returned.
+     * @param infos Additional information range
+     * @return Additional information
      */
     private IInformation getProgramInformation(IInformation[] infos) {
         if (infos == null) return null;
         Program fortran = this.controller.getFortranLanguage();
         if (fortran == null) return null;
         if (infos.length == 0) return null;
-        // 単一
+        // single
         if (infos.length == 1) {
             return infos[0];
         }
-        // 複数範囲
+        // Multiple ranges
         IInformation start = infos[0];
         IInformation end = infos[infos.length-1];
         if (start != null && end != null) {

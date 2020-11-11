@@ -39,34 +39,34 @@ import jp.riken.kscope.service.FutureService;
 import jp.riken.kscope.utils.StringUtils;
 
 /**
- * 検索アクション
+ * Search action
  * @author RIKEN
  */
 public class SearchFindAction extends ActionBase {
-    /** 検索サービス */
+    /** Search service */
     private AnalysisSearchService service;
 
     /**
-     * コンストラクタ
-     * @param controller	アプリケーションコントローラ
+     * Constructor
+     * @param controller Application controller
      */
     public SearchFindAction(AppController controller) {
         super(controller);
     }
 
     /**
-     * アクションが実行可能であるかチェックする.<br/>
-     * アクションの実行前チェック、メニューのイネーブルの切替を行う。<br/>
-     * @return		true=アクションが実行可能
+     * Check if the action is executable. <br/>
+     * Check before executing the action and switch the menu enable. <br/>
+     * @return true = Action can be executed
      */
     @Override
     public boolean validateAction() {
 
-        // 現在開いているファイル
+        // Currently open file
         SourceFile[] files = this.controller.getMainframe().getPanelSourceView().getOpenedSourceFile();
         if (files == null) return false;
 
-        // ソースコードの選択行を取得する
+        // Get the selected line of source code
         CodeLine line = this.controller.getMainframe().getPanelSourceView().getSelectedCodeLine();
         if (line == null) return false;
 
@@ -75,46 +75,46 @@ public class SearchFindAction extends ActionBase {
 
 
     /**
-     * アクション発生イベント
-     * @param event		イベント情報
+     * Action occurrence event
+     * @param event Event information
      */
     @Override
     public void actionPerformed(ActionEvent event) {
-        // 実行チェック
+        // Execution check
         if (!validateAction()) return;
 
-        // ステータスメッセージ
-        final String message = Message.getString("mainmenu.search.source"); //ソース検索
+        // Status message
+        final String message = Message.getString("mainmenu.search.source"); // Source search
         Application.status.setMessageMain(message);
 
-        // ソースコードの選択行を取得する
+        // Get the selected line of source code
         CodeLine line = this.controller.getMainframe().getPanelSourceView().getSelectedCodeLine();
         if (line == null) return;
 
-        // 選択文字列
+        // Selected string
         String text = line.getStatement();
 
-        // 検索ダイアログを取得する。
+        // Get the search dialog.
         SearchFindDialog dialog = this.controller.getMainframe().getDialogSearchFind();
-        // 検索文字列
+        // Search string
         if (text != null) {
             dialog.setSearchText(text);
         }
-        // 検索ダイアログを表示する。
+        // Display the search dialog.
         int result = dialog.showDialog();
         if (result != Constant.OK_DIALOG) return;
 
-        // 検索文字列
+        // Search string
         String searchText = dialog.getSearchText();
-        // オプション
+        // Optional
         boolean regex = dialog.isRegex();
         boolean word = dialog.isWord();
         boolean sensitivecase = dialog.isSensitivecase();
         boolean openfiles = dialog.isOpenFiles();
 
-        // 検索サービス
+        // Search service
         service = new AnalysisSearchService();
-        // エラー情報モデル
+        // Error information model
         ErrorInfoModel errorModel = this.controller.getErrorInfoModel();
         service.setErrorInfoModel(errorModel);
         SearchResultModel model = this.controller.getSearchResultModel();
@@ -123,38 +123,38 @@ public class SearchFindAction extends ActionBase {
         service.setRegex(regex);
         service.setWord(word);
         service.setSensitivecase(sensitivecase);
-        // ソースツリーモデルを取得する
+        // Get the source tree model
         TreeModel modelTree = this.controller.getMainframe().getPanelExplorerView().getPanelSourceTree().getTreeModel();
         if (FILE_TYPE.isXcodemlFile(line.getSourceFile().getFile())) {
-            // XMLファイルが表示されている時は、XMLツリーを取得する
+            // Get the XML tree when the XML file is displayed
             modelTree = this.controller.getMainframe().getPanelExplorerView().getPanelXmlTree().getTreeModel();
         }
         service.setExploreTreeNode((DefaultMutableTreeNode) modelTree.getRoot());
 
-        // 検索ファイル
+        // Search file
         SourceFile[] files = {line.getSourceFile()};
         if (openfiles) {
-            // 開いている他のファイルも検索する
+            // Search other open files
             files = this.controller.getMainframe().getPanelSourceView().getOpenedSourceFile();
         }
-        // 検索ファイル
+        // Search file
         service.setSearchFiles(files);
 
-        // スレッドタスクサービスの生成を行う。
+        // Create a thread task service.
         FutureService<Integer> future = new FutureService<Integer>(
             /**
-             * スレッド呼出クラス
+             * Thread call class
              */
             new Callable<Integer>() {
                 /**
-                 * スレッド実行を行う
+                 * Perform thread execution
                  */
                 @Override
 				public Integer call() {
                     try {
-                        // 検索実行
+                        // Search execution
                         service.searchFile();
-                        // エラーメッセージ
+                        // Error message
                         String errorMessage = service.getErrorMessage();
                         if (!StringUtils.isNullOrEmpty(errorMessage)) {
                         	return Constant.ERROR_RESULT;
@@ -168,24 +168,24 @@ public class SearchFindAction extends ActionBase {
             }
             ) {
                 /**
-                 * スレッド実行完了.<br/>
-                 * キャンセルされた時の後処理を行う。
+                 * Thread execution completed. <br/>
+                 * Perform post-processing when canceled.
                  */
                 @Override
                 protected void done() {
-                    // キャンセルによる終了であるかチェックする。
+                    // Check if the end is due to cancellation.
                     String errorMessage = service.getErrorMessage();
                     if (!StringUtils.isNullOrEmpty(errorMessage)) {
                     	this.setMessage(errorMessage);
-                    	Application.status.setMessageMain(message + Message.getString("action.common.error.status")); //エラー
+                    	Application.status.setMessageMain(message + Message.getString("action.common.error.status")); //error
                     }
                     else if (this.isCancelled()) {
-                        Application.status.setMessageMain(message + Message.getString("action.common.cancel.status")); //:キャンセル
+                        Application.status.setMessageMain(message + Message.getString("action.common.cancel.status")); //:Cancel
                     }
                     else {
-                        Application.status.setMessageMain(message + Message.getString("action.common.done.status")); //:完了
+                        Application.status.setMessageMain(message + Message.getString("action.common.done.status")); //: Done
                     }
-                    // サービス実行の停止
+                    // Stop service execution
                     if (service != null) {
                         service.cancelRunning();
                     }
@@ -193,23 +193,23 @@ public class SearchFindAction extends ActionBase {
                 }
         };
 
-        // ステータスメッセージクリア
+        // Clear status message
         Application.status.setMessageStatus(null);
 
-        // スレッドタスクにコントローラをリスナ登録する：スレッド完了時の呼出の為
+        // Register the controller as a listener in the thread task: To call when the thread is completed
         future.addPropertyChangeListener(this.controller);
         this.controller.setThreadFuture(future);
 
-        // プログレスダイアログを表示する
+        // Display the progress dialog
         WindowProgressAction progress = new WindowProgressAction(this.controller);
         progress.showProgressDialog();
 
-        // スレッド起動
+        // Thread start
         new Thread(future).start();
 
-        // 検索結果タブをアクティブにする
+        // Activate the search results tab
         this.controller.setSelectedAnalysisPanel(ANALYSIS_PANEL.SEARCHRESULT);
-        // ソースビューで検索文字列をハイライトする
+        // Highlight the search string in Source view
         this.controller.setSearchKeywords();
     }
 

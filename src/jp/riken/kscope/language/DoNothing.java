@@ -18,34 +18,34 @@
 package jp.riken.kscope.language;
 
 /**
- * 何もしない制御文クラス。
- * 
+ * A control statement class that does nothing.
+ *
  * @author RIKEN
- * 
+ *
  */
 public class DoNothing extends jp.riken.kscope.language.Block {
-    /** シリアル番号 */
+    /** Serial number */
     private static final long serialVersionUID = 7666146678194125791L;
     /**
-     * コンストラクタ。
+     * Constructor.
      *
      * @param parent
-     *          親ブロック
+     * Parent block
      */
     public DoNothing(Block parent) {
         super(parent);
     }
 
     /**
-     * コンストラクタ。
+     * Constructor.
      */
     public DoNothing() {
         super();
     }
 
     /**
-     * ブロックタイプの取得。
-     * 
+     * Get block type.
+     *
      * @return BlockType.DO_NOTHING
      */
     public BlockType getBlockType() {

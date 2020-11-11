@@ -26,45 +26,45 @@ import java.util.Set;
 import jp.riken.kscope.information.InformationBlocks;
 
 /**
- * 手続き呼び出しを表現するクラス。
+ * A class that represents a procedure call.
  *
  * @author RIKEN
  *
  */
 public class ProcedureUsage extends Block {
-	/** シリアル番号 */
+	/** Serial number */
 	private static final long serialVersionUID = 2385929813029019761L;
-	/** サブルーチン、関数呼出名 */
+	/** Subroutine, function call name */
     private String callName;
-    /** サブルーチン、関数定義 */
+    /** Subroutine, function definition */
     private transient Procedure callDefinition;
-    /** 仮引数 */
+    /** Formal argument */
     private List<Expression> arguments;
-    /** 組込関数フラグ : true=組込関数 */
+    /** Built-in function flag: true = Built-in function */
     private boolean intrinsic = false;
-    /** 関数呼出フラグ : true=関数呼出 */
+    /** Function call flag: true = Function call */
     private boolean isFunctionCall = false;
 
     /**
      *
-     * コンストラクタ。
+     * Constructor.
      *
      * @param mama
-     *            親ブロック
+     * Parent block
      */
     ProcedureUsage(Block mama) {
         super(mama);
     }
 
     /**
-     * コンストラクタ。
+     * Constructor.
      *
      * @param mama
-     *            親ブロック
+     * Parent block
      * @param subroutineName
-     *            CALLサブルーチン名
+     * CALL subroutine name
      * @param argmnts
-     *            引数リスト
+     * Argument list
      */
     public ProcedureUsage(Block mama, String subroutineName, List<Expression> argmnts) {
         super(mama);
@@ -73,12 +73,12 @@ public class ProcedureUsage extends Block {
     }
 
     /**
-     * コンストラクタ。
+     * Constructor.
      *
      * @param subroutineName
-     *            CALLサブルーチン名
+     * CALL subroutine name
      * @param argmnts
-     *            引数リスト
+     * Argument list
      */
     public ProcedureUsage(String subroutineName, List<Expression> argmnts) {
         super();
@@ -87,7 +87,7 @@ public class ProcedureUsage extends Block {
     }
 
     /**
-     * ブロックタイプの取得。
+     * Get block type.
      *
      * @return BlockType.PROCEDUREUSAGE
      */
@@ -128,8 +128,8 @@ public class ProcedureUsage extends Block {
     }
 
     /**
-     * 呼び出している手続きの宣言をセットする。
-     * @param proc 手続きの宣言
+     * Set the declaration of the procedure you are calling.
+     * @param proc Declaration of procedure
      */
     public void setCallDefinition(Procedure proc) {
         callDefinition = proc;
@@ -139,16 +139,16 @@ public class ProcedureUsage extends Block {
     }
 
     /**
-     * 組込み関数の呼出しであるとセットする。
+     * Set to call a built-in function.
      */
     public void setIntrinsic(){
         this.intrinsic = true;
     }
 
     /**
-     * 呼び出し関数名の取得
+     * Get the name of the calling function
      *
-     * @return call_name 呼び出し関数名
+     * @return call_name Calling function name
      */
     public String getCallName() {
         return callName;
@@ -156,18 +156,18 @@ public class ProcedureUsage extends Block {
 
 
     /**
-     * 呼び出す手続の宣言を返す。
+     * Returns a declaration of the procedure to call.
      *
-     * @return 手続の宣言
+     * @return Declaration of procedure
      */
      public Procedure getCallDefinition() {
         return callDefinition;
     }
 
     /**
-     * 実引数のリストを返す。無ければ空のリストを返す。
+     * Returns a list of actual arguments. If not, returns an empty list.
      *
-     * @return 実引数のリスト
+     * @return List of actual arguments
      */
     public List<Expression> getArguments() {
         if (this.arguments == null) {
@@ -177,11 +177,11 @@ public class ProcedureUsage extends Block {
     }
 
     /**
-     * 指定した名前の変数を実引数に含むか調べ、該当する添字の順番のsetを返す。
+     * Checks if a variable with the specified name is included in the actual argument, and returns a set of the corresponding subscript order.
      *
      * @param varName
-     *            変数の名前
-     * @return 添字順番のset（値は0以上）。該当する変数を持たなければ空のsetを返す。
+     * Variable name
+     * @return Set in subscript order (value is 0 or more). If it doesn't have the corresponding variable, it returns an empty set.
      */
     public Set<Integer> numberOfArg(String varName) {
         Set<Integer> nums = new HashSet<Integer>();
@@ -197,16 +197,16 @@ public class ProcedureUsage extends Block {
     }
 
     /**
-     * 組込関数であるか取得する
-     * @return		true=組込関数
+     * Get if it is a built-in function
+     * @return true = built-in function
      */
     public boolean isIntrinsic() {
         return intrinsic;
     }
 
     /**
-     * 関数定義の文字列表現を取得する.
-     * @return    関数定義の文字列表現
+     * Get the string representation of the function definition.
+     * @return String representation of function definition
      */
     private String definitionToString() {
         if (this.callDefinition == null) {
@@ -216,9 +216,9 @@ public class ProcedureUsage extends Block {
         }
     }
     /**
-     * 自身の宣言のHTML表現を返す。numArgに対応する引数をハイライトする。
-     * @param numArg 引数の添字順番
-     * @return 自身の宣言のHTML表現文字列。
+     * Returns the HTML representation of its own declaration. Highlight the argument corresponding to numArg.
+     * @param numArg Argument subscript order
+     * @return HTML representation string of its own declaration.
      */
     public String toDefinitionHTMLString(int numArg) {
         StringBuilder html = new StringBuilder();
@@ -228,7 +228,7 @@ public class ProcedureUsage extends Block {
             int count = 0;
             for (Expression arg : arguments) {
                 if (count == numArg) {
-                    // TODO 本来は、本メソッドの引数としてハイライト対象のStringを受け取り、そこだけを赤くするような処理があったほうが良い
+                    // TODO Originally, it is better to receive the highlighted String as an argument of this method and have a process to make only that string red.
                     html.append("<span style='color:red;'>");
                     html.append(arg.toString());
                     html.append("</span>");
@@ -245,13 +245,13 @@ public class ProcedureUsage extends Block {
     }
 
     /**
-     * 自身のHTML表現を返す。numArgに対応する引数をハイライトする。
+     * Returns its own HTML representation. Highlight the argument corresponding to numArg.
      *
      * @param numArg
-     *            引数の添字順番
+     * Argument subscript order
      * @param name
-     *            引数の名前
-     * @return 自身のHTML表現文字列。
+     * Argument name
+     * @return Your own HTML representation string.
      */
     public String toHTMLString(int numArg, String name) {
         StringBuilder html = new StringBuilder();
@@ -262,7 +262,7 @@ public class ProcedureUsage extends Block {
             for (Expression arg : arguments) {
                 if (count == numArg) {
                     // TODO
-                    // 本来は、本メソッドの引数としてハイライト対象のStringを受け取り、そこだけを赤くするような処理があったほうが良い
+                    // Originally, it is better to receive the highlighted String as an argument of this method and have a process to make only that string red.
                     html.append("<span style='color:red;'>");
                     html.append(arg.toString());
                     html.append("</span>");
@@ -279,9 +279,9 @@ public class ProcedureUsage extends Block {
     }
 
     /**
-     * 属するプログラム単位を返す。
+     * Returns the program unit to which it belongs.
      *
-     * @return プログラム単位。得られなければnullを返す。
+     * @return Program unit. If not obtained, null is returned.
      */
     public Procedure getMyProcedure() {
         Block me = this;
@@ -296,11 +296,11 @@ public class ProcedureUsage extends Block {
 
 
     /**
-     * 指定された数字が指す順番の実引数に含まれる変数のセットを返す。
+     * Returns a set of variables contained in the actual arguments in the order indicated by the specified number.
      *
      * @param numActualArg
-     *            実引数の順番
-     * @return 引数に含まれる変数名のセット。無ければ空のセットを返す。
+     * Order of actual arguments
+     * A set of variable names contained in the @return argument. If not, it returns an empty set.
      */
     public Set<String> getActualArgument(int numActualArg) {
         Set<String> varNames = new HashSet<String>();
@@ -318,13 +318,13 @@ public class ProcedureUsage extends Block {
 
 
     /**
-     * 指定された仮引数名とその順番に対応した実引数の順番を返す。
+     * Returns the specified formal argument name and the order of the actual arguments corresponding to that order.
      *
      * @param dummyArg
-     *            仮引数名
+     * Formal argument name
      * @param numDummyArg
-     *            仮引数の順番
-     * @return 実引数の順番。対応が見つからなければ-1を返す。
+     * Order of formal parameters
+     * @return The order of the actual arguments. Returns -1 if no correspondence is found.
      */
     public int getNumOfActualArgument(String dummyArg, int numDummyArg) {
         if (this.arguments == null) {
@@ -349,23 +349,23 @@ public class ProcedureUsage extends Block {
 
 
     /**
-     * 関数呼び出しであることを設定する。
+     * Set to be a function call.
      */
     public void setTypeIsFunction() {
         this.isFunctionCall = true;
     }
 
     /**
-     * 付加情報ブロックコレクションを生成する。
+     * Generate an additional information block collection.
      *
-     * @return 付加情報ブロックコレクション
+     * @return Additional information block collection
      */
     @Override
     public InformationBlocks createInformationBlocks() {
         InformationBlocks result = new InformationBlocks();
         result.addAll(super.createInformationBlocks());
         if (this.callDefinition != null) {
-            // 自己参照の場合は外す
+            // Remove for self-reference
             if (!this.getNamespace().equals(this.callDefinition.getNamespace()))
             {
                 result.addAll(this.callDefinition.createInformationBlocks());
@@ -380,10 +380,10 @@ public class ProcedureUsage extends Block {
     }
 
     /**
-     * idにマッチした情報ブロックを検索する。
+     * Search for information blocks that match id.
      * @param id
-     *          ID
-     * @return 見つかった情報ブロック。見つからなかった場合はnullが返ります。
+     * ID
+     * @return The information block found. If not found, null is returned.
      */
     @Override
     public IInformation findInformationBlockBy(String id) {
@@ -394,7 +394,7 @@ public class ProcedureUsage extends Block {
         }
 
         if (result == null && this.callDefinition != null) {
-            // 自己参照の場合は外す
+            // Remove for self-reference
             if (!this.getNamespace().equals(this.callDefinition.getNamespace()))
             {
                 result = this.callDefinition.findInformationBlockBy(id);
@@ -412,9 +412,9 @@ public class ProcedureUsage extends Block {
 
 
     /**
-     * 同一ブロックであるかチェックする.
-     * @param block		ブロック
-	 * @return		true=一致
+     * Check if they are the same block.
+     * @param block block
+* @return true = match
      */
     @Override
 	public boolean equalsBlocks(Block block) {
@@ -453,10 +453,10 @@ public class ProcedureUsage extends Block {
 
 
 	/**
-	 * 同一ブロックを検索する
-	 * @param block			IInformationブロック
-	 * @return		同一ブロック
-	 */
+* Search for the same block
+* @param block IInformation block
+* @return Same block
+*/
     @Override
 	public IInformation[] searchInformationBlocks(IInformation block) {
 		List<IInformation> list = new ArrayList<IInformation>();
@@ -468,7 +468,7 @@ public class ProcedureUsage extends Block {
 		}
 
         if (this.callDefinition != null) {
-            // 自己参照の場合は外す
+            // Remove for self-reference
             if (!this.getNamespace().equals(this.callDefinition.getNamespace())) {
     	    	IInformation[] infos = this.callDefinition.searchInformationBlocks(block);
     	    	if (infos != null) {

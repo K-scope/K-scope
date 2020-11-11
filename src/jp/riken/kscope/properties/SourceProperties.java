@@ -30,129 +30,129 @@ import jp.riken.kscope.utils.ResourceUtils;
 import jp.riken.kscope.utils.XmlUtils;
 
 /**
- * ソースコードの表示設定クラス
+ * Source code display setting class
  *
  * @author RIKEN
  */
 public class SourceProperties extends PropertiesBase {
 
     /**
-     * シリアル番号
+     * Serial number
      */
     private static final long serialVersionUID = 1L;
 
-    /* プロパティキー */
+    /* Property key */
     /**
-     * ソースフォント
+     * Source font
      */
     private final String KEY_FONT_SOURCE = "font-source";
     /**
-     * ソースフォント色
+     * Source font color
      */
     private final String KEY_FONTCOLOR_SOURCE = "fontcolor-source";
     /**
-     * ソース背景色
+     * Source background color
      */
     private final String KEY_BACKGROUND_SOURCE = "background-source";
     /**
-     * アクティブ行背景色
+     * Active row background color
      */
     private final String KEY_BACKGROUND_SELECTEDROW = "background-selectedrow";
     /**
-     * 折り返し位置
+     * Folding position
      */
     private final String KEY_WORDWRAP = "wordwrap";
     /**
-     * 検索文字色
+     * Search text color
      */
     private final String KEY_FONTCOLOR_SEARCH = "fontcolor-search";
     /**
-     * 検索文字背景色
+     * Search text background color
      */
     private final String KEY_BACKGROUND_SEARCH = "background-search";
     /**
-     * 強調範囲背景色
+     * Emphasis range background color
      */
     private final String KEY_BACKGROUND_AREA = "background-area";
     /**
-     * 選択範囲背景色
+     * Selection background color
      */
     private final String KEY_BACKGROUND_BLOCK = "background-block";
 
-    /*行番号背景色*/
+    /* Line number background color */
     private final String KEY_BACKGROUND_LINENUMBER = "background-linenumber"; //(2012/4/10) added by teraim
-    /** 選択ノード背景色 */
+    /** Selected node background color */
     private final String KEY_BACKGROUND_SELECTNODE = "background-selectnode";
     private final String KEY_BACKGROUND_VIEW2 = "background-view2";
-    /** 付加情報ノードフォント色 */
+    /** Additional information node font color */
     private final String KEY_FONTCOLOR_INFORMATIONNODE = "fontcolor-informationnode";
-    /** リンク切れノード文字色 */
+    /** Broken link node text color */
     private final String KEY_FONTCOLOR_BROKENLINKNODE = "fontcolor-brokenlinknode";
 
     /**
-     * ソースコードの表示設定リスト
+     * Source code display setting list
      */
     private List<PropertyValue> listProperty = new ArrayList<PropertyValue>();
 
     /**
-     * コンストラクタ
+     * Constructor
      *
-     * @throws Exception プロパティ読込エラー
+     * @throws Exception Property read error
      */
     public SourceProperties() throws Exception {
         loadProperties();
     }
 
     /**
-     * ソース設定プロパティをデフォルト設定ファイルから読み込む。
+     * Read source configuration properties from the default configuration file.
      *
-     * @throws Exception プロパティ読込エラー
+     * @throws Exception Property read error
      */
     public void loadProperties() throws Exception {
         InputStream stream = null;
 
-        // リソースファイルの読込
+        // Read resource file
         stream = ResourceUtils.getPropertiesFile(KscopeProperties.PROPERTIES_FILE);
 
-        // ソース設定プロパティを設定ファイルから読み込む。
+        // Read the source configuration properties from the configuration file.
         loadProperties(stream);
     }
 
     /**
-     * ソース設定プロパティを設定ファイルから読み込む。
+     * Read source configuration properties from the configuration file.
      *
-     * @param propertiesFile ソース設定プロパティ設定ファイル
-     * @throws Exception プロパティ読込エラー
+     * @param propertiesFile Source configuration property configuration file
+     * @throws Exception Property read error
      */
     public void loadProperties(File propertiesFile) throws Exception {
 
         if (!propertiesFile.exists()) {
-            throw (new Exception(Message.getString("propertiesbase.exeption.notexist"))); //ソース設定プロパティファイルが存在しません。
+            throw (new Exception(Message.getString("propertiesbase.exeption.notexist"))); // Source settings property file does not exist.
         }
 
-        // リソースファイルの読込
+        // Read resource file
         InputStream stream = new FileInputStream(propertiesFile);
 
-        // ソース設定プロパティを設定ファイルから読み込む。
+        // Read the source configuration properties from the configuration file.
         loadProperties(stream);
     }
 
     /**
-     * ソース設定プロパティを設定ファイルから読み込む。
+     * Read source configuration properties from the configuration file.
      *
-     * @param stream ソース設定プロパティ設定ファイルストリーム
-     * @throws Exception プロパティ読込エラー
+     * @param stream Source settings Property settings File stream
+     * @throws Exception Property read error
      */
     public void loadProperties(InputStream stream) throws Exception {
 
-        // XMLファイルのパース
+        // Parsing the XML file
         String key = null;
         String name = null;
         String type = null;
         String message = null;
         XmlUtils xml = new XmlUtils(stream);
 
-        // フォント
+        // Font
         key = KEY_FONT_SOURCE;
         name = xml.getString("//settings/property[@key='" + key + "']/@name");
         type = xml.getString("//settings/property[@key='" + key + "']/@type");
@@ -160,7 +160,7 @@ public class SourceProperties extends PropertiesBase {
         Font font = xml.getFont("//settings/property[@key='" + key + "']");
         this.setPropertyValue(key, name, type, font, message);
 
-        // フォント色
+        // Font color
         key = KEY_FONTCOLOR_SOURCE;
         name = xml.getString("//settings/property[@key='" + key + "']/@name");
         type = xml.getString("//settings/property[@key='" + key + "']/@type");
@@ -168,7 +168,7 @@ public class SourceProperties extends PropertiesBase {
         Color forecolor = xml.getColor("//settings/property[@key='" + key + "']/@color");
         this.setPropertyValue(key, name, type, forecolor, message);
 
-        // 背景色
+        // Background color
         key = KEY_BACKGROUND_SOURCE;
         name = xml.getString("//settings/property[@key='" + key + "']/@name");
         type = xml.getString("//settings/property[@key='" + key + "']/@type");
@@ -176,7 +176,7 @@ public class SourceProperties extends PropertiesBase {
         Color backcolor = xml.getColor("//settings/property[@key='" + key + "']/@color");
         this.setPropertyValue(key, name, type, backcolor, message);
 
-        // 選択行背景色
+        // Selected line background color
         key = KEY_BACKGROUND_SELECTEDROW;
         name = xml.getString("//settings/property[@key='" + key + "']/@name");
         type = xml.getString("//settings/property[@key='" + key + "']/@type");
@@ -184,7 +184,7 @@ public class SourceProperties extends PropertiesBase {
         Color activerow = xml.getColor("//settings/property[@key='" + key + "']/@color");
         this.setPropertyValue(key, name, type, activerow, message);
 
-        // 強調範囲背景色
+        // Highlighted background color
         key = KEY_BACKGROUND_AREA;
         name = xml.getString("//settings/property[@key='" + key + "']/@name");
         type = xml.getString("//settings/property[@key='" + key + "']/@type");
@@ -192,7 +192,7 @@ public class SourceProperties extends PropertiesBase {
         Color areacolor = xml.getColor("//settings/property[@key='" + key + "']/@color");
         this.setPropertyValue(key, name, type, areacolor, message);
 
-        // 選択範囲背景色
+        // Selection background color
         key = KEY_BACKGROUND_BLOCK;
         name = xml.getString("//settings/property[@key='" + key + "']/@name");
         type = xml.getString("//settings/property[@key='" + key + "']/@type");
@@ -200,7 +200,7 @@ public class SourceProperties extends PropertiesBase {
         Color blockcolor = xml.getColor("//settings/property[@key='" + key + "']/@color");
         this.setPropertyValue(key, name, type, blockcolor, message);
 
-        // 行番号背景色(2012/4/12)
+        // Line number background color (2012/4/12)
         key = KEY_BACKGROUND_LINENUMBER;
         name = xml.getString("//settings/property[@key='" + key + "']/@name");
         type = xml.getString("//settings/property[@key='" + key + "']/@type");
@@ -208,7 +208,7 @@ public class SourceProperties extends PropertiesBase {
         Color linecolor = xml.getColor("//settings/property[@key='" + key + "']/@color");
         this.setPropertyValue(key, name, type, linecolor, message);
 
-        // 選択行背景色１(2012/4/12)
+        // Selected line background color 1 (2012/4/12)
         key = KEY_BACKGROUND_SELECTNODE;
         name = xml.getString("//settings/property[@key='" + key + "']/@name");
         type = xml.getString("//settings/property[@key='" + key + "']/@type");
@@ -218,7 +218,7 @@ public class SourceProperties extends PropertiesBase {
     		this.setPropertyValue(key, name, type, viewcolor1, message);
     	}
 
-        // 選択行背景色２(2012/4/12)
+        // Selected line background color 2 (2012/4/12)
         key = KEY_BACKGROUND_VIEW2;
         name = xml.getString("//settings/property[@key='" + key + "']/@name");
         type = xml.getString("//settings/property[@key='" + key + "']/@type");
@@ -228,7 +228,7 @@ public class SourceProperties extends PropertiesBase {
     		this.setPropertyValue(key, name, type, viewcolor2, message);
     	}
 
-        // 検索文字色
+        // Search text color
         key = KEY_FONTCOLOR_SEARCH;
         name = xml.getString("//settings/property[@key='" + key + "']/@name");
         type = xml.getString("//settings/property[@key='" + key + "']/@type");
@@ -236,7 +236,7 @@ public class SourceProperties extends PropertiesBase {
         Color searchforecolor = xml.getColor("//settings/property[@key='" + key + "']/@color");
         this.setPropertyValue(key, name, type, searchforecolor, message);
 
-        // 検索文字背景色
+        // Search character background color
         key = KEY_BACKGROUND_SEARCH;
         name = xml.getString("//settings/property[@key='" + key + "']/@name");
         type = xml.getString("//settings/property[@key='" + key + "']/@type");
@@ -244,7 +244,7 @@ public class SourceProperties extends PropertiesBase {
         Color searchbackcolor = xml.getColor("//settings/property[@key='" + key + "']/@color");
         this.setPropertyValue(key, name, type, searchbackcolor, message);
 
-        // 折り返し位置
+        // Wrap position
         key = KEY_WORDWRAP;
         name = xml.getString("//settings/property[@key='" + key + "']/@name");
         type = xml.getString("//settings/property[@key='" + key + "']/@type");
@@ -253,7 +253,7 @@ public class SourceProperties extends PropertiesBase {
         if (wordwrap < 0) wordwrap = 0;
         this.setPropertyValue(key, name, type, wordwrap, message);
 
-        // 付加情報フォント色
+        // Additional information font color
         key = KEY_FONTCOLOR_INFORMATIONNODE;
         name = xml.getString("//settings/property[@key='" + key + "']/@name");
         type = xml.getString("//settings/property[@key='" + key + "']/@type");
@@ -263,7 +263,7 @@ public class SourceProperties extends PropertiesBase {
             this.setPropertyValue(key, name, type, informationcolor, message);
     	}
 
-    	// リンク切れ文字色
+    	// Broken link text color
     	key = KEY_FONTCOLOR_BROKENLINKNODE;
     	name = xml.getString("//settings/property[@key='" + key + "']/@name");
     	type = xml.getString("//settings/property[@key='" + key + "']/@type");
@@ -275,13 +275,13 @@ public class SourceProperties extends PropertiesBase {
     }
 
     /**
-     * プロパティ値を設定する.
+     * Set the property value.
      *
-     * @param key	キー
-     * @param name	プロパティ名
-     * @param type	プロパティタイプ
-     * @param value	プロパティ値
-     * @param message	メッセージ
+     * @param key key
+     * @param name Property name
+     * @param type Property type
+     * @param value Property value
+     * @param message message
      */
     private void setPropertyValue(String key, String name, String type, Object value, String message) {
         PropertyValue property = new PropertyValue(key, name, type, value, message);
@@ -289,9 +289,9 @@ public class SourceProperties extends PropertiesBase {
     }
 
     /**
-     * プロパティ値を設定する.
+     * Set the property value.
      *
-     * @param value	プロパティ値
+     * @param value Property value
      */
     public void setPropertyValue(PropertyValue value) {
         if (value == null) {
@@ -306,14 +306,14 @@ public class SourceProperties extends PropertiesBase {
             }
         }
 
-        // 新規追加
+        // Add new
         this.listProperty.add(value);
     }
 
     /**
-     * プロパティ値を取得する.
-     * @param key	キー
-     * @return    プロパティ値
+     * Get the property value.
+     * @param key key
+     * @return property value
      */
     private PropertyValue getPropertyValue(String key) {
         if (key == null) {
@@ -329,9 +329,9 @@ public class SourceProperties extends PropertiesBase {
     }
 
     /**
-     * ソースコード表示フォントを取得する。
+     * Get the source code display font.
      *
-     * @return	ソース表示フォント
+     * @return Source display font
      */
     public Font getFont() {
         PropertyValue value = getPropertyValue(KEY_FONT_SOURCE);
@@ -343,9 +343,9 @@ public class SourceProperties extends PropertiesBase {
     }
 
     /**
-     * ソースコード表示フォント色を取得する
+     * Get source code display font color
      *
-     * @return	ソースコード表示フォント色
+     * @return Source code display font color
      */
     public Color getFontColor() {
         PropertyValue value = getPropertyValue(KEY_FONTCOLOR_SOURCE);
@@ -357,9 +357,9 @@ public class SourceProperties extends PropertiesBase {
     }
 
     /**
-     * ソースコード背景色を取得する
+     * Get source code background color
      *
-     * @return	ソースコード背景色
+     * @return Source code background color
      */
     public Color getBackgroundColor() {
         PropertyValue value = getPropertyValue(KEY_BACKGROUND_SOURCE);
@@ -371,9 +371,9 @@ public class SourceProperties extends PropertiesBase {
     }
 
     /**
-     * アクティブ行背景色を取得する
+     * Get active row background color
      *
-     * @return	アクティブ行背景色
+     * @return Active line background color
      */
     public Color getActiverowColor() {
         PropertyValue value = getPropertyValue(KEY_BACKGROUND_SELECTEDROW);
@@ -385,9 +385,9 @@ public class SourceProperties extends PropertiesBase {
     }
 
     /**
-     * アクティブ行背景色(選択ツリーノード)を取得する
+     * Get the active row background color (selected tree node)
      *
-     * @return	アクティブ行背景色
+     * @return Active line background color
      */
     public Color getBackgoundSelectNodeColor() {
         PropertyValue value = getPropertyValue(KEY_BACKGROUND_SELECTNODE);
@@ -399,9 +399,9 @@ public class SourceProperties extends PropertiesBase {
     }
 
     /**
-     * アクティブ行背景色２を取得する
+     * Get active row background color 2
      *
-     * @return	アクティブ行背景色
+     * @return Active line background color
      */
     public Color getBackgoundView2Color() {
         PropertyValue value = getPropertyValue(KEY_BACKGROUND_VIEW2);
@@ -413,9 +413,9 @@ public class SourceProperties extends PropertiesBase {
     }
 
     /**
-     * 検索文字色を取得する
+     * Get search text color
      *
-     * @return	検索文字色
+     * @return Search text color
      */
     public Color getSearchFontColor() {
         PropertyValue value = getPropertyValue(KEY_FONTCOLOR_SEARCH);
@@ -427,9 +427,9 @@ public class SourceProperties extends PropertiesBase {
     }
 
     /**
-     * 検索背景色を取得する
+     * Get search background color
      *
-     * @return	検索背景色
+     * @return Search background color
      */
     public Color getSearchBackgroundColor() {
         PropertyValue value = getPropertyValue(KEY_BACKGROUND_SEARCH);
@@ -441,9 +441,9 @@ public class SourceProperties extends PropertiesBase {
     }
 
     /**
-     * 折り返し位置を取得する
+     * Get the wrapping position
      *
-     * @return	折り返し位置
+     * @return Return position
      */
     public int getWordwrap() {
         PropertyValue value = getPropertyValue(KEY_WORDWRAP);
@@ -455,9 +455,9 @@ public class SourceProperties extends PropertiesBase {
     }
 
     /**
-     * 強調範囲背景色を取得する
+     * Get emphasis range background color
      *
-     * @return	強調範囲背景色
+     * @return Emphasis range background color
      */
     public Color getAreaColor() {
         PropertyValue value = getPropertyValue(KEY_BACKGROUND_AREA);
@@ -469,9 +469,9 @@ public class SourceProperties extends PropertiesBase {
     }
 
     /**
-     * 選択範囲背景色を取得する
+     * Get selection background color
      *
-     * @return	選択範囲背景色
+     * @return Selection background color
      */
     public Color getBlockColor() {
         PropertyValue value = getPropertyValue(KEY_BACKGROUND_BLOCK);
@@ -483,9 +483,9 @@ public class SourceProperties extends PropertiesBase {
     }
 
     /**
-     * 行番号背景色を取得する (2012/4/10) added by teriam
+     * Get line number background color (2012/4/10) added by teriam
      *
-     * @return	選択範囲背景色
+     * @return Selection background color
      */
     public Color getLineNumberColor() {
         PropertyValue value = getPropertyValue(KEY_BACKGROUND_LINENUMBER);
@@ -497,8 +497,8 @@ public class SourceProperties extends PropertiesBase {
     }
 
     /**
-     * 付加情報フォント色を取得する
-     * @return	付加情報フォント色
+     * Get additional information font color
+     * @return Additional information font color
      */
     public Color getInformationNodeFontColor() {
         PropertyValue value = getPropertyValue(KEY_FONTCOLOR_INFORMATIONNODE);
@@ -509,8 +509,8 @@ public class SourceProperties extends PropertiesBase {
     }
 
     /**
-     * リンク切れ文字色を取得する
-     * @return リンク切れ文字色
+     * Get broken link text color
+     * @return Broken link text color
      */
     public Color getBrokenLinkNodeFontColor() {
     	PropertyValue value = getPropertyValue(KEY_FONTCOLOR_BROKENLINKNODE);
@@ -522,7 +522,7 @@ public class SourceProperties extends PropertiesBase {
 
 
     /**
-     * プロパティ変更イベントを通知する。
+     * Notify property change event.
      */
     @Override
     public void firePropertyChange() {
@@ -530,21 +530,21 @@ public class SourceProperties extends PropertiesBase {
     }
 
     /**
-     * プロパティをDOMノードに出力する
+     * Output properties to DOM node
      *
-     * @param node	出力ノード
+     * @param node Output node
      */
     public void writeProperties(org.w3c.dom.Element node) {
 
-        // ドキュメントの取得
+        // Get documentation
         org.w3c.dom.Document document = node.getOwnerDocument();
 
-        // コメントを追加
+        // add comment
         {
-            org.w3c.dom.Comment comment = document.createComment(Message.getString("sourceproperties.document.comment")); //表示プロパティ
+            org.w3c.dom.Comment comment = document.createComment(Message.getString("sourceproperties.document.comment")); // Display properties
             node.appendChild(comment);
         }
-        // ソースフォント
+        // Source font
         {
             String key = KEY_FONT_SOURCE;
             PropertyValue value = this.getPropertyValue(key);
@@ -554,7 +554,7 @@ public class SourceProperties extends PropertiesBase {
                 node.appendChild(elem);
             }
         }
-        // ソースフォント色
+        // Source font color
         {
             String key = KEY_FONTCOLOR_SOURCE;
             PropertyValue value = this.getPropertyValue(key);
@@ -564,7 +564,7 @@ public class SourceProperties extends PropertiesBase {
                 node.appendChild(elem);
             }
         }
-        // ソース背景色
+        // Source background color
         {
             String key = KEY_BACKGROUND_SOURCE;
             PropertyValue value = this.getPropertyValue(key);
@@ -574,7 +574,7 @@ public class SourceProperties extends PropertiesBase {
                 node.appendChild(elem);
             }
         }
-        // アクティブ行背景色１を取得する
+        // Get active row background color 1
         {
             String key = KEY_BACKGROUND_SELECTNODE;
             PropertyValue value = this.getPropertyValue(key);
@@ -584,7 +584,7 @@ public class SourceProperties extends PropertiesBase {
                 node.appendChild(elem);
             }
         }
-        // アクティブ行背景色２を取得する
+        // Get active row background color 2
         {
             String key = KEY_BACKGROUND_VIEW2;
             PropertyValue value = this.getPropertyValue(key);
@@ -594,7 +594,7 @@ public class SourceProperties extends PropertiesBase {
                 node.appendChild(elem);
             }
         }
-        // アクティブ行背景色
+        // Active row background color
         {
             String key = KEY_BACKGROUND_SELECTEDROW;
             PropertyValue value = this.getPropertyValue(key);
@@ -604,7 +604,7 @@ public class SourceProperties extends PropertiesBase {
                 node.appendChild(elem);
             }
         }
-        // 折り返し位置
+        // Wrap position
         {
             String key = KEY_WORDWRAP;
             PropertyValue value = this.getPropertyValue(key);
@@ -616,7 +616,7 @@ public class SourceProperties extends PropertiesBase {
                 node.appendChild(elem);
             }
         }
-        // 検索文字色
+        // Search text color
         {
             String key = KEY_FONTCOLOR_SEARCH;
             PropertyValue value = this.getPropertyValue(key);
@@ -626,7 +626,7 @@ public class SourceProperties extends PropertiesBase {
                 node.appendChild(elem);
             }
         }
-        // 検索文字背景色
+        // Search character background color
         {
             String key = KEY_BACKGROUND_SEARCH;
             PropertyValue value = this.getPropertyValue(key);
@@ -636,7 +636,7 @@ public class SourceProperties extends PropertiesBase {
                 node.appendChild(elem);
             }
         }
-        // 強調範囲背景色
+        // Highlighted background color
         {
             String key = KEY_BACKGROUND_AREA;
             PropertyValue value = this.getPropertyValue(key);
@@ -646,7 +646,7 @@ public class SourceProperties extends PropertiesBase {
                 node.appendChild(elem);
             }
         }
-        // 選択範囲背景色
+        // Selection background color
         {
             String key = KEY_BACKGROUND_BLOCK;
             PropertyValue value = this.getPropertyValue(key);
@@ -656,7 +656,7 @@ public class SourceProperties extends PropertiesBase {
                 node.appendChild(elem);
             }
         }
-        //行番号背景色を取得する (2012/4/10) added by teriam
+        // Get line number background color (2012/4/10) added by teriam
         {
             String key = KEY_BACKGROUND_LINENUMBER;
             PropertyValue value = this.getPropertyValue(key);
@@ -666,7 +666,7 @@ public class SourceProperties extends PropertiesBase {
                 node.appendChild(elem);
             }
         }
-        // 付加情報フォント色
+        // Additional information font color
         {
             String key = KEY_FONTCOLOR_INFORMATIONNODE;
             PropertyValue value = this.getPropertyValue(key);
@@ -676,7 +676,7 @@ public class SourceProperties extends PropertiesBase {
                 node.appendChild(elem);
             }
         }
-        // リンク切れ文字色
+        // Broken link text color
         {
         	String key = KEY_FONTCOLOR_BROKENLINKNODE;
             PropertyValue value = this.getPropertyValue(key);
@@ -689,34 +689,34 @@ public class SourceProperties extends PropertiesBase {
     }
 
     /**
-     * プロパティ要素を作成する
+     * Create a property element
      *
-     * @param document	XMLドキュメント
-     * @param value	プロパティ値
-     * @return	プロパティ要素
+     * @param document XML document
+     * @param value Property value
+     * @return property element
      */
     private org.w3c.dom.Element createPropertyElement(org.w3c.dom.Document document, PropertyValue value) {
 
         org.w3c.dom.Element elem = document.createElement("property");
-        // プロパティキー
+        // Property key
         {
             org.w3c.dom.Attr attr = document.createAttribute("key");
             attr.setValue(value.getKey());
             elem.setAttributeNode(attr);
         }
-        // プロパティ名
+        // Property name
         {
             org.w3c.dom.Attr attr = document.createAttribute("name");
             attr.setValue(value.getName());
             elem.setAttributeNode(attr);
         }
-        // プロパティタイプ
+        // Property type
         {
             org.w3c.dom.Attr attr = document.createAttribute("type");
             attr.setValue(value.getType());
             elem.setAttributeNode(attr);
         }
-        // メッセージ
+        // Message
         {
             org.w3c.dom.Attr attr = document.createAttribute("message");
             attr.setValue(value.getMessage());
@@ -727,9 +727,9 @@ public class SourceProperties extends PropertiesBase {
     }
 
     /**
-     * ソースプロパティリストを取得する.
+     * Get the source property list.
      *
-     * @return	ソースプロパティリスト
+     * @return Source property list
      */
     public PropertyValue[] getPropertyValues() {
         return this.listProperty.toArray(new PropertyValue[0]);

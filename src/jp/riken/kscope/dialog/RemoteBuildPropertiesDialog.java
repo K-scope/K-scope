@@ -59,17 +59,17 @@ public class RemoteBuildPropertiesDialog  extends javax.swing.JDialog implements
     private RemoteBuildProperties rb_properties;
 	
     private static final long serialVersionUID = -8218498915763496914L;
-    /** キャンセルボタン */
+    /** Cancel button */
     private JButton btnCancel;
-    /** OKボタン */
+    /** OK button */
     private JButton btnOk;
-    /** 適用ボタン */
+    /** Apply button */
     private JButton btnApply;
-    /** プロジェクト設定リスト */
+    /** Project setting list */
     private JTable tblProperties;
-    /** プロジェクト設定リストデータ */
+    /** Project setting list data */
     private DefaultTableModel modelProperties;
-    /** 列名 */
+    /** Column name */
     private final String[] COLUMN_HEADERS = {
         Message.getString("remotebuildsettingdialog.parameter.order"),
         Message.getString("remotebuildsettingdialog.parameter.name"),
@@ -78,7 +78,7 @@ public class RemoteBuildPropertiesDialog  extends javax.swing.JDialog implements
     };
     private String message = null;
 
-    /** ダイアログの戻り値 */
+    /** Dialog return value */
     private int result = Constant.CANCEL_DIALOG;
 
     public RemoteBuildPropertiesDialog(Frame frame, RemoteBuildProperties settings) {
@@ -99,7 +99,7 @@ public class RemoteBuildPropertiesDialog  extends javax.swing.JDialog implements
 	
 	
     /**
-     * GUI初期化を行う。
+     * Initialize the GUI.
      */
     private void initGUI() {
 
@@ -126,7 +126,7 @@ public class RemoteBuildPropertiesDialog  extends javax.swing.JDialog implements
                 text.setBorder(new EmptyBorder(3, 15, 3, 15));
                 panel_message.add(text, BorderLayout.CENTER);
             }
-            // ボタンパネル
+            // Button panel
             {
                 JPanel panelButtons = new JPanel();
                 FlowLayout jPanel1Layout = new FlowLayout();
@@ -136,11 +136,11 @@ public class RemoteBuildPropertiesDialog  extends javax.swing.JDialog implements
                 getContentPane().add(panelButtons, BorderLayout.SOUTH);
                 panelButtons.setPreferredSize(new java.awt.Dimension(390, 46));
 
-                // メインボタンサイズ
+                // Main button size
                 java.awt.Dimension buttonSize = new java.awt.Dimension(96, 22);
                 {
                     btnApply = new JButton();
-                    btnApply.setText(Message.getString("dialog.common.button.apply")); //適用
+                    btnApply.setText(Message.getString("dialog.common.button.apply")); //Apply
                     btnApply.setPreferredSize(buttonSize);
                     btnApply.addActionListener(this);
                     panelButtons.add(btnApply);
@@ -154,7 +154,7 @@ public class RemoteBuildPropertiesDialog  extends javax.swing.JDialog implements
                 }
                 {
                     btnCancel = new JButton();
-                    btnCancel.setText(Message.getString("dialog.common.button.cancel"));//キャンセル
+                    btnCancel.setText(Message.getString("dialog.common.button.cancel"));//Cancel
                     btnCancel.setPreferredSize(buttonSize);
                     btnCancel.addActionListener(this);
                     btnCancel.setMargin(new Insets(5, 5, 5, 5));
@@ -162,7 +162,7 @@ public class RemoteBuildPropertiesDialog  extends javax.swing.JDialog implements
                 }
             }
 
-            // コンテンツパネル
+            // Content panel
             {
                 JPanel panelContent = new JPanel();
                 BorderLayout panelContentLayout = new BorderLayout();
@@ -322,16 +322,16 @@ public class RemoteBuildPropertiesDialog  extends javax.swing.JDialog implements
     }
     
     /**
-     * ダイアログを表示する。
+     * Display a dialog.
      *
-     * @return ダイアログの閉じた時のボタン種別
+     * @return Button type when the dialog is closed
      */
     public int showDialog() {
 
-        // 親フレーム中央に表示する。
+        // Display in the center of the parent frame.
         this.setLocationRelativeTo(this.getOwner());
 
-        // ダイアログ表示
+        // Dialog display
         this.setVisible(true);
         this.requestFocus();
         return this.result;
@@ -340,29 +340,29 @@ public class RemoteBuildPropertiesDialog  extends javax.swing.JDialog implements
     @Override
     public void actionPerformed(ActionEvent event) {
         // OK
-        // 登録
+        // Registration
         if (event.getSource() == this.btnOk) {
             this.result = Constant.OK_DIALOG;
 
-            // 変更イベントを発生
+            // Fire a change event
             //this.sshproperties.firePropertyChange();
 
-            // ダイアログを閉じる。
+            // Close the dialog.
             dispose();
             return;
         }
-        // 適用
+        // Apply
         if (event.getSource() == this.btnApply) {
             this.result = Constant.OK_DIALOG;
 
-            // 変更イベントを発生
+            // Fire a change event
             //this.sshproperties.firePropertyChange();
 
             return;
-        } // 閉じる
+        } // close
         else if (event.getSource() == this.btnCancel) {
             this.result = Constant.CANCEL_DIALOG;
-            // ダイアログを閉じる。
+            // Close the dialog.
             dispose();
             return;
         }

@@ -37,19 +37,19 @@ import jp.riken.kscope.service.LanguageService;
 import jp.riken.kscope.service.ProjectService;
 
 /**
- * プロジェクトの保存アクション
+ * Save project action
  * @author RIKEN
  */
 public class FileProjectSaveAction extends ActionBase {
 	private static boolean debug = (System.getenv("DEBUG")!= null);
 	private static boolean debug_l2 = false;
 
-    /** データベースの構築、探索を行うクラス */
+    /** Class that builds and searches the database */
     private LanguageService service;
 
     /**
-     * コンストラクタ
-     * @param controller	アプリケーションコントローラ
+     * Constructor
+     * @param controller Application controller
      */
     public FileProjectSaveAction(AppController controller) {
         super(controller);
@@ -57,49 +57,49 @@ public class FileProjectSaveAction extends ActionBase {
     }
 
     /**
-     * アクションが実行可能であるかチェックする.<br/>
-     * アクションの実行前チェック、メニューのイネーブルの切替を行う。<br/>
-     * @return		true=アクションが実行可能
+     * Check if the action is executable. <br/>
+     * Check before executing the action and switch the menu enable. <br/>
+     * @return true = Action can be executed
      */
     @Override
     public boolean validateAction() {
-        // プロジェクトが作成済みであること
+        // The project has been created
         ProjectModel model = this.controller.getProjectModel();
         if (model == null) return false;
         if (model.getProjectTitle() == null) return false;
         if (model.getProjectFolder() == null || !model.getProjectFolder().exists()) return false;
 
-        // スレッドタスクの実行状態をチェックする
+        // Check the execution status of the thread task
         return this.controller.isThreadTaskDone();
     }
 
     /**
-     * アクション発生イベント
-     * @param event		イベント情報
+     * Action occurrence event
+     * @param event Event information
      */
     @Override
     public void actionPerformed(ActionEvent event) {
-        String message = Message.getString("mainmenu.file.saveproject"); //プロジェクトの保存
+        String message = Message.getString("mainmenu.file.saveproject"); // Save project
         Application.status.setMessageMain(message);
 
-        // アクションチェック
+        // Action check
         if (!validateAction()) {
-            Application.status.setMessageMain(message + Message.getString("action.common.unavailable.status")); //:不可
+            Application.status.setMessageMain(message + Message.getString("action.common.unavailable.status")); //: Impossible
             return;
         }
 
-        // 親Frameの取得を行う。
+        // Get the parent Frame.
         Frame frame = getWindowAncestor( event );
 
-        // 確認メッセージを表示する。
+        // Display a confirmation message.
         int option = JOptionPane.showConfirmDialog(frame,
-                     Message.getString("fileprojectsaveaction.save.confirm.dialog.message"), //プロジェクトを保存しますか？
-                     message, //プロジェクトの保存
+                     Message.getString("fileprojectsaveaction.save.confirm.dialog.message"), // Do you want to save the project?
+                     message, // Save project
                      JOptionPane.OK_CANCEL_OPTION,
                      JOptionPane.WARNING_MESSAGE);
 
         if (option != JOptionPane.OK_OPTION) {
-            Application.status.setMessageMain(message + Message.getString("action.common.cancel.status")); //:キャンセル
+            Application.status.setMessageMain(message + Message.getString("action.common.cancel.status")); //:Cancel
             return;
         }
 
@@ -112,82 +112,82 @@ public class FileProjectSaveAction extends ActionBase {
 	 * @throws HeadlessException
 	 */
 	public void saveProject(Frame frame)	throws HeadlessException {
-	// プロジェクトサービス
+	// Project service
         ProjectService service = new ProjectService(this.controller.getProjectModel());
-        // キーワードプロパティ
+        // Keyword properties
         service.setPropertiesKeyword(this.controller.getPropertiesKeyword());
-        // 外部ツールプロパティ
+        // External tool properties
         service.setPropertiesExtension(this.controller.getPropertiesExtension());
-        // 演算カウントプロパティ
+        // Arithmetic count property
         service.setPropertiesOperand(this.controller.getPropertiesOperation());
-        // ソースビュー設定プロパティ
+        // Source view settings properties
         service.setPropertiesSource(this.controller.getPropertiesSource());
-        // プロファイラ設定プロパティ
+        // Profiler configuration properties
         service.setPropertiesProfiler(this.controller.getPropertiesProfiler());
-        // プロジェクト設定プロパティ
+        // Project settings properties
         service.setPropertiesProject(this.controller.getPropertiesProject());
-        // 要求Byte/FLOP設定プロパティ
+        // Request Byte / FLOP configuration property
         service.setPropertiesMemory(this.controller.getPropertiesMemory());
         //
         service.setRBproperties(this.controller.getRBproperties());
-        // エラーモデル
+        // Error model
         service.setErrorInfoModel(this.controller.getErrorInfoModel());
 
         try {
-            // プロジェクト保存
+            // Save project
             File projectFolder = this.controller.getProjectModel().getProjectFolder();
             service.saveProject(projectFolder);
 
-            // Languageクラスのシリアライズを行う
-            // settingsフォルダ
+            // Serialize the Language class
+            // settings folder
             File settingsFolder = new File(projectFolder.getAbsoluteFile() + File.separator + KscopeProperties.SETTINGS_FOLDER);
             writeLanguage(settingsFolder);
 
         } catch (Exception e) {
             e.printStackTrace();
-            String message = Message.getString("mainmenu.file.saveproject"); //プロジェクトの保存
-            // エラーメッセージ
+            String message = Message.getString("mainmenu.file.saveproject"); // Save project
+            // Error message
             JOptionPane.showMessageDialog(frame,
-                    Message.getString("fileprojectsaveaction.save.failed.dialog.message"), //プロジェクトの保存に失敗しました。
-                    message + Message.getString("dialog.common.error"), //エラー
+                    Message.getString("fileprojectsaveaction.save.failed.dialog.message"), // Failed to save the project.
+                    message + Message.getString("dialog.common.error"), //error
                     JOptionPane.ERROR_MESSAGE);
 
-            // ステータスメッセージ
-            Application.status.setMessageMain(message + Message.getString("action.common.error.status")); //:エラー
+            // Status message
+            Application.status.setMessageMain(message + Message.getString("action.common.error.status")); //:error
         }
     }
 
     /**
-     * Languageクラスのシリアライズを行う
-     * @param folder		Languageクラスのシリアライズフォルダ
+     * Serialize the Language class
+     * @param folder Language class serialized folder
      */
     public void writeLanguage(final File folder) {
-        // ステータスメッセージ
-        final String message = Message.getString("mainmenu.file.saveproject"); //プロジェクトの保存
+        // Status message
+        final String message = Message.getString("mainmenu.file.saveproject"); // Save project
 
-        // フォートランデータベース
+        // Fortran database
         Fortran fortran = this.controller.getFortranLanguage();
-        // エラー情報モデル
+        // Error information model
         ErrorInfoModel errorModel = this.controller.getErrorInfoModel();
 
-        // 構造解析サービス
+        // Structural analysis service
         service = new LanguageService(fortran);
-        // エラー情報モデルを設定する。
+        // Set the error information model.
         service.setErrorInfoModel(errorModel);
 
-        // スレッドタスクサービスの生成を行う。
+        // Create a thread task service.
         FutureService<Integer> future = new FutureService<Integer>(
                 /**
-                 * スレッド呼出クラス
+                 * Thread call class
                  */
                 new Callable<Integer>() {
                     /**
-                     * スレッド実行を行う
+                     * Perform thread execution
                      */
                     @Override
                     public Integer call() {
                         try {
-                            // シリアライズ実行
+                            // Serialize execution
                             service.writeLanguage(folder);
                             return Constant.SUCCESS_RESULT;
                         } catch (Exception e) {
@@ -198,20 +198,20 @@ public class FileProjectSaveAction extends ActionBase {
                 }
                 ) {
                     /**
-                     * スレッド実行完了.<br/>
-                     * キャンセルされた時の後処理を行う。
+                     * Thread execution completed. <br/>
+                     * Perform post-processing when canceled.
                      */
                     @Override
                     protected void done() {
-                        // キャンセルによる終了であるかチェックする。
+                        // Check if the end is due to cancellation.
                         if (this.isCancelled()) {
-                            Application.status.setMessageMain(message + Message.getString("action.common.cancel.status")); //:キャンセル
+                            Application.status.setMessageMain(message + Message.getString("action.common.cancel.status")); //:Cancel
                         }
                         else {
-                            Application.status.setMessageMain(message + Message.getString("action.common.done.status")); //:完了
+                            Application.status.setMessageMain(message + Message.getString("action.common.done.status")); //: Done
                         }
 
-                        // サービス実行の停止
+                        // Stop service execution
                         if (service != null) {
                             service.cancelRunning();
                         }
@@ -220,19 +220,19 @@ public class FileProjectSaveAction extends ActionBase {
                     }
 
         };
-        // ステータスメッセージクリア
+        // Clear status message
         Application.status.setMessageStatus(null);
 
-        // スレッドタスクにコントローラをリスナ登録する：スレッド完了時の呼出の為
+        // Register the controller as a listener in the thread task: To call when the thread is completed
         future.addPropertyChangeListener(this.controller);
         this.controller.setThreadFuture(future);
 
-        // プログレスダイアログを表示する
+        // Display the progress dialog
         WindowProgressAction progress = new WindowProgressAction(this.controller);
         progress.showProgressDialog();
         Application.status.setProgressStart(true);
 
-        // スレッド起動
+        // Thread start
         new Thread(future).start();
     }
 

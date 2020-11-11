@@ -24,25 +24,25 @@ import jp.riken.kscope.data.CodeLine;
 import jp.riken.kscope.language.IBlock;
 
 /**
- * 詳細プロファイラ測定区間情報クラス
+ * Detailed profiler measurement interval information class
  * @author RIKEN
  */
 public class ProfilerMeasureInfo {
 
-    /** 測定区間データリスト */
+    /** Measurement interval data list */
     private List<MeasureData> listMeasure;
 
     /**
-     * コンストラクタ
+     * Constructor
      */
     public ProfilerMeasureInfo() {
         this.listMeasure = new ArrayList<MeasureData>();
     }
 
     /**
-     * 測定区間データを追加する
-     * @param data		測定区間データ
-     * @return    追加測定区間データ
+     * Add measurement interval data
+     * @param data Measurement interval data
+     * @return Additional measurement interval data
      */
     public MeasureData addMeasureData(MeasureData data) {
         this.listMeasure.add(data);
@@ -50,11 +50,11 @@ public class ProfilerMeasureInfo {
     }
 
     /**
-     * 測定区間データを追加する
+     * Add measurement interval data
      *
-     * @param code		測定区間
-     * @param name		グループ名
-     * @return    追加測定区間データ
+     * @param code Measurement interval
+     * @param name Group name
+     * @return Additional measurement interval data
      */
     public MeasureData addMeasureData(CodeLine code, String name) {
         MeasureData data = new MeasureData(name, code);
@@ -63,13 +63,13 @@ public class ProfilerMeasureInfo {
     }
 
     /**
-     * 測定区間データを追加する
+     * Add measurement interval data
      *
-     * @param code		測定区間
-     * @param name		グループ名
-     * @param number		詳細番号
-     * @param level		プライオリティレベル
-     * @return    追加測定区間データ
+     * @param code Measurement interval
+     * @param name Group name
+     * @param number Detail number
+     * @param level Priority level
+     * @return Additional measurement interval data
      */
     public MeasureData addMeasureData(CodeLine code, String name, String number, String level) {
         MeasureData data = new MeasureData(name, code);
@@ -84,11 +84,11 @@ public class ProfilerMeasureInfo {
     }
 
     /**
-     * 測定区間データを追加する
+     * Add measurement interval data
      *
-     * @param blocks		測定区間{開始ブロック〜終了ブロック}
-     * @param name		グループ名
-     * @return    追加測定区間データ
+     * @param blocks Measurement interval {start block to end block}
+     * @param name Group name
+     * @return Additional measurement interval data
      */
     public MeasureData addMeasureData(IBlock[] blocks, String name) {
         MeasureData data = new MeasureData(name, blocks);
@@ -97,13 +97,13 @@ public class ProfilerMeasureInfo {
     }
 
     /**
-     * 測定区間データを追加する
+     * Add measurement interval data
      *
-     * @param blocks		測定区間{開始ブロック〜終了ブロック}
-     * @param name		グループ名
-     * @param number		詳細番号
-     * @param level		プライオリティレベル
-     * @return    追加測定区間データ
+     * @param blocks Measurement interval {start block to end block}
+     * @param name Group name
+     * @param number Detail number
+     * @param level Priority level
+     * @return Additional measurement interval data
      */
     public MeasureData addMeasureData(IBlock[] blocks, String name, String number, String level) {
         MeasureData data = new MeasureData(name, blocks);
@@ -117,16 +117,16 @@ public class ProfilerMeasureInfo {
         return data;
     }
     /**
-     * 測定区間データリストを追加する
-     * @param list		測定区間データリスト
+     * Add measurement interval data list
+     * @param list Measurement interval data list
      */
     public void addMeasureData(List<MeasureData> list) {
         this.listMeasure.addAll(list);
     }
 
     /**
-     * 測定区間データリストを設定する
-     * @param list		測定区間データリスト
+     * Set the measurement interval data list
+     * @param list Measurement interval data list
      */
     public void setMeasureList(List<MeasureData> list) {
         this.listMeasure = new ArrayList<MeasureData>();
@@ -134,16 +134,16 @@ public class ProfilerMeasureInfo {
     }
 
     /**
-     * 測定区間データリストを取得する
-     * @return		測定区間データリスト
+     * Get the measurement interval data list
+     * @return Measurement interval data list
      */
     public List<MeasureData> getMeasureList() {
         return this.listMeasure;
     }
 
     /**
-     * 測定区間データリスト数を取得する
-     * @return		測定区間データリスト数
+     * Get the number of measurement interval data lists
+     * @return Number of measurement interval data lists
      */
     public int getMeasureDataCount() {
         if (this.listMeasure == null) return 0;
@@ -151,9 +151,9 @@ public class ProfilerMeasureInfo {
     }
 
     /**
-     * 測定区間データを取得する
-     * @param id		インデックス
-     * @return		測定区間データ
+     * Get measurement interval data
+     * @param id index
+     * @return Measurement interval data
      */
     public MeasureData getMeasureData(int id) {
         if (this.listMeasure == null) return null;
@@ -162,7 +162,7 @@ public class ProfilerMeasureInfo {
     }
 
     /**
-     * 測定区間データリストをクリアする。
+     * Clear the measurement interval data list.
      */
     public void clearMeasureInfo() {
         if (this.listMeasure == null) return;
@@ -170,8 +170,8 @@ public class ProfilerMeasureInfo {
     }
 
     /**
-     * 測定区間データリストからデータを削除する
-     * @param id		削除インデックス
+     * Delete data from the measurement interval data list
+     * @param id Delete index
      */
     public void removeMeasureData(int id) {
         if (this.listMeasure == null) return;
@@ -180,8 +180,8 @@ public class ProfilerMeasureInfo {
     }
 
     /**
-     * 測定区間データリストからデータを削除する
-     * @param data		削除測定区間データ
+     * Delete data from the measurement interval data list
+     * @param data Deleted measurement interval data
      */
     public void removeMeasureData(MeasureData data) {
         if (this.listMeasure == null) return;
@@ -190,9 +190,9 @@ public class ProfilerMeasureInfo {
 
 
     /**
-     * 測定区間データリストから同一グループ名が存在するかチェックする
-     * @param name		 グループ名
-     * @return		true=同一グループ名が存在する
+     * Check if the same group name exists from the measurement interval data list
+     * @param name Group name
+     * @return true = Same group name exists
      */
     public boolean containsMeasureData(String name) {
         if (this.listMeasure == null) return false;
@@ -207,31 +207,31 @@ public class ProfilerMeasureInfo {
     }
 
     /**
-     * 測定区間データクラス
+     * Measurement interval data class
      */
     public class MeasureData {
-        /** グループ名 */
+        /** group name */
         private String groupname;
-        /** 詳細番号 */
+        /** Detail number */
         private String number;
-        /** プライオリティレベル */
+        /** Priority level */
         private String level;
-        /** 測定区間挿入行 */
+        /** Measurement interval insertion line */
         private CodeLine measureCodeLine;
-        /** 測定区間挿入ブロック */
+        /** Measurement interval insertion block */
         private IBlock[] measureBlocks;
 
         /**
-         * コンストラクタ
-         * @param code		測定区間挿入行情報
+         * Constructor
+         * @param code Measurement interval insertion line information
          */
         public MeasureData(CodeLine code) {
             this.measureCodeLine = code;
         }
 
         /**
-         * コンストラクタ
-         * @param blocks		測定区間挿入ブロック {開始ブロック〜終了ブロック}
+         * Constructor
+         * @param blocks Measurement interval insertion block {start block ~ end block}
          */
         public MeasureData(IBlock[] blocks) {
             this.measureBlocks = blocks;
@@ -239,9 +239,9 @@ public class ProfilerMeasureInfo {
 
 
         /**
-         * コンストラクタ
-         * @param name		グループ名
-         * @param code		測定区間挿入行情報
+         * Constructor
+         * @param name Group name
+         * @param code Measurement interval insertion line information
          */
         public MeasureData(String name, CodeLine code) {
             this.groupname = name;
@@ -249,9 +249,9 @@ public class ProfilerMeasureInfo {
         }
 
         /**
-         * コンストラクタ
-         * @param name		グループ名
-         * @param blocks		測定区間挿入ブロック{開始ブロック〜終了ブロック}
+         * Constructor
+         * @param name Group name
+         * @param blocks Measurement interval insertion block {start block ~ end block}
          */
         public MeasureData(String name, IBlock[] blocks) {
             this.groupname = name;
@@ -259,98 +259,98 @@ public class ProfilerMeasureInfo {
         }
 
         /**
-         * グループ名を取得する
-         * @return		グループ名
+         * Get the group name
+         * @return group name
          */
         public String getGroupname() {
             return groupname;
         }
 
         /**
-         * グループ名を取得する
-         * @param name		グループ名
+         * Get the group name
+         * @param name Group name
          */
         public void setGroupname(String name) {
             this.groupname = name;
         }
 
         /**
-         * 測定区間挿入行を取得する
-         * @return 測定区間挿入行
+         * Get the measurement interval insertion line
+         * @return Measurement interval insertion line
          */
         public CodeLine getMeasureCodeLine() {
             return this.measureCodeLine;
         }
 
         /**
-         * 測定区間挿入行を設定する。
-         * @param code		測定区間挿入行
+         * Set the measurement interval insertion line.
+         * @param code Measurement interval insertion line
          */
         public void setMeasureCodeLine(CodeLine code) {
             this.measureCodeLine = code;
         }
 
         /**
-         * 測定区間挿入ブロックを取得する
-         * @return 測定区間挿入ブロック
+         * Get the measurement interval insertion block
+         * @return Measurement interval insertion block
          */
         public IBlock[] getMeasureBlocks() {
             return this.measureBlocks;
         }
 
         /**
-         * 測定区間挿入ブロックを設定する。
-         * @param blocks		測定区間挿入ブロック{開始ブロック〜終了ブロック}
+         * Set the measurement interval insertion block.
+         * @param blocks Measurement interval insertion block {start block ~ end block}
          */
         public void setMeasureBlocks(IBlock[] blocks) {
             this.measureBlocks = blocks;
         }
 
         /**
-         * 詳細番号
-         * @return 詳細番号
+         * Detail number
+         * @return Detail number
          */
         public String getNumber() {
             return number;
         }
 
         /**
-         * 詳細番号
-         * @param number 詳細番号
+         * Detail number
+         * @param number Detail number
          */
         public void setNumber(String number) {
             this.number = number;
         }
 
         /**
-         * プライオリティレベル
-         * @return     プライオリティレベル
+         * Priority level
+         * @return Priority level
          */
         public String getLevel() {
             return level;
         }
 
         /**
-         * プライオリティレベル
-         * @param level プライオリティレベル
+         * Priority level
+         * @param level Priority level
          */
         public void setLevel(String level) {
             this.level = level;
         }
 
         /**
-         * 測定区間挿入範囲を取得する.
-         * 測定区間挿入行, 測定区間挿入ブロックから挿入範囲を取得する.
-         * @return 測定区間挿入範囲
+         * Get the measurement interval insertion range.
+         * Get the insertion range from the measurement interval insertion line and measurement interval insertion block.
+         * @return Measurement interval insertion range
          */
         public CodeLine getMeasureArea() {
             if (this.measureCodeLine != null) {
                 return this.measureCodeLine;
             }
             else if (this.measureBlocks != null) {
-                // 開始ブロック
+                // Start block
                 CodeLine startcode = new CodeLine(this.measureBlocks[0].getStartCodeLine(), this.measureBlocks[0].getEndCodeLine());
-                // 終了ブロック
+                // End block
                 CodeLine endtcode = new CodeLine(this.measureBlocks[this.measureBlocks.length-1].getStartCodeLine(), this.measureBlocks[this.measureBlocks.length-1].getEndCodeLine());
                 CodeLine area = new CodeLine(startcode, endtcode);
                 return area;
@@ -360,26 +360,26 @@ public class ProfilerMeasureInfo {
         }
 
         /**
-         * パラメータを文字列出力する
-         * @return		パラメータ
+         * Output parameters as a string
+         * @return parameter
          */
         public String toStringParam() {
             StringBuffer buf = new StringBuffer();
-            /** グループ名 */
+            /** group name */
             if (this.groupname != null && !this.groupname.isEmpty()) {
                 String rep_name = this.groupname;
-                // 削除 2012/05/21：ダブルクォートで囲んでいたらダブルクォートは付けない。
+                // Delete 2012/05/21: If you enclose it in double quotes, do not add double quotes.
   //              if (!(rep_name.startsWith("\"") && rep_name.endsWith("\""))) {
   //                  rep_name = "\"" + rep_name + "\"";
   //              }
                 buf.append(rep_name);
             }
-            /** 詳細番号 */
+            /** Detail number */
             if (this.number != null && !this.number.isEmpty()) {
                 if (buf.length() > 0) buf.append(", ");
                 buf.append(this.number);
             }
-            /** プライオリティレベル */
+            /** Priority level */
             if (this.level != null && !this.level.isEmpty()) {
                 if (buf.length() > 0) buf.append(", ");
                 buf.append(this.level);

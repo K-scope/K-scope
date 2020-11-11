@@ -20,122 +20,122 @@ package jp.riken.kscope.profiler;
 import jp.riken.kscope.profiler.eprof.HardwareMonitorInfo;
 
 /**
- * プロファイライベントカウンタ(Eprof)データクラス.
- * EProfのプロファイラデータ
+ * Profiler event counter (Eprof) data class.
+ * EProf profiler data
  * @author RIKEN
  */
 public class ProfilerEprofData extends ProfilerBaseData {
 
-    /** カウンタグループ名:Eprof */
+    /** Counter group name: Eprof */
     private String symbol;
-    /** カウンタの呼び出し回数	int :Eprof */
+    /** Counter call count int: Eprof */
     private int callCount;
-    /** 経過時間	float	(ms) :Eprof */
+    /** Elapsed time float (ms): Eprof */
     private float elapsTime;
-    /** ユーザCPU時間	float	(ms)  :Eprof */
+    /** User CPU time float (ms): Eprof */
     private float userTime;
-    /** システムＣＰＵ時間	float	(ms)  :Eprof */
+    /** System CPU time float (ms): Eprof */
     private float systemTime;
-    /** ハードウェアモニタ情報（ＰＡ情報）テーブル  :Eprof */
+    /** Hardware monitor information (PA information) table: Eprof */
     private HardwareMonitorInfo hardwareInfo;
 
     /**
-     * コンストラクタ
+     * Constructor
      */
     public ProfilerEprofData() {
         super();
     }
 
     /**
-     * シンボル名を取得する
-     * @return		シンボル名
+     * Get the symbol name
+     * @return Symbol name
      */
     public String getSymbol() {
         return symbol;
     }
 
     /**
-     * シンボル名を設定する
-     * @param name		シンボル名
+     * Set the symbol name
+     * @param name Symbol name
      */
     public void setSymbol(String name) {
         this.symbol = name;
     }
 
     /**
-     * カウンタの呼び出し回数
-     * @return		カウンタの呼び出し回数
+     * Number of counter calls
+     * @return Number of counter calls
      */
     public int getCallCount() {
         return callCount;
     }
 
     /**
-     * カウンタの呼び出し回数
-     * @param count		カウンタの呼び出し回数
+     * Number of counter calls
+     * @param count Number of counter calls
      */
     public void setCallCount(int count) {
         this.callCount = count;
     }
 
     /**
-     * 経過時間
-     * @return		経過時間
+     * elapsed time
+     * @return elapsed time
      */
     public float getElapsTime() {
         return elapsTime;
     }
     /**
-     * 経過時間
-     * @param time		経過時間
+     * elapsed time
+     * @param time elapsed time
      */
     public void setElapsTime(float time) {
         this.elapsTime = time;
     }
 
     /**
-     * ユーザCPU時間
-     * @return		ユーザCPU時間
+     * User CPU time
+     * @return user CPU time
      */
     public float getUserTime() {
         return userTime;
     }
 
     /**
-     * ユーザCPU時間
-     * @param time		ユーザCPU時間
+     * User CPU time
+     * @param time User CPU time
      */
     public void setUserTime(float time) {
         this.userTime = time;
     }
 
     /**
-     * システムＣＰＵ時間
-     * @return		システムＣＰＵ時間
+     * System CPU time
+     * @return system CPU time
      */
     public float getSystemTime() {
         return systemTime;
     }
 
     /**
-     * システムＣＰＵ時間
-     * @param time		システムＣＰＵ時間
+     * System CPU time
+     * @param time System CPU time
      */
     public void setSystemTime(float time) {
         this.systemTime = time;
     }
 
     /**
-     * ハードウェアモニタ情報（ＰＡ情報）テーブル
-     * @return hardwareInfo		ハードウェアモニタ情報（ＰＡ情報）テーブル
+     * Hardware monitor information (PA information) table
+     * @return hardwareInfo Hardware monitor information (PA information) table
      */
     public HardwareMonitorInfo getHardwareInfo() {
         return hardwareInfo;
     }
 
     /**
-     * ハードウェアモニタ情報（ＰＡ情報）テーブル
-     * @param info ハードウェアモニタ情報（ＰＡ情報）テーブル
+     * Hardware monitor information (PA information) table
+     * @param info Hardware monitor information (PA information) table
      */
     public void setHardwareInfo(HardwareMonitorInfo info) {
         this.hardwareInfo = info;

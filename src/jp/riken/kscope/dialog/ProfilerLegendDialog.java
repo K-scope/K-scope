@@ -41,27 +41,27 @@ import jp.riken.kscope.utils.SwingUtils;
 
 
 /**
- * プロファイラ凡例ダイアログ
+ * Profiler Legend Dialog
  * @author RIKEN
  */
 public class ProfilerLegendDialog extends javax.swing.JDialog implements PropertyChangeListener {
-    /** シリアル番号 */
+    /** Serial number */
     private static final long serialVersionUID = 1L;
-    /** プロファイラ設定 */
+    /** Profiler settings */
     private ProfilerProperties properties;
-    /** コスト表示:手続色ラベル */
+    /** Cost display: Procedure color label */
     private JLabel lblColorProcedure;
-    /** コスト表示:ループ色ラベル */
+    /** Cost display: Loop color label */
     private JLabel lblColorLoop;
-    /** コスト表示:ライン色ラベル */
+    /** Cost display: Line color label */
     private JLabel lblColorLine;
 
     /**
-     * コンストラクタ
+     * Constructor
     
      *
-     * @param owner	親フレーム
-     * @param modal	true=モーダルダイアログを表示する
+     * @param owner parent frame
+     * @param modal true = Show modal dialog
      */
     public ProfilerLegendDialog(Frame owner, boolean modal) {
         super(owner, modal);
@@ -69,11 +69,11 @@ public class ProfilerLegendDialog extends javax.swing.JDialog implements Propert
     }
 
     /**
-     * コンストラクタ
+     * Constructor
      *
-     * @param owner	親フレーム
-     * @param modal	true=モーダルダイアログを表示する
-     * @param properties	プロファイラプロパティ
+     * @param owner parent frame
+     * @param modal true = Show modal dialog
+     * @param properties Profiler properties
      */
     public ProfilerLegendDialog(Frame owner, boolean modal, ProfilerProperties properties) {
         super(owner, modal);
@@ -82,7 +82,7 @@ public class ProfilerLegendDialog extends javax.swing.JDialog implements Propert
     }
 
     /**
-     * GUI初期化を行う。
+     * Initialize the GUI.
      */
     private void initGUI() {
 
@@ -94,7 +94,7 @@ public class ProfilerLegendDialog extends javax.swing.JDialog implements Propert
             thisLayout.rowWeights = new double[]{0, 0};
             getContentPane().setLayout(thisLayout);
 
-            // バーグラフ表示色
+            // Bar graph display color
             {
                 JPanel panel = new JPanel();
                 GridBagLayout layout = new GridBagLayout();
@@ -104,13 +104,13 @@ public class ProfilerLegendDialog extends javax.swing.JDialog implements Propert
                 layout.rowWeights = new double[]{0, 0, 0};
                 panel.setLayout(layout);
                 panel.setBorder(new TitledBorder(
-                        Message.getString("profilerlegenddialog.costsourcecolor.title")));  // コスト情報表示色
+                        Message.getString("profilerlegenddialog.costsourcecolor.title")));  // Cost information display color
                 this.add(panel, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
 
                 Dimension color_size = new Dimension(40, 22);
-                // 手続
+                // Procedure
                 {
-                    JLabel lblName = new JLabel(PROFILERINFO_TYPE.COST_PROCEDURE.getShortName()); //手続
+                    JLabel lblName = new JLabel(PROFILERINFO_TYPE.COST_PROCEDURE.getShortName()); //procedure
                     panel.add(lblName, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 0, 10), 0, 0));
                     lblColorProcedure = new JLabel();
                     lblColorProcedure.setBorder(new LineBorder(Color.BLACK, 1));
@@ -118,9 +118,9 @@ public class ProfilerLegendDialog extends javax.swing.JDialog implements Propert
                     lblColorProcedure.setPreferredSize(color_size);
                     panel.add(lblColorProcedure, new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
                 }
-                // ループ
+                // loop
                 {
-                    JLabel lblName = new JLabel(PROFILERINFO_TYPE.COST_LOOP.getShortName()); //ループ
+                    JLabel lblName = new JLabel(PROFILERINFO_TYPE.COST_LOOP.getShortName()); //loop
                     panel.add(lblName, new GridBagConstraints(0, 1, 1, 1, 0.0, 0.0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 0, 10), 0, 0));
                     lblColorLoop = new JLabel();
                     lblColorLoop.setBorder(new LineBorder(Color.BLACK, 1));
@@ -128,9 +128,9 @@ public class ProfilerLegendDialog extends javax.swing.JDialog implements Propert
                     lblColorLoop.setPreferredSize(color_size);
                     panel.add(lblColorLoop, new GridBagConstraints(1, 1, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
                 }
-                // ライン
+                // line
                 {
-                    JLabel lblName = new JLabel(PROFILERINFO_TYPE.COST_LINE.getShortName()); //ライン
+                    JLabel lblName = new JLabel(PROFILERINFO_TYPE.COST_LINE.getShortName()); //line
                     panel.add(lblName, new GridBagConstraints(0, 2, 1, 1, 0.0, 0.0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 0, 10), 0, 0));
                     lblColorLine = new JLabel();
                     lblColorLine.setBorder(new LineBorder(Color.BLACK, 1));
@@ -140,7 +140,7 @@ public class ProfilerLegendDialog extends javax.swing.JDialog implements Propert
                 }
             }
 
-            // コストルーラ表示色
+            // Cost ruler display color
             {
                 JPanel panel = new JPanel();
                 GridBagLayout layout = new GridBagLayout();
@@ -150,18 +150,18 @@ public class ProfilerLegendDialog extends javax.swing.JDialog implements Propert
                 layout.rowWeights = new double[]{0, 0};
                 panel.setLayout(layout);
                 panel.setBorder(new TitledBorder(
-                        Message.getString("profilerlegenddialog.costrulercolor.title")));  // コストルーラ表示色
+                        Message.getString("profilerlegenddialog.costrulercolor.title")));  // Cost ruler display color
                 this.add(panel, new GridBagConstraints(0, 1, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(10, 0, 0, 0), 0, 0));
 
-                // グラデーション色
+                // Gradient color
                 JPanel panelGradient = new JPanel() {
                     /**
-                     * シリアル番号
+                     * Serial number
                      */
                     private static final long serialVersionUID = 1L;
 
                     /**
-                     * プロファイラルーラのグラデーションを描画する.
+                     * Draw a profile laura gradient.
                      */
                     @Override
                     protected void paintComponent(Graphics g) {
@@ -171,7 +171,7 @@ public class ProfilerLegendDialog extends javax.swing.JDialog implements Propert
                             return;
                         }
                         Graphics2D g2 = (Graphics2D) g;
-                        // 描画領域
+                        // Drawing area
                         Rectangle rectDraw = this.getBounds();
                         int step = 256;
                         float width = (float) rectDraw.width / (float) step;
@@ -191,17 +191,17 @@ public class ProfilerLegendDialog extends javax.swing.JDialog implements Propert
                 panelGradient.setBorder(new LineBorder(Color.BLACK, 1));
                 panel.add(panelGradient, new GridBagConstraints(0, 0, 3, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
 
-                // 凡例ラベル
+                // Legend label
                 JLabel lblMin = new JLabel("min");
                 panel.add(lblMin, new GridBagConstraints(0, 1, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
                 JLabel lblMax = new JLabel("max");
                 panel.add(lblMax, new GridBagConstraints(2, 1, 1, 1, 0.0, 0.0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
             }
-            this.setTitle(Message.getString("profilerlegenddialog.costinfolegend.title"));  // コスト情報凡例
+            this.setTitle(Message.getString("profilerlegenddialog.costinfolegend.title"));  // Cost information legend
             this.setSize(220, 260);
             this.setResizable(false);
 
-            // プロファイラプロパティの設定色を表示する.
+            // Display the profiler property setting color.
             paintProfilerProperties();
 
         } catch (Exception e) {
@@ -210,18 +210,18 @@ public class ProfilerLegendDialog extends javax.swing.JDialog implements Propert
     }
 
     /**
-     * ダイアログを表示する。
+     * Display a dialog.
      *
-     * @return ダイアログの閉じた時のボタン種別
+     * @return Button type when the dialog is closed
      */
     public int showDialog() {
-        // ダイアログ表示
+        // Dialog display
         this.setVisible(true);
         return 0;
     }
 
     /**
-     * プロファイラプロパティの設定色を表示する.
+     * Display the profiler property setting color.
      */
     private void paintProfilerProperties() {
         if (this.properties == null) {
@@ -234,7 +234,7 @@ public class ProfilerLegendDialog extends javax.swing.JDialog implements Propert
     }
 
     /**
-     * プロファイラプロパティの変更通知
+     * Profiler property change notification
      */
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
@@ -242,9 +242,9 @@ public class ProfilerLegendDialog extends javax.swing.JDialog implements Propert
     }
 
     /**
-     * プロファイラプロパティを設定する
+     * Set profiler properties
      *
-     * @param properties プロファイラプロパティ
+     * @param properties Profiler properties
      */
     public void setProperties(ProfilerProperties properties) {
         this.properties = properties;

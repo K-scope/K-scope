@@ -40,7 +40,7 @@ import jp.riken.kscope.service.ProjectMakeService;
 import jp.riken.kscope.utils.StringUtils;
 
 /**
- * 構造解析再実行アクション
+ * Structural analysis re-execution action
  * @author RIKEN
  */
 public class ProjectRebuildAction extends ActionBase {
@@ -48,17 +48,17 @@ public class ProjectRebuildAction extends ActionBase {
 	private static boolean debug = (System.getenv("DEBUG")!= null);
 	private static boolean debug_l2 = false;
 	
-	/** makeコマンド実行サービス */
+	/** make command execution service */
 	private ProjectMakeService serviceMake;
-	/** 構造解析サービス */
+	/** Structural analysis service */
 	private LanguageService serviceLang;
-	/** エクスプローラビューの更新フラグ */
+	/** Explorer view update flag */
     @SuppressWarnings("unused")
 	private boolean updateView;
 
     /**
-     * コンストラクタ
-     * @param controller	アプリケーションコントローラ
+     * Constructor
+     * @param controller Application controller
      */
 	public ProjectRebuildAction(AppController controller){
 		super(controller);
@@ -68,9 +68,9 @@ public class ProjectRebuildAction extends ActionBase {
 	}
 
 	/**
-     * アクションが実行可能であるかチェックする.<br/>
-     * アクションの実行前チェック、メニューのイネーブルの切替を行う。<br/>
-     * @return		true=アクションが実行可能
+     * Check if the action is executable. <br/>
+     * Check before executing the action and switch the menu enable. <br/>
+     * @return true = Action can be executed
      */
 	@Override
 	public boolean validateAction() {
@@ -86,59 +86,59 @@ public class ProjectRebuildAction extends ActionBase {
 		if (value == null) return false;
 		if (StringUtils.isNullOrEmpty(value.getValue())) return false;
 
-        // スレッドタスクの実行状態をチェックする
+        // Check the execution status of the thread task
         //return this.controller.isThreadTaskDone();
 		return properties.canRebuild();
 	}
 
     /**
-     * アクション発生イベント
-     * @param event		イベント情報
+     * Action occurrence event
+     * @param event Event information
      */
 	@Override
 	public void actionPerformed(ActionEvent event) {
-		final String message = Message.getString("mainmenu.project.restertanalysis"); //構造解析再実行
+		final String message = Message.getString("mainmenu.project.restertanalysis"); // Re-execute structural analysis
 		Application.status.setMessageMain(message);		
 		Frame frame = getWindowAncestor(event);
-        // 確認メッセージを表示する。
+        // Display a confirmation message.
         int result = JOptionPane.showConfirmDialog(
                 frame,
-                Message.getString("projectrebuildaction.confirmdialog.message"), //構造解析を再実行しますか？
-                message, //構造解析再実行
+                Message.getString("projectrebuildaction.confirmdialog.message"), // Do you want to re-execute the structural analysis?
+                message, // Re-execute structural analysis
                 JOptionPane.OK_CANCEL_OPTION,
                 JOptionPane.QUESTION_MESSAGE);
 
 		if (result != Constant.OK_DIALOG) {
 			Application.status.setMessageMain(message +
-					Message.getString("action.common.cancel.status")); //:キャンセル
+					Message.getString("action.common.cancel.status")); //:Cancel
 			return;
 		}
 
-		// 構造解析再実行
+		// Re-execute structural analysis
 		rebuild();
 
 		return;
 	}
 
 	/**
-	 * 構造解析再実行を行う.
-	 * makeコマンドを実行し、データベースの再構成を行う。
-	 */
+* Re-execute structural analysis.
+* Execute the make command to reconfigure the database.
+*/
 	public void rebuild() {
-		//構造解析再実行
+		// Re-execute structural analysis
 		final String message = Message.getString("mainmenu.project.restertanalysis");
         Application.status.setMessageMain(message);
 
-        // プロジェクトモデル
+        // Project model
         ProjectModel projectModel = this.controller.getProjectModel();
 		
-		// コンソール
+		// console
 		this.controller.setSelectedAnalysisPanel(ANALYSIS_PANEL.CONSOLE);
 		final ConsolePanel console = this.controller.getMainframe().getPanelAnalysisView().getPanelConsole();
 		console.clearConsole();
 		OutputStream out = console.getOutputStream();
 
-		// エラーモデル
+		// Error model
 		ErrorInfoModel modelError = this.controller.getErrorInfoModel();
 		modelError.clearErrorList();
 
@@ -146,39 +146,39 @@ public class ProjectRebuildAction extends ActionBase {
 		LanguageTreeModel modelTree = this.controller.getLanguageTreeModel();
 		this.updateView = !(modelTree.isSetLanguageTree());
 
-		// makeコマンド実行サービス
+		// make command execution service
 		serviceMake = new ProjectMakeService(projectModel.getProjectFolder(),this.controller);
 		serviceMake.setOutputStream(out);
-        // エラー情報モデルを設定する。
+        // Set the error information model.
 		serviceMake.setErrorInfoModel(modelError);
-        // フォートランデータベース
+        // Fortran database
 		serviceMake.setFortranLanguage(this.controller.getFortranLanguage());
-        // XMLファイル検索パス
+        // XML file search path
 		serviceMake.setListSearchPath(this.controller.getProjectModel().getListSearchPath());
-        // プロジェクトモデル
+        // Project model
 		serviceMake.setProjectModel(this.controller.getProjectModel());
 
-        // 構造解析サービス
+        // Structural analysis service
         serviceLang = new LanguageService(this.controller.getFortranLanguage());
-        // 構造ツリーモデルを設定する
+        // Set the structure tree model
         serviceLang.setLanguageTreeModel(this.controller.getLanguageTreeModel());
-        // モジュールツリーモデルを設定する
+        // Set up the module tree model
         serviceLang.setModuleTreeModel(this.controller.getModuleTreeModel());
-        // エラー情報モデルを設定する。
+        // Set the error information model.
         serviceLang.setErrorInfoModel(modelError);
-        // ソースツリーモデルを設定する。
+        // Set the source tree model.
         serviceLang.setSourceTreeModel(this.controller.getSourceTreeModel());
-        // XMLツリーモデルを設定する。
+        // Set up the XML tree model.
         serviceLang.setXmlTreeModel(this.controller.getXmlTreeModel());
 
-        // スレッドタスクサービスの生成を行う。
+        // Create a thread task service.
         FutureService<Integer> future = new FutureService<Integer>(
                 /**
-                 * スレッド呼出クラス
+                 * Thread call class
                  */
                 new Callable<Integer>() {
                     /**
-                     * スレッド実行を行う
+                     * Perform thread execution
                      */
                     @Override
 					public Integer call() {
@@ -194,13 +194,13 @@ public class ProjectRebuildAction extends ActionBase {
                         	if (!result) {
                         		return Constant.CANCEL_RESULT;
                         	}
-                            // 分析ビューのクリアを行う。
+                            // Clear the analysis view.
                             clearAnalysisView();
-                            // 解析実行
+                            // Analyze execution
                         	if (serviceMake.rebuild()) {
-                                // エクスプローラビュー、ソースビューのクリアを行う。
+                                // Clear Explorer view and Source view.
                                 clearExplorerView();
-                            	// エクスプローラビューの更新
+                            	// Update Explorer View
                             	serviceLang.setExplorerView();
                         	}
 
@@ -213,19 +213,19 @@ public class ProjectRebuildAction extends ActionBase {
                 }
                 ) {
                     /**
-                     * スレッド実行完了.<br/>
-                     * キャンセルされた時の後処理を行う。
+                     * Thread execution completed. <br/>
+                     * Perform post-processing when canceled.
                      */
                     @Override
                     protected void done() {
-                        // キャンセルによる終了であるかチェックする。
+                        // Check if the end is due to cancellation.
                         if (this.isCancelled()) {
-                            Application.status.setMessageMain(message + Message.getString("action.common.cancel.status")); //:キャンセル
+                            Application.status.setMessageMain(message + Message.getString("action.common.cancel.status")); //:Cancel
                         }
                         else {
-                            Application.status.setMessageMain(message + Message.getString("action.common.done.status")); //:完了
+                            Application.status.setMessageMain(message + Message.getString("action.common.done.status")); //: Done
                         }
-                        // サービス実行の停止
+                        // Stop service execution
                         if (serviceMake != null) {
                         	serviceMake.cancelRunning();
                         }
@@ -236,38 +236,38 @@ public class ProjectRebuildAction extends ActionBase {
                     }
 
         };
-        // ステータスメッセージクリア
+        // Clear status message
         Application.status.setMessageStatus(null);
 
-        // スレッドタスクにコントローラをリスナ登録する：スレッド完了時の呼出の為
+        // Register the controller as a listener in the thread task: To call when the thread is completed
         future.addPropertyChangeListener(this.controller);
         this.controller.setThreadFuture(future);
 
-        // プログレスダイアログを表示する
+        // Display the progress dialog
         WindowProgressAction progress = new WindowProgressAction(this.controller);
         progress.showProgressDialog();
 
-        // スレッド起動
+        // Thread start
         Thread thread =  new Thread(future);
         thread.start();
 
 	}
 
     /**
-     * 分析ビューのクリアを行う。
+     * Clear the analysis view.
      */
     private void clearAnalysisView() {
-        // 分析情報クリア
+        // Clear analysis information
         this.controller.getMainframe().getPanelAnalysisView().clearModels();
     }
 
     /**
-     * エクスプローラビュー、ソースビューのクリアを行う。
+     * Clear Explorer view and Source view.
      */
     private void clearExplorerView() {
-        // ツリーモデル
+        // Tree model
         this.controller.getMainframe().getPanelExplorerView().clearTreeModel();
-        // ソースビュークリア
+        // Clear Source View
         this.controller.getMainframe().getPanelSourceView().closeAllTabs();
     }
 }

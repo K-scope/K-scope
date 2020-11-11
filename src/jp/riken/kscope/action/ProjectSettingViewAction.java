@@ -27,45 +27,45 @@ import jp.riken.kscope.properties.SourceProperties;
 import jp.riken.kscope.service.AppController;
 
 /**
- * ソースビュー設定アクションクラス
+ * Source view settings action class
  * @author RIKEN
  */
 public class ProjectSettingViewAction extends ActionBase {
 
     /**
-     * コンストラクタ
-     * @param controller	アプリケーションコントローラ
+     * Constructor
+     * @param controller Application controller
      */
     public ProjectSettingViewAction(AppController controller) {
         super(controller);
     }
 
     /**
-     * アクション発生イベント
-     * @param event			イベント情報
+     * Action occurrence event
+     * @param event Event information
      */
     @Override
     public void actionPerformed(ActionEvent event) {
-        // ステータスメッセージ
-        final String message = Message.getString("mainmenu.project.config.display"); //ソースビュー設定
+        // Status message
+        final String message = Message.getString("mainmenu.project.config.display"); // Source view settings
         Application.status.setMessageMain(message);
 
-        // 親Frameの取得を行う。
+        // Get the parent Frame.
         Frame frame = getWindowAncestor( event );
 
-        // ソースビュー設定ダイアログを表示する。
+        // Display the source view setting dialog.
         SourceProperties properities = this.controller.getPropertiesSource();
 
         SettingViewDialog dialog = new SettingViewDialog(frame, true, properities);
         int result = dialog.showDialog();
         if (result != Constant.OK_DIALOG) {
         	Application.status.setMessageMain(message +
-        			Message.getString("action.common.cancel.status")); //キャンセル
+        			Message.getString("action.common.cancel.status")); //Cancel
         	return;
         }
 
         Application.status.setMessageMain(message +
-    			Message.getString("action.common.done.status")); //完了
+    			Message.getString("action.common.done.status")); // Done
         return;
 
     }

@@ -54,111 +54,111 @@ import jp.riken.kscope.properties.OperationProperties;
 import jp.riken.kscope.utils.StringUtils;
 
 /**
- * 演算カウントダイアログクラス
+ * Calculation count dialog class
  * @author RIKEN
  *
  */
 public class SettingOperationDialog extends javax.swing.JDialog implements ActionListener, ListSelectionListener {
 
-    /** シリアル番号 */
+    /** Serial number */
     private static final long serialVersionUID = 1L;
 
-    /** キャンセルボタン */
+    /** Cancel button */
     private JButton btnCancel;
-    /** OKボタン */
+    /** OK button */
     private JButton btnOk;
-    /** 組込み関数ラベル */
+    /** Built-in function label */
     private JLabel lblName;
-    /** 組込み関数名テキストボックス */
+    /** Built-in function name text box */
     private JTextField txtName;
-    /** Op(+)テキストボックス */
+    /** Op (+) text box */
     private JTextField txtOpAdd;
-    /** Op(*)テキストボックス */
+    /** Op (*) text box */
     private JTextField txtOpMul;
-    /** 登録ボタン */
+    /** Registration button */
     private JButton btnReg;
-    /** 追加ボタン */
+    /** Add button */
     private JButton btnAdd;
-    /** 削除ボタン */
+    /** Delete button */
     private JButton btnDel;
-    /** クリアボタン */
+    /** Clear button */
     private JButton btnClear;
 
-    /** 演算カウントリスト */
+    /** Arithmetic count list */
     private JTable tblOperand;
-    /** 演算カウントリストデータ */
+    /** Calculation count list data */
     private DefaultTableModel modelOperation;
-    /** 演算カウント設定パネル */
+    /** Calculation count setting panel */
     private JPanel panelOperand;
-    /** 四則演算FLOP設定:+ */
+    /** Four arithmetic FLOP settings: + */
 	private JTextField txtAdd;
-	/** 四則演算FLOP設定:* */
+	/** Four arithmetic FLOP settings: * */
 	private JTextField txtMul;
-	/** 四則演算FLOP設定:- */
+	/** Four arithmetic FLOP settings:-*/
 	private JTextField txtSub;
-	/** 四則演算FLOP設定:/ */
+	/** Four arithmetic FLOP settings: /*/
 	private JTextField txtDiv;
-    /** ダイアログの戻り値 */
+    /** Dialog return value */
     private int result = Constant.CANCEL_DIALOG;
 
-    /** 演算カウントプロパティ */
+    /** Arithmetic count property */
     OperationProperties properities;
 
-    private final String[] COLUMN_HEADER = { Message.getString("settingoperationdialog.columnheader.instinsic"), "op(+)", "op(*)", "op(-)", "op(/)" }; //組込関数
+    private final String[] COLUMN_HEADER = { Message.getString("settingoperationdialog.columnheader.instinsic"), "op(+)", "op(*)", "op(-)", "op(/)" }; // Built-in function
     private final int[] COLUMN_MINWIDTH = { 110, 48, 48, -1, -1 };
     private final int[] COLUMN_MAXWIDTH = { 0, 48, 48, -1, -1 };
     private final int COLUMN_COUNT = 6;
 
 
     /**
-     * コンストラクタ
-     * @param frame		親フレーム
+     * Constructor
+     * @param frame Parent frame
      */
     public SettingOperationDialog(JFrame frame) {
         super(frame);
         initGUI();
 
-        // 初期表示
+        // Initial display
         clearOperation();
     }
 
     /**
-     * コンストラクタ
-     * @param frame		親フレーム
-     * @param modal		true=モーダルダイアログを表示する
+     * Constructor
+     * @param frame Parent frame
+     * @param modal true = Show modal dialog
      */
     public SettingOperationDialog(Frame frame, boolean modal) {
         super(frame, modal);
         initGUI();
 
-        // 初期表示
+        // Initial display
         clearOperation();
     }
 
     /**
-     * コンストラクタ
-     * @param frame		親フレーム
-     * @param modal		true=モーダルダイアログを表示する
-     * @param properities	外部ツールプロパティ
+     * Constructor
+     * @param frame Parent frame
+     * @param modal true = Show modal dialog
+     * @param properities External tool properties
      */
     public SettingOperationDialog(Frame frame, boolean modal, OperationProperties properities) {
         super(frame, modal);
         initGUI();
         setOperandProperties(properities);
 
-        // 初期表示
+        // Initial display
         clearOperation();
     }
 
     /**
-     * GUI初期化を行う。
+     * Initialize the GUI.
      */
     private void initGUI() {
         try {
 
             getContentPane().setLayout(new BorderLayout());
 
-            // ボタンパネル
+            // Button panel
             {
                 JPanel panelButtons = new JPanel();
                 FlowLayout jPanel1Layout = new FlowLayout();
@@ -168,7 +168,7 @@ public class SettingOperationDialog extends javax.swing.JDialog implements Actio
                 getContentPane().add(panelButtons, BorderLayout.SOUTH);
                 panelButtons.setPreferredSize(new java.awt.Dimension(390, 45));
 
-                // メインボタンサイズ
+                // Main button size
                 java.awt.Dimension buttonSize = new java.awt.Dimension(96, 22);
                 {
                     btnOk = new JButton();
@@ -180,18 +180,18 @@ public class SettingOperationDialog extends javax.swing.JDialog implements Actio
                 {
                     btnCancel = new JButton();
                     panelButtons.add(btnCancel);
-                    btnCancel.setText(Message.getString("dialog.common.button.cancel")); //キャンセル
+                    btnCancel.setText(Message.getString("dialog.common.button.cancel")); //Cancel
                     btnCancel.setPreferredSize(buttonSize);
                     btnCancel.setMargin(new Insets(5, 5, 5, 5));
                     btnCancel.addActionListener(this);
                 }
             }
-            // 四則演算FLOPカウント
+            // Four arithmetic FLOP count
             {
                 JPanel panelFlop = new JPanel();
                 getContentPane().add(panelFlop, BorderLayout.NORTH);
-                // 四則演算のFLOP設定
-                String title = Message.getString("settingoperationdialog.panelflop.title"); //四則演算の演算数設定
+                // FLOP setting of four arithmetic operations
+                String title = Message.getString("settingoperationdialog.panelflop.title"); // Set the number of arithmetic operations
                 TitledBorder borderTitle = new TitledBorder(BorderFactory.createEtchedBorder(), title);
                 Border border = new CompoundBorder( new EmptyBorder(7,7,7,7), borderTitle);
                 panelFlop.setBorder(border);
@@ -228,19 +228,19 @@ public class SettingOperationDialog extends javax.swing.JDialog implements Actio
                 panelFlop.add(lblUnit, new GridBagConstraints(col++, 0, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 24, 0, 24), 0, 0));
 
             }
-            // コンテンツパネル
+            // Content panel
             {
                 JPanel panelContent = new JPanel();
                 BorderLayout panelContentLayout = new BorderLayout();
                 getContentPane().add(panelContent, BorderLayout.CENTER);
-                String title = Message.getString("settingoperationdialog.contentspanel.title"); //組込み関数の演算数設定
+                String title = Message.getString("settingoperationdialog.contentspanel.title"); // Set the number of operations of the built-in function
                 TitledBorder titleOp = new TitledBorder(BorderFactory.createEtchedBorder(), title);
                 Border borderOut = new CompoundBorder( new EmptyBorder(7,7,7,7), titleOp);
                 Border border = new CompoundBorder( borderOut, new EmptyBorder(7,7,7,7));
                 panelContent.setBorder(border);
                 panelContent.setLayout(panelContentLayout);
 
-                // 演算カウントリスト
+                // Calculation count list
                 {
                     JPanel panelList = new JPanel();
                     BorderLayout panelListLayout = new BorderLayout();
@@ -254,7 +254,7 @@ public class SettingOperationDialog extends javax.swing.JDialog implements Actio
                         {
                             modelOperation = new DefaultTableModel();
                             modelOperation.setColumnCount(COLUMN_COUNT);
-                            // ヘッダー列名
+                            // Header column name
                             String[] columns = COLUMN_HEADER;
                             modelOperation.setColumnIdentifiers(columns);
                             tblOperand = new JTable();
@@ -266,24 +266,24 @@ public class SettingOperationDialog extends javax.swing.JDialog implements Actio
                             tblOperand.setColumnSelectionAllowed(false);
                             tblOperand.setDefaultEditor(Object.class, null);
 
-                            // 列幅設定
+                            // Column width setting
                             for (int i=0; i<tblOperand.getColumnModel().getColumnCount(); i++) {
                                 TableColumn col = tblOperand.getColumnModel().getColumn(i);
-                                // 列幅を設定する。
+                                // Set the column width.
                                 if (i<COLUMN_MINWIDTH.length) {
                                     col.setMinWidth(COLUMN_MINWIDTH[i]);
-                                    // 最大列幅が設定されている(>0)場合は、最大列幅を設定して固定列幅とする。
+                                    // If the maximum column width is set (> 0), set the maximum column width to make it a fixed column width.
                                     if (COLUMN_MAXWIDTH[i] > 0) {
                                         col.setMaxWidth(COLUMN_MAXWIDTH[i]);
                                         col.setResizable(false);
                                     }
-                                    // 最大列幅が-1で設定されている場合は、非表示列(=0)とする。
+                                    // If the maximum column width is set to -1, set it as a hidden column (= 0).
                                     else if (COLUMN_MAXWIDTH[i] < 0) {
                                         col.setMaxWidth(0);
                                         col.setResizable(false);
                                     }
                                 }
-                                // 列幅が設定されていない列は非表示とする。
+                                // Hide columns for which no column width is set.
                                 else {
                                     col.setMinWidth(0);
                                     col.setMaxWidth(0);
@@ -294,7 +294,7 @@ public class SettingOperationDialog extends javax.swing.JDialog implements Actio
                     }
                 }
 
-                // 設定パネル
+                // Settings panel
                 {
                     JPanel panelSettings = new JPanel();
                     BorderLayout panelSettingsLayout = new BorderLayout();
@@ -313,67 +313,67 @@ public class SettingOperationDialog extends javax.swing.JDialog implements Actio
                     panelOperand.setLayout(panelKeywordLayout);
                     panelOperand.setPreferredSize(new java.awt.Dimension(230, 234));
 
-                    // 演算カウント枠
+                    // Calculation count frame
 
-                    String titleOperand = Message.getString("settingkeyworddialog.label.preference"); // 設定
+                    String titleOperand = Message.getString("settingkeyworddialog.label.preference"); // Configuration
                     TitledBorder borderOutOperand = new TitledBorder(BorderFactory.createEtchedBorder(), titleOperand);
                     Border borderOperand = new CompoundBorder( borderOutOperand, new EmptyBorder(0,7,0,7));
                     panelOperand.setBorder(borderOperand);
 
-                    // 組込み関数名
+                    // Built-in function name
                     {
                         lblName = new JLabel();
                         panelOperand.add(lblName, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
-                        lblName.setText(Message.getString("settingoperationdialog.label.intrinsicname")); //組込み関数
+                        lblName.setText(Message.getString("settingoperationdialog.label.intrinsicname")); // Built-in functions
                     }
                     {
                         txtName = new JTextField();
                         panelOperand.add(txtName, new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
                     }
-                    // 演算子:+
+                    // Operator: +
                     {
                         JLabel lblOpPlus = new JLabel();
                         panelOperand.add(lblOpPlus, new GridBagConstraints(0, 1, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
-                        lblOpPlus.setText(Message.getString("settingoperationdialog.label.plus")); //演算数(+)
+                        lblOpPlus.setText(Message.getString("settingoperationdialog.label.plus")); // Number of operations (+)
                     }
                     {
                         txtOpAdd = new JTextField();
                         panelOperand.add(txtOpAdd, new GridBagConstraints(1, 1, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
                     }
-                    // 演算子:*
+                    // Operator: *
                     {
                         JLabel lblOpProduct = new JLabel();
                         panelOperand.add(lblOpProduct, new GridBagConstraints(0, 2, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
-                        lblOpProduct.setText(Message.getString("settingoperationdialog.label.product")); //演算数(*)
+                        lblOpProduct.setText(Message.getString("settingoperationdialog.label.product")); // Number of operations (*)
                     }
                     {
                         txtOpMul = new JTextField();
                         panelOperand.add(txtOpMul, new GridBagConstraints(1, 2, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
                     }
                     /***********
-                    // 演算子:-
+                    // Operator:-
                     {
-                        JLabel lblOpMinus = new JLabel();
-                        panelOperand.add(lblOpMinus, new GridBagConstraints(0, 3, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
-                        lblOpMinus.setText("演算数(-)");
+                        JLabel lblOpMinus = new JLabel ();
+                        panelOperand.add (lblOpMinus, new GridBagConstraints (0, 3, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets (0, 0, 0, 0), 0, 0));
+                        lblOpMinus.setText ("Number of operations (-)");
                     }
                     {
-                        txtOpSub = new JTextField();
-                        panelOperand.add(txtOpSub, new GridBagConstraints(1, 3, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
+                        txtOpSub = new JTextField ();
+                        panelOperand.add (txtOpSub, new GridBagConstraints (1, 3, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets (0, 0, 0, 0), 0, 0));
                     }
-                    // 演算子:/
+                    // Operator: /
                     {
-                        JLabel lblOpQuotient = new JLabel();
-                        panelOperand.add(lblOpQuotient, new GridBagConstraints(0, 4, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
-                        lblOpQuotient.setText("演算数(/)");
+                        JLabel lblOpQuotient = new JLabel ();
+                        panelOperand.add (lblOpQuotient, new GridBagConstraints (0, 4, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets (0, 0, 0, 0), 0, 0));
+                        lblOpQuotient.setText ("Number of operations (/)");
                     }
                     {
-                        txtOpDiv = new JTextField();
-                        panelOperand.add(txtOpDiv, new GridBagConstraints(1, 4, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
+                        txtOpDiv = new JTextField ();
+                        panelOperand.add (txtOpDiv, new GridBagConstraints (1, 4, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets (0, 0, 0, 0), 0, 0));
                     }
                     ***************/
 
-                    // 演算カウント追加削除ボタンパネル
+                    // Calculation count addition / deletion button panel
                     JPanel panelAddButtons = new JPanel();
                     FlowLayout panelAddButtonsLayout = new FlowLayout(FlowLayout.RIGHT);
                     Border borderAddButtons = new EmptyBorder(0,7,0,0);
@@ -386,7 +386,7 @@ public class SettingOperationDialog extends javax.swing.JDialog implements Actio
                     {
                         btnAdd = new JButton();
                         panelAddButtons.add(btnAdd);
-                        btnAdd.setText(Message.getString("dialog.common.button.add")); //追加
+                        btnAdd.setText(Message.getString("dialog.common.button.add")); //add to
                         btnAdd.setPreferredSize(minSize);
                         btnAdd.setMargin(minInsets);
                         btnAdd.addActionListener(this);
@@ -394,7 +394,7 @@ public class SettingOperationDialog extends javax.swing.JDialog implements Actio
                     {
                         btnReg = new JButton();
                         panelAddButtons.add(btnReg);
-                        btnReg.setText(Message.getString("dialog.common.button.update")); //更新
+                        btnReg.setText(Message.getString("dialog.common.button.update")); //update
                         btnReg.setPreferredSize(minSize);
                         btnReg.setMargin(minInsets);
                         btnReg.addActionListener(this);
@@ -402,7 +402,7 @@ public class SettingOperationDialog extends javax.swing.JDialog implements Actio
                     {
                         btnDel = new JButton();
                         panelAddButtons.add(btnDel);
-                        btnDel.setText(Message.getString("dialog.common.button.delete")); //削除
+                        btnDel.setText(Message.getString("dialog.common.button.delete")); //Delete
                         btnDel.setPreferredSize(minSize);
                         btnDel.setMargin(minInsets);
                         btnDel.addActionListener(this);
@@ -410,7 +410,7 @@ public class SettingOperationDialog extends javax.swing.JDialog implements Actio
                     {
                         btnClear = new JButton();
                         panelAddButtons.add(btnClear);
-                        btnClear.setText(Message.getString("dialog.common.button.clear")); //クリア
+                        btnClear.setText(Message.getString("dialog.common.button.clear")); //clear
                         btnClear.setPreferredSize(minSize);
                         btnClear.setMargin(minInsets);
                         btnClear.addActionListener(this);
@@ -418,7 +418,7 @@ public class SettingOperationDialog extends javax.swing.JDialog implements Actio
                 }
             }
 
-            setTitle(Message.getString("settingoperationdialog.dialog.title")); //演算数カウント
+            setTitle(Message.getString("settingoperationdialog.dialog.title")); // Count the number of operations
             this.setSize(560, 420);
 
         } catch (Exception e) {
@@ -427,42 +427,42 @@ public class SettingOperationDialog extends javax.swing.JDialog implements Actio
     }
 
     /**
-     * ダイアログを表示する。
-     * @return    ダイアログの閉じた時のボタン種別
+     * Display a dialog.
+     * @return Button type when the dialog is closed
      */
     public int showDialog() {
 
-        // 親フレーム中央に表示する。
+        // Display in the center of the parent frame.
         this.setLocationRelativeTo(this.getOwner());
 
-        // ダイアログ表示
+        // Dialog display
         this.setVisible(true);
 
         return this.result;
     }
 
     /**
-     * 演算カウントプロパティを設定する。
-     * @param properities		演算カウントプロパティ
+     * Set the operation count property.
+     * @param properities Arithmetic count properties
      */
     public void setOperandProperties(OperationProperties properities) {
         this.properities = properities;
 
-        // 組込み関数(キー)名でソートする
+        // Sort by built-in function (key) name
         Object[] keyList = properities.keySet().toArray();
         java.util.Arrays.sort(keyList);
 
-        // 演算カウントリストを作成する
+        // Create an arithmetic count list
         for (Object key : keyList) {
             OperationCount value = (OperationCount) properities.get(key);
 
-            // 行データの作成
+            // Create row data
             Object[] column = createOperationRowData(value);
-            // 行追加
+            // Add line
             modelOperation.addRow(column);
         }
 
-        // 四則演算FLOP設定
+        // Four arithmetic FLOP settings
         this.txtAdd.setText(String.valueOf(properities.getFlopAdd()));
         this.txtMul.setText(String.valueOf(properities.getFlopMul()));
         this.txtSub.setText(String.valueOf(properities.getFlopSub()));
@@ -471,55 +471,55 @@ public class SettingOperationDialog extends javax.swing.JDialog implements Actio
     }
 
     /**
-     * 演算カウントを取得する。
-     * @return		演算カウントプロパティ
+     * Get the operation count.
+     * @return operation count property
      */
     public OperationProperties getOperandProperties() {
 
-        // 演算カウントプロパティのクリア
+        // Clear operation count property
         properities.clear();
 
-        // 演算カウントリストから演算カウントの取得を行う
+        // Get the operation count from the operation count list
         int count = modelOperation.getRowCount();
         for (int i=0; i<count; i++) {
             OperationCount opc = new OperationCount();
 
             Object cell;
             String name = null;
-            // 名前
+            // name
             cell = modelOperation.getValueAt(i, 0);
             if (cell != null && !((String)cell).isEmpty() ) {
                 opc.setName((String) cell);
                 name = (String) cell;
             }
-            // 演算数(+)
+            // Number of operations (+)
             cell = modelOperation.getValueAt(i, 1);
             if (cell != null && !cell.toString().isEmpty() && StringUtils.isNumeric(cell.toString())) {
                 opc.setAdd( Integer.parseInt(cell.toString()));
             }
-            // 演算数(*)
+            // Number of operations (*)
             cell = modelOperation.getValueAt(i, 2);
             if (cell != null && !(cell.toString()).isEmpty() && StringUtils.isNumeric(cell.toString())) {
                 opc.setMul( Integer.parseInt(cell.toString()));
             }
-            // 演算数(−)
+            // Number of operations (-)
             cell = modelOperation.getValueAt(i, 3);
             if (cell != null && !(cell.toString()).isEmpty() && StringUtils.isNumeric(cell.toString())) {
                 opc.setSub( Integer.parseInt(cell.toString()));
             }
-            // 演算数(/)
+            // Number of operations (/)
             cell = modelOperation.getValueAt(i, 4);
             if (cell != null && !(cell.toString()).isEmpty() && StringUtils.isNumeric(cell.toString())) {
                 opc.setDiv( Integer.parseInt(cell.toString()));
             }
 
-            // 演算カウントの追加
+            // Add operation count
             if (name != null && !name.isEmpty()) {
                 properities.addOperationProperty(name, opc);
             }
         }
 
-        // 四則演算FLOP設定
+        // Four arithmetic FLOP settings
         {
 	        int value = 0;
 	        if (StringUtils.isNumeric(this.txtAdd.getText())) {
@@ -553,8 +553,8 @@ public class SettingOperationDialog extends javax.swing.JDialog implements Actio
     }
 
     /**
-     * ボタンクリックイベント
-     * @param event		イベント情報
+     * Button click event
+     * @param event Event information
      */
     @Override
     public void actionPerformed(ActionEvent event) {
@@ -563,65 +563,65 @@ public class SettingOperationDialog extends javax.swing.JDialog implements Actio
         if (event.getSource() == this.btnOk) {
             this.result = Constant.OK_DIALOG;
 
-            // 変更内容を取得する。
+            // Get the changes.
             getOperandProperties();
 
-            // 変更イベントを発生
+            // Fire a change event
             this.properities.firePropertyChange();
 
-            // ダイアログを閉じる。
+            // Close the dialog.
             dispose();
             return;
         }
-        // 閉じる
+        // close
         else if (event.getSource() == this.btnCancel) {
             this.result = Constant.CANCEL_DIALOG;
-            // ダイアログを閉じる。
+            // Close the dialog.
             dispose();
             return;
         }
-        // 更新
+        // update
         else if (event.getSource() == this.btnReg) {
-            // 入力チェック
+            // Check the input
             if (this.validateOperand(false) == false) {
-                // 入力ミス
+                // Typing error
                 return;
             }
 
-            // 更新を行う
+            // Update
             OperationCount opc = this.getOperationCount();
             setOperandList(opc);
 
         }
-        // 追加
+        // add to
         else if (event.getSource() == this.btnAdd) {
-            // 入力チェック
+            // Check the input
             if (this.validateOperand(true) == false) {
-                // 入力ミス
+                // Typing error
                 return;
             }
 
-            // 追加を行う
+            // make an addition
             OperationCount opc = this.getOperationCount();
             addOperandList(opc);
         }
-        // 削除
+        // Delete
         else if (event.getSource() == this.btnDel) {
-            // 選択行
+            // Selected line
             int selectedrow = this.tblOperand.getSelectedRow();
             if (selectedrow < 0) return;
 
-            int option = JOptionPane.showConfirmDialog(this, Message.getString("settingoperationdialog.confirmdialog.delete.message"), //削除してもよろしいですか？
-                    Message.getString("settingoperationdialog.confirmdialog.delete.title"), JOptionPane.OK_CANCEL_OPTION); //演算カウントの削除
+            int option = JOptionPane.showConfirmDialog(this, Message.getString("settingoperationdialog.confirmdialog.delete.message"), //Delete Are you sure you want to?
+                    Message.getString("settingoperationdialog.confirmdialog.delete.title"), JOptionPane.OK_CANCEL_OPTION); // Delete operation count
             if (option == JOptionPane.OK_OPTION) {
-                // 削除を行う
+                // Delete
                 OperationCount opc = this.getOperationCount();
                 removeOperationList(opc);
             }
         }
-        // 新規
+        // new
         else if (event.getSource() == this.btnClear) {
-            // 演算カウントパネルをクリアする。
+            // Clear the calculation count panel.
             clearOperation();
         }
 
@@ -629,39 +629,39 @@ public class SettingOperationDialog extends javax.swing.JDialog implements Actio
 
 
     /**
-     * 演算カウントリストの変更イベント.<br/>
-     * 選択行の演算カウント情報を設定パネルにセットする。
-     * @param event		イベント情報
+     * Operation count list change event. <br/>
+     * Set the calculation count information of the selected line in the setting panel.
+     * @param event Event information
      */
     @Override
     public void valueChanged(ListSelectionEvent event) {
 
         if (event.getSource() == this.tblOperand.getSelectionModel()) {
-            // 選択行を取得する。
+            // Get the selected row.
             int selectedrow = this.tblOperand.getSelectedRow();
             if (selectedrow < 0) return;
 
             Object cell;
-            // 名前
+            // name
             cell = modelOperation.getValueAt(selectedrow, 0);
             this.txtName.setText((String) cell);
 
-            // 演算数(+)
+            // Number of operations (+)
             cell = modelOperation.getValueAt(selectedrow, 1);
             this.txtOpAdd.setText(cell!=null ? cell.toString() : null);
 
-            // 演算数(*)
+            // Number of operations (*)
             cell = modelOperation.getValueAt(selectedrow, 2);
             this.txtOpMul.setText(cell!=null ? cell.toString() : null);
 /*
-            // 演算数(−)
-            cell = modelOperand.getValueAt(selectedrow, 3);
-            this.txtOpSub.setText(cell!=null ? cell.toString() : null);
+            // Number of operations (-)
+            cell = modelOperand.getValueAt (selectedrow, 3);
+            this.txtOpSub.setText (cell! = null? cell.toString (): null);
 
 
-            // 演算数(/)
-            cell = modelOperand.getValueAt(selectedrow, 4);
-            this.txtOpDiv.setText(cell!=null ? cell.toString() : null);
+            // Number of operations (/)
+            cell = modelOperand.getValueAt (selectedrow, 4);
+            this.txtOpDiv.setText (cell! = null? cell.toString (): null);
 */
         }
 
@@ -669,39 +669,39 @@ public class SettingOperationDialog extends javax.swing.JDialog implements Actio
     }
 
     /**
-     * 演算カウントリストモデルの行データの作成を行う。
-     * @param opc		キーワードデータ
-     * @return			行データ
+     * Create row data for the arithmetic count list model.
+     * @param opc Keyword data
+     * @return line data
      */
     private Object[] createOperationRowData(OperationCount opc) {
 
         Object[] column = new Object[6];
-        // 組込み関数名
+        // Built-in function name
         column[0] = opc.getName();
-        // 演算数(+)
+        // Number of operations (+)
         column[1] = opc.getAdd();
-        // 演算数(*)
+        // Number of operations (*)
         column[2] = opc.getMul();
-        // 演算数(-)
+        // Number of operations (-)
         column[3] = opc.getSub();
-        // 演算数(/)
+        // Number of operations (/)
         column[4] = opc.getDiv();
 
         return column;
     }
 
     /**
-     * 演算カウントパネルからキーワードオブジェクトを取得する。
-     * @return		演算カウントオブジェクト
+     * Get the keyword object from the calculation count panel.
+     * @return Operation count object
      */
     private OperationCount getOperationCount() {
 
         OperationCount opc = new OperationCount();
 
         String value = null;
-        // 組込み関数名
+        // Built-in function name
         opc.setName(this.txtName.getText());
-        // 演算数(+)
+        // Number of operations (+)
         value = this.txtOpAdd.getText();
         if (value != null && !value.isEmpty() && StringUtils.isNumeric(value)) {
             opc.setAdd(Integer.parseInt(value));
@@ -709,7 +709,7 @@ public class SettingOperationDialog extends javax.swing.JDialog implements Actio
         else {
             opc.setAdd(null);
         }
-        // 演算数(*)
+        // Number of operations (*)
         value = this.txtOpMul.getText();
         if (value != null && !value.isEmpty() && StringUtils.isNumeric(value)) {
             opc.setMul(Integer.parseInt(value));
@@ -718,21 +718,21 @@ public class SettingOperationDialog extends javax.swing.JDialog implements Actio
             opc.setMul(null);
         }
         /**********
-        // 演算数(-)
-        value = this.txtOpSub.getText();
-        if (value != null && !value.isEmpty() && StringUtils.is_int_str(value)) {
-            opc.setSub(Integer.parseInt(value));
+        // Number of operations (-)
+        value = this.txtOpSub.getText ();
+        if (value! = null &&! value.isEmpty () && StringUtils.is_int_str (value)) {
+            opc.setSub (Integer.parseInt (value));
         }
         else {
-            opc.setSub(null);
+            opc.setSub (null);
         }
-        // 演算数(/)
-        value = this.txtOpDiv.getText();
-        if (value != null && !value.isEmpty() && StringUtils.is_int_str(value)) {
-            opc.setDiv(Integer.parseInt(value));
+        // Number of operations (/)
+        value = this.txtOpDiv.getText ();
+        if (value! = null &&! value.isEmpty () && StringUtils.is_int_str (value)) {
+            opc.setDiv (Integer.parseInt (value));
         }
         else {
-            opc.setDiv(null);
+            opc.setDiv (null);
         }
         **************/
 
@@ -740,31 +740,31 @@ public class SettingOperationDialog extends javax.swing.JDialog implements Actio
     }
 
     /**
-     * 演算カウント設定を更新する。
-     * @param opc		演算カウント
+     * Update the calculation count setting.
+     * @param opc Operation count
      */
     private void setOperandList(OperationCount opc) {
 
-        // 選択行
+        // Selected line
         int selectedrow = this.tblOperand.getSelectedRow();
         if (selectedrow < 0) return;
 
-        // 行データの作成
+        // Create row data
         Object[] column = createOperationRowData(opc);
-        // 行更新
+        // Line update
         modelOperation.removeRow(selectedrow);
         modelOperation.insertRow(selectedrow, column);
         this.tblOperand.setRowSelectionInterval(selectedrow, selectedrow);
     }
 
     /**
-     * 演算カウントを追加する。
-     * @param opc		演算カウント
+     * Add an arithmetic count.
+     * @param opc Operation count
      */
     private void addOperandList(OperationCount opc) {
-        // 行データの作成
+        // Create row data
         Object[] column = createOperationRowData(opc);
-        // 行追加
+        // Add line
         modelOperation.addRow(column);
         int selectedrow = modelOperation.getRowCount()-1;
         this.tblOperand.setRowSelectionInterval(selectedrow, selectedrow);
@@ -772,72 +772,72 @@ public class SettingOperationDialog extends javax.swing.JDialog implements Actio
 
 
     /**
-     * 演算カウントを削除する。
-     * @param opc		演算カウント
+     * Delete the operation count.
+     * @param opc Operation count
      */
     private void removeOperationList(OperationCount opc) {
-        // 選択行
+        // Selected line
         int selectedrow = this.tblOperand.getSelectedRow();
         if (selectedrow < 0) return;
 
-        // 行削除
+        // Delete line
         modelOperation.removeRow(selectedrow);
 
-        // キーワード設定パネルをクリアする。
+        // Clear the keyword setting panel.
         clearOperation();
     }
 
     /**
-     * 演算カウントパネルをクリアする。
+     * Clear the calculation count panel.
      */
     private void clearOperation() {
 
-        // 設定をクリア
-        /** 組込み関数名テキストボックス */
+        // Clear settings
+        /** Built-in function name text box */
         this.txtName.setText(null);
-        /** 演算数(+)テキストボックス */
+        /** Number of operations (+) text box */
         this.txtOpAdd.setText(null);
-        /** 演算数(*)テキストボックス */
+        /** Number of operations (*) Text box */
         this.txtOpMul.setText(null);
         /********
-        // 演算数(-)テキストボックス
-        this.txtOpSub.setText(null);
-        // 演算数(/)テキストボックス
-        this.txtOpDiv.setText(null);
+        // Number of operations (-) text box
+        this.txtOpSub.setText (null);
+        // Number of operations (/) Text box
+        this.txtOpDiv.setText (null);
         **********/
     }
 
     /**
-     * 入力チェックを行う。
-     * @param  addflag		追加フラグ(true=演算カウント追加)
+     * Check the input.
+     * @param addflag Add flag (true = add operation count)
      */
     private boolean validateOperand(boolean addflag) {
-        // 名前は必須
+        // Name required
         String name = this.txtName.getText();
-        // 入力チェック
+        // Check the input
         if (name == null || name.isEmpty()) {
             JOptionPane.showMessageDialog(this,
-                    Message.getString("settingoperationdialog.errordialog.nameempty.message"), //組込み関数名を入力してください。
-                    Message.getString("dialog.common.error"), //エラー
+                    Message.getString("settingoperationdialog.errordialog.nameempty.message"), // Enter the built-in function name.
+                    Message.getString("dialog.common.error"), //error
                                 JOptionPane.ERROR_MESSAGE);
             return false;
         }
 
-        // 組込み関数名の重複チェックを行う。
+        // Check for duplicate built-in function names.
         int selectedrow = this.tblOperand.getSelectedRow();
         int count = this.modelOperation.getRowCount();
         boolean exists = false;
         for (int i=0; i<count; i++) {
-            // 組込み関数名
+            // Built-in function name
             String cellName = (String)(this.modelOperation.getValueAt(i, 0));
             if (name.equals(cellName)) {
                 if (addflag) {
-                    // 追加の場合は、同じ組込み関数名は禁止
+                    // In case of addition, the same built-in function name is prohibited
                     exists = true;
                     break;
                 }
                 else if (i != selectedrow) {
-                    // 更新の場合は、更新行以外に同じ組込み関数名が存在したらNG
+                    // In case of update, NG if the same built-in function name exists other than the update line
                     exists = true;
                     break;
                 }
@@ -845,7 +845,7 @@ public class SettingOperationDialog extends javax.swing.JDialog implements Actio
         }
         if (exists) {
             JOptionPane.showMessageDialog(this,
-                    Message.getString("settingoperationdialog.errordialog.duplication.message"), //重複した組込み関数名は登録できません。
+                    Message.getString("settingoperationdialog.errordialog.duplication.message"), // Duplicate built-in function names cannot be registered.
                     Message.getString("dialog.common.error"),
                     JOptionPane.ERROR_MESSAGE);
             return false;

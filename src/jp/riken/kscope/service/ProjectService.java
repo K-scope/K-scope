@@ -48,26 +48,26 @@ import jp.riken.kscope.properties.SourceProperties;
 
 
 /**
- * プロジェクトの管理を行うサービスクラス
+ * Service class that manages the project
  * @author RIKEN
  */
 public class ProjectService extends BaseService {
 
-    /** プロジェクトモデル */
+    /** Project model */
     private ProjectModel projectModel;
-    /** キーワードプロパティ */
+    /** Keyword Properties */
     private KeywordProperties propertiesKeyword;
-    /** 外部ツールプロパティ */
+    /** External tool properties */
     private ProgramProperties propertiesExtension;
-    /** 演算カウントプロパティ */
+    /** Arithmetic count property */
     private OperationProperties propertiesOperand;
-    /** ソースビュー設定 */
+    /** Source view settings */
     private SourceProperties propertiesSource;
-    /** プロファイラプロパティ設定 */
+    /** Profiler property settings */
     private ProfilerProperties propertiesProfiler;
-    /** プロジェクト設定 */
+    /** Project settings */
     private ProjectProperties propertiesProject;
-    /** 要求Byte/FLOP設定プロパティ */
+    /** Request Byte / FLOP configuration property */
     private RequiredBFProperties propertiesMemory;
     
     private RemoteBuildProperties rb_properties;
@@ -76,45 +76,45 @@ public class ProjectService extends BaseService {
     private Boolean debug_l2 = (debug && (System.getenv("DEBUG").equalsIgnoreCase("high"))); 
     private Boolean debug_l3 = (debug && (System.getenv("DEBUG").equalsIgnoreCase("high") || System.getenv("DEBUG").equalsIgnoreCase("extreme")));
     /**
-     * コンストラクタ
+     * Constructor
      */
     public ProjectService() {
         setProjectModel(new ProjectModel());
     }
 
     /**
-     * コンストラクタ
-     * @param model		プロジェクトモデル
+     * Constructor
+     * @param model Project model
      */
     public ProjectService(ProjectModel model) {
         this.setProjectModel(model);
     }
 
     /**
-     * 新規プロジェクトを作成する
-     * @param title			プロジェクトタイトル
-     * @param projectFolder		プロジェクトフォルダ
-     * @param list			    ファイルリスト
-     * @param type				ファイルタイプ
-     * @return			プロジェクト情報モデル
+     * Create a new project
+     * @param title Project title
+     * @param projectFolder project folder
+     * @param list File list
+     * @param type File type
+     * @return Project information model
      */
     public ProjectModel createProject(String title, File projectFolder, List<File> list, FILE_TYPE type) {
         if (this.projectModel == null) {
             setProjectModel(new ProjectModel());
         }
 
-        // プロジェクトタイトル
+        // Project title
         this.projectModel.setProjectTitle(title);
-        // プロジェクトフォルダ
+        // Project folder
         this.projectModel.setProjectFolder(projectFolder);
-        // ファイルタイプ
+        // File type
         this.projectModel.setFileType(type);
-        // プロジェクト選択ファイル
+        // Project selection file
         if (list != null) {
             SourceFile[] listFile = getSourceFiles(list.toArray(new File[0]), type, true);
             this.projectModel.setListXmlFile(listFile);
         }
-        // プロジェクト選択フォルダ・ファイル
+        // Project selection folder / file
         this.projectModel.setListSearchPath(list);
 
 //        this.propertiesProject.setProjectFolder(projectFolder.toString());
@@ -123,19 +123,19 @@ public class ProjectService extends BaseService {
     }
 
     /**
-     * プロジェクトにXMLフォルダを追加する。
-     * @param listAddFile		追加ファイルリスト
-     * @return		成否
+     * Add an XML folder to your project.
+     * @param listAddFile List of additional files
+     * @return Success or failure
      */
     public boolean addProjectSelectedFile(List<File> listAddFile) {
 
         if (listAddFile == null || listAddFile.size() <= 0) return false;
 
-        // 追加XMLファイルの取得
+        // Get additional XML file
         SourceFile[] listAdd = getSourceFiles(listAddFile.toArray(new File[0]), FILE_TYPE.XCODEML_XML, true);
         if (listAdd == null) return false;
 
-        // 重複ファイルチェック
+        // Duplicate file check
         List<SourceFile> listXml = this.projectModel.getListSelectedFile();
         for (SourceFile addfile : listAdd) {
             if (!listXml.contains(addfile)) {
@@ -147,19 +147,19 @@ public class ProjectService extends BaseService {
     }
 
     /**
-     * プロジェクトにFortranフォルダを追加する。
-     * @param listAddFile		追加ファイルリスト
-     * @return		成否
+     * Add a Fortran folder to your project.
+     * @param listAddFile List of additional files
+     * @return Success or failure
      */
     public boolean addProjectFortranFile(List<File> listAddFile) {
 
         if (listAddFile == null || listAddFile.size() <= 0) return false;
 
-        // 追加XMLファイルの取得
+        // Get additional XML file
         SourceFile[] listAdd = getSourceFiles(listAddFile.toArray(new File[0]), FILE_TYPE.FORTRANLANG, true);
         if (listAdd == null) return false;
 
-        // 重複ファイルチェック
+        // Duplicate file check
         List<SourceFile> listXml = this.projectModel.getListSelectedFile();
         for (SourceFile addfile : listAdd) {
             if (!listXml.contains(addfile)) {
@@ -171,16 +171,16 @@ public class ProjectService extends BaseService {
     }
 
     /**
-     * プロジェクトからXMLファイルを削除する。
-     * @param listDeleteFile		削除ファイルリスト
-     * @return		成否
+     * Delete the XML file from the project.
+     * @param listDeleteFile Delete file list
+     * @return Success or failure
      */
     public boolean deleteProjectSelectedFile(List<SourceFile> listDeleteFile) {
 
-        // 登録XMLファイルリスト
+        // Registered XML file list
         List<SourceFile> listXml = this.projectModel.getListSelectedFile();
 
-        // ファイルチェック
+        // File check
         for (SourceFile delfile : listDeleteFile) {
             if (listXml.contains(delfile)) {
                 listXml.remove(delfile);
@@ -191,12 +191,12 @@ public class ProjectService extends BaseService {
     }
 
     /**
-     * サブディレクトリからファイル一覧を取得する。
+     * Get a list of files from a subdirectory.
      *
-     * @param dir            選択ファイルリスト
-     * @param ftype            選択言語タイプ
-     * @param subDir            サブディレクトリを検索するかどうかのフラグ（true:サブディレクトリ検索/false:検索しない)
-     * @return サブディレクトリのファイルリスト
+     * @param dir Selected file list
+     * @param ftype Selected language type
+     * @param subDir Flag for whether to search subdirectories (true: subdirectory search / false: do not search)
+     * @return Subdirectory file list
      */
     private File[] searchFiles(File dir, FILE_TYPE ftype, boolean subDir) {
     	if (debug_l2) {
@@ -204,7 +204,7 @@ public class ProjectService extends BaseService {
     		System.out.println("KscopeProperties.SETTINGS_FOLDER=" +KscopeProperties.SETTINGS_FOLDER);
     	}
     	if (dir == null) return null;
-    	// settings.ppaフォルダは追加しない。
+    	// Do not add the settings.ppa folder.
     	if (dir.isDirectory() && KscopeProperties.SETTINGS_FOLDER.equalsIgnoreCase(dir.getName())) {
     		return null;
     	}
@@ -214,7 +214,7 @@ public class ProjectService extends BaseService {
         if (debug_l2) {
         	System.out.println("File filter: "+filter.toString());
         }
-        // ディレクトリ内のファイル一覧を取得する。
+        // Get the list of files in the directory.
         File[] fileList = dir.listFiles();
         if (debug_l3) {
         	System.out.println("File list:");
@@ -223,14 +223,14 @@ public class ProjectService extends BaseService {
         	}
         }
         for (int i = 0; i < fileList.length; i++) {
-            // サブディレクトリ検索フラグがtrueの場合のみ、サブディレクトリを検索する。
+            // Search subdirectories only if the subdirectory search flag is true.
             if (subDir && fileList[i].isDirectory()) {
                 File[] files = searchFiles(fileList[i], ftype, subDir);
                 if (files != null && files.length > 0) {
                     sublist.addAll(java.util.Arrays.asList(files));
                 }
             } else if (fileList[i].isFile()) {
-                // ファイルフィルタがnullの場合は、無条件追加
+                // If the file filter is null, add unconditionally
                 if (filter == null) {
                     sublist.add(fileList[i]);
                 } else if (filter.accept(fileList[i])) {
@@ -246,11 +246,11 @@ public class ProjectService extends BaseService {
     }
 
     /**
-     * ファイルからSourceFileオブジェクトを作成して、一覧を取得する。
-     * @param files            選択ファイルリスト
-     * @param ftype            ファイルタイプ
-     * @param subDir            サブディレクトリ検索フラグ
-     * @return SourceFileリスト
+     * Create a SourceFile object from the file and get the list.
+     * @param files Selected file list
+     * @param ftype file type
+     * @param subDir Subdirectory search flag
+     * @return SourceFile list
      */
     public SourceFile[] getSourceFiles(File files[], FILE_TYPE ftype,
             boolean subDir) {
@@ -276,7 +276,7 @@ public class ProjectService extends BaseService {
         }
 
         for (int j = 0; j < filelist.size(); j++) {
-            // 自動判定の場合は、ファイル拡張子からファイルタイプを取得する。
+            // For automatic judgment, get the file type from the file extension.
             FILE_TYPE type = FILE_TYPE.getFileType(filelist.get(j));
             if (type != FILE_TYPE.UNKNOWN) {
                 SourceFile src = new SourceFile(filelist.get(j), type);
@@ -289,12 +289,12 @@ public class ProjectService extends BaseService {
     }
 
     /**
-     * ディレクトリからSourceFileオブジェクトを作成して、一覧を取得する。
+     * Create a SourceFile object from the directory to get the list.
      *
-     * @param dir            選択ディレクトリ
-     * @param ftype            言語タイプ
-     * @param subDir            サブディレクトリ検索フラグ
-     * @return SourceFileリスト
+     * @param dir Selected directory
+     * @param ftype language type
+     * @param subDir Subdirectory search flag
+     * @return SourceFile list
      */
     public SourceFile[] getSourceFiles(File dir, FILE_TYPE ftype, boolean subDir) {
         File files[] = { dir };
@@ -302,16 +302,16 @@ public class ProjectService extends BaseService {
     }
 
     /**
-     * プロジェクトモデルを取得する。
-     * @return projectModel		プロジェクトモデル
+     * Get the project model.
+     * @return projectModel Project model
      */
     public ProjectModel getProjectModel() {
         return projectModel;
     }
     
         /**
-     * プロジェクトモデルを設定する
-     * @param projectModel 		プロジェクトモデル
+     * Set the project model
+     * @param projectModel Project model
      */
     public void setProjectModel(ProjectModel projectModel) {
         this.projectModel = projectModel;
@@ -319,21 +319,21 @@ public class ProjectService extends BaseService {
 
 
     /**
-     * プロジェクトを保存する
-     * @param	saveFolder	プロジェクトフォルダ
-     * @throws Exception   プロジェクト保存エラー
+     * Save the project
+     * @param saveFolder project folder
+     * @throws Exception Project save error
      */
     public void saveProject(File saveFolder) throws Exception {
 
         try {
-            // プロジェクトXMLファイル出力
+            // Project XML file output
             writeProjectModel(saveFolder);
 
-            // プロパティのXMLファイル出力
+            // Property XML file output
             writeProperties(saveFolder);
 
         } catch (Exception ex) {
-            // エラーメッセージ出力
+            // Error message output
             this.addErrorInfo(ex.getMessage());
 
             throw(ex);
@@ -342,93 +342,93 @@ public class ProjectService extends BaseService {
 
 
     /**
-     * プロジェクトXMLファイル出力する
-     * @param saveFolder    保存フォルダ
-     * @throws Exception 		プロパティ出力エラー
+     * Output project XML file
+     * @param saveFolder Save folder
+     * @throws Exception Property output error
      */
     private void writeProjectModel(File saveFolder) throws Exception {
 
-        // ドキュメント作成
+        // Document creation
         DocumentBuilderFactory dbfactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder docbuilder = dbfactory.newDocumentBuilder();
         org.w3c.dom.Document document = docbuilder.newDocument();
 
-        // project要素:ルート要素
+        // project element: root element
         org.w3c.dom.Element root = document.createElement("project");
         document.appendChild(root);
 
-        // プロジェクトモデル情報のノード出力
+        // Node output of project model information
         this.projectModel.writeProjectModel(root);
 
-        // 出力プロジェクトファイル
+        // Output project file
         File saveFile = new File(saveFolder.getAbsolutePath() + File.separator + KscopeProperties.PROJECT_FILE);
         
-        // XML ファイル出力
+        // XML file output
         writeXmlFile(saveFile, document);
 
     }
 
 
     /**
-     * プロパティのXMLファイル出力する
-     * @param saveFolder    保存フォルダ
-     * @throws Exception 		プロパティ出力エラー
+     * Output property XML file
+     * @param saveFolder Save folder
+     * @throws Exception Property output error
      */
     public void writeProperties(File saveFolder) throws Exception {
 
-        // ドキュメント作成
+        // Document creation
         DocumentBuilderFactory dbfactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder docbuilder = dbfactory.newDocumentBuilder();
         org.w3c.dom.Document document = docbuilder.newDocument();
 
-        // properties要素:ルート要素
+        // properties element: root element
         org.w3c.dom.Element root = document.createElement("properties");
         document.appendChild(root);
 
-        // settings要素
+        // settings element
         org.w3c.dom.Element elemSettings = document.createElement("settings");
         root.appendChild(elemSettings);
 
-        // ソースビュー設定出力
+        // Source view settings output
         this.propertiesSource.writeProperties(elemSettings);
-        // キーワードプロパティ設定出力
+        // Keyword property setting output
         this.propertiesKeyword.writeProperties(elemSettings);
-        // 外部ツールプロパティ設定出力
+        // External tool property setting output
         this.propertiesExtension.writeProperties(elemSettings);
-        // 演算カウントプロパティ設定出力
+        // Operation count property setting output
         this.propertiesOperand.writeProperties(elemSettings);
-        // プロファイラプロパティ設定出力
+        // Profiler property setting output
         this.propertiesProfiler.writeProperties(elemSettings);
-        // プロジェクトプロパティ設定出力
+        // Project property setting output
         this.propertiesProject.writeProperties(elemSettings);
-        // 要求Byte/FLOP設定プロパティ設定出力
+        // Request Byte / FLOP setting property setting output
         this.propertiesMemory.writeProperties(elemSettings);
         //this.rb_properties.writeProperties(elemSettings);
 
-        // settingsフォルダ作成
+        // Create settings folder
         File settingsFolder = new File(saveFolder.getAbsoluteFile() + File.separator + KscopeProperties.SETTINGS_FOLDER);
         if (!settingsFolder.exists()) {
             settingsFolder.mkdir();
         }
 
-        // 出力ファイル
+        // Output file
         File settingsXml = new File(settingsFolder.getAbsoluteFile() + File.separator + KscopeProperties.PROPERTIES_FILE);
 
-        // XML ファイル出力
+        // XML file output
         writeXmlFile(settingsXml, document);
 
     }
 
 
     /**
-     * XMLドキュメントをファイル出力する
-     * @param output		出力ファイル
-     * @param document		XMLドキュメント
-     * @throws Exception    XML出力エラー
+     * Output XML document to a file
+     * @param output Output file
+     * @param document XML document
+     * @throws Exception XML output error
      */
     private void writeXmlFile(File output, org.w3c.dom.Document document) throws Exception {
 
-        // DOM出力
+        // DOM output
         TransformerFactory transFactory = TransformerFactory.newInstance();
         transFactory.setAttribute("indent-number", 4);
         Transformer transformer = transFactory.newTransformer();
@@ -447,56 +447,56 @@ public class ProjectService extends BaseService {
 
 
     /**
-     * キーワードプロパティを設定する
-     * @param propertiesKeyword		キーワードプロパティ
+     * Set keyword properties
+     * @param properties Keyword keyword property
      */
     public void setPropertiesKeyword(KeywordProperties propertiesKeyword) {
         this.propertiesKeyword = propertiesKeyword;
     }
 
     /**
-     * 外部ツールプロパティを設定する
-     * @param propertiesExtension		外部ツールプロパティ
+     * Set external tool properties
+     * @param propertiesExtension External tool properties
      */
     public void setPropertiesExtension(ProgramProperties propertiesExtension) {
         this.propertiesExtension = propertiesExtension;
     }
 
     /**
-     * 演算カウントプロパティを設定する
-     * @param propertiesOperand			演算カウントプロパティ
+     * Set the operation count property
+     * @param propertiesOperand Arithmetic count property
      */
     public void setPropertiesOperand(OperationProperties propertiesOperand) {
         this.propertiesOperand = propertiesOperand;
     }
 
     /**
-     * ソースビュー設定を設定する
-     * @param propertiesSource		ソースビュー設定
+     * Set source view settings
+     * @param propertiesSource Source view settings
      */
     public void setPropertiesSource(SourceProperties propertiesSource) {
         this.propertiesSource = propertiesSource;
     }
 
     /**
-     * プロファイラプロパティ設定を設定する
-     * @param propertiesProfiler		プロファイラプロパティ設定
+     * Set profiler property settings
+     * @param propertiesProfiler Profiler property settings
      */
     public void setPropertiesProfiler(ProfilerProperties propertiesProfiler) {
         this.propertiesProfiler = propertiesProfiler;
     }
 
     /**
-     * プロジェクト設定を設定する
-     * @param propertiesProject		プロジェクト設定
+     * Set project settings
+     * @param propertiesProject Project settings
      */
     public void setPropertiesProject(ProjectProperties propertiesProject) {
     	this.propertiesProject = propertiesProject;
     }
 
     /**
-     * 要求Byte/FLOP設定プロパティ設定を設定する
-     * @param propertiesMemory		要求Byte/FLOP設定プロパティ
+     * Request Byte / FLOP setting property Set property setting
+     * @param propertiesMemory Request Byte / FLOP configuration properties
      */
     public void setPropertiesMemory(RequiredBFProperties propertiesMemory) {
     	this.propertiesMemory = propertiesMemory;
@@ -507,42 +507,42 @@ public class ProjectService extends BaseService {
     }
 
     /**
-     * プロジェクトを開く
-     * @param openFolder		プロジェクトフォルダ
-     * @throws Exception        プロジェクトオープンエラー
+     * Open the project
+     * @param openFolder project folder
+     * @throws Exception Project open error
      */
     public void openProject(File openFolder) throws Exception {
         try {
-            // プロジェクト設定ファイル
+            // Project configuration file
             File projectFile = new File(openFolder.getAbsolutePath() + File.separator + KscopeProperties.PROJECT_FILE);
-            // プロジェクト設定ファイルのロード
+            // Load the project configuration file
             this.projectModel.loadProjectModel(projectFile);
 
-            // プロジェクトプロパティのロード
-            // settingsフォルダ
+            // Load project properties
+            // settings folder
             File settingsFolder = new File(openFolder.getAbsoluteFile() + File.separator + KscopeProperties.SETTINGS_FOLDER);
 
-            // 出力ファイル
+            // Output file
             File settingsXml = new File(settingsFolder.getAbsoluteFile() + File.separator + KscopeProperties.PROPERTIES_FILE);
 
-            // ソースビュー設定出力
+            // Source view settings output
             this.propertiesSource.loadProperties(settingsXml);
-            // キーワードプロパティ設定出力
+            // Keyword property setting output
             this.propertiesKeyword.loadProperties(settingsXml);
-            // 外部ツールプロパティ設定出力
+            // External tool property setting output
             this.propertiesExtension.loadProperties(settingsXml);
-            // 演算カウントプロパティ設定出力
+            // Operation count property setting output
             this.propertiesOperand.loadProperties(settingsXml);
-            // プロファイラプロパティ設定出力
+            // Profiler property setting output
             this.propertiesProfiler.loadProperties(settingsXml);
-            // プロジェクト設定出力
+            // Project setting output
             this.propertiesProject.loadProperties(settingsXml);
-            // 要求Byte/FLOP設定プロパティ
+            // Request Byte / FLOP configuration property
             this.propertiesMemory.loadProperties(settingsXml);
             this.rb_properties.loadProperties(settingsXml);
 
         } catch (Exception ex) {
-            // エラーメッセージ出力
+            // Error message output
             this.addErrorInfo(ex.getMessage());
 
             throw(ex);
@@ -552,41 +552,41 @@ public class ProjectService extends BaseService {
 
 
     /**
-     * プロジェクトのプロパティを設定する
-     * @param model			プロパティモデル
+     * Set project properties
+     * @param model Property model
      */
     public void setProperties(PropertiesTableModel model) {
 
         String[] items = {
-            Message.getString("projectservice.properties.name"), //プロジェクト名
-            Message.getString("projectservice.properties.folder"), //プロジェクトフォルダ
-            Message.getString("projectservice.properties.createdate"), //作成日時
-            Message.getString("projectservice.properties.updatedate") //更新日時
+            Message.getString("projectservice.properties.name"), //Project name
+            Message.getString("projectservice.properties.folder"), // project folder
+            Message.getString("projectservice.properties.createdate"), // Creation date and time
+            Message.getString("projectservice.properties.updatedate") // Update date and time
         };
         String[] values = new String[4];
         if (this.projectModel != null) {
-            // プロジェクト名
+            // Project name
             values[0] = this.projectModel.getProjectTitle();
             if (this.projectModel.getProjectFolder() != null) {
-                // プロジェクトフォルダ
+                // Project folder
                 values[1] = this.projectModel.getProjectFolder().getAbsolutePath();
             }
-            // 作成日時
+            // Creation date and time
             values[2] = this.projectModel.getCreateDate();
-            // 更新日時
+            // Update date and time
             values[3] = this.projectModel.getUpdateDate();
         }
 
-        // プロパティモデルに設定する
-        // プロパティパネルへの通知はObserverにて通知される。
-        model.setTitle(Message.getString("projectservice.properties.title")); //プロジェクトプロパティ
+        // Set in property model
+        // Notification to the property panel is notified by Observer.
+        model.setTitle(Message.getString("projectservice.properties.title")); // Project properties
         model.setProperties(items, values);
 
     }
 
     /**
-     * プロパティ設定が完了しているか確認
-     * @return    true=プロパティ設定完了
+     * Check if property setting is completed
+     * @return true = Property setting completed
      */
     public boolean existAllProperties() {
     	if(this.propertiesExtension == null) return false;

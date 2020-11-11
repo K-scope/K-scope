@@ -18,33 +18,33 @@
 package jp.riken.kscope.language;
 
 /**
- * Directiveに対応したクラス。
- * 
+ * A class that supports Directive.
+ *
  * @author RIKEN
- * 
+ *
  */
 public class Directive extends jp.riken.kscope.language.Block {
-    /** シリアル番号 */
+    /** Serial number */
     private static final long serialVersionUID = -1028405799509858653L;
     private String argument;
 
     /**
-     * コンストラクタ。
+     * Constructor.
      *
      * @param parent
-     *          親ブロック
+     * Parent block
      */
     public Directive(Block parent) {
         super(parent);
     }
 
     /**
-     * コンストラクタ。
-     * 
+     * Constructor.
+     *
      * @param parent
-     *            親ブロック
+     * Parent block
      * @param argmnt
-     *            引数（メッセージ等）
+     * Arguments (messages, etc.)
      */
     public Directive(Block parent, String argmnt) {
         super(parent);
@@ -52,15 +52,15 @@ public class Directive extends jp.riken.kscope.language.Block {
     }
 
     /**
-     * コンストラクタ。
+     * Constructor.
      */
     public Directive() {
         super();
     }
 
     /**
-     * ブロックタイプの取得。
-     * 
+     * Get block type.
+     *
      * @return BlockType.DIRECTIVE
      */
     public BlockType getBlockType() {
@@ -68,19 +68,19 @@ public class Directive extends jp.riken.kscope.language.Block {
     }
 
     /**
-     * 本文のセット。
-     * 
+     * A set of text.
+     *
      * @param str
-     *            引数
+     * Argument
      */
     public void setArgument(String str) {
         this.argument = str;
     }
 
     /**
-     * 引数（メッセージ等）の取得。
-     * 
-     * @return 引数（メッセージ等）
+     * Get arguments (messages, etc.).
+     *
+     * @return argument (message etc.)
      */
     public String getArgument() {
         return argument;

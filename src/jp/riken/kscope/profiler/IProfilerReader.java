@@ -20,83 +20,83 @@ package jp.riken.kscope.profiler;
 import java.io.File;
 
 /**
- * プロファイラファイルの読込クラス
+ * Profiler file read class
  * @author RIKEN
  */
 public interface IProfilerReader {
 
     /**
-     * プロファイラファイルから読み込みを行う
-     * @param profilerfile		プロファイラファイル
-     * @param endian			エンディアン設定　LITTLE_ENDIAN:0x00 BIG_ENDIAN:0x01;
-     * @throws Exception   読込例外
+     * Read from profiler file
+     * @param profilerfile Profiler file
+     * @param endian Endian setting LITTLE_ENDIAN: 0x00 BIG_ENDIAN: 0x01;
+     * @throws Exception Read exception
      */
     public void readFile(File profilerfile, int endian) throws Exception;
 
     /**
-     * プロファイラファイルから読み込みを行う
-     * @param profilerfile		プロファイラファイル
-     * @throws Exception		読込例外
+     * Read from profiler file
+     * @param profilerfile Profiler file
+     * @throws Exception Read exception
      */
     public void readFile(File profilerfile) throws Exception;
 
     /**
-     * ファイルのエンディアンを設定する
-     * @param endian		エンディアン設定　LITTLE_ENDIAN:0x00 BIG_ENDIAN:0x01;
+     * Set the endianness of the file
+     * @param endian Endian setting LITTLE_ENDIAN: 0x00 BIG_ENDIAN: 0x01;
      */
     public void setEndian(int endian);
 
     /**
-     * 読込プロファイラファイル
-     * @return 読込プロファイラファイル
+     * Read profiler file
+     * @return Read profiler file
      */
     public File getProfFile();
 
     /**
-     * コスト情報リスト:ラインを取得する
-     * @return		コスト情報リスト:ライン(Dprof)
+     * Cost information list: Get the line
+     * @return Cost information list: Line (Dprof)
      */
     public ProfilerDprofData[] getCostInfoLine();
 
 
     /**
-     * コスト情報リスト:ループを取得する
-     * @return		コスト情報リスト:ループ(Dprof)
+     * Cost information list: Get a loop
+     * @return Cost information list: Loop (Dprof)
      */
     public ProfilerDprofData[] getCostInfoLoop();
 
     /**
-     * コスト情報リスト:手続を取得する
-     * @return		コスト情報リスト:手続(Dprof)
+     * Cost information list: Get the procedure
+     * @return Cost information list: Procedure (Dprof)
      */
     public ProfilerDprofData[] getCostInfoProcedure();
 
     /**
-     * コールグラフ情報(Dprof)を取得する
-     * @return		コールグラフ情報(Dprof)
+     * Get call graph information (Dprof)
+     * @return Call graph information (Dprof)
      */
     public ProfilerDprofData[] getDprofCallGraphInfo();
 
     /**
-     * イベントカウンタ情報(Eprof)を取得する
-     * @return		イベントカウンタ情報(Eprof)
+     * Get event counter information (Eprof)
+     * @return Event counter information (Eprof)
      */
     public ProfilerEprofData[] getEprofEventCounterInfo();
 
     /**
-     * プロファイラマジックキーを取得する
-     * @return		マジックキー
+     * Get profiler magic key
+     * @return magic key
      */
     public String getFileType();
 
     /**
-     * PAイベント指定値(EPRFのみ)を取得する.
-     *     Cache
-     *     Instructions
-     *     MEM_access
-     *     Performance
-     *     Statistics
-     * @return counterGroup		PAイベント指定値(EPRFのみ)
+     * Get the PA event specification value (EPRF only).
+     * Cache
+     * Instructions
+     * MEM_access
+     * Performance
+     * Statistics
+     * @return counterGroup PA event specification value (EPRF only)
      */
     public String getPaEventName();
 }

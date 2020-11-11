@@ -39,90 +39,90 @@ import jp.riken.kscope.model.InformationModel;
 import jp.riken.kscope.service.AppController;
 
 /**
- * エクスプローラツリー変更アクションクラス
+ * Explorer tree change action class
  * @author RIKEN
  */
 public class ExploreTreeChangeAction extends ActionBase implements TreeSelectionListener, ChangeListener {
 
     /**
-     * コンストラクタ
-     * @param controller	アプリケーションコントローラ
+     * Constructor
+     * @param controller Application controller
      */
     public ExploreTreeChangeAction(AppController controller) {
         super(controller);
     }
 
     /**
-     * アクション発生イベント
-     * @param event		イベント情報
+     * Action occurrence event
+     * @param event Event information
      */
     @Override
     public void actionPerformed(ActionEvent event) {
-        // 選択されているツリーノードの情報を表示する
+        // Display information for the selected tree node
         viewSelectedNodeInfo();
     }
 
     /**
-     * ツリーの選択変更イベント
-     * @param event			イベント情報
+     * Tree selection change event
+     * @param event Event information
      */
     @Override
     public void valueChanged(TreeSelectionEvent event) {
     	if (event.getNewLeadSelectionPath() == null) return;
 
-        // 選択されているツリーノードの情報を表示する
+        // Display information for the selected tree node
         viewSelectedNodeInfo();
     }
 
     /**
-     * タブの選択変更イベント
-     * @param event			イベント情報
+     * Tab selection change event
+     * @param event Event information
      */
     @Override
     public void stateChanged(ChangeEvent event) {
-        // 選択されているツリーノードの情報を表示する
+        // Display information for the selected tree node
         viewSelectedNodeInfo();
     }
 
     /**
-     * 選択されているツリーノードの情報を表示する
+     * Display information about the selected tree node
      */
     public void viewSelectedNodeInfo() {
         EXPLORE_PANEL panel = this.controller.getMainframe().getPanelExplorerView().getSelectedEnumPanel();
 
-        // 構造ツリー又はモジュールツリー
+        // Structure tree or module tree
         if (panel == EXPLORE_PANEL.LANGUAGE || panel == EXPLORE_PANEL.MODULE) {
-            // 構造ツリー,モジュールツリーのプロパティ設定アクション
+            // Structure tree, module tree property setting actions
             LanguagePropertiesAction action = new LanguagePropertiesAction(this.controller);
-            // プロパティの設定を行う。
+            // Set the property.
             action.setProperties();
 
             if (this.controller.getMainframe().getPanelAnalysisView().getSelectedPanel() != null
                 && this.controller.getMainframe().getPanelAnalysisView().getSelectedPanel().getEnumPanel() == ANALYSIS_PANEL.INFORMATION) {
-                // 付加情報の表示を行う
+                // Display additional information
                 setInformation();
             }
         }
         else if (panel == EXPLORE_PANEL.SOURCE || panel == EXPLORE_PANEL.XML) {
-            // ファイルのプロパティ設定アクション
+            // File property setting action
             FilePropertiesAction action = new FilePropertiesAction(this.controller);
-            // プロパティの設定を行う。
+            // Set the property.
             action.setProperties();
         }
     }
 
     /**
-     * 付加情報の表示を行う。
+     * Display additional information.
      */
     public void setInformation() {
 
-        // プロジェクトフォルダ
+        // Project folder
         File projectFolder = this.controller.getProjectModel().getProjectFolder();
 
-        // 選択構造ツリーノード
+        // Selected structure tree node
         DefaultMutableTreeNode[] nodes = this.controller.getMainframe().getPanelExplorerView().getSelectedNodes();
         if (nodes == null) return;
-        // ルートノードの場合は、子ノードとする
+        // If it is a root node, make it a child node
         if (nodes.length == 1 && nodes[0].isRoot()) {
             Object obj = nodes[0].getUserObject();
             if (obj != null && !(obj instanceof IInformation)) {
@@ -134,28 +134,28 @@ public class ExploreTreeChangeAction extends ActionBase implements TreeSelection
             }
         }
 
-        // 付加情報パネルモデルの設定
+        // Additional information panel model settings
         InformationModel infoModel = this.controller.getMainframe().getPanelAnalysisView().getPanelInformation().getModel();
-        // プロジェクトフォルダの設定
+        // Project folder settings
         infoModel.setProjectFolder(projectFolder);
 
-        // モデルのクリア
+        // Clear the model
         infoModel.clearInformation();
 
-        // 付加情報の追加
+        // Add additional information
         for (DefaultMutableTreeNode node : nodes) {
             Object obj = node.getUserObject();
             if (obj == null) continue;
             if (!(obj instanceof IInformation)) continue;
 
-            // 付加情報を探索する
+            // Search for additional information
             InformationEntry entry = new InformationEntry(this.controller.getFortranLanguage());
             LanguageVisitor visitor = new LanguageVisitor(entry);
             visitor.entryInformation((IInformation)obj);
             IInformation[] infos = entry.getListInformation();
             if (infos != null) {
             	for (IInformation info : infos) {
-                    // 付加情報の設定
+                    // Additional information settings
                     infoModel.setTitle(info.toString());
                     infoModel.addInformation(info);
             	}

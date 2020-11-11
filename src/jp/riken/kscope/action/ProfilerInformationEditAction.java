@@ -34,24 +34,24 @@ import jp.riken.kscope.service.AppController;
 
 
 /**
- * プロファイラ情報の付加情報追加アクションクラス
+ * Additional information addition action class for profiler information
  * @author RIKEN
  *
  */
 public class ProfilerInformationEditAction extends ActionBase {
 
     /**
-     * コンストラクタ
-     * @param controller	アプリケーションコントローラ
+     * Constructor
+     * @param controller Application controller
      */
     public ProfilerInformationEditAction(AppController controller) {
         super(controller);
     }
 
     /**
-     * アクションが実行可能であるかチェックする.<br/>
-     * アクションの実行前チェック、メニューのイネーブルの切替を行う。<br/>
-     * @return		true=アクションが実行可能
+     * Check if the action is executable. <br/>
+     * Check before executing the action and switch the menu enable. <br/>
+     * @return true = Action can be executed
      */
     @Override
     public boolean validateAction() {
@@ -59,36 +59,36 @@ public class ProfilerInformationEditAction extends ActionBase {
     }
 
     /**
-     * 付加情報編集イベント
-     * @param event		イベント情報
+     * Additional information editing event
+     * @param event Event information
      */
     @Override
     public void actionPerformed(ActionEvent event) {
 
-        // 実行チェック
+        // Execution check
         if (!validateAction()) return;
 
-        // ステータスメッセージ
-        final String message = Message.getString("mainmenu.edit.info"); //"付加情報編集"
+        // Status message
+        final String message = Message.getString("mainmenu.edit.info"); // "Edit additional information"
         Application.status.setMessageMain(message);
 
-        // 選択付加情報を取得する
+        // Get additional selection information
         IAnalisysComponent panel = this.controller.getMainframe().getPanelAnalysisView().getSelectedPanel();
         if (!(panel instanceof ProfilerTablePanel)) return;
         ProfilerBaseData value = ((ProfilerTablePanel)panel).getModel().getSelectedInfo();
         if (value == null) return;
-        // 追加プロファイラ情報の取得
+        // Get additional profiler information
         String addinfo = ((ProfilerTablePanel)panel).getModel().getSelectedText();
 
-        // 付加情報の編集を行う
+        // Edit additional information
         if (!editInformations(value, addinfo)) {
-            // 付加情報の編集のキャンセル
+            // Cancel editing of additional information
         	Application.status.setMessageMain(message +
         			Message.getString("action.common.cancel.status"));
             return;
         }
 
-        // 付加情報パネルをアクティブにする
+        // Activate the additional information panel
         this.controller.getMainframe().getPanelAnalysisView().setSelectedPanel(ANALYSIS_PANEL.INFORMATION);
         Application.status.setMessageMain(message +
     			Message.getString("action.common.done.status"));
@@ -96,8 +96,8 @@ public class ProfilerInformationEditAction extends ActionBase {
     }
 
     /**
-     * 選択付加情報を取得する
-     * @return		選択付加情報
+     * Get additional selection information
+     * @return Selectable additional information
      */
     private boolean isSelectedInformation() {
         IAnalisysComponent panel = this.controller.getMainframe().getPanelAnalysisView().getSelectedPanel();
@@ -111,38 +111,38 @@ public class ProfilerInformationEditAction extends ActionBase {
     }
 
     /**
-     * 付加情報の編集を行う
-     * @param infoNodes		付加情報範囲
-     * @param addText		追加付加情報
-     * @return    付加情報の編集の可否
+     * Edit additional information
+     * @param infoNodes Additional information range
+     * @param addText Additional additional information
+     * @return Whether to edit additional information
      */
     public boolean editInformations(IInformation[] infoNodes, String addText) {
         if (infoNodes == null) return false;
-        // 複数範囲の付加情報から付加情報クラスを取得する.
+        // Get the additional information class from multiple ranges of additional information.
         IInformation info = getProgramInformation(infoNodes);
 
-        // 付加情報ダイアログを表示する
+        // Display additional information dialog
         EditInformationEditAction action = new EditInformationEditAction(this.controller, FRAME_VIEW.ANALYSIS_VIEW);
         return action.editInformation(info, addText);
     }
 
     /**
-     * 複数範囲の付加情報から付加情報クラスを取得する.
-     * Programクラスにて付加情報範囲のInformationBlockを生成して返す. <br/>
-     * 付加情報範囲が１つだけの場合は、先頭の付加情報を返す.
-     * @param infos		付加情報範囲
-     * @return			付加情報
+     * Get the additional information class from multiple ranges of additional information.
+     * Generate and return InformationBlock of additional information range in Program class. <br/>
+     * If there is only one additional information range, the first additional information is returned.
+     * @param infos Additional information range
+     * @return Additional information
      */
     private IInformation getProgramInformation(IInformation[] infos) {
         if (infos == null) return null;
         Program fortran = this.controller.getFortranLanguage();
         if (fortran == null) return null;
         if (infos.length == 0) return null;
-        // 単一
+        // single
         if (infos.length == 1) {
             return infos[0];
         }
-        // 複数範囲
+        // Multiple ranges
         IInformation start = infos[0];
         IInformation end = infos[infos.length-1];
         if (start != null && end != null) {
@@ -154,28 +154,28 @@ public class ProfilerInformationEditAction extends ActionBase {
     }
 
     /**
-     * 付加情報の編集を行う
-     * @param value		    プロファイラデータ
-     * @param text		追加付加情報
-     * @return    付加情報の編集の可否
+     * Edit additional information
+     * @param value Profiler data
+     * @param text Additional additional information
+     * @return Whether to edit additional information
      */
 	public boolean editInformations(ProfilerBaseData value, String text) {
 	    IInformation info = getInformationBlock(value);
 	    if (info == null) return false;
 
-        // 付加情報ダイアログを表示する
+        // Display additional information dialog
         EditInformationEditAction action = new EditInformationEditAction(this.controller, FRAME_VIEW.ANALYSIS_VIEW);
         return action.editInformation(info, text);
 	}
 
 	/**
-	 * プロファイラデータから付加情報ブロックを取得する.
-	 * @param value		プロファイラデータ
-	 * @return			付加情報ブロック
-	 */
+* Get additional information block from profiler data.
+* @param value Profiler data
+* @return Additional information block
+*/
 	private IInformation getInformationBlock(ProfilerBaseData value) {
 		if (value == null) return null;
-		// コード行情報
+		// Code line information
 		CodeLine line = value.getCodeLine();
 		IBlock block = value.getBlock();
 		if (block == null) {

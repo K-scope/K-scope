@@ -27,23 +27,23 @@ import jp.riken.kscope.data.CodeLine;
 import jp.riken.kscope.information.InformationBlocks;
 
 /**
- * 代入文を表すクラス。
+ * A class that represents an assignment statement.
  *
  * @author RIKEN
  *
  */
 
 public class Substitution extends Block {
-	/** シリアル番号 */
+	/** Serial number */
 	private static final long serialVersionUID = 6743876701008619698L;
-	/** 左辺式 */
+	/** Left side type */
     private Variable leftVar;
-    /** 右辺式 */
+    /** Right-hand side expression */
     private Expression rightVar;
 
     /**
      *
-     * コンストラクタ。
+     * Constructor.
      */
     public Substitution() {
         super();
@@ -51,14 +51,14 @@ public class Substitution extends Block {
 
     /**
      *
-     * コンストラクタ。
-     * @param mama 親ブロック
+     * Constructor.
+     * @param mama Parent block
      */
     Substitution(Block mama) {
         super(mama);
     }
     /**
-     * ブロックタイプの取得。
+     * Get block type.
      *
      * @return BlockType.SUBSTITUTION
      */
@@ -68,12 +68,12 @@ public class Substitution extends Block {
     // ++++++++++++++++++++++++++++++++++++++++++++
 
     /**
-     * 右辺をセットする。
-     * @param ex 右辺の変数
+     * Set the right side.
+     * @param ex Variable on the right side
      */
     public void setRight(Expression ex) {
         rightVar = ex;
-        //TODO 本来はパース時点でセット出来れば無駄な処理をせずに済むので要検討
+        // TODO Originally, if it can be set at the time of parsing, unnecessary processing will be avoided, so consideration is required.
         CodeLine lineInfo = this.getStartCodeLine();
         String label = this.get_start().get_label();
         List<ProcedureUsage> pus = ex.getFuncCalls();
@@ -85,32 +85,32 @@ public class Substitution extends Block {
             pu.get_start().set_label(label);
             pu.get_end().set_label(label);
         }
-        // 親代入文を設定する.
+        // Set the parent assignment statement.
         if (rightVar != null) {
         	rightVar.setParentStatement(this);
         }
     }
     /**
-     * 左辺をセットする。
-     * @param var 左辺の変数
+     * Set the left side.
+     * @param var Variable on the left side
      */
     public void setLeft(Variable var) {
         leftVar = var;
-        // 親代入文を設定する.
+        // Set the parent assignment statement.
         if (leftVar != null) {
         	leftVar.setParentStatement(this);
         }
     }
     /**
-     * 右辺を取得する。
-     * @return 右辺の変数
+     * Get the right-hand side.
+     * @return Variable on the right side
      */
     public Expression getRightValue() {
         return rightVar;
     }
     /**
-     * 左辺を取得する。
-     * @return 左辺の変数
+     * Get the left side.
+     * @return Variable on the left side
      */
     public Variable getLeftValue() {
         return leftVar;
@@ -126,9 +126,9 @@ public class Substitution extends Block {
     }
 
     /**
-     * 付加情報ブロックコレクションを生成する。
+     * Generate an additional information block collection.
      *
-     * @return 付加情報ブロックコレクション
+     * @return Additional information block collection
      */
     @Override
     public InformationBlocks createInformationBlocks() {
@@ -144,10 +144,10 @@ public class Substitution extends Block {
     }
 
     /**
-     * idにマッチした情報ブロックを検索する。
+     * Search for information blocks that match id.
      * @param id
-     *          ID
-     * @return 見つかった情報ブロック。見つからなかった場合はnullが返ります。
+     * ID
+     * @return The information block found. If not found, null is returned.
      */
     @Override
     public IInformation findInformationBlockBy(String id) {
@@ -168,8 +168,8 @@ public class Substitution extends Block {
     }
 
     /**
-     * 式に含まれる全ての手続呼出のセットを返す。変数および手続呼出の添字も対象とする。 再帰呼び出し。
-     * @return 手続呼出のセット。
+     * Returns the set of all procedure calls contained in the expression. It also covers variables and procedure call subscripts. Recursive call.
+     * @return A set of procedure calls.
      */
     public Set<ProcedureUsage> getAllFunctions() {
     	Set<ProcedureUsage> leftCalls = this.leftVar.getAllFunctions();
@@ -187,9 +187,9 @@ public class Substitution extends Block {
 
 
     /**
-     * 同一ブロックであるかチェックする.
-     * @param block		ブロック
-	 * @return		true=一致
+     * Check if they are the same block.
+     * @param block block
+* @return true = match
      */
     @Override
 	public boolean equalsBlocks(Block block) {
@@ -219,10 +219,10 @@ public class Substitution extends Block {
 
 
     /**
-     * 同一ブロックを検索する
+     * Search for the same block
      *
-     * @param block    IInformationブロック
-     * @return 同一ブロック
+     * @param block IInformation block
+     * @return Same block
      */
     @Override
     public IInformation[] searchInformationBlocks(IInformation block) {
@@ -252,8 +252,8 @@ public class Substitution extends Block {
     }
 
 	/**
-	 * 変数リストを取得する.
-	 */
+* Get the variable list.
+*/
 	@Override
     public Set<Variable> getAllVariables() {
 		Set<Variable> list = new HashSet<Variable>();

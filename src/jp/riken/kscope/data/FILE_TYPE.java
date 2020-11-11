@@ -26,56 +26,56 @@ import jp.riken.kscope.Message;
 import jp.riken.kscope.properties.KscopeProperties;
 
 /**
- * ソースファイルの形式列挙クラス。 ソースファイルの形式のタイプリストである。 また、拡張子フィルタ、拡張子によるソースファイル形式の判断、取得を行う。
+ * Source file format enumeration class. A type list of source file formats. In addition, the extension filter and the source file format based on the extension are judged and acquired.
  *
  * @author RIKEN
  *
  */
 public enum FILE_TYPE {
-    /** 拡張子自動判定 */
-    FILE_AUTO(Message.getString("file_type.enum.suffix-auto")), //拡張子自動判定
-    /** Fortran:固定形式(72桁) */
-    FORTRAN_FIXED_72(Message.getString("file_type.enum.fortran-fix-72")), //FORTRAN:固定形式(72桁)
-    /** Fortran:固定形式(拡張桁数) */
-    FORTRAN_FIXED_EXT(Message.getString("file_type.enum.fortran-fix-exp")), //FORTRAN:固定形式(拡張桁数)
-    /** Fortran:自由形式 */
-    FORTRAN_FREE(Message.getString("file_type.enum.fortran-free")), //FORTRAN:自由形式
-    /** C言語 */
-    CLANG(Message.getString("file_type.enum.c-lang")), //C言語
+    /** Automatic extension judgment */
+    FILE_AUTO(Message.getString("file_type.enum.suffix-auto")), // Extension automatic judgment
+    /** Fortran: Fixed format (72 digits) */
+    FORTRAN_FIXED_72(Message.getString("file_type.enum.fortran-fix-72")), // FORTRAN: Fixed format (72 digits)
+    /** Fortran: Fixed format (extended number of digits) */
+    FORTRAN_FIXED_EXT(Message.getString("file_type.enum.fortran-fix-exp")), // FORTRAN: Fixed format (extended number of digits)
+    /** Fortran: Free format */
+    FORTRAN_FREE(Message.getString("file_type.enum.fortran-free")), // FORTRAN: Free format
+    /** C language */
+    CLANG(Message.getString("file_type.enum.c-lang")), // C language
     /** XcodeML(XML) */
     XCODEML_XML(Message.getString("file_type.enum.xcodeml")), //XCODEML
-    /** Fortran:全般 */
+    /** Fortran: General */
     FORTRANLANG(Message.getString("file_type.enum.fortran")), //Fortran
-    /** 不明 */
-    UNKNOWN(Message.getString("explore_panel.enum.unknown")); //不明
+    /** Unknown */
+    UNKNOWN(Message.getString("explore_panel.enum.unknown")); //unknown
 
-    /** Fortran:固定形式(72桁)拡張子 = null */
+    /** Fortran: Fixed format (72 digits) Extension = null */
     public static String[] EXT_FORTRAN_FIXED72 = KscopeProperties.getExtFortranFixed72();
-    /** Fortran:固定形式(拡張桁数) = {"f"} */
+    /** Fortran: Fixed format (extended number of digits) = {"f"} */
     public static String[] EXT_FORTRAN_FIXEDEXT = KscopeProperties.getExtFortranFixedExt();
-    /** Fortran:自由形式拡張子 = {"f90", "f95"} */
+    /** Fortran: Free-form extension = {"f90", "f95"} */
     public static String[] EXT_FORTRAN_FREE = KscopeProperties.getExtFortranFree();
-    /** C言語拡張子 = {"c", "h"} */
+    /** C language extension = {"c", "h"} */
     public static String[] EXT_CLANG = KscopeProperties.getExtCLang();
-    /** XcdoeML拡張子 = {"xml"} */
+    /** XcdoeML extension = {"xml"} */
     public static String[] EXT_XCODEML = KscopeProperties.getExtXcodeml();
 
-    /** ファイルタイプの表記文字列 */
+    /** File type notation string */
     private final String m_text;
 
     /*
-     * コンストラクタ
+     * Constructor
      *
-     * @param text ファイルタイプの表記文字列
+     * @param text File type notation string
      */
     private FILE_TYPE(String text) {
         this.m_text = text;
     }
 
     /**
-     * ファイルタイプの表記文字列を取得する。
+     * Get the notation string of the file type.
      *
-     * @return ファイルタイプの表記文字列
+     * @return File type notation string
      */
     @Override
 	public String toString() {
@@ -83,9 +83,9 @@ public enum FILE_TYPE {
     }
 
     /**
-     * ファイルタイプの表記文字列リストを取得する。
+     * Get the notation string list of the file type.
      *
-     * @return 表記文字列リスト
+     * @return Notation string list
      */
     public static String[] getTextList() {
         FILE_TYPE type[] = FILE_TYPE.values();
@@ -99,10 +99,10 @@ public enum FILE_TYPE {
     }
 
     /**
-     * ソースファイルフィルタを作成する。 Windowsの場合、ファイルフィルタは拡張子の大文字・小文字を区別しない。
-     * Linuxの場合、ファイルフィルタは拡張子の大文字・小文字を区別する。
+     * Create a source file filter. On Windows, the file filter is case insensitive.
+     * For Linux, the file filter is case sensitive.
      *
-     * @return Fortranファイルフィルタ
+     * @return Fortran file filter
      */
     public static FileFilter getSourceFilter() {
         FileFilter filter;
@@ -137,7 +137,7 @@ public enum FILE_TYPE {
 
             @Override
 			public String getDescription() {
-                String dest = Message.getString("file_type.enum.source.p"); //ソースファイル(
+                String dest = Message.getString("file_type.enum.source.p"); //source file(
                 for (int i = 0; EXT_FORTRAN_FIXED72 != null
                         && i < EXT_FORTRAN_FIXED72.length; i++) {
                     dest += "*." + EXT_FORTRAN_FIXED72[i] + ";";
@@ -162,10 +162,10 @@ public enum FILE_TYPE {
     }
 
     /**
-     * Fortranのファイルフィルタを作成する。 Windowsの場合、ファイルフィルタは拡張子の大文字・小文字を区別しない。
-     * Linuxの場合、ファイルフィルタは拡張子の大文字・小文字を区別する。
+     * Create a Fortran file filter. On Windows, the file filter is case insensitive.
+     * For Linux, the file filter is case sensitive.
      *
-     * @return Fortranファイルフィルタ
+     * @return Fortran file filter
      */
     public static FileFilter getFortranFilter() {
         FileFilter fort_filter;
@@ -196,7 +196,7 @@ public enum FILE_TYPE {
 
             @Override
 			public String getDescription() {
-                String dest = Message.getString("file_type.enum.fortran.p"); //"Fortranファイル("
+                String dest = Message.getString("file_type.enum.fortran.p"); // "Fortran file ("
                 for (int i = 0; EXT_FORTRAN_FIXED72 != null
                         && i < EXT_FORTRAN_FIXED72.length; i++) {
                     dest += "*." + EXT_FORTRAN_FIXED72[i] + ";";
@@ -218,10 +218,10 @@ public enum FILE_TYPE {
     }
 
     /**
-     * Fortran固定形式(72桁)のファイルフィルタを作成する。 Windowsの場合、ファイルフィルタは拡張子の大文字・小文字を区別しない。
-     * Linuxの場合、ファイルフィルタは拡張子の大文字・小文字を区別する。
+     * Create a Fortran fixed format (72 digit) file filter. On Windows, the file filter is case insensitive.
+     * For Linux, the file filter is case sensitive.
      *
-     * @return Fortran固定形式ファイルフィルタ
+     * @return Fortran fixed format file filter
      */
     public static FileFilter getFortranFixed72Filter() {
         FileFilter fort_filter;
@@ -243,7 +243,7 @@ public enum FILE_TYPE {
 
             @Override
 			public String getDescription() {
-                String dest = Message.getString("file_type.enum.fortran-fix-72.p"); //"Fortran固定形式(72桁)ファイル(";
+                String dest = Message.getString("file_type.enum.fortran-fix-72.p"); // "Fortran fixed format (72 digits) file (";
                 for (int i = 0; EXT_FORTRAN_FIXED72 != null
                         && i < EXT_FORTRAN_FIXED72.length; i++) {
                     dest += "*." + EXT_FORTRAN_FIXED72[i] + ";";
@@ -257,10 +257,10 @@ public enum FILE_TYPE {
     }
 
     /**
-     * Fortran固定形式(桁数拡張)のファイルフィルタを作成する。 Windowsの場合、ファイルフィルタは拡張子の大文字・小文字を区別しない。
-     * Linuxの場合、ファイルフィルタは拡張子の大文字・小文字を区別する。
+     * Fortran Create a fixed format (extended number of digits) file filter. On Windows, the file filter is case insensitive.
+     * For Linux, the file filter is case sensitive.
      *
-     * @return Fortran固定形式ファイルフィルタ
+     * @return Fortran fixed format file filter
      */
     public static FileFilter getFortranFixedExtFilter() {
         FileFilter fort_filter;
@@ -282,7 +282,7 @@ public enum FILE_TYPE {
 
             @Override
 			public String getDescription() {
-                String dest = Message.getString("file_type.enum.fortran-fix-exp.p"); //"Fortran固定形式(桁数拡張)ファイル(";
+                String dest = Message.getString("file_type.enum.fortran-fix-exp.p"); // "Fortran fixed format (extended number of digits) file (";
                 for (int i = 0; EXT_FORTRAN_FIXEDEXT != null
                         && i < EXT_FORTRAN_FIXEDEXT.length; i++) {
                     dest += "*." + EXT_FORTRAN_FIXEDEXT[i] + ";";
@@ -296,10 +296,10 @@ public enum FILE_TYPE {
     }
 
     /**
-     * Fortran自由形式形式のファイルフィルタを作成する。 Windowsの場合、ファイルフィルタは拡張子の大文字・小文字を区別しない。
-     * Linuxの場合、ファイルフィルタは拡張子の大文字・小文字を区別する。
+     * Fortran Create a free-form file filter. On Windows, the file filter is case insensitive.
+     * For Linux, the file filter is case sensitive.
      *
-     * @return Fortran固定形式ファイルフィルタ
+     * @return Fortran fixed format file filter
      */
     public static FileFilter getFortranFreeFilter() {
         FileFilter fort_filter;
@@ -321,7 +321,7 @@ public enum FILE_TYPE {
 
             @Override
 			public String getDescription() {
-                String dest = Message.getString("file_type.enum.fortran-free.p"); // "Fortran自由形式ファイル(";
+                String dest = Message.getString("file_type.enum.fortran-free.p"); // "Fortran free format file (";
                 for (int i = 0; i < EXT_FORTRAN_FREE.length; i++) {
                     dest += "*." + EXT_FORTRAN_FREE[i];
                     if (i < EXT_FORTRAN_FREE.length - 1)
@@ -335,10 +335,10 @@ public enum FILE_TYPE {
     }
 
     /**
-     * C言語のファイルフィルタを作成する。 Windowsの場合、ファイルフィルタは拡張子の大文字・小文字を区別しない。
-     * Linuxの場合、ファイルフィルタは拡張子の大文字・小文字を区別する。
+     * Create a C language file filter. On Windows, the file filter is case insensitive.
+     * For Linux, the file filter is case sensitive.
      *
-     * @return C言語ファイルフィルタ
+     * @return C language file filter
      */
     public static FileFilter getClangFilter() {
         FileFilter c_filter;
@@ -358,7 +358,7 @@ public enum FILE_TYPE {
 
             @Override
 			public String getDescription() {
-                String dest = Message.getString("file_type.enum.c-lang.p"); //"C言語ファイル(";
+                String dest = Message.getString("file_type.enum.c-lang.p"); // "C language file (";
                 for (int i = 0; i < EXT_CLANG.length; i++) {
                     dest += "*." + EXT_CLANG[i];
                     if (i < EXT_CLANG.length - 1)
@@ -372,9 +372,9 @@ public enum FILE_TYPE {
     }
 
     /**
-     * XcodeMLのファイルフィルタを作成する。
+     * Create an XcodeML file filter.
      *
-     * @return C言語ファイルフィルタ
+     * @return C language file filter
      */
     public static FileFilter getXcodemlFilter() {
         FileFilter xml_filter;
@@ -408,11 +408,11 @@ public enum FILE_TYPE {
     }
 
     /**
-     * Fortran固定形式(72桁)のファイルであるか判断する。
+     * Fortran Determines if the file is in fixed format (72 digits).
      *
      * @param file
-     *            ソースファイル
-     * @return true:Fortran固定形式/false:Fortran固定形式ではない。
+     *            source file
+     * @return true: Fortran fixed format / false: Not Fortran fixed format.
      */
     public static boolean isFortranFixed72File(File file) {
         FileFilter filter = getFortranFixed72Filter();
@@ -420,11 +420,11 @@ public enum FILE_TYPE {
     }
 
     /**
-     * Fortran固定形式(桁数拡張)のファイルであるか判断する。
+     * Fortran Determines if the file is in fixed format (extended number of digits).
      *
      * @param file
-     *            ソースファイル
-     * @return true:Fortran固定形式/false:Fortran固定形式ではない。
+     *            source file
+     * @return true: Fortran fixed format / false: Not Fortran fixed format.
      */
     public static boolean isFortranFixedExtFile(File file) {
         FileFilter filter = getFortranFixedExtFilter();
@@ -432,11 +432,11 @@ public enum FILE_TYPE {
     }
 
     /**
-     * Fortran自由形式のファイルであるか判断する。
+     * Fortran Determines if the file is in free format.
      *
      * @param file
-     *            ソースファイル
-     * @return true:Fortran自由形式/false:Fortran自由形式ではない。
+     *            source file
+     * @return true: Fortran free form / false: Fortran not free form.
      */
     public static boolean isFortranFreeFile(File file) {
         FileFilter filter = getFortranFreeFilter();
@@ -444,11 +444,11 @@ public enum FILE_TYPE {
     }
 
     /**
-     * Fortranのファイルであるか判断する。
+     * Determine if it is a Fortran file.
      *
      * @param file
-     *            ソースファイル
-     * @return true:Fortran/false:Fortranではない。
+     *            source file
+     * @return true: Fortran / false: Not Fortran.
      */
     public static boolean isFortranFile(File file) {
         FileFilter filter = getFortranFilter();
@@ -456,11 +456,11 @@ public enum FILE_TYPE {
     }
 
     /**
-     * C言語のファイルであるか判断する。
+     * Determine if the file is in C language.
      *
      * @param file
-     *            ソースファイル
-     * @return true:C言語/false:C言語ではない。
+     *            source file
+     * @return true: C language / false: Not C language.
      */
     public static boolean isClangFile(File file) {
         FileFilter filter = getClangFilter();
@@ -468,11 +468,11 @@ public enum FILE_TYPE {
     }
 
     /**
-     * XcdoeMLのファイルであるか判断する。
+     * Determine if it is an XcdoeML file.
      *
      * @param file
-     *            ソースファイル
-     * @return true:XcdoeML/false:XcdoeMLではない。
+     *            source file
+     * @return true: XcdoeML / false: Not XcdoeML.
      */
     public static boolean isXcodemlFile(File file) {
         FileFilter filter = getXcodemlFilter();
@@ -480,13 +480,13 @@ public enum FILE_TYPE {
     }
 
     /**
-     * ソースファイルの拡張子からファイルタイプを自動判定する。
-     * 拡張子から自動判定するのは、Fortran:固定形式(桁数拡張)->Fortran:自由形式->C言語の順番である。
-     * Fortran:固定形式(72桁)は拡張子から自動判定は行わない。Fortran:固定形式(桁数拡張)とする。
+     * Automatically determine the file type from the extension of the source file.
+     * The order of automatic judgment from the extension is Fortran: fixed format (extended number of digits)-> Fortran: free format-> C language.
+     * Fortran: Fixed format (72 digits) is not automatically judged from the extension. Fortran: Fixed format (extended number of digits).
      *
      * @param file
-     *            ソースファイル
-     * @return ファイルタイプ
+     *            source file
+     * @return File type
      */
     public static FILE_TYPE getFileType(File file) {
         if (isFortranFixed72File(file))
@@ -506,11 +506,11 @@ public enum FILE_TYPE {
     }
 
     /**
-     * ファイルタイプを取得する。
+     * Get the file type.
      *
      * @param idx
-     *            インデックス
-     * @return ファイルタイプ
+     *            index
+     * @return File type
      */
     public static FILE_TYPE getFileType(int idx) {
         FILE_TYPE type[] = FILE_TYPE.values();
@@ -518,104 +518,104 @@ public enum FILE_TYPE {
     }
 
     /**
-     * Fortran:固定形式(72桁)の拡張子リストを設定する。
+     * Fortran: Set a fixed format (72 digits) extension list.
      *
      * @param exts
-     *            拡張子リスト
+     * Extension list
      */
     public static void setExtensionsFixed72(String exts[]) {
         EXT_FORTRAN_FIXED72 = exts;
     }
 
     /**
-     * Fortran:固定形式(桁数拡張)の拡張子リストを設定する。
+     * Fortran: Set a fixed format (extended number of digits) extension list.
      *
      * @param exts
-     *            拡張子リスト
+     * Extension list
      */
     public static void setExtensionsFixedExt(String exts[]) {
         EXT_FORTRAN_FIXEDEXT = exts;
     }
 
     /**
-     * Fortran:自由形式の拡張子リストを設定する。
+     * Fortran: Set a free-form extension list.
      *
      * @param exts
-     *            拡張子リスト
+     * Extension list
      */
     public static void setExtensionsFree(String exts[]) {
         EXT_FORTRAN_FREE = exts;
     }
 
     /**
-     * C言語の拡張子リストを設定する。
+     * Set the C language extension list.
      *
      * @param exts
-     *            拡張子リスト
+     * Extension list
      */
     public static void setExtensionsClang(String exts[]) {
         EXT_CLANG = exts;
     }
 
     /**
-     * XcodeMLの拡張子リストを設定する。
+     * Set the extension list of XcodeML.
      *
      * @param exts
-     *            拡張子リスト
+     * Extension list
      */
     public static void setExtensionsXcodeML(String exts[]) {
         EXT_XCODEML = exts;
     }
 
     /**
-     * Fortran:固定形式(72桁)の拡張子リストを取得する。
+     * Fortran: Get a list of fixed format (72 digits) extensions.
      *
-     * @return 拡張子リスト
+     * @return Extension list
      */
     public static String[] getExtensionsFixed72() {
         return EXT_FORTRAN_FIXED72;
     }
 
     /**
-     * Fortran:固定形式(桁数拡張)の拡張子リストを取得する。
+     * Fortran: Get a fixed format (extended number of digits) extension list.
      *
-     * @return 拡張子リスト
+     * @return Extension list
      */
     public static String[] getExtensionsFixedExt() {
         return EXT_FORTRAN_FIXEDEXT;
     }
 
     /**
-     * Fortran:自由形式の拡張子リストを取得する。
+     * Fortran: Get a free-form extension list.
      *
-     * @return 拡張子リスト
+     * @return Extension list
      */
     public static String[] getExtensionsFree() {
         return EXT_FORTRAN_FREE;
     }
 
     /**
-     * C言語の拡張子リストを取得する。
+     * Get the C language extension list.
      *
-     * @return 拡張子リスト
+     * @return Extension list
      */
     public static String[] getExtensionsClang() {
         return EXT_CLANG;
     }
 
     /**
-     * XcodeMLの拡張子リストを取得する。
+     * Get the XcodeML extension list.
      *
-     * @return 拡張子リスト
+     * @return Extension list
      */
     public static String[] getExtensionsXcodeml() {
         return EXT_XCODEML;
     }
 
     /**
-     * 自身のファイルタイプのファイルフィルタを取得する。
+     * Get the file filter for your own file type.
      *
-     * @return ファイルフィルタ
+     * @return file filter
      */
     public FileFilter getFileFilter() {
         if (this.equals(FILE_AUTO)) {

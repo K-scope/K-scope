@@ -93,17 +93,17 @@ public class RemoteBuildProperties extends PropertiesBase {
 
 	private static final long serialVersionUID = 1L;
 
-	/** キーワード(ハイライト)設定リスト */
+	/** Keyword (highlight) setting list */
 	private List<RemoteBuildData> RB_data_list = new ArrayList<RemoteBuildData>();
 
 	private InputStream is = null;
 
 	/**
-	 * コンストラクタ
-	 * 
-	 * @throws Exception
-	 *             プロパティ読込エラー
-	 */
+* Constructor
+*
+* @throws Exception
+* Property read error
+*/
 	public RemoteBuildProperties() throws Exception {
 		if (debug) debug_l2 = (System.getenv("DEBUG").equalsIgnoreCase("high"));
 		loadProperties();
@@ -112,49 +112,49 @@ public class RemoteBuildProperties extends PropertiesBase {
 	}
 
 	/**
-	 * ソース設定プロパティをデフォルト設定ファイルから読み込む。
-	 * 
-	 * @throws Exception
-	 *             プロパティ読込エラー
-	 */
+* Read source configuration properties from the default configuration file.
+*
+* @throws Exception
+* Property read error
+*/
 	public void loadProperties() throws Exception {
 		is = null;
-		// リソースファイルの読込
+		// Read resource file
 		is = ResourceUtils.getPropertiesFile(KscopeProperties.PROPERTIES_FILE); // properties.xml
 		loadProperties(is);
 	}
 
 	/**
-	 * ソース設定プロパティを設定ファイルから読み込む。
-	 * 
-	 * @param propertiesFile
-	 *            ソース設定プロパティ設定ファイル
-	 * @throws Exception
-	 *             プロパティ読込エラー
-	 */
+* Read source configuration properties from the configuration file.
+*
+* @param propertiesFile
+* Source settings property settings file
+* @throws Exception
+* Property read error
+*/
 	public void loadProperties(File propertiesFile) throws Exception {
 
 		if (!propertiesFile.exists()) {
-			throw (new Exception(Message.getString("propertiesbase.exeption.notexist"))); // ソース設定プロパティファイルが存在しません。
+			throw (new Exception(Message.getString("propertiesbase.exeption.notexist"))); // Source settings properties file does not exist.
 		}
 
-		// リソースファイルの読込
+		// Read resource file
 		InputStream stream = new FileInputStream(propertiesFile);
 
-		// XMLファイルのパース
+		// Parsing the XML file
 		loadProperties(stream);
 	}
 
 	/**
-	 * ソース設定プロパティを設定ファイルから読み込む。
-	 * 
-	 * @param stream
-	 *            設定ファイルストリーム
-	 * @throws Exception
-	 *             プロパティ読込エラー
-	 */
+* Read source configuration properties from the configuration file.
+*
+* @param stream
+* Configuration file stream
+* @throws Exception
+* Property read error
+*/
 	public void loadProperties(InputStream stream) throws Exception {
-		// XMLファイルのパース
+		// Parsing the XML file
 		RB_data_list = parseRBProperty(stream, "//project");
 		// TODO: For backward compatibility
 		// if (!checkRBdata) {
@@ -163,23 +163,23 @@ public class RemoteBuildProperties extends PropertiesBase {
 	}
 
 	/**
-	 * キーワード(ハイライト)リストをクリアする。
-	 */
+* Clear the keyword (highlight) list.
+*/
 	public void clearList() {
 		RB_data_list = new ArrayList<RemoteBuildData>();
 	}
 
 	/**
-	 * キーワードを取得する
-	 * 
-	 * @param stream
-	 *            XML入力ストリーム
-	 * @param path
-	 *            キーワードXPATH
-	 * @return キーワードリスト
-	 * @throws Exception
-	 *             キーワードパースエラー
-	 */
+* Get keywords
+*
+* @param stream
+* XML input stream
+* @param path
+* Keyword XPATH
+* @return keyword list
+* @throws Exception
+* Keyword parsing error
+*/
 	public List<RemoteBuildData> parseRBProperty(InputStream stream, String path) throws Exception {
 
 		List<RemoteBuildData> list = new ArrayList<RemoteBuildData>();
@@ -205,7 +205,7 @@ public class RemoteBuildProperties extends PropertiesBase {
 				Node node = nodelist.item(i);
 				RemoteBuildData rbdata = new RemoteBuildData();
 
-				// 属性の取得
+				// Get attributes
 				NamedNodeMap attrs = node.getAttributes();
 				Node attrnode_key, attrnode_value, attrnode_description;
 				String key = null;
@@ -221,12 +221,12 @@ public class RemoteBuildProperties extends PropertiesBase {
 					commandline_option = attrnode_value.getNodeValue();
 				}
 
-				// プロパティ名
+				// Property name
 				attrnode_key = attrs.getNamedItem("key");
 				if (attrnode_key != null) {
 					key = attrnode_key.getNodeValue();
 				}
-				// プロパティ値
+				// Property value
 				attrnode_value = attrs.getNamedItem("value");
 				if (attrnode_value != null) {
 					value = attrnode_value.getNodeValue();
@@ -257,17 +257,17 @@ public class RemoteBuildProperties extends PropertiesBase {
 	}
 
 	/**
-	 * プロパティをDOMノードに出力する
-	 * 
-	 * @param node
-	 *            出力ノード
-	 */
+* Output properties to DOM node
+*
+* @param node
+* Output node
+*/
 	public void writeProperties(org.w3c.dom.Node node) {
 
-		// ドキュメントの取得
+		// Get documentation
 		org.w3c.dom.Document document = node.getOwnerDocument();
 
-		// コメントを追加
+		// add comment
 		{
 			org.w3c.dom.Comment comment = document
 					.createComment(Message.getString("remotebuildproperties.document.comment"));
@@ -297,7 +297,7 @@ public class RemoteBuildProperties extends PropertiesBase {
 				attr.setValue(rb_data.getDescription());
 				elem.setAttributeNode(attr);
 			}
-			// ノード追加
+			// Add node
 			node.appendChild(elem);
 		}
 	}

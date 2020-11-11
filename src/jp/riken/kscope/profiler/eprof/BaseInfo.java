@@ -17,86 +17,86 @@
 package jp.riken.kscope.profiler.eprof;
 
 /**
- * 基本情報
+ * Basic information
  * @author RIKEN
  */
 public class BaseInfo {
-    /** カウンタの呼び出し回数	int */
+    /** Counter call count int */
     private int callCount;
-    /** 経過時間	float	(ms) */
+    /** Elapsed time float (ms) */
     private float elapsTime;
-    /** ユーザCPU時間	float	(ms) */
+    /** User CPU time float (ms) */
     private float userTime;
-    /** システムＣＰＵ時間	float	(ms) */
+    /** System CPU time float (ms) */
     private float systemTime;
     
     
     /**
-     * コンストラクタ
+     * Constructor
      */
     public BaseInfo() {
     }
     
     
     /**
-     * カウンタの呼び出し回数
-     * @return		カウンタの呼び出し回数
+     * Number of counter calls
+     * @return Number of counter calls
      */
 	public int getCallCount() {
 		return callCount;
 	}
 	
 	/**
-	 * カウンタの呼び出し回数
-	 * @param count		カウンタの呼び出し回数
-	 */
+* Number of counter calls
+* @param count Number of counter calls
+*/
 	public void setCallCount(int count) {
 		this.callCount = count;
 	}
 	
 	/**
-	 * 経過時間
-	 * @return		経過時間
-	 */
+	 * elapsed time
+* @return elapsed time
+*/
 	public float getElapsTime() {
 		return elapsTime;
 	}
 	/**
-	 * 経過時間
-	 * @param time		経過時間
-	 */
+	 * elapsed time
+* @param time elapsed time
+*/
 	public void setElapsTime(float time) {
 		this.elapsTime = time;
 	}
 	
 	/**
-	 * ユーザCPU時間
-	 * @return		ユーザCPU時間
-	 */
+* User CPU time
+* @return user CPU time
+*/
 	public float getUserTime() {
 		return userTime;
 	}
 	
 	/**
-	 * ユーザCPU時間
-	 * @param time		ユーザCPU時間
-	 */
+* User CPU time
+* @param time User CPU time
+*/
 	public void setUserTime(float time) {
 		this.userTime = time;
 	}
 	
 	/**
-	 * システムＣＰＵ時間
-	 * @return		システムＣＰＵ時間
-	 */
+* System CPU time
+* @return system CPU time
+*/
 	public float getSystemTime() {
 		return systemTime;
 	}
 	
 	/**
-	 * システムＣＰＵ時間
-	 * @param time		システムＣＰＵ時間
-	 */
+* System CPU time
+* @param time System CPU time
+*/
 	public void setSystemTime(float time) {
 		this.systemTime = time;
 	}

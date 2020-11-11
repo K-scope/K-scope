@@ -24,28 +24,28 @@ import java.util.Date;
 import jp.riken.kscope.utils.FileUtils;
 
 /**
- * ソースファイルクラス ソースファイル名、ファイルタイプを持つ。
+ * Source file class Has a source file name and file type.
  *
  * @author RIKEN
  *
  */
 public class SourceFile implements Serializable {
 
-	/** シリアル番号 */
+	/** Serial number */
     private static final long serialVersionUID = -1930551091523251203L;
-    /** ソースファイル */
+    /** source file */
     private File m_file;
-    /** 言語タイプ */
+    /** Language type */
     private FILE_TYPE m_fileType;
-    /** 更新日付 */
+    /** Update date */
     private Date modifyDate;
-    /** 関連ファイル:ソースファイルの場合は、XMLファイル, XMLファイルの場合はソースファイル */
+    /** Related files: XML files for source files, source files for XML files */
     private SourceFile relationFile = null;
 
     /**
-     * コンストラクタ
-     * @param  file			ソースファイル
-     * @param  fileType		言語タイプ
+     * Constructor
+     * @param file Source file
+     * @param fileType Language type
      */
     public SourceFile(File file, FILE_TYPE fileType) {
     	this.m_file = file;
@@ -57,8 +57,8 @@ public class SourceFile implements Serializable {
     }
 
     /**
-     * コンストラクタ
-     * @param  filename		ファイル名
+     * Constructor
+     * @param filename File name
      */
     public SourceFile(String filename) {
     	this.m_file = new File(filename);
@@ -69,8 +69,8 @@ public class SourceFile implements Serializable {
     }
 
     /**
-     * コンストラクタ
-     * @param  file			ソースファイル
+     * Constructor
+     * @param file Source file
      */
     public SourceFile(File file) {
     	this.m_file = file;
@@ -81,8 +81,8 @@ public class SourceFile implements Serializable {
     }
 
     /**
-     * コピーコンストラクタ
-     * @param source		コピー元ソースファイル
+     * Copy constructor
+     * @param source Copy source source file
      */
     public SourceFile(SourceFile source) {
         if (source.m_file != null) {
@@ -93,32 +93,32 @@ public class SourceFile implements Serializable {
     }
 
     /**
-     * ソースファイルを取得する。
+     * Get the source file.
      *
-     * @return ソースファイル
+     * @return source file
      */
     public File getFile() {
         return m_file;
     }
 
     /**
-     * ファイルタイプ
-     * @return ファイルタイプ
+     * File type
+     * @return File type
      */
     public FILE_TYPE getFileType() {
         return m_fileType;
     }
 
     /**
-     * ファイルタイプ
-     * @param  type ファイルタイプ
+     * File type
+     * @param type File type
      */
     public void setFileType(FILE_TYPE type) {
         m_fileType = type;
     }
 
     /**
-     * ソースファイルのファイル名のみを返す。
+     * Returns only the filename of the source file.
      */
     @Override
     public String toString() {
@@ -128,8 +128,8 @@ public class SourceFile implements Serializable {
     }
 
     /**
-     * ソースファイルのパス名を返す。
-     * @return   ソースファイルパス名
+     * Returns the pathname of the source file.
+     * @return source file pathname
      */
     public String getPath() {
         if (m_file == null) return null;
@@ -137,11 +137,11 @@ public class SourceFile implements Serializable {
     }
 
     /**
-     * ソースファイルが等しいかチェックする。 m_fileが等しければ等しいとする。
+     * Check if the source files are equal. If m_files are equal, they are equal.
      *
      * @param obj
-     *            ソースファイル
-     * @return true:等しい/false:等しくない
+     *            source file
+     * @return true: equal / false: not equal
      */
     @Override
     public boolean equals(Object obj) {
@@ -177,9 +177,9 @@ public class SourceFile implements Serializable {
     }
 
     /**
-     * パス文字列の先頭から./を削除する
-     * @param path		パス文字列
-     * @return			'./'削除パス文字列
+     * Remove ./ from the beginning of the path string
+     * @param path path string
+     * @return'./' Delete path string
      */
     private String trimPath(String path) {
         if (path == null) return null;
@@ -194,8 +194,8 @@ public class SourceFile implements Serializable {
 
 
     /**
-     * ソースファイル情報を出力する
-     * @return		ソースファイル情報
+     * Output source file information
+     * @return Source file information
      */
     public String toStringInfo() {
     	if (m_file != null)
@@ -205,8 +205,8 @@ public class SourceFile implements Serializable {
     }
 
     /**
-     * ソースファイルを設定する
-     * @param file		ソースファイル
+     * Set the source file
+     * @param file Source file
      */
     public void setFile(File file) {
         this.m_file = file;
@@ -217,9 +217,9 @@ public class SourceFile implements Serializable {
     }
 
 	/**
-	 * ファイルパス文字列のハッシュコードを返す。
-	 * @return		ハッシュコード
-	 */
+* Returns the hash code of the file path string.
+* @return hash code
+*/
 	@Override
 	public int hashCode() {
 		if (this.m_file == null) return 0;
@@ -228,25 +228,25 @@ public class SourceFile implements Serializable {
 	}
 
 	/**
-	 * 更新日付を取得する
-	 * @return		更新日付
-	 */
+* Get update date
+* @return Update date
+*/
 	public Date getModifyDate() {
 		return modifyDate;
 	}
 
 	/**
-	 * 更新日付を設定する.
-	 * @param modifyDate		更新日付
-	 */
+* Set the update date.
+* @param modifyDate Modify date
+*/
 	public void setModifyDate(Date modifyDate) {
 		this.modifyDate = modifyDate;
 	}
 
 	/**
-	 * 更新日付を設定する.
-	 * @param file		更新ファイル
-	 */
+* Set the update date.
+* @param file Update file
+*/
 	public void setModifyDate(File file) {
 		try {
 			setModifyDate(new Date(file.lastModified()));
@@ -254,27 +254,27 @@ public class SourceFile implements Serializable {
 	}
 
 	/**
-	 * 関連ファイルを取得する.
-	 * ソースファイルの場合は、XMLファイル, XMLファイルの場合はソースファイルを取得する.
-	 * @return		関連ファイル
-	 */
+* Get related files.
+* Get the XML file for the source file, and the source file for the XML file.
+* @return Related files
+*/
 	public SourceFile getRelationFile() {
 		return this.relationFile;
 	}
 
 	/**
-	 * 関連ファイルを設定する.
-	 * ソースファイルの場合は、XMLファイル, XMLファイルの場合はソースファイルを設定する.
-	 * @param file		関連ファイル
-	 */
+* Set related files.
+* Set the XML file for the source file and the source file for the XML file.
+* @param file Related files
+*/
 	public void setRelationFile(SourceFile file) {
 		this.relationFile = file;
 	}
 
 	/**
-	 * 更新日付が有効であるかチェックする.
-	 * @return		true=更新日付が有効
-	 */
+* Check if the update date is valid.
+* @return true = Update date is valid
+*/
 	public boolean validateModifyDate() {
 		if (this.modifyDate == null) return false;
 		long time = this.modifyDate.getTime();
@@ -282,8 +282,8 @@ public class SourceFile implements Serializable {
 	}
 
 	/**
-	 * 更新日付を更新する.
-	 */
+* Update the update date.
+*/
 	public void updateModifyDate() {
 		if (m_file == null) return;
 		try {

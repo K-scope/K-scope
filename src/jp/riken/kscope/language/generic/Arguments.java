@@ -24,24 +24,24 @@ import jp.riken.kscope.language.Expression;
 import jp.riken.kscope.language.ProcedureUsage;
 
 /**
- * 総称関数の仮引数リストクラス。
+ * Generic function formal parameter list class.
  *
  * @author RIKEN
  *
  */
 public class Arguments extends java.util.ArrayList<Argument> implements
         Serializable {
-	/** シリアル番号 */
+	/** Serial number */
 	private static final long serialVersionUID = -6787020569904689390L;
 
     /**
-     * 引数の型と属性が適合しているか。
+     * Are the argument types and attributes matched?
      *
      * @param procedure
-     *         対象となる関数
+     * Target function
      *
-     * @return true:  適合している。<br>
-     *         false: 適合していない。
+     * @return true: Conforms. <br>
+     * false: Not compatible.
      */
     public boolean isSameArguments(ProcedureUsage procedure) {
         if (procedure == null) { return false; }
@@ -49,13 +49,13 @@ public class Arguments extends java.util.ArrayList<Argument> implements
     }
 
     /**
-     * 実引数の型と属性が適合しているか。
+     * Are the actual argument types and attributes matched?
      *
      * @param actualArguments
-     *         実引数リスト
+     * List of actual arguments
      *
-     * @return true:  適合している。<br>
-     *         false: 適合していない。
+     * @return true: Conforms. <br>
+     * false: Not compatible.
      */
     public boolean isSameArguments(List<Expression> actualArguments) {
         boolean result = true;

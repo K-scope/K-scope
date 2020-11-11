@@ -62,88 +62,88 @@ import jp.riken.kscope.properties.KeywordProperties;
 import jp.riken.kscope.utils.StringUtils;
 
 /**
- * キーワード設定ダイアログクラス
+ * Keyword setting dialog class
  * @author RIKEN
  *
  */
 public class SettingKeywordDialog extends javax.swing.JDialog implements ActionListener, ListSelectionListener, ItemListener {
 
-    /** シリアル番号 */
+    /** Serial number */
     private static final long serialVersionUID = 1L;
 
-    /** キャンセルボタン */
+    /** Cancel button */
     private JButton btnCancel;
-    /** OKボタン */
+    /** OK button */
     private JButton btnOk;
-    /** 適用ボタン */
+    /** Apply button */
     private JButton btnApply;
-    /** キーワード名ラベル */
+    /** Keyword name label */
     private JLabel lblName;
-    /** キーワード名テキストボックス */
+    /** Keyword name text box */
     private JTextField txtName;
-    /** キーワードラベル */
+    /** Keyword label */
     private JLabel lblKeyword;
-    /** キーワードテキストボックス */
+    /** Keyword text box */
     private JTextField txtKeyword;
-    /** フォント色ラベル */
+    /** Font color label */
     private JLabel lblColor;
-    /** フォント色ボタン */
+    /** Font color button */
     private JColorButton btnColor;
-    /** スタイルラベル */
+    /** Style label */
     private JLabel lblStyle;
-    /** イタリックチェックボックス */
+    /** Italic checkbox */
     private JCheckBox chkItalic;
-    /** ボイドチェックボックス */
+    /** Void checkbox */
     private JCheckBox chkBold;
-    /** 有効チェックボックス */
+    /** Valid checkbox */
     private JCheckBox chkEnabled;
-    /** オプションラベル */
+    /** Option label */
     private JLabel lblOption;
-    /** 大文字小文字区別チェックボックス(true=大文字・小文字の区別を行う) */
+    /** Case-sensitive checkbox (true = case-sensitive) */
     private JCheckBox chkSensitivecase;
-    /** 正規表現チェックボックス */
+    /** Regular expression checkbox */
     private JCheckBox chkRegex;
-    /** 登録ボタン */
+    /** Registration button */
     private JButton btnReg;
-    /** 追加ボタン */
+    /** Add button */
     private JButton btnAdd;
-    /** 削除ボタン */
+    /** Delete button */
     private JButton btnDel;
-    /** 新規ボタン */
+    /** New button */
     private JButton btnNew;
 
-    /** キーワードリスト */
+    /** Keyword list */
     private JTable tblKeyword;
-    /** キーワードリストデータ */
+    /** Keyword list data */
     private DefaultTableModel modelKeyword;
-    /** 有効チェックボックス付きボーダ */
+    /** Border with valid checkbox */
     private JComponentTitledBorder titleBorder;
-    /** キーワード設定パネル */
+    /** Keyword setting panel */
     private JPanel panelKeyword;
 
-    /** ダイアログの戻り値 */
+    /** Dialog return value */
     private int result = Constant.CANCEL_DIALOG;
 
-    /** キーワードプロパティ */
+    /** Keyword Properties */
     KeywordProperties properities;
-    /** 設定リストヘッダー */
-    private final String[] COLUMN_HEADER = { Message.getString("dialog.common.button.apply"), //適用
-                                             Message.getString("settingkeyworddialog.columnheader.caption"), //キーワード名
-                                             Message.getString("mainmenu.project.config.keyword"), //キーワード
-                                             Message.getString("settingkeyworddialog.columnheader.fontcolor"), //フォント色
-                                             Message.getString("jfontchooserdialog.fontpanel.label.style"), //スタイル
-                                             Message.getString("settingkeyworddialog.columnheader.upper-lower"), //大文字・小文字区別
-                                             Message.getString("searchfinddialog.checkbox.regex"), //正規表現
-                                             Message.getString("settingkeyworddialog.columnheader.forbidden") //キーワード編集不可
+    /** Settings list header */
+    private final String[] COLUMN_HEADER = { Message.getString("dialog.common.button.apply"), //Apply
+                                             Message.getString("settingkeyworddialog.columnheader.caption"), // keyword name
+                                             Message.getString("mainmenu.project.config.keyword"), //keyword
+                                             Message.getString("settingkeyworddialog.columnheader.fontcolor"), // Font color
+                                             Message.getString("jfontchooserdialog.fontpanel.label.style"), //style
+                                             Message.getString("settingkeyworddialog.columnheader.upper-lower"), // Case sensitive
+                                             Message.getString("searchfinddialog.checkbox.regex"), //Regular expressions
+                                             Message.getString("settingkeyworddialog.columnheader.forbidden") // Keywords cannot be edited
                                              };
     private final int[] COLUMN_MINWIDTH = { 50, 120, 160, 80, 80, 120, 80, 0, 0 };
     private final int[] COLUMN_MAXWIDTH = { 50, 0, 0, 80, 80, 120, 80, -1, -1 };
-    /** COLUMN_HEADER.length + 1 : 末尾にキーワードロック(非表示) */
+    /** COLUMN_HEADER.length + 1: Keyword lock at the end (hidden) */
     private final int COLUMN_COUNT = 8;
 
     /**
-     * コンストラクタ
-     * @param frame		親フレーム
+     * Constructor
+     * @param frame Parent frame
      */
     public SettingKeywordDialog(JFrame frame) {
         super(frame);
@@ -151,9 +151,9 @@ public class SettingKeywordDialog extends javax.swing.JDialog implements ActionL
     }
 
     /**
-     * コンストラクタ
-     * @param frame		親フレーム
-     * @param modal		true=モーダルダイアログを表示する
+     * Constructor
+     * @param frame Parent frame
+     * @param modal true = Show modal dialog
      */
     public SettingKeywordDialog(Frame frame, boolean modal) {
         super(frame, modal);
@@ -161,10 +161,10 @@ public class SettingKeywordDialog extends javax.swing.JDialog implements ActionL
     }
 
     /**
-     * コンストラクタ
-     * @param frame		親フレーム
-     * @param modal		true=モーダルダイアログを表示する
-     * @param properities	キーワードプロパティ
+     * Constructor
+     * @param frame Parent frame
+     * @param modal true = Show modal dialog
+     * @param properities keyword properties
      */
     public SettingKeywordDialog(Frame frame, boolean modal, KeywordProperties properities) {
         super(frame, modal);
@@ -173,11 +173,11 @@ public class SettingKeywordDialog extends javax.swing.JDialog implements ActionL
     }
 
     /**
-     * GUI初期化を行う。
+     * Initialize the GUI.
      */
     private void initGUI() {
         try {
-            // ボタンパネル
+            // Button panel
             {
                 JPanel panelButtons = new JPanel();
                 FlowLayout jPanel1Layout = new FlowLayout();
@@ -187,12 +187,12 @@ public class SettingKeywordDialog extends javax.swing.JDialog implements ActionL
                 getContentPane().add(panelButtons, BorderLayout.SOUTH);
                 panelButtons.setPreferredSize(new java.awt.Dimension(390, 45));
 
-                // メインボタンサイズ
+                // Main button size
                 java.awt.Dimension buttonSize = new java.awt.Dimension(96, 22);
                 {
                     btnApply = new JButton();
                     panelButtons.add(btnApply);
-                    btnApply.setText(Message.getString("dialog.common.button.apply")); //適用
+                    btnApply.setText(Message.getString("dialog.common.button.apply")); //Apply
                     btnApply.setPreferredSize(buttonSize);
                     btnApply.addActionListener(this);
                 }
@@ -206,13 +206,13 @@ public class SettingKeywordDialog extends javax.swing.JDialog implements ActionL
                 {
                     btnCancel = new JButton();
                     panelButtons.add(btnCancel);
-                    btnCancel.setText(Message.getString("dialog.common.button.cancel")); //キャンセル
+                    btnCancel.setText(Message.getString("dialog.common.button.cancel")); //Cancel
                     btnCancel.setPreferredSize(buttonSize);
                     btnCancel.setMargin(new Insets(5, 5, 5, 5));
                     btnCancel.addActionListener(this);
                 }
             }
-            // コンテンツパネル
+            // Content panel
             {
                 JPanel panelContent = new JPanel();
                 BorderLayout panelContentLayout = new BorderLayout();
@@ -221,7 +221,7 @@ public class SettingKeywordDialog extends javax.swing.JDialog implements ActionL
                 panelContent.setBorder(border);
                 panelContent.setLayout(panelContentLayout);
 
-                // キーワードリスト
+                // Keyword list
                 {
                     JPanel panelList = new JPanel();
                     BorderLayout panelListLayout = new BorderLayout();
@@ -230,7 +230,7 @@ public class SettingKeywordDialog extends javax.swing.JDialog implements ActionL
                     {
                         JLabel lblList = new JLabel();
                         panelList.add(lblList, BorderLayout.NORTH);
-                        lblList.setText(Message.getString("settingkeyworddialog.label.keywordlist")); //キーワードリスト
+                        lblList.setText(Message.getString("settingkeyworddialog.label.keywordlist")); // Keyword list
                     }
                     {
                         JScrollPane scrollList = new JScrollPane();
@@ -240,7 +240,7 @@ public class SettingKeywordDialog extends javax.swing.JDialog implements ActionL
                         {
                             modelKeyword = new DefaultTableModel();
                             modelKeyword.setColumnCount(COLUMN_COUNT);
-                            // ヘッダー列名
+                            // Header column name
                             String[] columns = COLUMN_HEADER;
                             modelKeyword.setColumnIdentifiers(columns);
                             tblKeyword = new JTable();
@@ -253,24 +253,24 @@ public class SettingKeywordDialog extends javax.swing.JDialog implements ActionL
                             tblKeyword.setColumnSelectionAllowed(false);
                             tblKeyword.setDefaultEditor(Object.class, null);
 
-                            // 列幅設定
+                            // Column width setting
                             for (int i=0; i<tblKeyword.getColumnModel().getColumnCount(); i++) {
                                 TableColumn col = tblKeyword.getColumnModel().getColumn(i);
-                                // 列幅を設定する。
+                                // Set the column width.
                                 if (i<COLUMN_MINWIDTH.length) {
                                     col.setMinWidth(COLUMN_MINWIDTH[i]);
-                                    // 最大列幅が設定されている(>0)場合は、最大列幅を設定して固定列幅とする。
+                                    // If the maximum column width is set (> 0), set the maximum column width to make it a fixed column width.
                                     if (COLUMN_MAXWIDTH[i] > 0) {
                                         col.setMaxWidth(COLUMN_MAXWIDTH[i]);
                                         col.setResizable(false);
                                     }
-                                    // 最大列幅が-1で設定されている場合は、非表示列(=0)とする。
+                                    // If the maximum column width is set to -1, set it as a hidden column (= 0).
                                     else if (COLUMN_MAXWIDTH[i] < 0) {
                                         col.setMaxWidth(0);
                                         col.setResizable(false);
                                     }
                                 }
-                                // 列幅が設定されていない列は非表示とする。
+                                // Hide columns for which no column width is set.
                                 else {
                                     col.setMinWidth(0);
                                     col.setMaxWidth(0);
@@ -281,7 +281,7 @@ public class SettingKeywordDialog extends javax.swing.JDialog implements ActionL
                     }
                 }
 
-                // 設定パネル
+                // Settings panel
                 {
                     JPanel panelSettings = new JPanel();
                     BorderLayout panelSettingsLayout = new BorderLayout();
@@ -291,7 +291,7 @@ public class SettingKeywordDialog extends javax.swing.JDialog implements ActionL
                     panelSettings.setLayout(panelSettingsLayout);
                     {
                         JLabel lblSettings = new JLabel();
-                        lblSettings.setText(Message.getString("settingkeyworddialog.label.preference")); //設定
+                        lblSettings.setText(Message.getString("settingkeyworddialog.label.preference")); //Configuration
                         panelSettings.add(lblSettings, BorderLayout.NORTH);
                     }
                     panelKeyword = new JPanel();
@@ -304,49 +304,49 @@ public class SettingKeywordDialog extends javax.swing.JDialog implements ActionL
                     panelKeyword.setLayout(panelKeywordLayout);
                     panelKeyword.setPreferredSize(new java.awt.Dimension(320, 234));
 
-                    // 有効チェックボタン
-                    chkEnabled = new JCheckBox(Message.getString("settingkeyworddialog.checkbox.enable")); //有効
+                    // Valid check button
+                    chkEnabled = new JCheckBox(Message.getString("settingkeyworddialog.checkbox.enable")); //Effectiveness
                     chkEnabled.addItemListener(this);
                     titleBorder = new JComponentTitledBorder(chkEnabled, panelKeyword, BorderFactory.createEtchedBorder());
                     Border borderKeyword = new CompoundBorder( titleBorder, new EmptyBorder(7,7,0,7));
                     panelKeyword.setBorder(borderKeyword);
 
-                    // キーワード名
+                    // Keyword name
                     {
                         lblName = new JLabel();
                         panelKeyword.add(lblName, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
-                        lblName.setText(Message.getString("settingkeyworddialog.label.keywordname")); //名前
+                        lblName.setText(Message.getString("settingkeyworddialog.label.keywordname")); //name
                     }
                     {
                         txtName = new JTextField();
                         panelKeyword.add(txtName, new GridBagConstraints(1, 0, 2, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
                     }
-                    // キーワード
+                    // Keywords
                     {
                         lblKeyword = new JLabel();
                         panelKeyword.add(lblKeyword, new GridBagConstraints(0, 1, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
-                        lblKeyword.setText(Message.getString("mainmenu.project.config.keyword")); //キーワード
+                        lblKeyword.setText(Message.getString("mainmenu.project.config.keyword")); //keyword
                     }
                     {
                         txtKeyword = new JTextField();
                         panelKeyword.add(txtKeyword, new GridBagConstraints(1, 1, 2, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
                     }
-                    // フォント色
+                    // Font color
                     {
                         lblColor = new JLabel();
                         panelKeyword.add(lblColor, new GridBagConstraints(0, 2, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
-                        lblColor.setText(Message.getString("settingkeyworddialog.columnheader.fontcolor")); //フォント色
+                        lblColor.setText(Message.getString("settingkeyworddialog.columnheader.fontcolor")); // Font color
                     }
                     {
                         btnColor = new JColorButton();
                         panelKeyword.add(btnColor, new GridBagConstraints(1, 2, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
                         btnColor.addActionListener(this);
                     }
-                    // スタイル
+                    // Style
                     {
                         lblStyle = new JLabel();
                         panelKeyword.add(lblStyle, new GridBagConstraints(0, 3, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
-                        lblStyle.setText(Message.getString("jfontchooserdialog.fontpanel.label.style")); //スタイル
+                        lblStyle.setText(Message.getString("jfontchooserdialog.fontpanel.label.style")); //style
                     }
                     // Bold
                     {
@@ -360,24 +360,24 @@ public class SettingKeywordDialog extends javax.swing.JDialog implements ActionL
                         panelKeyword.add(chkItalic, new GridBagConstraints(2, 3, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
                         chkItalic.setText("ITALIC");
                     }
-                    // オプション
+                    // Optional
                     {
                         lblOption = new JLabel();
                         panelKeyword.add(lblOption, new GridBagConstraints(0, 4, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
-                        lblOption.setText(Message.getString("settingkeyworddialog.label.options")); //オプション
+                        lblOption.setText(Message.getString("settingkeyworddialog.label.options")); //option
                     }
                     {
                         chkSensitivecase = new JCheckBox();
                         panelKeyword.add(chkSensitivecase, new GridBagConstraints(1, 4, 2, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
-                        chkSensitivecase.setText(Message.getString("searchfinddialog.checkbox.upper-lower")); //大文字・小文字を区別する
+                        chkSensitivecase.setText(Message.getString("searchfinddialog.checkbox.upper-lower")); // Case sensitive
                     }
                     {
                         chkRegex = new JCheckBox();
                         panelKeyword.add(chkRegex, new GridBagConstraints(1, 5, 2, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
-                        chkRegex.setText(Message.getString("searchfinddialog.checkbox.regex")); //正規表現
+                        chkRegex.setText(Message.getString("searchfinddialog.checkbox.regex")); //Regular expressions
                     }
 
-                    // キーワード追加削除ボタンパネル
+                    // Keyword add / delete button panel
                     JPanel panelAddButtons = new JPanel();
                     FlowLayout panelAddButtonsLayout = new FlowLayout(FlowLayout.RIGHT);
                     Border borderAddButtons = new EmptyBorder(0,7,0,0);
@@ -390,7 +390,7 @@ public class SettingKeywordDialog extends javax.swing.JDialog implements ActionL
                     {
                         btnAdd = new JButton();
                         panelAddButtons.add(btnAdd);
-                        btnAdd.setText(Message.getString("settingkeyworddialog.button.add")); //|追加
+                        btnAdd.setText(Message.getString("settingkeyworddialog.button.add")); // | Add
                         btnAdd.setPreferredSize(minSize);
                         btnAdd.setMargin(minInsets);
                         btnAdd.addActionListener(this);
@@ -398,7 +398,7 @@ public class SettingKeywordDialog extends javax.swing.JDialog implements ActionL
                     {
                         btnReg = new JButton();
                         panelAddButtons.add(btnReg);
-                        btnReg.setText(Message.getString("dialog.common.button.update")); //更新
+                        btnReg.setText(Message.getString("dialog.common.button.update")); //update
                         btnReg.setPreferredSize(minSize);
                         btnReg.setMargin(minInsets);
                         btnReg.addActionListener(this);
@@ -406,7 +406,7 @@ public class SettingKeywordDialog extends javax.swing.JDialog implements ActionL
                     {
                         btnDel = new JButton();
                         panelAddButtons.add(btnDel);
-                        btnDel.setText(Message.getString("dialog.common.button.delete")); //削除
+                        btnDel.setText(Message.getString("dialog.common.button.delete")); //Delete
                         btnDel.setPreferredSize(minSize);
                         btnDel.setMargin(minInsets);
                         btnDel.addActionListener(this);
@@ -414,7 +414,7 @@ public class SettingKeywordDialog extends javax.swing.JDialog implements ActionL
                     {
                         btnNew = new JButton();
                         panelAddButtons.add(btnNew);
-                        btnNew.setText(Message.getString("informationdialog.button.clear.tooltip")); //クリア
+                        btnNew.setText(Message.getString("informationdialog.button.clear.tooltip")); //clear
                         btnNew.setPreferredSize(minSize);
                         btnNew.setMargin(minInsets);
                         btnNew.addActionListener(this);
@@ -422,7 +422,7 @@ public class SettingKeywordDialog extends javax.swing.JDialog implements ActionL
                 }
             }
 
-            setTitle(Message.getString("settingkeyworddialog.dialog.title")); //キーワード設定
+            setTitle(Message.getString("settingkeyworddialog.dialog.title")); // Keyword setting
             this.setSize(670, 360);
         } catch (Exception e) {
             e.printStackTrace();
@@ -430,79 +430,79 @@ public class SettingKeywordDialog extends javax.swing.JDialog implements ActionL
     }
 
     /**
-     * ダイアログを表示する。
-     * @return    ダイアログの閉じた時のボタン種別
+     * Display a dialog.
+     * @return Button type when the dialog is closed
      */
     public int showDialog() {
 
-        // 親フレーム中央に表示する。
+        // Display in the center of the parent frame.
         this.setLocationRelativeTo(this.getOwner());
 
-        // ダイアログ表示
+        // Dialog display
         this.setVisible(true);
 
         return this.result;
     }
 
     /**
-     * キーワード設定を設定する。
-     * @param properities		キーワード設定プロパティ
+     * Set keyword settings.
+     * @param properities keyword setting properties
      */
     public void setKeywordProperties(KeywordProperties properities) {
         this.properities = properities;
 
-        // キーワードリストを作成する
-        //  "適用", "キーワード名", "キーワード", "フォント色", "スタイル"
+        // Create a keyword list
+        // "Apply", "Keyword name", "Keyword", "Font color", "Style"
         int count = properities.getKeywordCount();
         for (int i=0; i<count; i++) {
             Keyword keyword = properities.getKeyword(i);
 
-            // 行データの作成
+            // Create row data
             Object[] column = createKeywordRowData(keyword);
-            // 行追加
+            // Add line
             modelKeyword.addRow(column);
         }
     }
 
     /**
-     * キーワード設定を取得する。
-     * @return		キーワード設定プロパティ
+     * Get keyword settings.
+     * @return keyword setting property
      */
     public KeywordProperties getKeywordProperties() {
 
-        // キーワードプロパティのクリア
+        // Clear keyword properties
         properities.clearKeyword();
 
-        // キーワードリストからキーワード設定の取得を行う
+        // Get keyword settings from the keyword list
         int count = modelKeyword.getRowCount();
         for (int i=0; i<count; i++) {
             Keyword keyword = new Keyword(KEYWORD_TYPE.KEYWORD);
 
             Object cell;
-            // 有効・無効
+            // Valid / Invalid
             cell = modelKeyword.getValueAt(i, 0);
-            boolean enabled = Message.getString("settingkeyworddialog.checkbox.enable").equals((String)cell); //有効
+            boolean enabled = Message.getString("settingkeyworddialog.checkbox.enable").equals((String)cell); //Effectiveness
             keyword.setEnabled(enabled);
-            // 名前
+            // name
             cell = modelKeyword.getValueAt(i, 1);
             String keyname = Message.getKey((String) cell);
             if (StringUtils.isNullOrEmpty(keyname)) {
-            	// name変更により入力名前を設定する
+            	// Set the input name by changing the name
             	keyword.setName((String) cell);
             }
             else {
-            	// name未変更によりnameのキーを設定する.
+            	// Set the name key by not changing the name.
             	keyword.setName(keyname);
             }
-            // キーワード
+            // Keywords
             cell = modelKeyword.getValueAt(i, 2);
             keyword.setKeyword((String) cell);
-            // フォント色
+            // Font color
             cell = modelKeyword.getValueAt(i, 3);
             if (cell instanceof java.awt.Color) {
                 keyword.setForecolor((java.awt.Color) cell);
             }
-            // スタイル
+            // Style
             // Bold
             cell = modelKeyword.getValueAt(i, 4);
             boolean bold = false;
@@ -519,20 +519,20 @@ public class SettingKeywordDialog extends javax.swing.JDialog implements ActionL
             if (italic) style += Font.ITALIC;
             keyword.setStyle(style);
 
-            // 大文字・小文字の区別
+            // Case sensitive
             cell = modelKeyword.getValueAt(i, 5);
             boolean sensitivecase = (Boolean)cell;
             keyword.setCaseSensitive(sensitivecase);
-            // 正規表現
+            // Regular expressions
             cell = modelKeyword.getValueAt(i, 6);
             boolean regex = (Boolean)cell;
             keyword.setRegex(regex);
-            // キーワードロック
+            // Keyword lock
             cell = modelKeyword.getValueAt(i, 7);
             boolean keywordlock = (Boolean)cell;
             keyword.setKeywordlock(keywordlock);
 
-            // キーワードの追加
+            // Add keyword
             properities.addKeyword(keyword);
         }
 
@@ -540,8 +540,8 @@ public class SettingKeywordDialog extends javax.swing.JDialog implements ActionL
     }
 
     /**
-     * ボタンクリックイベント
-     * @param event		イベント情報
+     * Button click event
+     * @param event Event information
      */
     @Override
     public void actionPerformed(ActionEvent event) {
@@ -550,150 +550,150 @@ public class SettingKeywordDialog extends javax.swing.JDialog implements ActionL
         if (event.getSource() == this.btnOk) {
             this.result = Constant.OK_DIALOG;
 
-            // 変更内容を取得する。
+            // Get the changes.
             getKeywordProperties();
 
-            // 変更イベントを発生
+            // Fire a change event
             this.properities.firePropertyChange();
 
-            // ダイアログを閉じる。
+            // Close the dialog.
             dispose();
             return;
         }
-        // 適用
+        // Apply
         else if (event.getSource() == this.btnApply) {
             this.result = Constant.OK_DIALOG;
 
-            // 変更内容を取得する。
+            // Get the changes.
             getKeywordProperties();
 
-            // 変更イベントを発生
+            // Fire a change event
             this.properities.firePropertyChange();
 
             return;
         }
-        // 閉じる
+        // close
         else if (event.getSource() == this.btnCancel) {
             this.result = Constant.CANCEL_DIALOG;
-            // ダイアログを閉じる。
+            // Close the dialog.
             dispose();
             return;
         }
-        // フォント、背景、アクティブ背景色
+        // Font, background, active background color
         else if (event.getSource() == this.btnColor) {
-            // 色選択ダイアログ
-            Color color = JColorChooser.showDialog(this, Message.getString("settingkeyworddialog.colorchooser.title"), this.btnColor.getColor()); //色の選択
+            // Color selection dialog
+            Color color = JColorChooser.showDialog(this, Message.getString("settingkeyworddialog.colorchooser.title"), this.btnColor.getColor()); // Color selection
             if(color != null){
-                // ボタンにカラーアイコンを設定する
+                // Set a color icon on the button
                 this.btnColor.setColor(color);
             }
 
             return;
         }
-        // 更新
+        // update
         else if (event.getSource() == this.btnReg) {
-            // 入力チェック
+            // Check the input
             if (this.validateKeyword(false) == false) {
-                // 入力ミス
+                // Typing error
                 return;
             }
 
-            // 更新を行う
+            // Update
             Keyword keyword = this.getKeyword();
             setKeywordList(keyword);
 
         }
-        // 追加
+        // add to
         else if (event.getSource() == this.btnAdd) {
-            // 入力チェック
+            // Check the input
             if (this.validateKeyword(true) == false) {
-                // 入力ミス
+                // Typing error
                 return;
             }
 
-            // 追加を行う
+            // make an addition
             Keyword keyword = this.getKeyword();
 
-            // 追加の場合、キーワード編集不可はfalseとする
+            // When adding, set keyword editability to false
             keyword.setKeywordlock(false);
 
             addKeywordList(keyword);
         }
-        // 削除
+        // Delete
         else if (event.getSource() == this.btnDel) {
-            // 削除を行う
+            // Delete
         	Keyword keyword = this.getKeyword();
             removeKeywordList(keyword);
 
-            // 設定パネルのイネーブルの切替を行う
+            // Switch the enable of the setting panel
             setSettingPanelEnabled(true, false);
-            // キーワード設定パネルをクリアする
+            // Clear the keyword setting panel
             clearKeyword();
         }
-        // クリア
+        // clear
         else if (event.getSource() == this.btnNew) {
-            // 設定パネルのイネーブルの切替を行う
+            // Switch the enable of the setting panel
             setSettingPanelEnabled(true, false);
-            // キーワード設定パネルをクリアする。
+            // Clear the keyword setting panel.
             clearKeyword();
         }
 
     }
 
     /**
-     * 有効・無効チェックボックス変更イベント
-     * @param event		イベント情報
+     * Enabled / disabled checkbox change event
+     * @param event Event information
      */
     @Override
     public void itemStateChanged(ItemEvent event) {
 
         if (event.getSource() == this.chkEnabled) {
             boolean enabled = this.chkEnabled.isSelected();
-            // 設定パネルのイネーブルの切替を行う
+            // Switch the enable of the setting panel
             setSettingPanelEnabled(enabled, true);
         }
     }
 
     /**
-     * 設定パネルのイネーブルの切替を行う
-     * @param enabled		true=イネーブル
-     * @param keylockable		true=キーワードロック状態を判断する
+     * Toggle the enable of the setting panel
+     * @param enabled true = enabled
+     * @param keylockable true = Judge keyword lock status
      */
     private void setSettingPanelEnabled(boolean enabled, boolean keylockable) {
-        /** キーワード名ラベル */
+        /** Keyword name label */
         this.lblName.setEnabled(enabled);
-        /** キーワード名テキストボックス */
+        /** Keyword name text box */
         this.txtName.setEnabled(enabled);
-        /** キーワードラベル */
+        /** Keyword label */
         this.lblKeyword.setEnabled(enabled);
-        /** キーワードテキストボックス */
+        /** Keyword text box */
         this.txtKeyword.setEnabled(enabled);
-        /** フォント色ラベル */
+        /** Font color label */
         this.lblColor.setEnabled(enabled);
-        /** フォント色ボタン */
+        /** Font color button */
         this.btnColor.setEnabled(enabled);
-        /** スタイルラベル */
+        /** Style label */
         this.lblStyle.setEnabled(enabled);
-        /** イタリックチェックボックス */
+        /** Italic checkbox */
         this.chkItalic.setEnabled(enabled);
-        /** ボイドチェックボックス */
+        /** Void checkbox */
         this.chkBold.setEnabled(enabled);
-        /** オプションラベル */
+        /** Option label */
         this.lblOption.setEnabled(enabled);
-        /** 大文字小文字区別チェックボックス */
+        /** Case-sensitive checkbox */
         this.chkSensitivecase.setEnabled(enabled);
-        /** 正規表現チェックボックス */
+        /** Regular expression checkbox */
         this.chkRegex.setEnabled(enabled);
 
         if (keylockable) {
-            // キーワードロック状態によりEnableにはしない
+            // Do not enable due to keyword lock status
             if (enabled) {
-                // 選択行を取得する。
+                // Get the selected row.
                 int selectedrow = this.tblKeyword.getSelectedRow();
 
-                // キーワードロックであれば、キーワードの編集不可
+                // Keyword cannot be edited if it is a keyword lock
                 if (selectedrow >= 0) {
-                    // キーワードロック
+                    // Keyword lock
                     Object cell = modelKeyword.getValueAt(selectedrow, 7);
                     boolean keywordlock = (Boolean)cell;
                     this.txtKeyword.setEnabled(!keywordlock);
@@ -706,34 +706,34 @@ public class SettingKeywordDialog extends javax.swing.JDialog implements ActionL
 
 
     /**
-     * キーワードリストの変更イベント.<br/>
-     * 選択行のキーワード情報を設定パネルにセットする。
-     * @param event		イベント情報
+     * Keyword list change event. <br/>
+     * Set the keyword information of the selected line in the setting panel.
+     * @param event Event information
      */
     @Override
     public void valueChanged(ListSelectionEvent event) {
 
         if (event.getSource() == this.tblKeyword.getSelectionModel()) {
-            // 選択行を取得する。
+            // Get the selected row.
             int selectedrow = this.tblKeyword.getSelectedRow();
             if (selectedrow < 0) return;
 
             Object cell;
-            // 有効・無効
+            // Valid / Invalid
             cell = modelKeyword.getValueAt(selectedrow, 0);
-            boolean enabled = Message.getString("settingkeyworddialog.checkbox.enable").equals((String)cell); //有効
+            boolean enabled = Message.getString("settingkeyworddialog.checkbox.enable").equals((String)cell); //Effectiveness
             this.chkEnabled.setSelected(enabled);
 
-            // 有効・無効により設定パネルのイネーブルの切替
+            // Switching the setting panel enable by enabling / disabling
             setSettingPanelEnabled(enabled, true);
 
-            // 名前
+            // name
             cell = modelKeyword.getValueAt(selectedrow, 1);
             this.txtName.setText((String) cell);
-            // キーワード
+            // Keywords
             cell = modelKeyword.getValueAt(selectedrow, 2);
             this.txtKeyword.setText((String) cell);
-            // フォント色
+            // Font color
             cell = modelKeyword.getValueAt(selectedrow, 3);
             if (cell == null) {
                 this.btnColor.setColor(null);
@@ -741,7 +741,7 @@ public class SettingKeywordDialog extends javax.swing.JDialog implements ActionL
             else if (cell instanceof java.awt.Color) {
                 this.btnColor.setColor((java.awt.Color) cell);
             }
-            // スタイル
+            // Style
             // Bold
             cell = modelKeyword.getValueAt(selectedrow, 4);
             boolean bold = false;
@@ -755,22 +755,22 @@ public class SettingKeywordDialog extends javax.swing.JDialog implements ActionL
                 italic = true;
             }
             this.chkItalic.setSelected(italic);
-            // 大文字・小文字の区別
+            // Case sensitive
             cell = modelKeyword.getValueAt(selectedrow, 5);
             boolean sensitivecase = (Boolean)cell;
             this.chkSensitivecase.setSelected(sensitivecase);
-            // 正規表現
+            // Regular expressions
             cell = modelKeyword.getValueAt(selectedrow, 6);
             boolean regex = (Boolean)cell;
             this.chkRegex.setSelected(regex);
-            // キーワードロック
+            // Keyword lock
             cell = modelKeyword.getValueAt(selectedrow, 7);
             boolean keywordlock = (Boolean)cell;
             this.txtKeyword.setEnabled(!keywordlock);
             this.chkRegex.setEnabled(!keywordlock);
             this.chkSensitivecase.setEnabled(!keywordlock);
 
-            // 有効チェックボックスボーダの再描画
+            // Enabled checkbox Redraw border
             this.chkEnabled.repaint();
             panelKeyword.repaint();
         }
@@ -778,14 +778,14 @@ public class SettingKeywordDialog extends javax.swing.JDialog implements ActionL
     }
 
     /**
-     * キーワードリストモデルの行データの作成を行う。
-     * @param keyword		キーワードデータ
-     * @return			行データ
+     * Create row data for keyword list model.
+     * @param keyword keyword data
+     * @return line data
      */
     private Object[] createKeywordRowData(Keyword keyword) {
     	// COLUMN_COUNT=8
         Object[] column = new Object[COLUMN_COUNT];
-        column[0] = (keyword.isEnabled()) ? Message.getString("settingkeyworddialog.checkbox.enable") : Message.getString("settingkeyworddialog.data.disable"); //KEY13=有効 / KEY29=無効
+        column[0] = (keyword.isEnabled()) ? Message.getString("settingkeyworddialog.checkbox.enable") : Message.getString("settingkeyworddialog.data.disable"); // KEY13 = valid / KEY29 = invalid
         if (Message.containsKey(keyword.getName())) {
         	column[1] = Message.getString(keyword.getName());
         }
@@ -819,22 +819,22 @@ public class SettingKeywordDialog extends javax.swing.JDialog implements ActionL
     }
 
     /**
-     * キーワード設定パネルからキーワードオブジェクトを取得する。
-     * @return		キーワードオブジェクト
+     * Get the keyword object from the keyword setting panel.
+     * @return keyword object
      */
     private Keyword getKeyword() {
 
         Keyword keyword = new Keyword(KEYWORD_TYPE.KEYWORD);
 
-        // 有効・無効
+        // Valid / Invalid
         keyword.setEnabled(this.chkEnabled.isSelected());
-        // 名前
+        // name
         keyword.setName(this.txtName.getText());
-        // キーワード
+        // Keywords
         keyword.setKeyword(this.txtKeyword.getText());
-        // フォント色
+        // Font color
         keyword.setForecolor(this.btnColor.getColor());
-        // スタイル
+        // Style
         // Bold
         boolean bold = this.chkBold.isSelected();
         // Italic
@@ -843,48 +843,48 @@ public class SettingKeywordDialog extends javax.swing.JDialog implements ActionL
         if (bold) style += Font.BOLD;
         if (italic) style += Font.ITALIC;
         keyword.setStyle(style);
-        // 大文字・小文字の区別
+        // Case sensitive
         keyword.setCaseSensitive(this.chkSensitivecase.isSelected());
-        // 正規表現
+        // Regular expressions
         keyword.setRegex(this.chkRegex.isSelected());
-        // キーワードロック
+        // Keyword lock
         keyword.setKeywordlock(!this.txtKeyword.isEnabled());
 
         return keyword;
     }
 
     /**
-     * キーワードを更新する。
-     * @param keyword		キーワード情報
+     * Update keywords.
+     * @param keyword Keyword information
      */
     private void setKeywordList(Keyword keyword) {
 
-        // 選択行
+        // Selected line
         int selectedrow = this.tblKeyword.getSelectedRow();
         if (selectedrow < 0) {
         	JOptionPane.showMessageDialog(this,
-        			Message.getString("settingkeyworddialog.informationdialog.update.message"), //リストから更新対象のキーワードを選択してください。
-        			Message.getString("settingkeyworddialog.informationdialog.update.title"), //キーワードの更新
+        			Message.getString("settingkeyworddialog.informationdialog.update.message"), // Select the keyword to be updated from the list.
+        			Message.getString("settingkeyworddialog.informationdialog.update.title"), // Update keywords
         			JOptionPane.INFORMATION_MESSAGE);
         	return;
         }
 
-        // 行データの作成
+        // Create row data
         Object[] column = createKeywordRowData(keyword);
-        // 行更新
+        // Line update
         modelKeyword.removeRow(selectedrow);
         modelKeyword.insertRow(selectedrow, column);
         this.tblKeyword.setRowSelectionInterval(selectedrow, selectedrow);
     }
 
     /**
-     * キーワードを追加する。
-     * @param keyword		キーワード情報
+     * Add keywords.
+     * @param keyword Keyword information
      */
     private void addKeywordList(Keyword keyword) {
-        // 行データの作成
+        // Create row data
         Object[] column = createKeywordRowData(keyword);
-        // 行追加
+        // Add line
         modelKeyword.addRow(column);
         int selectedrow = modelKeyword.getRowCount()-1;
         this.tblKeyword.setRowSelectionInterval(selectedrow, selectedrow);
@@ -892,82 +892,82 @@ public class SettingKeywordDialog extends javax.swing.JDialog implements ActionL
 
 
     /**
-     * キーワードを削除する。
-     * @param keyword		キーワード情報
+     * Delete the keyword.
+     * @param keyword Keyword information
      */
     private void removeKeywordList(Keyword keyword) {
-        // 選択行
+        // Selected line
         int selectedrow = this.tblKeyword.getSelectedRow();
         if (selectedrow < 0) return;
         int option = JOptionPane.showConfirmDialog(this,
-        		Message.getString("settingkeyworddialog.confirmdialog.delete.message"), //削除してもよろしいですか？
-                Message.getString("settingkeyworddialog.confirmdialog.delete.title"),  //キーワードの削除
+        		Message.getString("settingkeyworddialog.confirmdialog.delete.message"), //Delete Are you sure you want to?
+                Message.getString("settingkeyworddialog.confirmdialog.delete.title"),  // Delete keywords
                 JOptionPane.OK_CANCEL_OPTION);
         if (option == JOptionPane.OK_OPTION) {
-        // 行削除
+        // Delete line
         modelKeyword.removeRow(selectedrow);
 
-        // キーワード設定パネルをクリアする。
+        // Clear the keyword setting panel.
         clearKeyword();
         }
     }
 
     /**
-     * キーワード設定パネルをクリアする。
+     * Clear the keyword setting panel.
      */
     private void clearKeyword() {
 
-        // 設定をクリア
+        // Clear settings
         this.chkEnabled.setSelected(true);
-        /** キーワード名テキストボックス */
+        /** Keyword name text box */
         this.txtName.setText(null);
-        /** キーワードテキストボックス */
+        /** Keyword text box */
         this.txtKeyword.setText(null);
-        /** フォント色ボタン */
+        /** Font color button */
         this.btnColor.setColor(null);
-        /** イタリックチェックボックス */
+        /** Italic checkbox */
         this.chkItalic.setSelected(false);
-        /** ボイドチェックボックス */
+        /** Void checkbox */
         this.chkBold.setSelected(false);
-        /** 大文字小文字区別チェックボックス */
+        /** Case-sensitive checkbox */
         this.chkSensitivecase.setSelected(false);
-        /** 正規表現チェックボックス */
+        /** Regular expression checkbox */
         this.chkRegex.setSelected(false);
 
     }
 
     /**
-     * 入力チェックを行う。
-     * @param  addflag		追加フラグ(true=キーワード追加)
+     * Check the input.
+     * @param addflag Add flag (true = keyword added)
      */
     private boolean validateKeyword(boolean addflag) {
-        // キーワードは必須
+        // Keywords required
         String keyword = this.txtKeyword.getText();
 
-        // 入力チェック
+        // Check the input
         if (keyword == null || keyword.isEmpty()) {
             JOptionPane.showMessageDialog(this,
-            		Message.getString("settingkeyworddialog.errordialog.empty.message"), //キーワードを入力してください。
-                    Message.getString("dialog.common.error"), //エラー
+            		Message.getString("settingkeyworddialog.errordialog.empty.message"), // Please enter a keyword.
+                    Message.getString("dialog.common.error"), //error
                                 JOptionPane.ERROR_MESSAGE);
             return false;
         }
 
-        // キーワードの重複チェックを行う。
+        // Check for duplicate keywords.
         int selectedrow = this.tblKeyword.getSelectedRow();
         int count = this.modelKeyword.getRowCount();
         boolean exists = false;
         for (int i=0; i<count; i++) {
-            // キーワード
+            // Keywords
             String cellKeyword = (String)(this.modelKeyword.getValueAt(i, 2));
             if (keyword.equals(cellKeyword)) {
                 if (addflag) {
-                    // 追加の場合は、同じキーワードは禁止
+                    // When adding, the same keyword is prohibited
                     exists = true;
                     break;
                 }
                 else if (i != selectedrow) {
-                    // 更新の場合は、更新行以外に同じキーワードが存在したらNG
+                    // In the case of update, NG if the same keyword exists other than the update line
                     exists = true;
                     break;
                 }
@@ -975,8 +975,8 @@ public class SettingKeywordDialog extends javax.swing.JDialog implements ActionL
         }
         if (exists) {
             JOptionPane.showMessageDialog(this,
-            		Message.getString("settingkeyworddialog.errordialog.exist.message"), //重複したキーワードは登録できません。
-                    Message.getString("dialog.common.error"), //エラー
+            		Message.getString("settingkeyworddialog.errordialog.exist.message"), // Duplicate keywords cannot be registered.
+                    Message.getString("dialog.common.error"), //error
                     JOptionPane.ERROR_MESSAGE);
             return false;
         }
@@ -985,23 +985,23 @@ public class SettingKeywordDialog extends javax.swing.JDialog implements ActionL
     }
 
     /**
-     * キーワードテーブルの色セルの描画クラス
+     * Keyword table color cell drawing class
      * @author RIKEN
      *
      */
     private class KeywordTableRenderer extends DefaultTableCellRenderer {
-        /** シリアル番号 */
+        /** Serial number */
         private static final long serialVersionUID = 1L;
 
         /**
-         * セルの描画コンポーネントを取得する
-         * @param table			描画テーブル
-         * @param value			セルデータ
-         * @param isSelected	選択状態
-         * @param hasFocus		フォーカス
-         * @param row			行インデックス
-         * @param column		列インデックス
-         * @return		描画コンポーネント
+         * Get the drawing component of the cell
+         * @param table Drawing table
+         * @param value Cell data
+         * @param isSelected Selected state
+         * @param hasFocus Focus
+         * @param row row index
+         * @param column Column index
+         * @return drawing component
          */
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value,
@@ -1021,7 +1021,7 @@ public class SettingKeywordDialog extends javax.swing.JDialog implements ActionL
                 java.awt.Color colorValue = (java.awt.Color)modelKeyword.getValueAt(row, 3);
                 if (colorValue != null) foreColor = colorValue;
 
-                // スタイル
+                // Style
 
                 // Bold
                 cell = modelKeyword.getValueAt(row, 4);

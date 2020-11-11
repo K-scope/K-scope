@@ -66,73 +66,73 @@ import jp.riken.kscope.properties.ProfilerProperties;
 import jp.riken.kscope.utils.SwingUtils;
 
 /**
- * プロファイラ設定ダイアログ
+ * Profiler settings dialog
  * @author RIKEN
  */
 public class SettingProfilerDialog extends javax.swing.JDialog implements ActionListener, TreeSelectionListener {
-    /** シリアル番号 */
+    /** Serial number */
     private static final long serialVersionUID = 1L;
 
-    /** キャンセルボタン */
+    /** Cancel button */
     private JButton btnCancel;
-    /** 適用ボタン */
+    /** Apply button */
     private JButton btnApply;
-    /** OKボタン */
+    /** OK button */
     private JButton btnOk;
-    /** プロファイラ設定リスト */
+    /** Profiler settings list */
     private JTree treeProperties;
-    /** プロファイラ設定リストデータ */
+    /** Profiler setting list data */
     private DefaultTreeModel modelProperties;
-    /** プロファイラ設定パネル */
+    /** Profiler settings panel */
     private JPanel panelProperty;
 
-    /** ダイアログの戻り値 */
+    /** Dialog return value */
     private int result = Constant.CANCEL_DIALOG;
 
-    /** プロファイラプロパティ */
+    /** Profiler Properties */
     private ProfilerProperties properities;
-    /** コンテンツパネル */
+    /** Content Panel */
     private JPanel panelContent;
-    /** 設定パネル */
+    /** Settings panel */
     private JPanel panelSettings;
 
 
-    /** パネルタイプ */
+    /** Panel type */
     private enum PANEL_TYPE {
-        /** コストバーグラフ色、最大表示行数 */
+        /** Cost bar graph color, maximum number of lines to display */
         PROFILER_VIEW,
-        /** コストルーラ色 */
+        /** Cost ruler color */
         PROFILER_RULER,
-        /** EPROF測定区間説明 */
+        /** EPROF measurement section description */
         EPROF_STATEMENT_DISCRIPTION,
-        /** EPROF測定区間:開始 */
+        /** EPROF measurement interval: Start */
         EPROF_STATEMENT_START,
-        /** EPROF測定区間:終了 */
+        /** EPROF measurement interval: end */
         EPROF_STATEMENT_END
     }
 
     /**
-     * コンストラクタ
-     * @param frame		親フレーム
+     * Constructor
+     * @param frame Parent frame
      */
     public SettingProfilerDialog(Frame frame) {
         super(frame);
     }
 
     /**
-     * コンストラクタ
-     * @param frame		親フレーム
-     * @param modal		true=モーダルダイアログを表示する
+     * Constructor
+     * @param frame Parent frame
+     * @param modal true = Show modal dialog
      */
     public SettingProfilerDialog(Frame frame, boolean modal) {
         super(frame, modal);
     }
 
     /**
-     * コンストラクタ
-     * @param frame		親フレーム
-     * @param modal		true=モーダルダイアログを表示する
-     * @param properities		プロファイラ設定プロパティ
+     * Constructor
+     * @param frame Parent frame
+     * @param modal true = Show modal dialog
+     * @param properities Profiler configuration properties
      */
     public SettingProfilerDialog(Frame frame, boolean modal, ProfilerProperties properities) {
         super(frame, modal);
@@ -141,8 +141,8 @@ public class SettingProfilerDialog extends javax.swing.JDialog implements Action
     }
 
     /**
-     * プロファイラ設定を設定する。
-     * @param properities		プロファイラ設定プロパティ
+     * Set profiler settings.
+     * @param properities Profiler configuration properties
      */
     public void setProfilerProperties(ProfilerProperties properities) {
         this.properities = properities;
@@ -152,7 +152,7 @@ public class SettingProfilerDialog extends javax.swing.JDialog implements Action
 
 
     /**
-     * GUI初期化を行う。
+     * Initialize the GUI.
      */
     private void initGUI() {
         try {
@@ -161,7 +161,7 @@ public class SettingProfilerDialog extends javax.swing.JDialog implements Action
             thisLayout.setVgap(5);
             getContentPane().setLayout(thisLayout);
 
-            // ボタンパネル
+            // Button panel
             {
                 JPanel panelButtons = new JPanel();
                 FlowLayout jPanel1Layout = new FlowLayout();
@@ -171,11 +171,11 @@ public class SettingProfilerDialog extends javax.swing.JDialog implements Action
                 getContentPane().add(panelButtons, BorderLayout.SOUTH);
                 panelButtons.setPreferredSize(new java.awt.Dimension(390, 46));
 
-                // メインボタンサイズ
+                // Main button size
                 java.awt.Dimension buttonSize = new java.awt.Dimension(96, 22);
                 {
                     btnApply = new JButton();
-                    btnApply.setText(Message.getString("dialog.common.button.apply")); //適用
+                    btnApply.setText(Message.getString("dialog.common.button.apply")); //Apply
                     btnApply.setPreferredSize(buttonSize);
                     btnApply.addActionListener(this);
                     panelButtons.add(btnApply);
@@ -189,7 +189,7 @@ public class SettingProfilerDialog extends javax.swing.JDialog implements Action
                 }
                 {
                     btnCancel = new JButton();
-                    btnCancel.setText(Message.getString("dialog.common.button.cancel")); //キャンセル
+                    btnCancel.setText(Message.getString("dialog.common.button.cancel")); //Cancel
                     btnCancel.setPreferredSize(buttonSize);
                     btnCancel.addActionListener(this);
                     btnCancel.setMargin(new Insets(5, 5, 5, 5));
@@ -197,7 +197,7 @@ public class SettingProfilerDialog extends javax.swing.JDialog implements Action
                 }
             }
 
-            // コンテンツパネル
+            // Content panel
             {
                 panelContent = new JPanel();
                 BorderLayout panelContentLayout = new BorderLayout();
@@ -206,7 +206,7 @@ public class SettingProfilerDialog extends javax.swing.JDialog implements Action
                 panelContent.setBorder(border);
                 panelContent.setLayout(panelContentLayout);
 
-                // プロパティリスト
+                // Property list
                 {
                     JPanel panelList = new JPanel();
                     BorderLayout panelListLayout = new BorderLayout();
@@ -215,7 +215,7 @@ public class SettingProfilerDialog extends javax.swing.JDialog implements Action
                     {
                         JLabel lblList = new JLabel();
                         panelList.add(lblList, BorderLayout.NORTH);
-                        lblList.setText(Message.getString("settingprofilerdialog.label.propertieslist")); //プロパティ設定リスト
+                        lblList.setText(Message.getString("settingprofilerdialog.label.propertieslist")); // Property setting list
                     }
                     {
                         JScrollPane scrollList = new JScrollPane();
@@ -241,7 +241,7 @@ public class SettingProfilerDialog extends javax.swing.JDialog implements Action
                         scrollList.setPreferredSize(size);
                     }
                 }
-                // 設定パネル
+                // Settings panel
                 {
                     this.panelSettings = new JPanel();
                     BorderLayout panelSettingsLayout = new BorderLayout();
@@ -251,24 +251,24 @@ public class SettingProfilerDialog extends javax.swing.JDialog implements Action
                     panelSettings.setLayout(panelSettingsLayout);
                     {
                         JLabel lblSettings = new JLabel();
-                        lblSettings.setText(Message.getString("mainmenu.project.config")); //設定
+                        lblSettings.setText(Message.getString("mainmenu.project.config")); //Configuration
                         panelSettings.add(lblSettings, BorderLayout.NORTH);
                     }
                     this.panelProperty = new JPanel();
                     panelSettings.add(this.panelProperty, BorderLayout.CENTER);
                     panelSettings.add(panelProperty, BorderLayout.CENTER);
 
-                    // 設定パネル枠
+                    // Setting panel frame
                     EtchedBorder titleBorder = (EtchedBorder) BorderFactory.createEtchedBorder();
                     Border borderKeyword = new CompoundBorder( titleBorder, new EmptyBorder(17,7,0,7));
                     panelProperty.setBorder(borderKeyword);
 
                 }
             }
-            setTitle(Message.getString("projectsettingprofileraction.setup.status")); //プロファイラ設定
+            setTitle(Message.getString("projectsettingprofileraction.setup.status")); // Profiler settings
             setSize(680, 420);
 
-            // イベント
+            // Event
             this.treeProperties.addTreeSelectionListener(this);
             this.treeProperties.setSelectionRow(0);
 
@@ -279,36 +279,36 @@ public class SettingProfilerDialog extends javax.swing.JDialog implements Action
 
 
     /**
-     * プロファイラ設定ツリーモデルの作成を行う。
-     * @return   プロファイラ設定ツリーモデル
+     * Create profiler settings tree model.
+     * @return Profiler settings tree model
      */
     private DefaultTreeModel createTreeModel() {
 
-        DefaultMutableTreeNode root = new DefaultMutableTreeNode(Message.getString("projectsettingprofileraction.setup.status")); //プロファイラ設定
+        DefaultMutableTreeNode root = new DefaultMutableTreeNode(Message.getString("projectsettingprofileraction.setup.status")); // Profiler settings
         root.setUserObject(new TopTitlePanel());
 
-        // コスト情報表示設定
+        // Cost information display settings
         {
             DefaultMutableTreeNode node = new DefaultMutableTreeNode();
             root.add(node);
             node.setUserObject(new ProfilerViewPanel(this.properities, PANEL_TYPE.PROFILER_VIEW));
         }
-        // コストルーラ表示設定
+        // Cost ruler display settings
         {
             DefaultMutableTreeNode node = new DefaultMutableTreeNode();
             root.add(node);
             node.setUserObject(new ProfilerRulerPanel(this.properities, PANEL_TYPE.PROFILER_RULER));
         }
 
-        // 測定区間設定
+        // Measurement interval setting
         {
-            DefaultMutableTreeNode node = new DefaultMutableTreeNode(); //測定区間設定
+            DefaultMutableTreeNode node = new DefaultMutableTreeNode(); // Measurement interval setting
             root.add(node);
             node.setUserObject(new EprofStatementTitlePanel());
-            DefaultMutableTreeNode start = new DefaultMutableTreeNode(); //開始ステートメント
+            DefaultMutableTreeNode start = new DefaultMutableTreeNode(); // Start statement
             node.add(start);
             start.setUserObject(new EprofStatementPanel(this.properities, PANEL_TYPE.EPROF_STATEMENT_START));
-            DefaultMutableTreeNode end = new DefaultMutableTreeNode(); //終了ステートメント
+            DefaultMutableTreeNode end = new DefaultMutableTreeNode(); // end statement
             node.add(end);
             end.setUserObject(new EprofStatementPanel(this.properities, PANEL_TYPE.EPROF_STATEMENT_END));
         }
@@ -317,39 +317,39 @@ public class SettingProfilerDialog extends javax.swing.JDialog implements Action
     }
 
     /**
-     * プロファイラ設定パネルインターフェイス
+     * Profiler settings panel interface
      */
     private interface ProfilerPropertiesPanel {
         /**
-         * プロパティ設定を更新する
+         * Update property settings
          */
         public void updateProperties();
     }
 
     /**
-     * プロファイラ設定パネル
+     * Profiler settings panel
      */
     private class TopTitlePanel extends javax.swing.JPanel implements ProfilerPropertiesPanel {
 
-        /** シリアル番号 */
+        /** Serial number */
         private static final long serialVersionUID = 1L;
 
         /**
-         * コンストラクタ
+         * Constructor
          */
         public TopTitlePanel() {
             initGUI();
         }
 
         /**
-         * GUI初期化を行う。
+         * Initialize the GUI.
          */
         private void initGUI() {
 
             BorderLayout panelSettingsLayout = new BorderLayout();
             this.setLayout(panelSettingsLayout);
             {
-                JLabel lblSettings = new JLabel(Message.getString("projectsettingprofileraction.setup.status")); //プロファイラ設定
+                JLabel lblSettings = new JLabel(Message.getString("projectsettingprofileraction.setup.status")); // Profiler settings
                 this.add(lblSettings, BorderLayout.NORTH);
             }
             JPanel panelProperty = new JPanel();
@@ -362,7 +362,7 @@ public class SettingProfilerDialog extends javax.swing.JDialog implements Action
             panelProperty.setLayout(panelPropertyLayout);
             panelProperty.setPreferredSize(new java.awt.Dimension(320, 234));
 
-            // 設定パネル枠
+            // Setting panel frame
             EtchedBorder titleBorder = (EtchedBorder) BorderFactory.createEtchedBorder();
             Border borderKeyword = new CompoundBorder( titleBorder, new EmptyBorder(17,7,0,7));
             panelProperty.setBorder(borderKeyword);
@@ -374,37 +374,37 @@ public class SettingProfilerDialog extends javax.swing.JDialog implements Action
         }
 
         /**
-         * プロパティ設定を更新する
+         * Update property settings
          */
         @Override
         public void updateProperties() { }
 
         @Override
         public String toString() {
-            return Message.getString("projectsettingprofileraction.setup.status"); //プロファイラ設定
+            return Message.getString("projectsettingprofileraction.setup.status"); // Profiler settings
         }
     }
 
 
     /**
-     * 測定ステートメント設定タイトルパネル
+     * Measurement statement settings title panel
      */
     private class EprofStatementTitlePanel extends javax.swing.JPanel implements ProfilerPropertiesPanel {
 
-        /** シリアル番号 */
+        /** Serial number */
         private static final long serialVersionUID = 1L;
-        /** タイトル、ノード表示 */
-        private String title = Message.getString("settingprofilerdialog.label.setupmesurementrange.title"); //測定区間設定
+        /** Title, node display */
+        private String title = Message.getString("settingprofilerdialog.label.setupmesurementrange.title"); // Measurement interval setting
 
         /**
-         * コンストラクタ
+         * Constructor
          */
         public EprofStatementTitlePanel() {
             initGUI();
         }
 
         /**
-         * GUI初期化を行う。
+         * Initialize the GUI.
          */
         private void initGUI() {
 
@@ -424,7 +424,7 @@ public class SettingProfilerDialog extends javax.swing.JDialog implements Action
             panelProperty.setLayout(panelPropertyLayout);
             panelProperty.setPreferredSize(new java.awt.Dimension(320, 234));
 
-            // 設定パネル枠
+            // Setting panel frame
             EtchedBorder titleBorder = (EtchedBorder) BorderFactory.createEtchedBorder();
             Border borderKeyword = new CompoundBorder( titleBorder, new EmptyBorder(17,7,0,7));
             panelProperty.setBorder(borderKeyword);
@@ -436,7 +436,7 @@ public class SettingProfilerDialog extends javax.swing.JDialog implements Action
         }
 
         /**
-         * プロパティ設定を更新する
+         * Update property settings
          */
         @Override
         public void updateProperties() { }
@@ -448,27 +448,27 @@ public class SettingProfilerDialog extends javax.swing.JDialog implements Action
     }
 
     /**
-     * 測定ステートメント設定パネル
+     * Measurement statement setting panel
      */
     private class EprofStatementPanel extends javax.swing.JPanel implements ProfilerPropertiesPanel {
 
-        /** シリアル番号 */
+        /** Serial number */
         private static final long serialVersionUID = 1L;
-        /** プロファイラ設定 */
+        /** Profiler settings */
         private ProfilerProperties properties;
-        /** パネルタイプ */
+        /** Panel type */
         private PANEL_TYPE type;
-        /** 測定ステートメント:関数名*/
+        /** Measurement statement: Function name */
         private JTextField eprofFunctionname;
-        /** 測定ステートメント:測定ステートメント文 */
+        /** Measurement statement: Measurement statement statement */
         private JTextArea eprofMeasureStatement;
-        /** タイトル、ノード表示 */
+        /** Title, node display */
         private String title;
 
         /**
-         * コンストラクタ
-         * @param properties	プロファイラ
-         * @param type			パネルタイプ
+         * Constructor
+         * @param properties Profiler
+         * @param type Panel type
          */
         public EprofStatementPanel(ProfilerProperties properties, PANEL_TYPE type) {
             this.properties = properties;
@@ -478,7 +478,7 @@ public class SettingProfilerDialog extends javax.swing.JDialog implements Action
 
 
         /**
-         * GUI初期化を行う。
+         * Initialize the GUI.
          */
         private void initGUI() {
             BorderLayout panelSettingsLayout = new BorderLayout();
@@ -486,14 +486,14 @@ public class SettingProfilerDialog extends javax.swing.JDialog implements Action
             String functionname = null;
             String statement = null;
             if (this.type == PANEL_TYPE.EPROF_STATEMENT_START) {
-                this.title = Message.getString("settingprofilerdialog.label.mesuermentstatement") + //測定ステートメント
-                		" : " + Message.getString("settingprofilerdialog.label.start"); //:開始
+                this.title = Message.getString("settingprofilerdialog.label.mesuermentstatement") + // Measurement statement
+                		" : " + Message.getString("settingprofilerdialog.label.start"); //:start
                 functionname = this.properties.getEprofFunctionStart();
                 statement = this.properties.getEprofStatementStart();
             }
             else if (this.type == PANEL_TYPE.EPROF_STATEMENT_END) {
-                this.title = Message.getString("settingprofilerdialog.label.mesuermentstatement") + //測定ステートメント
-                		" : " + Message.getString("settingprofilerdialog.label.end"); //:終了
+                this.title = Message.getString("settingprofilerdialog.label.mesuermentstatement") + // Measurement statement
+                		" : " + Message.getString("settingprofilerdialog.label.end"); //: End
                 functionname = this.properties.getEprofFunctionEnd();
                 statement = this.properties.getEprofStatementEnd();
             }
@@ -511,15 +511,15 @@ public class SettingProfilerDialog extends javax.swing.JDialog implements Action
             panelProperty.setLayout(panelPropertyLayout);
             panelProperty.setPreferredSize(new java.awt.Dimension(320, 234));
 
-            // 設定パネル枠
+            // Setting panel frame
             EtchedBorder titleBorder = (EtchedBorder) BorderFactory.createEtchedBorder();
             Border borderKeyword = new CompoundBorder( titleBorder, new EmptyBorder(17,7,0,7));
             panelProperty.setBorder(borderKeyword);
 
             Dimension textSize = new Dimension(50, 20);
-            // 測定ステートメント:関数名
+            // Measurement statement: function name
             {
-                JLabel lblName = new JLabel(Message.getString("settingprofilerdialog.label.mesurementfuncname")); //測定関数名
+                JLabel lblName = new JLabel(Message.getString("settingprofilerdialog.label.mesurementfuncname")); // measurement function name
                 panelProperty.add(lblName, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0, GridBagConstraints.NORTHWEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
             }
             {
@@ -530,7 +530,7 @@ public class SettingProfilerDialog extends javax.swing.JDialog implements Action
                 this.eprofFunctionname.setText(functionname);
             }
             {
-                JLabel lblName = new JLabel(Message.getString("settingprofilerdialog.label.statement")); //測定ステートメント
+                JLabel lblName = new JLabel(Message.getString("settingprofilerdialog.label.statement")); // Measurement statement
                 panelProperty.add(lblName, new GridBagConstraints(0, 1, 1, 1, 0.0, 0.0, GridBagConstraints.NORTHWEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
             }
             {
@@ -548,19 +548,19 @@ public class SettingProfilerDialog extends javax.swing.JDialog implements Action
         }
 
         /**
-         * プロパティ設定を更新する
+         * Update property settings
          */
         @Override
         public void updateProperties() {
             if (this.type == PANEL_TYPE.EPROF_STATEMENT_START) {
-                // 測定区間ステートメント:開始関数名
+                // Measurement interval statement: Start function name
                 this.properties.setEprofFunctionStart(this.eprofFunctionname.getText());
-                // 測定区間ステートメント:開始ステートメント
+                // Measurement interval statement: Start statement
                 this.properties.setEprofStatementStart(this.eprofMeasureStatement.getText());
             } else if (this.type == PANEL_TYPE.EPROF_STATEMENT_END) {
-                // 測定区間ステートメント:終了関数名
+                // Measurement interval statement: End function name
                 this.properties.setEprofFunctionEnd(this.eprofFunctionname.getText());
-                // 測定区間ステートメント:終了ステートメント
+                // Measurement interval statement: End statement
                 this.properties.setEprofStatementEnd(this.eprofMeasureStatement.getText());
             }
         }
@@ -572,32 +572,32 @@ public class SettingProfilerDialog extends javax.swing.JDialog implements Action
     }
 
     /**
-     * コスト情報表示設定パネル
+     * Cost information display setting panel
      */
     private class ProfilerViewPanel extends javax.swing.JPanel implements ProfilerPropertiesPanel, ActionListener {
 
-        /** シリアル番号 */
+        /** Serial number */
         private static final long serialVersionUID = 1L;
-        /** プロファイラ設定 */
+        /** Profiler settings */
         private ProfilerProperties properties;
-        /** パネルタイプ */
+        /** Panel type */
         @SuppressWarnings("unused")
         private PANEL_TYPE type;
-        /** コスト情報表示最大数 */
+        /** Maximum number of cost information displayed */
         private JTextField maxCount;
-        /** コスト情報表示色ボタン:手続 */
+        /** Cost information display color button: Procedure */
         private JColorButton btnColorProcedure;
-        /** コスト情報表示色ボタン:ループ */
+        /** Cost information display color button: Loop */
         private JColorButton btnColorLoop;
-        /** コスト情報表示色ボタン:ライン */
+        /** Cost information display color Button: Line */
         private JColorButton btnColorLine;
-        /** タイトル、ノード表示 */
-        private final String title = Message.getString("settingprofilerdialog.label.profilerview.title"); //コスト情報表示
+        /** Title, node display */
+        private final String title = Message.getString("settingprofilerdialog.label.profilerview.title"); // Cost information display
 
         /**
-         * コンストラクタ
-         * @param properties		プロファイラ設定
-         * @param type				パネルタイプ
+         * Constructor
+         * @param properties Profiler settings
+         * @param type Panel type
          */
         public ProfilerViewPanel(ProfilerProperties properties, PANEL_TYPE type) {
             this.properties = properties;
@@ -607,7 +607,7 @@ public class SettingProfilerDialog extends javax.swing.JDialog implements Action
 
 
         /**
-         * GUI初期化を行う。
+         * Initialize the GUI.
          */
         private void initGUI() {
 
@@ -628,15 +628,15 @@ public class SettingProfilerDialog extends javax.swing.JDialog implements Action
             panelProperty.setLayout(panelPropertyLayout);
             panelProperty.setPreferredSize(new java.awt.Dimension(320, 234));
 
-            // 設定パネル枠
+            // Setting panel frame
             EtchedBorder titleBorder = (EtchedBorder) BorderFactory.createEtchedBorder();
             Border borderKeyword = new CompoundBorder( titleBorder, new EmptyBorder(17,7,0,7));
             panelProperty.setBorder(borderKeyword);
 
             Dimension textSize = new Dimension(50, 20);
-            // プロパティ名
+            // Property name
             {
-                JLabel lblName = new JLabel(Message.getString("settingprofilerdialog.label.maxlinenumber")); //テーブル表示最大行数
+                JLabel lblName = new JLabel(Message.getString("settingprofilerdialog.label.maxlinenumber")); // Maximum number of rows displayed in the table
                 panelProperty.add(lblName, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
             }
             {
@@ -648,9 +648,9 @@ public class SettingProfilerDialog extends javax.swing.JDialog implements Action
             }
             {
                 JLabel lblName = new JLabel(
-                		Message.getString("settingprofilerdialog.label.costinfocolor") + //コスト情報表示色
+                		Message.getString("settingprofilerdialog.label.costinfocolor") + // Cost information display color
                 		":" +
-                		Message.getString("profileinfo_type.enum.procedure")); //手続
+                		Message.getString("profileinfo_type.enum.procedure")); //procedure
                 panelProperty.add(lblName, new GridBagConstraints(0, 1, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
             }
             {
@@ -661,9 +661,9 @@ public class SettingProfilerDialog extends javax.swing.JDialog implements Action
             }
             {
                 JLabel lblName = new JLabel(
-                		Message.getString("settingprofilerdialog.label.costinfocolor") + //コスト情報表示色
+                		Message.getString("settingprofilerdialog.label.costinfocolor") + // Cost information display color
                 		":" +
-                		Message.getString("profileinfo_type.enum.loop")); //ループ
+                		Message.getString("profileinfo_type.enum.loop")); //loop
                 panelProperty.add(lblName, new GridBagConstraints(0, 2, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
             }
             {
@@ -674,9 +674,9 @@ public class SettingProfilerDialog extends javax.swing.JDialog implements Action
             }
             {
                 JLabel lblName = new JLabel(
-                		Message.getString("settingprofilerdialog.label.costinfocolor") + //コスト情報表示色
+                		Message.getString("settingprofilerdialog.label.costinfocolor") + // Cost information display color
                 		":" +
-                		Message.getString("profileinfo_type.enum.line")); //ライン
+                		Message.getString("profileinfo_type.enum.line")); //line
                 panelProperty.add(lblName, new GridBagConstraints(0, 3, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
             }
             {
@@ -689,19 +689,19 @@ public class SettingProfilerDialog extends javax.swing.JDialog implements Action
 
 
         /**
-         * プロパティ設定を更新する
+         * Update property settings
          */
         @Override
         public void updateProperties() {
-            // テーブル表示最大行数
+            // Maximum number of rows displayed in the table
             this.properties.setCostinfoMaxCount(Integer.parseInt(this.maxCount.getText()));
-            // コスト情報表示色:手続
+            // Cost information display color: Procedure
             this.properties.setCostinfoBarcolorProcedure(this.btnColorProcedure.getColor());
-            // コスト情報表示色:ループ
+            // Cost information display color: Loop
             this.properties.setCostinfoBarcolorLoop(this.btnColorLoop.getColor());
-            // コスト情報表示色:ライン
+            // Cost information display color: Line
             this.properties.setCostinfoBarcolorLine(this.btnColorLine.getColor());
-            // バーグラフの色設定
+            // Bar graph color settings
             PROFILERINFO_TYPE.setProfilerProperties(this.properties);
         }
 
@@ -712,21 +712,21 @@ public class SettingProfilerDialog extends javax.swing.JDialog implements Action
 
 
         /**
-         * 色選択ダイアログを表示する
-         * @param event		イベント情報
+         * Display the color selection dialog
+         * @param event Event information
          */
         @Override
         public void actionPerformed(ActionEvent event) {
 
-            // コスト情報表示色
+            // Cost information display color
             if (event.getSource() instanceof JColorButton) {
                 JColorButton button = (JColorButton) event.getSource();
-                // 色選択ダイアログ
+                // Color selection dialog
                 Color color = JColorChooser.showDialog(this,
-                		Message.getString("settingprofilerdialog.colorchooserdialog.title"), //色の選択
+                		Message.getString("settingprofilerdialog.colorchooserdialog.title"), // Color selection
                 		button.getColor());
                 if(color != null){
-                    // ボタンにカラーを設定する
+                    // Set the color for the button
                     button.setColor(color);
                 }
 
@@ -737,34 +737,34 @@ public class SettingProfilerDialog extends javax.swing.JDialog implements Action
 
 
     /**
-     * コストルーラ表示設定パネル
+     * Cost ruler display setting panel
      */
     private class ProfilerRulerPanel extends javax.swing.JPanel implements ProfilerPropertiesPanel, ActionListener, ChangeListener {
 
-        /** シリアル番号 */
+        /** Serial number */
         private static final long serialVersionUID = 1L;
-        /** プロファイラ設定 */
+        /** Profiler settings */
         private ProfilerProperties properties;
-        /** パネルタイプ */
+        /** Panel type */
         @SuppressWarnings("unused")
         private PANEL_TYPE type;
-        /** コストルーラ:最小色 */
+        /** Cost ruler: Minimum color */
         private JColorButton btnRulerMin;
-        /** コストルーラ:最大色 */
+        /** Cost Ruler: Maximum Color */
         private JColorButton btnRulerMax;
-        /** コストルーラ:コード枠色 */
+        /** Cost ruler: Code frame color */
         private JColorButton btnBorder;
-        /** コストルーラ:コード背景色 */
+        /** Cost ruler: Code background color */
         private JColorButton btnBackcolor;
-        /** コストルーラ:コード背景色:透過色 */
+        /** Cost ruler: Code background color: Transparent color */
         private JSlider sliderAlpha;
-        /** タイトル、ノード表示 */
-        private final String title = Message.getString("settingprofilerdialog.label.costruler"); //コストルーラ表示
+        /** Title, node display */
+        private final String title = Message.getString("settingprofilerdialog.label.costruler"); // Cost ruler display
 
         /**
-         * コンストラクタ
-         * @param properties		プロファイラ設定
-         * @param type				パネルタイプ
+         * Constructor
+         * @param properties Profiler settings
+         * @param type Panel type
          */
         public ProfilerRulerPanel(ProfilerProperties properties, PANEL_TYPE type) {
             this.properties = properties;
@@ -774,7 +774,7 @@ public class SettingProfilerDialog extends javax.swing.JDialog implements Action
 
 
         /**
-         * GUI初期化を行う。
+         * Initialize the GUI.
          */
         private void initGUI() {
 
@@ -795,14 +795,14 @@ public class SettingProfilerDialog extends javax.swing.JDialog implements Action
             panelProperty.setLayout(panelPropertyLayout);
             panelProperty.setPreferredSize(new java.awt.Dimension(320, 234));
 
-            // 設定パネル枠
+            // Setting panel frame
             EtchedBorder titleBorder = (EtchedBorder) BorderFactory.createEtchedBorder();
             Border borderKeyword = new CompoundBorder( titleBorder, new EmptyBorder(17,7,0,7));
             panelProperty.setBorder(borderKeyword);
 
-            // コード表示枠色
+            // Code display frame color
             {
-                JLabel lblName = new JLabel(Message.getString("settingprofilerdialog.label.framecolor")); //KEY32=コード表示枠色
+                JLabel lblName = new JLabel(Message.getString("settingprofilerdialog.label.framecolor")); // KEY32 = Code display frame color
                 panelProperty.add(lblName, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
             }
             {
@@ -811,9 +811,9 @@ public class SettingProfilerDialog extends javax.swing.JDialog implements Action
                 this.btnBorder.setColor(this.properties.getRulerPanelBorderColor());
                 this.btnBorder.addActionListener(this);
             }
-            // コード表示背景色
+            // Code display background color
             {
-                JLabel lblName = new JLabel(Message.getString("settingprofilerdialog.label.background")); //KEY33=コード表示背景色
+                JLabel lblName = new JLabel(Message.getString("settingprofilerdialog.label.background")); // KEY33 = Code display background color
                 panelProperty.add(lblName, new GridBagConstraints(0, 1, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
             }
             {
@@ -825,7 +825,7 @@ public class SettingProfilerDialog extends javax.swing.JDialog implements Action
             {
             	JPanel panel = new JPanel();
             	panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
-            	JLabel label = new JLabel(Message.getString("settingprofilerdialog.label.transparency")); //KEY36=透明度
+            	JLabel label = new JLabel(Message.getString("settingprofilerdialog.label.transparency")); // KEY36 = Transparency
             	panel.add(label);
             	this.sliderAlpha = new JSlider(0, 255);
             	panel.add(this.sliderAlpha);
@@ -835,9 +835,9 @@ public class SettingProfilerDialog extends javax.swing.JDialog implements Action
                 Color back = this.properties.getRulerPanelBackColor();
                 this.sliderAlpha.setValue(back.getAlpha());
             }
-            // コストルーラ:最小色
+            // Cost ruler: Minimum color
             {
-                JLabel lblName = new JLabel(Message.getString("settingprofilerdialog.label.costminimun")); //KEY34=コストルーラ:最小色
+                JLabel lblName = new JLabel(Message.getString("settingprofilerdialog.label.costminimun")); // KEY34 = Cost Ruler: Minimum Color
                 panelProperty.add(lblName, new GridBagConstraints(0, 2, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
             }
             {
@@ -846,9 +846,9 @@ public class SettingProfilerDialog extends javax.swing.JDialog implements Action
                 this.btnRulerMin.setColor(this.properties.getRulerColorMin());
                 this.btnRulerMin.addActionListener(this);
             }
-            // コストルーラ:最大色
+            // Cost ruler: Maximum color
             {
-                JLabel lblName = new JLabel(Message.getString("settingprofilerdialog.label.costmaximun")); //KEY34=コストルーラ:最大色
+                JLabel lblName = new JLabel(Message.getString("settingprofilerdialog.label.costmaximun")); // KEY34 = Cost Ruler: Maximum Color
                 panelProperty.add(lblName, new GridBagConstraints(0, 3, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
             }
             {
@@ -857,23 +857,23 @@ public class SettingProfilerDialog extends javax.swing.JDialog implements Action
                 this.btnRulerMax.setColor(this.properties.getRulerColorMax());
                 this.btnRulerMax.addActionListener(this);
             }
-            // グラデーションパネル
+            // Gradient panel
             {
-                // グラデーション色
+                // Gradient color
                 JPanel panelGradient = new JPanel() {
                     /**
-                     * シリアル番号
+                     * Serial number
                      */
                     private static final long serialVersionUID = 1L;
 
                     /**
-                     * プロファイラルーラのグラデーションを描画する.
+                     * Draw a profile laura gradient.
                      */
                     @Override
                     protected void paintComponent(Graphics g) {
                         super.paintComponent(g);
                         Graphics2D g2 = (Graphics2D) g;
-                        // 描画領域
+                        // Drawing area
                         Rectangle rectDraw = this.getBounds();
                         int step = 256;
                         float width = (float) rectDraw.width / (float) step;
@@ -898,21 +898,21 @@ public class SettingProfilerDialog extends javax.swing.JDialog implements Action
 
 
         /**
-         * プロパティ設定を更新する
+         * Update property settings
          */
         @Override
         public void updateProperties() {
-            // コード表示枠色
+            // Code display frame color
             this.properties.setRulerPanelBorderColor(this.btnBorder.getColor());
-            // コード表示背景色
+            // Code display background color
             Color backcolor = this.btnBackcolor.getColor();
             if (backcolor != null) {
             	Color value = new Color(backcolor.getRed(), backcolor.getGreen(), backcolor.getBlue(), this.sliderAlpha.getValue());
                 this.properties.setRulerPanelBackColor(value);
             }
-            // コストルーラ:最小色
+            // Cost ruler: Minimum color
             this.properties.setRulerColorMin(this.btnRulerMin.getColor());
-            // コストルーラ:最大色
+            // Cost ruler: Maximum color
             this.properties.setRulerColorMax(this.btnRulerMax.getColor());
         }
 
@@ -923,26 +923,26 @@ public class SettingProfilerDialog extends javax.swing.JDialog implements Action
 
 
         /**
-         * 色選択ダイアログを表示する
-         * @param event		イベント情報
+         * Display the color selection dialog
+         * @param event Event information
          */
         @Override
         public void actionPerformed(ActionEvent event) {
 
-            // コスト情報表示色
+            // Cost information display color
             if (event.getSource() instanceof JColorButton) {
                 JColorButton button = (JColorButton) event.getSource();
-                // 色選択ダイアログ
+                // Color selection dialog
                 Color color = JColorChooser.showDialog(this,
-                		Message.getString("settingprofilerdialog.colorchooserdialog.title"), //色の選択
+                		Message.getString("settingprofilerdialog.colorchooserdialog.title"), // Color selection
                 		button.getColor());
                 if (color == null) {
                 	return;
                 }
 
-            	// ボタンにカラーを設定する
+            	// Set the color for the button
                 if (event.getSource() == this.btnBackcolor) {
-                	// 背景色の場合Alphaを設定する
+                	// Set Alpha for background color
                 	Color back = new Color(color.getRed(), color.getGreen(), color.getBlue(), this.sliderAlpha.getValue());
                     button.setColor(back);
                 }
@@ -955,8 +955,8 @@ public class SettingProfilerDialog extends javax.swing.JDialog implements Action
         }
 
         /**
-         * 背景透過色のスライダ変更イベント
-         * @param event    イベント情報
+         * Background transparent color slider change event
+         * @param event Event information
          */
 		@Override
 		public void stateChanged(ChangeEvent event) {
@@ -969,31 +969,31 @@ public class SettingProfilerDialog extends javax.swing.JDialog implements Action
     }
 
     /**
-     * ダイアログを表示する。
-     * @return    ダイアログの閉じた時のボタン種別
+     * Display a dialog.
+     * @return Button type when the dialog is closed
      */
     public int showDialog() {
 
-        // 親フレーム中央に表示する。
+        // Display in the center of the parent frame.
         this.setLocationRelativeTo(this.getOwner());
 
-        // ダイアログ表示
+        // Dialog display
         this.setVisible(true);
 
         return this.result;
     }
 
     /**
-     * ボタンクリックイベント
-     * @param event		イベント情報
+     * Button click event
+     * @param event Event information
      */
     @Override
     public void actionPerformed(ActionEvent event) {
 
-        // 適用・登録
+        // Apply / Register
         if (event.getSource() == this.btnOk
             || event.getSource() == this.btnApply) {
-            // コーディング規約設定を更新する。
+            // Update the coding standard settings.
             for(int i=0;i<this.treeProperties.getRowCount();i++) {
                 TreePath path = this.treeProperties.getPathForRow(i);
                 DefaultMutableTreeNode node = (DefaultMutableTreeNode)path.getLastPathComponent();
@@ -1002,28 +1002,28 @@ public class SettingProfilerDialog extends javax.swing.JDialog implements Action
                     ((ProfilerPropertiesPanel)node.getUserObject()).updateProperties();
                 }
             }
-            // 変更イベントを発生
+            // Fire a change event
             this.properities.firePropertyChange();
 
-            // ダイアログを閉じる。
+            // Close the dialog.
             if (event.getSource() == this.btnOk) {
                 this.result = Constant.OK_DIALOG;
                 dispose();
             }
             return;
         }
-        // 閉じる
+        // close
         else if (event.getSource() == this.btnCancel) {
             this.result = Constant.CANCEL_DIALOG;
-            // ダイアログを閉じる。
+            // Close the dialog.
             dispose();
             return;
         }
     }
 
     /**
-     * 設定項目ツリーの選択変更イベント
-     * @param event		イベント情報
+     * Setting item tree selection change event
+     * @param event Event information
      */
     @Override
     public void valueChanged(TreeSelectionEvent event) {

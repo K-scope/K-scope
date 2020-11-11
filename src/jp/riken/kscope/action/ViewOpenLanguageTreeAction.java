@@ -29,14 +29,14 @@ import jp.riken.kscope.service.AppController;
 import jp.riken.kscope.service.LanguageService;
 
 /**
- * 新規構造ツリーを開くアクションクラス
+ * Action class to open a new structure tree
  * @author RIKEN
  */
 public class ViewOpenLanguageTreeAction extends ActionBase {
 
     /**
-     * コンストラクタ
-     * @param controller	アプリケーションコントローラ
+     * Constructor
+     * @param controller Application controller
      */
     public ViewOpenLanguageTreeAction(AppController controller) {
         super(controller);
@@ -44,14 +44,14 @@ public class ViewOpenLanguageTreeAction extends ActionBase {
 
 
     /**
-     * アクションが実行可能であるかチェックする.<br/>
-     * アクションの実行前チェック、メニューのイネーブルの切替を行う。<br/>
-     * @return		true=アクションが実行可能
+     * Check if the action is executable. <br/>
+     * Check before executing the action and switch the menu enable. <br/>
+     * @return true = Action can be executed
      */
     @Override
     public boolean validateAction() {
 
-        // 現在の選択ノードの取得
+        // Get the currently selected node
         IBlock[] blocks = this.controller.getMainframe().getPanelExplorerView().getSelectedBlocks();
         if (blocks == null) return false;
         IBlock selectedProcedure = null;
@@ -68,54 +68,54 @@ public class ViewOpenLanguageTreeAction extends ActionBase {
 
 
     /**
-     * 構造ツリーを開く
-     * @param   block			新規ルートブロック
+     * Open the structure tree
+     * @param block New root block
      */
     public void openLanguageTree(IBlock block) {
-        // ルートブロックにできるのは、Procedureのみ
+        // Only Procedure can be the root block
         if (!(block instanceof Procedure)) {
             return;
         }
 
-        // フォートランデータベース
+        // Fortran database
         Fortran fortran = this.controller.getFortranLanguage();
-        // エラー情報モデル
+        // Error information model
         ErrorInfoModel errorModel = this.controller.getErrorInfoModel();
-        // 構造ツリーモデルを新規に生成する
+        // Generate a new structure tree model
         LanguageTreeModel languageModel = new LanguageTreeModel();
 
-        // 構造解析サービス
+        // Structural analysis service
         LanguageService service = new LanguageService(fortran);
-        // 構造ツリーモデルを設定する
+        // Set the structure tree model
         service.setLanguageTreeModel(languageModel);
-        // エラー情報モデルを設定する。
+        // Set the error information model.
         service.setErrorInfoModel(errorModel);
 
-        // 構造ツリーを生成する
+        // Generate a structure tree
         if (!service.writeTree(block)) {
             return;
         }
 
-        // 構造ツリー生成済みの構造ツリーモデルにて新規ツリータブを作成する
+        // Create a new tree tab with the structure tree model that has already been generated.
         this.controller.getMainframe().getPanelExplorerView().viewLanguageTree(languageModel);
 
-        // 構造ツリーフィルタの適用を行う
+        // Apply the structure tree filter
         this.controller.applyLanguageTreeFilter();
 
         return;
     }
 
     /**
-     * アクション発生イベント
-     * @param event		イベント情報
+     * Action occurrence event
+     * @param event Event information
      */
     @Override
     public void actionPerformed(ActionEvent event) {
-    	// ステータスバー
+    	// Status bar
     	Application.status.setMessageMain(
-    			Message.getString("mainmenu.view.newtree")); //新規構造ツリー
+    			Message.getString("mainmenu.view.newtree")); // New structure tree
 
-        // 現在の選択ノードの取得
+        // Get the currently selected node
         IBlock[] blocks = this.controller.getMainframe().getPanelExplorerView().getSelectedBlocks();
         if (blocks == null) return;
         IBlock selectedProcedure = null;
@@ -127,7 +127,7 @@ public class ViewOpenLanguageTreeAction extends ActionBase {
         }
         if (selectedProcedure == null) return;
 
-        // 構造ツリーを開く
+        // open the structure tree
         openLanguageTree(selectedProcedure);
 
     }

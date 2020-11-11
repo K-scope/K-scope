@@ -25,26 +25,26 @@ import jp.riken.kscope.gui.ISourceBargraph;
 import jp.riken.kscope.properties.ProfilerProperties;
 
 /**
- * 基本プロファイラ(DProf)データクラス.
- * Dprofのプロファイラデータ
+ * Basic Profiler (DProf) data class.
+ * Dprof profiler data
  * @author RIKEN
  */
 public class ProfilerDprofData extends ProfilerBaseData implements ISourceBargraph {
 
-    /** シンボル名/カウンタグループ名:Dprof */
+    /** Symbol name / counter group name: Dprof */
     private String symbol;
     // Dprof
-    /** ネストレベル:Dprof  */
+    /** Nest level: Dprof */
     private int nestLevel;
-    /** サンプリング回数:Dprof */
+    /** Sampling count: Dprof */
     private float sampling;
-    /** 全体に対する割合:Dprof */
+    /** Percentage to total: Dprof */
     private float ratio;
-    /** 累計サンプリング回数:Dprof */
+    /** Cumulative sampling count: Dprof */
     private float sumSampling;
 
     /**
-     * コンストラクタ
+     * Constructor
      */
     public ProfilerDprofData() {
         super();
@@ -54,60 +54,60 @@ public class ProfilerDprofData extends ProfilerBaseData implements ISourceBargra
     }
 
     /**
-     * シンボル名を取得する
-     * @return		シンボル名
+     * Get the symbol name
+     * @return Symbol name
      */
     public String getSymbol() {
         return symbol;
     }
 
     /**
-     * シンボル名を設定する
-     * @param name		シンボル名
+     * Set the symbol name
+     * @param name Symbol name
      */
     public void setSymbol(String name) {
         this.symbol = name;
     }
 
     /**
-     * サンプリング回数を取得する
-     * @return		サンプリング回数
+     * Get the number of samplings
+     * @return Sampling count
      */
     public float getSampling() {
         return sampling;
     }
 
     /**
-     * サンプリング回数を設定する
-     * @param count		サンプリング回数
+     * Set the number of samplings
+     * @param count Sampling count
      */
     public void setSampling(float count) {
         this.sampling = count;
     }
 
     /**
-     * 全体に対する割合を設定する
-     * @return		全体に対する割合
+     * Set the ratio to the whole
+     * @return Percentage of total
      */
     public float getRatio() {
         return ratio;
     }
 
     /**
-     * 全体に対する割合を設定する
-     * @param value		全体に対する割合
+     * Set the ratio to the whole
+     * @param value Percentage of the whole
      */
     public void setRatio(float value) {
         this.ratio = value;
     }
 
     /**
-     * バーグラフ横に表示する文字列を取得する
-     * @return		表示文字列
+     * Get the character string to be displayed next to the bar graph
+     * @return Display string
      */
     @Override
     public String getBarText() {
-        // 少数点以下2桁表示
+        // Display 2 digits after the decimal point
 
         float value = new BigDecimal(String.valueOf(this.getRatio()*100)).setScale(ProfilerProperties.COST_RATIO_SCALE, BigDecimal.ROUND_HALF_UP).floatValue();
         int scale = ProfilerProperties.COST_RATIO_SCALE;
@@ -120,9 +120,9 @@ public class ProfilerDprofData extends ProfilerBaseData implements ISourceBargra
     }
 
     /**
-     * バーグラフの値を取得する.
-     * Max=1.0 〜 Min=0.0
-     * @return		バーグラフの値
+     * Get the value of the bar graph.
+     * Max = 1.0 ~ Min = 0.0
+     * @return Bar graph value
      */
     @Override
     public float getBarValue() {
@@ -130,8 +130,8 @@ public class ProfilerDprofData extends ProfilerBaseData implements ISourceBargra
     }
 
     /**
-     * バーグラフの対象ソースファイルを取得する
-     * @return		対象ソースファイル
+     * Get the target source file for the bar graph
+     * @return Target source file
      */
     @Override
     public SourceFile getSourceFile() {
@@ -140,8 +140,8 @@ public class ProfilerDprofData extends ProfilerBaseData implements ISourceBargra
     }
 
     /**
-     * バーグラフの表示色を取得する
-     * @return		バーグラフ表示色
+     * Get the display color of the bar graph
+     * @return Bar graph display color
      */
     @Override
     public Color getBarColor() {
@@ -150,40 +150,40 @@ public class ProfilerDprofData extends ProfilerBaseData implements ISourceBargra
 
 
     /**
-     * ネストレベル:Dprof
-     * @return ネストレベル:Dprof
+     * Nest level: Dprof
+     * @return Nest level: Dprof
      */
     public int getNestLevel() {
         return nestLevel;
     }
 
     /**
-     * ネストレベル:Dprof
-     * @param nest ネストレベル:Dprof
+     * Nest level: Dprof
+     * @param nest Nest level: Dprof
      */
     public void setNestLevel(int nest) {
         this.nestLevel = nest;
     }
 
     /**
-     * 累計サンプリング回数
-     * @return 累計サンプリング回数
+     * Cumulative sampling count
+     * @return Cumulative sampling count
      */
     public float getSumSampling() {
         return sumSampling;
     }
 
     /**
-     * 累計サンプリング回数
-     * @param count      累計サンプリング回数
+     * Cumulative sampling count
+     * @param count Cumulative sampling count
      */
     public void setSumSampling(float count) {
         this.sumSampling = count;
     }
 
     /**
-     * バーグラフのタイプ名を取得する
-     * @return		バーグラフタイプ名
+     * Get the bar graph type name
+     * @return Bar graph type name
      */
 	@Override
 	public String getTypeName() {

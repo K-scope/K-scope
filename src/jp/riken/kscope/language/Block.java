@@ -30,38 +30,38 @@ import jp.riken.kscope.information.InformationBlocks;
 import jp.riken.kscope.information.TextInfo;
 
 /**
- * 処理ブロックを表現する抽象クラス。
+ * An abstract class that represents a processing block.
  *
  * @author RIKEN
  *
  */
 public abstract class Block implements Serializable, IInformation, IBlock {
-    /** シリアル番号 */
+    /** Serial number */
     private static final long serialVersionUID = 4754517459536460336L;
-    /** 親ブロック */
+    /** Parent block */
     private Block mother;
-    /** 開始行情報 */
+    /** Start line information */
     private Statement start;
-    /** 終了行情報 */
+    /** End line information */
     private Statement end;
-    /** 子ブロック */
-    // TODO childrenを常にnewするのはやめるべきか要検討
+    /** Child block */
+    // Consider whether to stop new TODO children all the time
     private ArrayList<Block> children = new ArrayList<Block>();
-    /** 付加情報 */
-    // TODO 常にnullで初期化するのはやめるべきか要検討
+    /** Additional information */
+    // TODO Consider whether you should stop initializing with null all the time
     private TextInfo information = null;
 
     /**
-     * コンストラクタ。
+     * Constructor.
      */
     protected Block() {
     }
 
     /**
-     * コンストラクタ。
+     * Constructor.
      *
      * @param mama
-     *            親ブロック
+     * Parent block
      */
     public Block(Block mama) {
         this.mother = mama;
@@ -69,31 +69,31 @@ public abstract class Block implements Serializable, IInformation, IBlock {
 
     // ++++++++++++++++++++++++++++++++++++++++++++
     /**
-     * 開始コード行情報を設定する。
+     * Set the start code line information.
      *
      * @param lineInfo
-     *            開始コード行情報
+     * Start code line information
      */
     protected void set_block_start(CodeLine lineInfo) {
         start = new Statement(lineInfo);
     }
 
     /**
-     * 終了コード行情報を設定する。
+     * Set the exit code line information.
      *
      * @param lineInfo
-     *            終了コード行情報
+     * Exit code line information
      */
     protected void set_block_end(CodeLine lineInfo) {
         end = new Statement(lineInfo);
     }
 
     /**
-     * ブロックの文字列表現を取得する.
+     * Get the string representation of the block.
      */
     @Override
     public String toString() {
-        // delete by @hira at 2013/03/01  付加情報登録ブロックは[!]から赤色文字に変更の為削除
+        // delete by @hira at 2013/03/01 The additional information registration block was deleted because it changed from [!] To red characters.
 //         String info = "";
 //        if (this.getInformation() != null) {
 //            if (!(this.getInformation().getContent().equals(""))) {
@@ -105,8 +105,8 @@ public abstract class Block implements Serializable, IInformation, IBlock {
     }
 
     /**
-     * ブロックの基本文字列表現を取得する.
-     * @return  ブロックの文字列表現
+     * Get the base string representation of the block.
+     * @return Block string representation
      */
     protected String toStringBase() {
         //return this.get_start_str().toLowerCase();
@@ -114,17 +114,17 @@ public abstract class Block implements Serializable, IInformation, IBlock {
     }
 
     /**
-     * 親ブロックを設定する。
-     * @param mama		親ブロック
+     * Set the parent block.
+     * @param mama Parent block
      */
     protected void set_mother(Block mama) {
         mother = mama;
     }
 
     /**
-     * 親ブロックを返す。
+     * Returns the parent block.
      *
-     * @return 親ブロック
+     * @return Parent block
      */
     public Block get_mother() {
         return mother;
@@ -132,18 +132,18 @@ public abstract class Block implements Serializable, IInformation, IBlock {
 
     // ++++++++++++++++++++++++++++++++++++++++++++
     /**
-     * 開始Statementを返す。
+     * Returns the start Statement.
      *
-     * @return 開始Statement
+     * @return Start Statement
      */
     public Statement get_start() {
         return start;
     }
 
     /**
-     * 終了Statementを返す。
+     * Returns the end Statement.
      *
-     * @return 終了Statement
+     * @return End Statement
      */
     public Statement get_end() {
         return end;
@@ -151,18 +151,18 @@ public abstract class Block implements Serializable, IInformation, IBlock {
 
     // ++++++++++++++++++++++++++++++++++++++++++++
     /**
-     * ブロックの開始行の文字列表現を返す。
+     * Returns a string representation of the start line of the block.
      *
-     * @return 開始行の文字列表現
+     * @return String representation of the start line
      */
     public String get_start_str() {
         return start.get_statement();
     }
 
     /**
-     * ブロックの終了行の文字列表現を返す。
+     * Returns a string representation of the end line of the block.
      *
-     * @return 終了行の文字列表現
+     * @return String representation of the end line
      */
     public String get_end_str() {
         return end.get_statement();
@@ -189,9 +189,9 @@ public abstract class Block implements Serializable, IInformation, IBlock {
 
     // ++++++++++++++++++++++++++++++++++++++++++++
     /**
-     * 子要素を返す。
+     * Returns a child element.
      *
-     * @return 子要素。無ければ空のリストを返す
+     * @return Child element. Returns an empty list if not
      */
     public ArrayList<Block> getChildren() {
         return children;
@@ -241,8 +241,8 @@ public abstract class Block implements Serializable, IInformation, IBlock {
     }
 
     /**
-     * 付加情報を取得する
-     * @return		付加情報
+     * Get additional information
+     * @return Additional information
      */
     @Override
     public TextInfo getInformation() {
@@ -250,9 +250,9 @@ public abstract class Block implements Serializable, IInformation, IBlock {
     }
 
     /**
-     * 開始行番号情報を取得する
+     * Get start line number information
      *
-     * @return		開始行番号情報
+     * @return Start line number information
      */
     @Override
     public CodeLine getStartCodeLine() {
@@ -262,9 +262,9 @@ public abstract class Block implements Serializable, IInformation, IBlock {
     }
 
     /**
-     * 終了行番号情報を取得する
+     * Get end line number information
      *
-     * @return		終了行番号情報
+     * @return End line number information
      */
     @Override
     public CodeLine getEndCodeLine() {
@@ -274,9 +274,9 @@ public abstract class Block implements Serializable, IInformation, IBlock {
     }
 
     /**
-     * 名前空間（モジュール名.ルーチン名）を取得する。
+     * Get the namespace (module name.routine name).
      *
-     * @return 名前空間（モジュール名.ルーチン名）
+     * @return namespace (module name.routine name)
      */
     @Override
     public String getNamespace() {
@@ -288,19 +288,19 @@ public abstract class Block implements Serializable, IInformation, IBlock {
     }
 
     /**
-     * 開始位置を取得する。
+     * Get the start position.
      *
-     * @return 開始位置
+     * @return start position
      */
     @Override
     public int getStartPos() {
         return this.getStartCodeLine().getStartLine();
     }
     /**
-     * 開始位置を設定する。
+     * Set the start position.
      *
      * @param pos
-     *         開始位置
+     * Starting position
      */
     @Override
     public void setStartPos(int pos) {
@@ -308,26 +308,26 @@ public abstract class Block implements Serializable, IInformation, IBlock {
     }
 
     /*
-     * TODO: 暫定対応。
-     *       本当はプログラムの終了はprogram.getEndCodeLine.getEndLineで
-     *       取得するか、programのEndCodeLineを削除し、StartCodeLineを
-     *       CodeLineと名称変更すべき。要検討。
+     * TODO: Temporary support.
+     * Actually, the end of the program is program.getEndCodeLine.getEndLine
+     * Get or delete EndCodeLine of program and StartCodeLine
+     * Should be renamed to CodeLine. Suspect.
      */
 
     /**
-     * 終了位置を取得する。
+     * Get the end position.
      *
-     * @return 終了位置
+     * @return end position
      */
     @Override
     public int getEndPos() {
         return this.getStartCodeLine().getEndLine();
     }
     /**
-     * 終了位置を設定する。
+     * Set the end position.
      *
      * @param pos
-     *         終了位置
+     * End position
      */
     @Override
     public void setEndPos(int pos) {
@@ -335,9 +335,9 @@ public abstract class Block implements Serializable, IInformation, IBlock {
     }
 
     /**
-     * idにマッチした情報ブロックを検索する。
-     * @param id    ID
-     * @return 見つかった情報ブロック。見つからなかった場合はnullが返ります。
+     * Search for information blocks that match id.
+     * @param id ID
+     * @return The information block found. If not found, null is returned.
      */
     public IInformation findInformationBlockBy(String id) {
         IInformation result = null;
@@ -356,7 +356,7 @@ public abstract class Block implements Serializable, IInformation, IBlock {
     }
 
     /**
-     * 付加情報をすべて削除する。
+     * Delete all additional information.
      */
     @Override
     public void clearInformation() {
@@ -367,9 +367,9 @@ public abstract class Block implements Serializable, IInformation, IBlock {
     }
 
     /**
-     * 付加情報ブロックコレクションを生成する。
+     * Generate an additional information block collection.
      *
-     * @return 付加情報ブロックコレクション
+     * @return Additional information block collection
      */
     public InformationBlocks createInformationBlocks() {
         InformationBlocks result = new InformationBlocks();
@@ -388,15 +388,15 @@ public abstract class Block implements Serializable, IInformation, IBlock {
     }
 
     /**
-     * 自身の子ブロックのリストを返す。
-     * @return 子ブロックのリスト。無ければ空のリストを返す。
+     * Returns a list of its own child blocks.
+     * @return A list of child blocks. If not, returns an empty list.
      */
     public List<Block> getBlocks() {
         return this.children;
     }
 
     /**
-     * IDを取得する。
+     * Get an ID.
      *
      * @return ID
      */
@@ -415,8 +415,8 @@ public abstract class Block implements Serializable, IInformation, IBlock {
     }
 
     /**
-     * 親ブロックを取得する
-     * @return        親ブロック
+     * Get the parent block
+     * @return Parent block
      */
     @Override
     public IBlock getMotherBlock() {
@@ -424,10 +424,10 @@ public abstract class Block implements Serializable, IInformation, IBlock {
     }
 
     /**
-     * 同一ブロックであるかチェックする.
-     * childrenが同じサイズ、同じ文字列であること.
-     * @param block		ブロック
-	 * @return		true=一致
+     * Check if they are the same block.
+     * Children must be the same size and the same string.
+     * @param block block
+* @return true = match
      */
 	public boolean equalsBlocks(Block block) {
 		if (block == null) return false;
@@ -462,10 +462,10 @@ public abstract class Block implements Serializable, IInformation, IBlock {
 	}
 
     /**
-     * 子ブロックのインデックスを返す.
-     * 存在しない場合は、-1を返す。
-     * @param block		ブロック
-	 * @return			インデックス
+     * Returns the index of the child block.
+     * Returns -1 if it does not exist.
+     * @param block block
+* @return index
      */
 	protected int indexOfChildren(Block block) {
 		return this.children.indexOf(block);
@@ -473,10 +473,10 @@ public abstract class Block implements Serializable, IInformation, IBlock {
 
 
 	/**
-	 * 同一ブロックを検索する
-	 * @param block			IInformationブロック
-	 * @return		同一ブロック
-	 */
+* Search for the same block
+* @param block IInformation block
+* @return Same block
+*/
 	public IInformation[] searchInformationBlocks(IInformation block) {
 		if (!(block instanceof Block)) {
 			return null;
@@ -501,10 +501,10 @@ public abstract class Block implements Serializable, IInformation, IBlock {
 	}
 
 	/**
-	 * 同一ブロック階層であるかチェックする.
-	 * @param block		チェック対象Block
-	 * @return   true=一致
-	 */
+* Check if they are in the same block hierarchy.
+* @param block Check target Block
+* @return true = match
+*/
 	public boolean equalsLayout(Block block) {
 		if (block == null) return false;
 
@@ -585,9 +585,9 @@ public abstract class Block implements Serializable, IInformation, IBlock {
 
 
     /**
-     * 構造IDを取得する。
+     * Get the structure ID.
      *
-     * @return 構造ID
+     * @return Structure ID
      */
     @Override
     public String getLayoutID() {
@@ -624,11 +624,11 @@ public abstract class Block implements Serializable, IInformation, IBlock {
     }
 
     /**
-     * 子ブロックのインデックスを返す.
-     * DO, SELECT, IF文の出現回数とする
-     * 存在しない場合は、-1を返す。
-     * @param block		ブロック
-	 * @return			インデックス
+     * Returns the index of the child block.
+     * The number of occurrences of DO, SELECT, and IF statements
+     * Returns -1 if it does not exist.
+     * @param block block
+* @return index
      */
     protected int indexOfLayout(Block block) {
 		int index = -1;
@@ -648,9 +648,9 @@ public abstract class Block implements Serializable, IInformation, IBlock {
 	}
 
     /**
-     * layoutIDにマッチした構造ブロックを検索する。
-     * @param id    layoutID
-     * @return 見つかった構造ブロック
+     * Search for structural blocks that match the layoutID.
+     * @param id layoutID
+     * @return Found structural block
      */
     public IInformation findInformationLayoutID(String id) {
     	if (id == null || id.isEmpty()) return null;
@@ -672,10 +672,10 @@ public abstract class Block implements Serializable, IInformation, IBlock {
 
 
 	/**
-	 * 行番号のブロックを検索する
-	 * @param line			行番号
-	 * @return		行番号のブロック
-	 */
+* Search for blocks of line numbers
+* @param line line number
+* @return Line number block
+*/
 	public IBlock[] searchCodeLine(CodeLine line) {
 		if (line == null) return null;
 
@@ -714,8 +714,8 @@ public abstract class Block implements Serializable, IInformation, IBlock {
 	}
 
 	/**
-	 * 変数リストを取得する.
-	 */
+* Get the variable list.
+*/
 	@Override
 	public Set<Variable> getAllVariables() {
 		Set<Variable> list = new HashSet<Variable>();

@@ -22,70 +22,70 @@ import jp.riken.kscope.dialog.ProgressDialog;
 import jp.riken.kscope.service.AppController;
 
 /**
- * プログレスダイアログの表示アクションクラス
+ * Progress dialog display action class
  * @author RIKEN
  */
 public class WindowProgressAction extends ActionBase {
 
     /**
-     * コンストラクタ
-     * @param controller	アプリケーションコントローラ
+     * Constructor
+     * @param controller Application controller
      */
     public WindowProgressAction(AppController controller) {
         super(controller);
     }
 
     /**
-     * アクションが実行可能であるかチェックする.<br/>
-     * アクションの実行前チェック、メニューのイネーブルの切替を行う。<br/>
-     * @return		true=アクションが実行可能
+     * Check if the action is executable. <br/>
+     * Check before executing the action and switch the menu enable. <br/>
+     * @return true = Action can be executed
      */
     @Override
     public boolean validateAction() {
-        // スレッドタスクの実行状態をチェックする(true=スレッドが終了していない)
+        // Check the execution status of the thread task (true = thread has not ended)
         return !this.controller.isThreadTaskDone();
     }
 
     /**
-     * アクション発生イベント
-     * @param event		イベント情報
+     * Action occurrence event
+     * @param event Event information
      */
     @Override
     public void actionPerformed(ActionEvent event) {
-        // メニューからのプログレスダイアログの表示の場合は、スレッド実行中のみ表示を行う。
+        // When displaying the progress dialog from the menu, display only while the thread is running.
         if (this.controller.isThreadTaskDone()) {
-            // スレッド実行なし
+            // No thread execution
             return;
         }
 
-        // プログレスダイアログを表示する。
+        // Display the progress dialog.
         showProgressDialog();
     }
 
     /**
-     * プログレスダイアログを表示する。
+     * Display the progress dialog.
      */
     public void showProgressDialog() {
 
-        // プログレスダイアログを表示する。
+        // Display the progress dialog.
         ProgressDialog dialog = this.controller.getMainframe().getDialogProgress();
 
-        // スレッドタスクを設定する
+        // Set up a thread task
         dialog.setThreadService(this.controller.getThreadFuture());
 
-        // ダイアログ表示
+        // Dialog display
         dialog.showDialog();
     }
 
     /**
-     * プログレスダイアログを閉じるする。
+     * Close the progress dialog.
      */
     public void closeProgressDialog() {
 
-        // プログレスダイアログを表示する。
+        // Display the progress dialog.
         ProgressDialog dialog = this.controller.getMainframe().getDialogProgress();
 
-        // ダイアログを閉じる
+        // Close the dialog
         dialog.dispose();
 
     }

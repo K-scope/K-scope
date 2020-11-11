@@ -28,46 +28,46 @@ import jp.riken.kscope.language.Statement;
 import jp.riken.kscope.language.VariableDefinition;
 
 /**
- * structure型クラス。
+ * structure type class.
  *
  * @author RIKEN
  *
  */
 public class Structure implements Serializable {
-    /** シリアル番号 */
+    /** Serial number */
     private static final long serialVersionUID = 6682888216005792092L;
-    /** 変数名 */
+    /** Variable name */
     private String name = "";
-    /** 構造体メンバ変数 */
+    /** Structure member variables */
     private List<VariableDefinition> definitions = new ArrayList<VariableDefinition>();
-    /** コード開始行 */
+    /** Code start line */
     private Statement start;
-    /** コード終了行 */
+    /** End line of code */
     private Statement end;
-    /** 親ブロック */
+    /** Parent block */
     private IBlock mother;
 
     /**
-     * コンストラクタ。
+     * Constructor.
      */
     public Structure() {
     }
 
     /**
-     * コンストラクタ。
+     * Constructor.
      *
      * @param nm
-     *         構造体の名前
+     * Structure name
      */
     public Structure(String nm) {
         name = nm;
     }
 
     /**
-     * 変数定義文の追加。
+     * Addition of variable definition statement.
      *
      * @param definition
-     *          変数定義文
+     * Variable definition statement
      */
     public void add(VariableDefinition definition) {
         if (definition != null) {
@@ -76,12 +76,12 @@ public class Structure implements Serializable {
    }
 
     /**
-     * 指定の型の変数定義文の追加。
+     * Add variable definition statement of the specified type.
      *
      * @param typ
-     *          変数の型
+     * Variable type
      * @param nm
-     *          変数名
+     *          Variable name
      */
     public void add(VariableType typ, String nm) {
         if (typ != null && nm != null) {
@@ -91,12 +91,12 @@ public class Structure implements Serializable {
     }
 
     /**
-     * type文の追加。
+     * Added type statement.
      *
      * @param type
-     *          構造体
+     *          Structure
      * @param variableName
-     *          変数名
+     *          Variable name
      */
     public void add(Type type, String variableName) {
         if (type != null && variableName != null) {
@@ -106,12 +106,12 @@ public class Structure implements Serializable {
     }
 
     /**
-     * structure文の追加。
+     * Addition of structure statement.
      *
      * @param structure
-     *          構造体
+     *          Structure
      * @param variableName
-     *          変数名
+     *          Variable name
      */
     public void add(Structure structure, String variableName) {
         if (structure != null && variableName != null) {
@@ -121,10 +121,10 @@ public class Structure implements Serializable {
     }
 
     /**
-     * union文の追加。
+     * Added union statement.
      *
      * @param union
-     *          共用体
+     * Union type
      */
     public void add(Union union) {
         if (union != null) {
@@ -134,55 +134,55 @@ public class Structure implements Serializable {
     }
 
     /**
-     * 構造体名の取得。
+     * Get the structure name.
      *
-     * @return 構造体の名前
+     * @return The name of the structure
      */
     public String getName() {
         return name;
     }
 
     /**
-     * 構造体内の変数定義文リストの取得。
+     * Get a list of variable definition statements in the structure.
      *
-     * @return 変数定義文リスト
+     * @return Variable definition statement list
      */
     public List<VariableDefinition> getDefinitions() {
         return definitions;
     }
 
     /**
-     * 構造体内の変数定義文リストの設定。
-     * @param 変数定義文リスト
+     * Setting the variable definition statement list in the structure.
+     * @param Variable definition statement list
      */
     public void setDefinitions(List<VariableDefinition> list) {
         this.definitions = list;
     }
 
     /**
-     * 型が適合しているかどうか。<br>
+     * Whether the type is compatible. <br>
      *
-     * 多重定義されている関数群の中から対応する関数を探索する際に、<br>
-     * 仮引数と実引数の型チェックをする必要がある。<br>
-     * 「適合している」とは、この型チェックで、同一の型と判定される
-     * 事を意味している。
+     * When searching for the corresponding function from the overloaded function group, <br>
+     * It is necessary to check the type of formal and actual arguments. <br>
+     * "Matching" is judged to be the same type by this type check
+     * Means a thing.
      *
      * @param value
-     *          型
+     * Type
      *
-     * @return true : 適合している<br>
-     *         false: 適合していない
+     * @return true: Conforms <br>
+     * false: Not compatible
      *
      */
     public boolean matches(Structure value) {
         if (value == null) { return false; }
-        // 名前のチェックのみ
+        // Name check only
         return this.name.equalsIgnoreCase(value.getName());
     }
 
     /**
-     * 開始コード行情報を取得する。
-     * @return         開始コード行情報
+     * Get the start code line information.
+     * @return Start code line information
      */
     public Statement getStartStatement() {
         return this.start;
@@ -190,16 +190,16 @@ public class Structure implements Serializable {
 
 
     /**
-     * 終了コード行情報を設定する。
-     * @param lineInfo         終了コード行情報
+     * Set the exit code line information.
+     * @param lineInfo Exit code line information
      */
     public Statement getEndStatement() {
         return this.end;
     }
 
     /**
-     * 開始コード行情報を設定する。
-     * @param lineInfo         開始コード行情報
+     * Set the start code line information.
+     * @param lineInfo Start code line information
      */
     public void setStartStatement(CodeLine lineInfo) {
         this.start = new Statement(lineInfo);
@@ -207,8 +207,8 @@ public class Structure implements Serializable {
 
 
     /**
-     * 終了コード行情報を設定する。
-     * @param lineInfo         終了コード行情報
+     * Set the exit code line information.
+     * @param lineInfo Exit code line information
      */
     public void setEndStatement(CodeLine lineInfo) {
         this.end = new Statement(lineInfo);
@@ -216,8 +216,8 @@ public class Structure implements Serializable {
 
 
     /**
-     * 親ブロックを取得する
-     * @return        親ブロック
+     * Get the parent block
+     * @return Parent block
      */
     public void setMotherBlock(IBlock block) {
         this.mother = block;
@@ -225,8 +225,8 @@ public class Structure implements Serializable {
 
 
     /**
-     * 親ブロックを取得する
-     * @return        親ブロック
+     * Get the parent block
+     * @return Parent block
      */
     public IBlock getMotherBlock() {
         return this.mother;

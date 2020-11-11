@@ -19,35 +19,35 @@ package jp.riken.kscope.language;
 
 /**
 *
-* 繰り返し処理を表現したクラス.<br>
-* FortranにおけるDOループに該当するもの.
+* A class that expresses iterative processing. <br>
+* Corresponds to the DO loop in Fortran.
 *
 * @author RIKEN
 *
 */
 public class Repetition extends Block {
-	/** シリアル番号 */
+	/** Serial number */
 	private static final long serialVersionUID = -2221953302518033528L;
-	/** DO文:index変数 */
+	/** DO statement: index variable */
     private Variable iterator;
-    /** DO文:初期値 */
+    /** DO statement: initial value */
     private Expression initIterator;
-    /** DO文:最大値 */
+    /** DO statement: maximum value */
     private Expression endCondition;
-    /** DO文:ステップインターバル */
+    /** DO statement: Step interval */
     private Expression step;
 
     /**
-     * コンストラクタ.
+     * Constructor.
      */
 	Repetition() {
         super();
 	}
 
     /**
-     * コンストラクタ.
+     * Constructor.
      *
-     * @param mama 親ブロック
+     * @param mama Parent block
      */
 
 	Repetition(Block mama) {
@@ -55,12 +55,12 @@ public class Repetition extends Block {
 	}
 
     /**
-     * コンストラクタ.
+     * Constructor.
      *
-     * @param itrtr ループ制御変数
-     * @param initItrtr 始値
-     * @param endCndtn 終値
-     * @param stp 刻み幅
+     * @param itrtr Loop control variable
+     * @param initItrtr Open price
+     * @param endCndtn closing price
+     * @param stp step size
      */
     public Repetition(Variable itrtr,
             Expression initItrtr, Expression endCndtn,
@@ -72,7 +72,7 @@ public class Repetition extends Block {
         this.step = stp;
 	}
     /**
-     * ブロックタイプの取得。
+     * Get block type.
      *
      * @return BlockType.REPETITION
      */
@@ -81,84 +81,84 @@ public class Repetition extends Block {
     }
 
     /**
-     * ループ制御変数の設定.
+     * Loop control variable settings.
      *
-     * @param itrtr ループ制御変数
+     * @param itrtr Loop control variable
      */
     protected void setIterator(Variable itrtr) {
         iterator = itrtr;
     }
     /**
-     * ループ制御変数の取得.
+     * Get loop control variables.
      *
-     * @return ループ制御変数
+     * @return Loop control variable
      */
     public Variable getIterator() {
         return iterator;
 	}
 
     /**
-     * 始値の設定.
+     * Open price setting.
      *
-     * @param initItrtr 始値
+     * @param initItrtr Open price
      */
     protected void setInitIterator(Expression initItrtr) {
         initIterator = initItrtr;
     }
     /**
-     * 始値の取得.
+     * Get the opening price.
      *
-     * @return 始値
+     * @return Open price
      */
     public Expression getInitIterator() {
         return initIterator;
 	}
 
     /**
-     * 終値の設定.
+     * Setting the closing price.
      *
-     * @param endCndtn 終値
+     * @param endCndtn closing price
      */
     protected void setEndCondition(Expression endCndtn) {
         endCondition = endCndtn;
     }
     /**
-     * 終値の取得.
+     * Get closing price.
      *
-     * @return 終値
+     * @return closing price
      */
     public Expression getEndCondition() {
         return endCondition;
 	}
 
     /**
-     * 刻み幅の設定.
+     * Setting the step size.
      *
-     * @param stp 刻み幅
+     * @param stp step size
      */
     protected void setStep(Expression stp) {
         step = stp;
     }
     /**
-     * 刻み幅の取得.
+     * Get step size.
      *
-     * @return 刻み幅
+     * @return step size
      */
     public Expression getStep() {
         return step;
 	}
 
     /**
-     * メンバー変数の設定.
+     * Member variable settings.
      *
      * @param itrtr
-     *           ループ制御変数
+     * Loop control variable
      * @param initItrtr
-     *           始値
+     * Open price
      * @param endCndtn
-     *           終値
+     * Closing price
      * @param stp
-     *           刻み幅
+     * Step width
      */
     protected void setProperty(Variable itrtr,
             Expression initItrtr, Expression endCndtn,
@@ -167,7 +167,7 @@ public class Repetition extends Block {
         initIterator = initItrtr;
         endCondition = endCndtn;
 		step = stp;
-		// 親DO文をセットする
+		// Set the parent DO statement
 		if (iterator != null) {
 			iterator.setParentStatement(this);
 		}

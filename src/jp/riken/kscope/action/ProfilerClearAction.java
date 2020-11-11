@@ -23,28 +23,28 @@ import jp.riken.kscope.Message;
 import jp.riken.kscope.service.AppController;
 
 /**
- * プロファイラ情報のクリアアクションクラス
+ * Clear action class for profiler information
  * @author RIKEN
  */
 public class ProfilerClearAction extends ActionBase {
 
     /**
-     * コンストラクタ
-     * @param controller	アプリケーションコントローラ
+     * Constructor
+     * @param controller Application controller
      */
     public ProfilerClearAction(AppController controller) {
         super(controller);
     }
 
     /**
-     * アクション発生イベント
-     * @param event		イベント情報
+     * Action occurrence event
+     * @param event Event information
      */
     @Override
     public void actionPerformed(ActionEvent event) {
-    	// ステータスバー
+    	// Status bar
     	Application.status.setMessageMain(
-    			Message.getString("mainmenu.profiler.clear")); //プロファイラのクリア
+    			Message.getString("mainmenu.profiler.clear")); // Clear profiler
         this.controller.clearProfilerInfo();
     }
 

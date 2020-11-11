@@ -22,15 +22,15 @@ import jp.riken.kscope.dialog.AboutDialog;
 import jp.riken.kscope.service.AppController;
 
 /**
- * バージョン情報ダイアログを表示する
+ * Display the version information dialog
  * @author RIKEN
  *
  */
 public class HelpVersionAction extends ActionBase {
 
     /**
-     * コンストラクタ
-     * @param controller	アプリケーションコントローラ
+     * Constructor
+     * @param controller Application controller
      */
     public HelpVersionAction(AppController controller) {
         super(controller);
@@ -38,8 +38,8 @@ public class HelpVersionAction extends ActionBase {
 
 
     /**
-     * アクション発生イベント
-     * @param event		イベント情報
+     * Action occurrence event
+     * @param event Event information
      */
     @Override
     public void actionPerformed(ActionEvent event) {
@@ -47,7 +47,7 @@ public class HelpVersionAction extends ActionBase {
     }
 
     /**
-     * バージョン情報ダイアログを表示する
+     * Display the version information dialog
      */
     public void showAboutDialog() {
         AboutDialog dialog = new AboutDialog(this.controller.getMainframe(), true);

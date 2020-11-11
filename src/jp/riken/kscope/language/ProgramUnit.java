@@ -36,51 +36,51 @@ import jp.riken.kscope.information.TextInfo;
 import jp.riken.kscope.language.fortran.Type;
 import jp.riken.kscope.language.generic.Procedures;
 /**
- * プログラム単位を表現するクラス。
+ * A class that represents a program unit.
  *
  * @author RIKEN
  *
  */
 public abstract class ProgramUnit implements Serializable, IInformation, IBlock {
-	/** シリアル番号 */
+	/** Serial number */
 	private static final long serialVersionUID = -4778301667477615867L;
-	/** プログラム名、モジュール名、サブルーチン名、関数名 */
+	/** Program name, module name, subroutine name, function name */
     private String name;
-    /** プログラム単位の種類:program, module, subroutine, function */
+    /** Program unit type: program, module, subroutine, function */
     private String type;
-    /** 親プログラム */
+    /** Parent program */
     private ProgramUnit mother;
-    /** 開始行情報 */
+    /** Start line information */
     private Statement start;
-    /** 終了行情報 */
+    /** End line information */
     private Statement end;
     /**
-     * プログラム単位の属性.<br/>
-     * 現状、"recursive"のみ。{<"recursive", "">}
+     * Program-based attributes. <br/>
+     * Currently, only "recursive". {<"recursive", "">}
      */
     private Map<String, Object> attributes = new HashMap<String, Object>();
-    /** 副プログラム単位.*/
+    /** Subprogram unit. */
     private Map<String, Procedure> children;
-    /** INTERFACE文リスト */
+    /** INTERFACE statement list */
     private List<Procedures> interfaceList;
-    /** USE文リスト */
+    /** USE statement list */
     private List<UseState> useList;
-    /** 構造体構造定義リスト */
+    /** Structure structure definition list */
     private List<Type> typeDefinitions = new ArrayList<Type>();
-    /** Equivalence文リスト */
+    /** Equivalence statement list */
     private List<Equivalence> equivalenceList;
-    /** COMMON文リスト */
+    /** COMMON statement list */
     private List<Common> commonList;
-    /** DATA文リスト */
+    /** DATA statement list */
     private List<Data> dataList;
-    /** Directive文リスト */
+    /** Directive statement list */
     private List<Directive> directiveList;
-    /** external宣言された関数名とデータ型のマップ */
+    /** External Declared function name and data type map */
     private Map<String, IVariableType> externalFunctionList;
     /**
-     * 変数宣言文リスト.<br/>
-     * Map\<変数名, 変数定義\> <br/>
-     * HashMapからLinkedHashMapへ変更：挿入順を保持する為 at 2010/03/03 by @hira
+     * Variable declaration statement list. <br/>
+     * Map \ <variable name, variable definition \> <br/>
+     * Change from HashMap to LinkedHashMap: To maintain the insertion order at 2010/03/03 by @hira
      */
     public Map<String, VariableDefinition> variables = new LinkedHashMap<String, VariableDefinition>(); // defined
                                                                                                         // variables
@@ -88,25 +88,25 @@ public abstract class ProgramUnit implements Serializable, IInformation, IBlock 
                                                                                                         // this
                                                                                                         // program
                                                                                                         // unit
-    /** 付加情報 */
+    /** Additional information */
     private TextInfo information = null;
     /**
-     * 本プログラム単位内で参照されている変数名とそのブロックのマップ。 分析機能のためのメンバー変数。
+     * A map of variable names and their blocks referenced in this program unit. Member variables for analytical functions.
      */
     private Map<String, Set<IBlock>> refVariableNames = new HashMap<String, Set<IBlock>>();
     /**
-     * 本プログラム単位内で定義されている変数名とそのブロックのマップ。 分析機能のためのメンバー変数。
+     * A map of variable names and their blocks defined in this program unit. Member variables for analytical functions.
      */
     private Map<String, Set<IBlock>> defVariableNames = new HashMap<String, Set<IBlock>>();
     /**
-     * 本プログラム単位内で使用されている変数の名前と宣言(他のプログラム単位含む)のマップ。 分析機能のためのメンバー変数。
+     * A map of variable names and declarations (including other program units) used within this program unit. Member variables for analytical functions.
      */
     private transient HashMap<String, VariableDefinition> variableMap = new HashMap<String, VariableDefinition>();
 
     /**
-     * コンストラクタ。
-     * @param tp プログラム単位の種類
-     * @param nm 名前
+     * Constructor.
+     * @param tp Program unit type
+     * @param nm name
      */
     public ProgramUnit(String tp, String nm) {
         type = tp;
@@ -114,18 +114,18 @@ public abstract class ProgramUnit implements Serializable, IInformation, IBlock 
     }
 
     /**
-     * プログラム単位に属する構造体構造定義のリストを返す。
+     * Returns a list of structure structure definitions that belong to a program unit.
      *
-     * @return 構造体構造定義のリスト。無ければ空のリストを返す。
+     * @return Structure List of structure definitions. If not, returns an empty list.
      */
     public List<Type> getTypeList() {
         return this.typeDefinitions;
     }
 
     /**
-     * 構造体定義を取得する
-     * @param name		構造体名
-     * @return		構造体定義
+     * Get the structure definition
+     * @param name Structure name
+     * @return Structure definition
      */
     public Type getType(String name) {
     	if (this.typeDefinitions == null) return null;
@@ -141,9 +141,9 @@ public abstract class ProgramUnit implements Serializable, IInformation, IBlock 
     }
 
     /**
-     * Data文を追加する。
+     * Add a Data statement.
      *
-     * @param dt Dataクラス
+     * @param dt Data class
      */
     public void addData(Data dt) {
         if (this.dataList == null) {
@@ -153,9 +153,9 @@ public abstract class ProgramUnit implements Serializable, IInformation, IBlock 
     }
 
     /**
-     * Directive文を追加する。
+     * Add a Directive statement.
      *
-     * @param di Directiveクラス
+     * @param di Directive class
      */
     public void addDirective(Directive di) {
         if (this.directiveList == null) {
@@ -165,10 +165,10 @@ public abstract class ProgramUnit implements Serializable, IInformation, IBlock 
     }
 
     /**
-     * Equivalence文を追加する。
+     * Add an Equivalence statement.
      *
      * @param eq
-     *            　Equivalenceクラス
+     * Equivalence class
      */
     public void addEquivalence(Equivalence eq) {
         if (this.equivalenceList == null) {
@@ -178,10 +178,10 @@ public abstract class ProgramUnit implements Serializable, IInformation, IBlock 
     }
 
     /**
-     * Common文を追加する。
+     * Add a Common statement.
      *
      * @param cm
-     *            Commonクラス
+     * Common class
      */
     public void addCommon(Common cm) {
         if (this.commonList == null) {
@@ -191,10 +191,10 @@ public abstract class ProgramUnit implements Serializable, IInformation, IBlock 
     }
 
     /**
-     * INTERFACE宣言を追加する。
+     * Add an INTERFACE declaration.
      *
      * @param blk
-     *            interfaceクラス
+     * interface class
      */
     public void addInterface(Procedures blk) {
         if (this.interfaceList == null) {
@@ -203,8 +203,8 @@ public abstract class ProgramUnit implements Serializable, IInformation, IBlock 
         this.interfaceList.add(blk);
     }
     /**
-     * INTERFACE文リストを返す。
-     * @return INTERFACE文リスト。無ければ空のリストを返す。
+     * Returns a list of INTERFACE statements.
+     * @return INTERFACE statement list. If not, returns an empty list.
      */
     public List<Procedures> getInterfaceList() {
         if (this.interfaceList == null) {
@@ -227,17 +227,17 @@ public abstract class ProgramUnit implements Serializable, IInformation, IBlock 
     }
 
     /**
-     * プログラム名、モジュール名、サブルーチン名、関数名を取得する.
-     * @return		プログラム名、モジュール名、サブルーチン名、関数名
+     * Get the program name, module name, subroutine name, and function name.
+     * @return Program name, module name, subroutine name, function name
      */
     protected String toStringBase() {
         return name;
     }
 
     /**
-     * ファイルパス（パスを含むファイル名）の取得。<br>
+     * Get the file path (file name including the path). <br>
      *
-     * @return ファイルパス
+     * @return file path
      */
     public String getFilePath() {
         String result;
@@ -250,32 +250,32 @@ public abstract class ProgramUnit implements Serializable, IInformation, IBlock 
     }
 
     /**
-     * 親プログラムを設定する.
-     * @param mam		親プログラム
+     * Set the parent program.
+     * @param mam parent program
      */
     protected void set_mother(ProgramUnit mam) {
         mother = mam;
     }
 
     /**
-     * プログラムの属性を追加する.
-     * @param attribute_name		属性名
+     * Add program attributes.
+     * @param attribute_name Attribute name
      */
     protected void put_attribute(String attribute_name) {
         attributes.put(attribute_name, "");
     }
 
     /**
-     * プログラムの属性を追加する.
-     * @param attribute_name		属性名
-     * @param attribute_value		属性値
+     * Add program attributes.
+     * @param attribute_name Attribute name
+     * @param attribute_value Attribute value
      */
     protected void put_attribute(String attribute_name, Object attribute_value) {
         attributes.put(attribute_name, attribute_value);
     }
 
     /**
-     * 副プログラムを追加する.
+     * Add a subprogram.
      * @param child
      */
     protected void put_child(Procedure child) {
@@ -286,9 +286,9 @@ public abstract class ProgramUnit implements Serializable, IInformation, IBlock 
     }
 
     /**
-     * 副プログラムを追加する.
-     * @param type_name		プログラム単位の種類
-     * @param proc_name		プログラム名
+     * Add a subprogram.
+     * @param type_name Program unit type
+     * @param proc_name Program name
      */
     protected void set_child(String type_name, String proc_name) {
         Procedure proc = new Procedure(type_name, proc_name);
@@ -296,8 +296,8 @@ public abstract class ProgramUnit implements Serializable, IInformation, IBlock 
     }
 
     /**
-     * 変数宣言文を追加する.
-     * @param vr		変数宣言文
+     * Add a variable declaration statement.
+     * @param vr Variable declaration statement
      */
     protected void put_variable(VariableDefinition vr) {
         vr.setMother(this);
@@ -305,8 +305,8 @@ public abstract class ProgramUnit implements Serializable, IInformation, IBlock 
     }
 
     /**
-     * 変数宣言文を追加する.
-     * @param varName		変数名
+     * Add a variable declaration statement.
+     * @param varName Variable name
      */
     protected void new_variable_def(String varName) {
         VariableDefinition varDef = new VariableDefinition(varName);
@@ -314,18 +314,18 @@ public abstract class ProgramUnit implements Serializable, IInformation, IBlock 
     }
 
     /**
-     * 指定した属性を持っているか判定する。
-     * @param attribute_name 属性の名前
-     * @return 真偽値。属性を持っていれば真
+     * Determine if you have the specified attributes.
+     * @param attribute_name The name of the attribute
+     * @return Boolean value. True if it has attributes
      */
     public boolean has_attribute(String attribute_name) {
         return attributes.containsKey(attribute_name);
     }
 
     /**
-     * 副プログラム名が存在するかチェックする.
-     * @param name		副プログラム名
-     * @return		true=副プログラムに存在する.
+     * Check if the subprogram name exists.
+     * @param name Subprogram name
+     * @return true = Exists in the subprogram.
      */
     protected boolean is_my_procedure(String name) {
         if (this.children != null) {
@@ -335,48 +335,48 @@ public abstract class ProgramUnit implements Serializable, IInformation, IBlock 
     }
 
     /**
-     * モジュール名、サブルーチン名、関数名を返す。
-     * @return モジュール名、サブルーチン名、関数名
+     * Returns the module name, subroutine name, and function name.
+     * @return Module name, subroutine name, function name
      */
     public String get_name() {
         return this.name;
     }
 
     /**
-     * プログラム単位の種類を返す。
-     * @return プログラム単位の種類
+     * Returns the program unit type.
+     * @return Program unit type
      */
     public String get_type() {
         return type;
     }
 
     /**
-     * 開始statementを返す。
-     * @return 開始statement
+     * Returns the start statement.
+     * @return start statement
      */
     public Statement get_start() {
         return (start);
     }
 
     /**
-     * 終了statementを返す。
-     * @return 終了statement
+     * Returns the end statement.
+     * @return end statement
      */
     public Statement get_end() {
         return (end);
     }
 
     /**
-     * 親プログラム単位を返す。
-     * @return 親プログラム単位。いなければnullを返す
+     * Returns the parent program unit.
+     * @return Parent program unit. Returns null if not
      */
     public ProgramUnit get_mother() {
         return mother;
     }
 
     /**
-     * 副プログラム単位の配列を返す。
-     * @return 副プログラム単位の配列。無ければnullを返す。
+     * Returns an array of subprogram units.
+     * @return An array of subprogram units. If not, it returns null.
      */
     public Procedure[] get_children() {
         if (this.children == null) {
@@ -385,8 +385,8 @@ public abstract class ProgramUnit implements Serializable, IInformation, IBlock 
         return children.values().toArray(new Procedure[0]);
     }
     /**
-     * 副プログラム単位を取得する。
-     * @return 副プログラム単位のリスト。無ければ空のリストを返す。
+     * Get subprogram units.
+     * @return List of subprogram units. If not, returns an empty list.
      */
     public Collection<Procedure> getChildren() {
         if (this.children == null) {
@@ -399,9 +399,9 @@ public abstract class ProgramUnit implements Serializable, IInformation, IBlock 
     }
 
     /**
-     * 副プログラムを取得する.
-     * @param name		副プログラム名
-     * @return			副プログラム
+     * Get a subprogram.
+     * @param name Subprogram name
+     * @return subprogram
      */
     protected ProgramUnit get_child(String name) {
         if (this.children == null) {
@@ -411,8 +411,8 @@ public abstract class ProgramUnit implements Serializable, IInformation, IBlock 
     }
 
     /**
-     * 副プログラム数を取得する.
-     * @return		副プログラム数
+     * Get the number of subprograms.
+     * @return Number of subprograms
      */
     protected int get_num_of_child() {
         if (this.children == null) {
@@ -422,8 +422,8 @@ public abstract class ProgramUnit implements Serializable, IInformation, IBlock 
     }
 
     /**
-     * 副プログラム名のリストを取得する.
-     * @return		副プログラム名のリスト
+     * Get a list of subprogram names.
+     * @return List of subprogram names
      */
     protected String[] get_child_name() {
         if (this.children == null) {
@@ -433,65 +433,65 @@ public abstract class ProgramUnit implements Serializable, IInformation, IBlock 
     }
 
     /**
-     * プログラム属性値を取得する.
-     * @param attribute_name		属性名
-     * @return			属性値
+     * Get the program attribute value.
+     * @param attribute_name Attribute name
+     * @return attribute value
      */
     protected Object get_attribute(String attribute_name) {
         return attributes.get(attribute_name);
     }
 
     /**
-     * 指定した名前の変数宣言を返す。
-     * @param var_name 変数名
-     * @return 変数宣言。無ければnullを返す。
+     * Returns a variable declaration with the specified name.
+     * @param var_name Variable name
+     * @return Variable declaration. If not, it returns null.
      */
     public VariableDefinition get_variable(String var_name) {
         return variables.get(var_name);
     }
 
     /**
-     * 自身に係わる変数宣言のマップを返す。
-     * @return 変数宣言のマップ。
+     * Returns a map of variable declarations related to itself.
+     * @return Map of variable declarations.
      */
     public Map<String,VariableDefinition> getVariables() {
         return this.variables;
     }
 
     /**
-     * 開始コード行情報を設定する。
+     * Set the start code line information.
      *
      * @param lineInfo
-     *            開始コード行情報
+     * Start code line information
      */
     public void set_start(CodeLine lineInfo) {
         start = new Statement(lineInfo);
     }
 
     /**
-     * 終了コード行情報を設定する。
+     * Set the exit code line information.
      *
      * @param lineInfo
-     *            終了コード行情報
+     * Exit code line information
      */
     public void set_end(CodeLine lineInfo) {
         end = new Statement(lineInfo);
     }
 
     /**
-     * 変数宣言文を設定する。
+     * Set a variable declaration statement.
      *
      * @param varDef
-     *            変数宣言文
+     * Variable declaration statement
      */
     protected void set_variable_def(VariableDefinition varDef) {
         this.put_variable(varDef);
     }
 
     /**
-     * 変数宣言文を取得する。
+     * Get the variable declaration statement.
      *
-     * @return 変数宣言文リスト
+     * @return Variable declaration statement list
      */
     public VariableDefinition[] get_variables() {
         if (variables == null)
@@ -510,8 +510,8 @@ public abstract class ProgramUnit implements Serializable, IInformation, IBlock 
     }
 
     /**
-     * 付加情報を取得する
-     * @return		付加情報
+     * Get additional information
+     * @return Additional information
      */
     @Override
     public TextInfo getInformation() {
@@ -519,8 +519,8 @@ public abstract class ProgramUnit implements Serializable, IInformation, IBlock 
     }
 
     /**
-     * 開始行番号情報を取得する
-     * @return		開始行番号情報
+     * Get start line number information
+     * @return Start line number information
      */
     @Override
     public CodeLine getStartCodeLine() {
@@ -529,8 +529,8 @@ public abstract class ProgramUnit implements Serializable, IInformation, IBlock 
     }
 
     /**
-     * 終了行番号情報を取得する
-     * @return		終了行番号情報
+     * Get end line number information
+     * @return End line number information
      */
     @Override
     public CodeLine getEndCodeLine() {
@@ -539,7 +539,7 @@ public abstract class ProgramUnit implements Serializable, IInformation, IBlock 
     }
 
     /**
-     * TYPE宣言を登録する。
+     * Register the TYPE declaration.
      *
      * @param tp
      */
@@ -549,8 +549,8 @@ public abstract class ProgramUnit implements Serializable, IInformation, IBlock 
     }
 
     /**
-     * USE文のリストを返す。
-     * @return USE文のリスト。無ければ空のリストを返す。
+     * Returns a list of USE statements.
+     * @return A list of USE statements. If not, returns an empty list.
      */
     public List<UseState> getUseList() {
         if (useList == null) {
@@ -560,33 +560,33 @@ public abstract class ProgramUnit implements Serializable, IInformation, IBlock 
     }
 
     /**
-     * DATA文リストを返す。
-     * @return		DATA文リスト
+     * Returns a DATA statement list.
+     * @return DATA statement list
      */
     public List<Data> getDataList() {
         return dataList;
     }
 
     /**
-     * Directive文リストを返す。
+     * Returns a Directive statement list.
      *
-     * @return Directive文リスト
+     * @return Directive statement list
      */
     public List<Directive> getDirectiveList() {
         return directiveList;
     }
 
     /**
-     * EQUIVALENCE文リストを返す。
-     * @return		EQUIVALENCE文リスト
+     * Returns a list of EQUIVALENCE statements.
+     * @return EQUIVALENCE Statement list
      */
     public List<Equivalence> getEquivalenceList() {
         return equivalenceList;
     }
 
     /**
-     * COMMON文リストを返す。
-     * @return		COMMON文リスト.無ければ空のリストを返す。
+     * COMMON Returns a list of statements.
+     * @return COMMON statement list. If not, an empty list is returned.
      */
     public List<Common> getCommonList() {
         if (this.commonList == null) {
@@ -596,11 +596,11 @@ public abstract class ProgramUnit implements Serializable, IInformation, IBlock 
     }
 
     /**
-     * 指定した名前の変数をメンバーに含むCOMMON名の名前を返す。
+     * Returns the name of a COMMON name that contains a variable with the specified name as a member.
      *
      * @param varname
-     *            変数名
-     * @return COMMON名。無名COMMONブロックならば"NO_NAME"を返す。該当するCOMMON文が無ければnullを返す。
+     *            Variable name
+     * @return COMMON name. If it is an anonymous COMMON block, "NO_NAME" is returned. If there is no corresponding COMMON statement, null is returned.
      */
     public String getCommonName(String varname) {
         String st = null;
@@ -614,8 +614,8 @@ public abstract class ProgramUnit implements Serializable, IInformation, IBlock 
     }
 
     /**
-     * USE文を追加する。
-     * @param useline USE文
+     * Add a USE statement.
+     * @param useline USE statement
      */
     protected void addUse(UseState useline) {
         if (this.useList == null) {
@@ -625,9 +625,9 @@ public abstract class ProgramUnit implements Serializable, IInformation, IBlock 
     }
 
     /**
-     * 名前空間（モジュール名.ルーチン名）を取得する。
+     * Get the namespace (module name.routine name).
      *
-     * @return 名前空間（モジュール名.ルーチン名）
+     * @return namespace (module name.routine name)
      */
     @Override
     public String getNamespace() {
@@ -642,19 +642,19 @@ public abstract class ProgramUnit implements Serializable, IInformation, IBlock 
     }
 
     /**
-     * 開始位置を取得する。
+     * Get the start position.
      *
-     * @return 開始位置
+     * @return start position
      */
     @Override
     public int getStartPos() {
         return this.getStartCodeLine().getStartLine();
     }
     /**
-     * 開始位置を設定する。
+     * Set the start position.
      *
      * @param pos
-     *         開始位置
+     * Starting position
      */
     @Override
     public void setStartPos(int pos) {
@@ -662,16 +662,16 @@ public abstract class ProgramUnit implements Serializable, IInformation, IBlock 
     }
 
     /*
-     * TODO: 暫定対応。
-     *       本当はプログラムの終了はprogram.getEndCodeLine.getEndLineで
-     *       取得するか、programのEndCodeLineを削除し、StartCodeLineを
-     *       CodeLineと名称変更すべき。要検討。
+     * TODO: Temporary support.
+     * Actually, the end of the program is program.getEndCodeLine.getEndLine
+     * Get or delete EndCodeLine of program and StartCodeLine
+     * Should be renamed to CodeLine. Suspect.
      */
 
     /**
-     * 終了位置を取得する。
+     * Get the end position.
      *
-     * @return 終了位置
+     * @return end position
      */
     @Override
     public int getEndPos() {
@@ -679,10 +679,10 @@ public abstract class ProgramUnit implements Serializable, IInformation, IBlock 
     }
 
     /**
-     * 終了位置を設定する。
+     * Set the end position.
      *
      * @param pos
-     *         終了位置
+     * End position
      */
     @Override
     public void setEndPos(int pos) {
@@ -690,10 +690,10 @@ public abstract class ProgramUnit implements Serializable, IInformation, IBlock 
     }
 
     /**
-     * idにマッチした情報ブロックを検索する。
+     * Search for information blocks that match id.
      * @param id
-     *          ID
-     * @return 見つかった情報ブロック。見つからなかった場合はnullが返ります。
+     * ID
+     * @return The information block found. If not found, null is returned.
      */
     public IInformation findInformationBlockBy(String id) {
         IInformation result = null;
@@ -722,7 +722,7 @@ public abstract class ProgramUnit implements Serializable, IInformation, IBlock 
     }
 
     /**
-     * 付加情報をすべて削除する。
+     * Delete all additional information.
      */
     @Override
     public void clearInformation() {
@@ -736,24 +736,24 @@ public abstract class ProgramUnit implements Serializable, IInformation, IBlock 
     }
 
     /**
-     * 付加情報ブロックコレクションを生成する。
+     * Generate an additional information block collection.
      *
-     * @return 付加情報ブロックコレクション
+     * @return Additional information block collection
      */
     public InformationBlocks createInformationBlocks() {
         InformationBlocks result = new InformationBlocks();
 
-        // 自身の付加情報を追加する
+        // Add your own additional information
         if (this.information != null) {
             InformationBlock block
               = new InformationBlock(this.information, this, this);
             result.add(block);
         }
-        // 自身が持つ副プログラム単位の付加情報を追加する
+        // Add additional information for each subprogram that you have
         for (Procedure procedure : this.getChildren()) {
             result.addAll(procedure.createInformationBlocks());
         }
-        // 自身が持つ変数宣言の付加情報を追加する
+        // Add additional information of your own variable declaration
         if (this.variables != null) {
             for (VariableDefinition variable : this.variables.values()) {
                 result.addAll(variable.createInformationBlocks());
@@ -763,11 +763,11 @@ public abstract class ProgramUnit implements Serializable, IInformation, IBlock 
     }
 
     /**
-     * 名前空間（モジュール名＋ルーチン名）より、ProgramUnitを検索する。
+     * Search ProgramUnit from the namespace (module name + routine name).
      *
      * @param namespace
-     *          検索対象名前空間
-     * @return 最初に見つかったProgramUnitオブジェクト
+     * Searched namespace
+     * @return The first ProgramUnit object found
      */
     public ProgramUnit findProgramUnitBy(String namespace) {
         ProgramUnit result = null;
@@ -784,17 +784,17 @@ public abstract class ProgramUnit implements Serializable, IInformation, IBlock 
     }
 
     /**
-     * external宣言された関数名とデータ型のマップを取得する。
-     * @return 関数名とデータ型のマップ
+     * Get a map of the externally declared function name and data type.
+     * @return Function name and data type map
      */
     public Map<String, IVariableType> getExternalFunctionList() {
         return externalFunctionList;
     }
 
     /**
-     * external宣言された関数名とデータ型のマップ要素を追加する。
-     * @param funcName 関数名
-     * @param tp データ型
+     * external Add a map element for the declared function name and data type.
+     * @param funcName Function name
+     * @param tp data type
      */
     public void addExternalFunctionList(String funcName, IVariableType tp) {
         if (this.externalFunctionList == null) {
@@ -805,7 +805,7 @@ public abstract class ProgramUnit implements Serializable, IInformation, IBlock 
         }
     }
     /**
-     * IDを取得する。
+     * Get an ID.
      *
      * @return ID
      */
@@ -821,21 +821,21 @@ public abstract class ProgramUnit implements Serializable, IInformation, IBlock 
     }
 
     /**
-     * プログラム単位内で参照されている変数名とブロックリストのマップを返す。
+     * Returns a map of variable names and block lists referenced within a program unit.
      *
-     * @return 変数名とブロックリストのマップ
+     * @return Variable name and block list map
      */
     public Map<String, Set<IBlock>> getRefVariableNames() {
         return refVariableNames;
     }
 
     /**
-     * プログラム単位内で参照されている変数名と現れるブロックを追加する。
+     * Add variable names referenced and blocks that appear in the program unit.
      *
      * @param refVarName
-     *            変数名
+     *            Variable name
      * @param blk
-     *            ブロック
+     * Block
      */
     public void putRefVariableName(String refVarName, IBlock blk) {
         String nm = refVarName.toLowerCase();
@@ -850,21 +850,21 @@ public abstract class ProgramUnit implements Serializable, IInformation, IBlock 
     }
 
     /**
-     * プログラム単位内で定義されている変数名の集合を取得する。
+     * Get the set of variable names defined in the program unit.
      *
-     * @return 変数名の集合
+     * @return A set of variable names
      */
     public Map<String, Set<IBlock>> getDefVariableNames() {
         return defVariableNames;
     }
 
     /**
-     * プログラム単位内で定義されている変数名と現れるブロックを追加する。
+     * Add the variable name defined in the program unit and the block that appears.
      *
      * @param defVarName
-     *            変数名
+     *            Variable name
      * @param blk
-     *            ブロック
+     * Block
      */
     public void putDefVariableName(String defVarName, IBlock blk) {
         String nm = defVarName.toLowerCase();
@@ -878,9 +878,9 @@ public abstract class ProgramUnit implements Serializable, IInformation, IBlock 
         }
     }
     /**
-     * プログラム単位で使用される変数マップを取得する。
+     * Get the variable map used for each program.
      *
-     * @return 変数のマップ
+     * @return Variable map
      */
     public HashMap<String, VariableDefinition> getVariableMap() {
         if (this.variableMap == null) {
@@ -890,11 +890,11 @@ public abstract class ProgramUnit implements Serializable, IInformation, IBlock 
     }
 
     /**
-     * プログラム単位において指定された名前で使用される変数が存在すればその宣言を返す。
+     * If there is a variable used by the specified name in the program unit, its declaration is returned.
      *
      * @param nm
-     *            変数名
-     * @return 変数宣言。無ければnullを返す。
+     *            Variable name
+     * @return Variable declaration. If not, it returns null.
      */
     public VariableDefinition getVariableMap(String nm) {
     	if (nm == null || nm.isEmpty()) return null;
@@ -909,17 +909,17 @@ public abstract class ProgramUnit implements Serializable, IInformation, IBlock 
     }
 
     /**
-     * 変数宣言リストを作成する.
+     * Create a variable declaration list.
      */
     private void createVariableMap() {
         this.variableMap = new HashMap<String, VariableDefinition>();
     }
 
     /**
-     * プログラム単位で使用される変数名を追加する。
+     * Add variable names used for each program.
      *
      * @param nm
-     *            変数名
+     *            Variable name
      */
     public void putVariableMap(String nm) {
         if (this.variableMap == null) {
@@ -932,12 +932,12 @@ public abstract class ProgramUnit implements Serializable, IInformation, IBlock 
     }
 
     /**
-     * プログラム単位で使用される変数名と宣言のマップを追加する。
+     * Add a map of variable names and declarations used on a program-by-program basis.
      *
      * @param varName
-     *            変数名
+     *            Variable name
      * @param varDef
-     *            変数宣言
+     *            Variable declaration
      */
     public void putVariableMap(String varName, VariableDefinition varDef) {
         if (this.variableMap == null) {
@@ -946,10 +946,10 @@ public abstract class ProgramUnit implements Serializable, IInformation, IBlock 
         this.variableMap.put(varName, varDef);
     }
     /**
-     * 指定された式に含まれる全ての変数名と、指定されたブロックを参照としてセットする。
-     * 指定された式に含まれる全ての変数名と、式に含まれる手続呼出を参照としてセットする。
-     * @param blk ブロック
-     * @param exp 式
+     * Set all variable names contained in the specified expression and the specified block as references.
+     * Set all variable names included in the specified expression and the procedure call included in the expression as references.
+     * @param blk block
+     * @param exp expression
      */
     public void addExpressionToRef(IBlock blk, Expression exp) {
         Set<Variable> vars = exp.getAllVariables();
@@ -976,8 +976,8 @@ public abstract class ProgramUnit implements Serializable, IInformation, IBlock 
 
 
     /**
-     * 親ブロックを取得する
-     * @return        親ブロック
+     * Get the parent block
+     * @return Parent block
      */
     @Override
     public IBlock getMotherBlock() {
@@ -986,9 +986,9 @@ public abstract class ProgramUnit implements Serializable, IInformation, IBlock 
 
 
     /**
-     * 子ブロックに同一ProgramUnitが存在するかチェックする
-     * @param unit		検索ProgramUnit
-     * @return			true=同一ProgramUnitが存在する
+     * Check if the same ProgramUnit exists in the child block
+     * @param unit Search ProgramUnit
+     * @return true = Same Program Unit exists
      */
 	public boolean containsChildren(ProgramUnit unit) {
 		if (this == unit) return true;
@@ -1011,28 +1011,28 @@ public abstract class ProgramUnit implements Serializable, IInformation, IBlock 
 	}
 
 	/**
-	 * 同一ProgramUnitであるかチェックする.
-	 * 副プログラム単位(children)と変数宣言(variables)のみチェックする.
-	 * 付加情報の差替用であるので、createInformationBlocksにて取得ブロックのみチェックする.
-	 * @param unit		モジュール、サブルーチン
-	 * @return		true=一致
-	 */
+* Check if they are the same Program Unit.
+* Check only subprogram units (children) and variable declarations (variables).
+* Since it is for replacement of additional information, check only the acquired block with createInformationBlocks.
+* @param unit module, subroutine
+* @return true = match
+*/
 	public boolean equalsBlocks(ProgramUnit unit) {
 		if (unit == null) return false;
 
-		// モジュール、サブルーチン名
+		// Module, subroutine name
 		if (this.name != null) {
 			if (!this.name.equalsIgnoreCase(unit.name)) {
 				return false;
 			}
 		}
-		// タイプ
+		// Type
 		if (this.type != null) {
 			if (!this.type.equalsIgnoreCase(unit.type)) {
 				return false;
 			}
 		}
-		// 副プログラム
+		// Subprogram
 		if (this.children != null && unit.children != null) {
 			if (this.children.size() != unit.children.size()) {
 				return false;
@@ -1055,7 +1055,7 @@ public abstract class ProgramUnit implements Serializable, IInformation, IBlock 
 		}
 
 
-		// 変数宣言文
+		// Variable declaration statement
 		if (this.variables != null && unit.variables != null) {
 			if (this.variables.size() != unit.variables.size()) {
 				return false;
@@ -1081,10 +1081,10 @@ public abstract class ProgramUnit implements Serializable, IInformation, IBlock 
 	}
 
 	/**
-	 * 同一ブロックを取得する
-	 * @param block			IInformationブロック
-	 * @return		同一ブロック
-	 */
+* Get the same block
+* @param block IInformation block
+* @return Same block
+*/
 	public IInformation findBlock(IInformation block) {
 		if (block == null) return null;
 		String id = block.getID();
@@ -1092,9 +1092,9 @@ public abstract class ProgramUnit implements Serializable, IInformation, IBlock 
 	}
 
 	/**
-	 * 子ブロック、変数宣言が存在するかチェックする.
-	 * @return		true=空モジュール、サブルーチン
-	 */
+* Check if child blocks and variable declarations exist.
+* @return true = empty module, subroutine
+*/
 	public boolean isEmpty() {
 		if (this.children != null && this.children.size() > 0) {
 			return false;
@@ -1107,10 +1107,10 @@ public abstract class ProgramUnit implements Serializable, IInformation, IBlock 
 
 
 	/**
-	 * 同一ブロックを検索する
-	 * @param block			IInformationブロック
-	 * @return		同一ブロック
-	 */
+* Search for the same block
+* @param block IInformation block
+* @return Same block
+*/
 	public IInformation[] searchInformationBlocks(IInformation block) {
 		if (block == null) return null;
 
@@ -1121,7 +1121,7 @@ public abstract class ProgramUnit implements Serializable, IInformation, IBlock 
 			}
 		}
 
-		// 変数宣言文
+		// Variable declaration statement
         if (this.variables != null) {
             Collection<VariableDefinition> definitions = this.variables.values();
             for (VariableDefinition definition : definitions) {
@@ -1132,7 +1132,7 @@ public abstract class ProgramUnit implements Serializable, IInformation, IBlock 
             }
         }
 
-        // サブルーチン
+        // Subroutine
         if (this.getChildren() != null) {
             Collection<Procedure> procedures = this.getChildren();
             for (Procedure procedure : procedures) {
@@ -1150,25 +1150,25 @@ public abstract class ProgramUnit implements Serializable, IInformation, IBlock 
 	}
 
 	/**
-	 * 同一ブロック階層であるかチェックする.
-	 * @param unit		チェック対象programUnit
-	 * @return   true=一致
-	 */
+* Check if they are in the same block hierarchy.
+* @param unit Check target programUnit
+* @return true = match
+*/
 	public boolean equalsLayout(ProgramUnit unit) {
-		// モジュール、サブルーチン名
+		// Module, subroutine name
 		if (this.name != null) {
 			if (!this.name.equalsIgnoreCase(unit.name)) {
 				return false;
 			}
 		}
-		// タイプ
+		// Type
 		if (this.type != null) {
 			if (!this.type.equalsIgnoreCase(unit.type)) {
 				return false;
 			}
 		}
 
-		// 副プログラム
+		// Subprogram
 		if (this.children != null && unit.children != null) {
 			if (this.children.size() != unit.children.size()) {
 				return false;
@@ -1190,15 +1190,15 @@ public abstract class ProgramUnit implements Serializable, IInformation, IBlock 
 			}
 		}
 
-		// ブロック階層チェックの場合は変数宣言文はチェックしない。
+		// In case of block hierarchy check, variable declaration statement is not checked.
 
 		return true;
 	}
 
     /**
-     * 構造IDを取得する。
+     * Get the structure ID.
      *
-     * @return 構造ID
+     * @return Structure ID
      */
 	@Override
 	public String getLayoutID() {
@@ -1206,9 +1206,9 @@ public abstract class ProgramUnit implements Serializable, IInformation, IBlock 
 	}
 
     /**
-     * layoutIDにマッチした構造ブロックを検索する。
-     * @param id    layoutID
-     * @return 見つかった構造ブロック
+     * Search for structural blocks that match the layoutID.
+     * @param id layoutID
+     * @return Found structural block
      */
     public IInformation findInformationLayoutID(String id) {
     	if (id == null || id.isEmpty()) return null;
@@ -1229,10 +1229,10 @@ public abstract class ProgramUnit implements Serializable, IInformation, IBlock 
     }
 
 	/**
-	 * 行番号のブロックを検索する
-	 * @param line			行番号
-	 * @return		行番号のブロック
-	 */
+* Search for blocks of line numbers
+* @param line line number
+* @return Line number block
+*/
 	public IBlock[] searchCodeLine(CodeLine line) {
 		if (line == null) return null;
 
@@ -1243,11 +1243,11 @@ public abstract class ProgramUnit implements Serializable, IInformation, IBlock 
 			;  // nothing
 		}
 		else {
-			// このブロックが範囲外であるので、子ブロックも範囲外
+			// Since this block is out of range, the child blocks are also out of range
         	return null;
 		}
 
-		// 変数宣言文
+		// Variable declaration statement
         if (this.variables != null) {
             Collection<VariableDefinition> definitions = this.variables.values();
             for (VariableDefinition definition : definitions) {
@@ -1258,7 +1258,7 @@ public abstract class ProgramUnit implements Serializable, IInformation, IBlock 
             }
         }
 
-        // サブルーチン
+        // Subroutine
         if (this.getChildren() != null) {
             Collection<Procedure> procedures = this.getChildren();
             for (Procedure procedure : procedures) {
@@ -1276,11 +1276,11 @@ public abstract class ProgramUnit implements Serializable, IInformation, IBlock 
 	}
 
  	/**
- 	 * 変数リストを取得する.
- 	 */
+ * Get the variable list.
+ */
  	@Override
  	public Set<Variable> getAllVariables() {
-        // サブルーチン
+        // Subroutine
  		Set<Variable> list = new HashSet<Variable>();
         if (this.getChildren() != null) {
             Collection<Procedure> procedures = this.getChildren();
@@ -1297,8 +1297,8 @@ public abstract class ProgramUnit implements Serializable, IInformation, IBlock 
 
 
  	/**
- 	 * 変数に変数定義をセットする
- 	 */
+ * Set variable definition for variable
+ */
 	public void setVariableDefinitions() {
 		Set<Variable> vars = getAllVariables();
 		if (vars == null || vars.size() <= 0) return;

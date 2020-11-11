@@ -18,31 +18,31 @@
 package jp.riken.kscope.language;
 
 /**
- * 手続きの終了を表すクラス。
- * 
+ * A class that represents the end of the procedure.
+ *
  * @author RIKEN
- * 
+ *
  */
 public class Return extends Block {
-	/** シリアル番号 */
+	/** Serial number */
 	private static final long serialVersionUID = 2144326483810706905L;
     /**
-     * 
-     * コンストラクタ。
+     *
+     * Constructor.
      */
     Return() {
         super();
     }
 
     /**
-     * 
-     * コンストラクタ。
+     *
+     * Constructor.
      */
     Return(Block mama) {
         super(mama);
     }
     /**
-     * ブロックタイプの取得。
+     * Get block type.
      *
      * @return BlockType.RETURN
      */

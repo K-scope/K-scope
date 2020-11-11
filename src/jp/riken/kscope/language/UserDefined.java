@@ -18,34 +18,34 @@
 package jp.riken.kscope.language;
 
 /**
- * ユーザーにより定義される処理ブロックを表現するクラス。
- * 
+ * A class that represents a user-defined processing block.
+ *
  * @author RIKEN
- * 
+ *
  */
 public class UserDefined extends Block {
-	/** シリアル番号 */
+	/** Serial number */
 	private static final long serialVersionUID = -8357311499299755127L;
     /**
-     * 
-     * コンストラクタ。
+     *
+     * Constructor.
      */
     UserDefined() {
         super();
     }
 
     /**
-     * 
-     * コンストラクタ。
-     * 
+     *
+     * Constructor.
+     *
      * @param mama
-     *            親ブロック
+     * Parent block
      */
     UserDefined(Block mama) {
         super(mama);
     }
     /**
-     * ブロックタイプの取得。
+     * Get block type.
      *
      * @return BlockType.USERDEFINITION
      */

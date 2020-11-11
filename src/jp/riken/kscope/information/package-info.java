@@ -16,6 +16,6 @@
  */
 
 /**
- * 付加情報クラスを提供します
+ * Provides additional information class
  */
 package jp.riken.kscope.information;

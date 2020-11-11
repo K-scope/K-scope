@@ -49,7 +49,7 @@ import jp.riken.kscope.utils.SwingUtils;
 import jp.riken.kscope.xcodeml.XcodeMLParserStax;
 
 /**
- * プロジェクトを開くアクション
+ * Action to open project
  * @author RIKEN
  */
 public class FileProjectOpenAction extends ActionBase {
@@ -57,16 +57,16 @@ public class FileProjectOpenAction extends ActionBase {
 	private static boolean debug = (System.getenv("DEBUG")!= null);
 	private static boolean debug_l2 = false;
 	
-    /** データベースの構築、探索を行うクラス */
+    /** Class that builds and searches the database */
     private LanguageService serviceLanguage;
-    /** 変数アクセス先メモリサービス */
+    /** Variable access destination memory service */
     private AnalysisMemoryService serviceMemory;
-    /** プロジェクトのクリアアクション */
+    /** Project clear action */
     private ProjectClearLanguageAction clearAction;
 
     /**
-     * コンストラクタ
-     * @param controller	アプリケーションコントローラ
+     * Constructor
+     * @param controller Application controller
      */
     public FileProjectOpenAction(AppController controller) {
         super(controller);
@@ -74,102 +74,102 @@ public class FileProjectOpenAction extends ActionBase {
     }
 
     /**
-     * アクションが実行可能であるかチェックする.<br/>
-     * アクションの実行前チェック、メニューのイネーブルの切替を行う。<br/>
-     * @return		true=アクションが実行可能
+     * Check if the action is executable. <br/>
+     * Check before executing the action and switch the menu enable. <br/>
+     * @return true = Action can be executed
      */
     @Override
 	public boolean validateAction() {
-        // スレッドタスクの実行状態をチェックする
+        // Check the execution status of the thread task
         return this.controller.isThreadTaskDone();
 	}
 
     /**
-     * アクション発生イベント
-     * @param event		イベント情報
+     * Action occurrence event
+     * @param event Event information
      */
     @Override
     public void actionPerformed(ActionEvent event) {
-        String message = Message.getString("mainmenu.file.openproject"); //プロジェクトを開く
+        String message = Message.getString("mainmenu.file.openproject"); // open the project
         Application.status.setMessageMain(message);
 
-        // 親Frameの取得を行う。
+        // Get the parent Frame.
         Frame frame = getWindowAncestor( event );
 
-        // 最終アクセスフォルダ
+        // Last access folder
         String currentFolder = this.controller.getLastAccessFolder();
         if (currentFolder == null) {
             currentFolder = System.getProperty("user.dir");
         }
 
-        // プロジェクトフォルダ選択ダイアログを表示する。
+        // Display the project folder selection dialog.
         File selected = SwingUtils.showOpenProjectDialog(
     			frame,
-    			Message.getString("dialog.common.selectproject.title"), //プロジェクトフォルダの選択
+    			Message.getString("dialog.common.selectproject.title"), // Select project folder
     			currentFolder);
         if (selected == null) {
-        		Application.status.setMessageMain(message + Message.getString("action.common.cancel.status")); //:キャンセル
+        		Application.status.setMessageMain(message + Message.getString("action.common.cancel.status")); //:Cancel
         		return;
         }
-        // プロジェクト設定ファイルであるか
-        File projectFolder = null;		// プロジェクトフォルダ
-        File projectFile = null;		// プロジェクト設定ファイル
+        // Is it a project configuration file?
+        File projectFolder = null;		// Project folder
+        File projectFile = null;		// Project configuration file
         if (selected.isFile() && KscopeProperties.PROJECT_FILE.equalsIgnoreCase(selected.getName())) {
         	projectFolder = selected.getParentFile();
         	projectFile = selected;
-        	// 最終アクセスフォルダ
+        	// Last access folder
         	this.controller.setLastAccessFolder(projectFolder);
         }
         else {
         	projectFolder = selected;
         	projectFile = new File(selected.getAbsolutePath() + File.separator + KscopeProperties.PROJECT_FILE);
-        	// 最終アクセスフォルダ
+        	// Last access folder
         	this.controller.setLastAccessFolder(projectFolder.getParentFile());
         }
 
-        // プロジェクトフォルダのチェック
-        // プロジェクト設定ファイル
+        // Check the project folder
+        // Project configuration file
         if (!projectFile.exists()) {
-            // エラーメッセージ
+            // Error message
             JOptionPane.showMessageDialog(frame,
-                    Message.getString("dialog.common.selectproject.notprojecterr.message"), //プロジェクトフォルダではありません。
-                    Message.getString("dialog.common.error"), //エラー
+                    Message.getString("dialog.common.selectproject.notprojecterr.message"), // Not a project folder.
+                    Message.getString("dialog.common.error"), //error
                     JOptionPane.ERROR_MESSAGE);
             return;
         }
 
         try {
-            // プロジェクトのクリア
+            // Clear the project
             FileProjectCloseAction actionClose = new FileProjectCloseAction(this.controller);
             actionClose.clearProject();
 
-            // プロジェクトモデル
+            // Project model
             ProjectModel modelProject = this.controller.getProjectModel();
-            // プロジェクトサービス
+            // Project service
             ProjectService service = new ProjectService(modelProject);
-            // キーワードプロパティ
+            // Keyword properties
             service.setPropertiesKeyword(this.controller.getPropertiesKeyword());
-            // 外部ツールプロパティ
+            // External tool properties
             service.setPropertiesExtension(this.controller.getPropertiesExtension());
-            // 演算カウントプロパティ
+            // Arithmetic count property
             service.setPropertiesOperand(this.controller.getPropertiesOperation());
-            // ソースビュー設定プロパティ
+            // Source view settings properties
             service.setPropertiesSource(this.controller.getPropertiesSource());
-            // プロファイラプロパティ設定プロパティ
+            // Profiler property setting property
             service.setPropertiesProfiler(this.controller.getPropertiesProfiler());
-            // プロジェクトプロパティ
+            // Project properties
             service.setPropertiesProject(this.controller.getPropertiesProject());
-            // 要求Byte/FLOP設定プロパティ
+            // Request Byte / FLOP configuration property
             service.setPropertiesMemory(this.controller.getPropertiesMemory());
             
             service.setRBproperties(this.controller.getRBproperties());
-            // エラーモデル
+            // Error model
             service.setErrorInfoModel(this.controller.getErrorInfoModel());
 
-            // プロジェクトを開く
+            // open the project
             service.openProject(projectFolder);
 
-            // XMLツリーに選択XMLファイルを表示する。
+            // Display the selected XML file in the XML tree.
             List<SourceFile> listSource = modelProject.getListSelectedFile();
             List<SourceFile> xmlfiles = new ArrayList<SourceFile>();
             List<SourceFile> srcfiles = new ArrayList<SourceFile>();
@@ -184,110 +184,110 @@ public class FileProjectOpenAction extends ActionBase {
                 }
             }
 
-            // ソースビューにプロジェクトフォルダを設定する
+            // Set the project folder in the source view
             this.controller.getMainframe().getPanelSourceView().setProjectFolder(modelProject.getProjectFolder());
 
-            // プロパティの更新
+            // Update properties
             this.controller.updateProperties();
-            // プロジェクトプロパティにタイトルを設定
+            // Set the title in the project property
             this.controller.getPropertiesProject().setProjectTitle(modelProject.getProjectTitle());
 
-            // Languageクラスのデシリアライズを行う
-            // settingsフォルダ
+            // Deserialize the Language class
+            // settings folder
             File settingsFolder = new File(projectFolder.getAbsoluteFile() + File.separator + KscopeProperties.SETTINGS_FOLDER);
             readLanguage(settingsFolder, xmlfiles.toArray(new SourceFile[0]), srcfiles.toArray(new SourceFile[0]));
             if(xmlfiles.size() <= 0)  {
             	this.controller.getMainframe().getPanelExplorerView().setSelectedPanel(EXPLORE_PANEL.SOURCE);
-            	this.controller.getErrorInfoModel().addErrorInfo(Message.getString("fileprojectopenaction.build.noxmlerr.errinfo")); //XMLファイルが存在しませんので、新たに構造解析実行はできません。
+            	this.controller.getErrorInfoModel().addErrorInfo(Message.getString("fileprojectopenaction.build.noxmlerr.errinfo")); // Since the XML file does not exist, new structural analysis cannot be executed.
              }
 
         } catch (Exception e) {
             if (debug) e.printStackTrace();
-            // エラーメッセージ
+            // Error message
             JOptionPane.showMessageDialog(frame,
-                    Message.getString("fileprojectopenaction.openproject.openerr.dialog.message"), //プロジェクトのオープンエラー
-                    message + Message.getString("dialog.common.error"), //エラー
+                    Message.getString("fileprojectopenaction.openproject.openerr.dialog.message"), // Project open error
+                    message + Message.getString("dialog.common.error"), //error
                     JOptionPane.ERROR_MESSAGE);
 
-            // ステータスメッセージ
-            Application.status.setMessageMain(message + Message.getString("action.common.error.status")); //:エラー
+            // Status message
+            Application.status.setMessageMain(message + Message.getString("action.common.error.status")); //:error
         }
     }
 
     /**
-     * Languageクラスのデシリアライズを行う
-     * @param folder		Languageクラスのシリアライズフォルダ
-     * @param xmlfiles		XMLファイルリスト
-     * @param  srcfiles     ソースファイルリスト
+     * Deserialize the Language class
+     * @param folder Language class serialized folder
+     * @param xmlfiles XML file list
+     * @param srcfiles Source file list
      */
     public void readLanguage(final File folder, final SourceFile[] xmlfiles, final SourceFile[] srcfiles) {
-        // ステータスメッセージ
-        final String message = Message.getString("mainmenu.file.openproject"); //プロジェクトを開く
+        // Status message
+        final String message = Message.getString("mainmenu.file.openproject"); // open the project
 
-        // フォートランデータベースをクリアする
+        // Clear the Fortran database
         clearAction = new ProjectClearLanguageAction(this.controller);
         clearAction.clearFortranLanguage();
 
-        // フォートランデータベース
+        // Fortran database
         Fortran fortran = this.controller.getFortranLanguage();
-        // エラー情報モデル
+        // Error information model
         ErrorInfoModel errorModel = this.controller.getErrorInfoModel();
-        // ソースツリーモデル
+        // Sourcetree model
         final FileTreeModel fileModel = this.controller.getSourceTreeModel();
-        // Xmlツリーモデル
+        // Xml tree model
         final FileTreeModel xmlModel = this.controller.getXmlTreeModel();
-        // 構造ツリーモデル
+        // Structural tree model
         LanguageTreeModel languageModel = this.controller.getLanguageTreeModel();
-        // モジュールツリーモデル
+        // Module tree model
         ModuleTreeModel moduleModel = this.controller.getModuleTreeModel();
-        // XMLパーサの作成
+        // Create XML parser
         XcodeMLParserStax xmlParser = new XcodeMLParserStax();
 
         ProjectModel model = this.controller.getProjectModel();
         final File prjFolder = model.getProjectFolder();
 
-        // 構造解析サービス
+        // Structural analysis service
         serviceLanguage = new LanguageService(xmlfiles, fortran, xmlParser);
-        // エラー情報モデルを設定する。
+        // Set the error information model.
         serviceLanguage.setErrorInfoModel(errorModel);
-        // ソースツリーモデルを設定する。
+        // Set the source tree model.
         serviceLanguage.setSourceTreeModel(fileModel);
-        // Xmlツリーモデルを設定する。
+        // Set up an Xml tree model.
         serviceLanguage.setXmlTreeModel(xmlModel);
-        // 構造ツリーモデルを設定する
+        // Set the structure tree model
         serviceLanguage.setLanguageTreeModel(languageModel);
-        // モジュールツリーモデルを設定する
+        // Set the module tree model
         serviceLanguage.setModuleTreeModel(moduleModel);
 
-        // 変数アクセス先メモリサービス
+        // Variable access destination memory service
         serviceMemory = new AnalysisMemoryService();
-        // 変数アクセス先メモリ設定
+        // Variable access destination memory setting
         serviceMemory.setPropertiesVariableMemory(this.controller.getPropertiesVariable());
 
-        // スレッドタスクサービスの生成を行う。
+        // Create a thread task service.
         FutureService<Integer> future = new FutureService<Integer>(
                 /**
-                 * スレッド呼出クラス
+                 * Thread call class
                  */
                 new Callable<Integer>() {
                     /**
-                     * スレッド実行を行う
+                     * Perform thread execution
                      */
                     @Override
 					public Integer call() {
                         try {
-                        	// ツリー更新
+                        	// Tree update
                         	Application.status.setMessageStatus("Set files...");
                         	xmlModel.setProjectFolder(prjFolder);
                         	xmlModel.setSourceFile(xmlfiles);
                         	fileModel.setProjectFolder(prjFolder);
                         	fileModel.setSourceFile(srcfiles);
 
-                            // デシリアライズ実行
+                            // Deserialize execution
                         	serviceLanguage.readLanguage(folder);
                         	controller.setFortranLanguage(serviceLanguage.getFortranLanguage());
 
-                        	// アクセス先メモリの設定している変数の取得
+                        	// Get the variables set in the access destination memory
                         	serviceMemory.createVariableMemoryProperties(serviceLanguage.getFortranLanguage());
 
                             return Constant.SUCCESS_RESULT;
@@ -302,29 +302,29 @@ public class FileProjectOpenAction extends ActionBase {
                 }
                 ) {
                     /**
-                     * スレッド実行完了.<br/>
-                     * キャンセルされた時の後処理を行う。
+                     * Thread execution completed. <br/>
+                     * Perform post-processing when canceled.
                      */
                     @Override
                     protected void done() {
-                        // フォートラン構文解析結果格納データベースが新規にオブジェクト生成されたので、
-                        // アプリケーションコントローラにセットする
+                        // A new object has been created for the Fortran parsing result storage database.
+                        // Set in the application controller
                         Fortran value = serviceLanguage.getFortranLanguage();
                         if (value != null) {
                             controller.setFortranLanguage(value);
                         }
 
-                        // キャンセルによる終了であるかチェックする。
+                        // Check if the end is due to cancellation.
                         if (this.isCancelled()) {
-                            // フォートランデータベースをクリアする
+                            // Clear the Fortran database
                             clearAction.clearFortranLanguage();
-                            Application.status.setMessageMain(message + Message.getString("action.common.cancel.status")); //:キャンセル
+                            Application.status.setMessageMain(message + Message.getString("action.common.cancel.status")); //:Cancel
                         }
                         else {
-                            Application.status.setMessageMain(message + Message.getString("action.common.done.status")); //:完了
+                            Application.status.setMessageMain(message + Message.getString("action.common.done.status")); //: Done
                         }
 
-                        // サービス実行の停止
+                        // Stop service execution
                         if (serviceLanguage != null) {
                         	serviceLanguage.cancelRunning();
                         }
@@ -333,19 +333,19 @@ public class FileProjectOpenAction extends ActionBase {
                     }
 
         };
-        // ステータスメッセージクリア
+        // Clear status message
         Application.status.setMessageStatus(null);
 
-        // スレッドタスクにコントローラをリスナ登録する：スレッド完了時の呼出の為
+        // Register the controller as a listener in the thread task: To call when the thread is completed
         future.addPropertyChangeListener(this.controller);
         this.controller.setThreadFuture(future);
 
-        // プログレスダイアログを表示する
+        // Display the progress dialog
         WindowProgressAction progress = new WindowProgressAction(FileProjectOpenAction.this.controller);
         progress.showProgressDialog();
         Application.status.setProgressStart(true);
 
-        // スレッド起動
+        // Thread start
         new Thread(future).start();
     }
 

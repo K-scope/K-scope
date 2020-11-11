@@ -18,70 +18,70 @@
 package jp.riken.kscope.data;
 
 /**
- * 演算カウント
+ * Calculation count
  * @author RIKEN
  *
  */
 public class OperationCount {
 
-    /** 演算子:+カウント */
+    /** Operator: + Count */
     private Integer add;
-    /** 演算子:-カウント */
+    /** Operator: -Count */
     private Integer sub;
-    /** 演算子:*カウント */
+    /** Operator: * Count */
     private Integer mul;
-    /** 演算子:/カウント */
+    /** Operator: / Count */
     private Integer div;
-    /** intrinsicカウント */
+    /** intrinsic count */
     private Integer intrinsic;
-    /** ロードカウント */
+    /** Load count */
     private Integer load;
-    /** ストアカウント */
+    /** Store count */
     private Integer store;
-    /** F:カウント */
+    /** F: Count */
     private Integer f;
     /** F/(L+S) or (L+S)/F*/
     private Float fls;
 
     /**
-     * カウント名.<br/>
-     * 組込み関数名 or ループ、ブロック名
+     * Count name. <br/>
+     * Built-in function name or loop, block name
      */
     private String name;
 
     /**
-     * コンストラクタ
+     * Constructor
      */
     public OperationCount() {
     }
 
     /**
-     * 演算子:+カウントを取得する
-     * @return		演算子:+カウント
+     * Operator: + Get count
+     * @return operator: + count
      */
     public Integer getAdd() {
         return add;
     }
 
     /**
-     * 演算子:+カウントを設定する
-     * @param add		演算子:+カウント
+     * Operator: + Set count
+     * @param add operator: + count
      */
     public void setAdd(Integer add) {
         this.add = add;
     }
 
     /**
-     * 演算子:-カウントを取得する
-     * @return		演算子:-カウント
+     * Operator:-Get count
+     * @return operator:-count
      */
     public Integer getSub() {
         return sub;
     }
 
     /**
-     * 演算子:-カウントを設定する
-     * @param sub		演算子:-カウント
+     * Operator:-Set count
+     * @param sub operator:-count
      */
     public void setSub(Integer sub) {
         this.sub = sub;
@@ -89,48 +89,48 @@ public class OperationCount {
 
 
     /**
-     * 演算子:*カウントを取得する
-     * @return		演算子:*カウント
+     * Operator: * Get count
+     * @return operator: * count
      */
     public Integer getMul() {
         return mul;
     }
 
     /**
-     * 演算子:*カウントを設定する
-     * @param mul		演算子:*カウント
+     * Operator: * Set count
+     * @param mul operator: * Count
      */
     public void setMul(Integer mul) {
         this.mul = mul;
     }
 
     /**
-     * 演算子:/カウントを取得する
-     * @return		演算子:/カウント
+     * Operator: / Get count
+     * @return operator: / count
      */
     public Integer getDiv() {
         return div;
     }
 
     /**
-     * 演算子:/カウントを設定する
-     * @param div		演算子:/カウント
+     * Operator: / Set count
+     * @param div operator: / count
      */
     public void setDiv(Integer div) {
         this.div = div;
     }
 
     /**
-     * intrinsicカウントを取得する
-     * @return		intrinsicカウント
+     * Get intrinsic count
+     * @return intrinsic count
      */
     public Integer getIntrinsic() {
         return intrinsic;
     }
 
     /**
-     * intrinsicカウントを設定する
-     * @param intrinsic		intrinsicカウント
+     * Set intrinsic count
+     * @param intrinsic intrinsic count
      */
     public void setIntrinsic(Integer intrinsic) {
         this.intrinsic = intrinsic;
@@ -138,80 +138,80 @@ public class OperationCount {
 
 
     /**
-     * ロードカウントを取得する
-     * @return		ロードカウント
+     * Get the load count
+     * @return load count
      */
     public Integer getLoad() {
         return load;
     }
 
     /**
-     * ロードカウントを設定する
-     * @param load		ロードカウント
+     * Set load count
+     * @param load load count
      */
     public void setLoad(Integer load) {
         this.load = load;
     }
 
     /**
-     * ストアカウントを取得する
-     * @return		ストアカウント
+     * Get store count
+     * @return store count
      */
     public Integer getStore() {
         return store;
     }
 
     /**
-     * ストアカウントを設定する
-     * @param store		ストアカウント
+     * Set store count
+     * @param store Store count
      */
     public void setStore(Integer store) {
         this.store = store;
     }
 
     /**
-     * F(L+S)を取得する
-     * @return		F(L+S)
+     * Get F (L + S)
+     * @return F (L + S)
      */
     public Float getFls() {
         return this.fls;
     }
 
     /**
-     * F(L+S)を設定する
-     * @param fls		F(L+S)
+     * Set F (L + S)
+     * @param fls F (L + S)
      */
     public void setFls(Float fls) {
         this.fls = fls;
     }
 
     /**
-     * カウント名を取得する
-     * @return 		カウント名
+     * Get the count name
+     * @return Count name
      */
     public String getName() {
         return name;
     }
 
     /**
-     * カウント名を設定する
-     * @param name 	カウント名
+     * Set the count name
+     * @param name Count name
      */
     public void setName(String name) {
         this.name = name;
     }
 
     /**
-     * F:カウントを取得する
-     * @return		F:カウント
+     * F: Get the count
+     * @return F: Count
      */
     public Integer getF() {
         return f;
     }
 
     /**
-     * F:カウントを設定する
-     * @param f		F:カウント
+     * F: Set the count
+     * @param f F: Count
      */
     public void setF(Integer f) {
         this.f = f;

@@ -25,30 +25,30 @@ import java.lang.Integer;
 import jp.riken.kscope.common.Constant;
 
 /**
- * スレッドタスクサービスクラス
+ * Thread task service class
  * @author RIKEN
- * @param <Integer>		スレッド終了コード
+ * @param <Integer> Thread exit code
  */
 @SuppressWarnings("hiding")
 public class FutureService<Integer> extends FutureTask<Integer> {
 
-    /** スレッド終了通知 */
+    /** Thread end notification */
     private PropertyChangeSupport threadEvent;
-    /** スレッド終了メッセージ */
+    /** Thread end message */
     private String message;
 
     /**
-     * コンストラクタ
-     * @param callable		スレッド呼出クラス
+     * Constructor
+     * @param callable Thread call class
      */
     public FutureService(Callable<Integer> callable) {
         super(callable);
     }
 
     /**
-     * コンストラクタ
-     * @param runnable		実行スレッド
-     * @param result		パラメータ
+     * Constructor
+     * @param runnable execution thread
+     * @param result parameter
      */
     public FutureService(Runnable runnable, Integer result) {
         super(runnable, result);
@@ -56,16 +56,16 @@ public class FutureService<Integer> extends FutureTask<Integer> {
 
 
     /**
-     * コンストラクタ
-     * @param runnable		実行スレッド
+     * Constructor
+     * @param runnable execution thread
      */
     public FutureService(Runnable runnable) {
         super(runnable, null);
     }
 
     /**
-     * スレッド終了通知リスナの登録を行う
-     * @param listener		プロパティ変更リスナ
+     * Register the thread end notification listener
+     * @param listener Property change listener
      */
     public void addPropertyChangeListener(PropertyChangeListener listener) {
         if (threadEvent == null) {
@@ -80,7 +80,7 @@ public class FutureService<Integer> extends FutureTask<Integer> {
     }
 
     /**
-     * スレッド実行終了
+     * End thread execution
      */
     @Override
     @SuppressWarnings("unchecked")
@@ -99,24 +99,24 @@ public class FutureService<Integer> extends FutureTask<Integer> {
             }
         }
 
-        // PropertyChangeSupportを利用してスレッドの終了を通知する
+        // Use PropertyChangeSupport to notify the end of the thread
         if (threadEvent != null) {
             this.threadEvent.firePropertyChange(Constant.PROPERTYNAME_THREADDONE, null, result);
         }
     }
 
 	/**
-	 * スレッド終了メッセージを取得する
-	 * @return スレッド終了メッセージ
-	 */
+* Get thread end message
+* @return Thread end message
+*/
 	public String getMessage() {
 		return message;
 	}
 
 	/**
-	 * スレッド終了メッセージを設定する.
-	 * @param message スレッド終了メッセージ
-	 */
+* Set the thread end message.
+* @param message Thread end message
+*/
 	public void setMessage(String message) {
 		this.message = message;
 	}

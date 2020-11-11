@@ -39,75 +39,75 @@ import jp.riken.kscope.properties.VariableMemoryProperties;
 import jp.riken.kscope.utils.StringUtils;
 
 /**
- * メモリ性能算出を行う
+ * Calculate memory performance
  * @author RIKEN
  */
 public class AnalysisMemoryService extends AnalysisBaseService {
 
-    /** 要求Byte/FLOP設定プロパティ */
+    /** Request Byte / FLOP configuration property */
     private RequiredBFProperties properitiesRequiredBF;
-    /** 組込み関数演算カウントプロパティ */
+    /** Built-in function operation count property */
     private OperationProperties propertiesOperation;
-    /** 要求Byte/FLOPテーブルモデル */
+    /** Request Byte / FLOP table model */
     private RequiredBFModel modelRequiredBF;
-    /** 要求Byte/FLOP算出結果 */
+    /** Request Byte / FLOP calculation result */
     private List<RequiredBFResult> requiedBFResults;
-    /** 選択ブロック */
+    /** Selection block */
     private List<IBlock> blocks;
-    /** 変数アクセス先メモリ設定プロパティ */
+    /** Variable access destination memory setting property */
     private VariableMemoryProperties propertiesVariableMemory;
 
     /**
-     * コンストラクタ
+     * Constructor
      */
     public AnalysisMemoryService() {
         super();
     }
 
 	/**
-	 * 要求Byte/FLOP設定プロパティを取得する.
-	 * @return 要求Byte/FLOP設定プロパティ
-	 */
+* Get the request Byte / FLOP configuration property.
+* @return Request Byte / FLOP configuration property
+*/
 	public RequiredBFProperties getProperitiesRequiredBF() {
 		return properitiesRequiredBF;
 	}
 
 	/**
-	 * 要求Byte/FLOP設定プロパティを設定する.
-	 * @param properities 要求Byte/FLOP設定プロパティ
-	 */
+* Set the request Byte / FLOP setting property.
+* @param properities Request Byte / FLOP configuration properties
+*/
 	public void setProperitiesRequiredBF(RequiredBFProperties properities) {
 		this.properitiesRequiredBF = properities;
 	}
 
 	/**
-	 * 組込み関数演算カウントプロパティを取得する.
-	 * @return 組込み関数演算カウントプロパティ
-	 */
+* Get the built-in function operation count property.
+* @return Built-in function operation count property
+*/
 	public OperationProperties getPropertiesOperand() {
 		return propertiesOperation;
 	}
 
 	/**
-	 * 組込み関数演算カウントプロパティを設定する.
-	 * @param properities 組込み関数演算カウントプロパティ
-	 */
+* Set the built-in function operation count property.
+* @param properities Built-in function arithmetic count property
+*/
 	public void setPropertiesOperand(OperationProperties properities) {
 		this.propertiesOperation = properities;
 	}
 
 	/**
-	 * 選択ブロックを取得する.
-	 * @return 選択ブロック
-	 */
+* Get the selected block.
+* @return selection block
+*/
 	public IBlock[] getBlocks() {
 		return blocks.toArray(new IBlock[0]);
 	}
 
 	/**
-	 * 選択ブロックを設定する.
-	 * @param blocks 選択ブロック
-	 */
+* Set the selection block.
+* @param blocks selection blocks
+*/
 	public void setBlocks(IBlock[] blocks) {
 		if (this.blocks == null) {
 			this.blocks = new ArrayList<IBlock>();
@@ -116,138 +116,138 @@ public class AnalysisMemoryService extends AnalysisBaseService {
 	}
 
 	/**
-	 * 要求Byte/FLOPテーブルモデルを取得する.
-	 * @return 要求Byte/FLOPテーブルモデル
-	 */
+* Get the request Byte / FLOP table model.
+* @return Request Byte / FLOP table model
+*/
 	public RequiredBFModel getModelRequiredBF() {
 		return modelRequiredBF;
 	}
 
 	/**
-	 * 要求Byte/FLOPテーブルモデルを設定する.
-	 * @param model 要求Byte/FLOPテーブルモデル
-	 */
+* Set the request Byte / FLOP table model.
+* @param model Request Byte / FLOP table model
+*/
 	public void setModelRequiredBF(RequiredBFModel model) {
 		this.modelRequiredBF = model;
 	}
 
 	/**
-	 * 要求Byte/FLOP算出結果を取得する.
-	 * @return 要求Byte/FLOP算出結果
-	 */
+* Get the request Byte / FLOP calculation result.
+* @return Request Byte / FLOP calculation result
+*/
 	public List<RequiredBFResult> getReqiedBFResults() {
 		return requiedBFResults;
 	}
 
 	/**
-	 * 要求Byte/FLOP算出結果を設定する.
-	 * @param reqiedBFResults  要求Byte/FLOP算出結果
-	 */
+* Set the request Byte / FLOP calculation result.
+* @param reqiedBFResults Request Byte / FLOP calculation result
+*/
 	public void setReqiedBFResults(List<RequiredBFResult> reqiedBFResults) {
 		this.requiedBFResults = reqiedBFResults;
 	}
 
 	/**
-	 * 要求Byte/FLOPを算出する.
-	 * @param block    算出ブロック
-	 * @return    要求Byte/FLOP算出結果
-	 */
+* Calculate the request Byte / FLOP.
+* @param block Calculation block
+* @return Request Byte / FLOP calculation result
+*/
 	public RequiredBFResult calcRequiredBF(IBlock block) {
 		if (block == null) return null;
 
-		// 演算数,Load,Storeをカウントする.
+		// Count the number of operations, Load, Store.
 		OperationCounterUtils utils = new OperationCounterUtils();
 		utils.setPropertiesOperation(this.propertiesOperation);
 		utils.countBlock(block);
 
 		RequiredBFResult result = new RequiredBFResult();
-		// 算出ブロック
+		// Calculation block
 		result.setBlock(block);
-		// 右辺変数
+		// Right-hand variable
 		List<Variable> rights = utils.getRightVariables();
-		// 左辺変数
+		// Left side variable
 		List<Variable> lefts = utils.getLeftVariables();
 		// Load, Store
 		setStoreLoad(result, lefts, rights);
-        // 演算数
+        // Number of operations
 		setOperation(result, utils.getAddFlop(),
 						   utils.getSubFlop(),
 						   utils.getMulFlop(),
 						   utils.getDivFlop(),
 						   utils.getPowFlop(),
 						   utils.getFunctionFlop());
-        // 要求Byte/FLOP,要求FLOP/Byte
+        // Request Byte / FLOP, Request FLOP / Byte
 		result.calcRequiredBF();
-		// メモリスループット
+		// Memory throughput
 		setMemThroughput(result, lefts, rights);
-		// 実効Byte/FLOP,実効FLOP/Byte
+		// Effective Byte / FLOP, Effective FLOP / Byte
 		result.calcRequiredBF(this.properitiesRequiredBF.getFlopPerformance());
-		// ピーク性能
+		// Peak performance
 		result.calcPeakPerformance();
-		// アクセス先メモリカウント
+		// Access memory count
 		setAccessCount(result, lefts, rights);
-		// BF算出単位
+		// BF calculation unit
 		result.setBFCalcType(this.properitiesRequiredBF.getBFCalcType());
 
 		return result;
 	}
 
 	/**
-	 * 演算数を設定する.
-	 * @param result	算出結果
-	 * @param add		加算(+)
-	 * @param sub		減算(-)
-	 * @param mul		乗算(*)
-	 * @param div		除算(/)
-	 * @param pow		累乗
-	 * @param function	組込関数の加算(+) + 乗算(*)
-	 */
+* Set the number of operations.
+* @param result Calculation result
+* @param add Addition (+)
+* @param sub Subtraction (-)
+* @param mul multiplication (*)
+* @param div division (/)
+* @param pow to the power
+* @param function Addition (+) + multiplication (*) of built-in functions
+*/
 	private void setOperation(RequiredBFResult result, int add, int sub, int mul, int div, int pow, int function) {
 		if (result == null) return;
 
-		// 演算数(FLOP) = add(F) + mul(F) + intrinsic(F)
+		// Number of operations (FLOP) = add (F) + mul (F) + intrinsic (F)
 		int op = add + sub + mul + div + pow + function;
 		result.setOperation(op);
-		// 浮動小数点データ型の変数に対する加算(+)の数
+		// Number of additions (+) to variables of floating point data type
 		result.setAddCount(add);
-		// 浮動小数点データ型の変数に対する減算(-)の数
+		// Number of subtractions (-) for variables of floating point data type
 		result.setSubCount(sub);
-		// 浮動小数点データ型の変数に対する乗算(*)の数
+		// Number of multiplications (*) on variables of floating point data type
 		result.setMulCount(mul);
-		// 浮動小数点データ型の変数に対する除算(/)の数
+		// Number of divisions (/) on variables of floating point data type
 		result.setDivCount(div);
-		// 浮動小数点データ型の変数に対する累乗, 組込関数の加算(+) + 乗算(*)
+		// Exponentiation of variables of floating point data type, addition of built-in functions (+) + multiplication (*)
 		result.setIntrinsicCount(pow + function);
 
 		return;
 	}
 
 	/**
-	 * Store, Loadを算出結果に設定します.
-	 * @param result		算出結果
-	 * @param lefts			左辺変数リスト
-	 * @param rights		右辺変数リスト
-	 */
+* Set Store and Load in the calculation result.
+* @param result Calculation result
+* @param lefts Left side variable list
+* @param rights Right-hand variable list
+*/
 	private void setStoreLoad(RequiredBFResult result, List<Variable> lefts, List<Variable> rights) {
 		if (result == null) return;
-		// すべての変数リスト
+		// List of all variables
 		List<Variable> all = getMargeVariable(lefts, rights);
-		// 変数バイト数
+		// Number of variable bytes
 		int loadByte = getVariableMemoryByte(all);
 		int leftByte = getVariableMemoryByte(lefts);
-		// Load算出 = right + left
+		// Load calculation = right + left
 		result.setLoad(loadByte);
-		// Store変数
+		// Store variable
 		result.setStore(leftByte);
 	}
 
 	/**
-	 * 左辺変数リストと右辺変数リストをマージします.
-	 * 同一変数は除外します.
-	 * @param lefts			左辺変数リスト
-	 * @param rights		右辺変数リスト
-	 * @return		マージ変数リスト
-	 */
+* Merge the left-hand variable list and the right-hand variable list.
+* Exclude the same variable.
+* @param lefts Left side variable list
+* @param rights Right-hand variable list
+* @return Merge variable list
+*/
 	private List<Variable> getMargeVariable(List<Variable> lefts, List<Variable> rights) {
 		List<Variable> all = new ArrayList<Variable>();
 		OperationCounterUtils utils = new OperationCounterUtils();
@@ -270,19 +270,19 @@ public class AnalysisMemoryService extends AnalysisBaseService {
 	}
 
 	/**
-	 * メモリスループットを設定する.
-	 * @param result		算出結果
-	 * @param lefts			左辺変数リスト
-	 * @param rights		右辺変数リスト
-	 */
+* Set memory throughput.
+* @param result Calculation result
+* @param lefts Left side variable list
+* @param rights Right-hand variable list
+*/
 	private void setMemThroughput(RequiredBFResult result, List<Variable> lefts, List<Variable> rights) {
 		if (result == null) return;
 
-		// Store有り、無しの判定
-		// 左辺変数と要求Byte/FLOP設定ダイアログのスループットモードから判断する.
+		// Judgment with or without Store
+		// Judge from the left side variable and the throughput mode of the request Byte / FLOP setting dialog.
 		boolean isstore = isStore(lefts);
 
-		// スループット(GB/s)
+		// Throughput (GB / s)
 		float throughput = 0.0F;
 		if (isstore) {
 			throughput= this.properitiesRequiredBF.getMemThroughputStore();
@@ -292,16 +292,16 @@ public class AnalysisMemoryService extends AnalysisBaseService {
 		}
 		result.setThroughput(throughput);
 
-		// メモリスループット算出モード
+		// Memory throughput calculation mode
 		result.setMemThroughputCalcMode(this.properitiesRequiredBF.getMemThroughputCalcMode());
-		// 算出元のスループット値(GB/s)（ストア有り or ストアなし）
+		// Calculation source throughput value (GB / s) (with or without store)
 		RequiredBF memory = this.properitiesRequiredBF.getRequiredBF(ACCESSMEMORY_TYPE.MEMORY);
 		RequiredBF l1 = this.properitiesRequiredBF.getRequiredBF(ACCESSMEMORY_TYPE.L1_CACHE);
 		RequiredBF l2 = this.properitiesRequiredBF.getRequiredBF(ACCESSMEMORY_TYPE.L2_CACHE);
 		RequiredBF register = this.properitiesRequiredBF.getRequiredBF(ACCESSMEMORY_TYPE.REGISTER);
 		RequiredBF custom = this.properitiesRequiredBF.getRequiredBF(ACCESSMEMORY_TYPE.CUSTOM);
 		if (isstore) {
-			// 算出元のスループット値(GB/s)（ストア有り）
+			// Calculation source throughput value (GB / s) (with store)
 			result.setMemoryMBW(memory.getMemThroughputStore());
 			result.setL1MBW(l1.getMemThroughputStore());
 			result.setL2MBW(l2.getMemThroughputStore());
@@ -309,14 +309,14 @@ public class AnalysisMemoryService extends AnalysisBaseService {
 			result.setCustomMBW(custom.getMemThroughputStore());
 		}
 		else {
-			// 算出元のスループット値(GB/s)（ストアなし）
+			// Source throughput value (GB / s) (no store)
 			result.setMemoryMBW(memory.getMemThroughputNostore());
 			result.setL1MBW(l1.getMemThroughputNostore());
 			result.setL2MBW(l2.getMemThroughputNostore());
 			result.setRegisterMBW(register.getMemThroughputNostore());
 			result.setCustomMBW(custom.getMemThroughputNostore());
 		}
-		// 係数
+		// Coefficient
 		result.setMemoryCoef(memory.getCoef());
 		result.setL1Coef(l1.getCoef());
 		result.setL2Coef(l2.getCoef());
@@ -325,11 +325,11 @@ public class AnalysisMemoryService extends AnalysisBaseService {
 	}
 
 	/**
-	 * メモリアクセス先メモリを設定する.
-	 * @param result		算出結果
-	 * @param lefts			左辺変数リスト
-	 * @param rights		右辺変数リスト
-	 */
+* Set the memory access destination memory.
+* @param result Calculation result
+* @param lefts Left side variable list
+* @param rights Right-hand variable list
+*/
 	private void setAccessCount(RequiredBFResult result, List<Variable> lefts, List<Variable> rights) {
 		if (result == null) return;
 		int memory = 0;
@@ -372,12 +372,12 @@ public class AnalysisMemoryService extends AnalysisBaseService {
 
 
 	/**
-	 * スループット算出のストア有り無しの判定を行う.
-	 * @param lefts		左辺変数リスト
-	 * @return			true=ストア有り
-	 */
+* Judge whether there is a store for throughput calculation.
+* @param lefts Left side variable list
+* @return true = with store
+*/
 	private boolean isStore(List<Variable> lefts) {
-		// Store有り、無しの判定
+		// Judgment with or without Store
 		boolean isstore = false;
 		if (this.properitiesRequiredBF.getMemThroughputCalcMode() == MEM_THROUGHPUT_CALC_MODE.NOSTORE) {
 			isstore = false;
@@ -395,10 +395,10 @@ public class AnalysisMemoryService extends AnalysisBaseService {
 	}
 
 	/**
-	 * 変数のバイト数を取得する.
-	 * @param var		変数
-	 * @return		バイト数
-	 */
+* Get the number of bytes in a variable.
+* @param var variable
+* @return Number of bytes
+*/
 	private int getVariableByte(Variable var) {
 		if (var == null) return 0;
 		if (var.getDefinition() == null) return 0;
@@ -407,14 +407,14 @@ public class AnalysisMemoryService extends AnalysisBaseService {
 		VariableType type = (VariableType)var.getDefinition().getType();
 		if (type == null) return 0;
 
-		// kind属性
+		// kind attribute
 		int kind = 0;
 		if (type.getKind() != null) {
 			if (StringUtils.isNumeric(type.getKind().toString())) {
 				kind = Integer.parseInt(type.getKind().toString());
 			}
 		}
-		// データ型のバイト数を求める.
+		// Find the number of bytes in the data type.
 		int byteValue = 0;
 		if (type.getPrimitiveDataType() == VariableType.PrimitiveDataType.BYTE) {
 			byteValue = 1;
@@ -452,10 +452,10 @@ public class AnalysisMemoryService extends AnalysisBaseService {
 
 
 	/**
-	 * 変数が左辺であるかチェックする.
-	 * @param var		変数
-	 * @return		バイト数
-	 */
+* Check if the variable is on the left side.
+* @param var variable
+* @return Number of bytes
+*/
 	@SuppressWarnings("unused")
 	private boolean isRightVariable(Variable var) {
 		if (var == null) return false;
@@ -466,16 +466,16 @@ public class AnalysisMemoryService extends AnalysisBaseService {
 		if (sub.getLeftValue() == var) {
 			return false;
 		}
-		// 左辺ではないので右辺の変数
+		// Variable on the right side because it is not on the left side
 		return true;
 	}
 
 
 	/**
-	 * 変数が左辺であるかチェックする.
-	 * @param var		変数
-	 * @return		バイト数
-	 */
+* Check if the variable is on the left side.
+* @param var variable
+* @return Number of bytes
+*/
     @SuppressWarnings("unused")
 	private boolean isLeftVariable(Variable var) {
 		if (var == null) return false;
@@ -491,10 +491,10 @@ public class AnalysisMemoryService extends AnalysisBaseService {
 
 
 	/**
-	 * 要求B/F対象の変数の数を取得する.
-	 * @param  vars  変数リスト
-	 * @return		要求B/F対象の変数の数
-	 */
+* Get the number of variables for request B / F.
+* @param vars Variable list
+* @return Request B / F Number of variables
+*/
     @SuppressWarnings("unused")
 	private int getVariableMemoryCount(List<Variable> vars) {
 		if (vars == null) return 0;
@@ -518,10 +518,10 @@ public class AnalysisMemoryService extends AnalysisBaseService {
 
 
 	/**
-	 * 要求B/F対象の変数Byteを取得する.
-	 * @param  vars  変数リスト
-	 * @return		要求B/F対象の変数Byte
-	 */
+* Get the variable Byte for the request B / F.
+* @param vars Variable list
+* @return Request B / F Target variable Byte
+*/
 	private int getVariableMemoryByte(List<Variable> vars) {
 		if (vars == null) return 0;
 		if (vars.size() <= 0) return 0;
@@ -530,10 +530,10 @@ public class AnalysisMemoryService extends AnalysisBaseService {
 			if (this.properitiesRequiredBF != null) {
 				ACCESSMEMORY_TYPE type = getMemoryType(var);
 				if (type == null) {
-					// 設定済み変数からアクセス先メモリを取得する
+					// Get the access destination memory from the configured variable
 					type = getAccessMemoryType(var);
 					if (type == null) {
-						// デフォルトのアクセス先メモリを取得する
+						// Get the default access memory
 						type = ACCESSMEMORY_TYPE.getDefaultType(var);
 					}
 				}
@@ -552,11 +552,11 @@ public class AnalysisMemoryService extends AnalysisBaseService {
 	}
 
 	/**
-	 * 変数のアクセス先メモリタイプを取得する.
-	 * ソースビュー適用アクセス先メモリと一時設定アクセス先メモリから一時設定アクセス先メモリを優先して取得する.
-	 * @param var	変数
-	 * @return		アクセス先メモリ
-	 */
+* Get the memory type to access the variable.
+* Priority is given to the temporary setting access destination memory from the source view application access destination memory and temporary setting access destination memory.
+* @param var variable
+* @return Access memory
+*/
 	private ACCESSMEMORY_TYPE getMemoryType(Variable var) {
 		if (var == null) return null;
 		ACCESSMEMORY_TYPE type = var.getMemoryType();
@@ -566,45 +566,45 @@ public class AnalysisMemoryService extends AnalysisBaseService {
 	}
 
 	/**
-	 * 分析ビューに算出結果を追加する.
-	 * @param  results    算出結果リスト
-	 */
+* Add the calculation result to the analysis view.
+* @param results Calculation result list
+*/
 	public void setAnalysisPanel(RequiredBFResult[] results) {
 		if (this.modelRequiredBF == null) return;
 		if (this.properitiesRequiredBF != null) {
-			// 算出単位を設定する
+			// Set the calculation unit
 			this.modelRequiredBF.setUnitType(this.properitiesRequiredBF.getBFCalcType());
 		}
 		this.modelRequiredBF.addRequiredByteFlopResults(results);
 	}
 
 	/**
-	 * 変数アクセス先メモリ設定プロパティを取得する.
-	 * @return 変数アクセス先メモリ設定プロパティ
-	 */
+* Get the variable access destination memory setting property.
+* @return variable access destination memory setting property
+*/
 	public VariableMemoryProperties getPropertiesVariableMemory() {
 		return propertiesVariableMemory;
 	}
 
 	/**
-	 * 変数アクセス先メモリ設定プロパティを設定する.
-	 * @param properties    変数アクセス先メモリ設定プロパティ
-	 */
+* Set the variable access destination memory setting property.
+* @param properties Variable access destination memory setting property
+*/
 	public void setPropertiesVariableMemory(VariableMemoryProperties properties) {
 		this.propertiesVariableMemory = properties;
 	}
 
 	/**
-	 * 変数アクセス先メモリ設定プロパティに変数を設定する.
-	 * 追加変数はデータベースから取得する.
-	 * @param language   Fortranデータベース
-	 */
+* Set a variable in the variable access destination memory setting property.
+* Get additional variables from the database.
+* @param language Fortran database
+*/
 	public void createVariableMemoryProperties(Fortran language) {
 
 		VariableMemoryEntry entry = new VariableMemoryEntry(language);
         LanguageVisitor visitor = new LanguageVisitor(entry);
         visitor.entry();
-        // アクセス先メモリの設定されている変数の取得
+        // Get the set variables of the access destination memory
         Variable[] vars = entry.getListVariable();
         if (vars == null || vars.length <= 0) return;
         for (Variable var : vars) {
@@ -614,19 +614,19 @@ public class AnalysisMemoryService extends AnalysisBaseService {
 	}
 
 	/**
-	 * 設定済み変数からアクセス先メモリを取得する.
-	 * 同一添字、同一定義の変数を取得する.
-	 * 設定済み変数が複数、且つ設定アクセス先メモリが異なる場合は、nullを返す
-	 * @param var		検索変数
-	 * @return			アクセス先メモリ
-	 */
+* Get the access destination memory from the set variable.
+* Get variables with the same subscript and the same definition.
+* If there are multiple configured variables and the set access destination memory is different, null is returned.
+* @param var Search variable
+* @return Access memory
+*/
 	private ACCESSMEMORY_TYPE getAccessMemoryType(Variable var) {
-		// 設定済み変数からアクセス先メモリを取得する
+		// Get the access destination memory from the configured variable
 		if (this.propertiesVariableMemory == null) return null;
 		List<Variable> vars = this.propertiesVariableMemory.getEqualsVariableDefinition(var);
 		if (vars == null || vars.size() <= 0) return null;
 
-		// 設定アクセス先メモリが異なる場合は、nullを返す
+		// Returns null if the configuration access destination memory is different
 		ACCESSMEMORY_TYPE type = null;
 		for (Variable item : vars) {
 			if (type == null) {

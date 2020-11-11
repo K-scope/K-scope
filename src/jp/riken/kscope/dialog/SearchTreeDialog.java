@@ -40,42 +40,42 @@ import jp.riken.kscope.common.Constant;
 import jp.riken.kscope.common.EXPLORE_PANEL;
 
 /**
- * ツリー検索ダイアログクラス
+ * Tree search dialog class
  * @author RIKEN
  */
 public class SearchTreeDialog extends javax.swing.JDialog implements ActionListener {
-    /** シリアル番号 */
+    /** Serial number */
     private static final long serialVersionUID = 1L;
-    /** 検索ボタン */
+    /** Search button */
     private JButton btnOk;
-    /** 閉じるボタン */
+    /** Close button */
     private JButton btnClose;
-    /** 単語検索ボタン */
+    /** Word search button */
     private JCheckBox chkWord;
-    /** 正規表現検索 */
+    /** Regular expression search */
     private JCheckBox chkRegex;
-    /** 大文字・小文字区別なし検索 */
+    /** Case-insensitive search */
     private JCheckBox chkSensitivecase;
-    /** 検索文字列 */
+    /** Search string */
     private JTextField txtSearch;
-    /** 検索フォルダ */
+    /** Search folder */
     private JTextField txtFolder;
-    /** フォルダ参照ボタン */
+    /** Folder reference button */
     private JButton btnFolder;
-    /** 参照ツリーモデル */
+    /** Reference tree model */
     private TreeModel modelTree;
-    /** 参照ツリータイプ */
+    /** Reference tree type */
     EXPLORE_PANEL panelType;
-    /** 選択ツリーパス */
+    /** Selected tree path */
     private TreeNode[] selectedNodes;
 
-    /** ダイアログの戻り値 */
+    /** Dialog return value */
     private int result = Constant.CANCEL_DIALOG;
 
     /**
-     * コンストラクタ
-     * @param owner		親フレーム
-     * @param modal		true=モーダルダイアログを表示する
+     * Constructor
+     * @param owner parent frame
+     * @param modal true = Show modal dialog
      */
     public SearchTreeDialog(Frame owner, boolean modal) {
         super(owner, modal);
@@ -84,11 +84,11 @@ public class SearchTreeDialog extends javax.swing.JDialog implements ActionListe
 
 
     /**
-     * GUI初期化を行う。
+     * Initialize the GUI.
      */
     private void initGUI() {
         try {
-            // ボタンパネル
+            // Button panel
             {
                 JPanel panelButtons = new JPanel();
                 FlowLayout panelButtonsLayout = new FlowLayout();
@@ -98,19 +98,19 @@ public class SearchTreeDialog extends javax.swing.JDialog implements ActionListe
                 getContentPane().add(panelButtons, BorderLayout.SOUTH);
                 panelButtons.setPreferredSize(new java.awt.Dimension(390, 41));
 
-                // 検索ボタン
+                // search button
                 java.awt.Dimension buttonSize = new java.awt.Dimension(96, 22);
                 {
                     btnOk = new JButton();
-                    btnOk.setText(Message.getString("mainmenu.search")); //検索
+                    btnOk.setText(Message.getString("mainmenu.search")); // search
                     btnOk.setPreferredSize(buttonSize);
                     btnOk.addActionListener(this);
                     panelButtons.add(btnOk);
                 }
-                // 閉じるボタン
+                // Close button
                 {
                     btnClose = new JButton();
-                    btnClose.setText(Message.getString("dialog.common.button.cancel")); //キャンセル
+                    btnClose.setText(Message.getString("dialog.common.button.cancel")); //Cancel
                     btnClose.setMargin(new Insets(0, 5, 0, 5));
                     btnClose.setPreferredSize(buttonSize);
                     btnClose.addActionListener(this);
@@ -118,7 +118,7 @@ public class SearchTreeDialog extends javax.swing.JDialog implements ActionListe
                 }
             }
 
-            // 検索コンテンツ
+            // Search content
             {
                 JPanel panelContent = new JPanel();
                 GridBagLayout panelContentLayout = new GridBagLayout();
@@ -129,55 +129,55 @@ public class SearchTreeDialog extends javax.swing.JDialog implements ActionListe
                 getContentPane().add(panelContent, BorderLayout.CENTER);
                 panelContent.setLayout(panelContentLayout);
 
-                // 説明文ラベル
+                // descriptive label
                 {
                     JLabel label = new JLabel();
                     panelContent.add(label, new GridBagConstraints(1, 0, 2, 1, 0.0, 0.0, GridBagConstraints.NORTHWEST, GridBagConstraints.NONE, new Insets(0, 0, 7, 0), 0, 0));
-                    label.setText(Message.getString("searchtreedialog.label.desc")); //ツリーノードのテキスト検索を行います。
+                    label.setText(Message.getString("searchtreedialog.label.desc")); // Perform a text search on the tree node.
                     //label.setForeground(Color.BLUE);
                 }
-                // 検索ラベル
+                // Search label
                 {
                     JLabel lblSearch = new JLabel();
                     panelContent.add(lblSearch, new GridBagConstraints(1, 1, 1, 1, 0.0, 0.0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
-                    lblSearch.setText(Message.getString("searchfinddialog.label.searchword")); //検索文字：
+                    lblSearch.setText(Message.getString("searchfinddialog.label.searchword")); // Search character:
                 }
-                // 検索テキストボックス
+                // Search text box
                 {
                     txtSearch = new JTextField();
                     panelContent.add(txtSearch, new GridBagConstraints(2, 1, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
                 }
-                // オプションラベル
+                // Option label
                 {
                     JLabel lblOption = new JLabel();
                     panelContent.add(lblOption, new GridBagConstraints(1, 3, 1, 1, 0.0, 0.0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
-                    lblOption.setText(Message.getString("searchfinddialog.label.options")); //オプション：
+                    lblOption.setText(Message.getString("searchfinddialog.label.options")); //option:
                 }
-                // オプション：大文字・小文字を区別する
+                // Optional: Case sensitive
                 {
                     chkSensitivecase = new JCheckBox();
                     panelContent.add(chkSensitivecase, new GridBagConstraints(2, 3, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
-                    chkSensitivecase.setText(Message.getString("searchfinddialog.checkbox.upper-lower")); //大文字・小文字を区別する
+                    chkSensitivecase.setText(Message.getString("searchfinddialog.checkbox.upper-lower")); // Case sensitive
                     chkSensitivecase.setMargin(new java.awt.Insets(2, 10, 2, 1));
                 }
-                // オプション：単語検索
+                // Optional: Word search
                 {
                     chkWord = new JCheckBox();
                     panelContent.add(chkWord, new GridBagConstraints(2, 4, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
-                    chkWord.setText(Message.getString("searchfinddialog.checkbox.word")); //単語検索
+                    chkWord.setText(Message.getString("searchfinddialog.checkbox.word")); // word search
                     chkWord.setMargin(new java.awt.Insets(2, 10, 2, 1));
                 }
-                // オプション：正規表現
+                // Optional: Regular expression
                 {
                     chkRegex = new JCheckBox();
                     panelContent.add(chkRegex, new GridBagConstraints(2, 5, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
-                    chkRegex.setText(Message.getString("searchfinddialog.checkbox.regex")); //正規表現
+                    chkRegex.setText(Message.getString("searchfinddialog.checkbox.regex")); //Regular expressions
                     chkRegex.setMargin(new java.awt.Insets(2, 10, 2, 1));
                 }
                 {
                     JLabel lblFolder = new JLabel();
                     panelContent.add(lblFolder, new GridBagConstraints(1, 2, 1, 1, 0.0, 0.0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
-                    lblFolder.setText(Message.getString("searchtreedialog.label.searchnode")); //検索ノード：
+                    lblFolder.setText(Message.getString("searchtreedialog.label.searchnode")); // Search node:
                 }
                 {
                     JPanel panelFolder = new JPanel();
@@ -190,20 +190,20 @@ public class SearchTreeDialog extends javax.swing.JDialog implements ActionListe
                     layoutFolder.columnWidths = new int[] {7, 7};
                     panelFolder.setLayout(layoutFolder);
                     {
-                        txtFolder = new JTextField(Message.getString("searchtreedialog.text.allnode")); //すべてのノード
+                        txtFolder = new JTextField(Message.getString("searchtreedialog.text.allnode")); // All nodes
                         txtFolder.setEditable(false);
                         panelFolder.add(txtFolder, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
                     }
                     {
                         btnFolder = new JButton();
                         panelFolder.add(btnFolder, new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
-                        btnFolder.setText(Message.getString("dialog.common.button.refer")); //参照
+                        btnFolder.setText(Message.getString("dialog.common.button.refer")); //reference
                         btnFolder.setPreferredSize(new java.awt.Dimension(82, 22));
                         btnFolder.addActionListener(this);
                     }
                 }
             }
-            this.setTitle(Message.getString("mainmenu.search.tree")); //ツリー検索
+            this.setTitle(Message.getString("mainmenu.search.tree")); // Tree search
             this.setSize(435, 240);
         } catch (Exception e) {
             e.printStackTrace();
@@ -211,70 +211,70 @@ public class SearchTreeDialog extends javax.swing.JDialog implements ActionListe
     }
 
     /**
-     * ダイアログを表示する。
-     * @return    ダイアログの閉じた時のボタン種別
+     * Display a dialog.
+     * @return Button type when the dialog is closed
      */
     public int showDialog() {
 
-        // 親フレーム中央に表示する。
+        // Display in the center of the parent frame.
         this.setLocationRelativeTo(this.getOwner());
 
-        // ダイアログ表示
+        // Dialog display
         this.setVisible(true);
 
         return this.result;
     }
 
     /**
-     * ボタンクリックイベント
-     * @param event		イベント情報
+     * Button click event
+     * @param event Event information
      */
     @Override
     public void actionPerformed(ActionEvent event) {
 
-        // 登録
+        // Registration
         if (event.getSource() == this.btnOk) {
-            // 入力チェック
+            // Check the input
             if (!validateSearch()) {
-                // エラー
+                // error
                 return;
             }
             this.result = Constant.OK_DIALOG;
-            // ダイアログを閉じる。
+            // Close the dialog.
             dispose();
             return;
         }
-        // 閉じる
+        // close
         else if (event.getSource() == this.btnClose) {
             this.result = Constant.CANCEL_DIALOG;
-            // ダイアログを閉じる。
+            // Close the dialog.
             dispose();
             return;
         }
-        // 参照
+        // Reference
         else if (event.getSource() == this.btnFolder) {
             TreeChooserDialog dialog = new TreeChooserDialog(this, true, this.panelType, this.modelTree);
             dialog.setSelectedTreeNodes(this.selectedNodes);
             int result = dialog.showDialog();
             if (result == Constant.CANCEL_DIALOG) return;
 
-            // 選択ツリーパス
+            // Selected tree path
             setSelectedTreeNodes(dialog.getSelectedTreeNodes());
             return;
         }
     }
 
     /**
-     * 選択ノードを取得する
-     * @return 		選択ノード
+     * Get the selected node
+     * @return Selected node
      */
     public TreeNode[] getSelectedTreeNodes() {
         return this.selectedNodes;
     }
 
     /**
-     * 選択ノードを設定する。
-     * @param nodes 	選択ノード
+     * Set the selection node.
+     * @param nodes Selected nodes
      */
     public void setSelectedTreeNodes(TreeNode[] nodes) {
         this.selectedNodes = nodes;
@@ -288,15 +288,15 @@ public class SearchTreeDialog extends javax.swing.JDialog implements ActionListe
             selected = selected.substring(0, selected.length() - 1);
         }
         else {
-            selected = Message.getString("searchtreedialog.text.allnode"); //すべてのノード
+            selected = Message.getString("searchtreedialog.text.allnode"); // All nodes
         }
         this.txtFolder.setText(selected);
     }
 
     /**
-     * 参照ツリーモデルを設定する
-     * @param type		ツリータイプ
-     * @param model		ツリーモデル
+     * Set up a reference tree model
+     * @param type Tree type
+     * @param model Tree model
      */
     public void setReferenceTreeModel(EXPLORE_PANEL type, TreeModel model) {
         this.panelType = type;
@@ -305,48 +305,48 @@ public class SearchTreeDialog extends javax.swing.JDialog implements ActionListe
 
 
     /**
-     * 単語検索を取得する
-     * @return  true=単語検索
+     * Get word search
+     * @return true = word search
      */
     public boolean isSearchWord() {
         return this.chkWord.isSelected();
     }
 
     /**
-     * 正規表現検索を取得する
-     * @return  true=正規表現検索
+     * Get a regular expression search
+     * @return true = regular expression search
      */
     public boolean isSearchRegex() {
         return this.chkRegex.isSelected();
     }
 
     /**
-     * 大文字・小文字区別検索を取得する
-     * @return  true=大文字・小文字区別を行う検索
+     * Get case-sensitive search
+     * @return true = Case sensitive search
      */
     public boolean isSearchSensitivecase() {
         return this.chkSensitivecase.isSelected();
     }
 
     /**
-     * 検索文字列を取得する
-     * @return		検索文字列
+     * Get the search string
+     * @return Search string
      */
     public String getSearchText() {
         return this.txtSearch.getText();
     }
 
     /**
-     * 入力チェックを行う
-     * @return			true=入力チェックOK
+     * Check input
+     * @return true = Input check OK
      */
     private boolean validateSearch() {
         String text = this.txtSearch.getText();
         if (text != null) text = text.trim();
         if (text == null || text.isEmpty()) {
             JOptionPane.showMessageDialog(this,
-                                Message.getString("searchfinddialog.errordialog.empty.message"), //検索文字列を入力してください。
-                                Message.getString("dialog.common.error"), //エラー
+                                Message.getString("searchfinddialog.errordialog.empty.message"), // Please enter the search string.
+                                Message.getString("dialog.common.error"), //error
                                 JOptionPane.ERROR_MESSAGE);
             return false;
         }

@@ -43,32 +43,32 @@ import jp.riken.kscope.language.utils.LanguageUtils;
 import jp.riken.kscope.model.TraceResultModel;
 
 /**
- * 分析：変数トレースを行う。
+ * Analysis: Perform variable tracing.
  *
  * @author RIKEN
  */
 public class AnalysisTraceService extends AnalysisBaseService {
 
-    /** トレース対象変数名. */
+    /** Trace target variable name. */
     private String traceWord;
 
     /**
-     * コンストラクタ.
+     * Constructor.
      *
      * @param fortran
-     *            フォートランデータベース
+     * Fortran database
      */
     public AnalysisTraceService(Fortran fortran) {
         super(fortran);
     }
 
     /**
-     * トレースを開始する.<br/>
-     * トレース対象変数名, トレース行情報から対象プロシージャ、トレースブロックを探索する.
+     * Start tracing. <br/>
+     * Search the target procedure and trace block from the trace target variable name and trace line information.
      *
      * @param line
-     *            トレース行情報
-     * @return トレース結果モデル
+     * Trace line information
+     * @return Trace result model
      */
     public TraceResultModel analysisTraceStart(CodeLine line) {
 
@@ -76,14 +76,14 @@ public class AnalysisTraceService extends AnalysisBaseService {
             return null;
         }
         String traceWrd = this.traceWord.toLowerCase();
-        // CodeLineの情報から、対応するプログラム単位を探索する。
+        // Search for the corresponding program unit from the CodeLine information.
         LanguageUtils utils = new LanguageUtils(this.fortranDb);
         ProgramUnit currentProc = utils.getCurrentProgramUnit(line);
         if (currentProc == null) {
             return null;
         }
 
-        // 参照一覧モデルに設定する
+        // Set to reference list model
         IBlock currentblk = currentProc;
         DefaultMutableTreeNode root = new DefaultMutableTreeNode(currentProc);
         if (currentProc instanceof Procedure) {
@@ -92,7 +92,7 @@ public class AnalysisTraceService extends AnalysisBaseService {
             if (blks != null) {
                 for (IBlock blk : blks) {
                     this.addBlockToRoot(root, blk);
-                    // CodeLineに対応するブロックが含まれれば登録する。
+                    // Register if the block corresponding to CodeLine is included.
                     int currentLine = blk.getStartCodeLine().getStartLine();
                     if (currentLine == line.getStartLine()) {
                         currentblk = blk;
@@ -100,35 +100,35 @@ public class AnalysisTraceService extends AnalysisBaseService {
                 }
             }
         }
-        // TODO モジュールの場合どうするか要検討
+        // Consider what to do with the TODO module
 
-        // 結果表示ツリーの生成
+        // Generate result display tree
         DefaultTreeModel tree = new DefaultTreeModel(root);
 
-        // トレースモデルの作成
+        // Create a trace model
         TraceResultModel modelTrace = new TraceResultModel();
-        modelTrace.setTraceWord(traceWrd); // トレース対象変数名
-        modelTrace.setTreeModel(tree); // 表示ツリーモデル
-        modelTrace.setTitle(traceWrd); // 表示タイトル
-        modelTrace.setSelectedBlock(currentblk); // 選択ブロック
+        modelTrace.setTraceWord(traceWrd); // Trace target variable name
+        modelTrace.setTreeModel(tree); // Display tree model
+        modelTrace.setTitle(traceWrd); // Display title
+        modelTrace.setSelectedBlock(currentblk); // Select block
 
         return modelTrace;
     }
 
     /**
-     * rootにブロックを追加する。ブロックが分岐に属する場合は分岐を含めて構築する。
+     * Add a block to root. If the block belongs to a branch, build it including the branch.
      *
      * @param root
-     *            ルートノード
+     * Root node
      * @param blk
-     *            追加するブロック
+     * Blocks to add
      */
     private void addBlockToRoot(DefaultMutableTreeNode root, IBlock blk) {
         DefaultMutableTreeNode node = new DefaultMutableTreeNode(blk);
         if (blk instanceof Block) {
             Block mother = ((Block) blk).get_mother();
             DefaultMutableTreeNode childNode = new DefaultMutableTreeNode(blk);
-            // 実行文のトップに行くまで続ける。無限ループに注意
+            // Continue until you reach the top of the executable statement. Beware of infinite loops
             while (!(mother instanceof ExecutableBody)) {
                 DefaultMutableTreeNode mamNode = this.searchTree(root, mother);
                 if (mother instanceof Condition) {
@@ -151,24 +151,24 @@ public class AnalysisTraceService extends AnalysisBaseService {
     }
 
     /**
-     * rootにblkを持つノードがあればそのノードを返す。
+     * If root has a node with blk, return that node.
      *
      * @param node
-     *            ルートノード
+     * Root node
      * @param blk
-     *            ブロック
-     * @return ノード。無ければ新たに生成したノードを返す。
+     * Block
+     * @return node. If not, the newly created node is returned.
      */
     private DefaultMutableTreeNode searchTree(DefaultMutableTreeNode node, Block blk) {
         if (node.getUserObject().equals(blk)) {
             return node;
         }
 
-        // ツリーノードを順方向で列挙
+        // List tree nodes in the forward direction
         Enumeration<?> depth = node.preorderEnumeration();
         while(depth.hasMoreElements()) {
             DefaultMutableTreeNode treeNode = (DefaultMutableTreeNode)depth.nextElement();
-            // ノード検索を行う
+            // Do a node search
             if (treeNode == null || treeNode.getUserObject() == null) {
                 continue;
             }
@@ -182,12 +182,12 @@ public class AnalysisTraceService extends AnalysisBaseService {
 
 
     /**
-     * トレース:インを行う.<br/>
-     * トレース対象変数名, トレースブロックからサブルーチン、関数のプロシージャを探索する.
+     * Trace: Do an in. <br/>
+     * Search for subroutines and function procedures from the trace target variable name and trace block.
      *
      * @param block
-     *            トレースブロック(現在のトレースの選択ブロック)
-     * @return トレース結果モデルリスト
+     * Trace block (current trace selection block)
+     * @return Trace result model list
      */
     public TraceResultModel[] analysisTraceIn(IBlock block) {
         if (block == null) {
@@ -206,17 +206,17 @@ public class AnalysisTraceService extends AnalysisBaseService {
             return null;
         }
 
-        // トレースモデル
+        // Trace model
         List<TraceResultModel> listTrace = new ArrayList<TraceResultModel>();
         for (ProcedureUsage pu: pus) {
-            Procedure proc = null; // call文の定義先
+            Procedure proc = null; // Definition destination of call statement
             if (pu.getCallDefinition() != null) {
                 proc = pu.getCallDefinition();
             } else {
-                // TODO 定義がない場合、それを提示すべきか
+                // If there is no TODO definition, should it be presented?
                 return null;
             }
-            String actualArg = this.traceWord.toLowerCase(); // プログラム単位内での実引数名
+            String actualArg = this.traceWord.toLowerCase(); // Actual argument name in the program unit
 
             Set<Integer> numArgs = pu.numberOfArg(actualArg);
             numArgsLoop:
@@ -224,12 +224,12 @@ public class AnalysisTraceService extends AnalysisBaseService {
                     String dummyArg;
                     Variable var = proc.getArgument(numArg);
                     if (var == null) {
-                        // 対応する引数が見つからないので処理終了
+                        // End of processing because the corresponding argument cannot be found
                         continue numArgsLoop;
                     } else {
                         dummyArg = var.getName();
                     }
-                // キーワード引数をチェック
+                // Check keyword arguments
                 if (pu.getArguments().get(numArg) instanceof KeywordArgument) {
                     KeywordArgument keywrd = (KeywordArgument) pu
                             .getArguments().get(numArg);
@@ -238,21 +238,21 @@ public class AnalysisTraceService extends AnalysisBaseService {
                     }
                 }
 
-                    // 参照一覧モデルに設定する
+                    // Set to reference list model
                 Set<IBlock> refdefs = proc.getRefDefBlocks(dummyArg);
                     DefaultMutableTreeNode root = new DefaultMutableTreeNode(proc);
                 for (IBlock blk : refdefs) {
                     this.addBlockToRoot(root, blk);
                     }
 
-                    // ツリーの生成
+                    // Tree generation
                     DefaultTreeModel tree = new DefaultTreeModel(root);
                     TraceResultModel modelTrace = new TraceResultModel();
-                    modelTrace.setTraceWord(dummyArg); // トレース対象変数名
-                    modelTrace.setTreeModel(tree); // 表示ツリーモデル
-                    modelTrace.setTitle(dummyArg); // 表示タイトル
-                    modelTrace.setSelectedBlock(proc); // 選択ブロック
-                    modelTrace.setBlocklabel(pu.toDefinitionHTMLString(numArg)); // トレース先ダイアログ表示用のラベル
+                    modelTrace.setTraceWord(dummyArg); // Trace target variable name
+                    modelTrace.setTreeModel(tree); // Display tree model
+                    modelTrace.setTitle(dummyArg); // Display title
+                    modelTrace.setSelectedBlock(proc); // Select block
+                    modelTrace.setBlocklabel(pu.toDefinitionHTMLString(numArg)); // Label for displaying the trace destination dialog
                     listTrace.add(modelTrace);
                 }
         }
@@ -261,14 +261,14 @@ public class AnalysisTraceService extends AnalysisBaseService {
     }
 
     /**
-     * トレース:アウトを行う。<br/>
-     * 指定した手続きを呼び出しているブロックを探索する。
+     * Trace: Out. <br/>
+     * Search for the block calling the specified procedure.
      *
      * @param block
-     *            トレースブロック(現在のトレースのルートブロック)
+     * Trace block (root block of the current trace)
      * @param traceHistory
-     *            トレース履歴
-     * @return トレース結果モデルリスト
+     * Trace history
+     * @return Trace result model list
      */
     public TraceResultModel[] analysisTraceOut(IBlock block,
             IBlock[] traceHistory) {
@@ -281,26 +281,26 @@ public class AnalysisTraceService extends AnalysisBaseService {
         }
 
         String dummyArg = this.traceWord.toLowerCase();
-        int numDummyArg = currentProc.getNumOfDummyArgument(dummyArg); // dummyArgの順番
+        int numDummyArg = currentProc.getNumOfDummyArgument(dummyArg); // order of dummyArg
         if (numDummyArg < 0) {
             return null;
         }
-        // Procedureをcallしている手続き呼び出しブロックを取得する
+        // Get the procedure call block calling the Procedure
         Set<ProcedureUsage> calls = currentProc.getCallMember();
 
-        // トレースモデルの作成
+        // Create a trace model
         List<TraceResultModel> listTrace = new ArrayList<TraceResultModel>();
-        // 各プログラム単位に対してトレースを実施する
+        // Perform a trace for each program unit
 
         for (ProcedureUsage currentCall : calls) {
-            Procedure proc = currentCall.getMyProcedure(); // currentCallが属するプログラム単位
+            Procedure proc = currentCall.getMyProcedure(); // Program unit to which currentCall belongs
 
             int numActualArg = currentCall.getNumOfActualArgument(dummyArg,
                     numDummyArg);
             if (numActualArg < 0) {
                 continue;
             }
-            // 仮引数に対応する変数名のリストに変換する
+            // Convert to a list of variable names corresponding to formal arguments
             Set<String> actualArgs = currentCall
                     .getActualArgument(numActualArg);
             for (String actualArg : actualArgs) {
@@ -310,21 +310,21 @@ public class AnalysisTraceService extends AnalysisBaseService {
 
                 if (refdefs != null) {
                     for (IBlock refdef : refdefs) {
-                        // 参照一覧モデルに設定する
+                        // Set to reference list model
                         this.addBlockToRoot(root, refdef);
                     }
                 }
 
-                // ツリーの生成
+                // Tree generation
                 DefaultTreeModel tree = new DefaultTreeModel(root);
 
                 TraceResultModel modelTrace = new TraceResultModel();
-                modelTrace.setTraceWord(actualArg); // トレース対象変数名
-                modelTrace.setTreeModel(tree); // 表示ツリーモデル
-                modelTrace.setTitle(actualArg); // 表示タイトル
-                modelTrace.setSelectedBlock(currentCall); // 選択ブロック
+                modelTrace.setTraceWord(actualArg); // Trace target variable name
+                modelTrace.setTreeModel(tree); // Display tree model
+                modelTrace.setTitle(actualArg); // Display title
+                modelTrace.setSelectedBlock(currentCall); // Select block
                 modelTrace.setBlocklabel(currentCall.toHTMLString(numActualArg,
-                        actualArg)); // トレース先ダイアログ表示用のラベル
+                        actualArg)); // Label for displaying the trace destination dialog
                 listTrace.add(modelTrace);
 
             }
@@ -353,19 +353,19 @@ public class AnalysisTraceService extends AnalysisBaseService {
     }
 
     /**
-     * トレース対象変数名を取得する.
+     * Get the name of the variable to be traced.
      *
-     * @return トレース対象変数名
+     * @return Traced variable name
      */
     public String getTraceWord() {
         return this.traceWord;
     }
 
     /**
-     * トレース対象変数名を設定する.
+     * Set the variable name to be traced.
      *
      * @param word
-     *            トレース対象変数名
+     * Trace target variable name
      */
     public void setTraceWord(String word) {
         this.traceWord = word;

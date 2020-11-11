@@ -27,43 +27,43 @@ import jp.riken.kscope.properties.OperationProperties;
 import jp.riken.kscope.service.AppController;
 
 /**
- * 演算カウント設定アクションクラス
+ * Calculation count setting action class
  * @author RIKEN
  *
  */
 public class ProjectSettingOperationAction extends ActionBase {
 
     /**
-     * コンストラクタ
-     * @param controller	アプリケーションコントローラ
+     * Constructor
+     * @param controller Application controller
      */
     public ProjectSettingOperationAction(AppController controller) {
         super(controller);
     }
 
     /**
-     * アクション発生イベント
-     * @param event			イベント情報
+     * Action occurrence event
+     * @param event Event information
      */
     @Override
     public void actionPerformed(ActionEvent event) {
-        // ステータスメッセージ
-        final String message = Message.getString("projectsettingoperationaction.setup.status"); //演算カウント設定
+        // Status message
+        final String message = Message.getString("projectsettingoperationaction.setup.status"); // Calculation count setting
         Application.status.setMessageMain(message);
 
-        // 親Frameの取得を行う。
+        // Get the parent Frame.
         Frame frame = getWindowAncestor( event );
 
-        // 演算カウント設定ダイアログを表示する。
+        // Display the operation count setting dialog.
         OperationProperties properities = this.controller.getPropertiesOperation();
 
         SettingOperationDialog dialog = new SettingOperationDialog(frame, true, properities);
         int result = dialog.showDialog();
         if (result != Constant.OK_DIALOG) {
-        	Application.status.setMessageMain(message + Message.getString("action.common.cancel.status")); // キャンセル
+        	Application.status.setMessageMain(message + Message.getString("action.common.cancel.status")); // Cancel
         	return;
         }
-        Application.status.setMessageMain(message + Message.getString("action.common.done.status")); // 完了
+        Application.status.setMessageMain(message + Message.getString("action.common.done.status")); // Done
         return;
     }
 

@@ -17,7 +17,7 @@
 package jp.riken.kscope.profiler.dprof;
 
 /**
- * オフセット情報を保持する
+ * Hold offset information
  *
  * @author RIKEN
  *
@@ -31,102 +31,102 @@ public class OffSetInfo {
     private int symbolInfo;
 
     /**
-     * ライン情報を取得する
-     * @return ライン情報
+     * Get line information
+     * @return Line information
      */
     public int getLineInfo() {
         return lineInfo;
     }
 
     /**
-     * ループ情報を取得する
-     * @return ループ情報
+     * Get loop information
+     * @return Loop information
      */
     public int getLoopInfo() {
         return loopInfo;
     }
 
     /**
-     * コールグラフ情報を取得する
-     * @return コールグラフ情報
+     * Get call graph information
+     * @return Call graph information
      */
     public int getCallGraphInfo() {
         return callGraphInfo;
     }
 
     /**
-     * MPI関数経過時間情報を取得する
-     * @return MPI関数経過時間情報
+     * Get MPI function elapsed time information
+     * @return MPI function elapsed time information
      */
     public int getMpiFuncElapsTimeInfo() {
         return mpiFuncElapsTimeInfo;
     }
 
     /**
-     * 通信情報を取得する
-     * @return 通信情報
+     * Get communication information
+     * @return Communication information
      */
     public int getComInfo() {
         return comInfo;
     }
 
     /**
-     * シンボル情報を取得する
-     * @return シンボル情報
+     * Get symbol information
+     * @return Symbol information
      */
     public int getSymbolInfo() {
         return symbolInfo;
     }
 
     /**
-     * ライン情報を設定する
+     * Set line information
      * @param lineInfo
-     *            設定するライン情報
+     * Line information to set
      */
     public void setLineInfo(int lineInfo) {
         this.lineInfo = lineInfo;
     }
 
     /**
-     * ループ情報を設定する
+     * Set loop information
      * @param loopInfo
-     *            設定するループ情報
+     * Loop information to set
      */
     public void setLoopInfo(int loopInfo) {
         this.loopInfo = loopInfo;
     }
 
     /**
-     * コールグラフ情報を設定する
+     * Set call graph information
      * @param callGraphInfo
-     *            設定するコールグラフ情報
+     * Call graph information to be set
      */
     public void setCallGraphInfo(int callGraphInfo) {
         this.callGraphInfo = callGraphInfo;
     }
 
     /**
-     * MPI関数経過時間情報を設定する
+     * MPI function Set elapsed time information
      * @param mpiFuncElapsTimeInfo
-     *            設定するMPI関数経過時間情報
+     * MPI function elapsed time information to be set
      */
     public void setMpiFuncElapsTimeInfo(int mpiFuncElapsTimeInfo) {
         this.mpiFuncElapsTimeInfo = mpiFuncElapsTimeInfo;
     }
 
     /**
-     * 通信情報を設定する
+     * Set communication information
      * @param comInfo
-     *            設定する通信情報
+     * Communication information to be set
      */
     public void setComInfo(int comInfo) {
         this.comInfo = comInfo;
     }
 
     /**
-     * シンボル情報を設定する
+     * Set symbol information
      * @param symbolInfo
-     *            設定するシンボル情報
+     * Symbol information to set
      */
     public void setSymbolInfo(int symbolInfo) {
         this.symbolInfo = symbolInfo;

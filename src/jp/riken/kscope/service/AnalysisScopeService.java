@@ -34,41 +34,41 @@ import jp.riken.kscope.language.fortran.VariableAttribute.ScopeAttribute;
 import jp.riken.kscope.model.ScopeModel;
 
 /**
- * 変数有効域サービスクラス.<br/>
- * 変数有効域テーブルを作成する
+ * Variable scope service class. <br/>
+ * Create a variable effective area table
  *
  * @author RIKEN
  */
 public class AnalysisScopeService extends AnalysisBaseService {
 
-    /** 変数有効域モデル */
+    /** Variable scope model */
     private ScopeModel modelScope;
 
     /**
-     * コンストラクタ
+     * Constructor
      *
      * @param fortran
-     *            フォートランデータベース
+     * Fortran database
      */
     public AnalysisScopeService(Fortran fortran) {
         super(fortran);
     }
 
     /**
-     * 変数有効域モデルを設定する
+     * Set variable effective area model
      *
      * @param model
-     *            変数有効域モデル
+     * Variable scope model
      */
     public void setModelScope(ScopeModel model) {
         this.modelScope = model;
     }
 
     /**
-     * 変数有効域を作成する
+     * Create a variable valid area
      *
      * @param variable
-     *            変数有効域変数
+     * Variable scope variable
      */
     public void analysisScope(VariableDefinition variable) {
 
@@ -81,7 +81,7 @@ public class AnalysisScopeService extends AnalysisBaseService {
         if (pu == null) return;
 
         Set<String> result = new HashSet<String>();
-        // 宣言が属するプログラム単位を追加
+        // Add the program unit to which the declaration belongs
         StringBuilder scope = new StringBuilder(pu.get_name());
         ProgramUnit mthr = pu.get_mother();
         while (mthr != null) {
@@ -90,7 +90,7 @@ public class AnalysisScopeService extends AnalysisBaseService {
         }
         result.add(scope.toString());
         for (Procedure child : pu.getChildren()) {
-            // 副プログラムに同一の名前の宣言が無ければ追加
+            // Add if the subprogram does not have the same name declaration
             if (child.get_variable(varName) == null) {
                 result.add(scope.toString() + "." + child.get_name());
             }
@@ -102,18 +102,18 @@ public class AnalysisScopeService extends AnalysisBaseService {
             }
         }
 
-        // private属性かチェック
+        // Check if it is a private attribute
         VariableAttribute att = (VariableAttribute) variable.getAttribute();
         if (!(att != null && att.getScope() == ScopeAttribute.PRIVATE)) {
 
-            // COMMON文に含まれるかチェック
+            // Check if it is included in the COMMON statement
             this.searchCOMMON(variable, result);
 
-            // 各モジュールのUSE文を探索
+            // Search for the USE statement for each module
             this.searchUSE(variable, result);
         }
 
-        // 変数有効域テーブルの設定
+        // Variable effective area table setting
         String[] areas = null;
         if (result.size() > 0) {
             result = new TreeSet<String>(result);
@@ -125,9 +125,9 @@ public class AnalysisScopeService extends AnalysisBaseService {
 
     /**
      * @param var
-     *            変数宣言
+     *            Variable declaration
      * @param res
-     *            結果のセット
+     * Set of results
      */
     private void searchCOMMON(VariableDefinition var, Set<String> res) {
         String varName = var.get_name();
@@ -165,9 +165,9 @@ public class AnalysisScopeService extends AnalysisBaseService {
 
     /**
      * @param var
-     *            変数宣言
+     *            Variable declaration
      * @param res
-     *            結果のセット
+     * Set of results
      */
     private void searchUSE(VariableDefinition var, Set<String> res) {
         String varName = var.get_name();
@@ -176,7 +176,7 @@ public class AnalysisScopeService extends AnalysisBaseService {
         for (Module mod : modules) {
             boolean flag = false;
             List<UseState> ul = mod.getUseList();
-            // moduleをチェック
+            // Check module
             for (UseState us : ul) {
                 if (us.getModuleName().equalsIgnoreCase(pu.get_name())) {
                     if (us.hasOnlyMember()) {
@@ -193,7 +193,7 @@ public class AnalysisScopeService extends AnalysisBaseService {
                     }
                 }
             }
-            // module副プログラムをチェック
+            // Check module subprogram
             for (Procedure child : mod.getChildren()) {
                 boolean flag2 = false;
                 List<UseState> ul2 = child.getUseList();
@@ -214,13 +214,13 @@ public class AnalysisScopeService extends AnalysisBaseService {
                         }
                     }
                 }
-                // モジュールでUSEされ、かつモジュール副プログラムでUSEされていない場合
+                // If it is USE in the module and not in the module subprogram
                 if (flag2 == false && flag == true) {
                     if (child.get_variable(varName) == null) {
                         res.add(mod.get_name() + "." + child.get_name());
                     }
                 }
-                // moduleの内部副プログラムをチェック
+                // Check the internal subprogram of module
                 for (Procedure grnd : child.getChildren()) {
                     boolean flag3 = false;
                     List<UseState> ul3 = grnd.getUseList();
@@ -243,7 +243,7 @@ public class AnalysisScopeService extends AnalysisBaseService {
                             }
                         }
                     }
-                    // モジュールまたはモジュール副プログラムでUSEされ、かつ内部副プログラムでUSEされていない場合
+                    // If the module or module subprogram is USE and not the internal subprogram
                     if (flag3 == false && (flag == true || flag2 == true)) {
                         if (grnd.get_variable(var.get_name()) == null) {
                             res.add(mod.get_name() + "." + child.get_name()

@@ -25,46 +25,46 @@ import jp.riken.kscope.service.AppController;
 import jp.riken.kscope.service.FileService;
 
 /**
- * ファイルプロパティアクションクラス
+ * File property action class
  * @author RIKEN
  */
 public class FilePropertiesAction extends ActionBase {
 
     /**
-     * コンストラクタ
-     * @param controller	アプリケーションコントローラ
+     * Constructor
+     * @param controller Application controller
      */
     public FilePropertiesAction(AppController controller) {
         super(controller);
     }
 
     /**
-     * アクション発生イベント
-     * @param event		イベント情報
+     * Action occurrence event
+     * @param event Event information
      */
     @Override
     public void actionPerformed(ActionEvent event) {
 
-        // プロパティの設定を行う。
+        // Set the property.
         setProperties();
 
-        // プロパティタブをアクティブにする
+        // Activate the Properties tab
         this.controller.getMainframe().getPanelAnalysisView().setSelectedPanel(ANALYSIS_PANEL.PROPARTIES);
     }
 
     /**
-     * プロパティの設定を行う。
+     * Set properties.
      */
     public void setProperties() {
 
-        // 選択ファイルの取得を行う
+        // Get the selected file
         File[] files = this.controller.getMainframe().getPanelExplorerView().getSelectedNodeFiles();
         if (files == null || files.length <= 0) return;
 
-        // ファイルのプロパティ設定モデルの取得する
+        // Get the file property setting model
         PropertiesTableModel model = this.controller.getPropertiesTableModel();
 
-        // ファイルプロパティの取得を行う
+        // Get file properties
         FileService service = new FileService();
         service.setFileProperties(files[0], model);
 

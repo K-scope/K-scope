@@ -20,21 +20,21 @@ package jp.riken.kscope.language;
 import java.io.Serializable;
 
 /**
- * 変数宣言の配列添え字を表現するクラス。
+ * A class that represents an array subscript of a variable declaration.
  *
  * @author RIKEN
  *
  */
 public class VariableDimension implements Serializable {
-	/** シリアル番号 */
+	/** Serial number */
 	private static final long serialVersionUID = 1309109368271186155L;
     private DimensionIndex[] indices = null;
 
     /**
-     * コンストラクタ。
+     * Constructor.
      *
      * @param inds
-     *            添字の配列
+     * Subscript array
      */
     public VariableDimension(DimensionIndex[] inds) {
         this.indices = inds;

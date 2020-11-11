@@ -23,21 +23,21 @@ import jp.riken.kscope.language.IVariableAttribute;
 import jp.riken.kscope.language.IVariableType;
 
 /**
- * 総称関数の仮引数に対応したクラス。
+ * Class corresponding to the formal argument of the generic function.
  *
  * @author RIKEN
  *
  */
 public class Argument implements Serializable {
-	/** シリアル番号 */
+	/** Serial number */
 	private static final long serialVersionUID = -5912521170672226755L;
     private IVariableType type;
     private IVariableAttribute attribute;
     private String name;
 
     /**
-     * コンストラクタ。
-     * @param nm 名前
+     * Constructor.
+     * @param nm name
      */
     public Argument(String nm) {
         this.name = nm;
@@ -45,12 +45,12 @@ public class Argument implements Serializable {
 
 
     /**
-     * コンストラクタ。
+     * Constructor.
      *
      * @param typ
-     *          仮引数の型
+     * Formal argument type
      * @param attrbt
-     *          仮引数の属性
+     * Formal argument attributes
      */
     public Argument(IVariableType typ, IVariableAttribute attrbt) {
         type = typ;
@@ -58,49 +58,49 @@ public class Argument implements Serializable {
     }
 
     /**
-     * 仮引数の型をセットする。
-     * @param tp 仮引数の型
+     * Set the formal argument type.
+     * @param tp Formal argument type
      */
     public void setType(IVariableType tp) {
         this.type = tp;
     }
 
     /**
-     * 仮引数の属性をセットする。
-     * @param att 仮引数の属性
+     * Set the formal argument attribute.
+     * @param att Formal argument attributes
      */
     public void setVariableAttributes(IVariableAttribute att) {
         this.attribute = att;
     }
 
     /**
-     * 仮引数の型の取得。
+     * Get the type of formal argument.
      *
-     * @return 仮引数の型
+     * @return Formal argument type
      */
     public IVariableType getType() {
         return type;
     }
 
     /**
-     * 仮引数の属性の取得。
+     * Get the attribute of the formal argument.
      *
-     * @return 仮引数の属性
+     * @return Formal argument attributes
      */
     public IVariableAttribute getAttribute() {
         return attribute;
     }
 
     /**
-     * 引数の型と属性が適合しているか。
+     * Are the argument types and attributes matched?
      *
      * @param typ
-     *         対象となる引数の型
+     * Target argument type
      * @param attrbt
-     *         対象となる属性
+     * Target attributes
      *
-     * @return true:  適合している。<br>
-     *         false: 適合していない。
+     * @return true: Conforms. <br>
+     * false: Not compatible.
      */
     public boolean matches(IVariableType typ, IVariableAttribute attrbt) {
         if (typ == null || attrbt == null
@@ -112,8 +112,8 @@ public class Argument implements Serializable {
 
 
     /**
-     * 引数名を取得する。
-     * @return 引数名
+     * Get the argument name.
+     * @return Argument name
      */
     public String getName() {
         return this.name;

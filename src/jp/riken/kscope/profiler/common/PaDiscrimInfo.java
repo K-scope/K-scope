@@ -17,7 +17,7 @@
 package jp.riken.kscope.profiler.common;
 
 /**
- * 共通情報のPA識別情報を保持する
+ * Holds PA identification information of common information
  *
  * @author RIKEN
  */
@@ -28,21 +28,21 @@ public class PaDiscrimInfo {
     private short reserve;
 
     /**
-     * CPU種別を取得する
-     * @return CPU種別
-     *<br>
-     *<br>
-     * CPU種別<br>
-     *0x0000    Itanium Madison                (PQ V1)<br>
-     *0x0001    Itanium Montesito (Dual core)  (PQ V2)<br>
-     *0x0002    AMD Opteron (Quad core)        (PG V3)<br>
-     *0x0003    SPARC64 VII Jupiter             (PW V3)<br>
-     *0x0004    Opteron                        (PG V3 収集->解析は 0x0002 で統一)<br>
-     *0x0005    Xeon Core 2                    (PG V3 Woodcrest,Harpertown)<br>
-     *0x0006    Xeon Coer i7                  (PG V3 Nehalem)<br>
-      *0x0007    SPARC64 VIII Venus               (PETA)<br>
-      *0x0008    SPARC64 IX fx                  (PETA)<br>
-      *0x0009    Xeon CORE(TM) PROCESSOR 2XXX SERIES (PCC SandyBrige)<br>
+     * Get CPU type
+     * @return CPU type
+     * <br>
+     * <br>
+     * CPU type <br>
+     * 0x0000 Itanium Madison (PQ V1) <br>
+     * 0x0001 Itanium Montesito (Dual core) (PQ V2) <br>
+     * 0x0002 AMD Opteron (Quad core) (PG V3) <br>
+     * 0x0003 SPARC64 VII Jupiter (PW V3) <br>
+     * 0x0004 Opteron (PG V3 collection-> analysis unified with 0x0002) <br>
+     * 0x0005 Xeon Core 2 (PG V3 Woodcrest, Harpertown) <br>
+     * 0x0006 Xeon Coer i7 (PG V3 Nehalem) <br>
+      * 0x0007 SPARC64 VIII Venus (PETA) <br>
+      * 0x0008 SPARC64 IX fx (PETA) <br>
+      * 0x0009 Xeon CORE (TM) PROCESSOR 2XXX SERIES (PCC Sandy Brige) <br>
       *
      */
     public short getCpu() {
@@ -50,33 +50,33 @@ public class PaDiscrimInfo {
     }
 
     /**
-     * イベント数を取得する
-     * @return イベント数
+     * Get the number of events
+     * @return Number of events
      */
     public short getEvent_nbr() {
         return event_nbr;
     }
 
     /**
-     * PAバージョンを取得する
-     * @return PAバージョン(連番)
+     * Get PA version
+     * @return PA version (serial number)
      */
     public short getPa_ver() {
         return pa_ver;
     }
 
     /**
-     * リザーブを取得する
-     * @return リザーブ
+     * Get reserve
+     * @return reserve
      */
     public short getReserve() {
         return reserve;
     }
 
     /**
-     * CPU種別を設定する
+     * Set CPU type
      * @param cpu
-     *            設定するCPU種別
+     * CPU type to set
      *
      */
     public void setCpu(short cpu) {
@@ -84,27 +84,27 @@ public class PaDiscrimInfo {
     }
 
     /**
-     * イベント数を設定する
+     * Set the number of events
      * @param event_nbr
-     *            設定するイベント数
+     * Number of events to set
      */
     public void setEvent_nbr(short event_nbr) {
         this.event_nbr = event_nbr;
     }
 
     /**
-     * PAバージョンを設定する
+     * Set PA version
      * @param pa_ver
-     *            設定するPAバージョン(連番)
+     * PA version to set (serial number)
      */
     public void setPa_ver(short pa_ver) {
         this.pa_ver = pa_ver;
     }
 
     /**
-     * リザーブを設定する
+     * Set reserve
      * @param reserve
-     *            設定するリザーブ
+     * Reserve to set
      */
     public void setReserve(short reserve) {
         this.reserve = reserve;

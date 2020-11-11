@@ -27,24 +27,24 @@ import jp.riken.kscope.language.IBlock;
 import jp.riken.kscope.language.Variable;
 
 /**
- * Blockのリストクラス
+ * Block list class
  * @author RIKEN
  */
 public class BlockList implements IBlock {
-	/** ブロックリスト */
+	/** Block list */
 	private List<IBlock> blocks;
 
 	/**
-	 * コンストラクタ
-	 */
+* Constructor
+*/
 	public BlockList() {
 		this.blocks = new ArrayList<IBlock>();
 	}
 
 	/**
-	 * コンストラクタ
-	 * @param  list    ブロックリスト
-	 */
+* Constructor
+* @param list Block list
+*/
 	public BlockList(IBlock[] list) {
 		if (list != null && list.length > 0) {
 			this.blocks = new ArrayList<IBlock>();
@@ -53,34 +53,34 @@ public class BlockList implements IBlock {
 	}
 
 	/**
-	 * ブロックリストを取得する.
-	 * @return		ブロックリスト
-	 */
+* Get the block list.
+* @return block list
+*/
 	public List<IBlock> getBlocks() {
 		return this.blocks;
 	}
 
 	/**
-	 * ブロックリストを設定する.
-	 * @param list		ブロックリスト
-	 */
+* Set the block list.
+* @param list Block list
+*/
 	public void setBlocks(List<IBlock> list) {
 		this.blocks = list;
 	}
 
 	/**
-	 * ブロックリスト数を取得する.
-	 * @return		ブロックリスト数
-	 */
+* Get the number of block lists.
+* @return Number of block lists
+*/
 	public int getBlockCount() {
 		if (this.blocks == null) return 0;
 		return this.blocks.size();
 	}
 
 	/**
-	 * ブロックを追加する.
-	 * @param block		追加ブロック
-	 */
+* Add a block.
+* @param block Additional block
+*/
 	public void addBlock(IBlock block) {
 		if (this.blocks == null) {
 			this.blocks = new ArrayList<IBlock>();
@@ -89,9 +89,9 @@ public class BlockList implements IBlock {
 	}
 
 	/**
-	 * 開始コード行情報を取得する.
-	 * ブロックリストの最初のブロックの開始コード行情報を渡す.
-	 */
+* Get the start code line information.
+* Pass the start code line information of the first block in the block list.
+*/
 	@Override
 	public CodeLine getStartCodeLine() {
 		if (this.blocks == null || this.blocks.size() <= 0) return null;
@@ -99,9 +99,9 @@ public class BlockList implements IBlock {
 	}
 
 	/**
-	 * 終了コード行情報を取得する.
-	 * ブロックリストの最後のブロックの終了コード行情報を渡す.
-	 */
+* Get exit code line information.
+* Pass the exit code line information of the last block in the block list.
+*/
 	@Override
 	public CodeLine getEndCodeLine() {
 		if (this.blocks == null || this.blocks.size() <= 0) return null;
@@ -110,8 +110,8 @@ public class BlockList implements IBlock {
 	}
 
 	/**
-	 * ブロックリストクラスのブロックタイプはUNKNOWNとする.
-	 */
+* The block type of the block list class is UNKNOWN.
+*/
 	@Override
 	public BlockType getBlockType() {
 		return BlockType.UNKNOWN;
@@ -123,8 +123,8 @@ public class BlockList implements IBlock {
 	}
 
 	/**
-	 * ブロックリストから変数リストを取得する.
-	 */
+* Get the variable list from the block list.
+*/
 	@Override
 	public Set<Variable> getAllVariables() {
 		if (this.blocks == null || this.blocks.size() <= 0) return null;
@@ -141,9 +141,9 @@ public class BlockList implements IBlock {
 	}
 
 	/**
-	 * ブロックリストの文字列表現を取得する.
-	 * ブロックリストの開始 - 終了の文字列表現を取得する.
-	 */
+* Get the string representation of the block list.
+* Get the string representation of the start-end of the block list.
+*/
 	@Override
 	public String toString() {
 		if (this.blocks == null || this.blocks.size() <= 0) return null;
@@ -166,10 +166,10 @@ public class BlockList implements IBlock {
 	}
 
 	/**
-	 * ブロックがリストに登録済みかチェックする.
-	 * @param block		ブロック
-	 * @return		true=登録済み
-	 */
+* Check if the block is on the list.
+* @param block block
+* @return true = registered
+*/
 	public boolean contains(IBlock block) {
 		if (this.blocks == null || this.blocks.size() <= 0) return false;
 		return this.blocks.contains(block);

@@ -16,6 +16,6 @@
  */
 
 /**
- * データベースのユーティリティクラスを提供します.<br/>
+ * Provides database utility classes. <br/>
  */
 package jp.riken.kscope.language.utils;

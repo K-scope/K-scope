@@ -23,7 +23,7 @@ import jp.riken.kscope.language.Expression;
 
 /**
 *
-* 変数のデータ型を示すクラス.<br>
+* A class that indicates the data type of a variable. <br>
 *
 * @author RIKEN
 *
@@ -31,72 +31,72 @@ import jp.riken.kscope.language.Expression;
 public class VariableType implements Serializable,
         jp.riken.kscope.language.IVariableType {
 
-    /** シリアル番号 */
+    /** Serial number */
 	private static final long serialVersionUID = -7257691935972191261L;
 
     /**
-     * 基本データ型を示すenum。
+     * An enum that indicates the basic data type.
      *
      * @author RIKEN
      *
      */
     public enum PrimitiveDataType {
-        /** 不定. */
+        /** Indefinite. */
         UNKOWN("Unkown"),
-        /** 型なし（subroutineの型）. */
+        /** Untyped (subroutine type). */
         VOID(""),
-        /** byte型. */
+        /** byte type. */
         BYTE("byte"),
-        /** integer型. */
+        /** integer type. */
         INTEGER("integer"),
-        /** real型. */
+        /** real type. */
         REAL("real"),
-        /** double precision型. */
+        /** double precision type. */
         DOUBLE_PRECISION("double precision"),
-        /** logical型. */
+        /** logical type. */
         LOGICAL("logical"),
-        /** complex型. */
+        /** complex type. */
         COMPLEX("complex"),
-        /** double complex型. */
+        /** double complex type. */
         DOUBLE_COMPLEX("double complex"),
-        /** character型. */
+        /** character type. */
         CHARACTER("character"),
-        /** type型. */
+        /** type type. */
         TYPE("type"),
-        /** structure型. */
+        /** structure type. */
         STRUCTURE("structure"),
-        /** union型. */
+        /** union type. */
         UNION("union");
 
-        /** データ型名 */
+        /** Data type name */
         private String name = "";
 
         /**
-         * コンストラクタ。
+         * Constructor.
          *
          * @param nm
-         *          型名
+         * Model name
          */
         private PrimitiveDataType(String nm) {
             this.name = nm;
         }
 
         /**
-         * 型名の取得。
+         * Get the type name.
          *
-         * @return 型名
+         * @return type name
          */
         public String getName() {
             return name;
         }
 
         /**
-         * 型名からVariableTypeを検索する.
+         * Search for VariableType by type name.
          *
          * @param typeName
-         *          型名
+         * Model name
          *
-         * @return 型名に対応したVariableType
+         * @return VariableType corresponding to the type name
          *
          */
         public static PrimitiveDataType findTypeBy(String typeName) {
@@ -111,34 +111,34 @@ public class VariableType implements Serializable,
         }
     }
 
-    /** 基本データ型 */
+    /** Basic data type */
     private PrimitiveDataType primitiveDataType = PrimitiveDataType.UNKOWN;
-    /** KIND属性値 */
+    /** KIND attribute value */
     private Expression kind = null;
-    /** LEN属性値 */
+    /** LEN attribute value */
     private Expression len = null;
-    /** TYPE文 */
+    /** TYPE statement */
     private Type type = null;
-    /** STRUCTURE文 */
+    /** STRUCTURE statement */
     private Structure structure = null;
-    /** UNION文 */
+    /** UNION statement */
     private Union union = null;
 
     /**
-     * コンストラクタ。
+     * Constructor.
      *
      * @param typ
-     *          基本データ型
+     * Basic data type
      */
     public VariableType(PrimitiveDataType typ) {
         this.primitiveDataType = typ;
     }
 
     /**
-     * コンストラクタ。
+     * Constructor.
      *
      * @param value
-     *          type型の型定義
+     * type type definition
      */
     public VariableType(Type value) {
         this.primitiveDataType = PrimitiveDataType.TYPE;
@@ -146,10 +146,10 @@ public class VariableType implements Serializable,
     }
 
     /**
-     * コンストラクタ。
+     * Constructor.
      *
      * @param value
-     *          structure型の型定義
+     * Structure type definition
      */
     public VariableType(Structure value) {
         this.primitiveDataType = PrimitiveDataType.STRUCTURE;
@@ -157,10 +157,10 @@ public class VariableType implements Serializable,
     }
 
     /**
-     * コンストラクタ。
+     * Constructor.
      *
      * @param value
-     *          union型の型定義
+     * Union type definition
      */
     public VariableType(Union value) {
         this.primitiveDataType = PrimitiveDataType.UNION;
@@ -168,11 +168,11 @@ public class VariableType implements Serializable,
     }
 
     /**
-     * 型名の取得。
+     * Get the type name.
      *
-     * @return 型名。<br>
-     *         ただし、基本データ型がstructureあるいはtypeの場合は、<br>
-     *         structure名あるいはtype名を返します。
+     * @return Type name. <br>
+     * However, if the basic data type is structure or type, <br>
+     * Returns the structure or type name.
      */
     @Override
     public String getName() {
@@ -192,94 +192,94 @@ public class VariableType implements Serializable,
     }
 
     /**
-     * 基本データ型の取得.
+     * Get basic data type.
      *
-     * @return 基本データ型
+     * @return Basic data type
      */
     public PrimitiveDataType getPrimitiveDataType() {
         return primitiveDataType;
     }
 
     /**
-     * kind値の取得.
+     * Get kind value.
      *
-     * @return kind値
+     * @return kind value
      */
     public Expression getKind() {
         return kind;
     }
 
     /**
-     * kind値の設定.
+     * Kind value setting.
      *
      * @param value
-     *          kind値
+     * kind value
      */
     public void setKind(Expression value) {
         kind = value;
     }
 
     /**
-     * len値の取得.
+     * Get len value.
      *
-     * @return len値
+     * @return len value
      */
     public Expression getLen() {
         return len;
     }
 
     /**
-     * len値の設定.
+     * Setting the len value.
      *
      * @param value
-     *          len値
+     * len value
      */
     public void setLen(Expression value) {
         len = value;
     }
 
     /**
-     * type型の取得.
+     * type Get type.
      *
-     * @return type型の値
+     * @return type value
      */
     public Type getType() {
         return type;
     }
 
     /**
-     * type型の設定.
-     * @param type型の値
+     * type type setting.
+     * @param type Value of type
      */
     public void setType(Type type) {
         this.type = type;
     }
 
     /**
-     * structure型の取得.
+     * Get structure type.
      *
-     * @return structure型の値
+     * @return structure type value
      */
     public Structure getStructure() {
         return structure;
     }
 
     /**
-     * union型の取得.
+     * Get union type.
      *
-     * @return union型の値
+     * @return union type value
      */
     public Union getUnion() {
         return union;
     }
 
     /**
-     * 型名からVariableTypeを検索する.
+     * Search for VariableType by type name.
      *
      * @param typeName
-     *          型名
+     * Model name
      *
-     * @return 型名に対応したVariableType
+     * @return VariableType corresponding to the type name
      *
      */
     @Override
@@ -290,17 +290,17 @@ public class VariableType implements Serializable,
     }
 
     /**
-     * 型が適合しているかどうか。<br>
+     * Whether the type is compatible. <br>
      *
-     * 多重定義されている関数群の中から対応する関数を探索する際に、<br>
-     * 仮引数と実引数の型チェックをする必要がある。<br>
-     * 「適合している」とは、この型チェックで、同一の型と判定される 事を意味している。
+     * When searching for the corresponding function from the overloaded function group, <br>
+     * It is necessary to check the type of formal and actual arguments. <br>
+     * "Matching" means that this type check determines that the type is the same.
      *
      * @param value
-     *          型
+     * Type
      *
-     * @return true : 適合している<br>
-     *         false: 適合していない
+     * @return true: Conforms <br>
+     * false: Not compatible
      *
      */
     @Override
@@ -339,7 +339,7 @@ public class VariableType implements Serializable,
                     if (targetType.getKind() == null) {
                         result = false;
                     } else {
-                        //TODO kindが変数で表されている場合、実行時には同じkindなのにfalseを返す場合がある。
+                        // If TODO kind is represented by a variable, it may return false at runtime even though it is the same kind.
                         result = (targetType.getKind().toString().equals(this.kind
                                 .toString()));
                     }
@@ -369,9 +369,9 @@ public class VariableType implements Serializable,
     }
 
 	/**
-	 * 実数変数であるかチェックする.
-	 * @return		true=実数
-	 */
+* Check if it is a real variable.
+* @return true = real number
+*/
     @Override
 	public boolean isRealType() {
 	    if (this.primitiveDataType == null) return false;
@@ -384,9 +384,9 @@ public class VariableType implements Serializable,
 	}
 
 	/**
-	 * 整数変数であるかチェックする.
-	 * @return		true=整数
-	 */
+* Check if it is an integer variable.
+* @return true = integer
+*/
     @Override
 	public boolean isIntegerType() {
 	    if (this.primitiveDataType == null) return false;

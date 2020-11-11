@@ -17,7 +17,7 @@
 package jp.riken.kscope.profiler.dprof;
 
 /**
- * DPROF:コストライン情報クラス
+ * DPROF: Costline information class
  * @author RIKEN
  */
 public class LineInfo {
@@ -27,68 +27,68 @@ public class LineInfo {
     private int fileIndex;
 
     /**
-     * サンプリング回数を取得する
-     * @return サンプリング回数
+     * Get the number of samplings
+     * @return Sampling count
      */
     public float getSampNum() {
         return sampNum;
     }
 
     /**
-     * ライン番号を取得する
-     * @return ライン番号
+     * Get the line number
+     * @return line number
      */
     public int getLineNo() {
         return lineNo;
     }
 
     /**
-     * シンボルのindexを取得する
-     * @return シンボルのindex
+     * Get the index of the symbol
+     * @return Symbol index
      */
     public int getSymbolIndex() {
         return symbolIndex;
     }
 
     /**
-     * ファイルのindexを取得する
-     * @return ファイルのindex
+     * Get the index of the file
+     * @return file index
      */
     public int getFileIndex() {
         return fileIndex;
     }
 
     /**
-     * サンプリング回数を設定する
+     * Set the number of samplings
      * @param sampNum
-     *            設定するサンプリング回数
+     * Number of samplings to set
      */
     public void setSampNum(float sampNum) {
         this.sampNum = sampNum;
     }
 
     /**
-     * ライン番号を設定する
+     * Set the line number
      * @param lineNo
-     *            設定するライン番号
+     * Line number to set
      */
     public void setLineNo(int lineNo) {
         this.lineNo = lineNo;
     }
 
     /**
-     * シンボルのindexを設定する
+     * Set the index of the symbol
      * @param symbolIndex
-     *            設定するシンボルのindex
+     * Index of the symbol to be set
      */
     public void setSymbolIndex(int symbolIndex) {
         this.symbolIndex = symbolIndex;
     }
 
     /**
-     * ファイルのindexを設定する
+     * Set the index of the file
      * @param fileIndex
-     *            設定するファイルのindex
+     * Index of the file to be set
      */
     public void setFileIndex(int fileIndex) {
         this.fileIndex = fileIndex;

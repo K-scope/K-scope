@@ -34,31 +34,31 @@ import jp.riken.kscope.service.AnalysisVariableService;
 import jp.riken.kscope.service.AppController;
 
 /**
- * 参照一覧アクション
+ * Reference list action
  * @author RIKEN
  */
 public class AnalysisVariableAction extends ActionBase {
 
     /**
-     * コンストラクタ
-     * @param controller	アプリケーションコントローラ
+     * Constructor
+     * @param controller Application controller
      */
     public AnalysisVariableAction(AppController controller) {
         super(controller);
     }
 
     /**
-     * アクションが実行可能であるかチェックする.<br/>
-     * アクションの実行前チェック、メニューのイネーブルの切替を行う。<br/>
-     * @return		true=アクションが実行可能
+     * Check if the action is executable. <br/>
+     * Check before executing the action and switch the menu enable. <br/>
+     * @return true = Action can be executed
      */
     @Override
     public boolean validateAction() {
 
-        // ブロックリストと変数宣言リストを取得する
+        // Get the block list and variable declaration list
         List<IBlock> blocks = getSelectedBlocks();
         List<VariableDefinition> vars = getSelectedVariableDefinitions();
-        // ブロックリストと変数宣言リストのどちらかが存在していれば、OK
+        // OK if either the block list or the variable declaration list exists
         if (blocks != null && blocks.size() > 0) {
             return true;
         }
@@ -71,41 +71,41 @@ public class AnalysisVariableAction extends ActionBase {
 
 
     /**
-     * アクション発生イベント
-     * @param event		イベント情報
+     * Action occurrence event
+     * @param event Event information
      */
     @Override
     public void actionPerformed(ActionEvent event) {
 
-        // 実行チェック
+        // Execution check
         if (!validateAction()) return;
 
-        // ステータスメッセージ
-        final String message = Message.getString("mainmenu.analysis.valiableproperty"); //変数特性一覧
+        // Status message
+        final String message = Message.getString("mainmenu.analysis.valiableproperty"); // List of variable characteristics
         Application.status.setMessageMain(message);
 
-        // ブロックリストと変数宣言リストを作成する
+        // Create a block list and a variable declaration list
         List<IBlock> blocks = getSelectedBlocks();
         List<VariableDefinition> vars = getSelectedVariableDefinitions();
         if (blocks.size() <= 0 && vars.size() <= 0) return;
 
-        // フォートランデータベース
+        // Fortran database
         Fortran fortran = this.controller.getFortranLanguage();
-        // 変数特性情報一覧モデルを取得する
+        // Get the variable characteristic information list model
         VariableTableModel modelValiable = this.controller.getVariableTableModel();
-        // エラー情報モデル
+        // Error information model
         ErrorInfoModel errorModel = this.controller.getErrorInfoModel();
 
-        // 変数特性情報一覧クリア
+        // Clear variable characteristic information list
         modelValiable.clearVariable();
 
-        // 分析サービス
+        // Analysis service
         AnalysisVariableService service = new AnalysisVariableService(fortran);
         service.setErrorInfoModel(errorModel);
         service.setModelVariable(modelValiable);
 
-        // 変数特性情報一覧を取得する
-        // ブロックが選択を優先とする。
+        // Get the variable characteristic information list
+        // The block gives priority to selection.
         if (blocks.size() > 0) {
             service.analysisVariable(blocks.toArray(new IBlock[0]));
             this.controller.setLastVariable(blocks, null);
@@ -115,31 +115,31 @@ public class AnalysisVariableAction extends ActionBase {
             this.controller.setLastVariable(null, vars);
         }
 
-        // 変数特性情報一覧タブをアクティブにする
+        // Activate the variable characteristic information list tab
         this.controller.setSelectedAnalysisPanel(ANALYSIS_PANEL.VALIABLE);
 
     }
 
     /**
-     * 変数特性情報一覧を更新する.
+     * Update the variable characteristic information list.
      */
     public void refresh(){
-        // フォートランデータベース
+        // Fortran database
         Fortran fortran = this.controller.getFortranLanguage();
-        // 変数特性情報一覧モデルを取得する
+        // Get the variable characteristic information list model
         VariableTableModel modelValiable = this.controller.getVariableTableModel();
-        // エラー情報モデル
+        // Error information model
         ErrorInfoModel errorModel = this.controller.getErrorInfoModel();
 
-        // 変数特性情報一覧クリア
+        // Clear variable characteristic information list
         modelValiable.clearVariable();
 
-        // 分析サービス
+        // Analysis service
         AnalysisVariableService service = new AnalysisVariableService(fortran);
         service.setErrorInfoModel(errorModel);
         service.setModelVariable(modelValiable);
 
-        // 現在表示中のデータセットを取得する
+        // Get the currently displayed dataset
         List<IBlock> lastBlocks = this.controller.getLastVariableBlocks();
         List<VariableDefinition> lastVars = this.controller.getLastVariableVars();
     	if (lastBlocks != null && lastBlocks.size() > 0) {
@@ -151,16 +151,16 @@ public class AnalysisVariableAction extends ActionBase {
     }
 
     /**
-     * 選択ブロックを取得する
-     * @return		選択ブロック
+     * Get the selected block
+     * @return selection block
      */
     private List<IBlock> getSelectedBlocks() {
 
-        // 選択ノードを取得する
+        // Get the selected node
         DefaultMutableTreeNode[] nodes = this.controller.getMainframe().getPanelExplorerView().getSelectedNodes();
         if (nodes == null) return null;
 
-        // ブロックリストを作成する
+        // Create a block list
         List<IBlock> blocks = new ArrayList<IBlock>();
         List<VariableDefinition> vars = new ArrayList<VariableDefinition>();
         for (DefaultMutableTreeNode node : nodes) {
@@ -177,16 +177,16 @@ public class AnalysisVariableAction extends ActionBase {
     }
 
     /**
-     * 選択変数宣言文を取得する
-     * @return		選択変数宣言文
+     * Get the selection variable declaration statement
+     * @return Selective variable declaration statement
      */
     private List<VariableDefinition> getSelectedVariableDefinitions() {
 
-        // 選択ブロックを取得する
+        // Get the selected block
         DefaultMutableTreeNode[] nodes = this.controller.getMainframe().getPanelExplorerView().getSelectedNodes();
         if (nodes == null) return null;
 
-        // 変数宣言リストを作成する
+        // Create a variable declaration list
         List<VariableDefinition> vars = new ArrayList<VariableDefinition>();
         for (DefaultMutableTreeNode node : nodes) {
             Object obj = node.getUserObject();

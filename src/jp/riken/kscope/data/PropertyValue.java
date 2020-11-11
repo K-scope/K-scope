@@ -18,31 +18,31 @@
 package jp.riken.kscope.data;
 
 /**
- * プロパティ値クラス
+ * Property value class
  * @author RIKEN
  */
 public class PropertyValue {
 
-    /** プロパティキー */
+    /** Property key */
     private String key;
-    /** プロパティ名 */
+    /** Property name */
     private String name;
-    /** プロパティタイプ名 */
+    /** Property type name */
     private String type;
-    /** プロパティ値 */
+    /** Property value */
     private Object value;
-    /** メッセージ */
+    /** Message */
     private String message;
-    /** オプション */
+    /** Options */
     private String option;
 
     /**
-     * コンストラクタ
-     * @param key		プロパティキー
-     * @param name		プロパティ名
-     * @param type		プロパティタイプ名
-     * @param value		プロパティ値
-     * @param message		メッセージ
+     * Constructor
+     * @param key Property key
+     * @param name Property name
+     * @param type Property type name
+     * @param value Property value
+     * @param message message
      */
     public PropertyValue(String key, String name, String type, Object value, String message) {
         super();
@@ -54,13 +54,13 @@ public class PropertyValue {
     }
 
     /**
-     * コンストラクタ
-     * @param key		プロパティキー
-     * @param name		プロパティ名
-     * @param type		プロパティタイプ名
-     * @param value		プロパティ値
-     * @param message		メッセージ
-     * @param option		オプション
+     * Constructor
+     * @param key Property key
+     * @param name Property name
+     * @param type Property type name
+     * @param value Property value
+     * @param message message
+     * @param option option
      */
     public PropertyValue(String key, String name, String type, Object value, String message, String option) {
         this(key, name, type, value, message);
@@ -68,96 +68,96 @@ public class PropertyValue {
     }
 
     /**
-     * プロパティ名を取得する.
-     * @return		プロパティ名
+     * Get the property name.
+     * @return property name
      */
     public String getName() {
         return name;
     }
 
     /**
-     * プロパティ名を設定する.
-     * @param name		プロパティ名
+     * Set the property name.
+     * @param name Property name
      */
     public void setName(String name) {
         this.name = name;
     }
 
     /**
-     * プロパティタイプ名を取得する
-     * @return		プロパティタイプ名
+     * Get the property type name
+     * @return property type name
      */
     public String getType() {
         return type;
     }
 
     /**
-     * プロパティタイプ名を設定する.
-     * @param type		プロパティタイプ名
+     * Set the property type name.
+     * @param type Property type name
      */
     public void setType(String type) {
         this.type = type;
     }
 
     /**
-     * プロパティ値を取得する.
-     * @return		プロパティ値
+     * Get the property value.
+     * @return property value
      */
     public Object getValue() {
         return value;
     }
 
     /**
-     * プロパティ値を設定する
-     * @param value		プロパティ値
+     * Set property value
+     * @param value Property value
      */
     public void setValue(Object value) {
         this.value = value;
     }
 
     /**
-     * プロパティキーを取得する.
-     * @return		プロパティキー
+     * Get the property key.
+     * @return property key
      */
     public String getKey() {
         return key;
     }
 
     /**
-     * プロパティキーを設定する.
-     * @param key		プロパティキー
+     * Set the property key.
+     * @param key Property key
      */
     public void setKey(String key) {
         this.key = key;
     }
 
     /**
-     * メッセージを取得する
-     * @return		メッセージ
+     * Get a message
+     * @return message
      */
     public String getMessage() {
         return message;
     }
 
     /**
-     * メッセージを設定する
-     * @param message		メッセージ
+     * Set a message
+     * @param message message
      */
     public void setMessage(String message) {
         this.message = message;
     }
 
     /**
-     * オプションを取得する
-     * @return オプション
+     * Get options
+     * @return option
      */
     public String getOption() {
         return option;
     }
 
     /**
-     * オプションを設定する
-     * @param option オプション
+     * Set options
+     * @param option option
      */
     public void setOption(String option) {
         this.option = option;

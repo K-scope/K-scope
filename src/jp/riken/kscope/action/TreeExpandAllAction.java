@@ -23,7 +23,7 @@ import jp.riken.kscope.Message;
 import jp.riken.kscope.service.AppController;
 
 /**
- * ツリーすべて展開アクションイベント
+ * Expand all tree action event
  * @author RIKEN
  *
  */
@@ -31,23 +31,23 @@ public class TreeExpandAllAction extends ActionBase {
 
 
     /**
-     * コンストラクタ
-     * @param controller	アプリケーションコントローラ
+     * Constructor
+     * @param controller Application controller
      */
     public TreeExpandAllAction(AppController controller) {
         super(controller);
     }
 
     /**
-     * アクション発生イベント
-     * @param event		イベント情報
+     * Action occurrence event
+     * @param event Event information
      */
     @Override
     public void actionPerformed(ActionEvent event) {
-    	// ステータスバー
+    	// Status bar
         Application.status.setMessageMain(
-        		Message.getString("mainmenu.view.collapse-expand.expand-all")); //全て展開
-        // ツリー表示をすべて展開する
+        		Message.getString("mainmenu.view.collapse-expand.expand-all")); // Expand all
+        // Expand all tree views
         this.controller.getMainframe().getPanelExplorerView().expandTreeAll();
     }
 

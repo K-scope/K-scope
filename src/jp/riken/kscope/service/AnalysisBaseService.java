@@ -19,39 +19,39 @@ package jp.riken.kscope.service;
 import jp.riken.kscope.language.Fortran;
 
 /**
- * 分析サービスの基底クラス
+ * Base class for analytics services
  * @author RIKEN
  */
 public class AnalysisBaseService extends BaseService {
 
-    /** フォートランデータベース */
+    /** Fortran database */
     protected Fortran fortranDb = null;
 
     /**
-     * コンストラクタ
+     * Constructor
      */
     public AnalysisBaseService() {
     }
 
     /**
-     * コンストラクタ
-     * @param fortran            フォートランデータベース
+     * Constructor
+     * @param fortran Fortran database
      */
     public AnalysisBaseService(Fortran fortran) {
         this.setFortranDb(fortran);
     }
 
     /**
-     * フォートランデータベースを取得する.
-     * @return fortranDb		フォートランデータベース
+     * Get the Fortran database.
+     * @return fortranDb Fortran database
      */
     public Fortran getFortranDb() {
         return fortranDb;
     }
 
     /**
-     * フォートランデータベースを設定する.
-     * @param fortranDb 		フォートランデータベース
+     * Set up the Fortran database.
+     * @param fortranDb Fortran database
      */
     public void setFortranDb(Fortran fortranDb) {
         this.fortranDb = fortranDb;

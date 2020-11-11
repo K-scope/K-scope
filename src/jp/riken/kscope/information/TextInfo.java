@@ -18,39 +18,39 @@
 package jp.riken.kscope.information;
 
 /**
- * 付加情報クラス。
+ * Additional information class.
  *
  * @author RIKEN
  *
  */
 public class TextInfo extends InformationBase {
 
-    /** シリアル番号 */
+    /** Serial number */
 	private static final long serialVersionUID = -4345153798646974378L;
-	/** 付加情報 */
+	/** Additional information */
 	private String content;
 
     /**
-     * デフォルトコンストラクタ。
+     * Default constructor.
      */
     public TextInfo() {
     }
 
     /**
-     * コンストラクタ。
+     * Constructor.
      *
      * @param text
-     *         付加情報テキスト
+     * Additional information text
      */
     public TextInfo(String text) {
         this.content = text;
     }
 
     /**
-     * 付加情報テキストの設定。
+     * Additional information text settings.
      *
      * @param text
-     *      付加情報テキスト
+     * Additional information text
      */
     @Override
     public void setContent(String text) {
@@ -58,9 +58,9 @@ public class TextInfo extends InformationBase {
     }
 
     /**
-     * 付加情報テキストの取得。
+     * Get additional information text.
      *
-     * @return 付加情報テキスト
+     * @return Additional information text
      */
     @Override
     public String getContent() {

@@ -17,7 +17,7 @@
 package jp.riken.kscope.profiler.dprof;
 
 /**
- * DPROF:コストループ情報クラス
+ * DPROF: Cost loop information class
  * @author RIKEN
  */
 public class LoopInfo {
@@ -33,170 +33,170 @@ public class LoopInfo {
     private int fileIndex;
 
     /**
-     * サンプリング回数を取得する
-     * @return サンプリング回数
+     * Get the number of samplings
+     * @return Sampling count
      */
     public float getSampNum() {
         return sampNum;
     }
 
     /**
-     * バリア同期待ち数を取得する
-     * @return バリア同期待ち数
+     * Get the number of barrier synchronization waits
+     * @return Number of barrier synchronization waits
      */
     public float getBarrierSyncWaitNum() {
         return barrierSyncWaitNum;
     }
 
     /**
-     * MPIライブラリコスト数を取得する
-     * @return MPIライブラリコスト数
+     * Get the number of MPI library costs
+     * @return MPI library cost number
      */
     public float getMpiLibCostNum() {
         return mpiLibCostNum;
     }
 
     /**
-     * ループ開始行を取得する
-     * @return ループ開始行
+     * Get the loop start line
+     * @return Loop start line
      */
     public int getLineLoopStart() {
         return lineLoopStart;
     }
 
     /**
-     * ループ終了行を取得する
-     * @return ループ終了行
+     * Get the loop end line
+     * @return Loop end line
      */
     public int getLineLoopEnd() {
         return lineLoopEnd;
     }
 
     /**
-     * ネストレベルを取得する
-     * @return ネストレベル
+     * Get the nesting level
+     * @return Nested level
      */
     public int getNestLevel() {
         return nestLevel;
     }
 
     /**
-     * ループ種別を取得する
-     * @return ループ種別
+     * Get loop type
+     * @return Loop type
      */
     public short getLoopType() {
         return loopType;
     }
 
     /**
-     * 並列化情報を取得する
-     * @return 並列化情報
+     * Get parallelization information
+     * @return Parallelization information
      */
     public short getParallelInfo() {
         return parallelInfo;
     }
 
     /**
-     * シンボルのindexを取得する
-     * @return シンボルのindex
+     * Get the index of the symbol
+     * @return Symbol index
      */
     public int getSymbolIndex() {
         return symbolIndex;
     }
 
     /**
-     * ファイルのindexを取得する
-     * @return ファイルのindex
+     * Get the index of the file
+     * @return file index
      */
     public int getFileIndex() {
         return fileIndex;
     }
 
     /**
-     * サンプリング回数を設定する
+     * Set the number of samplings
      * @param sampNum
-     *            設定するサンプリング回数
+     * Number of samplings to set
      */
     public void setSampNum(float sampNum) {
         this.sampNum = sampNum;
     }
 
     /**
-     * バリア同期待ち数を設定する
+     * Set the number of barrier synchronization waits
      * @param barrierSyncWaitNum
-     *            設定するバリア同期待ち数
+     * Number of barrier synchronization waits to set
      */
     public void setBarrierSyncWaitNum(float barrierSyncWaitNum) {
         this.barrierSyncWaitNum = barrierSyncWaitNum;
     }
 
     /**
-     * MPIライブラリコスト数を設定する
+     * Set the number of MPI library costs
      * @param mpiLibCostNum
-     *            設定するMPIライブラリコスト数
+     * Number of MPI library costs to set
      */
     public void setMpiLibCostNum(float mpiLibCostNum) {
         this.mpiLibCostNum = mpiLibCostNum;
     }
 
     /**
-     * ループ開始行を設定する
+     * Set the loop start line
      * @param lineLoopStart
-     *            設定するループ開始行
+     * Loop start line to set
      */
     public void setLineLoopStart(int lineLoopStart) {
         this.lineLoopStart = lineLoopStart;
     }
 
     /**
-     * ループ終了行を設定する
+     * Set the loop end line
      * @param lineLoopEnd
-     *            設定するループ終了行
+     * Loop end line to set
      */
     public void setLineLoopEnd(int lineLoopEnd) {
         this.lineLoopEnd = lineLoopEnd;
     }
 
     /**
-     * ネストレベルを設定する
+     * Set the nesting level
      * @param nestLevel
-     *            設定するネストレベル
+     * Nest level to set
      */
     public void setNestLevel(int nestLevel) {
         this.nestLevel = nestLevel;
     }
 
     /**
-     * ループ種別を設定する
+     * Set the loop type
      * @param loopType
-     *            設定するループ種別
+     * Loop type to set
      */
     public void setLoopType(short loopType) {
         this.loopType = loopType;
     }
 
     /**
-     * 並列化情報を設定する
+     * Set parallelization information
      * @param parallelInfo
-     *            設定する並列化情報
+     * Parallelization information to be set
      */
     public void setParallelInfo(short parallelInfo) {
         this.parallelInfo = parallelInfo;
     }
 
     /**
-     * シンボルのindexを設定する
+     * Set the index of the symbol
      * @param symbolIndex
-     *            設定するシンボルのindex
+     * Index of the symbol to be set
      */
     public void setSymbolIndex(int symbolIndex) {
         this.symbolIndex = symbolIndex;
     }
 
     /**
-     * ファイルのindexを設定する
+     * Set the index of the file
      * @param fileIndex
-     *            設定するファイルのindex
+     * Index of the file to be set
      */
     public void setFileIndex(int fileIndex) {
         this.fileIndex = fileIndex;

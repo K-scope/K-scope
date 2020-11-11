@@ -43,42 +43,42 @@ import jp.riken.kscope.model.VariableTableModel;
 import jp.riken.kscope.utils.StringUtils;
 
 /**
- * 変数特性一覧の作成を行うサービスクラス
+ * Service class that creates a list of variable characteristics
  *
  * @author RIKEN
  */
 public class AnalysisVariableService extends AnalysisBaseService {
 
-    /** 変数特性一覧テーブルモデル */
+    /** Variable characteristic list table model */
     private VariableTableModel modelVariable;
 
     /**
-     * コンストラクタ
+     * Constructor
      *
      * @param fortran
-     *            フォートランデータベース
+     * Fortran database
      */
     public AnalysisVariableService(Fortran fortran) {
         super(fortran);
     }
 
     /**
-     * 変数特性一覧テーブルモデルを設定する
+     * Variable characteristic list Set table model
      *
      * @param modelVariable
-     *            変数特性一覧テーブルモデル
+     * Variable characteristic list table model
      */
     public void setModelVariable(VariableTableModel modelVariable) {
         this.modelVariable = modelVariable;
     }
 
     /**
-     * 変数特性一覧を作成する.<br/>
-     * フォートランデータベースと分析対象のブロックから変数特性一覧を作成する.<br/>
-     * 作成した変数特性一覧は、変数特性一覧テーブルモデルに設定する。
+     * Create a list of variable characteristics. <br/>
+     * Create a variable characteristic list from the Fortran database and the block to be analyzed. <br/>
+     * Set the created variable characteristic list in the variable characteristic list table model.
      *
      * @param blocks
-     *            ブロックリスト
+     * Block list
      */
     public void analysisVariable(IBlock[] blocks) {
 
@@ -87,7 +87,7 @@ public class AnalysisVariableService extends AnalysisBaseService {
         }
 
         for (IBlock block : blocks) {
-            // ブロックが属するプログラム単位へ変換する
+            // Convert to the program unit to which the block belongs
             while (block instanceof Block) {
                 if (block instanceof ExecutableBody) {
                     block = ((ExecutableBody) block).getParent();
@@ -106,7 +106,7 @@ public class AnalysisVariableService extends AnalysisBaseService {
                     String[] infos = makeVariableDefinitionInfo(vardef);
                     this.modelVariable.addVariableInfo(block, vardef, infos);
                 }
-                // 構造体のセット
+                // Set of structures
                 Set<Type> types = this.getTypeList(list);
                 for (Type tp : types) {
                     List<VariableDefinition> defs = tp.getDefinitions();
@@ -115,7 +115,7 @@ public class AnalysisVariableService extends AnalysisBaseService {
                         this.modelVariable.addVariableInfo(tp, def, infos);
                     }
                 }
-                // 内部副プログラムのセット
+                // Set of internal subprograms
                 Collection<Procedure> children = ((ProgramUnit) block)
                         .getChildren();
                 for (Procedure child : children) {
@@ -125,7 +125,7 @@ public class AnalysisVariableService extends AnalysisBaseService {
                         this.modelVariable
                                 .addVariableInfo(child, vardef, infos);
                     }
-                    // 構造体のセット
+                    // Set of structures
                     Set<Type> tps = this.getTypeList(varlist);
                     for (Type tp : tps) {
                         List<VariableDefinition> defs = tp.getDefinitions();
@@ -140,11 +140,11 @@ public class AnalysisVariableService extends AnalysisBaseService {
     }
 
     /**
-     * 変数宣言の配列から、含まれるTypeのセットを返す。
+     * Returns the included set of Types from an array of variable declarations.
      *
      * @param list
-     *            変数宣言の配列
-     * @return Typeクラスのセット。無ければ空のセットを返す。
+     * Array of variable declarations
+     * @return A set of Type classes. If not, it returns an empty set.
      */
     private Set<Type> getTypeList(VariableDefinition[] list) {
         Set<Type> set = new HashSet<Type>();
@@ -164,11 +164,11 @@ public class AnalysisVariableService extends AnalysisBaseService {
     }
 
     /**
-     * 変数宣言の配列を、スカラー・配列の順にソートする。
+     * Sort the array of variable declarations in the order of scalar and array.
      *
      * @param list
-     *            変数宣言の配列
-     * @return ソートされた変数宣言のセット。無ければ空のセットを返す。
+     * Array of variable declarations
+     * @return A set of sorted variable declarations. If not, it returns an empty set.
      */
     @SuppressWarnings("unused")
     private Set<VariableDefinition> sort(VariableDefinition[] list) {
@@ -192,18 +192,18 @@ public class AnalysisVariableService extends AnalysisBaseService {
     }
 
     /**
-     * 変数特性一覧を作成する.<br/>
-     * フォートランデータベースと分析対象の変数宣言から変数特性一覧を作成する.<br/>
-     * 作成した変数特性一覧は、変数特性一覧テーブルモデルに設定する。
+     * Create a list of variable characteristics. <br/>
+     * Create a variable characteristic list from the Fortran database and the variable declaration to be analyzed. <br/>
+     * Set the created variable characteristic list in the variable characteristic list table model.
      *
      * @param vars
-     *            変数宣言リスト
+     * Variable declaration list
      */
     public void analysisVariable(VariableDefinition[] vars) {
         this.modelVariable.setTitle("VariableDefinition List");
         //Set<VariableDefinition> varSet = this.sort(vars);
         for (VariableDefinition vardef : vars) {
-            IBlock block = vardef.getMother(); // 変数の属するプロシージャ
+            IBlock block = vardef.getMother(); // Procedure to which the variable belongs
             String[] infos = makeVariableDefinitionInfo(vardef);
             this.modelVariable.addVariableInfo(block, vardef, infos);
         }
@@ -211,22 +211,22 @@ public class AnalysisVariableService extends AnalysisBaseService {
 
     private String[] makeVariableDefinitionInfo(VariableDefinition var) {
         List<String> infos = new ArrayList<String>();
-        // スカラーか配列か
+        // Scalar or array
         if (var.isScalar()) {
             infos.add("scalar");
         } else {
             infos.add("array");
         }
-        // 変数名
+        // Variable name
         infos.add(var.get_name());
-        // データ型
+        // Data type
         IVariableType tp = var.getVariableType();
         infos.add(tp.toString());
 
-        // 各種属性のセット
+        // Set of various attributes
         VariableAttribute att = (VariableAttribute) var.getAttribute();
 
-        // スコープ属性
+        // Scope attribute
         ScopeAttribute sc;
         if (att == null) {
             sc = ScopeAttribute.NONE;
@@ -241,14 +241,14 @@ public class AnalysisVariableService extends AnalysisBaseService {
             infos.add("default");
         }
 
-        // パラメータ属性
+        // Parameter attributes
         if (att != null && att.hasParameter()) {
             infos.add("parameter");
         } else {
             infos.add("no param");
         }
 
-        // 初期値
+        // initial value
         if (var.getInitValue() == null) {
             infos.add("no value");
         } else {
@@ -267,7 +267,7 @@ public class AnalysisVariableService extends AnalysisBaseService {
             infos.add("no opt");
             infos.add("no pointer");
             infos.add("no save");
-            // common属性
+            // common attribute
             ProgramUnit pu = var.getMother();
             String common = null;
             if (pu != null) {
@@ -280,7 +280,7 @@ public class AnalysisVariableService extends AnalysisBaseService {
             }
             infos.add("no alloc");
         } else {
-            // intent属性
+            // intent attribute
             IntentAttribute ia = att.getIntent();
             if (ia == IntentAttribute.NONE) {
                 infos.add("no intent");
@@ -292,14 +292,14 @@ public class AnalysisVariableService extends AnalysisBaseService {
                 infos.add("inout");
             }
 
-            // optional属性
+            // optional attribute
             if (att.hasOptional()) {
                 infos.add("optional");
             } else {
                 infos.add("no opt");
             }
 
-            // pointer/target属性
+            // pointer / target attribute
             PointerAttribute pa = att.getPointerOrTarget();
             if (pa == PointerAttribute.NONE) {
                 infos.add("no pointer");
@@ -309,14 +309,14 @@ public class AnalysisVariableService extends AnalysisBaseService {
                 infos.add("target");
             }
 
-            // save属性
+            // save attribute
             if (att.hasSave()) {
                 infos.add("save");
             } else {
                 infos.add("no save");
             }
 
-            // common属性
+            // common attribute
             ProgramUnit pu = var.getMother();
             String common = null;
             if (pu != null) {
@@ -328,7 +328,7 @@ public class AnalysisVariableService extends AnalysisBaseService {
                 infos.add("com : " + common);
             }
 
-            // allocatable属性
+            // allocatable attribute
             if (att.hasAllocatable()) {
                 infos.add("allocatable");
             } else {
@@ -336,7 +336,7 @@ public class AnalysisVariableService extends AnalysisBaseService {
             }
         }
 
-        // 付加情報
+        // Additional information
         if (var.getInformation() != null && !StringUtils.isNullOrEmpty(var.getInformation().getContent())) {
             infos.add(var.getInformation().getContent());
         } else {

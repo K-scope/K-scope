@@ -16,6 +16,6 @@
  */
 
 /**
- * メインメニュー、ポップアップメニュー等のアクションクラスを提供します.<br/>
+ * Provides action classes such as main menu and pop-up menu. <br/>
  */
 package jp.riken.kscope.action;

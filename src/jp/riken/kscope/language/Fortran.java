@@ -34,45 +34,45 @@ import jp.riken.kscope.language.generic.Procedures;
 import jp.riken.kscope.parser.IAnalyseParser;
 
 /**
- * Fortranプログラムを表現するクラス。 ソースファイルをパースして得られた情報は、全てこのクラス(superクラスも含む)のメソッドを用いて生成する。
- * クラスFortranはProgramUnit、Blockの派生クラスで構成され、
- * オブジェクト生成メソッドは常にcurrentUnit、currentBlockに対して実行される。
+ * A class that represents a Fortran program. All the information obtained by parsing the source file is generated using the methods of this class (including the super class).
+ * Class Fortran consists of ProgramUnit and Block derived classes.
+ * Object creation method is always executed for currentUnit and currentBlock.
  */
 public final class Fortran extends Program {
-    /** シリアル番号 */
+    /** Serial number */
     private static final long serialVersionUID = -5141333793433490902L;
-    /** モジュール名を格納するための作業用配列 */
+    /** Working array for storing module names */
     private String[] moduleName;
-    /** フォートランソースファイルリスト */
+    /** Fortran source file list */
     private ArrayList<SourceFile> sourceFileList = new ArrayList<SourceFile>();
-    /** 宣言探索のための作業用変数 */
+    /** Working variables for declaration search */
     private transient Map<String, Procedure> knownProcedure = new HashMap<String, Procedure>();
-    /** キャンセルフラグ */
+    /** Cancel flag */
     private transient boolean cancel = false;
 
 
     /**
      *
-     * コンストラクタ。
+     * Constructor.
      */
     public Fortran() {
         super();
     }
 
     /**
-     * ソースファイルのリストをセットする。
+     * Set a list of source files.
      *
      * @param files
-     *            ソースファイルのリスト
+     * List of source files
      */
     public void setSourceFileList(ArrayList<SourceFile> files) {
         sourceFileList = files;
     }
 
     /**
-     * ソースファイルのリストを返す.<br/>
-     * XMLファイルと対応したソースファイルのみ
-     * @return ソースファイルのリスト
+     * Returns a list of source files. <br/>
+     * Only source files that correspond to XML files
+     * @return List of source files
      */
     public ArrayList<SourceFile> getSourceFileList() {
         return sourceFileList;
@@ -80,9 +80,9 @@ public final class Fortran extends Program {
 
 
     /**
-     * ソースファイルのリストを返す.<br/>
-     * プロシージャのソースファイルを含むすべてのソースファイル
-     * @return ソースファイルのリスト
+     * Returns a list of source files. <br/>
+     * All source files, including procedure source files
+     * @return List of source files
      */
     public ArrayList<SourceFile> getProcedureFileList() {
     	ArrayList<SourceFile> moduleFileList = getSourceFileList();
@@ -109,60 +109,60 @@ public final class Fortran extends Program {
 
     // ---------------ProgramUnit----------------//
     /**
-     * サブルーチン(Procedure)をcurrentUnitのchildとして生成する。 サブルーチンが引数を持たない場合に用いる。
-     * 新たにinitメソッドを実行する前にendSubroutineを呼ばなければならない。
+     * Create a subroutine (Procedure) as a child of the currentUnit. Used when the subroutine has no arguments.
+     * You must call endSubroutine before executing a new init method.
      *
      * @param subName
-     *            サブルーチン名。
+     * Subroutine name.
      */
     public void initSubroutine(String subName) {
         super.init_procedure("subroutine", subName);
     }
 
    /**
-     * サブルーチン(Procedure)をcurrentUnitのchildとして生成する。 サブルーチンが引数を持つ場合に用いる。
-     * 新たにinitメソッドを実行する前にendSubroutineを呼ばなければならない。
+     * Create a subroutine (Procedure) as a child of the currentUnit. Used when the subroutine has arguments.
+     * You must call endSubroutine before executing a new init method.
      *
      * @param subName
-     *            サブルーチンの名前
+     * Subroutine name
      * @param args
-     *            サブルーチンの引数
+     * Subroutine arguments
      */
     public void initSubroutine(String subName, String[] args) {
         super.init_procedure("subroutine", subName, args);
     }
 
     /**
-     * currentUnitを親に変更する。
+     * Change currentUnit to parent.
      */
     public void endSubroutine() {
         super.end_procedure();
     }
 
     /**
-     * 関数宣言を開始する。
+     * Start a function declaration.
      *
      * @param sub_name
-     *            関数名
+     * Function name
      */
     public void init_function(String sub_name) {
         super.init_procedure("function", sub_name);
     }
 
     /**
-     * 関数宣言を開始する。
+     * Start a function declaration.
      *
      * @param sub_name
-     *            関数名
+     * Function name
      * @param args
-     *            仮引数
+     * Formal argument
      */
     public void init_function(String sub_name, String[] args) {
         super.init_procedure("function", sub_name, args);
     }
 
     /**
-     * 関数を終了する。
+     * Exit the function.
      */
     public void end_function() {
         super.end_procedure();
@@ -173,10 +173,10 @@ public final class Fortran extends Program {
     // ++++++++++++++++++++++++++++++++++++++++++//
 
     /**
-     * プログラム全体に対して解析を実行し、宣言と呼び出しを対応付ける。
+     * Perform parsing on the entire program and associate declarations with calls.
      *
      * @param parser
-     *            GUI制御用クラス
+     * GUI control class
      */
     public void analyseDB(IAnalyseParser parser) {
         moduleName = get_module_name();
@@ -196,13 +196,13 @@ public final class Fortran extends Program {
     }
 
     /**
-     * プログラム全体に対して解析を実行し、宣言と呼び出しを対応付ける。
+     * Perform parsing on the entire program and associate declarations with calls.
      */
     public void analyseDB() {
         Application.status.setMessageStatus("analysys database...");
         moduleName = this.get_module_name();
         for (int i = 0; i < moduleName.length; i++) {
-        	// キャンセルチェック
+        	// Cancel check
         	if (isCancel()) break;
             Application.status.setMessageStatus("analysys database..." + moduleName[i]);
             Module current_module = module(moduleName[i]);
@@ -213,23 +213,23 @@ public final class Fortran extends Program {
     }
 
     /**
-     * 渡された手続きについて、宣言と呼び出しを対応付ける。
+     * Associate a declaration with a call for the passed procedure.
      *
      * @param subs
-     *            手続きの配列
+     * Arrangement of procedures
      */
     private void analyseDBInUnit(Collection<Procedure> subs) {
         if (this.knownProcedure == null) {
             this.knownProcedure = new HashMap<String, Procedure>();
         }
         for (Procedure sub : subs) {
-        	// キャンセルチェック
+        	// Cancel check
         	if (isCancel()) break;
             List<ProcedureUsage> calls = sub.getCalls();
             this.knownProcedure.clear();
             for (ProcedureUsage call:calls) {
                 if (call.isIntrinsic()) {
-                    // TODO INTRINSIC関数に対する処理。現状では不要だが何らかの扱いも可能だと思われる
+                    // Processing for the TODO INTRINSIC function. Currently unnecessary, but it seems possible to handle it in some way
                 } else {
                     this.searchCallDeclaration(sub, call);
                 }
@@ -245,7 +245,7 @@ public final class Fortran extends Program {
             }
 
             // add at 2013/03/01 by @hira
-            // 変数に変数定義をセットする
+            // Set the variable definition for the variable
     		Set<Variable> vars = sub.getAllVariables();
     		if (vars != null) {
 	            for (Variable var : vars) {
@@ -259,12 +259,12 @@ public final class Fortran extends Program {
     }
 
     /**
-     * 関数呼び出しの宣言を探索して対応付ける。
+     * Search for and associate function call declarations.
      *
      * @param pu
-     *            関数呼び出しが属するプログラム単位
+     * Program unit to which the function call belongs
      * @param call
-     *            関数呼び出し
+     * Function call
      */
     private void searchCallDeclaration(ProgramUnit pu, ProcedureUsage call) {
         ProgramUnit me = pu;
@@ -275,24 +275,24 @@ public final class Fortran extends Program {
             return;
         }
 
-        // 定義先が既知かチェック
+        // Check if the definition destination is known
         if (this.knownProcedure.containsKey(callName)) {
             call.setCallDefinition(this.knownProcedure.get(callName));
             return;
         }
 
-        // 親プログラム単位に対象を移しながら探索する
+        // Search while moving the target to the parent program unit
         String changeName = callName;
         while (current != null) {
-            // currentに対してInterface文の探索を実行する。
+            // Execute an Interface statement search for current.
             if (callName.equalsIgnoreCase(call.getCallName())) {
                 changeName = this.searchCallDeclarationForInterface(current, call);
             }
             if (!(callName.equalsIgnoreCase(changeName))) {
                 callName = changeName;
-                current = me; // interface文が見つかったので、新たな名前で手続きを探索し直す
+                current = me; // The interface statement was found, so search the procedure again with a new name.
             }
-            // currentの内部副プログラムを探す
+            // Find current internal subprogram
             if (current.getChildren().size() > 0) {
                 Collection<Procedure> children = current.getChildren();
                 for (Procedure child: children) {
@@ -304,20 +304,20 @@ public final class Fortran extends Program {
                 }
             }
 
-            // currentに対してUse文の探索を実行する。
+            // Execute a search for the Use statement for current.
             changeName = this.searchCallDeclarationForUse(current, call,
                     callName);
             if (call.getCallDefinition() != null) { return; }
             if (!(callName.equalsIgnoreCase(changeName))) {
                 callName = changeName;
-                current = me; // interface文が見つかったので、新たな名前で手続きを探索し直す
+                current = me; // The interface statement was found, so search the procedure again with a new name.
                 continue;
             }
-            // motherにcurrentを移す
+            // Transfer current to mother
             current = current.get_mother();
         }
 
-        // NO_MODULEにあるサブルーチンを探索
+        // Search for subroutines in NO_MODULE
         Procedure[] subs = module("NO_MODULE").get_procedures();
         for (int i = 0; i < subs.length; i++) {
             if (subs[i].get_name().equalsIgnoreCase(callName)) {
@@ -329,21 +329,21 @@ public final class Fortran extends Program {
     }
 
     /**
-     * 指定されたプログラム単位のinterface文を探索する。
-     * @param pu 探索対象のプログラム単位
-     * @param call 宣言を探索中の手続き呼び出し
-     * @return 総称名から変換された固有手続き名。無ければ元の名前を返す。
+     * Search for the interface statement for the specified program unit.
+     * @param pu Program unit to be searched
+     * @param call Procedure call while searching for declaration
+     * @return Unique procedure name converted from the generic name. If not, the original name is returned.
      */
     private String searchCallDeclarationForInterface(ProgramUnit pu,
             ProcedureUsage call) {
         String callName = call.getCallName();
         List<Procedures> interfaceList = pu.getInterfaceList();
         for (Procedures generic: interfaceList) {
-            // 無名interfaceのスキップ
+            // Skip anonymous interface
             if (generic.getName() != null) {
                 if (generic.getName().equalsIgnoreCase(callName)) {
                     Set<IProcedureItem> items = generic.getProcedures();
-                    // module procedure文の宣言対応を探索する
+                    // Search for declaration correspondence of module procedure statement
                     Procedure declaration = null;
                     for (IProcedureItem item: items) {
                         if (item instanceof ProcedureWithNameOnly) {
@@ -352,7 +352,7 @@ public final class Fortran extends Program {
                             if (modProc.getDeclaration() == null) {
                                 String modProcName = modProc.getName();
                                 modProc.setDeclaration(this.searchModuleProcedureDeclaration(modProcName, pu));
-                                // 対応した手続の仮引数だけ宣言を探索する
+                                // Search for declarations only for formal arguments of the corresponding procedure
                                 Variable[] args = modProc.getDeclaration().get_args();
                                 for (int i = 0; i < args.length; i++) {
                                     this.searchVariableDefinition(modProc.getDeclaration(), args[i].getName());
@@ -382,10 +382,10 @@ public final class Fortran extends Program {
         return callName;
     }
     /**
-     * module procedure文に対応する手続宣言を探索する。
-     * @param name module procedureの名前
-     * @param pu interface文を持つプログラム単位
-     * @return module procedureが指す手続。無ければnullを返す。
+     * Search for the procedure declaration corresponding to the module procedure statement.
+     * @param name module The name of the procedure
+     * @param pu interface Program unit with statement
+     * The procedure pointed to by the @return module procedure. If not, it returns null.
      */
     private Procedure searchModuleProcedureDeclaration(String name, ProgramUnit pu) {
         ProcedureUsage call = new ProcedureUsage(name, null);
@@ -398,20 +398,20 @@ public final class Fortran extends Program {
     }
 
     /**
-     * 指定されたプログラム単位のuse文,interface文に対して手続き宣言を探索する。
-     * @param pu 宣言保持候補のプログラム単位
-     * @param call 宣言を探索中の手続き呼び出し
-     * @param callName 探索している手続きの名前
-     * @return 総称名から変換された固有手続き名。無ければ元の名前を返す。
+     * Search the procedure declaration for the use statement and interface statement of the specified program unit.
+     * @param pu Program unit of declaration retention candidate
+     * @param call Procedure call while searching for declaration
+     * @param callName The name of the procedure you are searching for
+     * @return Unique procedure name converted from the generic name. If not, the original name is returned.
      */
     private String searchCallDeclarationForUse(ProgramUnit pu,
             ProcedureUsage call, String callName) {
         String changeName = callName;
-        // callの名前とcallNameが一致している場合はpuのinterface文を探す
+        // Look for pu's interface statement if the call name and callName match
         if (call.getCallName().equalsIgnoreCase(callName)) {
             changeName = this.searchCallDeclarationForInterface(pu, call);
             if (!(changeName.equalsIgnoreCase(call.getCallName()))) {
-                return changeName; // 探索手続き名が変更されたので処理を中断する
+                return changeName; // The search procedure name has been changed, so processing is interrupted.
             }
             // add by @hira at 2013/02/01
             if (call.getCallDefinition() != null) {
@@ -419,13 +419,13 @@ public final class Fortran extends Program {
             }
         }
 
-        // Use文を探索する
+        // Search for Use statements
         for (UseState useEle : pu.getUseList()) {
             if (useEle.hasOnlyMember()) {
                 if (useEle.hasOnlyMember(changeName)) {
                     Module useModule = module(useEle.getModuleName());
                     if (useModule != null) {
-                        // 手続きのチェック
+                        // Check the procedure
                         Procedure[] procs = useModule.get_procedures();
                         if (procs != null) {
                             for (int i = 0; i < procs.length; i++) {
@@ -442,7 +442,7 @@ public final class Fortran extends Program {
             } else {
                 Module useModule = module(useEle.getModuleName());
                 if (useModule != null) {
-                    // 手続きのチェック
+                    // Check the procedure
                     Procedure[] procs = useModule.get_procedures();
                     if (procs != null) {
                         for (int i = 0; i < procs.length; i++) {
@@ -457,7 +457,7 @@ public final class Fortran extends Program {
                     changeName = searchCallDeclarationForUse(useModule, call, changeName);
                     if (!(changeName.equalsIgnoreCase(call.getCallName()))
                             || (call.getCallDefinition() != null)) {
-                        return changeName; // 探索手続き名が変更された、または宣言が見つかったので処理を中断する
+                        return changeName; // The search procedure name has been changed, or the declaration has been found, so processing is interrupted.
                     }
                 }
             }
@@ -466,12 +466,12 @@ public final class Fortran extends Program {
     }
 
     /**
-     * 変数の宣言を探索して対応付ける。
+     * Search for and associate variable declarations.
      *
      * @param proc
-     *            変数が属するプログラム単位
+     * Program unit to which the variable belongs
      * @param varName
-     *            変数名
+     *            Variable name
      */
     private void searchVariableDefinition(Procedure proc, String varName) {
         ProgramUnit current = proc;
@@ -480,14 +480,14 @@ public final class Fortran extends Program {
         }
 
         while (current != null) {
-            // currentの宣言文を探す
+            // Find the current declaration
             VariableDefinition varDef = current.get_variable(varName);
             if (varDef != null) {
                 proc.putVariableMap(varName, varDef);
                 return;
             }
 
-            // currentのuse先を探索
+            // Search for current use destination
             if (current.getUseList() != null) {
                 if (searchVariableDefinitionForUse(current, varName, proc)) {
                     return;
@@ -499,15 +499,15 @@ public final class Fortran extends Program {
     }
 
     /**
-     * 変数の宣言を、プログラム単位内のUSE文に対して検索し、見つかれば対応付ける。 USE先にさらにUSE文がある場合は再帰的に探索する。
+     * Search the variable declaration for the USE statement in the program unit, and if found, associate it. If there is another USE statement in the USE destination, it is searched recursively.
      *
      * @param pu
-     *            プログラム単位
+     * Program unit
      * @param varName
-     *            変数名
+     *            Variable name
      * @param me
-     *            変数が属する手続き
-     * @return 真偽値。宣言が見つかれば真を返す。
+     * Procedure to which the variable belongs
+     * @return Boolean value. If a declaration is found, it returns true.
      */
     private boolean searchVariableDefinitionForUse(ProgramUnit pu,
             String varName, Procedure me) {
@@ -548,11 +548,11 @@ public final class Fortran extends Program {
     // ++++++++++++++++++++++++++++++++++++++++++++
 
     /**
-     * 指定した名前のサブルーチンを検索し返す。
+     * Search and return the subroutine with the specified name.
      *
      * @param name
-     *            サブルーチン名
-     * @return 指定した名前のサブルーチン
+     * Subroutine name
+     * @return Subroutine with the specified name
      */
     public Procedure search_subroutine(String name) {
 
@@ -570,10 +570,10 @@ public final class Fortran extends Program {
     }
 
     /**
-     * プログラム、モジュールから副プログラムを取得する.
-     * @param proc		モジュール
-     * @param name		副プログラム名
-     * @return			副プログラム
+     * Get subprograms from programs and modules.
+     * @param proc module
+     * @param name Subprogram name
+     * @return subprogram
      */
     private Procedure search_sub_rec(ProgramUnit proc, String name) {
         if (proc.is_my_procedure(name)) {
@@ -594,18 +594,18 @@ public final class Fortran extends Program {
     }
 
     /**
-     * CALL文をセットする。
+     * Set the CALL statement.
      *
      * @param lineInfo
-     *            コード行情報
+     * Code line information
      * @param label
-     *            行ラベル。ない場合はStatement.NO_LABELを渡す。
+     *            Row label. If not, pass Statement.NO_LABEL.
      * @param subroutineName
-     *            CALLサブルーチン名
+     * CALL subroutine name
      * @param arguments
-     *            引数のリスト
+     * List of arguments
      * @param intrinsic
-     *            組込み関数である場合trueをセットする。組込み関数でなければfalse。
+     * Set true if it is a built-in function. False if not a built-in function.
      */
     public void setCall(CodeLine lineInfo, String label, String subroutineName,
             List<Expression> arguments, boolean intrinsic) {
@@ -614,32 +614,32 @@ public final class Fortran extends Program {
     }
 
     /**
-     * DO文開始行を設定する
+     * Set the DO statement start line
      *
      * @param lineInfo
-     *            コード行情報
+     * Code line information
      * @param label
-     *            行ラベル.ない場合はStatement.NO_LABELをセットする
+     * Row label. If not, set Statement.NO_LABEL
      */
     public void start_loop(CodeLine lineInfo, String label) {
         super.start_repetition(lineInfo, label);
     }
 
     /**
-     * DO文開始行を設定する。
+     * Set the DO statement start line.
      *
      * @param lineInfo
-     *            コード行情報
+     * Code line information
      * @param label
-     *            行ラベル.ない場合はStatement.NO_LABELをセットする。
+     * Row label. If not, set Statement.NO_LABEL.
      * @param iterator
-     *            ループ制御変数
+     * Loop control variable
      * @param initIterator
-     *            始値
+     * Open price
      * @param endCondition
-     *            終値
+     * Closing price
      * @param step
-     *            刻み幅
+     * Step width
      */
     public void start_loop(CodeLine lineInfo, String label, Variable iterator,
             Expression initIterator, Expression endCondition, Expression step) {
@@ -648,34 +648,34 @@ public final class Fortran extends Program {
     }
 
     /**
-     * DO文終了行を設定する。
+     * Set the end line of the DO statement.
      *
      * @param lineInfo
-     *            コード行情報
+     * Code line information
      */
     public void end_loop(CodeLine lineInfo) {
         super.end_repetition(lineInfo);
     }
 
     /**
-     * DO文終了行を設定する。
+     * Set the end line of the DO statement.
      *
      * @param lineInfo
-     *            コード行情報
+     * Code line information
      * @param label
-     *            行ラベル
+     *            Row label
      */
     protected void end_loop(CodeLine lineInfo, String label) {
         super.end_repetition(lineInfo, label);
     }
 
     /**
-     * CONTINUE文を設定する。
+     * Set the CONTINUE statement.
      *
      * @param lineInfo
-     *            コード行情報
+     * Code line information
      * @param label
-     *            行ラベル
+     *            Row label
      */
     @Override
     public void set_continue(CodeLine lineInfo, String label) {
@@ -683,8 +683,8 @@ public final class Fortran extends Program {
     }
 
     /**
-     * シャローコピーを行う.
-     * @param fortran		コピー元データベース
+     * Make a shallow copy.
+     * @param fortran Copy source database
      */
     public void copyShallow(Fortran fortran) {
     	this.moduleName = fortran.moduleName;
@@ -693,16 +693,16 @@ public final class Fortran extends Program {
     }
 
     /**
-     * スレッドの実行がキャンセルであるかチェックする
-     * @return    true=キャンセル
+     * Check if thread execution is cancelled
+     * @return true = Cancel
      */
     public boolean isCancel() {
         return this.cancel;
     }
 
     /**
-     * キャンセルフラグを設定する。
-     * @param flag    キャンセルフラグ
+     * Set the cancel flag.
+     * @param flag Cancel flag
      */
     public void setCancel(boolean flag) {
     	this.cancel = flag;

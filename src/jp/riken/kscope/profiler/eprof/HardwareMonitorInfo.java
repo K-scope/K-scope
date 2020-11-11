@@ -19,48 +19,48 @@ package jp.riken.kscope.profiler.eprof;
 import java.util.List;
 
 /**
- *  ハードウェアモニタ情報
+ * Hardware monitor information
  * @author RIKEN
  */
 public class HardwareMonitorInfo {
-    /** 測定スレッド数 */
+    /** Number of measurement threads */
     private int threadCount;
-    /** ハードウェアモニタ情報(PA情報)テーブルリスト */
+    /** Hardware monitor information (PA information) table list */
     private List<HardwarePaTable> paInfo;
 
     /**
-     * コンストラクタ
+     * Constructor
      */
     public HardwareMonitorInfo() {
     }
 
     /**
-     * 測定スレッド数
-     * @return 測定スレッド数
+     * Number of measurement threads
+     * @return Number of measurement threads
      */
     public int getThreadCount() {
         return threadCount;
     }
 
     /**
-     * 測定スレッド数
-     * @param count		測定スレッド数
+     * Number of measurement threads
+     * @param count Number of measurement threads
      */
     public void setThreadCount(int count) {
         this.threadCount = count;
     }
 
     /**
-     * ハードウェアモニタ情報(PA情報)テーブルリスト
-     * @return ハードウェアモニタ情報(PA情報)テーブルリスト
+     * Hardware monitor information (PA information) table list
+     * @return Hardware monitor information (PA information) table list
      */
     public List<HardwarePaTable> getPaInfo() {
         return paInfo;
     }
 
     /**
-     * ハードウェアモニタ情報(PA情報)テーブルリスト
-     * @param list		ハードウェアモニタ情報(PA情報)テーブルリスト
+     * Hardware monitor information (PA information) table list
+     * @param list Hardware monitor information (PA information) table list
      */
     public void setPaInfo(List<HardwarePaTable> list) {
         this.paInfo = list;

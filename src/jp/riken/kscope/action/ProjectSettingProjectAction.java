@@ -34,9 +34,9 @@ public class ProjectSettingProjectAction extends ActionBase {
 	private static boolean debug_l2 = false;
 	
 	/**
-	 * コンストラクタ
-     * @param controller	アプリケーションコントローラ
-	 */
+* Constructor
+     * @param controller Application controller
+*/
 	public ProjectSettingProjectAction(AppController controller) {
 		super(controller);
 		if (debug) {
@@ -46,15 +46,15 @@ public class ProjectSettingProjectAction extends ActionBase {
 	
 	@Override
 	public void actionPerformed(ActionEvent event) {
-		final String message = Message.getString("projectsettingprojectaction.setup.status"); //プロジェクトの設定
+		final String message = Message.getString("projectsettingprojectaction.setup.status"); // Project settings
 		Application.status.setMessageMain(message);
 		
 		Frame frame = getWindowAncestor(event);
 		
-		// 最終アクセスフォルダ
+		// Last access folder
         String currentFolder = this.controller.getLastAccessFolder();
 		
-		// プロジェクト設定ダイアログを表示する。
+		// Display the project setting dialog.
         ProjectProperties properties = this.controller.getPropertiesProject();
         
 		SettingProjectDialog dialog = new SettingProjectDialog(frame, true, properties);
@@ -62,7 +62,7 @@ public class ProjectSettingProjectAction extends ActionBase {
 		int result = dialog.showDialog();
 		if (result != Constant.OK_DIALOG) {
         	Application.status.setMessageMain(message + 
-        			Message.getString("action.common.cancel.status")); //キャンセル
+        			Message.getString("action.common.cancel.status")); //Cancel
         	return;
         }
 		properties = dialog.getProjectProperties();
@@ -73,7 +73,7 @@ public class ProjectSettingProjectAction extends ActionBase {
 		this.controller.getProjectModel().setProjectTitle(title);
 
         Application.status.setMessageMain(message +
-    			Message.getString("action.common.done.status")); //完了
+    			Message.getString("action.common.done.status")); // Done
         return;
 
 	}

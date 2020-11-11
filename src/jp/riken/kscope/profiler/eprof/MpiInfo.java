@@ -19,17 +19,17 @@ package jp.riken.kscope.profiler.eprof;
 import java.util.List;
 
 /**
- * MPI情報
+ * MPI information
  * @author RIKEN
  */
 public class MpiInfo {
-    /** MPI関数の数	int */
+    /** Number of MPI functions int */
     private int mpiCount;
-    /** MPI関数リスト */
+    /** MPI function list */
     private List<MpiFunction> mpiFunctionList;
 
     /**
-     * コンストラクタ
+     * Constructor
      */
     public MpiInfo() {
 
@@ -37,16 +37,16 @@ public class MpiInfo {
 
 
     /**
-     * MPI関数の数
-     * @return		MPI関数の数
+     * Number of MPI functions
+     * @return Number of MPI functions
      */
     public int getMpiCount() {
         return mpiCount;
     }
 
     /**
-     * MPI関数の数
-     * @param count		MPI関数の数
+     * Number of MPI functions
+     * @param count Number of MPI functions
      */
     public void setMpiCount(int count) {
         this.mpiCount = count;
@@ -54,8 +54,8 @@ public class MpiInfo {
 
 
     /**
-     * MPI関数リスト
-     * @return MPI関数リスト
+     * MPI function list
+     * @return MPI function list
      */
     public List<MpiFunction> getMpiFunctionList() {
         return mpiFunctionList;
@@ -63,8 +63,8 @@ public class MpiInfo {
 
 
     /**
-     * MPI関数リスト
-     * @param list		MPI関数リスト
+     * MPI function list
+     * @param list MPI function list
      */
     public void setMpiFunctionList(List<MpiFunction> list) {
         this.mpiFunctionList = list;

@@ -19,50 +19,50 @@ package jp.riken.kscope.profiler.eprof;
 import java.util.List;
 
 /**
- * イベントカウンタ情報
+ * Event counter information
  * @author RIKEN
  */
 public class EventCounterInfo {
-    /** イベントカウンタ数 */
+    /** Number of event counters */
     private int eventcount;
-    /** カウンタグループリスト */
+    /** Counter group list */
     private List<EventCounterGroup> eventGroupList;
 
     /**
-     * コンストラクタ
+     * Constructor
      */
     public EventCounterInfo() {
     }
     
     
     /**
-     * イベントカウンタ数
-     * @return		イベントカウンタ数
+     * Number of event counters
+     * @return Number of event counters
      */
 	public int getEventcount() {
 		return eventcount;
 	}
 	
 	/**
-	 * イベントカウンタ数
-	 * @param count			イベントカウンタ数
-	 */
+* Number of event counters
+* @param count Number of event counters
+*/
 	public void setEventcount(int count) {
 		this.eventcount = count;
 	}
 	
 	/**
-	 * カウンタグループリスト
-	 * @return		カウンタグループリスト
-	 */
+* Counter group list
+* @return Counter group list
+*/
 	public List<EventCounterGroup> getEventGroupList() {
 		return eventGroupList;
 	}
 	
 	/**
-	 * カウンタグループリスト
-	 * @param list			カウンタグループリスト
-	 */
+* Counter group list
+* @param list Counter group list
+*/
 	public void setEventGroupList(List<EventCounterGroup> list) {
 		this.eventGroupList = list;
 	}

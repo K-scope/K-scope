@@ -41,44 +41,44 @@ import jp.riken.kscope.utils.StringUtils;
 import jp.riken.kscope.utils.SwingUtils;
 
 /**
- * ソースファイルエクスポートダイアログクラス
+ * Source file export dialog class
  * @author RIKEN
  */
 public class FileExportSourceFileDialog extends javax.swing.JDialog implements
 		ActionListener {
-	/** シリアル番号 */
+	/** Serial number */
     private static final long serialVersionUID = 1L;
 
-    /** キャンセルボタン */
+    /** Cancel button */
     private JButton btnCancel;
-    /** エクスポートボタン */
+    /** Export button */
     private JButton btnExport;
 
-    /** 出力フォルダ */
+    /** Output folder */
     private JTextField txtExportFolder;
-    /** 参照ボタン */
+    /** Browse button */
     private JButton btnRef;
-    /** ソース以外のファイルも出力する ラベル */
+    /** Label that outputs files other than the source */
     private JLabel lblOtherFiles;
-    /** ソース以外のファイルも出力する チェックボックス */
+    /** Checkbox to output files other than source */
     private JCheckBox chxOtherFiles;
-    /** 除外ファイル　*/
+    /** Excluded files */
     private JTextField txtExcludeFiles;
 
-    /** プロジェクトフォルダ */
+    /** Project folder */
     private File projectFolder;
-    /** エラーメッセージ */
+    /** Error message */
     private String errMsg;
 
-    /** ダイアログの戻り値 */
+    /** Dialog return value */
     private int result = Constant.CANCEL_DIALOG;
-    /** 画面幅 */
+    /** Screen width */
 	private final int DEFAULT_WIDTH = 480;
 
 	 /**
-     * コンストラクタ
-     * @param frame		親フレーム
-     * @param modal     モーダルモード
+     * Constructor
+     * @param frame Parent frame
+     * @param modal modal mode
      */
 	public FileExportSourceFileDialog(Frame frame, boolean modal) {
 		super(frame, modal);
@@ -86,8 +86,8 @@ public class FileExportSourceFileDialog extends javax.swing.JDialog implements
 	}
 
     /**
-     * コンストラクタ
-     * @param frame		親フレーム
+     * Constructor
+     * @param frame Parent frame
      */
 	public FileExportSourceFileDialog(JFrame frame) {
 		super(frame);
@@ -95,12 +95,12 @@ public class FileExportSourceFileDialog extends javax.swing.JDialog implements
 	}
 
 	/**
-	 * GUI初期化
-	 */
+* GUI initialization
+*/
 	private void initGUI() {
 		try {
 
-			// ボタンパネル
+			// Button panel
 			{
 				JPanel panelButtons = new JPanel();
                 FlowLayout jPanel1Layout = new FlowLayout();
@@ -110,7 +110,7 @@ public class FileExportSourceFileDialog extends javax.swing.JDialog implements
                 getContentPane().add(panelButtons, BorderLayout.SOUTH);
                 panelButtons.setPreferredSize(new java.awt.Dimension(200, 55));
 
-                // メインボタンサイズ
+                // Main button size
                 java.awt.Dimension buttonSize = new java.awt.Dimension(96, 22);
 
                 {
@@ -126,14 +126,14 @@ public class FileExportSourceFileDialog extends javax.swing.JDialog implements
                 {
                     btnCancel = new JButton();
                     panelButtons.add(btnCancel);
-                    btnCancel.setText(Message.getString("dialog.common.button.cancel")); //キャンセル
+                    btnCancel.setText(Message.getString("dialog.common.button.cancel")); //Cancel
                     btnCancel.setPreferredSize(buttonSize);
                     btnCancel.setMargin(new Insets(5, 5, 5, 5));
                     btnCancel.addActionListener(this);
                 }
 			}
 
-			// コンテンツパネル
+			// Content panel
 			{
 				JPanel panelContent = new JPanel(new BorderLayout());
                 getContentPane().add(panelContent, BorderLayout.CENTER);
@@ -144,15 +144,15 @@ public class FileExportSourceFileDialog extends javax.swing.JDialog implements
                 layoutContent.columnWidths = new int[] {14, 32, 220, 50};
                 panelContent.setLayout(layoutContent);
 
-                // 出力フォルダパネル
+                // Output folder panel
                 {
-                	panelContent.add(new JLabel(Message.getString("fileexportsourcefiledialog.label.outputfolder")), //出力先フォルダ
+                	panelContent.add(new JLabel(Message.getString("fileexportsourcefiledialog.label.outputfolder")), // Output folder
                 			new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(20, 0, 0, 8), 0, 0));
                 	txtExportFolder = new JTextField();
                 	panelContent.add(txtExportFolder,
                 			new GridBagConstraints(2, 0, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(20, 0, 0, 0), 0, 0));
                 	btnRef = new JButton();
-                	btnRef.setText(Message.getString("dialog.common.button.refer")); //参照
+                	btnRef.setText(Message.getString("dialog.common.button.refer")); //reference
                 	btnRef.setPreferredSize(new java.awt.Dimension(48, 22));
                 	btnRef.setMaximumSize(new java.awt.Dimension(48, 22));
                 	btnRef.setMargin(new Insets(0, 3, 0, 3));
@@ -160,15 +160,15 @@ public class FileExportSourceFileDialog extends javax.swing.JDialog implements
                 	panelContent.add(btnRef,
                 			new GridBagConstraints(3, 0, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(20, 8, 0, 8), 0, 0));
                 }
-                // ソースファイル以外のファイルパネル
+                // File panel other than the source file
                 {
-                	lblOtherFiles = new JLabel(Message.getString("fileexportsourcefiledialog.label.excludefile")); //除外ファイル
+                	lblOtherFiles = new JLabel(Message.getString("fileexportsourcefiledialog.label.excludefile")); // Excluded files
                 	txtExcludeFiles = new JTextField();
-                	txtExcludeFiles.setToolTipText(Message.getString("fileexportsourcefiledialog.tooltip.excludefile")); //カンマ区切りで除外するファイル名を列記します。...
+                	txtExcludeFiles.setToolTipText(Message.getString("fileexportsourcefiledialog.tooltip.excludefile")); // List the file names to exclude, separated by commas. ...
                 	chxOtherFiles = new JCheckBox(
-                			Message.getString("fileexportsourcefiledialog.checkbox.excludefile"), //ソース以外のファイルも出力する
+                			Message.getString("fileexportsourcefiledialog.checkbox.excludefile"), // Output files other than source
                 			false){
-						/** シリアル番号 */
+						/** Serial number */
 						private static final long serialVersionUID = 1L;
 						@Override
 						protected void fireStateChanged() {
@@ -187,7 +187,7 @@ public class FileExportSourceFileDialog extends javax.swing.JDialog implements
                 }
 			}
 
-            this.setTitle(Message.getString("fileexportsourcefiledialog.dialog.title")); //ソースファイルエクスポート
+            this.setTitle(Message.getString("fileexportsourcefiledialog.dialog.title")); // Source file export
             this.pack();
 
             Dimension size = new Dimension(DEFAULT_WIDTH, this.getSize().height);
@@ -199,23 +199,23 @@ public class FileExportSourceFileDialog extends javax.swing.JDialog implements
 	}
 
 	/**
-	 * 設定値エラーチェック
-	 * @return	true=問題なし
-	 */
+* Setting value error check
+* @return true = No problem
+*/
 	private boolean chkParams() {
-		// 出力先未設定　存在しないorディレクトリでない場合はＮＧ
+		// Output destination not set NG if it does not exist or is not a directory
 		String str = txtExportFolder.getText();
 		if (StringUtils.isNullOrEmpty(str)) {
-			errMsg = Message.getString("fileexportsourcefiledialog.errdlg.msg.outputfolderunset"); //出力先フォルダーが設定されていません。
+			errMsg = Message.getString("fileexportsourcefiledialog.errdlg.msg.outputfolderunset"); // The output destination folder is not set.
 			return false;
 		}
 		File f = new File(str);
 		if (!f.exists()) {
-			errMsg = Message.getString("fileexportsourcefiledialog.errdlg.msg.outputfoldernotexist"); //指定された出力先フォルダーは存在しません。
+			errMsg = Message.getString("fileexportsourcefiledialog.errdlg.msg.outputfoldernotexist"); // The specified output folder does not exist.
 			return false;
 		}
 		if (!f.isDirectory()) {
-			errMsg = Message.getString("fileexportsourcefiledialog.errdlg.msg.outputfoldernotdir"); //指定された出力先フォルダーはディレクトリではありません。
+			errMsg = Message.getString("fileexportsourcefiledialog.errdlg.msg.outputfoldernotdir"); // The specified output folder is not a directory.
 			return false;
 		}
 
@@ -227,7 +227,7 @@ public class FileExportSourceFileDialog extends javax.swing.JDialog implements
 		if (event.getSource() == this.btnExport) {
 			if (!chkParams()) {
 				JOptionPane.showMessageDialog(this, errMsg,
-						Message.getString("dialog.common.error"), //エラー
+						Message.getString("dialog.common.error"), //error
 						JOptionPane.ERROR_MESSAGE);
 			}
 			else {
@@ -242,9 +242,9 @@ public class FileExportSourceFileDialog extends javax.swing.JDialog implements
 			return;
 		}
 		else if (event.getSource() == this.btnRef) {
-			// フォルダ選択ダイアログを表示する。
+			// Display the folder selection dialog.
             File[] selected = SwingUtils.showOpenFolderDialog(this,
-                    Message.getString("fileexportsourcefiledialog.outputfolderselectdialog.title"), //出力先フォルダの選択
+                    Message.getString("fileexportsourcefiledialog.outputfolderselectdialog.title"), // Select output destination folder
                     this.projectFolder.getAbsolutePath(), false);
             if (selected == null || selected.length <= 0) return;
             this.txtExportFolder.setText(selected[0].getAbsolutePath());
@@ -253,23 +253,23 @@ public class FileExportSourceFileDialog extends javax.swing.JDialog implements
 	}
 
     /**
-     * ダイアログを表示する。
-     * @return    ダイアログの閉じた時のボタン種別
+     * Display a dialog.
+     * @return Button type when the dialog is closed
      */
     public int showDialog() {
 
-        // 親フレーム中央に表示する。
+        // Display in the center of the parent frame.
         this.setLocationRelativeTo(this.getOwner());
 
-        // ダイアログ表示
+        // Dialog display
         this.setVisible(true);
 
         return this.result;
     }
 
     /**
-     * プロジェクトフォルダを設定する
-     * @param	projectFolder
+     * Set the project folder
+     * @param project Folder
      */
     public void setProjectFolder(File projectFolder) {
     	if (projectFolder != null && projectFolder.exists() && projectFolder.isDirectory()) {
@@ -282,32 +282,32 @@ public class FileExportSourceFileDialog extends javax.swing.JDialog implements
     }
 
     /**
-     * 出力先フォルダパスを取得する
-     * @return	プロジェクトフォルダの絶対パス
+     * Get the output destination folder path
+     * @return Absolute path of project folder
      */
     public String getOutputFolder() {
     	return this.txtExportFolder.getText();
     }
 
     /**
-     * 除外ファイル文字列を設定
-     * @param	exclude          除外ファイル文字列
+     * Set exclusion file string
+     * @param exclude Exclude file string
      */
     public void setExcludeFile(String exclude) {
     	txtExcludeFiles.setText(exclude);
     }
 
     /**
-     * 除外ファイルパターンを取得
-     * @return	除外ファイルパターン
+     * Get exclusion file pattern
+     * @return Excluded file pattern
      */
     public String getExcludeFilePattern() {
     	return this.txtExcludeFiles.getText();
     }
 
     /**
-     * ソースファイル以外も出力するか否か
-     * @return	true=ソースファイル以外も出力する
+     * Whether to output other than the source file
+     * @return true = Output other than source file
      */
     public boolean isExportOtherFile(){
     	return this.chxOtherFiles.isSelected();

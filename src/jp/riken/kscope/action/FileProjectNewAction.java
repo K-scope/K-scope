@@ -53,56 +53,56 @@ import jp.riken.kscope.service.ProjectService;
 import jp.riken.kscope.xcodeml.XcodeMLParserStax;
 
 /**
- * プロジェクトの新規作成アクション
+ * New project action
  * @author RIKEN
  */
 public class FileProjectNewAction extends ActionBase {
-    /** 中間コードを生成するクラス */
+    /** Class that generates intermediate code */
     private ProjectMakeService makeService;
-    /** プロジェクトのクリアアクション */
+    /** Project clear action */
     private ProjectClearLanguageAction clearAction;
-    /** データベース構築サービス */
+    /** Database construction service */
     private LanguageService languageService;
-    /** プロジェクト構築サービス */
+    /** Project construction service */
     private ProjectService projectService;
 
     private Boolean debug=(System.getenv("DEBUG")!= null);
 
     /**
-     * コンストラクタ
+     * Constructor
      *
-     * @param controller	アプリケーションコントローラ
+     * @param controller Application controller
      */
     public FileProjectNewAction(AppController controller) {
         super(controller);
     }
 
     /**
-     * アクションが実行可能であるかチェックする.<br/>
-     * アクションの実行前チェック、メニューのイネーブルの切替を行う。<br/>
+     * Check if the action is executable. <br/>
+     * Check before executing the action and switch the menu enable. <br/>
      *
-     * @return	true=アクションが実行可能
+     * @return true = Action can be executed
      */
     @Override
     public boolean validateAction() {
-        // スレッドタスクの実行状態をチェックする
+        // Check the execution status of the thread task
         return this.controller.isThreadTaskDone();
     }
 
     /**
-     * アクション発生イベント
-     * @param event		イベント情報
+     * Action occurrence event
+     * @param event Event information
      */
     @Override
     public void actionPerformed(ActionEvent event) {
-    	 // 親Frameの取得を行う。
+    	 // Get the parent Frame.
         Frame frame = getWindowAncestor( event );
     	// Check if have opened project we need to save and close
     	FileProjectSaveAction save_action = new FileProjectSaveAction(this.controller);
     	if (save_action.validateAction()) {
     		int option = JOptionPane.showConfirmDialog(frame,
-    				Message.getString("fileprojectsaveaction.save.confirm.dialog.message"), //プロジェクトを保存しますか？
-    				Message.getString("mainmenu.file.closeproject"), //プロジェクトを閉じる, //プロジェクトの保存
+    				Message.getString("fileprojectsaveaction.save.confirm.dialog.message"), // Do you want to save the project?
+    				Message.getString("mainmenu.file.closeproject"), // close the project, // save the project
     				JOptionPane.OK_CANCEL_OPTION,
     				JOptionPane.WARNING_MESSAGE);
 
@@ -118,52 +118,52 @@ public class FileProjectNewAction extends ActionBase {
 			}
     	}
     	
-        final String message = Message.getString("mainmenu.file.newproject"); //プロジェクトの新規作成
+        final String message = Message.getString("mainmenu.file.newproject"); // Create a new project
         //RemoteBuildProperties rb_properties = null;
         Application.status.setMessageMain(message);
 
-        // 最終アクセスフォルダ
+        // Last access folder
         String currentFolder = this.controller.getLastAccessFolder();
         // Read default value of use_sshconnect
         ProjectProperties pproperties = this.controller.getPropertiesProject();
         //rb_properties = this.controller.getRBproperties();
         
-        // プロジェクトの新規作成ダイアログを表示する。
+        // Display the new project dialog.
         FileProjectNewDialog dialog = new FileProjectNewDialog(frame, true, pproperties, this.controller); 
         dialog.setLastAccessFolder(currentFolder);
-        // 除外パス名を設定する
+        // Set the exclusion path name
         dialog.addExcludeName(KscopeProperties.SETTINGS_FOLDER);
-        // プロジェクトプロパティにmakeコマンドがある場合はその文字列を表示
+        // Display the string if there is a make command in the project properties
         dialog.setBuildCommand(this.controller.getPropertiesProject().getPropertyValue(ProjectProperties.BUILD_COMMAND).getValue());
-        // タイトル, Makefile, 保存フラグの設定削除 at 2013/05/30 by @hira
-        // プロジェクトプロパティにタイトル設定がある場合その文字列を表示
+        // Title, Makefile, Save flag setting deleted at 2013/05/30 by @hira
+        // Display the character string if there is a title setting in the project property
         dialog.setProjectTitle(this.controller.getPropertiesProject().getPropertyValue(ProjectProperties.PRJ_TITLE).getValue());
-        // プロジェクトプロパティにMakefileパスがある場合はそのパスを表示
+        // Show the Makefile path if it exists in the project properties
         // dialog.setMakefilePath(this.controller.getPropertiesProject().getPropertyValue(ProjectProperties.MAKEFILE_PATH).getValue());
-        // プロジェクト作成直後にプロジェクトを保存するかどうかを設定
-        //　dialog.setSaveFlag(this.controller.getPropertiesApplication().getSaveProjectAfterCreate());
+        // Set whether to save the project immediately after creating the project
+        // dialog.setSaveFlag (this.controller.getPropertiesApplication (). getSaveProjectAfterCreate ());
 
         int result = dialog.showDialog();
 
         if (result != Constant.OK_DIALOG) {
-            Application.status.setMessageMain(message + Message.getString("action.common.cancel.status")); //:キャンセル
+            Application.status.setMessageMain(message + Message.getString("action.common.cancel.status")); //:Cancel
             return;
         }
 
-        // 最終アクセスフォルダ
+        // Last access folder
         this.controller.setLastAccessFolder(new File(dialog.getProjectFolder()));
-        // 中間コードの生成を行うか否か
+        // Whether to generate intermediate code
         boolean genCode = dialog.isGenerateIntermediateCode();
         
         String rs_file = dialog.remoteSettingsFile();  // RB settings file from dialog
         // Set Project property
         pproperties.getPropertyValue(RemoteBuildProperties.SETTINGS_FILE).setValue(rs_file);
         
-        // 選択ソース
+        // Selected source
         boolean selectedXml = dialog.isSelectedXml();
         FILE_TYPE type = FILE_TYPE.XCODEML_XML;
         if (!genCode && !selectedXml) {
-            // Fortranソースファイル
+            // Fortran source file
             type = FILE_TYPE.FORTRANLANG;
         }
         try {
@@ -172,82 +172,82 @@ public class FileProjectNewAction extends ActionBase {
         	String build_command = dialog.getBuildCommand(); // build command as set in text field in New Project dialog.
         	String clean_command = dialog.getCleanCommand(); // clean command as set in text field in New Project dialog.
         	
-            // プロジェクトを閉じる
+            // close the project
             FileProjectCloseAction closeAction = new FileProjectCloseAction(this.controller);
             closeAction.clearProject();
 
-            // プロジェクト情報
+            // Project information
             ProjectModel project = this.controller.getProjectModel();
-            // プロジェクトの新規作成
+            // Create a new project
             projectService = new ProjectService(project);
             projectService.createProject(dialog.getPeojectTitle(), new File(dialog.getProjectFolder()), dialog.getProjectXmlList(), type);
 
-            // エラーモデルの作成
+            // Create an error model
             ErrorInfoModel errorModel = this.controller.getErrorInfoModel();
             projectService.setErrorInfoModel(errorModel);
 
-            // フォートランデータベースをクリアする
+            // Clear the Fortran database
             clearAction = new ProjectClearLanguageAction(this.controller);
             clearAction.clearFortranLanguage();
 
-            /** 構造解析関連情報設定 */
-            // フォートランデータベース
+            /** Structural analysis related information setting */
+            // Fortran database
             Fortran fortran = this.controller.getFortranLanguage();
-            // XMLパーサの作成
+            // Create XML parser
             XcodeMLParserStax xmlParser = new XcodeMLParserStax();
-            // ソースツリーモデル
+            // Sourcetree model
             FileTreeModel fileModel = this.controller.getSourceTreeModel();
-            // 構造ツリーモデル
+            // Structural tree model
             LanguageTreeModel languageModel = this.controller.getLanguageTreeModel();
-            // モジュールツリーモデル
+            // Module tree model
             ModuleTreeModel moduleModel = this.controller.getModuleTreeModel();
-            // データベースの構築、探索を行うクラス
+            // Class that builds and searches the database
             languageService = new LanguageService(fortran);
-            // パーサの設定
+            // Parser settings
             languageService.setPerser(xmlParser);
-            // 構造ツリーモデルを設定する
+            // Set the structure tree model
             languageService.setLanguageTreeModel(languageModel);
-            // モジュールツリーモデルを設定する
+            // Set up the module tree model
             languageService.setModuleTreeModel(moduleModel);
-            // エラー情報モデルを設定する。
+            // Set the error information model.
             languageService.setErrorInfoModel(errorModel);
-            // ソースツリーモデルを設定する。
+            // Set the source tree model.
             languageService.setSourceTreeModel(fileModel);
-            // プロジェクトフォルダを設定する
+            // Set the project folder
             languageService.setProjectFolder(this.controller.getProjectModel().getProjectFolder());
 
-            /** プロパティ情報設定　ファイル保存時必須 */
-            // キーワードプロパティの設定
+            /** Property information setting Required when saving a file */
+            // Setting keyword properties
             projectService.setPropertiesKeyword(this.controller.getPropertiesKeyword());
-            // 外部ツールプロパティ設定
+            // External tool property settings
             projectService.setPropertiesExtension(this.controller.getPropertiesExtension());
-            // 演算カウントプロパティ設定
+            // Arithmetic count property setting
             projectService.setPropertiesOperand(this.controller.getPropertiesOperation());
-            // ソースビュープロパティ設定
+            // Source view property settings
             projectService.setPropertiesSource(this.controller.getPropertiesSource());
-            // プロファイラプロパティ設定
+            // Profiler property settings
             projectService.setPropertiesProfiler(this.controller.getPropertiesProfiler());
             
-            // 要求Byte/FLOP設定プロパティ
+            // Request Byte / FLOP configuration property
             projectService.setPropertiesMemory(this.controller.getPropertiesMemory());
             
             projectService.setRBproperties(this.controller.getRBproperties());
 
-            // Make関連情報
+            // Make related information
             File work = null;
 
             
-            // プロジェクトプロパティ設定
+            // Project property settings
             // TODO: check if need to move this below if-statement.
             projectService.setPropertiesProject(this.controller.getPropertiesProject());
-            // 中間コードの生成を行う
+            // Generate intermediate code
             if (genCode) {
-                // コンソールを表示
+                // Show console
             	this.controller.setSelectedAnalysisPanel(ANALYSIS_PANEL.CONSOLE);
 
                 work = project.getProjectFolder();
                 
-                // プロジェクトプロパティ設定
+                // Project property settings
                 ProjectProperties pp = this.controller.getPropertiesProject();
                 pp.setBuildCommand(build_command);
                 pp.setCleanCommand(clean_command);
@@ -259,17 +259,17 @@ public class FileProjectNewAction extends ActionBase {
                 	//pproperties.setRemoteProperties(rb_properties);
                 }
             }
-            // 中間コードの生成を行わない
+            // Do not generate intermediate code
             else
             {
 	            if (project.getListSelectedFile().size() < 1) {
-	            	Application.status.setMessageMain(message + Message.getString("action.common.error.status")); //:エラー
+	            	Application.status.setMessageMain(message + Message.getString("action.common.error.status")); //:error
 	            	String filetype = "XML";
 	            	if (type == FILE_TYPE.FORTRANLANG)
 	            		filetype = "Fortran";
-	            	String msg = Message.getString("fileprojectnewaction.createprojecterr.dialog.message", filetype); //指定したフォルダには  filetype ファイルがありません。...
+	            	String msg = Message.getString("fileprojectnewaction.createprojecterr.dialog.message", filetype); // There is no filetype file in the specified folder. ...
 	            	JOptionPane.showMessageDialog(frame, msg,
-	            			Message.getString("fileprojectnewaction.createprojecterr.dialog.title"), //プロジェクト作成エラー
+	            			Message.getString("fileprojectnewaction.createprojecterr.dialog.title"), // Project creation error
 	            			JOptionPane.ERROR_MESSAGE);
 	            	return;
 	            }
@@ -285,25 +285,25 @@ public class FileProjectNewAction extends ActionBase {
             		System.out.println("Calling execMake build_command="+build_command+".");
             }
 
-            /** 新規作成実行 */
+            /** New execution */
             execMake(build_command, work, dialog.getProjectXmlList(), project, dialog.isBuild(), dialog.isSave(), genCode, (project.getFileType() == FILE_TYPE.XCODEML_XML));
 
             // NO MORE NEED IN REBUILD FLAG. "REBUILD" MENU DEPENDS ONLY ON GENXML AND FULL_PROJECT PROPERTIES
             // Flag that project can be rebuilt
             //if (genCode) this.controller.getPropertiesProject().setRebuildFlag(true);
             
-            // ソースビューにプロジェクトフォルダを設定する
+            // Set the project folder in the source view
             this.controller.getMainframe().getPanelSourceView().setProjectFolder(project.getProjectFolder());
             if (dialog.isBuild()) {
             	this.controller.getMainframe().getPanelExplorerView().setSelectedPanel(EXPLORE_PANEL.LANGUAGE);
             }
             else {
 	            if (project.getFileType() == FILE_TYPE.XCODEML_XML) {
-	                // XMLタブをアクティブにする
+	                // Activate the XML tab
 	                this.controller.getMainframe().getPanelExplorerView().setSelectedPanel(EXPLORE_PANEL.XML);
 	            }
 	            else if (project.getFileType() == FILE_TYPE.FORTRANLANG) {
-	                // ソースタブをアクティブにする
+	                // Activate the Source tab
 	                this.controller.getMainframe().getPanelExplorerView().setSelectedPanel(EXPLORE_PANEL.SOURCE);
 	            }
             }
@@ -312,24 +312,24 @@ public class FileProjectNewAction extends ActionBase {
         } catch (Exception ex) {
 
             ex.printStackTrace();
-            // エラーメッセージ
+            // Error message
             JOptionPane.showMessageDialog(
                     frame,
-                    Message.getString("fileprojectnewaction.newprojecterr.dialog.message"), //プロジェクトの新規作成エラー
-                    message + Message.getString("dialog.common.error"), //エラー
+                    Message.getString("fileprojectnewaction.newprojecterr.dialog.message"), // New project creation error
+                    message + Message.getString("dialog.common.error"), //error
                     JOptionPane.ERROR_MESSAGE);
 
-            // ステータスメッセージ
-            Application.status.setMessageMain(message + Message.getString("action.common.error.status")); //:エラー
+            // Status message
+            Application.status.setMessageMain(message + Message.getString("action.common.error.status")); //:error
         }
 
-        //Application.status.setMessageMain(message + Message.getString("action.common.done.status")); //:完了
+        //Application.status.setMessageMain (message + Message.getString ("action.common.done.status")); //: Done
 
     }
 
    
 	/**
-     * プロジェクトの新規作成を実行する
+     * Create a new project
      * @param build_command
      * @param work
      * @param xmls
@@ -340,7 +340,7 @@ public class FileProjectNewAction extends ActionBase {
      * @param mode
      */
     private void execMake(String build_command, File work, List<File> xmls, ProjectModel model, boolean build, boolean save, boolean make, boolean mode) {
-        final String message = Message.getString("mainmenu.file.newproject"); //プロジェクトの新規作成
+        final String message = Message.getString("mainmenu.file.newproject"); // Create a new project
         makeService = new ProjectMakeService(work, this.controller);
         final ConsolePanel console = this.controller.getMainframe().getPanelAnalysisView().getPanelConsole();
 		console.clearConsole();
@@ -356,19 +356,19 @@ public class FileProjectNewAction extends ActionBase {
     	final List<File> sourceFiles = xmls;
     	final String build_c = build_command;    	
 
-        // スレッドタスクサービスの生成を行う。
+        // Create a thread task service.
         FutureService<Integer> future = new FutureService<Integer>(
                 /**
-                 * スレッド呼出クラス
+                 * Thread call class
                  */
                 new Callable<Integer>() {
                     /**
-                     * スレッド実行を行う
+                     * Perform thread execution
                      */
                     @Override
 					public Integer call() {
                         try {
-                            // 解析実行
+                            // Analyze execution
                         	if (bMake) {
                         		console.disable_horizontal_scroll = true; // disable scroll
                         		boolean result = makeService.executeMakeCommand();
@@ -378,7 +378,7 @@ public class FileProjectNewAction extends ActionBase {
                         		}                        		
                         	}
                         	Application.status.setMessageStatus("Set files...");
-                        	// 中間コードをまたはFortranファイルをソースリストに追加
+                        	// Add intermediate code or Fortran files to the source list
                         	FILE_TYPE filter = FILE_TYPE.XCODEML_XML;
                         	FileTreeModel treeModel = controller.getXmlTreeModel();
                         	if (!bModeXML) {
@@ -401,7 +401,7 @@ public class FileProjectNewAction extends ActionBase {
 
                         	prjModel.setListXmlFile(ls);
                         	languageService.setSourceFiles(ls.toArray(new SourceFile[0]));
-            	            // XMLツリーの更新
+            	            // Update XML tree
             	            if (treeModel != null) {
             	            	treeModel.setProjectFolder(prjFolder);
             	                treeModel.setSourceFile(ls.toArray(new SourceFile[0]));
@@ -434,19 +434,19 @@ public class FileProjectNewAction extends ActionBase {
                 }
                 ) {
                     /**
-                     * スレッド実行完了.<br/>
-                     * キャンセルされた時の後処理を行う。
+                     * Thread execution completed. <br/>
+                     * Perform post-processing when canceled.
                      */
                     @Override
                     protected void done() {
-                        // キャンセルによる終了であるかチェックする。
+                        // Check if the end is due to cancellation.
                         if (this.isCancelled()) {
-                            Application.status.setMessageMain(message + Message.getString("action.common.cancel.status")); //:キャンセル
+                            Application.status.setMessageMain(message + Message.getString("action.common.cancel.status")); //:Cancel
                         }
                         else {
-                            Application.status.setMessageMain(message + Message.getString("action.common.done.status")); //:完了
+                            Application.status.setMessageMain(message + Message.getString("action.common.done.status")); //: Done
                         }
-                        // サービス実行の停止
+                        // Stop service execution
                         if (makeService != null) {
                         	makeService.cancelRunning();
                         }
@@ -457,19 +457,19 @@ public class FileProjectNewAction extends ActionBase {
                         super.done();
                     }
         };
-        // ステータスメッセージクリア
+        // Clear status message
         Application.status.setMessageStatus(null);
 
-        // スレッドタスクにコントローラをリスナ登録する：スレッド完了時の呼出の為
+        // Register the controller as a listener in the thread task: To call when the thread is completed
         future.addPropertyChangeListener(this.controller);
         this.controller.setThreadFuture(future);
 
-        // プログレスダイアログを表示する
+        // Display the progress dialog
         WindowProgressAction progress = new WindowProgressAction(this.controller);
         progress.showProgressDialog();
         Application.status.setProgressStart(true);
 
-        // スレッド起動
+        // Thread start
         new Thread(future).start();
     }
 

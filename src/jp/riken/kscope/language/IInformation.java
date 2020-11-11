@@ -21,71 +21,71 @@ package jp.riken.kscope.language;
 import jp.riken.kscope.information.TextInfo;
 
 /**
- * 付加情報の取得、設定を行うインターフェイス
+ * Interface for acquiring and setting additional information
  * @author RIKEN
  */
 public interface IInformation {
     /**
-     * 付加情報を設定する.<br/>
-     * @param info    付加情報
+     * Set additional information. <br/>
+     * @param info Additional information
      */
     void setInformation(TextInfo info);
 
     /**
-     * 付加情報を取得する.
-     * @return		付加情報
+     * Get additional information.
+     * @return Additional information
      */
     TextInfo getInformation();
 
     /**
-     * 名前空間（モジュール名.ルーチン名）を取得する。
+     * Get the namespace (module name.routine name).
      *
-     * @return 名前空間（モジュール名.ルーチン名）
+     * @return namespace (module name.routine name)
      */
     String getNamespace();
 
     /**
-     * 開始位置を取得する。
+     * Get the start position.
      *
-     * @return 開始位置
+     * @return start position
      */
     int getStartPos();
     /**
-     * 開始位置を設定する。
+     * Set the start position.
      *
      * @param pos
-     *         開始位置
+     * Starting position
      */
     void setStartPos(int pos);
 
     /**
-     * 終了位置を取得する。
+     * Get the end position.
      *
-     * @return 終了位置
+     * @return end position
      */
     int getEndPos();
     /**
-     * 終了位置を設定する。
+     * Set the end position.
      *
      * @param pos
-     *         終了位置
+     * End position
      */
     void setEndPos(int pos);
 
     /**
-     * 付加情報をすべて削除する。
+     * Delete all additional information.
      */
     void clearInformation();
 
     /**
-     * IDを取得する。
+     * Get an ID.
      * @return ID
      */
     String getID();
 
     /**
-     * 構造IDを取得する。
-     * @return 構造ID
+     * Get the structure ID.
+     * @return Structure ID
      */
     String getLayoutID();
 

@@ -28,33 +28,33 @@ import jp.riken.kscope.common.ACCESSMEMORY_TYPE;
 import jp.riken.kscope.information.InformationBlocks;
 
 /**
- * 実行文に現れる変数を表現するクラス。
+ * A class that represents variables that appear in executable statements.
  *
  * @author RIKEN
  *
  */
 public class Variable implements Serializable {
-	/** シリアル番号 */
+	/** Serial number */
 	private static final long serialVersionUID = 7677119337098266464L;
-	/** 変数名 */
+	/** Variable name */
     private String name;
-    /** 変数の値 */
+    /** Variable value */
     private String value;
-    /** 配列添え字 */
+    /** Array subscript */
     private List<Expression> indexValues;
-    /** 変数定義 */
+    /** Variable definition */
     private VariableDefinition def;
-    /** アクセス先メモリ */
+    /** Access memory */
     private ACCESSMEMORY_TYPE memoryType;
-    /** 変数の親ブロック : 変数が属する代入文(Substitution),構文 */
+    /** Parent block of variable: Substitution, syntax */ to which the variable belongs
     private IBlock parentStatement;
-    /** 一時設定アクセス先メモリ */
+    /** Temporary setting access destination memory */
     private transient ACCESSMEMORY_TYPE temporaryMemoryType;
 
     /**
-     * コンストラクタ。
+     * Constructor.
      * @param varName
-     *          変数名
+     *          Variable name
      */
     public Variable(String varName) {
         name = varName;
@@ -70,9 +70,9 @@ public class Variable implements Serializable {
     // ++++++++++++++++++++++++++++++++++++++++++++
 
     /**
-     * 変数名のセット。
+     * A set of variable names.
      * @param nm
-     *          変数名
+     *          Variable name
      */
     public void setName(String nm) {
         name = nm;
@@ -81,9 +81,9 @@ public class Variable implements Serializable {
     // ++++++++++++++++++++++++++++++++++++++++++++
 
     /**
-     * 変数定義のセット。
+     * A set of variable definitions.
      * @param varDef
-     *          変数定義
+     *          Variable definition
      */
     public void setDefinition(VariableDefinition varDef) {
         def = varDef;
@@ -92,9 +92,9 @@ public class Variable implements Serializable {
     // ++++++++++++++++++++++++++++++++++++++++++++
 
     /**
-     * 値のセット。
+     * A set of values.
      * @param val
-     *          変数の値
+     * Variable value
      */
     public void setValue(String val) {
         value = val;
@@ -102,8 +102,8 @@ public class Variable implements Serializable {
 
     // ++++++++++++++++++++++++++++++++++++++++++++
     /**
-     * 配列添え字の値のセット。
-     * @param val 添字のリスト
+     * A set of array subscript values.
+     * @param val List of subscripts
      */
     public void setDimensionIndexValue(List<Expression> val) {
         indexValues = val;
@@ -111,9 +111,9 @@ public class Variable implements Serializable {
     // ++++++++++++++++++++++++++++++++++++++++++++
 
     /**
-     * 変数名の取得。
+     * Get variable name.
      * @return
-     *      変数名
+     *      Variable name
      */
     public String getName() {
         return (name);
@@ -122,8 +122,8 @@ public class Variable implements Serializable {
     // ++++++++++++++++++++++++++++++++++++++++++++
 
     /**
-     * 値の取得。
-     * @return 値
+     * Get the value.
+     * @return value
      */
     public String getValue() {
         return (value);
@@ -132,25 +132,25 @@ public class Variable implements Serializable {
     // ++++++++++++++++++++++++++++++++++++++++++++
 
     /**
-     * 変数定義の取得。
-     * @return 変数定義
+     * Get variable definition.
+     * @return variable definition
      */
     public VariableDefinition getDefinition() {
         return (def);
     }
 
     /**
-     * 配列添え字の値の取得
-     * @return   配列添え字
+     * Get array subscript value
+     * @return Array subscript
      */
     public List<Expression> getDimensionIndexValue() {
         return this.indexValues;
     }
 
     /**
-     * 変数のソースコード上での表示を再現して返す。
+     * Reproduces and returns the display of variables in the source code.
      *
-     * @return 変数の表示
+     * @return Display variables
      */
     public String getVariableString() {
         StringBuilder st = new StringBuilder();
@@ -170,9 +170,9 @@ public class Variable implements Serializable {
         return st.toString();
     }
     /**
-     * 付加情報ブロックコレクションを生成する。
+     * Generate an additional information block collection.
      *
-     * @return 付加情報ブロックコレクション
+     * @return Additional information block collection
      */
     public InformationBlocks createInformationBlocks() {
         InformationBlocks result = new InformationBlocks();
@@ -185,10 +185,10 @@ public class Variable implements Serializable {
     }
 
     /**
-     * idにマッチした情報ブロックを検索する。
+     * Search for information blocks that match id.
      * @param id
-     *          ID
-     * @return 見つかった情報ブロック。見つからなかった場合はnullが返ります。
+     * ID
+     * @return The information block found. If not found, null is returned.
      */
     public IInformation findInformationBlockBy(String id) {
         IInformation result = null;
@@ -202,8 +202,8 @@ public class Variable implements Serializable {
     }
 
     /**
-     * 自身の添字に含まれる変数を全て含めたセットを返す。
-     * @return 変数のセット
+     * Returns a set that includes all the variables contained in its own subscript.
+     * @return Set of variables
      */
     public Set<Variable> getAllVariables() {
         Set<Variable> set = new HashSet<Variable>();
@@ -217,8 +217,8 @@ public class Variable implements Serializable {
     }
 
     /**
-     * 自身が配列式であるか判定する。
-     * @return 真偽値。配列式であれば真
+     * Determine if it is an array expression.
+     * @return Boolean value. True if it is an array formula
      */
     public boolean isArrayExpression() {
         if (this.indexValues == null) {
@@ -234,8 +234,8 @@ public class Variable implements Serializable {
 
 
     /**
-     * 式に含まれる全ての手続呼出のセットを返す。変数および手続呼出の添字も対象とする。 再帰呼び出し。
-     * @return 手続呼出のセット。
+     * Returns the set of all procedure calls contained in the expression. It also covers variables and procedure call subscripts. Recursive call.
+     * @return A set of procedure calls.
      */
     public Set<ProcedureUsage> getAllFunctions() {
     	if (this.indexValues == null) return null;
@@ -252,9 +252,9 @@ public class Variable implements Serializable {
     }
 
     /**
-     * 同じ変数であるかチェックする.
-     * @param destVar		変数クラス
-     * @return		true=同じ
+     * Check if they are the same variable.
+     * @param destVar variable class
+     * @return true = same
      */
 	public boolean equalsVariable(Variable destVar) {
 		if (destVar == null) return false;
@@ -300,10 +300,10 @@ public class Variable implements Serializable {
 	}
 
 	/**
-	 * 同一ブロックを検索する
-	 * @param block			IInformationブロック
-	 * @return		同一ブロック
-	 */
+* Search for the same block
+* @param block IInformation block
+* @return Same block
+*/
 	public IInformation[] searchInformationBlocks(IInformation block) {
 		if (block == null) return null;
 
@@ -324,13 +324,13 @@ public class Variable implements Serializable {
 	}
 
 	/**
-	 * メモリアクセス対象変数であるかチェックする.
-	 * 実数型変数 : scaler and array
-	 * 整数型変数 : array
-	 * @return		true=メモリアクセス対象
-	 */
+* Check if it is a memory access target variable.
+* Real variables: scaler and array
+* Integer variable: array
+* @return true = Memory access target
+*/
 	public boolean isMemoryAccess() {
-		// 配列であること
+		// Must be an array
 		if (this.def == null) return false;
 		if (this.def.getVariableType() == null) return false;
 		if (this.def.getVariableType().isRealType()) {
@@ -345,46 +345,46 @@ public class Variable implements Serializable {
 	}
 
 	/**
-	 * アクセス先メモリを取得する.
-	 * @return アクセス先メモリ
-	 */
+* Get access memory.
+* @return Access memory
+*/
 	public ACCESSMEMORY_TYPE getMemoryType() {
 		return memoryType;
 	}
 
 	/**
-	 * アクセス先メモリを設定する.
-	 * @param memory アクセス先メモリ
-	 */
+* Set the access destination memory.
+* @param memory Access memory
+*/
 	public void setMemoryType(ACCESSMEMORY_TYPE memory) {
 		this.memoryType = memory;
 	}
 
 	/**
-	 * アクセス先メモリ設定をクリアする.
-	 */
+* Clear the access destination memory setting.
+*/
 	public void clearMemoryType() {
 		this.memoryType = null;
 		this.temporaryMemoryType = null;
 	}
 
 	/**
-	 * 親ブロックを取得する.
-	 * 親ブロックは変数が属する代入文(Substitution),構文とする.
-	 * @return 親ブロック
-	 */
+* Get the parent block.
+* The parent block is the assignment statement (Substitution) and syntax to which the variable belongs.
+* @return Parent block
+*/
 	public IBlock getParentStatement() {
 		return parentStatement;
 	}
 
 	/**
-	 * 親ブロックを設定する.
-	 * 親ブロックは変数が属する代入文(Substitution),構文とする.
-	 * @param parent 親ブロック
-	 */
+* Set the parent block.
+* The parent block is the assignment statement (Substitution) and syntax to which the variable belongs.
+* @param parent parent block
+*/
 	public void setParentStatement(IBlock parent) {
 		this.parentStatement = parent;
-		// 配列添え字に対して設定を行う
+		// Make settings for array subscripts
 		if (this.indexValues != null) {
 			for (Expression exp : this.indexValues) {
 				if (exp == null) continue;
@@ -394,9 +394,9 @@ public class Variable implements Serializable {
 	}
 
     /**
-     * 変数添字式の加算カウントを返す.
-     * 子変数、添字、関数引数もカウントする.
-     * @return 加算カウント
+     * Returns the addition count of variable subscripts.
+     * Also counts child variables, subscripts, and function arguments.
+     * @return Addition count
      */
 	public int getOperandAddCount() {
 		int count = 0;
@@ -411,9 +411,9 @@ public class Variable implements Serializable {
 
 
     /**
-     * 変数添字式の減算カウントを返す.
-     * 子変数、添字、関数引数もカウントする.
-     * @return 減算カウント
+     * Returns the subtraction count of variable subscripts.
+     * Also counts child variables, subscripts, and function arguments.
+     * @return Subtraction count
      */
 	public int getOperandSubCount() {
 		int count = 0;
@@ -427,9 +427,9 @@ public class Variable implements Serializable {
 	}
 
     /**
-     * 変数添字式の乗算カウントを返す.
-     * 子変数、添字、関数引数もカウントする.
-     * @return 乗算カウント
+     * Returns the multiplication count of variable subscripts.
+     * Also counts child variables, subscripts, and function arguments.
+     * @return multiplication count
      */
     public int getOperandMulCount() {
 		int count = 0;
@@ -443,9 +443,9 @@ public class Variable implements Serializable {
     }
 
     /**
-     * 変数添字式の除算カウントを返す.
-     * 子変数、添字、関数引数もカウントする.
-     * @return 除算カウント
+     * Returns the division count of a variable index expression.
+     * Also counts child variables, subscripts, and function arguments.
+     * @return division count
      */
     public int getOperandDivCount() {
 		int count = 0;
@@ -458,9 +458,9 @@ public class Variable implements Serializable {
         return count;
     }
     /**
-     * 変数添字式の累算カウントを返す.
-     * 子変数、添字、関数引数もカウントする.
-     * @return 累算カウント
+     * Returns the cumulative count of variable subscript expressions.
+     * Also counts child variables, subscripts, and function arguments.
+     * @return Cumulative count
      */
     public int getOperandPowCount() {
 		int count = 0;
@@ -474,17 +474,17 @@ public class Variable implements Serializable {
     }
 
 	/**
-	 * 一時設定アクセス先メモリを取得する
-	 * @return 一時設定アクセス先メモリ
-	 */
+* Get temporary access destination memory
+* @return Temporary access destination memory
+*/
 	public ACCESSMEMORY_TYPE getTemporaryMemoryType() {
 		return temporaryMemoryType;
 	}
 
 	/**
-	 * 一時設定アクセス先メモリを設定する
-	 * @param memory    一時設定アクセス先メモリ
-	 */
+* Temporary setting Set access destination memory
+* @param memory Temporary access destination memory
+*/
 	public void setTemporaryMemoryType(ACCESSMEMORY_TYPE memory) {
 		this.temporaryMemoryType = memory;
 	}

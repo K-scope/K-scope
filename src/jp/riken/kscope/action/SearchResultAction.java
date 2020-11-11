@@ -28,18 +28,18 @@ import jp.riken.kscope.model.SearchResultModel;
 import jp.riken.kscope.service.AppController;
 
 /**
- * 検索動作（前へ移動、次へ移動、クリア）アクション
+ * Search action (move previous, move next, clear) action
  * @author RIKEN
  */
 public class SearchResultAction extends ActionBase {
 
-    // 検索方向
+    // Search direction
     private TRACE_DIR searchDir;
 
     /**
-     * コンストラクタ
-     * @param controller	アプリケーションコントローラ
-     * @param dir			検索方向
+     * Constructor
+     * @param controller Application controller
+     * @param dir Search direction
      */
     public SearchResultAction(AppController controller, TRACE_DIR dir) {
         super(controller);
@@ -47,9 +47,9 @@ public class SearchResultAction extends ActionBase {
     }
 
     /**
-     * アクションが実行可能であるかチェックする.<br/>
-     * アクションの実行前チェック、メニューのイネーブルの切替を行う。<br/>
-     * @return		true=アクションが実行可能
+     * Check if the action is executable. <br/>
+     * Check before executing the action and switch the menu enable. <br/>
+     * @return true = Action can be executed
      */
     @Override
     public boolean validateAction() {
@@ -59,42 +59,42 @@ public class SearchResultAction extends ActionBase {
     }
 
     /**
-     * アクション発生イベント
-     * @param event		イベント情報
+     * Action occurrence event
+     * @param event Event information
      */
     @Override
     public void actionPerformed(ActionEvent event) {
     	
-    	//ステータスバー
+    	//Status bar
     	final String message = Application.status.getMessageMain().split(":")[0];
     	String actionMsg = null;
 
         if (!validateAction()) return;
 
-        // 検索結果モデル
+        // Search result model
         SearchResultPanel panel = this.controller.getMainframe().getPanelAnalysisView().getPanelSearchResult();
         if (this.searchDir == TRACE_DIR.UP) {
             panel.moveUp();
-            actionMsg = Message.getString("searchresultaction.backward.status"); //前へ
+            actionMsg = Message.getString("searchresultaction.backward.status"); //Forward
         }
         else if (this.searchDir == TRACE_DIR.DOWN) {
             panel.moveDown();
-            actionMsg = Message.getString("searchresultaction.forward.status"); //次へ
+            actionMsg = Message.getString("searchresultaction.forward.status"); //next
         }
         else if (this.searchDir == TRACE_DIR.END) {
             panel.clearModel();
 
-            // ソースビューで検索文字列をハイライトを再設定する
+            // Reset the search string highlight in Source view
             this.controller.getMainframe().getPanelSourceView().clearSearchWords(KEYWORD_TYPE.SEARCH);
-            actionMsg = Message.getString("searchresultaction.clear.status"); //クリア
+            actionMsg = Message.getString("searchresultaction.clear.status"); //clear
         }
         else if (this.searchDir == TRACE_DIR.REFRESH) {
-            // ソースビューで検索文字列をハイライトを再設定する
+            // Reset the search string highlight in Source view
             this.controller.setSearchKeywords();
-            actionMsg = Message.getString("searchresultaction.refresh.status"); //更新
+            actionMsg = Message.getString("searchresultaction.refresh.status"); //update
         }
 
-        // 検索結果タブをアクティブにする
+        // Activate the search results tab
         this.controller.setSelectedAnalysisPanel(ANALYSIS_PANEL.SEARCHRESULT);
         Application.status.setMessageMain(message + ":" + actionMsg);
     }

@@ -28,31 +28,31 @@ import jp.riken.kscope.language.Variable;
 import jp.riken.kscope.language.VariableDefinition;
 
 /**
- * type型クラス。
+ * type Type class.
  *
  * @author RIKEN
  *
  */
 public class Type implements IBlock, Serializable {
-    /** シリアル番号 */
+    /** Serial number */
     private static final long serialVersionUID = 5400440025290085684L;
     /**
-     * structure型とほぼ同じなため、structureを包含して使う。
+     * Since it is almost the same as the structure type, it is used by including the structure.
      */
     private Structure core;
 
     /**
-     * コンストラクタ。
+     * Constructor.
      */
     public Type() {
         core = new Structure();
     }
 
     /**
-     * コンストラクタ。
+     * Constructor.
      *
      * @param nm
-     *         構造体の名前
+     * Structure name
      */
     public Type(String nm) {
         core = new Structure(nm);
@@ -63,105 +63,105 @@ public class Type implements IBlock, Serializable {
         return "type " + this.getName();
     }
     /**
-     * 変数定義文の追加。
+     * Addition of variable definition statement.
      *
      * @param definition
-     *          変数定義文
+     * Variable definition statement
      */
     public void add(VariableDefinition definition) {
         core.add(definition);
     }
 
     /**
-     * 指定の型の変数定義文の追加。
+     * Add variable definition statement of the specified type.
      *
      * @param typ
-     *          変数の型
+     * Variable type
      * @param nm
-     *          変数名
+     *          Variable name
      */
     public void add(VariableType typ, String nm) {
         core.add(typ, nm);
     }
 
     /**
-     * type文の追加。
+     * Added type statement.
      *
      * @param type
-     *          構造体
+     *          Structure
      * @param variableName
-     *          変数名
+     *          Variable name
      */
     public void add(Type type, String variableName) {
         core.add(type, variableName);
     }
 
     /**
-     * structure文の追加。
+     * Addition of structure statement.
      *
      * @param structure
-     *          構造体
+     *          Structure
      * @param variableName
-     *          変数名
+     *          Variable name
      */
     public void add(Structure structure, String variableName) {
         core.add(structure, variableName);
     }
 
     /**
-     * union文の追加。
+     * Added union statement.
      *
      * @param union
-     *          共用体
+     * Union type
      */
     public void add(Union union) {
         core.add(union);
     }
 
     /**
-     * 構造体名の取得。
+     * Get the structure name.
      *
-     * @return 構造体の名前
+     * @return The name of the structure
      */
     public String getName() {
         return core.getName();
     }
 
     /**
-     * 構造体内の変数定義文リストの取得。
+     * Get a list of variable definition statements in the structure.
      *
-     * @return 変数定義文リスト.無ければnullを返す。
+     * @return Variable definition statement list. If not, null is returned.
      */
     public List<VariableDefinition> getDefinitions() {
         return core.getDefinitions();
     }
 
     /**
-     * 構造体内の変数定義文リストの設定。
-     * @param 変数定義文リスト
+     * Setting the variable definition statement list in the structure.
+     * @param Variable definition statement list
      */
     public void setDefinitions(List<VariableDefinition> list) {
     	core.setDefinitions(list);
     }
 
     /**
-     * 型が適合しているかどうか。<br>
+     * Whether the type is compatible. <br>
      *
-     * 多重定義されている関数群の中から対応する関数を探索する際に、<br>
-     * 仮引数と実引数の型チェックをする必要がある。<br>
-     * 「適合している」とは、この型チェックで、同一の型と判定される
-     * 事を意味している。
+     * When searching for the corresponding function from the overloaded function group, <br>
+     * It is necessary to check the type of formal and actual arguments. <br>
+     * "Matching" is judged to be the same type by this type check
+     * Means a thing.
      *
      * @param value
-     *          型
+     * Type
      *
-     * @return true : 適合している<br>
-     *         false: 適合していない
+     * @return true: Conforms <br>
+     * false: Not compatible
      *
      */
     public boolean matches(Type value) {
         if (value == null) { return false; }
-        // 名前のチェックのみ
+        // Name check only
         return this.getName().equalsIgnoreCase(value.getName());
     }
 
@@ -180,8 +180,8 @@ public class Type implements IBlock, Serializable {
     }
 
     /**
-     * 開始コード行情報を設定する。
-     * @param line	開始コード行情報を設定する。
+     * Set the start code line information.
+     * @param line Set the start code line information.
      */
     public void setStartCodeLine(CodeLine line) {
         if (this.core == null) return;
@@ -189,8 +189,8 @@ public class Type implements IBlock, Serializable {
     }
 
     /**
-     * 終了コード行情報を設定する。
-     * @param line	終了コード行情報を設定する。
+     * Set the exit code line information.
+     * @param line Set the exit code line information.
      */
     public void setEndCodeLine(CodeLine line) {
         if (this.core == null) return;
@@ -208,16 +208,16 @@ public class Type implements IBlock, Serializable {
     }
 
     /**
-     * 親ブロックを設定する.
-     * @param block		親ブロック
+     * Set the parent block.
+     * @param block Parent block
      */
     public void setMotherBlock(IBlock block) {
         this.core.setMotherBlock(block);
     }
 
  	/**
- 	 * 変数リストを取得する.
- 	 */
+ * Get the variable list.
+ */
  	@Override
  	public Set<Variable> getAllVariables() {
  		return null;

@@ -37,39 +37,39 @@ import jp.riken.kscope.service.FutureService;
 
 
 /**
- * 進捗状況表示ダイアログ
+ * Progress display dialog
  * @author RIKEN
  */
 public class ProgressDialog extends javax.swing.JDialog implements ActionListener, Observer {
 
-    /** シリアル番号 */
+    /** Serial number */
     private static final long serialVersionUID = 1L;
-    /** プログレスバー */
+    /** progress bar */
     private JProgressBar progressBar;
-    /** 進捗メッセージ */
+    /** Progress message */
     private JLabel lblMessageStatus;
-    /** キャンセルボタン */
+    /** Cancel button */
     private JButton btnCancel;
-    /** 閉じるボタン */
+    /** Close button */
     private JButton btnClose;
 
-    /** ダイアログの戻り値 */
+    /** Dialog return value */
     private int result = Constant.CANCEL_DIALOG;
 
-    /** スレッドタスクサービス */
+    /** Thread task service */
     private FutureService<Integer> threadService;
 
     /**
-     * プログレスバー不確定：インターバル時間(ms).<br/>
-     * PROGRESSBAR_CYCLETIME / PROGRESSBAR_INTERVAL = 偶数であること
+     * Progress bar uncertain: Interval time (ms). <br/>
+     * PROGRESSBAR_CYCLETIME / PROGRESSBAR_INTERVAL = even number
      */
     private final int PROGRESSBAR_INTERVAL = 200;
-    /** プログレスバー不確定：最大時間(ms) */
+    /** Progress bar uncertain: Maximum time (ms) */
     private final int PROGRESSBAR_CYCLETIME = 4000;
 
     /**
-     * コンストラクタ
-     * @param frame		親フレーム
+     * Constructor
+     * @param frame Parent frame
      */
     public ProgressDialog(JFrame frame) {
         super(frame);
@@ -77,9 +77,9 @@ public class ProgressDialog extends javax.swing.JDialog implements ActionListene
     }
 
     /**
-     * コンストラクタ
-     * @param owner		親フレーム
-     * @param modal		true=モーダルダイアログを表示する
+     * Constructor
+     * @param owner parent frame
+     * @param modal true = Show modal dialog
      */
     public ProgressDialog(Frame owner, boolean modal) {
         super(owner, modal);
@@ -87,7 +87,7 @@ public class ProgressDialog extends javax.swing.JDialog implements ActionListene
     }
 
     /**
-     * GUI初期化を行う。
+     * Initialize the GUI.
      */
     private void initGUI() {
         try {
@@ -106,19 +106,19 @@ public class ProgressDialog extends javax.swing.JDialog implements ActionListene
             {
                 btnClose = new JButton();
                 getContentPane().add(btnClose);
-                btnClose.setText(Message.getString("progressdialog.button.invisible")); //非表示
+                btnClose.setText(Message.getString("progressdialog.button.invisible")); // Hide
                 btnClose.setBounds(94, 112, 100, 22);
                 btnClose.addActionListener(this);
             }
             {
                 btnCancel = new JButton();
                 getContentPane().add(btnCancel);
-                btnCancel.setText(Message.getString("dialog.common.button.cancel")); //キャンセル
+                btnCancel.setText(Message.getString("dialog.common.button.cancel")); //Cancel
                 btnCancel.setBounds(235, 112, 101, 22);
                 btnCancel.addActionListener(this);
             }
 
-            this.setTitle(Message.getString("progressdialog.dialog.title")); //しばらくお待ちください
+            this.setTitle(Message.getString("progressdialog.dialog.title")); //Please wait
             this.setSize(440, 180);
 
             progressBar.setMinimum(0);
@@ -131,49 +131,49 @@ public class ProgressDialog extends javax.swing.JDialog implements ActionListene
     }
 
     /**
-     * ダイアログを表示する。
-     * @return    ダイアログの閉じた時のボタン種別
+     * Display a dialog.
+     * @return Button type when the dialog is closed
      */
     public int showDialog() {
 
-        // 親フレーム中央に表示する。
+        // Display in the center of the parent frame.
         this.setLocationRelativeTo(this.getOwner());
 
-        // ダイアログ表示
+        // Dialog display
         this.setVisible(true);
 
         return this.result;
     }
 
     /**
-     * ボタンクリックイベント
-     * @param event			イベント情報
+     * Button click event
+     * @param event Event information
      */
     @Override
     public void actionPerformed(ActionEvent event) {
         if (event.getSource() == this.btnClose) {
             this.result = Constant.OK_DIALOG;
-            // ダイアログを閉じる。
+            // Close the dialog.
             dispose();
             return;
         }
         else if (event.getSource() == this.btnCancel) {
             this.result = Constant.OK_DIALOG;
 
-            // スレッドをキャンセルする
+            // Cancel the thread
             if (this.threadService != null) {
                 this.threadService.cancel(true);
             }
 
-            // ダイアログを閉じる。
+            // Close the dialog.
             dispose();
             return;
         }
     }
 
     /**
-     * ステータスメッセージを設定する
-     * @param message		ステータスメッセージ
+     * Set status message
+     * @param message Status message
      */
     private void setMessageStatus(final String message) {
 
@@ -187,22 +187,22 @@ public class ProgressDialog extends javax.swing.JDialog implements ActionListene
     }
 
     /**
-     * 進捗状況の更新通知
-     * @param o			通知元
-     * @param arg		通知項目
+     * Progress update notification
+     * @param o Notification source
+     * @param arg Notification item
      */
     @Override
     public void update(Observable o, Object arg) {
 
         Application.StatusPrint status = (Application.StatusPrint)o;
 
-        // ステータスメッセージ
+        // Status message
         String statusMessage = status.getMessageStatus();
         setMessageStatus(statusMessage);
 
-        // プログレスバー
+        // progress bar
         if (status.isProgressStart()) {
-            // プログレスバー開始
+            // Start progress bar
             Integer value = status.getProgressValue();
             Integer min = status.getProgressMin();
             Integer max = status.getProgressMax();
@@ -218,7 +218,7 @@ public class ProgressDialog extends javax.swing.JDialog implements ActionListene
             }
         }
         else {
-            // プログレスバー停止
+            // Progress bar stop
             progressBar.setMinimum(0);
             progressBar.setMaximum(0);
             progressBar.setValue(0);
@@ -228,8 +228,8 @@ public class ProgressDialog extends javax.swing.JDialog implements ActionListene
     }
 
     /**
-     * スレッドタスクサービスを設定する
-     * @param threadService		スレッドタスクサービス
+     * Set up thread task service
+     * @param threadService Thread task service
      */
     public void setThreadService(FutureService<Integer> threadService) {
         this.threadService = threadService;

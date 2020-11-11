@@ -23,128 +23,128 @@ import java.util.regex.Matcher;
 
 
 /**
- * 拡張子設定データクラス
+ * Extension setting data class
  * @author RIKEN
  */
 public class Program {
 
-    /** 設定名 */
+    /** Setting name */
     private String name;
     /**
-     * 拡張子又は正規表現<br/>
-     * 拡張子の場合は、カンマ区切りで拡張子のみを記述する
+     * Extension or regular expression <br/>
+     * For extensions, describe only the extension separated by commas.
      */
     private String pattern;
-    /** 正規表現 */
+    /** Regular expressions */
     private boolean regex = false;
-    /** 拡張子 */
+    /** extension */
     private boolean exts = false;
-    /** 外部プログラム */
+    /** External program */
     private String exename;
-    /** 関連付けプログラム */
+    /** Association program */
     private boolean relation;
-    /** オプション */
+    /** Options */
     private String option;
 
     /**
-     * 設定名を取得する
-     * @return		設定名
+     * Get the setting name
+     * @return Setting name
      */
     public String getName() {
         return name;
     }
 
     /**
-     * 設定名を設定する
-     * @param name		設定名
+     * Set the setting name
+     * @param name Setting name
      */
     public void setName(String name) {
         this.name = name;
     }
 
     /**
-     * パターンを取得する
-     * @return		パターン
+     * Get the pattern
+     * @return pattern
      */
     public String getPattern() {
         return pattern;
     }
 
     /**
-     * パターンを設定する
-     * @param pattern		パターン
+     * Set the pattern
+     * @param pattern pattern
      */
     public void setPattern(String pattern) {
         this.pattern = pattern;
     }
 
     /**
-     * パターンが正規表現であるか取得する
-     * @return		true=正規表現
+     * Get if the pattern is a regular expression
+     * @return true = regular expression
      */
     public boolean isRegex() {
         return regex;
     }
 
     /**
-     * パターンを正規表現として設定する。
-     * @param regex		true=正規表現
+     * Set the pattern as a regular expression.
+     * @param regex true = regular expression
      */
     public void setRegex(boolean regex) {
         this.regex = regex;
     }
 
     /**
-     * パターンが拡張子であるか取得する
-     * @return		true=拡張子
+     * Get if the pattern is an extension
+     * @return true = extension
      */
     public boolean isExts() {
         return exts;
     }
 
     /**
-     * パターンを拡張子として設定する
-     * @param exts		true=拡張子
+     * Set the pattern as an extension
+     * @param exts true = extension
      */
     public void setExts(boolean exts) {
         this.exts = exts;
     }
 
     /**
-     * プログラムパスを設定する
-     * @return		プログラムパス
+     * Set the program path
+     * @return Program path
      */
     public String getExename() {
         return exename;
     }
 
     /**
-     * プログラムパスを設定する
-     * @param path		プログラムパス
+     * Set the program path
+     * @param path Program path
      */
     public void setExename(String path) {
         this.exename = path;
     }
 
     /**
-     * 関連付けプログラムとするか取得する
-     * @return		true=関連付けプログラム
+     * Make or get an association program
+     * @return true = Association program
      */
     public boolean isRelation() {
         return relation;
     }
 
     /**
-     * 関連付けプログラムをして設定する
-     * @param relation		関連付けプログラム
+     * Set as an association program
+     * @param relation Association program
      */
     public void setRelation(boolean relation) {
         this.relation = relation;
     }
 
     /**
-     * パターンに設定の拡張子数を取得する
-     * @return		拡張子数
+     * Get the number of extensions set in the pattern
+     * @return Number of extensions
      */
     public int getPatternExtsCount() {
         String[] exts = getPatternExts();
@@ -154,9 +154,9 @@ public class Program {
 
 
     /**
-     * パターンに設定の拡張子を取得する
-     * @param index			インデックス
-     * @return			拡張子
+     * Get the extension set for the pattern
+     * @param index index
+     * @return extension
      */
     public String getPatternExt(int index) {
         String[] exts = getPatternExts();
@@ -167,13 +167,13 @@ public class Program {
     }
 
     /**
-     * パターンに設定の拡張子リストを取得する
-     * @return			拡張子リスト
+     * Get the extension list set for the pattern
+     * @return Extension list
      */
     public String[] getPatternExts() {
         if (this.pattern == null || this.pattern.isEmpty()) return null;
 
-        // カンマ区切り分解する
+        // Comma delimited decomposition
         String[] exts = this.pattern.split(",", 0);
         if (exts == null || exts.length <= 0) return null;
 
@@ -189,40 +189,40 @@ public class Program {
     }
 
     /**
-     * オプションを取得する
-     * @return option		オプション
+     * Get options
+     * @return option option
      */
     public String getOption() {
         return this.option;
     }
 
     /**
-     * オプションを設定する
-     * @param value オプション
+     * Set options
+     * @param value option
      */
     public void setOption(String value) {
         this.option = value;
     }
 
     /**
-     * 検索文字と一致するプログラムであるかチェックする
-     * @param text		検索文字
-     * @return			true=一致プログラム
+     * Check if the program matches the search character
+     * @param text Search character
+     * @return true = Matching program
      */
     public boolean isMatchProgram(String text) {
         if (text == null || text.isEmpty()) return false;
 
-        // 正規表現
+        // Regular expressions
         if (this.isRegex()) {
             String pattern = this.getPattern();
             return isMatchRegex(text, pattern);
         }
         else {
-            // 拡張子
+            // extension
             int count = this.getPatternExtsCount();
             for (int i=0; i<count; i++) {
                 String ext = this.getPatternExt(i);
-                // 拡張子ファイルの検索正規表現
+                // Search for extension files Regular expression
                 String pattern = "^.+\\." + ext + "$";
                 if (isMatchRegex(text, pattern)) {
                     return true;
@@ -233,16 +233,16 @@ public class Program {
     }
 
     /**
-     * 正規表現で検索文字列が一致しているかチェックする
-     * @param text			検索文字列
-     * @param regexPattern		正規表現パターン
-     * @return		true=一致
+     * Check if the search string matches with a regular expression
+     * @param text Search string
+     * @param regexPattern Regular expression pattern
+     * @return true = match
      */
     private boolean isMatchRegex(String text, String regexPattern) {
         if (text == null || text.isEmpty()) return false;
         if (regexPattern == null || regexPattern.isEmpty()) return false;
 
-        // 正規表現によるマッチング
+        // Regular expression matching
         java.util.regex.Pattern pattern = java.util.regex.Pattern.compile(
                                                 regexPattern,
                                                 java.util.regex.Pattern.CASE_INSENSITIVE+java.util.regex.Pattern.MULTILINE);

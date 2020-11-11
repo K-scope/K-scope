@@ -40,73 +40,73 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 /**
- * 外部ツールプロパティクラス
+ * External tool property class
  * @author RIKEN
  */
 public class ProgramProperties extends PropertiesBase {
 
-    /** シリアル番号 */
+    /** Serial number */
     private static final long serialVersionUID = 1L;
 
-    /** 外部ツール設定リスト */
+    /** External tool setting list */
     private List<Program> listProgram = new ArrayList<Program>();
 
     /**
-     * コンストラクタ
-     * @throws Exception     プロパティ読込エラー
+     * Constructor
+     * @throws Exception Property read error
      */
     public ProgramProperties() throws Exception {
         loadProperties();
     }
 
     /**
-     * 外部ツールプロパティをデフォルト設定ファイルから読み込む。
+     * Read external tool properties from the default configuration file.
      *
-     * @throws Exception プロパティ読込エラー
+     * @throws Exception Property read error
      */
     public void loadProperties() throws Exception {
         InputStream stream = null;
 
-        // リソースファイルの読込
+        // Read resource file
         stream = ResourceUtils.getPropertiesFile(KscopeProperties.PROPERTIES_FILE);
 
-        // ソース設定プロパティを設定ファイルから読み込む。
+        // Read the source configuration properties from the configuration file.
         loadProperties(stream);
     }
 
     /**
-     * 外部ツールプロパティを設定ファイルから読み込む。
+     * Read external tool properties from the configuration file.
      *
-     * @param propertiesFile 設定ファイル
-     * @throws Exception プロパティ読込エラー
+     * @param propertiesFile Configuration file
+     * @throws Exception Property read error
      */
     public void loadProperties(File propertiesFile) throws Exception {
 
         if (!propertiesFile.exists()) {
-            throw (new Exception(Message.getString("propertiesbase.exeption.notexist"))); //外部ツールプロパティファイルが存在しません。
+            throw (new Exception(Message.getString("propertiesbase.exeption.notexist"))); // External tool properties file does not exist.
         }
 
-        // リソースファイルの読込
+        // Read resource file
         InputStream stream = new FileInputStream(propertiesFile);
 
-        // 外部ツールプロパティを設定ファイルから読み込む。
+        // Load external tool properties from the config file.
         loadProperties(stream);
     }
 
 
     /**
-     * 外部ツールプロパティをデフォルト設定ファイルから読み込む。
-     * @param  stream 		設定ファイルストリーム
-     * @throws Exception     プロパティ読込エラー
+     * Read external tool properties from the default configuration file.
+     * @param stream Configuration file stream
+     * @throws Exception Property read error
      *
      */
     public void loadProperties(InputStream stream) throws Exception {
-        // XMLファイルのパース
+        // Parsing the XML file
         listProgram = parseProgram(stream, "//program");
     }
 
     /**
-     * プロパティ変更イベントを通知する。
+     * Notify property change event.
      */
     @Override
     public void firePropertyChange() {
@@ -115,16 +115,16 @@ public class ProgramProperties extends PropertiesBase {
 
 
     /**
-     * 外部ツール設定リストを取得する。
-     * @return		外部ツール設定リスト
+     * Get the external tool setting list.
+     * @return External tool setting list
      */
     public List<Program> getListProgram() {
         return listProgram;
     }
 
     /**
-     * 外部ツール設定数を取得する。
-     * @return		外部ツール設定数
+     * Get the number of external tool settings.
+     * @return Number of external tool settings
      */
     public int getProgramCount() {
         if (listProgram == null || listProgram.size() <= 0) return 0;
@@ -132,9 +132,9 @@ public class ProgramProperties extends PropertiesBase {
     }
 
     /**
-     * 外部ツール設定を取得する。
-     * @param	index		インデックス
-     * @return		外部ツール設定
+     * Get external tool settings.
+     * @param index index
+     * @return External tool settings
      */
     public Program getProgram(int index) {
         if (listProgram == null || listProgram.size() <= 0) return null;
@@ -144,9 +144,9 @@ public class ProgramProperties extends PropertiesBase {
     }
 
     /**
-     * 外部ツール設定を設定する。
-     * @param	index		インデックス
-     * @param	exe		外部ツール設定
+     * Set external tool settings.
+     * @param index index
+     * @param exe external tool settings
      */
     public void setProgram(int index, Program exe) {
         if (listProgram == null || listProgram.size() <= 0) return;
@@ -155,8 +155,8 @@ public class ProgramProperties extends PropertiesBase {
     }
 
     /**
-     * 外部ツール設定を追加する。
-     * @param	exe		外部ツール設定
+     * Add external tool settings.
+     * @param exe external tool settings
      */
     public void addProgram(Program exe) {
         if (listProgram == null) {
@@ -167,8 +167,8 @@ public class ProgramProperties extends PropertiesBase {
     }
 
     /**
-     * 外部ツール設定を削除する。
-     * @param	exe		外部ツール設定
+     * Delete external tool settings.
+     * @param exe external tool settings
      */
     public void removeProgram(Program exe) {
         if (listProgram == null) return;
@@ -177,8 +177,8 @@ public class ProgramProperties extends PropertiesBase {
     }
 
     /**
-     * 外部ツール設定を削除する。
-     * @param	index		インデックス
+     * Delete external tool settings.
+     * @param index index
      */
     public void removeProgram(int index) {
         if (listProgram == null) return;
@@ -187,7 +187,7 @@ public class ProgramProperties extends PropertiesBase {
     }
 
     /**
-     * 外部ツール設定を削除する。
+     * Delete external tool settings.
      */
     public void clearProgram() {
         if (listProgram == null) return;
@@ -196,16 +196,16 @@ public class ProgramProperties extends PropertiesBase {
     }
 
     /**
-     * 検索パターンと一致する外部ツール設定を取得する
-     * @param pattern		検索パターン
-     * @return		外部ツール設定
+     * Get external tool settings that match your search pattern
+     * @param pattern Search pattern
+     * @return External tool settings
      */
     public Program getProgram(String pattern) {
         if (pattern == null || pattern.isEmpty()) return null;
 
         for (Program exe : listProgram) {
             String srcPattern = exe.getPattern();
-            // 大文字小文字を区別しない
+            // Case insensitive
             if (pattern.equalsIgnoreCase(srcPattern)) {
                 return exe;
             }
@@ -215,11 +215,11 @@ public class ProgramProperties extends PropertiesBase {
     }
 
     /**
-     * 外部ツール設定を取得する
-     * @param stream		XMLファイルストリーム
-     * @param path		外部ツール設定XPATH
-     * @return		外部ツール設定リスト
-     * @throws Exception     プロパティ読込エラー
+     * Get external tool settings
+     * @param stream XML file stream
+     * @param path External tool settings XPATH
+     * @return External tool setting list
+     * @throws Exception Property read error
      */
     public List<Program> parseProgram(InputStream stream, String path) throws Exception {
 
@@ -245,25 +245,25 @@ public class ProgramProperties extends PropertiesBase {
                 Node node = nodelist.item(i);
                 Program exe = new Program();
 
-                // 属性の取得
+                // Get attributes
                 NamedNodeMap attrs = node.getAttributes();
                 Node attrnode;
                 String value;
-                // プログラム名
+                // program name
                 attrnode = attrs.getNamedItem("name");
                 String name = null;
                 if (attrnode != null) {
                     name = attrnode.getNodeValue();
                     exe.setName(name);
                 }
-                // パターン
+                // Pattern
                 attrnode = attrs.getNamedItem("pattern");
                 String pattern = null;
                 if (attrnode != null) {
                     pattern = attrnode.getNodeValue();
                     exe.setPattern(pattern);
                 }
-                // 拡張子
+                // extension
                 attrnode = attrs.getNamedItem("exts");
                 boolean exts = false;
                 if (attrnode != null) {
@@ -271,7 +271,7 @@ public class ProgramProperties extends PropertiesBase {
                     exts = Boolean.parseBoolean(value);
                     exe.setExts(exts);
                 }
-                // 正規表現
+                // Regular expressions
                 attrnode = attrs.getNamedItem("regex");
                 boolean regex = false;
                 if (attrnode != null) {
@@ -279,7 +279,7 @@ public class ProgramProperties extends PropertiesBase {
                     regex = Boolean.parseBoolean(value);
                     exe.setRegex(regex);
                 }
-                // 関連付け
+                // Association
                 attrnode = attrs.getNamedItem("relation");
                 boolean relation = false;
                 if (attrnode != null) {
@@ -287,14 +287,14 @@ public class ProgramProperties extends PropertiesBase {
                     relation = Boolean.parseBoolean(value);
                     exe.setRelation(relation);
                 }
-                // 外部プログラム
+                // External program
                 attrnode = attrs.getNamedItem("program");
                 String program = null;
                 if (attrnode != null) {
                     program = attrnode.getNodeValue();
                     exe.setExename(program);
                 }
-                // オプション
+                // Optional
                 attrnode = attrs.getNamedItem("option");
                 String option = null;
                 if (attrnode != null) {
@@ -318,57 +318,57 @@ public class ProgramProperties extends PropertiesBase {
 
 
     /**
-     * プロパティをDOMノードに出力する
-     * @param node		出力ノード
+     * Output properties to DOM node
+     * @param node Output node
      */
     public void writeProperties(org.w3c.dom.Node node) {
-        // ドキュメントの取得
+        // Get documentation
         org.w3c.dom.Document document = node.getOwnerDocument();
 
-        // コメントを追加
+        // add comment
         {
-            org.w3c.dom.Comment comment = document.createComment(Message.getString("programproperties.document.comment")); //外部プログラムプロパティ
+            org.w3c.dom.Comment comment = document.createComment(Message.getString("programproperties.document.comment")); // External program properties
             node.appendChild(comment);
         }
 
         if (this.listProgram == null || this.listProgram.size() <= 0) return;
 
-        // キーワード
+        // Keywords
         for (Program program : this.listProgram) {
             org.w3c.dom.Element elem = document.createElement("program");
 
-            // プログラム名
+            // program name
             {
                 org.w3c.dom.Attr attr;
                 attr = document.createAttribute("name");
                 attr.setNodeValue(program.getName());
                 elem.setAttributeNode(attr);
             }
-            // パターン
+            // Pattern
             {
                 org.w3c.dom.Attr attr = document.createAttribute("pattern");
                 attr.setNodeValue(program.getPattern());
                 elem.setAttributeNode(attr);
             }
-            // 拡張子
+            // extension
             {
                 org.w3c.dom.Attr attr = document.createAttribute("exts");
                 attr.setNodeValue(String.valueOf(program.isExts()));
                 elem.setAttributeNode(attr);
             }
-            // 正規表現
+            // Regular expressions
             {
                 org.w3c.dom.Attr attr = document.createAttribute("regex");
                 attr.setNodeValue(String.valueOf(program.isRegex()));
                 elem.setAttributeNode(attr);
             }
-            // 関連付け
+            // Association
             {
                 org.w3c.dom.Attr attr = document.createAttribute("relation");
                 attr.setNodeValue(String.valueOf(program.isRelation()));
                 elem.setAttributeNode(attr);
             }
-            // 外部プログラム
+            // External program
             if (program.getExename() != null && !program.getExename().isEmpty()){
                 org.w3c.dom.Attr attr = document.createAttribute("program");
                 String exename = program.getExename();
@@ -376,21 +376,21 @@ public class ProgramProperties extends PropertiesBase {
                 attr.setNodeValue(exename);
                 elem.setAttributeNode(attr);
             }
-            // オプション
+            // Optional
             if (program.getOption() != null && !program.getOption().isEmpty()){
                 org.w3c.dom.Attr attr = document.createAttribute("option");
                 attr.setNodeValue(program.getOption());
                 elem.setAttributeNode(attr);
             }
-            // ノード追加
+            // Add node
             node.appendChild(elem);
         }
     }
 
     /**
-     * 検索文字と一致するプログラムを取得する
-     * @param text		検索文字
-     * @return			一致プログラム
+     * Get the program that matches the search character
+     * @param text Search character
+     * @return Matching program
      */
     public Program getMatchProgram(String text) {
         if (listProgram == null || listProgram.size() <= 0) return null;

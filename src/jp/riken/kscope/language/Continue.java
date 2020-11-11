@@ -18,34 +18,34 @@
 package jp.riken.kscope.language;
 
 /**
- * 繰り返し処理の最後に飛ぶ制御文クラス。
+ * Control statement class that jumps to the end of iterative processing.
  *
  * @author RIKEN
  *
  */
 public class Continue extends jp.riken.kscope.language.Block {
-    /** シリアル番号 */
+    /** Serial number */
     private static final long serialVersionUID = 1600666700399053469L;
-    /** ラベル */
+    /** Label */
     private String label;
 
     /**
-     * コンストラクタ。
+     * Constructor.
      *
      * @param parent
-     *          親ブロック
+     * Parent block
      */
     public Continue(Block parent) {
         super(parent);
     }
 
     /**
-     * コンストラクタ。
+     * Constructor.
      *
      * @param parent
-     *          親ブロック
+     * Parent block
      * @param lbl
-     *          ラベル
+     * Label
      */
     public Continue(Block parent, String lbl) {
         super(parent);
@@ -53,14 +53,14 @@ public class Continue extends jp.riken.kscope.language.Block {
     }
 
     /**
-     * コンストラクタ。
+     * Constructor.
      */
     public Continue() {
         super();
     }
 
     /**
-     * ブロックタイプの取得。
+     * Get block type.
      *
      * @return BlockType.CONTINUE
      */
@@ -69,9 +69,9 @@ public class Continue extends jp.riken.kscope.language.Block {
     }
 
     /**
-     * ラベルの取得。
+     * Get label.
      *
-     * @return ラベル
+     * @return label
      */
     public String getLabel() {
         return label;

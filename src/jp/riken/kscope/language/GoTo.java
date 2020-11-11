@@ -18,33 +18,33 @@
 package jp.riken.kscope.language;
 
 /**
- * 指定の箇所へ移動する制御文に対応したクラス。
- * 
+ * Class corresponding to the control statement that moves to the specified location.
+ *
  * @author RIKEN
- * 
+ *
  */
 public class GoTo extends jp.riken.kscope.language.Block {
-    /** シリアル番号 */
+    /** Serial number */
     private static final long serialVersionUID = 3580553803434734668L;
     private String argument;
 
     /**
-     * コンストラクタ。
+     * Constructor.
      *
      * @param parent
-     *          親ブロック
+     * Parent block
      */
     public GoTo(Block parent) {
         super(parent);
     }
 
     /**
-     * コンストラクタ。
-     * 
+     * Constructor.
+     *
      * @param parent
-     *            親ブロック
+     * Parent block
      * @param argmnt
-     *            引数（メッセージ等）
+     * Arguments (messages, etc.)
      */
     public GoTo(Block parent, String argmnt) {
         super(parent);
@@ -52,15 +52,15 @@ public class GoTo extends jp.riken.kscope.language.Block {
     }
 
     /**
-     * コンストラクタ。
+     * Constructor.
      */
     public GoTo() {
         super();
     }
 
     /**
-     * ブロックタイプの取得。
-     * 
+     * Get block type.
+     *
      * @return BlockType.GOTO
      */
     public BlockType getBlockType() {
@@ -68,19 +68,19 @@ public class GoTo extends jp.riken.kscope.language.Block {
     }
 
     /**
-     * 引数のセット。
-     * 
+     * A set of arguments.
+     *
      * @param str
-     *            引数
+     * Argument
      */
     public void setArgument(String str) {
         this.argument = str;
     }
 
     /**
-     * 引数の取得。
-     * 
-     * @return 引数
+     * Get arguments.
+     *
+     * @return argument
      */
     public String getArgument() {
         return argument;

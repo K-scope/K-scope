@@ -39,35 +39,35 @@ import jp.riken.kscope.language.fortran.Type;
 import jp.riken.kscope.language.generic.Procedures;
 
 /**
- * プログラムを表現する抽象クラス
+ * Abstract class that represents the program
  */
 public abstract class Program implements Serializable {
-	/** シリアル番号 */
+	/** Serial number */
 	private static final long serialVersionUID = 6765615822590486646L;
     /**
-     * モジュールに含まれないProcedureを格納するためのModuleオブジェクトの名前。
+     * The name of the Module object for storing Procedures that are not included in the module.
      */
     private final String NO_MODULE = "NO_MODULE";
-    /** メインプログラム名 */
+    /** Main program name */
     private String mainName;
-    /** モジュールリスト */
+    /** Module list */
     private Map<String, Module> modules = new HashMap<String, Module>();
-    /** Common宣言しているプログラムリスト */
+    /** List of programs declared as Common */
     private Map<String, List<ProgramUnit>> commonMap;
-    /** ブロック指定の付加情報 */
+    /** Additional information for block specification */
     private InformationBlocks informationBlocks = new InformationBlocks();
-    /** データベース挿入カレントプロシージャ */
+    /** Database insert current procedure */
     private transient ProgramUnit currentUnit;
 
     /**
-     * コンストラクタ。
+     * Constructor.
      */
     public Program() {
         init_module(NO_MODULE);
     }
 
     /**
-     * moduleの集合を取得する。
+     * Get a set of modules.
      * @return modules
      */
     public Map<String, Module> getModules() {
@@ -75,24 +75,24 @@ public abstract class Program implements Serializable {
     }
 
     /**
-     * モジュールを設定する。
-     * @param   modules  モジュール
+     * Set the module.
+     * @param modules modules
      */
     public void setModules(Map<String, Module> modules) {
 		this.modules = modules;
 	}
 
 	/**
-     * main名を返す。
-     * @return main名
+     * Returns the main name.
+     * @return main name
      */
     public String getMainName() {
         return mainName;
     }
 
     /**
-     * mainブロックを開始する。
-     * @param main_name main名
+     * Start the main block.
+     * @param main_name main name
      */
     public void init_main(String main_name) {
         currentUnit = module(NO_MODULE);
@@ -103,15 +103,15 @@ public abstract class Program implements Serializable {
     }
 
     /**
-     * mainブロックを終了する。
+     * Exit the main block.
      */
     public void end_main() {
         currentUnit = currentUnit.get_mother();
     }
 
     /**
-     * モジュールブロックを開始する。
-     * @param module_name モジュール名
+     * Start the module block.
+     * @param module_name Module name
      */
     public void init_module(String module_name) {
         Module module = new Module(module_name);
@@ -120,33 +120,33 @@ public abstract class Program implements Serializable {
     }
 
     /**
-     * モジュールブロックを終了する。
+     * Exit the module block.
      */
     public void end_module() {
         currentUnit = module(NO_MODULE);
     }
 
     /**
-     * 指定した名前のモジュールを返す。
-     * @param module_name モジュール名
-     * @return モジュールクラス
+     * Returns the module with the specified name.
+     * @param module_name Module name
+     * @return module class
      */
     public Module module(String module_name) {
         return modules.get(module_name);
     }
 
     /**
-     * モジュール名の配列を返す。
-     * @return モジュール名の配列
+     * Returns an array of module names.
+     * @return Array of module names
      */
     public String[] get_module_name() {
         return modules.keySet().toArray(new String[modules.size()]);
     }
 
     /**
-     * プロシージャブロックを開始する。
-     * @param type_name		プロシージャ種別
-     * @param sub_name		プロシージャ名
+     * Start a procedure block.
+     * @param type_name Procedure type
+     * @param sub_name Procedure name
      */
     protected void init_procedure(String type_name, String sub_name) {
         Procedure sub = new Procedure(type_name, sub_name);
@@ -157,10 +157,10 @@ public abstract class Program implements Serializable {
     }
 
     /**
-     * プロシージャブロックを開始する。
-     * @param type_name		プロシージャ種別
-     * @param sub_name		プロシージャ名
-     * @param args			プロシージャ仮引数
+     * Start a procedure block.
+     * @param type_name Procedure type
+     * @param sub_name Procedure name
+     * @param args Procedure formal parameters
      */
     protected void init_procedure(String type_name, String sub_name,
             String[] args) {
@@ -172,32 +172,32 @@ public abstract class Program implements Serializable {
     }
 
     /**
-     * プロシージャブロックを終了する。
+     * Exit the procedure block.
      */
     protected void end_procedure() {
         currentUnit = currentUnit.get_mother();
     }
 
     /**
-     * 属性を追加する。
-     * @param attribute_name 属性の文字列表現
+     * Add attributes.
+     * @param attribute_name String representation of the attribute
      */
     public void put_attribute(String attribute_name) {
         currentUnit.put_attribute(attribute_name);
     }
 
     /**
-     * USE文を追加する。
-     * @param useline USE文
+     * Add a USE statement.
+     * @param useline USE statement
      */
     public void setUse(UseState useline) {
         currentUnit.addUse(useline);
     }
     /**
-     * USE文を追加する。
-     * @param useline USE文
-     * @param lineInfo code行情報
-     * @param label ラベル。無ければStatement.NO_LABELをセットする。
+     * Add a USE statement.
+     * @param useline USE statement
+     * @param lineInfo code Line information
+     * @param label Label. If not, set Statement.NO_LABEL.
      */
     public void setUse(UseState useline, CodeLine lineInfo, String label) {
         currentUnit.addUse(useline);
@@ -207,13 +207,13 @@ public abstract class Program implements Serializable {
     }
 
     /**
-     * 分岐処理の開始行を設定する。
+     * Set the start line of branch processing.
      *
      * @param lineInfo
-     *            コード行情報
+     * Code line information
      * @param label
-     *            行ラベル。ない場合はStatement.NO_LABELをセットする。
-     * @param type Selectionの型
+     *            Row label. If not, set Statement.NO_LABEL.
+     * @param type Selection type
      */
     public void startSelection(CodeLine lineInfo, String label,
             jp.riken.kscope.language.Selection.SelectionType type) {
@@ -221,12 +221,12 @@ public abstract class Program implements Serializable {
     }
 
     /**
-     * 分岐を表す処理ブロックを開始する。else if文やelse文、case文に対応する。
+     * Start a processing block that represents a branch. Corresponds to else if statement, else statement, and case statement.
      *
      * @param cond
-     *           条件式
-     * @param lineInfo 行情報
-     * @param label ラベル。無い場合はStatement.NO_LABELをセットする。
+     * Conditional expression
+     * @param lineInfo Line information
+     * @param label Label. If not, set Statement.NO_LABEL.
      */
     public void startCondition(Expression cond, CodeLine lineInfo, String label) {
         if (label == null) { label = Statement.NO_LABEL; }
@@ -245,19 +245,19 @@ public abstract class Program implements Serializable {
     }
 
     /**
-     * 分岐を表す処理ブロックを終了する。else if文やelse文、case文に対応する。
+     * Terminate the processing block that represents the branch. Corresponds to else if statement, else statement, and case statement.
      *
-     * @param lineInfo 行情報
-     * @param label ラベル。無い場合はStatement.NO_LABELをセットする。
+     * @param lineInfo Line information
+     * @param label Label. If not, set Statement.NO_LABEL.
      */
     public void endCondition(CodeLine lineInfo, String label) {
         ((Procedure) currentUnit).end_condition(lineInfo, label);
     }
 
     /**
-     * 分岐処理に条件式をセットする（Select case文限定）。Selection以外のブロックにはセットされない。
-     * Select case文以外では利用されない。
-     * @param exp 条件式
+     * Set a conditional expression in the branch processing (select case statement only). It is not set in blocks other than Selection.
+     * Not used except in the Select case statement.
+     * @param exp conditional expression
      */
     public void setSelectCaseCondition(Expression exp) {
         IBlock blk = this.getCurrentBlock();
@@ -273,56 +273,56 @@ public abstract class Program implements Serializable {
     }
 
     /**
-     * 分岐の終了行を設定する。
+     * Set the end line of the branch.
      *
      * @param lineInfo
-     *            コード行情報
+     * Code line information
      */
     public void end_selection(CodeLine lineInfo) {
         ((Procedure) currentUnit).end_selection(lineInfo, Statement.NO_LABEL);
     }
 
     /**
-     * 分岐文の終了行を設定する。
+     * Set the end line of the branch statement.
      *
      * @param lineInfo
-     *            コード行情報
+     * Code line information
      * @param label
-     *            行ラベル
+     *            Row label
      */
     protected void end_selection(CodeLine lineInfo, String label) {
         ((Procedure) currentUnit).end_selection(lineInfo, label);
     }
 
     /**
-     * ユーザー定義処理ブロックを開始する.
-     * @param lineInfo		コード行情報
+     * Start a user-defined processing block.
+     * @param lineInfo Code line information
      */
     protected void start_user_defined(CodeLine lineInfo) {
         ((Procedure) currentUnit).start_user_defined(lineInfo);
     }
 
     /**
-     * ユーザー定義処理ブロックを開始する.
-     * @param lineInfo		コード行情報
-     * @param label			コードラベル
+     * Start a user-defined processing block.
+     * @param lineInfo Code line information
+     * @param label Code label
      */
     protected void start_user_defined(CodeLine lineInfo, String label) {
         ((Procedure) currentUnit).start_user_defined(lineInfo, label);
     }
 
     /**
-     * ユーザー定義処理ブロックを終了する.
-     * @param lineInfo		コード行情報
+     * Exit the user-defined processing block.
+     * @param lineInfo Code line information
      */
     protected void end_user_defined(CodeLine lineInfo) {
         ((Procedure) currentUnit).end_user_defined(lineInfo);
     }
 
     /**
-     * ユーザー定義処理ブロックを終了する.
-     * @param lineInfo		コード行情報
-     * @param label			コードラベル
+     * Exit the user-defined processing block.
+     * @param lineInfo Code line information
+     * @param label Code label
      */
     protected void end_user_defined(CodeLine lineInfo, String label) {
         ((Procedure) currentUnit).end_user_defined(lineInfo, label);
@@ -330,18 +330,18 @@ public abstract class Program implements Serializable {
 
 
     /**
-     * 手続きの呼び出しをセットする。
+     * Set the procedure call.
      *
      * @param lineInfo
-     *            コード行情報
+     * Code line information
      * @param label
-     *            行ラベル
+     *            Row label
      * @param subroutineName
-     *            CALLサブルーチン名
+     * CALL subroutine name
      * @param arguments
-     *            引数リスト
+     * Argument list
      * @param intrinsic
-     *            組込関数フラグ:true=組込関数
+     * Embedded function flag: true = Embedded function
      */
     protected void setProcedureUsage(CodeLine lineInfo, String label,
             String subroutineName, List<Expression> arguments, boolean intrinsic) {
@@ -352,7 +352,7 @@ public abstract class Program implements Serializable {
         }
         this.end_procedure_usage(lineInfo, label);
 
-        // 分析機能のために参照をセット
+        // Set references for analytics
         if (arguments != null) {
         for (Expression arg: arguments) {
             Set<Variable> vars = arg.getAllVariables();
@@ -366,16 +366,16 @@ public abstract class Program implements Serializable {
     }
 
     /**
-     * 手続きの呼び出しの開始をセットする。
+     * Set the start of the procedure call.
      *
      * @param lineInfo
-     *            コード行情報
+     * Code line information
      * @param label
-     *            行ラベル
+     *            Row label
      * @param subroutineName
-     *            CALLサブルーチン名
+     * CALL subroutine name
      * @param arguments
-     *            引数リスト
+     * Argument list
      */
     protected void start_procedure_usage(CodeLine lineInfo, String label,
             String subroutineName, List<Expression> arguments) {
@@ -384,44 +384,44 @@ public abstract class Program implements Serializable {
     }
 
     /**
-     * 手続きの呼び出しの終了を設定する。
+     * Set the end of the procedure call.
      *
      * @param lineInfo
-     *            コード行情報
+     * Code line information
      * @param label
-     *            行ラベル
+     *            Row label
      */
     protected void end_procedure_usage(CodeLine lineInfo, String label) {
         ((Procedure) currentUnit).end_procedure_usage(lineInfo, label);
     }
 
     /**
-     * DO文の開始行を設定する。（ラベル付き）
+     * Set the start line of the DO statement. (With label)
      *
      * @param lineInfo
-     *            コード行情報
+     * Code line information
      * @param label
-     *            行ラベル
+     *            Row label
      */
     protected void start_repetition(CodeLine lineInfo, String label) {
         ((Procedure) currentUnit).start_repetition(lineInfo, label);
     }
 
     /**
-     * DO文の開始行を設定する。
+     * Set the start line of the DO statement.
      *
      * @param lineInfo
-     *            コード行情報
+     * Code line information
      * @param label
-     *            行ラベル.ない場合はStatement.NO_LABELをセットする。
+     * Row label. If not, set Statement.NO_LABEL.
      * @param iterator
-     *            ループ制御変数.ない場合はnull
+     * Loop control variable. Null if not
      * @param initIterator
-     *            始値。ない場合はnull
+     * Open price. Null if not
      * @param endCondition
-     *            終値。ない場合はnull
+     * Closing price. Null if not
      * @param step
-     *            刻み幅。ない場合はnull
+     * Step width. Null if not
      */
     protected void start_repetition(CodeLine lineInfo, String label,
             Variable iterator, Expression initIterator,
@@ -434,7 +434,7 @@ public abstract class Program implements Serializable {
                 .getCurrentBlock();
         aCurrentBlock.setProperty(iterator, initIterator, endCondition, step);
 
-        // 分析機能のために参照をセット
+        // Set references for analytics
         if (iterator != null) {
             aCurrentUnit.putVariableMap(iterator.getName());
             aCurrentUnit.putDefVariableName(iterator.getName(), aCurrentBlock);
@@ -452,53 +452,53 @@ public abstract class Program implements Serializable {
     }
 
     /**
-     * DO文の終了行を設定する。
+     * Set the end line of the DO statement.
      *
      * @param lineInfo
-     *            コード行情報
+     * Code line information
      */
     protected void end_repetition(CodeLine lineInfo) {
         ((Procedure) currentUnit).end_repetition(lineInfo);
     }
 
     /**
-     * DO文の終了行を設定する。
+     * Set the end line of the DO statement.
      *
      * @param lineInfo
-     *            コード行情報
+     * Code line information
      * @param label
-     *            行ラベル
+     *            Row label
      */
     protected void end_repetition(CodeLine lineInfo, String label) {
         ((Procedure) currentUnit).end_repetition(lineInfo, label);
     }
 
     /**
-     * CONTINUE文を設定する。
+     * Set the CONTINUE statement.
      *
      * @param lineInfo
-     *            コード行情報
+     * Code line information
      * @param label
-     *            行ラベル
+     *            Row label
      */
     protected void set_continue(CodeLine lineInfo, String label) {
         ((Procedure) currentUnit).set_continue(lineInfo, label);
     }
 
     /**
-     * 変数宣言文を設定する。
+     * Set a variable declaration statement.
      *
      * @param var_def
-     *            変数宣言文
+     * Variable declaration statement
      */
     public void set_variable_def(VariableDefinition var_def) {
         currentUnit.set_variable_def(var_def);
     }
 
     /**
-     * データベースに現在格納しているブロックを取得する。
+     * Get the block currently stored in the database.
      *
-     * @return 現在ブロック
+     * @return Currently blocked
      */
     public Block get_current_block() {
         if (this.currentUnit == null) {
@@ -515,18 +515,18 @@ public abstract class Program implements Serializable {
     }
 
     /**
-     * データベースに現在格納しているProgramUnitを取得する。
+     * Get the ProgramUnit currently stored in the database.
      *
-     * @return 現在ProgramUnit
+     * @return Currently ProgramUnit
      */
     public ProgramUnit get_current_unit() {
         return this.currentUnit;
     }
 
     /**
-     * カレントユニットのカレントブロックを取得する。
+     * Get the current block of the current unit.
      *
-     * @return カレントブロック.カレントユニットがサブルーチンではない場合はnullを返す.
+     * @return Current block. Returns null if the current unit is not a subroutine.
      */
     private Block getCurrentBlock() {
         if (currentUnit instanceof Procedure) {
@@ -536,19 +536,19 @@ public abstract class Program implements Serializable {
         }
     }
 
-    // Blockクラスを継承するクラスの中で、論理的な1行で記述されるクラスのセットメソッド群
+    // A set method group of classes described in one logical line in the class that inherits the Block class
 
     /**
-     * 代入文をセットする。
+     * Set an assignment statement.
      *
      * @param left
-     *            左辺
+     * Left side
      * @param right
-     *            右辺
+     * Right side
      * @param lineInfo
-     *            行情報
+     * Row information
      * @param label
-     *            ラベル。ない場合はStatement.NO_LABELをセットする。
+     * Label. If not, set Statement.NO_LABEL.
      */
     public void setSubstitution(Variable left, Expression right,
             CodeLine lineInfo, String label) {
@@ -565,21 +565,21 @@ public abstract class Program implements Serializable {
         blk.setRight(right);
         block.add_child(blk);
 
-        // 分析機能のために参照をセット
+        // Set references for analytics
         ((Procedure) this.currentUnit).putDefVariableName(left.getName(), blk);
         ((Procedure) this.currentUnit).putVariableMap(left.getName());
         this.currentUnit.addExpressionToRef(blk, right);
     }
 
     /**
-     * カレントブロックに子要素を持たないBlockをセットする。
+     * Set a block that has no child elements in the current block.
      *
      * @param blk
-     *            ブロック
+     * Block
      * @param lineInfo
-     *            行情報
+     * Row information
      * @param label
-     *            ラベル。ない場合はStatement.NO_LABELをセットする。
+     * Label. If not, set Statement.NO_LABEL.
      */
     private void setBlockToCurrent(Block blk, CodeLine lineInfo, String label) {
         Block block = this.getCurrentBlock();
@@ -591,12 +591,12 @@ public abstract class Program implements Serializable {
     }
 
     /**
-     * Exit文をセットする。
+     * Set the Exit statement.
      *
      * @param lineInfo
-     *            行情報
+     * Row information
      * @param label
-     *            ラベル。ない場合はStatement.NO_LABELをセットする。
+     * Label. If not, set Statement.NO_LABEL.
      */
     public void setExit(CodeLine lineInfo, String label) {
         Break blk = new Break();
@@ -604,12 +604,12 @@ public abstract class Program implements Serializable {
     }
 
     /**
-     * Return文をセットする。
+     * Set the Return statement.
      *
      * @param lineInfo
-     *            行情報
+     * Row information
      * @param label
-     *            ラベル。ない場合はStatement.NO_LABELをセットする。
+     * Label. If not, set Statement.NO_LABEL.
      */
     public void setReturn(CodeLine lineInfo, String label) {
         Return blk = new Return();
@@ -617,12 +617,12 @@ public abstract class Program implements Serializable {
     }
 
     /**
-     * Cycle文をセットする。
+     * Set the Cycle statement.
      *
      * @param lineInfo
-     *            行情報
+     * Row information
      * @param label
-     *            ラベル。ない場合はStatement.NO_LABELをセットする。
+     * Label. If not, set Statement.NO_LABEL.
      */
     public void setCycle(CodeLine lineInfo, String label) {
         Continue blk = new Continue();
@@ -630,15 +630,15 @@ public abstract class Program implements Serializable {
     }
 
     /**
-     * Stop文をセットする。
+     * Set the Stop statement.
      *
      * @param arg
-     *            引数
+     * Argument
      *
      * @param lineInfo
-     *            行情報
+     * Row information
      * @param label
-     *            ラベル。ない場合はStatement.NO_LABELをセットする。
+     * Label. If not, set Statement.NO_LABEL.
      */
     public void setStop(String arg, CodeLine lineInfo, String label) {
         Termination blk = new Termination();
@@ -647,12 +647,12 @@ public abstract class Program implements Serializable {
     }
 
     /**
-     * Continue文をセットする。
+     * Set the Continue statement.
      *
      * @param lineInfo
-     *            行情報
+     * Row information
      * @param label
-     *            ラベル。ない場合はStatement.NO_LABELをセットする。
+     * Label. If not, set Statement.NO_LABEL.
      */
     public void setContinue(CodeLine lineInfo, String label) {
         DoNothing blk = new DoNothing();
@@ -660,15 +660,15 @@ public abstract class Program implements Serializable {
     }
 
     /**
-     * Pause文をセットする。
+     * Set a Pause statement.
      *
      * @param arg
-     *            引数
+     * Argument
      *
      * @param lineInfo
-     *            行情報
+     * Row information
      * @param label
-     *            ラベル。ない場合はStatement.NO_LABELをセットする。
+     * Label. If not, set Statement.NO_LABEL.
      */
     public void setPause(String arg, CodeLine lineInfo, String label) {
         Pause blk = new Pause();
@@ -677,15 +677,15 @@ public abstract class Program implements Serializable {
     }
 
     /**
-     * GoTo文をセットする。
+     * Set a GoTo statement.
      *
      * @param arg
-     *            引数
+     * Argument
      *
      * @param lineInfo
-     *            行情報
+     * Row information
      * @param label
-     *            ラベル。ない場合はStatement.NO_LABELをセットする。
+     * Label. If not, set Statement.NO_LABEL.
      */
     public void setGoTo(String arg, CodeLine lineInfo, String label) {
         GoTo blk = new GoTo();
@@ -694,11 +694,11 @@ public abstract class Program implements Serializable {
     }
 
     /**
-     * ディレクティブをセットする。
+     * Set directives.
      *
-     * @param arg 引数
-     * @param lineInfo 行情報
-     * @param label ラベル。ない場合はStatement.NO_LABELをセットする。
+     * @param arg argument
+     * @param lineInfo Line information
+     * @param label Label. If not, set Statement.NO_LABEL.
      */
     public void setDirective(String arg, CodeLine lineInfo, String label) {
         Directive blk = new Directive();
@@ -712,11 +712,11 @@ public abstract class Program implements Serializable {
     }
 
     /**
-     * Nullify文をセットする。
+     * Set the Nullify statement.
      *
-     * @param var 引数
-     * @param lineInfo 行情報
-     * @param label ラベル。ない場合はStatement.NO_LABELをセットする。
+     * @param var argument
+     * @param lineInfo Line information
+     * @param label Label. If not, set Statement.NO_LABEL.
      */
     public void setNullify(List<Variable> var, CodeLine lineInfo, String label) {
         DynamicNullification blk = new DynamicNullification();
@@ -725,17 +725,17 @@ public abstract class Program implements Serializable {
     }
 
     /**
-     * Allocate文をセットする。
+     * Set the Allocate statement.
      *
      * @param trgt
-     *            ターゲット
+     * Target
      * @param err
-     *            エラー変数式。ない場合はnullをセットする。
+     * Error variable expression. If not, set null.
      *
      * @param lineInfo
-     *            行情報
+     * Row information
      * @param label
-     *            ラベル。ない場合はStatement.NO_LABELをセットする。
+     * Label. If not, set Statement.NO_LABEL.
      */
     public void setAllocate(Map<Variable, VariableDimension> trgt,
             Variable err, CodeLine lineInfo, String label) {
@@ -746,17 +746,17 @@ public abstract class Program implements Serializable {
     }
 
     /**
-     * Deallocate文をセットする。
+     * Set the Deallocate statement.
      *
      * @param trgt
-     *            ターゲット
+     * Target
      * @param err
-     *            エラー変数式。ない場合はnullをセットする。
+     * Error variable expression. If not, set null.
      *
      * @param lineInfo
-     *            行情報
+     * Row information
      * @param label
-     *            ラベル。ない場合はStatement.NO_LABELをセットする。
+     * Label. If not, set Statement.NO_LABEL.
      */
     public void setDeallocate(List<Variable> trgt, Variable err,
             CodeLine lineInfo, String label) {
@@ -767,15 +767,15 @@ public abstract class Program implements Serializable {
     }
 
     /**
-     * Data文をカレントユニットにセットする。
+     * Set the Data statement to the current unit.
      *
      * @param blk
-     *            Dataクラス
+     * Data class
      *
      * @param lineInfo
-     *            行情報
+     * Row information
      * @param label
-     *            ラベル。ない場合はStatement.NO_LABELをセットする。
+     * Label. If not, set Statement.NO_LABEL.
      */
     public void setData(Data blk,
             CodeLine lineInfo, String label) {
@@ -787,15 +787,15 @@ public abstract class Program implements Serializable {
     }
 
     /**
-     * Equivalence文をカレントユニットにセットする。
+     * Set the Equivalence statement to the current unit.
      *
      * @param blk
-     *            Equivalenceクラス
+     * Equivalence class
      *
      * @param lineInfo
-     *            行情報
+     * Row information
      * @param label
-     *            ラベル。ない場合はStatement.NO_LABELをセットする。
+     * Label. If not, set Statement.NO_LABEL.
      */
     public void setEquivalence(Equivalence blk, CodeLine lineInfo,
             String label) {
@@ -807,15 +807,15 @@ public abstract class Program implements Serializable {
     }
 
     /**
-     * Common文をカレントユニットにセットする。
+     * Set the Common statement to the current unit.
      *
      * @param blk
-     *            Commonクラス
+     * Common class
      *
      * @param lineInfo
-     *            行情報
+     * Row information
      * @param label
-     *            ラベル。ない場合はStatement.NO_LABELをセットする。
+     * Label. If not, set Statement.NO_LABEL.
      */
     public void setCommon(Common blk, CodeLine lineInfo, String label) {
         this.currentUnit.addCommon(blk);
@@ -838,14 +838,14 @@ public abstract class Program implements Serializable {
     }
 
     /**
-     * Interface文をカレントユニットにセットする。
+     * Set the Interface statement to the current unit.
      *
      * @param blk
-     *            Interfaceクラス
+     * Interface class
      * @param lineInfo
-     *            行情報
+     * Row information
      * @param label
-     *            ラベル。ない場合はStatement.NO_LABELをセットする。
+     * Label. If not, set Statement.NO_LABEL.
      */
     public void setInterface(Procedures blk, CodeLine lineInfo, String label) {
         this.currentUnit.addInterface(blk);
@@ -856,7 +856,7 @@ public abstract class Program implements Serializable {
     }
     // ----------------------------------------
     /**
-     * カレントユニットにprivate属性をセットする。
+     * Set the private attribute to the current unit.
      */
     public void setPrivateToCurrentUnit() {
         if (!(currentUnit instanceof Procedure))
@@ -865,7 +865,7 @@ public abstract class Program implements Serializable {
     }
 
     /**
-     * カレントユニットにpublic属性をセットする。
+     * Set the public attribute to the current unit.
      */
     public void setPublicToCurrentUnit() {
         if (!(currentUnit instanceof Procedure))
@@ -875,9 +875,9 @@ public abstract class Program implements Serializable {
 
     // ----------------------------------------
     /**
-     * TYPE宣言を登録する。
+     * Register the TYPE declaration.
      *
-     * @param tp TYPE宣言
+     * @param tp TYPE declaration
      */
     public void addTypeDefinition(Type tp) {
         this.currentUnit.addTypeDefinition(tp);
@@ -890,24 +890,24 @@ public abstract class Program implements Serializable {
     }
 
     /**
-     * interfaceブロックを追加する.
-     * @param blk interfaceブロック
+     * Add an interface block.
+     * @param blk interface block
      */
     public void addInterface(Procedures blk) {
         currentUnit.addInterface(blk);
     }
 
     /**
-     * 領域指定された全ての情報ブロックの取得。
+     * Acquisition of all information blocks specified in the area.
      *
-     * @return 領域指定された情報ブロックコレクション
+     * @return Area Specified information block collection
      */
     public InformationBlocks getInformationBlocks() {
         return this.informationBlocks;
     }
     /**
-     * 領域指定された全ての情報ブロックのセット。
-     * @param blks 領域指定された情報ブロックの集合
+     * A set of all information blocks specified in the area.
+     * @param blks Area A set of specified information blocks
      */
     public void setInformationBlocks(InformationBlocks blks) {
         this.informationBlocks = blks;
@@ -917,9 +917,9 @@ public abstract class Program implements Serializable {
     // --------------Information---------------
     // ----------------------------------------
     /**
-     * 子プログラムを含む全ての情報ブロックの取得。
+     * Acquisition of all information blocks including child programs.
      *
-     * @return 情報ブロックコレクション
+     * @return Information block collection
      */
     public InformationBlocks getInformationBlocksAll() {
         InformationBlocks result = new InformationBlocks();
@@ -934,8 +934,8 @@ public abstract class Program implements Serializable {
 
 
     /**
-     * カレントユニットに戻り値の型をセットする。
-     * @param tp 戻り値の型
+     * Set the return type to the current unit.
+     * @param tp Return type
      */
     public void setReturnValueType(IVariableType tp) {
         ProgramUnit pu = this.currentUnit;
@@ -945,8 +945,8 @@ public abstract class Program implements Serializable {
     }
 
     /**
-     * カレントユニットに結果の名前をセットする。
-     * @param st 結果の名前
+     * Set the name of the result in the current unit.
+     * @param st Result name
      */
     public void setResult(String st) {
         ProgramUnit pu = this.currentUnit;
@@ -956,26 +956,26 @@ public abstract class Program implements Serializable {
     }
 
     /**
-     * カレントユニットにexternal宣言された関数の名前とデータ型を追加する。
-     * @param name 関数名
-     * @param tp データ型
+     * Add the name and data type of the function declared external to the current unit.
+     * @param name Function name
+     * @param tp data type
      */
     public void addExternalFunction(String name, IVariableType tp) {
         this.currentUnit.addExternalFunctionList(name, tp);
     }
 
     /**
-     * COMMONマップを返す。
-     * @return COMMONマップ
+     * Returns a COMMON map.
+     * @return COMMON map
      */
     public Map<String, List<ProgramUnit>> getCommonMap() {
         return commonMap;
     }
 
     /**
-     * 指定したCommon名を宣言しているプログラム単位のリストを返す。
-     * @param nm Common名
-     * @return プログラム単位のリスト。無ければ空のリストを返す。
+     * Returns a list of program units declaring the specified Common name.
+     * @param nm Common name
+     * @return A list of program units. If not, returns an empty list.
      */
     public List<ProgramUnit> getCommonUnit(String nm) {
         if (this.commonMap == null) {
@@ -988,11 +988,11 @@ public abstract class Program implements Serializable {
     }
 
     /**
-     * 指定したファイルに含まれるプログラム単位のリストを返す。
+     * Returns a list of program units contained in the specified file.
      *
      * @param file
-     *            ファイル
-     * @return プログラム単位のリスト。無ければ空のリストを返す。
+     *            File
+     * @return A list of program units. If not, returns an empty list.
      */
     public List<ProgramUnit> getProgramUnits(SourceFile file) {
     	if (file == null) return null;
@@ -1011,27 +1011,27 @@ public abstract class Program implements Serializable {
         return units;
     }
     /**
-     * 複数ブロック付加情報のリストから指定したstartとendを持つブロックを探索し、該当の付加情報領域を返す。
-     * @param start 開始ブロック
-     * @param end 終了ブロック
-     * @return 付加情報領域。無ければ新しい付加情報領域を作成し返す。
+     * Searches the block with the specified start and end from the list of multiple block additional information, and returns the corresponding additional information area.
+     * @param start Start block
+     * @param end End block
+     * @return Additional information area. If not, a new additional information area is created and returned.
      */
     public IInformation getInformation(IInformation start, IInformation end) {
         InformationBlock block = this.informationBlocks.findObjectBy(start, end);
         if (block != null) {
             return block;
         }
-        // 無ければ新しく作成して追加
+        // If not, create a new one and add
         TextInfo newInfo = new TextInfo();
         InformationBlock bk = new InformationBlock(newInfo, start, end);
         this.informationBlocks.add(bk);
         return bk;
     }
     /**
-     * 複数ブロック付加情報のリストから指定したinfoNodeを開始に持つブロックを探索し、該当の付加情報領域のリストを返す。
-     * 指定したinfoNodeがメインの場合、リストを全て返す。
-     * @param infoNode ブロック
-     * @return 付加情報領域のリスト。無ければ空のリストを返す。
+     * Searches the block starting from the specified infoNode from the list of multiple block additional information, and returns the list of the corresponding additional information area.
+     * If the specified infoNode is the main, return the entire list.
+     * @param infoNode block
+     * @return A list of additional information areas. If not, returns an empty list.
      */
     public List<InformationBlock> getInformation(IInformation infoNode) {
         if (infoNode instanceof Procedure) {
@@ -1044,18 +1044,18 @@ public abstract class Program implements Serializable {
     }
 
     /**
-     * main名をセットする
+     * Set the main name
      *
      * @param nm
-     *            main名
+     * main name
      */
     public void setMainName(String nm) {
         mainName = nm;
     }
 
     /**
-     * モジュールを追加する
-     * @param pu		モジュール
+     * Add a module
+     * @param pu module
      */
     public void addModule(ProgramUnit pu) {
         if (pu instanceof Module) {
@@ -1065,9 +1065,9 @@ public abstract class Program implements Serializable {
 
 
     /**
-     * Common文をcommonMapにセットする。
-     * @param key            Common文ブロック名
-     * @param unit           Common文宣言モジュール、サブルーチン
+     * Set the Common statement in commonMap.
+     * @param key Common statement block name
+     * @param unit Common statement declaration module, subroutine
      */
     public void addCommonMap(String key, ProgramUnit unit) {
         if (this.commonMap == null) {
@@ -1084,8 +1084,8 @@ public abstract class Program implements Serializable {
     }
 
     /**
-     * シャローコピーを行う.
-     * @param program		コピー元データベース
+     * Make a shallow copy.
+     * @param program Copy source database
      */
 	public void copyShallow(Program program) {
 	    this.mainName = program.mainName;
@@ -1095,38 +1095,38 @@ public abstract class Program implements Serializable {
 	}
 
 	/**
-	 * データベースの現在格納中のProgramUnitを取得する.
-	 * @return		現在格納中のProgramUnit
-	 */
+* Get the ProgramUnit currently stored in the database.
+* @return ProgramUnit currently stored
+*/
 	public ProgramUnit getCurrentUnit() {
 		return this.currentUnit;
 	}
 
 	/**
-	 * メインプログラムを取得する.
-	 * @return		メインプログラム
-	 */
+* Get the main program.
+* @return Main program
+*/
 	public Procedure getMainProgram() {
 		return getProcedureByName(NO_MODULE, this.mainName);
 	}
 
 	/**
-	 * プロシージャを取得する.<br/>
-	 * モジュールは、NO_MODULEから検索する.
-	 * @param procudurename		プロシージャ名
-	 * @return		プロシージャ
-	 */
+* Get the procedure. <br/>
+* Search for modules from NO_MODULE.
+* @param procudurename Procedure name
+* @return procedure
+*/
 	public Procedure getProcedure(String procudurename) {
 		return getProcedureByName(null, procudurename);
 	}
 
 	/**
-	 * プロシージャを取得する.<br/>
-	 * モジュール名がnullの場合は、NO_MODULEから検索する.
-	 * @param modulename		モジュール名
-	 * @param procudurename		プロシージャ名
-	 * @return		プロシージャ
-	 */
+* Get the procedure. <br/>
+* If the module name is null, search from NO_MODULE.
+* @param modulename Module name
+* @param procudurename Procedure name
+* @return procedure
+*/
 	public Procedure getProcedureByName(String modulename, String procudurename) {
 		if (procudurename == null) return null;
 		Module module = null;
@@ -1145,12 +1145,12 @@ public abstract class Program implements Serializable {
 	}
 
 	/**
-	 * プロシージャを取得する.<br/>
-	 * 親モジュールがnullの場合は、NO_MODULEから検索する.
-	 * @param parent			親モジュール
-	 * @param procudurename		プロシージャ名
-	 * @return		プロシージャ
-	 */
+* Get the procedure. <br/>
+* If the parent module is null, search from NO_MODULE.
+* @param parent parent module
+* @param procudurename Procedure name
+* @return procedure
+*/
 	public Procedure getProcedure(ProgramUnit parent, String procudurename) {
 		ProgramUnit parentUnit = parent;
 		if (parentUnit == null) {

@@ -24,57 +24,57 @@ import java.util.List;
 import jp.riken.kscope.information.InformationBlocks;
 
 /**
- * 分岐処理を表現するクラス。
+ * A class that represents branch processing.
  * @author RIKEN
  */
 public class Selection extends Block {
-	/** シリアル番号 */
+	/** Serial number */
 	private static final long serialVersionUID = -2834175766015959116L;
-    /** 条件式と実行文からなるブロックのリスト。 */
+    /** A list of blocks consisting of conditional expressions and executable statements. */
     private List<Condition> conditions = new ArrayList<Condition>();
-    /** 分岐の種類を表現する。 */
+    /** Represents the type of branch. */
     private SelectionType type;
-    /** SELECT CASE文の条件式を保持する。 */
+    /** Holds the conditional expression of the SELECT CASE statement. */
     private Expression caseCondition = null;
 
 
     /**
-     * 分岐の種類を表現するクラス。
+     * A class that represents the type of branch.
      *
      * @author RIKEN
      *
      */
     public enum SelectionType {
-    	/** select文. */
+    	/** select statement. */
     	SELECT,
-    	/** if文. */
+    	/** if statement. */
     	IF,
-    	/** where文. */
+    	/** where statement. */
     	WHERE
     }
 
     /**
-     * コンストラクタ.
+     * Constructor.
      */
     Selection() {
         super();
     }
 
     /**
-     * コンストラクタ。
+     * Constructor.
      * @param mama
-     *            親ブロック
+     * Parent block
      */
     Selection(Block mama) {
         super(mama);
     }
 
     /**
-     * コンストラクタ。
+     * Constructor.
      * @param mama
-     *            親ブロック
+     * Parent block
      * @param tp
-     *            ブロックの型
+     * Block type
      */
     Selection(Block mama, SelectionType tp) {
         super(mama);
@@ -82,48 +82,48 @@ public class Selection extends Block {
     }
 
     /**
-     * ブロックタイプの取得。
+     * Get block type.
      * @return BlockType.SELECTION
      */
     public BlockType getBlockType() {
         return BlockType.SELECTION;
     }
     /**
-     * 条件ブロックの数を取得する。
-     * @return 条件ブロックの数
+     * Get the number of condition blocks.
+     * @return Number of conditional blocks
      */
     protected int getNumOfConditions() {
         return conditions.size();
     }
 
     /**
-     * 条件式リストを取得する。
-     * @return		条件式リスト
+     * Get the conditional expression list.
+     * @return Conditional expression list
      */
     protected List<Condition> get_conditions() {
         return (conditions);
     }
 
     /**
-     * 条件式を取得する。
-     * @param i    条件式インデックス
-     * @return		条件式
+     * Get the conditional expression.
+     * @param i Conditional expression index
+     * @return conditional expression
      */
     protected Condition getCondition(int i) {
         return conditions.get(i);
     }
 
     /**
-     * 条件ブロックのリストを返す。
+     * Returns a list of conditional blocks.
      *
-     * @return 条件ブロックのリスト
+     * @return List of conditional blocks
      */
     public List<Condition> getConditions() {
         return this.conditions;
     }
 
     /**
-     * 分岐処理の種類をセットする。
+     * Set the type of branch processing.
      *
      * @param typ
      */
@@ -132,7 +132,7 @@ public class Selection extends Block {
     }
 
     /**
-     * Select case文ならば真を返す。
+     * Returns true if it is a Select case statement.
      *
      * @return boolean
      */
@@ -144,7 +144,7 @@ public class Selection extends Block {
     }
 
     /**
-     * IF文ならば真を返す。
+     * Returns true if it is an IF statement.
      *
      * @return boolean
      */
@@ -156,7 +156,7 @@ public class Selection extends Block {
     }
 
     /**
-     * WHERE文ならば真を返す。
+     * Returns true if it is a WHERE statement.
      *
      * @return boolean
      */
@@ -168,28 +168,28 @@ public class Selection extends Block {
     }
 
     /**
-     * case文の条件式を返す。
-     * @return 条件式。無ければnullを返す。
+     * Returns the conditional expression of the case statement.
+     * @return Conditional expression. If not, it returns null.
      */
     public Expression getCaseCondition() {
         return caseCondition;
     }
 
     /**
-     * case文の条件式をセットする。
-     * @param caseCond 条件式
+     * Set the conditional expression of the case statement.
+     * @param caseCond Conditional expression
      */
     public void setCaseCondition(Expression caseCond) {
         this.caseCondition = caseCond;
-        // 親IF,SELECT文を設定する
+        // Set the parent IF and SELECT statements
         if (this.caseCondition != null) {
         	this.caseCondition.setParentStatement(this);
         }
     }
     /**
-     * 付加情報ブロックコレクションを生成する。
+     * Generate an additional information block collection.
      *
-     * @return 付加情報ブロックコレクション
+     * @return Additional information block collection
      */
     @Override
     public InformationBlocks createInformationBlocks() {
@@ -207,10 +207,10 @@ public class Selection extends Block {
     }
 
     /**
-     * idにマッチした情報ブロックを検索する。
+     * Search for information blocks that match id.
      * @param id
-     *          ID
-     * @return 見つかった情報ブロック。見つからなかった場合はnullが返ります。
+     * ID
+     * @return The information block found. If not found, null is returned.
      */
     @Override
     public IInformation findInformationBlockBy(String id) {
@@ -234,8 +234,8 @@ public class Selection extends Block {
     }
 
     /**
-     * 自身の子要素であるConditionクラスのリストを返す。
-     * @return Conditionのリスト。無ければからのリストを返す。
+     * Returns a list of its own child elements, the Condition class.
+     * A list of @return conditions. If not, returns the list from.
      */
     @Override
     public ArrayList<Block> getChildren() {
@@ -246,9 +246,9 @@ public class Selection extends Block {
 
 
     /**
-     * 同一ブロックであるかチェックする.
-     * @param block		ブロック
-	 * @return		true=一致
+     * Check if they are the same block.
+     * @param block block
+* @return true = match
      */
     @Override
 	public boolean equalsBlocks(Block block) {
@@ -293,11 +293,11 @@ public class Selection extends Block {
     }
 
     /**
-     * 同一ブロックを検索する
+     * Search for the same block
      *
      * @param block
-     *            IInformationブロック
-     * @return 同一ブロック
+     * IInformation block
+     * @return Same block
      */
     @Override
     public IInformation[] searchInformationBlocks(IInformation block) {
@@ -322,10 +322,10 @@ public class Selection extends Block {
 
 
 	/**
-	 * 同一ブロック階層であるかチェックする.
-	 * @param block		チェック対象Block
-	 * @return   true=一致
-	 */
+* Check if they are in the same block hierarchy.
+* @param block Check target Block
+* @return true = match
+*/
 	public boolean equalsLayout(Block block) {
 		if (block == null) return false;
 		if (!(block instanceof Selection)) return false;
@@ -359,10 +359,10 @@ public class Selection extends Block {
     }
 
     /**
-     * 子ブロックのインデックスを返す.
-     * 存在しない場合は、-1を返す。
-     * @param block		ブロック
-	 * @return			インデックス
+     * Returns the index of the child block.
+     * Returns -1 if it does not exist.
+     * @param block block
+* @return index
      */
     @Override
     protected int indexOfChildren(Block block) {
@@ -375,11 +375,11 @@ public class Selection extends Block {
 	}
 
     /**
-     * 子ブロックのインデックスを返す.
-     * DO, SELECT, IF文の出現回数とする
-     * 存在しない場合は、-1を返す。
-     * @param block		ブロック
-	 * @return			インデックス
+     * Returns the index of the child block.
+     * The number of occurrences of DO, SELECT, and IF statements
+     * Returns -1 if it does not exist.
+     * @param block block
+* @return index
      */
     @Override
     protected int indexOfLayout(Block block) {

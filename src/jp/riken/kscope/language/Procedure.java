@@ -31,38 +31,38 @@ import jp.riken.kscope.language.fortran.VariableType;
 import jp.riken.kscope.language.fortran.VariableType.PrimitiveDataType;
 
 /**
- * 手続きを表現するクラス。
- * Fortranにおけるsubroutine,function,entryに対応する。
+ * A class that represents a procedure.
+ * Corresponds to subroutine, function, entry in Fortran.
  *
  * @author RIKEN
  *
  */
 public class Procedure extends ProgramUnit {
-	/** シリアル番号 */
+	/** Serial number */
 	private static final long serialVersionUID = -6409164910117026406L;
-    /** 仮引数. */
+    /** Formal argument. */
     private Variable[] arguments;
     /**
-     * 本手続きを呼び出しているプログラム単位のリスト。 分析機能のためのメンバー変数。
-     * @deprecated    未使用
+     * A list of program units calling this procedure. Member variables for analytical functions.
+     * @deprecated unused
      */
     @Deprecated
     private ArrayList<Procedure> parents = new ArrayList<Procedure>();
     /**
-     * 戻り値のデータ型を表現するメンバ。
+     * A member that represents the data type of the return value.
      */
     private IVariableType returnValueType = new VariableType(PrimitiveDataType.VOID);
-    /** 本手続きを呼び出しているCALL文のリスト */
+    /** List of CALL statements calling this procedure */
     private transient Set<ProcedureUsage> calls = new LinkedHashSet<ProcedureUsage>();
     /**
-     * 戻り値の名前を保持するメンバ。
+     * A member that holds the name of the return value.
      */
     private String result;
     /**
-     * 手続きの実行文を表現するメンバー変数。
+     * A member variable that represents the execution statement of a procedure.
      */
     private ExecutableBody body = new ExecutableBody(this);
-    /** scope属性：private, public */
+    /** scope attribute: private, public */
     private ScopeAttribute scope = ScopeAttribute.NONE;
 
     /**
@@ -73,37 +73,37 @@ public class Procedure extends ProgramUnit {
     }
 
     /**
-     * データ型をセットする。
+     * Set the data type.
      *
      * @param tp
-     *            データ型
+     * Data type
      */
     public void setReturnValueType(IVariableType tp) {
         this.returnValueType = tp;
     }
 
     /**
-     * 戻り値の名前を返す。
+     * Returns the name of the return value.
      *
-     * @return result 戻り値の名前
+     * @return result Return name
      */
     public String getResult() {
         return result;
     }
 
     /**
-     * 戻り値の名前をセットする。
+     * Set the name of the return value.
      *
      * @param res
-     *            戻り値の名前
+     * Return name
      */
     public void setResult(String res) {
         this.result = res;
     }
 
     /**
-     * 自身の処理ブロックを返す。
-     * @return 処理ブロック
+     * Returns its own processing block.
+     * @return processing block
      */
     public ExecutableBody getBody() {
         return this.body;
@@ -111,20 +111,20 @@ public class Procedure extends ProgramUnit {
 
 
     /**
-     * Public属性をセットする。
+     * Set the Public attribute.
      */
     public void setPublic() {
         scope = ScopeAttribute.PUBLIC;
     }
 
     /**
-     * Private属性をセットする。
+     * Set the Private attribute.
      */
     public void setPrivate() {
         scope = ScopeAttribute.PRIVATE;
     }
     /**
-     * ブロックタイプの取得。
+     * Get block type.
      *
      * @return BlockType.PROCEDURE
      */
@@ -141,26 +141,26 @@ public class Procedure extends ProgramUnit {
     // ++++++++++++++++++++++++++++++++++++++++++++
 
     /**
-     * コンストラクタ。
+     * Constructor.
      *
      * @param type_name
-     *            手続の種類
+     * Type of procedure
      * @param sub_name
-     *            手続の名前
+     * Name of procedure
      */
     public Procedure(String type_name, String sub_name) {
         super(type_name, sub_name);
     }
 
     /**
-     * コンストラクタ。
+     * Constructor.
      *
      * @param type_name
-     *            手続の種類
+     * Type of procedure
      * @param sub_name
-     *            手続の名前
+     * Name of procedure
      * @param args
-     *            仮引数の配列
+     * Array of formal arguments
      */
     public Procedure(String type_name, String sub_name, String[] args) {
         super(type_name, sub_name);
@@ -173,9 +173,9 @@ public class Procedure extends ProgramUnit {
     // ++++++++++++++++++++++++++++++++++++++++++++
 
     /**
-     * 本手続きを呼び出しているプログラム単位のリスト
-     * @param parent		本手続きを呼び出しているプログラム
-     * @deprecated    未使用
+     * List of program units calling this procedure
+     * @param parent The program calling this procedure
+     * @deprecated unused
      */
     @Deprecated
     protected void add_parent(Procedure parent) {
@@ -185,9 +185,9 @@ public class Procedure extends ProgramUnit {
     // ++++++++++++++++++++++++++++++++++++++++++++
 
     /**
-     * 指定された順番にある仮引数を返す。存在しなければnullを返す。
-     * @param i 引数の順番
-     * @return 仮引数。
+     * Returns the formal parameters in the specified order. Returns null if it does not exist.
+     * @param i Argument order
+     * @return Formal argument.
      */
     public Variable getArgument(int i) {
         if (arguments.length > i) {
@@ -199,9 +199,9 @@ public class Procedure extends ProgramUnit {
     // ++++++++++++++++++++++++++++++++++++++++++++
 
     /**
-     * 仮引数の配列を返す。
+     * Returns an array of formal arguments.
      *
-     * @return 仮引数の配列。
+     * @return An array of formal arguments.
      */
     public Variable[] get_args() {
         return arguments;
@@ -214,9 +214,9 @@ public class Procedure extends ProgramUnit {
     }
 
     /**
-     * 本手続きを呼び出しているプログラム単位のリストを取得する.
-     * @return		本手続きを呼び出しているプログラム単位のリスト
-     * @deprecated    未使用
+     * Get a list of program units calling this procedure.
+     * @return List of program units calling this procedure
+     * @deprecated unused
      */
     @Deprecated
     protected ArrayList<Procedure> get_parents() {
@@ -237,10 +237,10 @@ public class Procedure extends ProgramUnit {
 
     // ----------------Selection-----------------//
     /**
-     * 条件式の設定。
+     * Conditional expression setting.
      *
      * @param cond
-     *           条件式
+     * Conditional expression
      */
     protected void start_condition(Expression cond, CodeLine lineInfo,
             String label) {
@@ -282,9 +282,9 @@ public class Procedure extends ProgramUnit {
     // ++++++++++++++++++++++++++++++++++++++++++++
 
     /**
-     * 自身に属する手続呼出しのリストを返す。
+     * Returns a list of procedure calls that belong to you.
      *
-     * @return 手続呼出しのリスト。無ければ空のリストを返す。
+     * @return A list of procedure calls. If not, returns an empty list.
      */
     public List<ProcedureUsage> getCalls() {
         return body.getCalls();
@@ -295,38 +295,38 @@ public class Procedure extends ProgramUnit {
     // ++++++++++++++++++++++++++++++++++++++++++//
 
     /**
-     * CALL, FUNCTION文の開始行を設定する。
+     * Set the start line of the CALL, FUNCTION statement.
      *
      * @param lineInfo
-     *            コード行情報
+     * Code line information
      */
     protected void start_procedure_usage(CodeLine lineInfo) {
         body.start_procedure_usage(lineInfo);
     }
 
     /**
-     * CALL, FUNCTION文の開始行を設定する。
+     * Set the start line of the CALL, FUNCTION statement.
      *
      * @param lineInfo
-     *            コード行情報
+     * Code line information
      * @param label
-     *            行ラベル
+     *            Row label
      */
     protected void start_procedure_usage(CodeLine lineInfo, String label) {
         body.start_procedure_usage(lineInfo, label);
     }
 
     /**
-     * CALL, FUNCTION文の開始行を設定する。
+     * Set the start line of the CALL, FUNCTION statement.
      *
      * @param lineInfo
-     *            コード行情報
+     * Code line information
      * @param label
-     *            行ラベル
+     *            Row label
      * @param subroutineName
-     *            CALLサブルーチン名
+     * CALL subroutine name
      * @param arguments
-     *            引数リスト
+     * Argument list
      */
     protected void start_procedure_usage(CodeLine lineInfo, String label,
             String subroutineName, List<Expression> arguments) {
@@ -334,90 +334,90 @@ public class Procedure extends ProgramUnit {
     }
 
     /**
-     * CALL, FUNCTION文の終了行を設定する。
+     * Set the end line of the CALL and FUNCTION statements.
      *
      * @param lineInfo
-     *            コード行情報
+     * Code line information
      */
     protected void end_procedure_usage(CodeLine lineInfo) {
         body.end_procedure_usage(lineInfo);
     }
 
     /**
-     * CALL, FUNCTION文の終了行を設定する。
+     * Set the end line of the CALL and FUNCTION statements.
      *
      * @param lineInfo
-     *            コード行情報
+     * Code line information
      * @param label
-     *            行ラベル
+     *            Row label
      */
     protected void end_procedure_usage(CodeLine lineInfo, String label) {
         body.end_procedure_usage(lineInfo, label);
     }
 
     /**
-     * DO文の開始行を設定する。
+     * Set the start line of the DO statement.
      *
      * @param lineInfo
-     *            コード行情報
+     * Code line information
      */
     protected void start_repetition(CodeLine lineInfo) {
         body.start_repetition(lineInfo);
     }
 
     /**
-     * DO文の開始行を設定する。
+     * Set the start line of the DO statement.
      *
      * @param lineInfo
-     *            コード行情報
+     * Code line information
      * @param label
-     *            行ラベル
+     *            Row label
      */
     protected void start_repetition(CodeLine lineInfo, String label) {
         body.start_repetition(lineInfo, label);
     }
 
     /**
-     * DO文の終了行を設定する。
+     * Set the end line of the DO statement.
      *
      * @param lineInfo
-     *            コード行情報
+     * Code line information
      */
     protected void end_repetition(CodeLine lineInfo) {
         body.end_repetition(lineInfo);
     }
 
     /**
-     * DO文の終了行を設定する。
+     * Set the end line of the DO statement.
      *
      * @param lineInfo
-     *            コード行情報
+     * Code line information
      * @param label
-     *            行ラベル
+     *            Row label
      */
     protected void end_repetition(CodeLine lineInfo, String label) {
         body.end_repetition(lineInfo, label);
     }
 
     /**
-     * CONTINUE文を設定する。
+     * Set the CONTINUE statement.
      *
      * @param lineInfo
-     *            コード行情報
+     * Code line information
      * @param label
-     *            行ラベル
+     *            Row label
      */
     protected void set_continue(CodeLine lineInfo, String label) {
         body.set_continue(lineInfo, label);
     }
 
     /**
-     * SELECT文の開始行を設定する。（ラベル付き）
+     * Set the start line of the SELECT statement. (With label)
      *
      * @param lineInfo
-     *            コード行情報
+     * Code line information
      * @param label
-     *            行ラベル
+     *            Row label
      */
     protected void start_selection(CodeLine lineInfo, String label,
             jp.riken.kscope.language.Selection.SelectionType type) {
@@ -425,37 +425,37 @@ public class Procedure extends ProgramUnit {
     }
 
     /**
-     * SELECT文の終了行を設定する。（ラベル付き）
+     * Set the end line of the SELECT statement. (With label)
      *
      * @param lineInfo
-     *            コード行情報
+     * Code line information
      * @param label
-     *            行ラベル
+     *            Row label
      */
     protected void end_selection(CodeLine lineInfo, String label) {
         body.end_selection(lineInfo, label);
     }
 
     /**
-     * RETURN文をセットする
+     * Set a RETURN statement
      *
      * @param lineInfo
-     *            コード行情報
+     * Code line information
      */
     public void setReturn(CodeLine lineInfo) {
         body.setReturn(lineInfo);
     }
     /**
-     * 実引数リストが適合しているかどうか。<br>
+     * Whether the actual argument list matches. <br>
      *
-     * 多重定義されている関数群の中から対応する関数を探索する際に、<br>
-     * 仮引数と実引数の型チェックをする必要がある。<br>
-     * 「適合している」とは、この型チェックで、同一の型と判定される 事を意味している。<br>
+     * When searching for the corresponding function from the overloaded function group, <br>
+     * It is necessary to check the type of formal and actual arguments. <br>
+     * "Matching" means that this type check determines that the type is the same. <br>
      *
      * @param actualArguments
      *
-     * @return true : 適合している<br>
-     *         false: 適合していない
+     * @return true: Conforms <br>
+     * false: Not compatible
      */
     public boolean matches(List<Expression> actualArguments) {
         if (actualArguments == null || this.arguments == null) {
@@ -486,9 +486,9 @@ public class Procedure extends ProgramUnit {
     }
 
     /**
-     * カレントブロックを返す。
+     * Returns the current block.
      *
-     * @return カレントブロック
+     * @return Current block
      */
     public Block getCurrentBlock() {
         return body.getCurrentBlock();
@@ -503,10 +503,10 @@ public class Procedure extends ProgramUnit {
     }
 
     /**
-     * idにマッチした情報ブロックを検索する。
+     * Search for information blocks that match id.
      * @param id
-     *          ID
-     * @return 見つかった情報ブロック。見つからなかった場合はnullが返ります。
+     * ID
+     * @return The information block found. If not found, null is returned.
      */
     @Override
     public IInformation findInformationBlockBy(String id) {
@@ -521,12 +521,12 @@ public class Procedure extends ProgramUnit {
     }
 
     /**
-     * プログラム単位内で、ある変数が参照・定義されているブロックのセットを返す。
+     * Returns a set of blocks in which a variable is referenced / defined within a program unit.
      *
      * @param name
-     *            変数名
+     *            Variable name
      *
-     * @return ブロックのセット。無ければ空のセットを返す。
+     * A set of @return blocks. If not, it returns an empty set.
      */
     public Set<IBlock> getRefDefBlocks(String name) {
         String nm = name.toLowerCase();
@@ -542,7 +542,7 @@ public class Procedure extends ProgramUnit {
             if (defblocks == null) {
                 return refblocks;
             }
-            // ref,defともに要素がある場合
+            // When both ref and def have elements
             IBlock[] refArray = refblocks.toArray(new IBlock[0]);
             IBlock[] defArray = defblocks.toArray(new IBlock[0]);
             boolean refFlag = true;
@@ -581,17 +581,17 @@ public class Procedure extends ProgramUnit {
     }
 
     /**
-     * scope属性を取得する。
-     * @return		scope属性
+     * Get the scope attribute.
+     * @return scope attribute
      */
     public ScopeAttribute getScope() {
         return this.scope;
     }
 
     /**
-     * 指定した変数名の仮引数が含まれていればその順番を返す。
-     * @param dummyArg 変数名
-     * @return 仮引数の順番。指定した変数を含まない場合-1を返す。
+     * If the formal argument of the specified variable name is included, the order is returned.
+     * @param dummyArg Variable name
+     * @return The order of formal parameters. Returns -1 if it does not contain the specified variable.
      */
     public int getNumOfDummyArgument(String dummyArg) {
         Variable[] args = this.arguments;
@@ -606,8 +606,8 @@ public class Procedure extends ProgramUnit {
     }
 
     /**
-     * この手続を呼び出しているProcedureUsageクラスのリストを返す。
-     * @return ProcedureUsageのリスト。無ければ空のリストを返す。
+     * Returns a list of ProcedureUsage classes calling this procedure.
+     * A list of @return Procedure Usage. If not, returns an empty list.
      */
     public Set<ProcedureUsage> getCallMember() {
         if (this.calls == null) {
@@ -617,8 +617,8 @@ public class Procedure extends ProgramUnit {
     }
 
     /**
-     * この手続を呼び出しているProcedureUsageクラスを追加する。
-     * @param pu ProcedureUsageクラス
+     * Add the ProcedureUsage class that calls this procedure.
+     * @param pu ProcedureUsage class
      */
     public void addCallMember(ProcedureUsage pu) {
         if (this.calls == null) {
@@ -628,17 +628,17 @@ public class Procedure extends ProgramUnit {
     }
 
     /**
-     * この手続を呼び出しているProcedureUsageクラスリストを設定する。
-     * @param list   ProcedureUsageリスト
+     * Set the ProcedureUsage class list that calls this procedure.
+     * @param list Procedure Usage list
      */
     public void setCallMember(Set<ProcedureUsage> list) {
         this.calls = list;
     }
 
     /**
-     * 付加情報ブロックコレクションを生成する。
+     * Generate an additional information block collection.
      *
-     * @return 付加情報ブロックコレクション
+     * @return Additional information block collection
      */
     @Override
     public InformationBlocks createInformationBlocks() {
@@ -649,11 +649,11 @@ public class Procedure extends ProgramUnit {
     }
 
 	/**
-	 * 同一Procedureであるかチェックする.
-	 * 引数についてはチェックしない。
-	 * @param proc		subroutine, function
-	 * @return		true=一致
-	 */
+* Check if they are the same procedure.
+* Do not check the arguments.
+* @param proc subroutine, function
+* @return true = match
+*/
 	public boolean equalsBlocks(Procedure proc) {
 		if (proc == null) return false;
 
@@ -676,15 +676,15 @@ public class Procedure extends ProgramUnit {
 	}
 
 	/**
-	 * 同一ブロックを検索する
-	 * @param block			IInformationブロック
-	 * @return		同一ブロック
-	 */
+* Search for the same block
+* @param block IInformation block
+* @return Same block
+*/
     @Override
 	public IInformation[] searchInformationBlocks(IInformation block) {
 		List<IInformation> list = new ArrayList<IInformation>();
 
-		// 変数宣言文、副プログラム
+		// Variable declaration statement, subprogram
 		{
 	        IInformation[] infos = super.searchInformationBlocks(block);
 	        if (infos != null) {
@@ -706,10 +706,10 @@ public class Procedure extends ProgramUnit {
 
 
 	/**
-	 * 同一ブロック階層であるかチェックする.
-	 * @param proc		チェック対象Procedure
-	 * @return   true=一致
-	 */
+* Check if they are in the same block hierarchy.
+* @param proc Check target Procedure
+* @return true = match
+*/
     @Override
 	public boolean equalsLayout(ProgramUnit proc) {
 		if (proc == null) return false;
@@ -734,9 +734,9 @@ public class Procedure extends ProgramUnit {
 	}
 
     /**
-     * layoutIDにマッチした構造ブロックを検索する。
-     * @param id    layoutID
-     * @return 見つかった構造ブロック
+     * Search for structural blocks that match the layoutID.
+     * @param id layoutID
+     * @return Found structural block
      */
     @Override
     public IInformation findInformationLayoutID(String id) {
@@ -750,10 +750,10 @@ public class Procedure extends ProgramUnit {
     }
 
 	/**
-	 * 行番号のブロックを検索する
-	 * @param line			行番号
-	 * @return		行番号のブロック
-	 */
+* Search for blocks of line numbers
+* @param line line number
+* @return Line number block
+*/
     @Override
 	public IBlock[] searchCodeLine(CodeLine line) {
 		if (line == null) return null;
@@ -765,7 +765,7 @@ public class Procedure extends ProgramUnit {
 		if ( line.isOverlap(thisstart, thisend) ) {
 			addblock = this;
 		}
-		// 変数宣言文、副プログラム
+		// Variable declaration statement, subprogram
 		{
 			IBlock[] blocks = super.searchCodeLine(line);
 	        if (blocks != null) {
@@ -791,12 +791,12 @@ public class Procedure extends ProgramUnit {
 	}
 
  	/**
- 	 * 変数リストを取得する.
- 	 */
+ * Get the variable list.
+ */
  	@Override
  	public Set<Variable> getAllVariables() {
  		Set<Variable> list = new HashSet<Variable>();
-		// 変数宣言文、副プログラム
+		// Variable declaration statement, subprogram
 		{
 			Set<Variable> vars = super.getAllVariables();
 	        if (vars != null) {
@@ -814,9 +814,9 @@ public class Procedure extends ProgramUnit {
  	}
 
  	/**
- 	 * program文であるかチェックする.
- 	 * @return    true=program文
- 	 */
+ * Check if it is a program statement.
+ * @return true = program statement
+ */
  	public boolean isProgram() {
  		if (this.get_type() == null) return false;
  		if (this.get_type().equalsIgnoreCase("program")) return true;
@@ -824,9 +824,9 @@ public class Procedure extends ProgramUnit {
  	}
 
  	/**
- 	 * subroutine文であるかチェックする.
- 	 * @return    true=subroutine文
- 	 */
+ * Check if it is a subroutine statement.
+ * @return true = subroutine statement
+ */
  	public boolean isSubroutine() {
  		if (this.get_type() == null) return false;
  		if (this.get_type().equalsIgnoreCase("subroutine")) return true;
@@ -834,9 +834,9 @@ public class Procedure extends ProgramUnit {
  	}
 
  	/**
- 	 * function文であるかチェックする.
- 	 * @return    true=function文
- 	 */
+ * Check if it is a function statement.
+ * @return true = function statement
+ */
  	public boolean isFunction() {
  		if (this.get_type() == null) return false;
  		if (this.get_type().equalsIgnoreCase("function")) return true;

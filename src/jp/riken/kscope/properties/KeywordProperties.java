@@ -43,69 +43,69 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 /**
- * ソースコードのキーワード(ハイライト)設定クラス
+ * Source code keyword (highlight) setting class
  * @author RIKEN
  *
  */
 public class KeywordProperties extends PropertiesBase {
 
-    /** シリアル番号 */
+    /** Serial number */
     private static final long serialVersionUID = 1L;
 
-    /** キーワード(ハイライト)設定リスト */
+    /** Keyword (highlight) setting list */
     private List<Keyword> listKeyword = new ArrayList<Keyword>();
 
     /**
-     * コンストラクタ
-     * @throws Exception     プロパティ読込エラー
+     * Constructor
+     * @throws Exception Property read error
      */
     public KeywordProperties() throws Exception {
         loadProperties();
     }
 
     /**
-     * ソース設定プロパティをデフォルト設定ファイルから読み込む。
-     * @throws Exception     プロパティ読込エラー
+     * Read source configuration properties from the default configuration file.
+     * @throws Exception Property read error
      */
     public void loadProperties() throws Exception {
         InputStream is = null;
 
-        // リソースファイルの読込
+        // Read resource file
         is = ResourceUtils.getPropertiesFile(KscopeProperties.PROPERTIES_FILE);
 
         loadProperties(is);
     }
 
     /**
-     * ソース設定プロパティを設定ファイルから読み込む。
-     * @param  propertiesFile 		ソース設定プロパティ設定ファイル
-     * @throws Exception     プロパティ読込エラー
+     * Read source configuration properties from the configuration file.
+     * @param propertiesFile Source configuration property configuration file
+     * @throws Exception Property read error
      */
     public void loadProperties(File propertiesFile) throws Exception {
 
         if (!propertiesFile.exists()) {
-            throw(new Exception(Message.getString("propertiesbase.exeption.notexist"))); //ソース設定プロパティファイルが存在しません。
+            throw(new Exception(Message.getString("propertiesbase.exeption.notexist"))); // Source settings property file does not exist.
         }
 
-        // リソースファイルの読込
+        // Read resource file
         InputStream stream = new FileInputStream(propertiesFile);
 
-        // XMLファイルのパース
+        // Parsing the XML file
         loadProperties(stream);
     }
 
     /**
-     * ソース設定プロパティを設定ファイルから読み込む。
-     * @param   stream      設定ファイルストリーム
-     * @throws Exception     プロパティ読込エラー
+     * Read source configuration properties from the configuration file.
+     * @param stream Configuration file stream
+     * @throws Exception Property read error
      */
     public void loadProperties(InputStream stream ) throws Exception {
-        // XMLファイルのパース
+        // Parsing the XML file
         listKeyword = parseKeyword(stream, "//keyword");
     }
 
     /**
-     * プロパティ変更イベントを通知する。
+     * Notify property change event.
      */
     @Override
     public void firePropertyChange() {
@@ -113,16 +113,16 @@ public class KeywordProperties extends PropertiesBase {
     }
 
     /**
-     * キーワード(ハイライト)設定リストを取得する。
-     * @return		ハイライト設定リスト
+     * Get the keyword (highlight) setting list.
+     * @return highlight setting list
      */
     public List<Keyword> getListKeyword() {
         return listKeyword;
     }
 
     /**
-     * キーワード(ハイライト)数を取得する。
-     * @return		キーワード(ハイライト)数
+     * Get the number of keywords (highlights).
+     * @return Number of keywords (highlights)
      */
     public int getKeywordCount() {
         if (listKeyword == null || listKeyword.size() <= 0) {return 0;}
@@ -130,9 +130,9 @@ public class KeywordProperties extends PropertiesBase {
     }
 
     /**
-     * キーワード(ハイライト)を取得する。
-     * @param	index		インデックス
-     * @return		キーワード(ハイライト)
+     * Get keywords (highlights).
+     * @param index index
+     * @return keyword (highlight)
      */
     public Keyword getKeyword(int index) {
         if (listKeyword == null || listKeyword.size() <= 0) {return null;}
@@ -141,9 +141,9 @@ public class KeywordProperties extends PropertiesBase {
     }
 
     /**
-     * キーワード(ハイライト)を設定する。
-     * @param	index		インデックス
-     * @param	keyword		キーワード(ハイライト)
+     * Set keywords (highlights).
+     * @param index index
+     * @param keyword keyword (highlight)
      */
     public void setKeyword(int index, Keyword keyword) {
         if (listKeyword == null || listKeyword.size() <= 0) {return;}
@@ -152,8 +152,8 @@ public class KeywordProperties extends PropertiesBase {
     }
 
     /**
-     * キーワード(ハイライト)を追加する。
-     * @param	keyword		キーワード(ハイライト)
+     * Add keywords (highlights).
+     * @param keyword keyword (highlight)
      */
     public void addKeyword(Keyword keyword) {
         if (listKeyword == null) {
@@ -163,8 +163,8 @@ public class KeywordProperties extends PropertiesBase {
     }
 
     /**
-     * キーワード(ハイライト)を削除する。
-     * @param	keyword		キーワード(ハイライト)
+     * Remove keywords (highlights).
+     * @param keyword keyword (highlight)
      */
     public void removeKeyword(Keyword keyword) {
         if (listKeyword == null) return;
@@ -172,8 +172,8 @@ public class KeywordProperties extends PropertiesBase {
     }
 
     /**
-     * キーワード(ハイライト)を削除する。
-     * @param	index		インデックス
+     * Remove keywords (highlights).
+     * @param index index
      */
     public void removeKeyword(int index) {
         if (listKeyword == null) return;
@@ -181,16 +181,16 @@ public class KeywordProperties extends PropertiesBase {
     }
 
     /**
-     * キーワード(ハイライト)リストをクリアする。
+     * Clear the keyword (highlight) list.
      */
     public void clearKeyword() {
         listKeyword = new ArrayList<Keyword>();
     }
 
     /**
-     * 検索キーワードと一致するKeyword情報を取得する
-     * @param word		検索キーワード
-     * @return		Keyword情報
+     * Get Keyword information that matches the search keyword
+     * @param word Search keyword
+     * @return Keyword information
      */
     public Keyword getKeyword(String word) {
         if (word == null || word.isEmpty()) return null;
@@ -199,13 +199,13 @@ public class KeywordProperties extends PropertiesBase {
             String srcWord = keyword.getKeyword();
             boolean sensitivecase = keyword.isSensitivecase();
             if (sensitivecase) {
-                // 大文字小文字を区別する
+                // Case sensitive
                 if (word.equals(srcWord)) {
                     return keyword;
                 }
             }
             else {
-                // 大文字小文字を区別しない
+                // Case insensitive
                 if (word.equalsIgnoreCase(srcWord)) {
                     return keyword;
                 }
@@ -216,11 +216,11 @@ public class KeywordProperties extends PropertiesBase {
     }
 
     /**
-     * キーワードを取得する
-     * @param stream		XML入力ストリーム
-     * @param path		キーワードXPATH
-     * @return		キーワードリスト
-     * @throws Exception 		キーワードパースエラー
+     * Get keywords
+     * @param stream XML input stream
+     * @param path Keyword XPATH
+     * @return keyword list
+     * @throws Exception Keyword parsing error
      */
     public List<Keyword> parseKeyword(InputStream stream, String path) throws Exception {
 
@@ -246,18 +246,18 @@ public class KeywordProperties extends PropertiesBase {
                 Node node = nodelist.item(i);
                 Keyword keyword = new Keyword(KEYWORD_TYPE.KEYWORD);
 
-                // 属性の取得
+                // Get attributes
                 NamedNodeMap attrs = node.getAttributes();
                 Node attrnode;
                 String value;
-                // キーワード名
+                // Keyword name
                 attrnode = attrs.getNamedItem("name");
                 String name = null;
                 if (attrnode != null) {
                     name = attrnode.getNodeValue();
                     keyword.setName(name);
                 }
-                // キーワード
+                // Keywords
                 attrnode = attrs.getNamedItem("keyword");
                 String word = null;
                 if (attrnode != null) {
@@ -265,21 +265,21 @@ public class KeywordProperties extends PropertiesBase {
                     keyword.setKeyword(word);
                 }
 
-                // クラスモード
+                // Class mode
                 attrnode = attrs.getNamedItem("class");
                 String class_mode = null;
                 if (attrnode != null) {
                     class_mode = attrnode.getNodeValue();
                     keyword.setClassmode(class_mode);
                 }
-                // 太字
+                // Bold
                 attrnode = attrs.getNamedItem("bold");
                 boolean bold = false;
                 if (attrnode != null) {
                     value = attrnode.getNodeValue();
                     bold = Boolean.parseBoolean(value);
                 }
-                // イタリック
+                // italics
                 attrnode = attrs.getNamedItem("italic");
                 boolean italic = false;
                 if (attrnode != null) {
@@ -291,7 +291,7 @@ public class KeywordProperties extends PropertiesBase {
                 if (italic) style += Font.ITALIC;
                 keyword.setStyle(style);
 
-                // 文字色
+                // Letter color
                 attrnode = attrs.getNamedItem("forecolor");
                 Color forecolor = null;
                 if (attrnode != null) {
@@ -300,7 +300,7 @@ public class KeywordProperties extends PropertiesBase {
                     keyword.setForecolor(forecolor);
                 }
 
-                // 有効・無効
+                // Valid / Invalid
                 attrnode = attrs.getNamedItem("enabled");
                 boolean enabled = true;
                 if (attrnode != null) {
@@ -308,7 +308,7 @@ public class KeywordProperties extends PropertiesBase {
                     enabled = Boolean.parseBoolean(value);
                     keyword.setEnabled(enabled);
                 }
-                // 大文字・小文字の区別
+                // Case sensitive
                 attrnode = attrs.getNamedItem("sensitivecase");
                 boolean sensitivecase = false;
                 if (attrnode != null) {
@@ -316,7 +316,7 @@ public class KeywordProperties extends PropertiesBase {
                     sensitivecase = Boolean.parseBoolean(value);
                     keyword.setCaseSensitive(sensitivecase);
                 }
-                // 正規表現
+                // Regular expressions
                 attrnode = attrs.getNamedItem("regex");
                 boolean regex = false;
                 if (attrnode != null) {
@@ -324,7 +324,7 @@ public class KeywordProperties extends PropertiesBase {
                     regex = Boolean.parseBoolean(value);
                     keyword.setRegex(regex);
                 }
-                // キーワード変更付加
+                // Add keyword change
                 attrnode = attrs.getNamedItem("keywordlock");
                 boolean keywordlock = false;
                 if (attrnode != null) {
@@ -333,7 +333,7 @@ public class KeywordProperties extends PropertiesBase {
                     keyword.setKeywordlock(keywordlock);
                 }
 
-                // キーワードは単語検索とする
+                // Keyword is word search
                 keyword.setSearchWord(true);
 
                 list.add(keyword);
@@ -352,46 +352,46 @@ public class KeywordProperties extends PropertiesBase {
 
 
     /**
-     * プロパティをDOMノードに出力する
-     * @param node		出力ノード
+     * Output properties to DOM node
+     * @param node Output node
      */
     public void writeProperties(org.w3c.dom.Node node) {
 
-        // ドキュメントの取得
+        // Get documentation
         org.w3c.dom.Document document = node.getOwnerDocument();
 
-        // コメントを追加
+        // add comment
         {
-            org.w3c.dom.Comment comment = document.createComment(Message.getString("keywordproperties.document.comment")); //キーワードプロパティ
+            org.w3c.dom.Comment comment = document.createComment(Message.getString("keywordproperties.document.comment")); // keyword property
             node.appendChild(comment);
         }
 
         if (this.listKeyword == null || this.listKeyword.size() <= 0) return;
 
-        // キーワード
+        // Keywords
         for (Keyword keyword : this.listKeyword) {
             org.w3c.dom.Element elem = document.createElement("keyword");
 
-            // キーワード名
+            // Keyword name
             {
                 org.w3c.dom.Attr attr;
                 attr = document.createAttribute("name");
                 attr.setValue(keyword.getName());
                 elem.setAttributeNode(attr);
             }
-            // キーワード
+            // Keywords
             {
                 org.w3c.dom.Attr attr = document.createAttribute("keyword");
                 attr.setNodeValue(keyword.getKeyword());
                 elem.setAttributeNode(attr);
             }
-            // クラス
+            // class
             if (keyword.getClassmode() != null && !keyword.getClassmode().isEmpty()){
                 org.w3c.dom.Attr attr = document.createAttribute("class");
                 attr.setNodeValue(keyword.getClassmode());
                 elem.setAttributeNode(attr);
             }
-            // スタイル
+            // Style
             int style = keyword.getStyle();
             boolean bold = false;
             boolean italic = false;
@@ -409,39 +409,39 @@ public class KeywordProperties extends PropertiesBase {
                 attr.setNodeValue(String.valueOf(italic));
                 elem.setAttributeNode(attr);
             }
-            // 文字色
+            // Letter color
             {
                 Color color = keyword.getForecolor();
                 org.w3c.dom.Attr attr = document.createAttribute("forecolor");
                 attr.setNodeValue(StringUtils.parseColorCode(color));
                 elem.setAttributeNode(attr);
             }
-            // 文字色
+            // Letter color
             {
                 Color color = keyword.getForecolor();
                 org.w3c.dom.Attr attr = document.createAttribute("forecolor");
                 attr.setNodeValue(StringUtils.parseColorCode(color));
                 elem.setAttributeNode(attr);
             }
-            // 有効・無効
+            // Valid / Invalid
             {
                 org.w3c.dom.Attr attr = document.createAttribute("enabled");
                 attr.setNodeValue(String.valueOf(keyword.isEnabled()));
                 elem.setAttributeNode(attr);
             }
-            // 大文字・小文字の区別
+            // Case sensitive
             {
                 org.w3c.dom.Attr attr = document.createAttribute("sensitivecase");
                 attr.setNodeValue(String.valueOf(keyword.isSensitivecase()));
                 elem.setAttributeNode(attr);
             }
-            // 正規表現
+            // Regular expressions
             {
                 org.w3c.dom.Attr attr = document.createAttribute("regex");
                 attr.setNodeValue(String.valueOf(keyword.isRegex()));
                 elem.setAttributeNode(attr);
             }
-            // ノード追加
+            // Add node
             node.appendChild(elem);
         }
     }

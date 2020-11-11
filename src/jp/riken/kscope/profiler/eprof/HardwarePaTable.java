@@ -17,47 +17,47 @@
 package jp.riken.kscope.profiler.eprof;
 
 /**
- * ハードウェアモニタ情報（ＰＡ情報）テーブル
+ * Hardware monitor information (PA information) table
  * @author RIKEN
  */
 public class HardwarePaTable {
-    /** スレッド番号 */
+    /** Thread number */
     private int threadno;
-    /** ハードウェアモニタ情報(PA情報)テーブル */
+    /** Hardware monitor information (PA information) table */
     private double[] paTable;
 
     /**
-     * コンストラクタ
+     * Constructor
      */
     public HardwarePaTable() {
     }
 
     /**
-     * スレッド番号
-     * @return 		スレッド番号
+     * Thread number
+     * @return thread number
      */
     public int getThreadno() {
         return threadno;
     }
 
     /**
-     * スレッド番号
-     * @param no スレッド番号
+     * Thread number
+     * @param no thread number
      */
     public void setThreadno(int no) {
         this.threadno = no;
     }
     /**
-     * ハードウェアモニタ情報(PA情報)テーブル
-     * @return 		ハードウェアモニタ情報(PA情報)テーブル
+     * Hardware monitor information (PA information) table
+     * @return Hardware monitor information (PA information) table
      */
     public double[] getPaTable() {
         return paTable;
     }
 
     /**
-     * ハードウェアモニタ情報(PA情報)テーブル
-     * @param table ハードウェアモニタ情報(PA情報)テーブル
+     * Hardware monitor information (PA information) table
+     * @param table Hardware monitor information (PA information) table
      */
     public void setPaTable(double[] table) {
         this.paTable = table;

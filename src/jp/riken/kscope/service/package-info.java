@@ -16,6 +16,6 @@
  */
 
 /**
- * フォートランデータベースの構築、分析等のサービスを提供します.
+ * Provides services such as Fortran database construction and analysis.
  */
 package jp.riken.kscope.service;

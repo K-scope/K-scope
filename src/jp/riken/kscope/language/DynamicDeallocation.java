@@ -24,24 +24,24 @@ import java.util.List;
 import jp.riken.kscope.information.InformationBlocks;
 
 /**
- * 動的に割り当てられたメモリ領域を解放する処理に対応したクラス。
+ * A class that supports the process of freeing dynamically allocated memory areas.
  *
  * @author RIKEN
  *
  */
 public class DynamicDeallocation extends jp.riken.kscope.language.Block {
-    /** シリアル番号 */
+    /** Serial number */
     private static final long serialVersionUID = -2983724954300740000L;
     private List<Variable> targets;
     private Variable error;
 
     /**
-     * コンストラクタ。
+     * Constructor.
      *
      * @param parent
-     *           親ブロック
+     * Parent block
      * @param trgt
-     *           解放対象となる変数
+     * Variables to be released
      */
     public DynamicDeallocation(Block parent, List<Variable> trgt) {
         super(parent);
@@ -49,8 +49,8 @@ public class DynamicDeallocation extends jp.riken.kscope.language.Block {
     }
 
     /**
-     * コンストラクタ。
-     * @param trgt ターゲット
+     * Constructor.
+     * @param trgt Target
      */
     public DynamicDeallocation(List<Variable> trgt) {
         super();
@@ -58,42 +58,42 @@ public class DynamicDeallocation extends jp.riken.kscope.language.Block {
     }
 
     /**
-     * コンストラクタ。
+     * Constructor.
      */
     public DynamicDeallocation() {
         super();
     }
 
     /**
-     * エラー変数をセット。
+     * Set error variables.
      *
      * @param err
-     *            エラー変数
+     * Error variable
      */
     public void setError(Variable err) {
         error = err;
     }
 
     /**
-     * エラー変数を取得する。
+     * Get the error variable.
      *
-     * @return error エラー変数
+     * @return error Error variable
      */
     public Variable getError() {
         return error;
     }
 
     /**
-     * 解法対象変数をセットする。
+     * Set the variable to be solved.
      *
      * @param trgt
-     *            ターゲット
+     * Target
      */
     public void setTarget(List<Variable> trgt) {
         targets = trgt;
     }
     /**
-     * ブロックタイプの取得。
+     * Get block type.
      *
      * @return BlockType.DYNAMIC_DEALLOCATION
      */
@@ -102,18 +102,18 @@ public class DynamicDeallocation extends jp.riken.kscope.language.Block {
     }
 
     /**
-     * 解放対象変数の取得。
+     * Get the variable to be released.
      *
-     * @return 解放対象変数
+     * @return Variable to be released
      */
     public List<Variable> getTarget() {
         return targets;
     }
 
     /**
-     * 付加情報ブロックコレクションを生成する。
+     * Generate an additional information block collection.
      *
-     * @return 付加情報ブロックコレクション
+     * @return Additional information block collection
      */
     @Override
     public InformationBlocks createInformationBlocks() {
@@ -131,10 +131,10 @@ public class DynamicDeallocation extends jp.riken.kscope.language.Block {
     }
 
     /**
-     * idにマッチした情報ブロックを検索する。
+     * Search for information blocks that match id.
      * @param id
-     *          ID
-     * @return 見つかった情報ブロック。見つからなかった場合はnullが返ります。
+     * ID
+     * @return The information block found. If not found, null is returned.
      */
      @Override
     public IInformation findInformationBlockBy(String id) {
@@ -159,9 +159,9 @@ public class DynamicDeallocation extends jp.riken.kscope.language.Block {
 
 
      /**
-      * 同一ブロックであるかチェックする.
-      * @param block		ブロック
- 	 * @return		true=一致
+      * Check if they are the same block.
+      * @param block block
+ * @return true = match
       */
      @Override
  	public boolean equalsBlocks(Block block) {
@@ -202,9 +202,9 @@ public class DynamicDeallocation extends jp.riken.kscope.language.Block {
      }
 
      /**
-      * 同一ブロックを検索する
-      * @param block			IInformationブロック
-      * @return		同一ブロック
+      * Search for the same block
+      * @param block IInformation block
+      * @return Same block
       */
      @Override
      public IInformation[] searchInformationBlocks(IInformation block) {

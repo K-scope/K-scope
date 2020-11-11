@@ -23,54 +23,54 @@ import jp.riken.kscope.exception.LanguageException;
 import jp.riken.kscope.model.ErrorInfoModel;
 
 /**
- * サービス基底クラス
+ * Service base class
  * @author RIKEN
  */
 public abstract class BaseService {
-    /** エラーメッセージモデル */
+    /** Error message model */
     private ErrorInfoModel errorInfoModel;
 
     /**
-     * コンストラクタ
+     * Constructor
      */
     public BaseService() {
     }
 
     /**
-     * コンストラクタ
-     * @param   errorModel  エラーモデル
+     * Constructor
+     * @param errorModel Error model
      */
     public BaseService(ErrorInfoModel errorModel) {
         this.errorInfoModel = errorModel;
     }
 
     /**
-     * エラーメッセージモデルを設定する。
-     * @param errorInfoModel		エラーメッセージモデル
+     * Set the error message model.
+     * @param errorInfoModel Error message model
      */
     public void setErrorInfoModel(ErrorInfoModel errorInfoModel) {
         this.errorInfoModel = errorInfoModel;
     }
 
     /**
-     * エラーメッセージモデルを取得する
-     * @return errorMessage		エラーメッセージモデル
+     * Get the error message model
+     * @return errorMessage Error message model
      */
     public ErrorInfoModel getErrorInfoModel() {
         return errorInfoModel;
     }
 
     /**
-     * エラーメッセージを設定する
-     * @param errorMessage 		エラーメッセージ
+     * Set error message
+     * @param errorMessage Error message
      */
     public void addErrorInfo(String errorMessage) {
         this.errorInfoModel.addErrorInfo(errorMessage);
     }
 
     /**
-     * エラーメッセージを設定する
-     * @param ex 		エラーメッセージ
+     * Set error message
+     * @param ex error message
      */
     public void addErrorInfo(Exception ex) {
         String message = ex.getMessage();
@@ -81,36 +81,36 @@ public abstract class BaseService {
     }
 
     /**
-     * エラーメッセージを設定する
-     * @param file 		エラーファイル
-     * @param errorMessage 		エラーメッセージ
+     * Set error message
+     * @param file Error file
+     * @param errorMessage Error message
      */
     public void addErrorInfo(SourceFile file, String errorMessage) {
         this.errorInfoModel.addErrorInfo(file, errorMessage);
     }
 
     /**
-     * エラーメッセージを設定する
-     * @param file 		エラーファイル
-     * @param errorMessage 		エラーメッセージ
-     * @param lineno 		エラー行番号
+     * Set error message
+     * @param file Error file
+     * @param errorMessage Error message
+     * @param lineno Error line number
      */
     public void addErrorInfo(SourceFile file, String errorMessage, int lineno) {
         this.errorInfoModel.addErrorInfo(file, errorMessage, lineno);
     }
 
     /**
-     * エラーメッセージを設定する
-     * @param line 		エラー行情報
-     * @param errorMessage 		エラーメッセージ
+     * Set error message
+     * @param line Error line information
+     * @param errorMessage Error message
      */
     public void addErrorInfo(CodeLine line, String errorMessage) {
         this.errorInfoModel.addErrorInfo(line, errorMessage);
     }
 
     /**
-     * エラーメッセージを設定する
-     * @param lang_ex		エラー情報
+     * Set error message
+     * @param lang_ex Error information
      */
     public void addErrorInfo(LanguageException lang_ex) {
         String error_message = lang_ex.getMessage();
@@ -126,8 +126,8 @@ public abstract class BaseService {
     }
 
     /**
-     * エラーメッセージを設定する
-     * @param infos          エラー情報リスト
+     * Set error message
+     * @param infos Error information list
      */
     public void addErrorInfos(ErrorInfo[] infos) {
     	if (infos == null) return;

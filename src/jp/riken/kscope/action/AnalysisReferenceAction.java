@@ -33,18 +33,18 @@ import jp.riken.kscope.service.AnalysisReferenceService;
 import jp.riken.kscope.service.AppController;
 
 /**
- * 宣言・定義・参照一覧アクション
+ * Declaration / Definition / Reference List Action
  * @author RIKEN
  */
 public class AnalysisReferenceAction extends ActionBase {
 
-    /** 宣言・定義・参照一覧変数取得先ビュー */
+    /** Declaration / definition / reference list Variable acquisition destination view */
     private FRAME_VIEW view;
 
     /**
-     * コンストラクタ
-     * @param controller	アプリケーションコントローラ
-     * @param view 			宣言・定義・参照一覧変数取得先ビュー
+     * Constructor
+     * @param controller Application controller
+     * @param view Declaration / definition / reference list Variable acquisition destination view
      */
     public AnalysisReferenceAction(AppController controller, FRAME_VIEW view) {
         super(controller);
@@ -52,21 +52,21 @@ public class AnalysisReferenceAction extends ActionBase {
     }
 
     /**
-     * アクションが実行可能であるかチェックする.<br/>
-     * アクションの実行前チェック、メニューのイネーブルの切替を行う。<br/>
-     * @return		true=アクションが実行可能
+     * Check if the action is executable. <br/>
+     * Check before executing the action and switch the menu enable. <br/>
+     * @return true = Action can be executed
      */
     @Override
     public boolean validateAction() {
 
         if (this.view != FRAME_VIEW.SOURCE_VIEW) {
-            // 選択ノードを取得する
+            // Get the selected node
             VariableDefinition variable = getSelectedVariable();
             return (variable != null);
 
         }
         else {
-            // ソースコードの選択行を取得する
+            // Get the selected line of source code
             CodeLine line = this.controller.getMainframe().getPanelSourceView().getSelectedCodeLine();
             if (line == null) return false;
             return (line.getStatement() != null && !line.getStatement().isEmpty());
@@ -74,51 +74,51 @@ public class AnalysisReferenceAction extends ActionBase {
     }
 
     /**
-     * アクション発生イベント
-     * @param event		イベント情報
+     * Action occurrence event
+     * @param event Event information
      */
     @Override
     public void actionPerformed(ActionEvent event) {
-        // アクションチェック
+        // Action check
         if (!validateAction()) {
             return;
         }
 
-        // ステータスメッセージ
-        final String message = Message.getString("mainmenu.analysis.dec-def-ref"); //宣言・定義・参照
+        // Status message
+        final String message = Message.getString("mainmenu.analysis.dec-def-ref"); // Declaration / Definition / Reference
         Application.status.setMessageMain(message);
 
         if (this.view != FRAME_VIEW.SOURCE_VIEW) {
-            // 選択変数
+            // Select variable
             VariableDefinition variable = getSelectedVariable();
             if (variable == null) return;
-            // 参照一覧を取得する
+            // Get the reference list
             analysisReference(variable);
         }
         else {
-            // ソースコードの選択行を取得する
+            // Get the selected line of source code
             CodeLine line = this.controller.getMainframe().getPanelSourceView().getSelectedCodeLine();
             if (line == null) return;
 
-            // 参照一覧を取得する
+            // Get the reference list
             analysisReference(line);
 
         }
     }
 
     /**
-     * 宣言・定義・参照一覧変数を取得する
-     * @return		宣言・定義・参照一覧変数
+     * Get declaration / definition / reference list variables
+     * @return Declaration / definition / reference list variable
      */
     private VariableDefinition getSelectedVariable() {
 
         VariableDefinition variable = null;
         if (this.view == FRAME_VIEW.EXPLORE_VIEW) {
-            // 選択ノードを取得する
+            // Get the selected node
             DefaultMutableTreeNode node = this.controller.getMainframe().getPanelExplorerView().getSelectedNode();
             if (node == null || node.getUserObject() == null) return null;
 
-            // 選択ノード
+            // Selected node
             Object obj = node.getUserObject();
             if (obj instanceof VariableDefinition) {
                 variable = (VariableDefinition) obj;
@@ -132,61 +132,61 @@ public class AnalysisReferenceAction extends ActionBase {
 
 
     /**
-     * 宣言・定義・参照一覧を作成する
-     * @param variable		生成変数
+     * Create a declaration / definition / reference list
+     * @param variable Generated variable
      */
     public void analysisReference(VariableDefinition variable) {
         if (variable == null) return;
 
-        // フォートランデータベース
+        // Fortran database
         Fortran fortran = this.controller.getFortranLanguage();
-        // 参照一覧モデルを取得する
+        // Get the reference list model
         ReferenceModel modelReference = this.controller.getReferenceModel();
-        // エラー情報モデル
+        // Error information model
         ErrorInfoModel errorModel = this.controller.getErrorInfoModel();
 
-        // 参照一覧クリア
+        // Clear reference list
         modelReference.clearTreeModel();
 
-        // 分析サービス
+        // Analysis service
         AnalysisReferenceService service = new AnalysisReferenceService(fortran);
         service.setErrorInfoModel(errorModel);
         service.setModelReference(modelReference);
 
-        // 参照一覧を取得する
+        // Get the reference list
         service.analysisReference(variable);
 
-        // 参照一覧タブをアクティブにする
+        // Activate the Reference List tab
         this.controller.setSelectedAnalysisPanel(ANALYSIS_PANEL.REFERENCE);
 
     }
 
     /**
-     * 宣言・定義・参照一覧を作成する
-     * @param line		選択行情報
+     * Create a declaration / definition / reference list
+     * @param line Selected line information
      */
     public void analysisReference(CodeLine line) {
         if (line == null) return;
 
-        // フォートランデータベース
+        // Fortran database
         Fortran fortran = this.controller.getFortranLanguage();
-        // 参照一覧モデルを取得する
+        // Get the reference list model
         ReferenceModel modelReference = this.controller.getReferenceModel();
-        // エラー情報モデル
+        // Error information model
         ErrorInfoModel errorModel = this.controller.getErrorInfoModel();
 
-        // 参照一覧クリア
+        // Clear reference list
         modelReference.clearTreeModel();
 
-        // 分析サービス
+        // Analysis service
         AnalysisReferenceService service = new AnalysisReferenceService(fortran);
         service.setErrorInfoModel(errorModel);
         service.setModelReference(modelReference);
 
-        // 参照一覧を取得する
+        // Get the reference list
         service.analysisReference(line);
 
-        // 参照一覧タブをアクティブにする
+        // Activate the Reference List tab
         this.controller.setSelectedAnalysisPanel(ANALYSIS_PANEL.REFERENCE);
 
     }

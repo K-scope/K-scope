@@ -29,60 +29,60 @@ import jp.riken.kscope.model.ProjectModel;
 import jp.riken.kscope.service.AppController;
 
 /**
- * プロジェクトの閉じるアクション
+ * Project close action
  * @author RIKEN
  */
 public class FileProjectCloseAction extends ActionBase {
 
     /**
-     * コンストラクタ
-     * @param controller	アプリケーションコントローラ
+     * Constructor
+     * @param controller Application controller
      */
     public FileProjectCloseAction(AppController controller) {
         super(controller);
     }
 
     /**
-     * アクションが実行可能であるかチェックする.<br/>
-     * アクションの実行前チェック、メニューのイネーブルの切替を行う。<br/>
-     * @return		true=アクションが実行可能
+     * Check if the action is executable. <br/>
+     * Check before executing the action and switch the menu enable. <br/>
+     * @return true = Action can be executed
      */
     @Override
     public boolean validateAction() {
-        // プロジェクトが作成済みであること
+        // The project has been created
         ProjectModel model = this.controller.getProjectModel();
         if (model == null) return false;
         if (model.getProjectTitle() == null) return false;
         if (model.getProjectFolder() == null || !model.getProjectFolder().exists()) return false;
 
-        // スレッドタスクの実行状態をチェックする
+        // Check the execution status of the thread task
         return this.controller.isThreadTaskDone();
     }
 
     /**
-     * アクション発生イベント
-     * @param event		イベント情報
+     * Action occurrence event
+     * @param event Event information
      */
     @Override
     public void actionPerformed(ActionEvent event) {
-        final String message = Message.getString("mainmenu.file.closeproject"); //プロジェクトを閉じる
-        // ステータスメッセージ
+        final String message = Message.getString("mainmenu.file.closeproject"); // close the project
+        // Status message
         Application.status.setMessageMain(message);
 
-        // 親Frameの取得を行う。
+        // Get the parent Frame.
         Frame frame = getWindowAncestor( event );
 
         try {
 
-            // 確認メッセージを表示する。
+            // Display a confirmation message.
             int option = JOptionPane.showConfirmDialog(frame,
-                    Message.getString("fileprojectaloseaction.closeproject.dialog.message"), //プロジェクトを閉じますか？
-                    message, //プロジェクトを閉じる
+                    Message.getString("fileprojectaloseaction.closeproject.dialog.message"), // Do you want to close the project?
+                    message, // close the project
                     JOptionPane.OK_CANCEL_OPTION,
                     JOptionPane.WARNING_MESSAGE);
             if (option != JOptionPane.OK_OPTION) {
-                // ステータスメッセージ
-                Application.status.setMessageMain(message + Message.getString("action.common.cancel.status")); //:キャンセル
+                // Status message
+                Application.status.setMessageMain(message + Message.getString("action.common.cancel.status")); //:Cancel
                 return;
             }
 
@@ -91,17 +91,17 @@ public class FileProjectCloseAction extends ActionBase {
         } catch (Exception ex) {
             ex.printStackTrace();
 
-            // エラー箇所パネルにエラー表示
+            // Error display on the error location panel
             this.controller.getErrorInfoModel().addErrorInfo(ex);
 
-            // エラーメッセージ
+            // Error message
             JOptionPane.showMessageDialog(frame,
-                    Message.getString("fileprojectaloseaction.clearerror.dialog.message"), //プロジェクトのクリアエラー
-                    message + Message.getString("action.common.error.status"), //:エラー
+                    Message.getString("fileprojectaloseaction.clearerror.dialog.message"), // Project clear error
+                    message + Message.getString("action.common.error.status"), //:error
                     JOptionPane.ERROR_MESSAGE);
 
-            // ステータスメッセージ
-            Application.status.setMessageMain(message + Message.getString("action.common.error.status")); //:エラー
+            // Status message
+            Application.status.setMessageMain(message + Message.getString("action.common.error.status")); //:error
         }
     }
 
@@ -110,34 +110,34 @@ public class FileProjectCloseAction extends ActionBase {
 	 * @throws Exception
 	 */
 	public void closeProject() throws Exception {
-		// コンソールをクリアする
+		// clear the console
 		ConsolePanel console = this.controller.getMainframe().getPanelAnalysisView().getPanelConsole();
 		console.clearConsole();
 
-		// プロジェクトをクリアする
+		// clear the project
 		clearProject();
 
-		final String message = Message.getString("mainmenu.file.closeproject"); //プロジェクトを閉じる
-		// ステータスメッセージ
-		Application.status.setMessageMain(message + Message.getString("action.common.done.status")); //:完了
+		final String message = Message.getString("mainmenu.file.closeproject"); // close the project
+		// Status message
+		Application.status.setMessageMain(message + Message.getString("action.common.done.status")); //: Done
 	}
 
     /**
-     * プロジェクトをクリアする
-     * @throws Exception     プロジェクトのクリアエラー
+     * Clear the project
+     * @throws Exception Project clear error
      */
     public void clearProject() throws Exception {
 
-        // 解析情報のクリア
+        // Clear analysis information
         ProjectClearLanguageAction action = new ProjectClearLanguageAction(this.controller);
         action.clearFortranLanguage();
 
-        // XMLツリーをクリアする
+        // clear the XML tree
         FileTreeModel treeModel = this.controller.getXmlTreeModel();
         treeModel.setProjectFolder(null);
         treeModel.clearTreeModel();
 
-        // プロジェクトのクリア
+        // Clear the project
         this.controller.clearProject();
 
     }

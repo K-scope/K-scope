@@ -23,19 +23,19 @@ import jp.riken.kscope.service.AppController;
 
 
 /**
- * クリップボードコピーアクションクラス
+ * Clipboard copy action class
  * @author RIKEN
  *
  */
 public class EditClipboardCopyAction extends ActionBase {
 
-    /** クリップボードコピー先ビュー */
+    /** Clipboard copy destination view */
     private FRAME_VIEW view;
 
     /**
-     * コンストラクタ
-     * @param controller	アプリケーションコントローラ
-     * @param view 			クリップボードコピービュー
+     * Constructor
+     * @param controller Application controller
+     * @param view Clipboard copy view
      */
     public EditClipboardCopyAction(AppController controller, FRAME_VIEW view) {
         super(controller);
@@ -43,18 +43,18 @@ public class EditClipboardCopyAction extends ActionBase {
     }
 
     /**
-     * クリップボードコピーイベント
-     * @param event		イベント情報
+     * Clipboard copy event
+     * @param event Event information
      */
     @Override
     public void actionPerformed(ActionEvent event) {
 
         if (view == FRAME_VIEW.SOURCE_VIEW) {
-            // ソースビューからクリップボードへコピーする
+            // Copy from Source View to Clipboard
             this.controller.getMainframe().getPanelSourceView().copyClipboard();
         }
         else if (view == FRAME_VIEW.ANALYSIS_VIEW) {
-            // 分析ビューからクリップボードへコピーする
+            // Copy from analysis view to clipboard
             this.controller.getMainframe().getPanelAnalysisView().copyClipboard();
         }
         return;

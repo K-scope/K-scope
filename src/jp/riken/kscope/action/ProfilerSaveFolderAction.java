@@ -29,28 +29,28 @@ import jp.riken.kscope.service.ProfilerService;
 import jp.riken.kscope.utils.SwingUtils;
 
 /**
- * プロファイラ測定区間フォルダ保存アクションクラス
+ * Profiler measurement interval folder save action class
  * @author RIKEN
  *
  */
 public class ProfilerSaveFolderAction extends ActionBase {
 
     /**
-     * コンストラクタ
-     * @param controller	アプリケーションコントローラ
+     * Constructor
+     * @param controller Application controller
      */
     public ProfilerSaveFolderAction(AppController controller) {
         super(controller);
     }
 
     /**
-     * アクションが実行可能であるかチェックする.<br/>
-     * アクションの実行前チェック、メニューのイネーブルの切替を行う。<br/>
-     * @return		true=アクションが実行可能
+     * Check if the action is executable. <br/>
+     * Check before executing the action and switch the menu enable. <br/>
+     * @return true = Action can be executed
      */
     @Override
     public boolean validateAction() {
-        // プロジェクト情報
+        // Project information
         ProjectModel project = this.controller.getProjectModel();
         String projectFolder = null;
         if (project.getProjectFolder() != null) {
@@ -59,7 +59,7 @@ public class ProfilerSaveFolderAction extends ActionBase {
         if (projectFolder == null) {
             return false;
         }
-        // 測定区間情報
+        // Measurement section information
         if (this.controller.getProfilerInfo() == null) {
             return false;
         }
@@ -75,49 +75,49 @@ public class ProfilerSaveFolderAction extends ActionBase {
     }
 
     /**
-     * アクション発生イベント
-     * @param event		イベント情報
+     * Action occurrence event
+     * @param event Event information
      */
     @Override
     public void actionPerformed(ActionEvent event) {
-        // ステータスメッセージ
-        final String message = Message.getString("mainmenu.profiler.savefolder-mesuermentrange"); //測定区間:フォルダ保存
+        // Status message
+        final String message = Message.getString("mainmenu.profiler.savefolder-mesuermentrange"); // Measurement interval: Save in folder
         Application.status.setMessageMain(message);
-        // メインフレーム
+        // main frame
         Frame frame = this.controller.getMainframe();
 
-        // プロジェクト情報
+        // Project information
         ProjectModel project = this.controller.getProjectModel();
         File projectFolder = project.getProjectFolder();
 
-        String title = Message.getString("profilersavefolderaction.savefolder.selectdialog.title"); //測定区間:フォルダ保存の選択
-        // フォルダ選択ダイアログを表示する。
+        String title = Message.getString("profilersavefolderaction.savefolder.selectdialog.title"); // Measurement interval: Select save folder
+        // Display the folder selection dialog.
         File[] selected = SwingUtils.showSaveFolderDialog(frame, title, projectFolder.getAbsolutePath(), false);
         if (selected == null || selected.length <= 0) return;
 
-        // 測定区間情報
+        // Measurement section information
         ProfilerMeasureInfo measureInfo = this.controller.getProfilerInfo().getMeasureInfo();
-        // プロファイラサービス
+        // Profiler service
         ProfilerService service = new ProfilerService();
         service.setErrorInfoModel(this.controller.getErrorInfoModel());
         service.setMeasureInfo(measureInfo);
         service.setProjectFolder(projectFolder);
-        // プロファイラプロパティ
+        // Profiler properties
         service.setPropertiesProfiler(this.controller.getPropertiesProfiler());
 
         try {
-            // 上書き保存実行
+            // Overwrite save execution
             service.saveMeasureFile(selected[0]);
         } catch (Exception ex) {
             ex.printStackTrace();
             Application.status.setMessageMain(message+
-            		Message.getString("action.common.failed.status") //:失敗
+            		Message.getString("action.common.failed.status") //: Failure
             		);
             return;
         }
 
         Application.status.setMessageMain(message+
-        		Message.getString("action.common.done.status") //:完了
+        		Message.getString("action.common.done.status") //: Done
         		);
 
         return;

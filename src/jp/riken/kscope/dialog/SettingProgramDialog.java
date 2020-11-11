@@ -60,122 +60,122 @@ import jp.riken.kscope.utils.StringUtils;
 import jp.riken.kscope.utils.SwingUtils;
 
 /**
- * 外部ツール設定ダイアログクラス
+ * External tool settings dialog class
  * @author RIKEN
  *
  */
 public class SettingProgramDialog extends javax.swing.JDialog implements ActionListener, ListSelectionListener, ItemListener {
 
-    /** シリアル番号 */
+    /** Serial number */
     private static final long serialVersionUID = 1L;
 
-    /** キャンセルボタン */
+    /** Cancel button */
     private JButton btnCancel;
-    /** OKボタン */
+    /** OK button */
     private JButton btnOk;
-    /** 適用ボタン */
+    /** Apply button */
     private JButton btnApply;
-    /** 拡張子名ラベル */
+    /** Extension name label */
     private JLabel lblName;
-    /** 拡張子名テキストボックス */
+    /** Extension name text box */
     private JTextField txtName;
-    /** パターンラベル */
+    /** Pattern label */
     private JLabel lblPattern;
-    /** パターンテキストボックス */
+    /** Pattern text box */
     private JTextField txtPattern;
-    /** 拡張子オプションボタン */
+    /** Extension option button */
     private JRadioButton chkExt;
-    /** 正規表現オプションボタン */
+    /** Regular expression option button */
     private JRadioButton chkRegex;
-    /** 外部ツールラベル */
+    /** External tool label */
     private JLabel lblProgram;
-    /** 関連付け */
+    /** Association */
     private JCheckBox chkRelation;
-    /** プログラムテキストボックス */
+    /** Program text box */
     private JTextField txtProgram;
-    /** 登録ボタン */
+    /** Registration button */
     private JButton btnReg;
-    /** 追加ボタン */
+    /** Add button */
     private JButton btnAdd;
-    /** 削除ボタン */
+    /** Delete button */
     private JButton btnDel;
-    /** クリアボタン */
+    /** Clear button */
     private JButton btnClear;
-    /** プログラム参照パス */
+    /** Program reference path */
     private JButton btnExePath;
-    /** 起動オプションラベル */
+    /** Startup option label */
     private JLabel lblOption;
-    /** 起動オプション */
+    /** Boot options */
     private JTextField txtOption;
-    /** 外部ツールリスト */
+    /** External tool list */
     private JTable tblProgram;
-    /** 外部ツールリストデータ */
+    /** External tool list data */
     private DefaultTableModel modelProgram;
-    /** 外部ツール設定パネル */
+    /** External tool settings panel */
     private JPanel panelProgram;
 
-    /** ダイアログの戻り値 */
+    /** Dialog return value */
     private int result = Constant.CANCEL_DIALOG;
 
-    /** 外部ツールプロパティ */
+    /** External tool properties */
     ProgramProperties properities;
-    /** 設定リストヘッダー */
-    private final String[] COLUMN_HEADER = { Message.getString("settingprogramdialog.column_header.preferencename"), //設定名
-                                             Message.getString("settingprogramdialog.column_header.suffix-regular"), //拡張子・正規表現
-                                             Message.getString("settingprogramdialog.column_header.kind"), //種別
-                                             Message.getString("settingprogramdialog.column_header.externaltool"), //外部ツール
-                                             Message.getString("settingprogramdialog.column_header.argument") }; //起動引数
+    /** Settings list header */
+    private final String[] COLUMN_HEADER = { Message.getString("settingprogramdialog.column_header.preferencename"), // Setting name
+                                             Message.getString("settingprogramdialog.column_header.suffix-regular"), // Extension / Regular expression
+                                             Message.getString("settingprogramdialog.column_header.kind"), // Type
+                                             Message.getString("settingprogramdialog.column_header.externaltool"), // External tools
+                                             Message.getString("settingprogramdialog.column_header.argument") }; // Start argument
     private final int[] COLUMN_MINWIDTH = { 120, 160, 80, 240, 120};
     private final int[] COLUMN_MAXWIDTH = { 0, 0, 0, 80, 80 };
     private final int COLUMN_COUNT = 5;
 
 
     /**
-     * コンストラクタ
-     * @param frame		親フレーム
+     * Constructor
+     * @param frame Parent frame
      */
     public SettingProgramDialog(JFrame frame) {
         super(frame);
         initGUI();
 
-        // 初期表示
+        // Initial display
         clearProgram();
     }
 
     /**
-     * コンストラクタ
-     * @param frame		親フレーム
-     * @param modal		true=モーダルダイアログを表示する
+     * Constructor
+     * @param frame Parent frame
+     * @param modal true = Show modal dialog
      */
     public SettingProgramDialog(Frame frame, boolean modal) {
         super(frame, modal);
         initGUI();
 
-        // 初期表示
+        // Initial display
         clearProgram();
     }
 
     /**
-     * コンストラクタ
-     * @param frame		親フレーム
-     * @param modal		true=モーダルダイアログを表示する
-     * @param properities	外部ツールプロパティ
+     * Constructor
+     * @param frame Parent frame
+     * @param modal true = Show modal dialog
+     * @param properities External tool properties
      */
     public SettingProgramDialog(Frame frame, boolean modal, ProgramProperties properities) {
         super(frame, modal);
         initGUI();
         setProgramProperties(properities);
 
-        // 初期表示
+        // Initial display
         clearProgram();
     }
 
     /**
-     * GUI初期化を行う。
+     * Initialize the GUI.
      */
     private void initGUI() {
         try {
-            // ボタンパネル
+            // Button panel
             {
                 JPanel panelButtons = new JPanel();
                 FlowLayout jPanel1Layout = new FlowLayout();
@@ -185,12 +185,12 @@ public class SettingProgramDialog extends javax.swing.JDialog implements ActionL
                 getContentPane().add(panelButtons, BorderLayout.SOUTH);
                 panelButtons.setPreferredSize(new java.awt.Dimension(390, 45));
 
-                // メインボタンサイズ
+                // Main button size
                 java.awt.Dimension buttonSize = new java.awt.Dimension(96, 22);
                 {
                     btnApply = new JButton();
                     panelButtons.add(btnApply);
-                    btnApply.setText(Message.getString("dialog.common.button.apply")); //適用
+                    btnApply.setText(Message.getString("dialog.common.button.apply")); //Apply
                     btnApply.setPreferredSize(buttonSize);
                     btnApply.addActionListener(this);
                 }
@@ -204,13 +204,13 @@ public class SettingProgramDialog extends javax.swing.JDialog implements ActionL
                 {
                     btnCancel = new JButton();
                     panelButtons.add(btnCancel);
-                    btnCancel.setText(Message.getString("dialog.common.button.cancel")); //キャンセル
+                    btnCancel.setText(Message.getString("dialog.common.button.cancel")); //Cancel
                     btnCancel.setPreferredSize(buttonSize);
                     btnCancel.setMargin(new Insets(5, 5, 5, 5));
                     btnCancel.addActionListener(this);
                 }
             }
-            // コンテンツパネル
+            // Content panel
             {
                 JPanel panelContent = new JPanel();
                 BorderLayout panelContentLayout = new BorderLayout();
@@ -219,7 +219,7 @@ public class SettingProgramDialog extends javax.swing.JDialog implements ActionL
                 panelContent.setBorder(border);
                 panelContent.setLayout(panelContentLayout);
 
-                // 外部ツールリスト
+                // External tool list
                 {
                     JPanel panelList = new JPanel();
                     BorderLayout panelListLayout = new BorderLayout();
@@ -228,7 +228,7 @@ public class SettingProgramDialog extends javax.swing.JDialog implements ActionL
                     {
                         JLabel lblList = new JLabel();
                         panelList.add(lblList, BorderLayout.NORTH);
-                        lblList.setText(Message.getString("settingprogramdialog.label.externaltoollist")); //外部ツールリスト
+                        lblList.setText(Message.getString("settingprogramdialog.label.externaltoollist")); // External tool list
                     }
                     {
                         JScrollPane scrollList = new JScrollPane();
@@ -238,7 +238,7 @@ public class SettingProgramDialog extends javax.swing.JDialog implements ActionL
                         {
                             modelProgram = new DefaultTableModel();
                             modelProgram.setColumnCount(COLUMN_COUNT);
-                            // ヘッダー列名
+                            // Header column name
                             String[] columns = COLUMN_HEADER;
                             modelProgram.setColumnIdentifiers(columns);
                             tblProgram = new JTable();
@@ -250,24 +250,24 @@ public class SettingProgramDialog extends javax.swing.JDialog implements ActionL
                             tblProgram.setColumnSelectionAllowed(false);
                             tblProgram.setDefaultEditor(Object.class, null);
 
-                            // 列幅設定
+                            // Column width setting
                             for (int i=0; i<tblProgram.getColumnModel().getColumnCount(); i++) {
                                 TableColumn col = tblProgram.getColumnModel().getColumn(i);
-                                // 列幅を設定する。
+                                // Set the column width.
                                 if (i<COLUMN_MINWIDTH.length) {
                                     col.setMinWidth(COLUMN_MINWIDTH[i]);
-                                    // 最大列幅が設定されている(>0)場合は、最大列幅を設定して固定列幅とする。
+                                    // If the maximum column width is set (> 0), set the maximum column width to make it a fixed column width.
                                     if (COLUMN_MAXWIDTH[i] > 0) {
                                         col.setMaxWidth(COLUMN_MAXWIDTH[i]);
                                         col.setResizable(false);
                                     }
-                                    // 最大列幅が-1で設定されている場合は、非表示列(=0)とする。
+                                    // If the maximum column width is set to -1, set it as a hidden column (= 0).
                                     else if (COLUMN_MAXWIDTH[i] < 0) {
                                         col.setMaxWidth(0);
                                         col.setResizable(false);
                                     }
                                 }
-                                // 列幅が設定されていない列は非表示とする。
+                                // Hide columns for which no column width is set.
                                 else {
                                     col.setMinWidth(0);
                                     col.setMaxWidth(0);
@@ -278,7 +278,7 @@ public class SettingProgramDialog extends javax.swing.JDialog implements ActionL
                     }
                 }
 
-                // 設定パネル
+                // Settings panel
                 {
                     JPanel panelSettings = new JPanel();
                     BorderLayout panelSettingsLayout = new BorderLayout();
@@ -288,7 +288,7 @@ public class SettingProgramDialog extends javax.swing.JDialog implements ActionL
                     panelSettings.setLayout(panelSettingsLayout);
                     {
                         JLabel lblSettings = new JLabel();
-                        lblSettings.setText(Message.getString("settingkeyworddialog.label.preference")); //設定
+                        lblSettings.setText(Message.getString("settingkeyworddialog.label.preference")); //Configuration
                         panelSettings.add(lblSettings, BorderLayout.NORTH);
                     }
                     panelProgram = new JPanel();
@@ -301,26 +301,26 @@ public class SettingProgramDialog extends javax.swing.JDialog implements ActionL
                     panelProgram.setLayout(panelProgramLayout);
                     panelProgram.setPreferredSize(new java.awt.Dimension(420, 260));
 
-                    // 有効チェックボタン
+                    // Valid check button
                     EtchedBorder titleBorder = (EtchedBorder) BorderFactory.createEtchedBorder();
                     Border borderKeyword = new CompoundBorder( titleBorder, new EmptyBorder(7,7,0,7));
                     panelProgram.setBorder(borderKeyword);
 
-                    // 外部ツール名
+                    // External tool name
                     {
                         lblName = new JLabel();
                         panelProgram.add(lblName, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
-                        lblName.setText(Message.getString("settingprogramdialog.label.name")); //名前
+                        lblName.setText(Message.getString("settingprogramdialog.label.name")); //name
                     }
                     {
                         txtName = new JTextField();
                         panelProgram.add(txtName, new GridBagConstraints(1, 0, 2, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
                     }
-                    // パターン
+                    // Pattern
                     {
                         lblPattern = new JLabel();
                         panelProgram.add(lblPattern, new GridBagConstraints(0, 1, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
-                        lblPattern.setText(Message.getString("settingprogramdialog.label.pattern")); //パターン
+                        lblPattern.setText(Message.getString("settingprogramdialog.label.pattern")); //pattern
                     }
                     {
                         txtPattern = new JTextField();
@@ -328,88 +328,88 @@ public class SettingProgramDialog extends javax.swing.JDialog implements ActionL
                     }
                     {
                         ButtonGroup group = new ButtonGroup();
-                        // 拡張子オプションボタン
+                        // Extension option button
                         {
                             chkExt = new JRadioButton();
                             panelProgram.add(chkExt, new GridBagConstraints(1, 2, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
-                            chkExt.setText(Message.getString("settingprogramdialog.label.suffix")); //拡張子
+                            chkExt.setText(Message.getString("settingprogramdialog.label.suffix")); //extension
                         }
-                        // 正規表現オプションボタン
+                        // Regular expression option button
                         {
                             chkRegex = new JRadioButton();
                             panelProgram.add(chkRegex, new GridBagConstraints(2, 2, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
-                            chkRegex.setText(Message.getString("searchfinddialog.checkbox.regex")); //正規表現
+                            chkRegex.setText(Message.getString("searchfinddialog.checkbox.regex")); //Regular expressions
                         }
                         group.add(chkExt);
                         group.add(chkRegex);
                     }
-                    // 拡張子説明
+                    // Extension description
                     {
                         JLabel label1 = new JLabel();
                         panelProgram.add(label1, new GridBagConstraints(1, 3, 2, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
-                        label1.setText(Message.getString("settingprogramdialog.label.suffix.desc")); //拡張子はカンマ区切りで複数設定できます。
+                        label1.setText(Message.getString("settingprogramdialog.label.suffix.desc")); // You can set multiple extensions separated by commas.
                         //JLabel label2 = new JLabel();
-                        //label2.setText(Message.getString("settingprogramdialog.label.suffix.ex")); //(例) LOG,TXT,DAT
+                        //label2.setText (Message.getString ("settingprogramdialog.label.suffix.ex")); // (Example) LOG, TXT, DAT
 
-                        // ボックスパネル
+                        // Box panel
                         //Box box = Box.createVerticalBox();
                         //box.add(label1);
                         //box.add(label2);
                         //panelProgram.add(box, new GridBagConstraints(1, 3, 2, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
                     }
-                    // 外部ツール
+                    // External tools
                     {
                         lblProgram = new JLabel();
                         panelProgram.add(lblProgram, new GridBagConstraints(0, 4, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
-                        lblProgram.setText(Message.getString("settingprogramdialog.column_header.externaltool")); //外部ツール
+                        lblProgram.setText(Message.getString("settingprogramdialog.column_header.externaltool")); // External tools
                     }
                     {
                         chkRelation = new JCheckBox();
                         panelProgram.add(chkRelation, new GridBagConstraints(1, 4, 2, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
-                        chkRelation.setText(Message.getString("settingprogramdialog.label.programassociation")); //関連付けプログラム
+                        chkRelation.setText(Message.getString("settingprogramdialog.label.programassociation")); // Association program
                         chkRelation.addItemListener(this);
                     }
                     {
-                        // 外部ツールプログラムパス
+                        // External tool program path
                         txtProgram = new JTextField();
 
-                        // 参照ボタン
+                        // Browse button
                         btnExePath = new JButton();
-                        btnExePath.setText(Message.getString("dialog.common.button.refer")); //参照
+                        btnExePath.setText(Message.getString("dialog.common.button.refer")); //reference
                         btnExePath.setPreferredSize(new java.awt.Dimension(48, 22));
                         btnExePath.setMaximumSize(new java.awt.Dimension(48, 22));
                         btnExePath.setMargin(new Insets(0, 3, 0, 3));
                         btnExePath.addActionListener(this);
 
-                        // ボックスパネル
+                        // Box panel
                         Box box = Box.createHorizontalBox();
                         box.add(txtProgram);
                         box.add(btnExePath);
                         panelProgram.add(box, new GridBagConstraints(1, 5, 2, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
                     }
-                    // オプション
+                    // Optional
                     {
                         lblOption = new JLabel();
                         panelProgram.add(lblOption, new GridBagConstraints(0, 6, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
-                        lblOption.setText(Message.getString("settingprogramdialog.column_header.argument")); //起動引数
+                        lblOption.setText(Message.getString("settingprogramdialog.column_header.argument")); // Start argument
                     }
                     {
                         txtOption = new JTextField();
                         panelProgram.add(txtOption, new GridBagConstraints(1, 6, 2, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
                     }
 
-                    // 起動引数説明
+                    // Start argument description
                     {
-                    	// プログラム起動時の起動オプションを設定します。
-                    	// 以下のマクロが使用可能です。(ソースファイルのみ)
-                    	//    %F = ファイル名
-                    	//    %L = 行番号
-                    	//    (EMACS例 : +%L )
+                    	// Set startup options when the program starts.
+                    	// The following macros are available. (Source file only)
+                    	//% F = filename
+                    	//% L = line number
+                    	// (EMACS example: +% L)
                         JLabel label = new JLabel(Message.getString("settingprogramdialog.discription.argument"));
                         panelProgram.add(label, new GridBagConstraints(1, 7, 2, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
                     }
 
-                    // 外部ツール追加削除ボタンパネル
+                    // External tool add / remove button panel
                     JPanel panelAddButtons = new JPanel();
                     FlowLayout panelAddButtonsLayout = new FlowLayout(FlowLayout.RIGHT);
                     Border borderAddButtons = new EmptyBorder(0,7,0,0);
@@ -422,7 +422,7 @@ public class SettingProgramDialog extends javax.swing.JDialog implements ActionL
                     {
                         btnAdd = new JButton();
                         panelAddButtons.add(btnAdd);
-                        btnAdd.setText(Message.getString("dialog.common.button.add")); //追加
+                        btnAdd.setText(Message.getString("dialog.common.button.add")); //add to
                         btnAdd.setPreferredSize(minSize);
                         btnAdd.setMargin(minInsets);
                         btnAdd.addActionListener(this);
@@ -430,7 +430,7 @@ public class SettingProgramDialog extends javax.swing.JDialog implements ActionL
                     {
                         btnReg = new JButton();
                         panelAddButtons.add(btnReg);
-                        btnReg.setText(Message.getString("dialog.common.button.update")); //更新
+                        btnReg.setText(Message.getString("dialog.common.button.update")); //update
                         btnReg.setPreferredSize(minSize);
                         btnReg.setMargin(minInsets);
                         btnReg.addActionListener(this);
@@ -438,7 +438,7 @@ public class SettingProgramDialog extends javax.swing.JDialog implements ActionL
                     {
                         btnDel = new JButton();
                         panelAddButtons.add(btnDel);
-                        btnDel.setText(Message.getString("dialog.common.button.delete")); //削除
+                        btnDel.setText(Message.getString("dialog.common.button.delete")); //Delete
                         btnDel.setPreferredSize(minSize);
                         btnDel.setMargin(minInsets);
                         btnDel.addActionListener(this);
@@ -446,7 +446,7 @@ public class SettingProgramDialog extends javax.swing.JDialog implements ActionL
                     {
                         btnClear = new JButton();
                         panelAddButtons.add(btnClear);
-                        btnClear.setText(Message.getString("dialog.common.button.clear")); //ｸﾘｱ
+                        btnClear.setText(Message.getString("dialog.common.button.clear")); // Clear
                         btnClear.setPreferredSize(minSize);
                         btnClear.setMargin(minInsets);
                         btnClear.addActionListener(this);
@@ -454,7 +454,7 @@ public class SettingProgramDialog extends javax.swing.JDialog implements ActionL
                 }
             }
 
-            setTitle(Message.getString("projectsettingtoolsaction.setup.status")); //外部ツール設定
+            setTitle(Message.getString("projectsettingtoolsaction.setup.status")); // External tool settings
             this.setSize(670, 460);
 
         } catch (Exception e) {
@@ -463,80 +463,80 @@ public class SettingProgramDialog extends javax.swing.JDialog implements ActionL
     }
 
     /**
-     * ダイアログを表示する。
-     * @return    ダイアログの閉じた時のボタン種別
+     * Display a dialog.
+     * @return Button type when the dialog is closed
      */
     public int showDialog() {
 
-        // 親フレーム中央に表示する。
+        // Display in the center of the parent frame.
         this.setLocationRelativeTo(this.getOwner());
 
-        // ダイアログ表示
+        // Dialog display
         this.setVisible(true);
 
         return this.result;
     }
 
     /**
-     * 外部ツール設定プロパティを設定する。
-     * @param properities		外部ツール設定プロパティ
+     * Set external tool setting properties.
+     * @param properities External tool settings properties
      */
     public void setProgramProperties(ProgramProperties properities) {
         this.properities = properities;
 
-        // 外部ツールリストを作成する
+        // Create an external tool list
         int count = properities.getProgramCount();
         for (int i=0; i<count; i++) {
             Program program = properities.getProgram(i);
 
-            // 行データの作成
+            // Create row data
             Object[] column = createProgramRowData(program);
-            // 行追加
+            // Add line
             modelProgram.addRow(column);
         }
     }
 
     /**
-     * 外部ツール設定を取得する。
-     * @return		外部ツール設定プロパティ
+     * Get external tool settings.
+     * @return External tool settings properties
      */
     public ProgramProperties getProgramProperties() {
 
-        // 外部ツール設定リストから外部ツール設定の取得を行う
+        // Get the external tool settings from the external tool settings list
         int count = modelProgram.getRowCount();
-        // 外部ツール設定をクリア
+        // Clear external tool settings
         this.properities.clearProgram();
         for (int i=0; i<count; i++) {
             Program prog = new Program();
 
             Object cell;
-            // 名前
+            // name
             cell = modelProgram.getValueAt(i, 0);
             String keyname = Message.getKey((String) cell);
             if (StringUtils.isNullOrEmpty(keyname)) {
-            	// name変更により入力名前を設定する
+            	// Set the input name by changing the name
             	prog.setName((String) cell);
             }
             else {
-            	// name未変更によりnameのキーを設定する.
+            	// Set the name key by not changing the name.
             	prog.setName(keyname);
             }
-            // パターン
+            // Pattern
             cell = modelProgram.getValueAt(i, 1);
             prog.setPattern((String) cell);
-            // 拡張子 or 正規表現
+            // Extension or regular expression
             boolean exts = false;
             cell = modelProgram.getValueAt(i, 2);
-            if (Message.getString("settingprogramdialog.label.suffix").equals((String)cell)) { //拡張子
+            if (Message.getString("settingprogramdialog.label.suffix").equals((String)cell)) { //extension
                 exts = true;
             }
-            prog.setExts(exts);		// 拡張子
-            prog.setRegex(!exts);		// 正規表現
+            prog.setExts(exts);		// extension
+            prog.setRegex(!exts);		// Regular expressions
 
-            // 外部プログラム
+            // External program
             boolean relation = false;
             cell = modelProgram.getValueAt(i, 3);
-            if (Message.getString("settingprogramdialog.label.association").equals((String)cell)) { //関連付け
+            if (Message.getString("settingprogramdialog.label.association").equals((String)cell)) { // Association
                 relation = true;
             }
             prog.setRelation(relation);
@@ -544,12 +544,12 @@ public class SettingProgramDialog extends javax.swing.JDialog implements ActionL
                 prog.setExename((String)cell);
             }
 
-            // オプション
+            // Optional
             cell = modelProgram.getValueAt(i, 4);
             if ((String) cell != null && !((String)cell).isEmpty()) {
             	prog.setOption((String) cell);
             }
-            // 外部ツールの追加
+            // Add external tools
             properities.addProgram(prog);
         }
 
@@ -557,8 +557,8 @@ public class SettingProgramDialog extends javax.swing.JDialog implements ActionL
     }
 
     /**
-     * ボタンクリックイベント
-     * @param event		イベント情報
+     * Button click event
+     * @param event Event information
      */
     @Override
     public void actionPerformed(ActionEvent event) {
@@ -567,180 +567,180 @@ public class SettingProgramDialog extends javax.swing.JDialog implements ActionL
         if (event.getSource() == this.btnOk) {
             this.result = Constant.OK_DIALOG;
 
-            // 変更内容を取得する。
+            // Get the changes.
             getProgramProperties();
 
-            // 変更イベントを発生
+            // Fire a change event
             this.properities.firePropertyChange();
 
-            // ダイアログを閉じる。
+            // Close the dialog.
             dispose();
             return;
         }
-        // 適用
+        // Apply
         else if (event.getSource() == this.btnApply) {
             this.result = Constant.OK_DIALOG;
 
-            // 変更内容を取得する。
+            // Get the changes.
             getProgramProperties();
 
-            // 変更イベントを発生
+            // Fire a change event
             this.properities.firePropertyChange();
 
             return;
         }
-        // 閉じる
+        // close
         else if (event.getSource() == this.btnCancel) {
             this.result = Constant.CANCEL_DIALOG;
-            // ダイアログを閉じる。
+            // Close the dialog.
             dispose();
             return;
         }
-        // 参照
+        // Reference
         else if (event.getSource() == this.btnExePath) {
-            // ファイル選択ダイアログを表示する。
+            // Display the file selection dialog.
 
-            // ファイル選択ダイアログを表示する。
+            // Display the file selection dialog.
             File[] selected = SwingUtils.showOpenFileDialog(this,
-                    Message.getString("settingprogramdialog.selectfiledialog.title"), null, null, false); //プログラムの選択
+                    Message.getString("settingprogramdialog.selectfiledialog.title"), null, null, false); // Program selection
             if (selected == null || selected.length <= 0) return;
 
-            // 選択プログラムの設定をする
+            // Set the selection program
             this.txtProgram.setText(selected[0].getAbsolutePath());
 
             return;
         }
-        // 更新
+        // update
         else if (event.getSource() == this.btnReg) {
-            // 入力チェック
+            // Check the input
             if (this.validateProgram(false) == false) {
-                // 入力ミス
+                // Typing error
                 return;
             }
-            // プログラムが設定されているかチェック
+            // Check if the program is set
             if (!chkProgramPath()) {
             	JOptionPane.showMessageDialog(this,
-            			Message.getString("settingprogramdialog.errordialog.noprogram.message"), //プログラムを入力してください。
-            			Message.getString("dialog.common.error"), //エラー
+            			Message.getString("settingprogramdialog.errordialog.noprogram.message"), // Enter the program.
+            			Message.getString("dialog.common.error"), //error
             			JOptionPane.ERROR_MESSAGE);
             	return;
             }
 
-            // 更新を行う
+            // Update
             Program prog = this.getProgram();
             setProgramList(prog);
 
         }
-        // 追加
+        // add to
         else if (event.getSource() == this.btnAdd) {
-            // 入力チェック
+            // Check the input
             if (this.validateProgram(true) == false) {
-                // 入力ミス
+                // Typing error
                 return;
             }
-            // プログラムが設定されているかチェック
+            // Check if the program is set
             if (!chkProgramPath()) {
             	JOptionPane.showMessageDialog(this,
-            			Message.getString("settingprogramdialog.errordialog.noprogram.message"), //プログラムを入力してください。
-            			Message.getString("dialog.common.error"), //エラー
+            			Message.getString("settingprogramdialog.errordialog.noprogram.message"), // Enter the program.
+            			Message.getString("dialog.common.error"), //error
             			JOptionPane.ERROR_MESSAGE);
             	return;
             }
 
-            // 追加を行う
+            // make an addition
             Program prog = this.getProgram();
             addProgramList(prog);
         }
-        // 削除
+        // Delete
         else if (event.getSource() == this.btnDel) {
-            // 選択行
+            // Selected line
             int selectedrow = this.tblProgram.getSelectedRow();
             if (selectedrow < 0) return;
 
             int option = JOptionPane.showConfirmDialog(this,
-                    Message.getString("settingprogramdialog.confirmationdialog.delete.message"), //削除してもよろしいですか？
-                    Message.getString("settingprogramdialog.confirmationdialog.delete.title"), //外部ツールの削除
+                    Message.getString("settingprogramdialog.confirmationdialog.delete.message"), //Delete Are you sure you want to?
+                    Message.getString("settingprogramdialog.confirmationdialog.delete.title"), // Remove external tools
                     JOptionPane.OK_CANCEL_OPTION);
             if (option == JOptionPane.OK_OPTION) {
-                // 削除を行う
+                // Delete
                 Program orog = this.getProgram();
                 removeProgramList(orog);
             }
         }
-        // 新規
+        // new
         else if (event.getSource() == this.btnClear) {
-            // 設定パネルのイネーブルの切替を行う
+            // Switch the enable of the setting panel
             setSettingPanelEnabled(true);
-            // 外部ツール設定パネルをクリアする。
+            // Clear the external tool settings panel.
             clearProgram();
         }
 
     }
 
     /**
-     * 設定パネルのイネーブルの切替を行う
-     * @param enabled		true=イネーブル
+     * Toggle the enable of the setting panel
+     * @param enabled true = enabled
      */
     private void setSettingPanelEnabled(boolean enabled) {
-        /** 設定名ラベル */
+        /** Setting name label */
         this.lblName.setEnabled(enabled);
-        /** 設定名テキストボックス */
+        /** Setting name text box */
         this.txtName.setEnabled(enabled);
-        /** パターンラベル */
+        /** Pattern label */
         this.lblPattern.setEnabled(enabled);
-        /** パターンテキストボックス */
+        /** Pattern text box */
         this.txtPattern.setEnabled(enabled);
-        /** 拡張子チェックボックス */
+        /** Extension checkbox */
         this.chkExt.setEnabled(enabled);
-        /** 正規表現チェックボックス */
+        /** Regular expression checkbox */
         this.chkRegex.setEnabled(enabled);
-        /** 外部ツールラベル */
+        /** External tool label */
         this.lblProgram.setEnabled(enabled);
-        /** 関連付けチェックボックス */
+        /** Association checkbox */
         this.chkRelation.setEnabled(enabled);
-        /** 外部ツールテキストボックス */
+        /** External tool textbox */
         this.txtProgram.setEnabled(enabled);
-        /** 外部プログラム参照ボタン */
+        /** External program reference button */
         this.btnExePath.setEnabled(enabled);
-        /** オプション */
+        /** Options */
         this.txtOption.setEnabled(enabled);
 
     }
 
 
     /**
-     * 外部ツール設定リストの変更イベント.<br/>
-     * 選択行の外部ツール設定情報を設定パネルにセットする。
-     * @param event		イベント情報
+     * External tool setting list change event. <br/>
+     * Set the external tool setting information of the selected line in the setting panel.
+     * @param event Event information
      */
     @Override
     public void valueChanged(ListSelectionEvent event) {
 
         if (event.getSource() == this.tblProgram.getSelectionModel()) {
-            // 選択行を取得する。
+            // Get the selected row.
             int selectedrow = this.tblProgram.getSelectedRow();
             if (selectedrow < 0) return;
 
             Object cell;
-            // 名前
+            // name
             cell = modelProgram.getValueAt(selectedrow, 0);
             this.txtName.setText((String) cell);
-            // パターン
+            // Pattern
             cell = modelProgram.getValueAt(selectedrow, 1);
             this.txtPattern.setText((String) cell);
-            // 拡張子 or 正規表現
+            // Extension or regular expression
             boolean exts = false;
             cell = modelProgram.getValueAt(selectedrow, 2);
-            if (Message.getString("settingprogramdialog.label.suffix").equals((String)cell)) { //拡張子
+            if (Message.getString("settingprogramdialog.label.suffix").equals((String)cell)) { //extension
                 exts = true;
             }
-            this.chkExt.setSelected(exts);   // 拡張子
-            this.chkRegex.setSelected(!exts);		// 正規表現
+            this.chkExt.setSelected(exts);   // extension
+            this.chkRegex.setSelected(!exts);		// Regular expressions
 
-            // 外部プログラム
+            // External program
             boolean relation = false;
             cell = modelProgram.getValueAt(selectedrow, 3);
-            if (Message.getString("settingprogramdialog.label.association").equals((String)cell)) { //関連付け
+            if (Message.getString("settingprogramdialog.label.association").equals((String)cell)) { // Association
                 relation = true;
             }
             this.chkRelation.setSelected(relation);
@@ -751,7 +751,7 @@ public class SettingProgramDialog extends javax.swing.JDialog implements ActionL
                 this.txtProgram.setText(null);
             }
 
-            // 起動オプション
+            // Startup options
             cell = modelProgram.getValueAt(selectedrow, 4);
             this.txtOption.setText((String) cell);
         }
@@ -759,14 +759,14 @@ public class SettingProgramDialog extends javax.swing.JDialog implements ActionL
     }
 
     /**
-     * 外部ツール設定リストモデルの行データの作成を行う。
-     * @param prog		外部ツールデータ
-     * @return			行データ
+     * Create row data for external tool setting list model.
+     * @param prog External tool data
+     * @return line data
      */
     private Object[] createProgramRowData(Program prog) {
 
         Object[] column = new Object[5];
-        // 設定名
+        // Setting name
         String name = prog.getName();
         if (Message.containsKey(name)) {
         	column[0] = Message.getString(name);
@@ -774,81 +774,81 @@ public class SettingProgramDialog extends javax.swing.JDialog implements ActionL
         else {
         	column[0] = name;
         }
-        // パターン
+        // Pattern
         column[1] = prog.getPattern();
-        // 拡張子 OR 正規表現
+        // Extension OR regular expression
         if (prog.isExts()) {
-            column[2] = Message.getString("settingprogramdialog.label.suffix"); //拡張子
+            column[2] = Message.getString("settingprogramdialog.label.suffix"); //extension
         }
         else if (prog.isRegex()) {
-            column[2] = Message.getString("searchfinddialog.checkbox.regex"); //正規表現
+            column[2] = Message.getString("searchfinddialog.checkbox.regex"); //Regular expressions
         }
-        // 外部プログラム
+        // External program
         if (prog.isRelation()) {
-            column[3] = Message.getString("settingprogramdialog.label.association"); //関連付け
+            column[3] = Message.getString("settingprogramdialog.label.association"); // Association
         }
         else {
             column[3] = prog.getExename();
         }
-        // 起動引数
+        // Start argument
         column[4] = prog.getOption();
 
         return column;
     }
 
     /**
-     * 外部ツール設定パネルから外部ツールオブジェクトを取得する。
-     * @return		外部ツール設定オブジェクト
+     * Get the external tool object from the external tool settings panel.
+     * @return External tool configuration object
      */
     private Program getProgram() {
 
         Program prog = new Program();
 
-        // 名前
+        // name
         prog.setName(this.txtName.getText());
-        // パターン
+        // Pattern
         prog.setPattern(this.txtPattern.getText());
-        // 拡張子
+        // extension
         prog.setExts(this.chkExt.isSelected());
-        // 正規表現
+        // Regular expressions
         prog.setRegex(this.chkRegex.isSelected());
 
-        // 関連付け
+        // Association
         prog.setRelation(this.chkRelation.isSelected());
-        // 外部プログラム
+        // External program
         prog.setExename(this.txtProgram.getText());
-        // オプション
+        // Optional
         prog.setOption(this.txtOption.getText());
 
         return prog;
     }
 
     /**
-     * 外部ツール設定を更新する。
-     * @param prog		外部ツール設定
+     * Update external tool settings.
+     * @param prog External tool settings
      */
     private void setProgramList(Program prog) {
 
-        // 選択行
+        // Selected line
         int selectedrow = this.tblProgram.getSelectedRow();
         if (selectedrow < 0) return;
 
-        // 行データの作成
+        // Create row data
         Object[] column = createProgramRowData(prog);
-        // 行更新
+        // Line update
         modelProgram.removeRow(selectedrow);
         modelProgram.insertRow(selectedrow, column);
         this.tblProgram.setRowSelectionInterval(selectedrow, selectedrow);
     }
 
     /**
-     * 外部ツール設定を追加する。
-     * @param prog		外部ツール設定
+     * Add external tool settings.
+     * @param prog External tool settings
      */
     private void addProgramList(Program prog) {
-        // 行データの作成
+        // Create row data
         Object[] column = createProgramRowData(prog);
-        // 行追加
+        // Add line
         modelProgram.addRow(column);
         int selectedrow = modelProgram.getRowCount()-1;
         this.tblProgram.setRowSelectionInterval(selectedrow, selectedrow);
@@ -856,78 +856,78 @@ public class SettingProgramDialog extends javax.swing.JDialog implements ActionL
 
 
     /**
-     * 外部ツール設定を削除する。
-     * @param prog		外部ツール情報
+     * Delete external tool settings.
+     * @param prog External tool information
      */
     private void removeProgramList(Program prog) {
-        // 選択行
+        // Selected line
         int selectedrow = this.tblProgram.getSelectedRow();
         if (selectedrow < 0) return;
 
-        // 行削除
+        // Delete line
         modelProgram.removeRow(selectedrow);
 
-        // 外部ツール設定パネルをクリアする。
+        // Clear the external tool settings panel.
         clearProgram();
     }
 
     /**
-     * 外部ツール設定パネルをクリアする。
+     * Clear the external tool settings panel.
      */
     private void clearProgram() {
 
-        // 設定をクリア
-        /** 設定名テキストボックス */
+        // Clear settings
+        /** Setting name text box */
         this.txtName.setText(null);
-        /** パターンテキストボックス */
+        /** Pattern text box */
         this.txtPattern.setText(null);
-        /** 拡張子チェックボックス */
+        /** Extension checkbox */
         this.chkExt.setSelected(true);
-        /** 正規表現チェックボックス */
+        /** Regular expression checkbox */
         this.chkRegex.setSelected(false);
-        /** 関連付けチェックボックス */
+        /** Association checkbox */
         this.chkRelation.setSelected(true);
-        /** 外部ツールテキストボックス */
+        /** External tool textbox */
         this.txtProgram.setText(null);
         this.txtProgram.setEnabled(false);
         this.btnExePath.setEnabled(false);
-        /** 起動オプション */
+        /** Boot options */
         this.txtOption.setText(null);
 
     }
 
     /**
-     * 入力チェックを行う。
-     * @param  addflag		追加フラグ(true=外部ツール設定追加)
+     * Check the input.
+     * @param addflag Add flag (true = add external tool settings)
      */
     private boolean validateProgram(boolean addflag) {
-        // パターンは必須
+        // Pattern required
         String pattern = this.txtPattern.getText();
 
-        // 入力チェック
+        // Check the input
         if (pattern == null || pattern.isEmpty()) {
             JOptionPane.showMessageDialog(this,
-                    Message.getString("settingprogramdialog.errordialog.nosuffix.message"), //拡張子を入力してください。
-                    Message.getString("dialog.common.error"), //エラー
+                    Message.getString("settingprogramdialog.errordialog.nosuffix.message"), // Please enter the extension.
+                    Message.getString("dialog.common.error"), //error
                     JOptionPane.ERROR_MESSAGE);
             return false;
         }
 
-        // パターンの重複チェックを行う。
+        // Check for duplicate patterns.
         int selectedrow = this.tblProgram.getSelectedRow();
         int count = this.modelProgram.getRowCount();
         boolean exists = false;
         for (int i=0; i<count; i++) {
-            // 外部ツール拡張子
+            // External tool extension
             String cellKeyword = (String)(this.modelProgram.getValueAt(i, 2));
             if (pattern.equals(cellKeyword)) {
                 if (addflag) {
-                    // 追加の場合は、同じ外部ツールは禁止
+                    // In case of addition, the same external tool is prohibited
                     exists = true;
                     break;
                 }
                 else if (i != selectedrow) {
-                    // 更新の場合は、更新行以外に同じ外部ツールが存在したらNG
+                    // In the case of update, NG if the same external tool exists other than the update line
                     exists = true;
                     break;
                 }
@@ -935,8 +935,8 @@ public class SettingProgramDialog extends javax.swing.JDialog implements ActionL
         }
         if (exists) {
             JOptionPane.showMessageDialog(this,
-                    Message.getString("settingprogramdialog.errordialog.duplication.message"), //重複した拡張子は登録できません。
-                    Message.getString("dialog.common.error"), //エラー
+                    Message.getString("settingprogramdialog.errordialog.duplication.message"), // Duplicate extensions cannot be registered.
+                    Message.getString("dialog.common.error"), //error
                     JOptionPane.ERROR_MESSAGE);
             return false;
         }
@@ -945,13 +945,13 @@ public class SettingProgramDialog extends javax.swing.JDialog implements ActionL
     }
 
     /**
-     * チェックボックスのチェックイベント
-     * @param event			イベント情報
+     * Check box check event
+     * @param event Event information
      */
     @Override
     public void itemStateChanged(ItemEvent event) {
         if (event.getSource() == this.chkRelation) {
-            // 外部プログラムのイネーブルの切替
+            // Switching the enable of the external program
             boolean enabled = this.chkRelation.isSelected();
             this.txtProgram.setEnabled(!enabled);
             this.btnExePath.setEnabled(!enabled);
@@ -960,7 +960,7 @@ public class SettingProgramDialog extends javax.swing.JDialog implements ActionL
     }
 
     /**
-     * プログラムが指定されているかチェックする
+     * Check if the program is specified
      */
     private boolean chkProgramPath() {
     	if (!this.chkRelation.isSelected()) {

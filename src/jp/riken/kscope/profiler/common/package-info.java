@@ -16,6 +16,6 @@
  */
 
 /**
- * プロファイラ共通データクラスを提供します.<br/>
+ * Provides profiler common data class. <br/>
  */
 package jp.riken.kscope.profiler.common;
