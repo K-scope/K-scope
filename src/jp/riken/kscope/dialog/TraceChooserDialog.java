@@ -49,32 +49,32 @@ import jp.riken.kscope.utils.ResourceUtils;
 
 
 /**
- * トレース選択ダイアログ
+ * Trace selection dialog
  * @author RIKEN
  *
  */
 public class TraceChooserDialog extends javax.swing.JDialog implements ActionListener, MouseListener {
 
-    /** シリアル番号 */
+    /** Serial number */
     private static final long serialVersionUID = 1L;
-    /** トレーステーブル */
+    /** Trace table */
     private JTable tableTrace;
-    /** OKボタン */
+    /** OK button */
     private JButton btnOk;
-    /** キャンセルボタン */
+    /** Cancel button */
     private JButton btnCancel;
-    /** ファイルを開く */
+    /** Open file */
     private JButton btnOpenFile;
-    /** 該当個所を開くアクション */
+    /** Action to open the relevant part */
     ViewOpenAnalysisLineAction actionOpen;
 
-    /** ダイアログの戻り値 */
+    /** Dialog return value */
     private int result = Constant.CANCEL_DIALOG;
 
     /**
-     * コンストラクタ
-     * @param owner		親フレーム
-     * @param modal		true=モーダルダイアログを表示する
+     * Constructor
+     * @param owner parent frame
+     * @param modal true = Show modal dialog
      */
     public TraceChooserDialog(Frame owner, boolean modal) {
         super(owner, modal);
@@ -82,7 +82,7 @@ public class TraceChooserDialog extends javax.swing.JDialog implements ActionLis
     }
 
     /**
-     * GUI初期化を行う。
+     * Initialize the GUI.
      */
     private void initGUI() {
         try {
@@ -90,7 +90,7 @@ public class TraceChooserDialog extends javax.swing.JDialog implements ActionLis
             getContentPane().setLayout(thisLayout);
 
             {
-                // ボタンパネル
+                // Button panel
                 {
                     JPanel panelButtons = new JPanel();
                     FlowLayout layoutButtons = new FlowLayout();
@@ -111,12 +111,12 @@ public class TraceChooserDialog extends javax.swing.JDialog implements ActionLis
                     {
                         btnCancel = new JButton();
                         btnCancel.setPreferredSize(buttonSize);
-                        btnCancel.setText(Message.getString("dialog.common.button.cancel")); //キャンセル
+                        btnCancel.setText(Message.getString("dialog.common.button.cancel")); //Cancel
                         btnCancel.addActionListener(this);
                         panelButtons.add(btnCancel);
                     }
                 }
-                // トレース
+                // Trace
                 {
                     JPanel panelContent = new JPanel();
                     GridBagLayout panelContentLayout = new GridBagLayout();
@@ -127,17 +127,17 @@ public class TraceChooserDialog extends javax.swing.JDialog implements ActionLis
                     getContentPane().add(panelContent, BorderLayout.CENTER);
                     panelContent.setLayout(panelContentLayout);
                     panelContent.setPreferredSize(new java.awt.Dimension(390, 230));
-                    // ラベル
+                    // Label
                     {
                         JLabel label = new JLabel();
                         panelContent.add(label, new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
-                        label.setText(Message.getString("tracechooserdialog.label.next")); //トレース先選択
+                        label.setText(Message.getString("tracechooserdialog.label.next")); // Select trace destination
                     }
 
-                    // トレース先テーブル
+                    // Trace destination table
                     {
                         tableTrace = new JStripeTable();
-                        String[] HEADER_COLUMNS = {"", Message.getString("settingprojectdialog.column_header.message")}; //メッセージ
+                        String[] HEADER_COLUMNS = {"", Message.getString("settingprojectdialog.column_header.message")}; //message
 
                         DefaultTableModel tableModel = new DefaultTableModel();
                         tableModel.setColumnIdentifiers(HEADER_COLUMNS);
@@ -147,18 +147,18 @@ public class TraceChooserDialog extends javax.swing.JDialog implements ActionLis
                         tableTrace.setSelectionMode(ListSelectionModel.SINGLE_SELECTION );
                         tableTrace.setColumnSelectionAllowed(false);
 
-                        // テーブル列モデル
+                        // Table column model
                         DefaultTableColumnModel columnModel = (DefaultTableColumnModel)tableTrace.getColumnModel();
                         TableColumn column = null;
 
-                        // 1列目はモデル情報：非表示
+                        // First column is model information: hidden
                         column = columnModel.getColumn(0);
                         column.setPreferredWidth(0);
                         column.setMinWidth(0);
                         column.setMaxWidth(0);
                         column.setResizable(false);
 
-                        // ステータス列
+                        // Status column
                         column = columnModel.getColumn(1);
                         column.setPreferredWidth(445);
                         column.setMinWidth(160);
@@ -167,7 +167,7 @@ public class TraceChooserDialog extends javax.swing.JDialog implements ActionLis
                         scrollTrace.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
                         panelContent.add(scrollTrace, new GridBagConstraints(1, 1, 2, 2, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
                     }
-                    // ボタンパネル
+                    // Button panel
                     {
                         JPanel panelSubButtons = new JPanel();
                         FlowLayout panelSubButtonsLayout = new FlowLayout();
@@ -188,16 +188,16 @@ public class TraceChooserDialog extends javax.swing.JDialog implements ActionLis
                             btnOpenFile.setBorderPainted(false);
                         }
 
-                        // ツールチップ設定
-                        btnOpenFile.setToolTipText(Message.getString("tracechooserdialog.tooltip.open")); //該当個所を開く
+                        // Tooltip settings
+                        btnOpenFile.setToolTipText(Message.getString("tracechooserdialog.tooltip.open")); // Open the relevant part
 
-                        // イベント登録
+                        // Event registration
                         btnOpenFile.addActionListener(this);
                         tableTrace.addMouseListener(this);
                     }
                 }
             }
-            this.setTitle(Message.getString("tracechooserdialog.label.next")); //トレース先選択
+            this.setTitle(Message.getString("tracechooserdialog.label.next")); // Select trace destination
             this.setSize(480, 280);
 
         } catch (Exception e) {
@@ -206,23 +206,23 @@ public class TraceChooserDialog extends javax.swing.JDialog implements ActionLis
     }
 
     /**
-     * ダイアログを表示する。
-     * @return    ダイアログの閉じた時のボタン種別
+     * Display a dialog.
+     * @return Button type when the dialog is closed
      */
     public int showDialog() {
 
-        // 親フレーム中央に表示する。
+        // Display in the center of the parent frame.
         this.setLocationRelativeTo(this.getOwner());
 
-        // ダイアログ表示
+        // Dialog display
         this.setVisible(true);
 
         return this.result;
     }
 
     /**
-     * ボタンクリックイベント
-     * @param event		イベント情報
+     * Button click event
+     * @param event Event information
      */
     @Override
     public void actionPerformed(ActionEvent event) {
@@ -230,20 +230,20 @@ public class TraceChooserDialog extends javax.swing.JDialog implements ActionLis
         // OK
         if (event.getSource() == this.btnOk) {
             this.result = Constant.OK_DIALOG;
-            // ダイアログを閉じる。
+            // Close the dialog.
             dispose();
             return;
         }
-        // キャンセル
+        // Cancel
         else if (event.getSource() == this.btnCancel) {
             this.result = Constant.CANCEL_DIALOG;
-            // ダイアログを閉じる。
+            // Close the dialog.
             dispose();
             return;
         }
-        // 該当箇所を開く
+        // Open the relevant part
         else if (event.getSource() == this.btnOpenFile) {
-            // 該当個所を開く
+            // Open the relevant part
             viewSelectedBlock();
 
             return;
@@ -253,8 +253,8 @@ public class TraceChooserDialog extends javax.swing.JDialog implements ActionLis
     }
 
     /**
-     * トレース先モデルを取得する
-     * @return 		トレース先モデル
+     * Get the trace destination model
+     * @return Trace destination model
      */
     public TraceResultModel getTraceResultModel() {
 
@@ -269,8 +269,8 @@ public class TraceChooserDialog extends javax.swing.JDialog implements ActionLis
     }
 
     /**
-     * レース先モデルを設定する。
-     * @param traces 	レース先モデル
+     * Set the race destination model.
+     * @param traces Race destination model
      */
     public void setTraceResultModel(TraceResultModel[] traces) {
         if (traces == null) return;
@@ -278,7 +278,7 @@ public class TraceChooserDialog extends javax.swing.JDialog implements ActionLis
         DefaultTableModel tableModel = new DefaultTableModel();
 
         String[] HEADER_COLUMNS = {Message.getString("tracechooserdialog.header_column.codeline"), //CODELINE
-                                   Message.getString("settingprojectdialog.column_header.message")}; //メッセージ
+                                   Message.getString("settingprojectdialog.column_header.message")}; //message
         tableModel.setColumnIdentifiers(HEADER_COLUMNS);
         for (TraceResultModel model : traces) {
             Object[] rows = new Object[2];
@@ -288,12 +288,12 @@ public class TraceChooserDialog extends javax.swing.JDialog implements ActionLis
         }
         this.tableTrace.setModel(tableModel);
 
-        // 先頭行を選択状態とする
+        // Select the first line
         this.tableTrace.setRowSelectionInterval(0, 0);
     }
 
     /**
-     * 選択箇所を開く
+     * Open selection
      */
     private void viewSelectedBlock() {
         if (this.actionOpen == null) return;
@@ -301,7 +301,7 @@ public class TraceChooserDialog extends javax.swing.JDialog implements ActionLis
         TraceResultModel selectedModel = getTraceResultModel();
         IBlock block = selectedModel.getSelectedBlock();
 
-        // 該当箇所を開く
+        // Open the relevant part
         this.actionOpen.viewSelectedBlock(block);
 
         return;
@@ -309,15 +309,15 @@ public class TraceChooserDialog extends javax.swing.JDialog implements ActionLis
 
 
     /**
-     * マウスクリックイベント
-     * @param event		マウスイベント情報
+     * Mouse click event
+     * @param event Mouse event information
      */
     @Override
     public void mouseClicked(MouseEvent event) {
-        // ダブルクリックチェック
+        // Double click check
         if (SwingUtilities.isLeftMouseButton(event) && event.getClickCount() == 2) {
             if (event.getSource() == this.tableTrace) {
-                // 該当個所を開く
+                // Open the relevant part
                 viewSelectedBlock();
             }
         }
@@ -325,37 +325,37 @@ public class TraceChooserDialog extends javax.swing.JDialog implements ActionLis
 
 
     /**
-     * マウスボタンダウンイベント
-     * @param e		マウスイベント情報
+     * Mouse button down event
+     * @param e Mouse event information
      */
     @Override
     public void mousePressed(MouseEvent e) { }
 
     /**
-     * マウスボタンアップイベント
-     * @param e		マウスイベント情報
+     * Mouse button up event
+     * @param e Mouse event information
      */
     @Override
     public void mouseReleased(MouseEvent e) {}
 
     /**
-     * マウスオーバーイベント
-     * @param e		マウスイベント情報
+     * Mouseover event
+     * @param e Mouse event information
      */
     @Override
     public void mouseEntered(MouseEvent e) {}
 
     /**
-     * マウスアウトイベント
-     * @param e		マウスイベント情報
+     * Mouse out event
+     * @param e Mouse event information
      */
     @Override
     public void mouseExited(MouseEvent e) {}
 
 
     /**
-     * 該当個所を開くアクションを設定する。
-     * @param action		該当個所を開くアクション
+     * Set the action to open the relevant part.
+     * @param action Action to open the corresponding part
      */
     public void setViewOpenAnalysisLineAction(ViewOpenAnalysisLineAction action) {
         this.actionOpen = action;

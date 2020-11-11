@@ -51,32 +51,32 @@ import jp.riken.kscope.Message;
 import jp.riken.kscope.common.Constant;
 
 /**
- * フォント選択ダイアログ
+ * Font selection dialog
  * @author RIKEN
  */
 public class JFontChooserDialog extends javax.swing.JDialog implements ActionListener, ListSelectionListener, DocumentListener {
 
-    /** シリアル番号 */
+    /** Serial number */
     private static final long serialVersionUID = 1L;
-    /** フォントプレビュー */
+    /** Font preview */
     private JTextField txtPreview;
-    /** フォントサイズリスト */
+    /** Font size list */
     private JList<String> lstSize;
-    /** フォントスタイルリスト */
+    /** Font style list */
     private JList<String> lstStyle;
-    /** フォントリスト */
+    /** Font list */
     private JList<String> lstFont;
-    /** フォントサイズテキストボックス */
+    /** Font size text box */
     private JTextField txtSize;
-    /** キャンセルボタン */
+    /** Cancel button */
     private JButton btnCancel;
-    /** OKボタン */
+    /** OK button */
     private JButton btnOk;
 
-    /** ダイアログの戻り値 */
+    /** Dialog return value */
     private int result = Constant.CANCEL_DIALOG;
 
-    /** フォントスタイル */
+    /** Font style */
     private final String FONTSTYLE_PLAIN = "Plain";
     private final String FONTSTYLE_BOLD = "Bold";
     private final String FONTSTYLE_ITALIC = "Italic";
@@ -84,7 +84,7 @@ public class JFontChooserDialog extends javax.swing.JDialog implements ActionLis
 
 
     /**
-     * コンストラクタ
+     * Constructor
      */
     public JFontChooserDialog() {
         super();
@@ -94,8 +94,8 @@ public class JFontChooserDialog extends javax.swing.JDialog implements ActionLis
 
 
     /**
-     * コンストラクタ
-     * @param owner		親フレーム
+     * Constructor
+     * @param owner parent frame
      */
     public JFontChooserDialog(Frame owner) {
         super(owner);
@@ -104,9 +104,9 @@ public class JFontChooserDialog extends javax.swing.JDialog implements ActionLis
     }
 
     /**
-     * コンストラクタ
-     * @param owner		親ダイアログ
-     * @param modal		true=モーダルダイアログを表示する
+     * Constructor
+     * @param owner Parent dialog
+     * @param modal true = Show modal dialog
      */
     public JFontChooserDialog(Frame owner, boolean modal) {
         super(owner, modal);
@@ -115,10 +115,10 @@ public class JFontChooserDialog extends javax.swing.JDialog implements ActionLis
     }
 
     /**
-     * コンストラクタ
-     * @param owner		親ダイアログ
-     * @param modal		true=モーダルダイアログを表示する
-     * @param deffont		デフォルトフォント
+     * Constructor
+     * @param owner Parent dialog
+     * @param modal true = Show modal dialog
+     * @param deffont Default font
      */
     public JFontChooserDialog(Frame owner, boolean modal, Font deffont) {
         super(owner, modal);
@@ -127,8 +127,8 @@ public class JFontChooserDialog extends javax.swing.JDialog implements ActionLis
     }
 
     /**
-     * コンストラクタ
-     * @param owner		親ダイアログ
+     * Constructor
+     * @param owner Parent dialog
      */
     public JFontChooserDialog(JDialog owner) {
         super(owner);
@@ -137,9 +137,9 @@ public class JFontChooserDialog extends javax.swing.JDialog implements ActionLis
     }
 
     /**
-     * コンストラクタ
-     * @param owner		親ダイアログ
-     * @param modal		true=モーダルダイアログを表示する
+     * Constructor
+     * @param owner Parent dialog
+     * @param modal true = Show modal dialog
      */
     public JFontChooserDialog(JDialog owner, boolean modal) {
         super(owner, modal);
@@ -148,10 +148,10 @@ public class JFontChooserDialog extends javax.swing.JDialog implements ActionLis
     }
 
     /**
-     * コンストラクタ
-     * @param owner		親ダイアログ
-     * @param modal		true=モーダルダイアログを表示する
-     * @param deffont		デフォルトフォント
+     * Constructor
+     * @param owner Parent dialog
+     * @param modal true = Show modal dialog
+     * @param deffont Default font
      */
     public JFontChooserDialog(JDialog owner, boolean modal, Font deffont) {
         super(owner, modal);
@@ -160,24 +160,24 @@ public class JFontChooserDialog extends javax.swing.JDialog implements ActionLis
     }
 
     /**
-     * ダイアログを表示する。
-     * @return    ダイアログの閉じた時のボタン種別
+     * Display a dialog.
+     * @return Button type when the dialog is closed
      */
     public int showDialog() {
 
-        // 親フレーム中央に表示する。
+        // Display in the center of the parent frame.
         this.setLocationRelativeTo(this.getOwner());
 
-        // ダイアログ表示
+        // Dialog display
         this.setVisible(true);
 
         return this.result;
     }
 
     /**
-     * 選択されたフォントを返す.<br/>
-     * キャンセルボタンがクリックされた場合は、nullを返す。
-     * @return		選択フォント
+     * Returns the selected font. <br/>
+     * Returns null if the cancel button is clicked.
+     * @return Selected font
      */
     public Font getSelectedFont() {
         if (this.result == Constant.CANCEL_DIALOG) return null;
@@ -187,11 +187,11 @@ public class JFontChooserDialog extends javax.swing.JDialog implements ActionLis
 
 
     /**
-     * GUI初期化を行う。
+     * Initialize the GUI.
      */
     private void initGUI() {
         try {
-            // ボタンパネル
+            // Button panel
             {
                 JPanel panelButton = new JPanel();
                 FlowLayout panelButtonLayout = new FlowLayout();
@@ -201,7 +201,7 @@ public class JFontChooserDialog extends javax.swing.JDialog implements ActionLis
                 getContentPane().add(panelButton, BorderLayout.SOUTH);
                 panelButton.setPreferredSize(new java.awt.Dimension(423, 44));
 
-                // メインボタンサイズ
+                // Main button size
                 java.awt.Dimension buttonSize = new java.awt.Dimension(96, 22);
                 {
                     btnOk = new JButton();
@@ -213,13 +213,13 @@ public class JFontChooserDialog extends javax.swing.JDialog implements ActionLis
                 {
                     btnCancel = new JButton();
                     panelButton.add(btnCancel);
-                    btnCancel.setText(Message.getString("dialog.common.button.cancel")); //キャンセル
+                    btnCancel.setText(Message.getString("dialog.common.button.cancel")); //Cancel
                     btnCancel.setPreferredSize(buttonSize);
                     btnCancel.addActionListener(this);
                     btnCancel.setMargin(new Insets(5, 5, 5, 5));
                 }
             }
-            // コンテンツパネル
+            // Content panel
             {
                 JPanel panelContent = new JPanel();
                 GridBagLayout panelContentLayout = new GridBagLayout();
@@ -230,10 +230,10 @@ public class JFontChooserDialog extends javax.swing.JDialog implements ActionLis
                 panelContent.setLayout(panelContentLayout);
                 getContentPane().add(panelContent, BorderLayout.CENTER);
                 panelContent.setPreferredSize(new java.awt.Dimension(423, 144));
-                // フォントパネル
+                // Font panel
                 {
                     JPanel panelFont = new JPanel();
-                    TitledBorder titleBorder = new TitledBorder(new  EtchedBorder(EtchedBorder.LOWERED), Message.getString("jfontchooserdialog.fontpanel.title")); //フォント
+                    TitledBorder titleBorder = new TitledBorder(new  EtchedBorder(EtchedBorder.LOWERED), Message.getString("jfontchooserdialog.fontpanel.title")); //font
                     Border border = new CompoundBorder( new EmptyBorder(7,7,0,7), titleBorder);
                     panelFont.setBorder(border);
 
@@ -244,13 +244,13 @@ public class JFontChooserDialog extends javax.swing.JDialog implements ActionLis
                     panelFontLayout.rowWeights = new double[] {0.0, 0, 1.0};
                     panelContent.add(panelFont, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
                     panelFont.setLayout(panelFontLayout);
-                    // フォント名
+                    // font name
                     {
                         JLabel lblName = new JLabel();
                         panelFont.add(lblName, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 10, 0, 0), 0, 0));
-                        lblName.setText(Message.getString("jfontchooserdialog.fontpanel.title")); //フォント
+                        lblName.setText(Message.getString("jfontchooserdialog.fontpanel.title")); //font
                     }
-                    // フォントリスト
+                    // Font list
                     {
                         JScrollPane scrollFont = new JScrollPane();
                         panelFont.add(scrollFont, new GridBagConstraints(0, 1, 1, 2, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 10, 10, 0), 0, 0));
@@ -265,13 +265,13 @@ public class JFontChooserDialog extends javax.swing.JDialog implements ActionLis
                             lstFont.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
                         }
                     }
-                    // スタイル
+                    // Style
                     {
                         JLabel lblStyle = new JLabel();
                         panelFont.add(lblStyle, new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 10, 0, 0), 0, 0));
-                        lblStyle.setText(Message.getString("jfontchooserdialog.fontpanel.label.style")); //スタイル
+                        lblStyle.setText(Message.getString("jfontchooserdialog.fontpanel.label.style")); //style
                     }
-                    // スタイルリスト
+                    // Style list
                     {
                         JScrollPane scrollStyle = new JScrollPane();
                         panelFont.add(scrollStyle, new GridBagConstraints(1, 1, 1, 2, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 10, 10, 0), 0, 0));
@@ -286,13 +286,13 @@ public class JFontChooserDialog extends javax.swing.JDialog implements ActionLis
                             lstStyle.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
                         }
                     }
-                    // サイズ
+                    // size
                     {
                         JLabel lblSize = new JLabel();
                         panelFont.add(lblSize, new GridBagConstraints(2, 0, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 10, 0, 0), 0, 0));
-                        lblSize.setText(Message.getString("jfontchooserdialog.fontpanel.label.size")); //サイズ
+                        lblSize.setText(Message.getString("jfontchooserdialog.fontpanel.label.size")); //size
                     }
-                    // サイズリスト
+                    // size list
                     {
                         JScrollPane scrollSize = new JScrollPane();
                         panelFont.add(scrollSize, new GridBagConstraints(2, 2, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 10, 10, 10), 0, 0));
@@ -307,7 +307,7 @@ public class JFontChooserDialog extends javax.swing.JDialog implements ActionLis
                             lstSize.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
                         }
                     }
-                    // サイズテキストボックス
+                    // size text box
                     {
                         txtSize = new JTextField();
                         panelFont.add(txtSize, new GridBagConstraints(2, 1, 1, 1, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.HORIZONTAL, new Insets(0, 10, 0, 10), 0, 0));
@@ -315,11 +315,11 @@ public class JFontChooserDialog extends javax.swing.JDialog implements ActionLis
                         txtSize.getDocument().addDocumentListener(this);
                     }
                 }
-                // フォントプレビュー
+                // Font preview
                 {
                     JPanel panelPreview = new JPanel();
                     TitledBorder titleBorder = new TitledBorder(new  EtchedBorder(EtchedBorder.LOWERED),
-                                                                Message.getString("jfontchooserdialog.button.label.preview")); //プレビュー
+                                                                Message.getString("jfontchooserdialog.button.label.preview")); //preview
                     Border margin = new EmptyBorder(0, 7, 7, 7);
                     Border inBorder = new CompoundBorder( titleBorder, margin);
                     Border border = new CompoundBorder( new EmptyBorder(7,7,0,7), inBorder);
@@ -338,10 +338,10 @@ public class JFontChooserDialog extends javax.swing.JDialog implements ActionLis
                     }
                 }
             }
-            this.setTitle(Message.getString("jfontchooserdialog.dialog.title")); //フォント選択
+            this.setTitle(Message.getString("jfontchooserdialog.dialog.title")); // Font selection
             this.setSize(433, 342);
 
-            // フォント一覧を設定する
+            // Set the font list
             setEnvironmentFontList();
 
         } catch (Exception e) {
@@ -350,14 +350,14 @@ public class JFontChooserDialog extends javax.swing.JDialog implements ActionLis
     }
 
     /**
-     * フォント一覧を設定する。
+     * Set the font list.
      */
     private void setEnvironmentFontList() {
-        // フォント名の取得
+        // Get font name
         GraphicsEnvironment env = GraphicsEnvironment.getLocalGraphicsEnvironment();
         String[] fontNames = env.getAvailableFontFamilyNames();
 
-        // リストモデルの作成
+        // Create a list model
         DefaultListModel<String> model = new DefaultListModel<String>();
         if (fontNames != null && fontNames.length > 0) {
             for(int i=0;i<fontNames.length;i++) {
@@ -370,8 +370,8 @@ public class JFontChooserDialog extends javax.swing.JDialog implements ActionLis
 
 
     /**
-     * デフォルトフォントを設定する
-     * @param deffont		デフォルトフォント
+     * Set the default font
+     * @param deffont Default font
      */
     private void setDefualtFont(Font deffont) {
 
@@ -379,10 +379,10 @@ public class JFontChooserDialog extends javax.swing.JDialog implements ActionLis
             deffont = this.txtPreview.getFont();
         }
 
-        // フォント名
+        // font name
         this.lstFont.setSelectedValue(deffont.getFamily(), true);
 
-        // スタイル
+        // Style
         int style = deffont.getStyle();
         if (style == Font.BOLD) {
             this.lstStyle.setSelectedValue(this.FONTSTYLE_BOLD, true);
@@ -397,7 +397,7 @@ public class JFontChooserDialog extends javax.swing.JDialog implements ActionLis
             this.lstStyle.setSelectedValue(this.FONTSTYLE_PLAIN, true);
         }
 
-        // サイズ
+        // size
         int size = deffont.getSize();
         this.lstSize.setSelectedValue(String.valueOf(size), true);
 
@@ -405,14 +405,14 @@ public class JFontChooserDialog extends javax.swing.JDialog implements ActionLis
 
 
     /**
-     * フォントをプレビューする。
+     * Preview the font.
      */
     private void previewFont() {
-        // フォント名
+        // font name
         String name = this.lstFont.getSelectedValue();
         if (name == null || name.isEmpty()) return;
 
-        // スタイル
+        // Style
         String stylevalue = this.lstStyle.getSelectedValue();
         int style = Font.PLAIN;
         if (stylevalue != null) {
@@ -427,7 +427,7 @@ public class JFontChooserDialog extends javax.swing.JDialog implements ActionLis
             }
         }
 
-        // サイズ
+        // size
         int size = 0;
         String sizevalue = this.txtSize.getText();
         try {
@@ -437,15 +437,15 @@ public class JFontChooserDialog extends javax.swing.JDialog implements ActionLis
         }
         if (size ==0) return;
 
-        // フォント設定
+        // Font settings
         Font font = new Font(name, style, size);
         this.txtPreview.setFont(font);
 
     }
 
     /**
-     * ボタンクリックイベント
-     * @param event		イベント情報
+     * Button click event
+     * @param event Event information
      */
     @Override
     public void actionPerformed(ActionEvent event) {
@@ -453,14 +453,14 @@ public class JFontChooserDialog extends javax.swing.JDialog implements ActionLis
         // OK
         if (event.getSource() == this.btnOk) {
             this.result = Constant.OK_DIALOG;
-            // ダイアログを閉じる。
+            // Close the dialog.
             dispose();
             return;
         }
-        // キャンセル
+        // Cancel
         else if (event.getSource() == this.btnCancel) {
             this.result = Constant.CANCEL_DIALOG;
-            // ダイアログを閉じる。
+            // Close the dialog.
             dispose();
             return;
         }
@@ -468,8 +468,8 @@ public class JFontChooserDialog extends javax.swing.JDialog implements ActionLis
 
 
     /**
-     * リストの変更イベント
-     * @param event			イベント情報
+     * List change event
+     * @param event Event information
      */
     @Override
     public void valueChanged(ListSelectionEvent event) {
@@ -479,34 +479,34 @@ public class JFontChooserDialog extends javax.swing.JDialog implements ActionLis
             this.txtSize.setText(value);
         }
 
-        // フォントをプレビューする。
+        // Preview the font.
         previewFont();
     }
 
 
     /**
-     * サイズテキストボックスの挿入イベント
-     * @param event		イベント情報
+     * Insert size textbox event
+     * @param event Event information
      */
     @Override
     public void insertUpdate(DocumentEvent event) { }
 
 
     /**
-     * サイズテキストボックスの削除イベント
-     * @param event		イベント情報
+     * Size textbox delete event
+     * @param event Event information
      */
     @Override
     public void removeUpdate(DocumentEvent event) { }
 
 
     /**
-     * サイズテキストボックスの変更イベント
-     * @param event		イベント情報
+     * Size textbox change event
+     * @param event Event information
      */
     @Override
     public void changedUpdate(DocumentEvent event) {
-        // フォントをプレビューする。
+        // Preview the font.
         previewFont();
     }
 

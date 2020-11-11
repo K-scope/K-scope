@@ -51,76 +51,76 @@ import jp.riken.kscope.properties.VariableMemoryProperties;
 import jp.riken.kscope.service.AnalysisMemoryService;
 
 /**
- * メモリ性能算出結果ダイアログクラス
+ * Memory performance calculation result dialog class
  * @author RIKEN
  */
 public class RequiredBFDialog extends javax.swing.JDialog implements ActionListener {
 
-    /** シリアル番号 */
+    /** Serial number */
     private static final long serialVersionUID = 1L;
 
-    /** キャンセルボタン */
+    /** Cancel button */
     private JButton btnCancel;
-    /** OKボタン */
+    /** OK button */
     private JButton btnOk;
-    /** 変数アクセス先設定ボタン */
+    /** Variable access destination setting button */
     private JButton btnVariable;
-    /** 要求Byte/FLOP設定プロパティ */
+    /** Request Byte / FLOP configuration property */
     private RequiredBFProperties propertiesMemoryband;
-    /** 変数アクセス先メモリ設定 */
+    /** Variable access destination memory setting */
     private VariableMemoryProperties propertiesVariable;
-    /** ダイアログの戻り値 */
+    /** Dialog return value */
     private int result = Constant.CANCEL_DIALOG;
-    /** 前の選択ブロックへ戻るボタン */
+    /** Return button to previous selection block */
 	private JButton btnPrev;
-	/** 次の選択ブロックへ進むボタン */
+	/** Button to go to next selection block */
 	private JButton btnNext;
-	/** ロード算出結果ラベル */
+	/** Load calculation result label */
 	private LabeledTextFeild txtLoad;
-	/** ストア算出結果ラベル */
+	/** Store calculation result label */
 	private LabeledTextFeild txtStore;
-	/** 演算数算出結果ラベル */
+	/** Calculation result label */
 	private LabeledTextFeild txtFlop;
-	/** 要求B/F算出結果ラベル */
+	/** Request B / F calculation result label */
 	private LabeledTextFeild txtRequired;
-	/** スループット算出結果ラベル */
+	/** Throughput calculation result label */
 	private LabeledTextFeild txtThroughput;
-	/** 実効B/F算出結果ラベル */
+	/** Effective B / F calculation result label */
 	private LabeledTextFeild txtEffective;
-	/** ピーク性能比算出結果ラベル */
+	/** Peak performance ratio calculation result label */
 	private LabeledTextFeild txtPeak;
-	/** 要求B/F設定ボタン */
+	/** Request B / F setting button */
 	private JButton btnSetting;
-	/** 算出範囲ラベル */
+	/** Calculation range label */
 	private JLabel lblBlock;
-	/** 分析ビュー追加パネル */
+	/** Analysis view addition panel */
 	private JCheckBox chkAddList;
-	/** ダイアログ幅設定 */
+	/** Dialog width setting */
 	private final int DEFAULT_WIDTH = 480;
-	/** 変数アクセス先設定ダイアログ */
+	/** Variable access destination setting dialog */
 	private VariableAccessDialog nextDialog;
-	/** 親ダイアログフラグ true=最初に呼び出されたダイアログ, false=他のダイアログから呼び出された */
+	/** Parent dialog flag true = first called dialog, false = called from another dialog */
 	private boolean ownerDialog;
-    /** 選択ブロック */
+    /** Selection block */
     private IBlock[] selectedblocks;
-    /** 変数アクセス設定 */
+    /** Variable access settings */
 	private JPanel panelVariable;
-    /** 要求Byte/FLOP算出サービス */
+    /** Request Byte / FLOP calculation service */
     private AnalysisMemoryService serviceMemory;
-    /** 現在表示ブロック */
+    /** Currently displayed block */
     private int blockindex;
-    /** 要求B/F単位 */
+    /** Request B / F unit */
 	private JLabel lblUnitRequired;
-	/** 実効B/F単位 */
+	/** Effective B / F unit */
 	private JLabel lblUnitEffective;
-	/** Byte/FLOP単位文字列 */
+	/** Byte / FLOP unit string */
 	private final String UNIT_BITE_FLOP = "(Byte/FLOP)";
-	/** FLOP/Byte単位文字列 */
+	/** FLOP / Byte unit character string */
 	private final String UNIT_FLOP_BITE = "(FLOP/Byte)";
 
     /**
-     * コンストラクタ
-     * @param frame		親フレーム
+     * Constructor
+     * @param frame Parent frame
      */
     public RequiredBFDialog(JFrame frame) {
         super(frame);
@@ -130,9 +130,9 @@ public class RequiredBFDialog extends javax.swing.JDialog implements ActionListe
     }
 
     /**
-     * コンストラクタ
-     * @param frame		親フレーム
-     * @param modal		true=モーダルダイアログを表示する
+     * Constructor
+     * @param frame Parent frame
+     * @param modal true = Show modal dialog
      */
     public RequiredBFDialog(Frame frame, boolean modal) {
         super(frame, modal);
@@ -142,11 +142,11 @@ public class RequiredBFDialog extends javax.swing.JDialog implements ActionListe
     }
 
     /**
-     * GUI初期化を行う。
+     * Initialize the GUI.
      */
     private void initGUI() {
         try {
-            // ボタンパネル
+            // Button panel
             {
                 JPanel panelButtons = new JPanel();
                 getContentPane().add(panelButtons, BorderLayout.SOUTH);
@@ -158,12 +158,12 @@ public class RequiredBFDialog extends javax.swing.JDialog implements ActionListe
                 panelButtons.setLayout(layout);
                 panelButtons.setPreferredSize(new java.awt.Dimension(390, 45));
 
-                // メインボタンサイズ
+                // Main button size
                 java.awt.Dimension buttonSize = new java.awt.Dimension(96, 22);
                 {
                     btnOk = new JButton();
                     panelButtons.add(this.btnOk, new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
-                    String text = Message.getString("dialog.common.button.close"); // 閉じる
+                    String text = Message.getString("dialog.common.button.close"); // close
                     btnOk.setText(text);
                     btnOk.setPreferredSize(buttonSize);
                     btnOk.addActionListener(this);
@@ -171,19 +171,19 @@ public class RequiredBFDialog extends javax.swing.JDialog implements ActionListe
                 {
                 	chkAddList = new JCheckBox();
                 	panelButtons.add(this.chkAddList, new GridBagConstraints(2, 0, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 14, 0, 0), 0, 0));
-                	String text = Message.getString("requiredbfdialog.checkbox.addlist");  // リストに追加して閉じる
+                	String text = Message.getString("requiredbfdialog.checkbox.addlist");  // Add to list and close
                     chkAddList.setText(text);
                     chkAddList.setSelected(true);
                 }
             }
-            // コンテンツパネル
+            // Content panel
             {
             	JPanel panelContent = new JPanel(new BorderLayout());
                 getContentPane().add(panelContent, BorderLayout.CENTER);
                 Border border = new EmptyBorder(7,7,0,7);
                 panelContent.setBorder(border);
 
-                // 選択ブロック
+                // Select block
                 {
                 	JPanel panelHeader = new JPanel(new BorderLayout());
                 	panelContent.add(panelHeader, BorderLayout.NORTH);
@@ -195,7 +195,7 @@ public class RequiredBFDialog extends javax.swing.JDialog implements ActionListe
                     panelHeader.setLayout(layout);
                 	JPanel panel = new JPanel();
                 	panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
-                	String text = Message.getString("requiredbfdialog.label.calculateatea");  // 算出範囲
+                	String text = Message.getString("requiredbfdialog.label.calculateatea");  // Calculation range
                 	JLabel label = new JLabel(text);
                 	this.lblBlock = new JLabel("jacobi[962] do loop=1, nn");
                 	panel.add(Box.createGlue());
@@ -213,11 +213,11 @@ public class RequiredBFDialog extends javax.swing.JDialog implements ActionListe
                 	panelHeader.add(this.btnPrev, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
                 	panelHeader.add(this.btnNext, new GridBagConstraints(2, 0, 1, 1, 0.0, 0.0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
                 }
-                // メモリ性能算出結果
+                // Memory performance calculation result
                 {
                     JPanel panelList = new JPanel(new BorderLayout());
                     panelContent.add(panelList, BorderLayout.CENTER);
-                    String text = Message.getString("requiredbfdialog.frame.performance");  // メモリ性能算出結果
+                    String text = Message.getString("requiredbfdialog.frame.performance");  // Memory performance calculation result
                     TitledBorder titleBorder = new TitledBorder(BorderFactory.createEtchedBorder(), text);
                     panelList.setBorder(titleBorder);
                     {
@@ -251,7 +251,7 @@ public class RequiredBFDialog extends javax.swing.JDialog implements ActionListe
                         }
                         // FLOP
                         {
-                            String textlabel = Message.getString("requiredbfdialog.label.flop");  // 演算数
+                            String textlabel = Message.getString("requiredbfdialog.label.flop");  // Number of operations
                         	JLabel header = new JLabel(textlabel);
                         	panelMemory.add(header, new GridBagConstraints(0, 2, 1, 1, 0.0, 0.0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 8, 0, 8), 0, 0));
                         	this.txtFlop = new LabeledTextFeild(columns);
@@ -259,9 +259,9 @@ public class RequiredBFDialog extends javax.swing.JDialog implements ActionListe
                         	JLabel unit = new JLabel("(FLOP)");
                         	panelMemory.add(unit, new GridBagConstraints(2, 2, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 8, 0, 8), 0, 0));
                         }
-                        // 要求B/F
+                        // Request B / F
                         {
-                        	String textlabel = Message.getString("requiredbfdialog.label.required");  // 要求B/F
+                        	String textlabel = Message.getString("requiredbfdialog.label.required");  // Request B / F
                         	JLabel header = new JLabel(textlabel);
                         	panelMemory.add(header, new GridBagConstraints(0, 3, 1, 1, 0.0, 0.0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 8, 0, 8), 0, 0));
                         	this.txtRequired = new LabeledTextFeild(columns);
@@ -269,9 +269,9 @@ public class RequiredBFDialog extends javax.swing.JDialog implements ActionListe
                         	lblUnitRequired = new JLabel(UNIT_BITE_FLOP);
                         	panelMemory.add(lblUnitRequired, new GridBagConstraints(2, 3, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 8, 0, 8), 0, 0));
                         }
-                        // スループット
+                        // Throughput
                         {
-                        	String textlabel = Message.getString("requiredbfdialog.label.throughput");  //スループット
+                        	String textlabel = Message.getString("requiredbfdialog.label.throughput");  //throughput
                         	JLabel header = new JLabel(textlabel);
                         	panelMemory.add(header, new GridBagConstraints(0, 4, 1, 1, 0.0, 0.0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 8, 0, 8), 0, 0));
                         	this.txtThroughput = new LabeledTextFeild(columns);
@@ -279,9 +279,9 @@ public class RequiredBFDialog extends javax.swing.JDialog implements ActionListe
                         	JLabel unit = new JLabel("(GB/s)");
                         	panelMemory.add(unit, new GridBagConstraints(2, 4, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 8, 0, 8), 0, 0));
                         }
-                        // 実効B/F
+                        // Effective B / F
                         {
-                        	String textlabel = Message.getString("requiredbfdialog.label.effective");  //実効B/F
+                        	String textlabel = Message.getString("requiredbfdialog.label.effective");  // Effective B / F
                         	JLabel header = new JLabel(textlabel);
                         	panelMemory.add(header, new GridBagConstraints(0, 5, 1, 1, 0.0, 0.0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 8, 0, 8), 0, 0));
                         	this.txtEffective = new LabeledTextFeild(columns);
@@ -289,9 +289,9 @@ public class RequiredBFDialog extends javax.swing.JDialog implements ActionListe
                         	lblUnitEffective = new JLabel(UNIT_BITE_FLOP);
                         	panelMemory.add(lblUnitEffective, new GridBagConstraints(2, 5, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 8, 0, 8), 0, 0));
                         }
-                        // ピーク性能比
+                        // Peak performance ratio
                         {
-                        	String textlabel = Message.getString("requiredbfdialog.label.peak");  //ピーク性能比
+                        	String textlabel = Message.getString("requiredbfdialog.label.peak");  // Peak performance ratio
                         	JLabel header = new JLabel(textlabel);
                         	panelMemory.add(header, new GridBagConstraints(0, 6, 1, 1, 0.0, 0.0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0, 8, 0, 8), 0, 0));
                         	this.txtPeak = new LabeledTextFeild(columns);
@@ -301,48 +301,48 @@ public class RequiredBFDialog extends javax.swing.JDialog implements ActionListe
                         }
                     }
                 }
-                // 算出設定
+                // Calculation settings
                 {
 
 	                JPanel panelSettings = new JPanel();
 	                panelSettings.setLayout(new BoxLayout(panelSettings, BoxLayout.Y_AXIS));
 	                panelContent.add(panelSettings, BorderLayout.SOUTH);
 	                panelSettings.add(Box.createRigidArea(new Dimension(1, 7)));
-	                // スループット設定
+	                // Throughput settings
 	                {
 	                    JPanel panel = new JPanel();
 	                    FlowLayout layout = new FlowLayout(FlowLayout.RIGHT, 0, 0);
 	                    layout.setHgap(24);
 	                    panel.setLayout(layout);
 	                    panelSettings.add(panel);
-	                    String text = Message.getString("requiredbfdialog.setting.label.throughput");  //スループット設定
+	                    String text = Message.getString("requiredbfdialog.setting.label.throughput");  // Throughput settings
 	                	JLabel header = new JLabel(text);
 	                	panel.add(header);
-	                	this.btnSetting = new JButton(Message.getString("dialog.common.button.setting"));  //設定);
+	                	this.btnSetting = new JButton(Message.getString("dialog.common.button.setting"));  //Configuration);
 	                	panel.add(this.btnSetting);
 	                	this.btnSetting.setMargin(new Insets(0, 3, 0, 3));
 	                	this.btnSetting.addActionListener(this);
 	                }
 	                panelSettings.add(Box.createRigidArea(new Dimension(1, 4)));
-	                // 変数アクセス設定:変数アクセス設定ダイアログからの表示の場合は算出はなし。
+	                // Variable access settings: No calculation when displaying from the variable access settings dialog.
 	                if (this.ownerDialog) {
 	                    panelVariable = new JPanel();
 	                    FlowLayout layout = new FlowLayout(FlowLayout.RIGHT, 0, 0);
 	                    layout.setHgap(24);
 	                    panelVariable.setLayout(layout);
 	                    panelSettings.add(panelVariable);
-	                    String text = Message.getString("requiredbfdialog.setting.label.variable");  // 変数アクセス設定
+	                    String text = Message.getString("requiredbfdialog.setting.label.variable");  // Variable access settings
 	                	JLabel header = new JLabel(text);
 	                	panelVariable.add(header);
-	                    // 変数アクセス先設定ボタン
-                    	btnVariable = new JButton(Message.getString("dialog.common.button.setting"));  //設定);
+	                    // Variable access destination setting button
+                    	btnVariable = new JButton(Message.getString("dialog.common.button.setting"));  //Configuration);
                     	panelVariable.add(btnVariable);
 	                	this.btnVariable.setMargin(new Insets(0, 3, 0, 3));
 	                	this.btnVariable.addActionListener(this);
 	                }
                 }
             }
-            String text = Message.getString("requiredbfdialog.title");  // 要求Byte/FLOP算出
+            String text = Message.getString("requiredbfdialog.title");  // Request Byte / FLOP calculation
             setTitle(text);
             this.pack();
 
@@ -355,29 +355,29 @@ public class RequiredBFDialog extends javax.swing.JDialog implements ActionListe
     }
 
     /**
-     * ダイアログを表示する。
-     * @return    ダイアログの閉じた時のボタン種別
+     * Display a dialog.
+     * @return Button type when the dialog is closed
      */
     public int showDialog() {
-    	// 要求Byte/FLOPの算出を行う.
+    	// Calculate the request Byte / FLOP.
 		this.blockindex = 0;
 		setArrowButton();
 		if (this.selectedblocks != null && this.selectedblocks.length > 0) {
 			calculateRequiredByteFlop(this.selectedblocks[this.blockindex]);
 		}
 
-        // 親フレーム中央に表示する。
+        // Display in the center of the parent frame.
         this.setLocationRelativeTo(this.getOwner());
 
-        // ダイアログ表示
+        // Dialog display
         this.setVisible(true);
 
         return this.result;
     }
 
     /**
-     * ボタンクリックイベント
-     * @param event		イベント情報
+     * Button click event
+     * @param event Event information
      */
     @Override
     public void actionPerformed(ActionEvent event) {
@@ -386,21 +386,21 @@ public class RequiredBFDialog extends javax.swing.JDialog implements ActionListe
         if (event.getSource() == this.btnOk) {
             this.result = Constant.OK_DIALOG;
             if (this.chkAddList.isSelected()) {
-            	// リストに追加する.
+            	// Add to list.
             	setAnalysisPanel();
             }
-            // ダイアログを閉じる。
+            // Close the dialog.
             dispose();
             return;
         }
         if (event.getSource() == this.btnVariable) {
-            // 変数アクセス先設定ダイアログを表示する。
+            // Display the variable access destination setting dialog.
         	if (this.nextDialog != null) {
 	            this.setVisible(false);
 	            this.nextDialog.setOwnerDialog(false);
 	            this.nextDialog.showDialog();
 
-	        	// 要求Byte/FLOPの算出を行う.
+	        	// Calculate the request Byte / FLOP.
 	    		if (this.selectedblocks != null && this.selectedblocks.length > 0) {
 	    			calculateRequiredByteFlop(this.selectedblocks[this.blockindex]);
 	    		}
@@ -408,40 +408,40 @@ public class RequiredBFDialog extends javax.swing.JDialog implements ActionListe
         	}
             return;
         }
-        // 閉じる
+        // close
         else if (event.getSource() == this.btnCancel) {
             this.result = Constant.CANCEL_DIALOG;
-            // ダイアログを閉じる。
+            // Close the dialog.
             dispose();
             return;
         }
-        // スループット設定
+        // Throughput settings
         else if (event.getSource() == this.btnSetting) {
-            // 要求Byte/FLOP設定ダイアログを表示する。
+            // Display the request Byte / FLOP setting dialog.
             SettingRequiredBFDialog dialog = new SettingRequiredBFDialog(this, true, this.propertiesMemoryband);
             dialog.showDialog();
-        	// 要求Byte/FLOPの算出を行う.
+        	// Calculate the request Byte / FLOP.
     		if (this.selectedblocks != null && this.selectedblocks.length > 0) {
     			calculateRequiredByteFlop(this.selectedblocks[this.blockindex]);
     		}
             return;
         }
-        // 前のブロック表示
+        // Previous block display
         else if (event.getSource() == this.btnPrev) {
         	if (this.blockindex > 0) this.blockindex--;
         	setArrowButton();
-        	// 要求Byte/FLOPの算出を行う.
+        	// Calculate the request Byte / FLOP.
     		if (this.selectedblocks != null && this.selectedblocks.length > 0) {
     			calculateRequiredByteFlop(this.selectedblocks[this.blockindex]);
     		}
         }
-        // 次のブロック表示
+        // Next block display
         else if (event.getSource() == this.btnNext) {
         	if (this.selectedblocks != null && this.selectedblocks.length > 0) {
             	if (this.blockindex < this.selectedblocks.length-1) this.blockindex++;
         	}
         	setArrowButton();
-        	// 要求Byte/FLOPの算出を行う.
+        	// Calculate the request Byte / FLOP.
     		if (this.selectedblocks != null && this.selectedblocks.length > 0) {
     			calculateRequiredByteFlop(this.selectedblocks[this.blockindex]);
     		}
@@ -449,17 +449,17 @@ public class RequiredBFDialog extends javax.swing.JDialog implements ActionListe
     }
 
 	/**
-	 * 選択ブロックを取得する
-	 * @return 選択ブロック
-	 */
+* Get the selected block
+* @return selection block
+*/
 	public IBlock[] getSelectedBlocks() {
 		return this.selectedblocks;
 	}
 
 	/**
-	 * 選択ブロックを設定する.
-	 * @param blocks 選択ブロック
-	 */
+* Set the selection block.
+* @param blocks selection blocks
+*/
 	public void setSelectedblocks(IBlock[] blocks) {
 		this.selectedblocks = blocks;
 		this.blockindex = 0;
@@ -467,70 +467,70 @@ public class RequiredBFDialog extends javax.swing.JDialog implements ActionListe
 	}
 
     /**
-     * 変数アクセス先メモリプロパティを取得する
-     * @return		変数アクセス先メモリプロパティ
+     * Get variable access destination memory property
+     * @return variable access destination memory property
      */
     public VariableMemoryProperties getPropertiesVariable() {
         return propertiesVariable;
     }
 
     /**
-     * 変数アクセス先メモリプロパティを取得する
-     * @param  properties		変数アクセス先メモリプロパティ
+     * Get variable access destination memory property
+     * @param properties Variable access destination memory property
      */
     public void setPropertiesVariable(VariableMemoryProperties properties) {
         this.propertiesVariable = properties;
     }
 
     /**
-     * ラベル代替テキストフィールドクラス.
-     * 編集不可透明なテキストボックス
+     * Label alternative text field class.
+     * Non-editable transparent text box
      * @author RIKEN
      */
     class LabeledTextFeild extends JTextField {
-    	/** シリアル番号 */
+    	/** Serial number */
 		private static final long serialVersionUID = 1L;
 
 		/**
-    	 * コンストラクタ
-    	 */
+    * Constructor
+    */
     	public LabeledTextFeild() {
     		super();
     		setLabeled();
     	}
 
     	/**
-    	 * コンストラクタ
-    	 * @param    text    表示文字列
-    	 */
+    * Constructor
+    * @param text Display string
+    */
     	public LabeledTextFeild(String text) {
     		super(text);
     		setLabeled();
     	}
 
     	/**
-    	 * コンストラクタ
-    	 * @param    text    表示文字列
-    	 * @param    columns    表示幅
-    	 */
+    * Constructor
+    * @param text Display string
+    * @param columns Display width
+    */
     	public LabeledTextFeild(String text, int columns) {
     		super(text, columns);
     		setLabeled();
     	}
 
     	/**
-    	 * コンストラクタ
-    	 * @param    columns    表示幅
-    	 */
+    * Constructor
+    * @param columns Display width
+    */
     	public LabeledTextFeild(int columns) {
     		super(columns);
     		setLabeled();
     	}
 
     	/**
-    	 * 表示設定を行う.
-    	 * ラベルの様に編集不可とする.
-    	 */
+    * Set the display.
+    * Cannot be edited like a label.
+    */
     	private void setLabeled() {
         	this.setOpaque(false);
         	this.setEditable(false);
@@ -540,42 +540,42 @@ public class RequiredBFDialog extends javax.swing.JDialog implements ActionListe
     }
 
     /**
-     * 変数アクセス先設定ダイアログを設定する.
-     * @param dialog		変数アクセス先設定ダイアログ
+     * Set the variable access destination setting dialog.
+     * @param dialog Variable access destination setting dialog
      */
     public void setVariableAccessDialog(VariableAccessDialog dialog) {
     	this.nextDialog = dialog;
     }
 
     /**
-     * 親ダイアログフラグを設定する.
-     * @param owner		親ダイアログフラグ
+     * Set the parent dialog flag.
+     * @param owner Parent dialog flag
      */
     public void setOwnerDialog(boolean owner) {
     	this.ownerDialog = owner;
-    	// 変数アクセス設定パネルを非表示にする
+    	// Hide the variable access settings panel
     	this.panelVariable.setVisible(this.ownerDialog);
     }
 
 	/**
-	 * 要求Byte/FLOP算出サービスを設定する.
-	 * @param service 要求Byte/FLOP算出サービス
-	 */
+* Set the request Byte / FLOP calculation service.
+* @param service Request Byte / FLOP calculation service
+*/
 	public void setServiceMemory(AnalysisMemoryService service) {
 		this.serviceMemory = service;
 	}
 
 	/**
-	 * 要求Byte/FLOP設定プロパティを設定する.
-	 * @param properities 要求Byte/FLOP設定プロパティ
-	 */
+* Set the request Byte / FLOP setting property.
+* @param properities Request Byte / FLOP configuration properties
+*/
 	public void setPropertiesMemoryband(RequiredBFProperties properities) {
 		this.propertiesMemoryband = properities;
 	}
 
 	/**
-	 * 表示ブロックの前に、次へボタンの表示設定を行う.
-	 */
+* Set the display of the Next button before the display block.
+*/
 	private void setArrowButton() {
 		if (this.selectedblocks == null || this.selectedblocks.length <= 0) {
 			this.btnPrev.setVisible(false);
@@ -601,55 +601,55 @@ public class RequiredBFDialog extends javax.swing.JDialog implements ActionListe
 	}
 
 	/**
-	 * 要求Byte/FLOPを算出する.
-	 * @param block    算出ブロック
-	 */
+* Calculate the request Byte / FLOP.
+* @param block Calculation block
+*/
 	private void calculateRequiredByteFlop(IBlock block) {
 		if (block == null) return;
-		// 要求Byte/FLOPを算出する
+		// Calculate the request Byte / FLOP
 		RequiredBFResult result = this.serviceMemory.calcRequiredBF(block);
-		// 要求Byte/FLOP算出結果を表示する
+		// Display the request Byte / FLOP calculation result
 		setRequiredByteFlopResult(result);
 	}
 
 	/**
-	 * 要求Byte/FLOP算出結果を表示する.
-	 * @param result    要求Byte/FLOP算出結果
-	 */
+* Display the request Byte / FLOP calculation result.
+* @param result Request Byte / FLOP calculation result
+*/
 	private void setRequiredByteFlopResult(RequiredBFResult result) {
 		clearRequiredByteFlopResult();
 		if (result == null) return;
 
-		// ブロック
+		// block
 		this.lblBlock.setText(result.getBlock().toString());
-		// ロード算出結果
+		// Load calculation result
 		this.txtLoad.setText(String.format("%d", result.getLoad()));
-		// ストア算出結果
+		// Store calculation result
 		this.txtStore.setText(String.format("%d", result.getStore()));
-		// 演算数算出結果
+		// Calculation result of number of operations
 		this.txtFlop.setText(String.format("%d", result.getOperand()));
-		// 要求B/F算出結果
+		// Request B / F calculation result
 		float required = result.getRequiredBF();
 		if (this.propertiesMemoryband.getBFCalcType() == BF_CALC_TYPE.FLOP_BYTE) {
 			required = result.getRequiredFB();
 		}
 		this.txtRequired.setText(String.format("%.2f", required));
-		// スループット算出結果ラベル
+		// Throughput calculation result label
 		this.txtThroughput.setText(String.format("%.2f", result.getThroughput()));
-		// 実効B/F算出結果ラベル
+		// Effective B / F calculation result label
 		float effective = result.getEffectiveBF();
 		if (this.propertiesMemoryband.getBFCalcType() == BF_CALC_TYPE.FLOP_BYTE) {
 			effective = result.getEffectiveFB();
 		}
 		this.txtEffective.setText(String.format("%.2f", effective));
-		// ピーク性能比算出結果ラベル
+		// Peak performance ratio calculation result label
 		float peak = result.getPeakBF();
 		if (this.propertiesMemoryband.getBFCalcType() == BF_CALC_TYPE.FLOP_BYTE) {
 			peak = result.getPeakFB();
 		}
-		peak *= 100.0F;  // %表示
+		peak *= 100.0F;  //% display
 		this.txtPeak.setText(String.format("%.2f", peak));
-		// 単位表示
+		// Unit display
 		this.lblUnitRequired.setText(UNIT_BITE_FLOP);
 		this.lblUnitEffective.setText(UNIT_BITE_FLOP);
 		if (this.propertiesMemoryband.getBFCalcType() == BF_CALC_TYPE.FLOP_BYTE) {
@@ -660,36 +660,36 @@ public class RequiredBFDialog extends javax.swing.JDialog implements ActionListe
 	}
 
 	/**
-	 * 要求Byte/FLOP算出結果をクリアする.
-	 */
+* Clear the request Byte / FLOP calculation result.
+*/
 	private void clearRequiredByteFlopResult() {
-		// ブロック
+		// block
 		this.lblBlock.setText("");
-		// ロード算出結果
+		// Load calculation result
 		this.txtLoad.setText("");
-		// ストア算出結果
+		// Store calculation result
 		this.txtStore.setText("");
-		/** 演算数算出結果ラベル */
+		/** Calculation result label */
 		this.txtFlop.setText("");
-		/** 要求B/F算出結果ラベル */
+		/** Request B / F calculation result label */
 		this.txtRequired.setText("");
-		/** スループット算出結果ラベル */
+		/** Throughput calculation result label */
 		this.txtThroughput.setText("");
-		/** 実効B/F算出結果ラベル */
+		/** Effective B / F calculation result label */
 		this.txtEffective.setText("");
-		/** ピーク性能比算出結果ラベル */
+		/** Peak performance ratio calculation result label */
 		this.txtPeak.setText("");
 	}
 
 	/**
-	 * 分析ビューに算出結果を追加する.
-	 */
+* Add the calculation result to the analysis view.
+*/
 	private void setAnalysisPanel() {
 		if (this.selectedblocks == null) return;
 
 		List<RequiredBFResult> list = new ArrayList<RequiredBFResult>();
 		for (IBlock block : this.selectedblocks) {
-			// 要求Byte/FLOPを算出する
+			// Calculate the request Byte / FLOP
 			RequiredBFResult result = this.serviceMemory.calcRequiredBF(block);
 			if (result != null) {
 				list.add(result);

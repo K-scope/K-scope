@@ -47,34 +47,34 @@ import jp.riken.kscope.utils.ResourceUtils;
 
 
 /**
- * ツリー選択ダイアログ
+ * Tree selection dialog
  * @author RIKEN
  *
  */
 public class TreeChooserDialog extends javax.swing.JDialog implements ActionListener {
 
-    /** シリアル番号 */
+    /** Serial number */
     private static final long serialVersionUID = 1L;
-    /** 選択ツリー */
+    /** Selection tree */
     private ObjectTree treeSelect;
-    /** OKボタン */
+    /** OK button */
     private JButton btnOk;
-    /** キャンセルボタン */
+    /** Cancel button */
     private JButton btnCancel;
-    /** すべて展開ボタン */
+    /** Expand all button */
     private JButton btnExpand;
-    /** すべて収納ボタン */
+    /** All storage buttons */
     private JButton btnCollapse;
 
-    /** ダイアログの戻り値 */
+    /** Dialog return value */
     private int result = Constant.CANCEL_DIALOG;
 
     /**
-     * コンストラクタ
-     * @param owner		親フレーム
-     * @param modal		true=モーダルダイアログを表示する
-     * @param type		ツリータイプ
-     * @param model		ツリーモデル
+     * Constructor
+     * @param owner parent frame
+     * @param modal true = Show modal dialog
+     * @param type Tree type
+     * @param model Tree model
      */
     public TreeChooserDialog(Frame owner, boolean modal, EXPLORE_PANEL type, TreeModel model) {
         super(owner, modal);
@@ -82,11 +82,11 @@ public class TreeChooserDialog extends javax.swing.JDialog implements ActionList
     }
 
     /**
-     * コンストラクタ
-     * @param owner		親ダイアログ
-     * @param modal		true=モーダルダイアログを表示する
-     * @param type		ツリータイプ
-     * @param model		ツリーモデル
+     * Constructor
+     * @param owner Parent dialog
+     * @param modal true = Show modal dialog
+     * @param type Tree type
+     * @param model Tree model
      */
     public TreeChooserDialog(JDialog owner, boolean modal, EXPLORE_PANEL type, TreeModel model) {
         super(owner, modal);
@@ -95,16 +95,16 @@ public class TreeChooserDialog extends javax.swing.JDialog implements ActionList
 
 
     /**
-     * GUI初期化を行う。
-     * @param type		ツリータイプ
-     * @param model		ツリーモデル
+     * Initialize the GUI.
+     * @param type Tree type
+     * @param model Tree model
      */
     private void initGUI(EXPLORE_PANEL type, TreeModel model) {
         try {
             BorderLayout thisLayout = new BorderLayout();
             getContentPane().setLayout(thisLayout);
 
-            // ボタンパネル
+            // Button panel
             {
                 JPanel panelButtons = new JPanel();
                 FlowLayout layoutButtons = new FlowLayout();
@@ -125,12 +125,12 @@ public class TreeChooserDialog extends javax.swing.JDialog implements ActionList
                 {
                     btnCancel = new JButton();
                     btnCancel.setPreferredSize(buttonSize);
-                    btnCancel.setText(Message.getString("dialog.common.button.cancel")); //キャンセル
+                    btnCancel.setText(Message.getString("dialog.common.button.cancel")); //Cancel
                     btnCancel.addActionListener(this);
                     panelButtons.add(btnCancel);
                 }
             }
-            // 選択ツリー
+            // Selection tree
             {
                 JPanel panelContent = new JPanel();
                 GridBagLayout panelContentLayout = new GridBagLayout();
@@ -141,14 +141,14 @@ public class TreeChooserDialog extends javax.swing.JDialog implements ActionList
                 getContentPane().add(panelContent, BorderLayout.CENTER);
                 panelContent.setLayout(panelContentLayout);
                 panelContent.setPreferredSize(new java.awt.Dimension(390, 230));
-                // ラベル
+                // Label
                 {
                     JLabel label = new JLabel();
                     panelContent.add(label, new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
-                    label.setText(Message.getString("treechooserdialog.label.selecttreenode")); //ツリーノード選択
+                    label.setText(Message.getString("treechooserdialog.label.selecttreenode")); // Select tree node
                 }
 
-                // トレース先テーブル
+                // Trace destination table
                 {
                     treeSelect = new ObjectTree();
                     JScrollPane scrollTrace = new JScrollPane(treeSelect);
@@ -161,7 +161,7 @@ public class TreeChooserDialog extends javax.swing.JDialog implements ActionList
                     scrollTrace.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
                     panelContent.add(scrollTrace, new GridBagConstraints(1, 1, 2, 2, 0.0, 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
                 }
-                // ボタンパネル
+                // Button panel
                 {
                     JPanel panelSubButtons = new JPanel();
                     FlowLayout panelSubButtonsLayout = new FlowLayout();
@@ -183,7 +183,7 @@ public class TreeChooserDialog extends javax.swing.JDialog implements ActionList
                         panelSubButtons.add(btnExpand);
                         btnExpand.addActionListener(this);
                     }
-                    // 余白設定
+                    // Margin setting
                     panelSubButtons.add(Box.createHorizontalStrut(5));
                     {
                         Icon icon = ResourceUtils.getIcon("collapseall.gif");
@@ -196,16 +196,16 @@ public class TreeChooserDialog extends javax.swing.JDialog implements ActionList
                         panelSubButtons.add(btnCollapse);
                         btnCollapse.addActionListener(this);
                     }
-                    // 余白設定
+                    // Margin setting
                     panelSubButtons.add(Box.createHorizontalStrut(5));
                 }
 
-                // ツールチップ設定
-                btnExpand.setToolTipText(Message.getString("treechooserdialog.tooltip.expandall")); //すべて展開
-                btnCollapse.setToolTipText(Message.getString("treechooserdialog.tooltip.collapseall")); //すべて収納
+                // Tooltip settings
+                btnExpand.setToolTipText(Message.getString("treechooserdialog.tooltip.expandall")); // Expand all
+                btnCollapse.setToolTipText(Message.getString("treechooserdialog.tooltip.collapseall")); // All stored
             }
 
-            this.setTitle(Message.getString("treechooserdialog.dialog.title")); //ノード選択
+            this.setTitle(Message.getString("treechooserdialog.dialog.title")); // Node selection
             this.setSize(480, 280);
 
         } catch (Exception e) {
@@ -214,23 +214,23 @@ public class TreeChooserDialog extends javax.swing.JDialog implements ActionList
     }
 
     /**
-     * ダイアログを表示する。
-     * @return    ダイアログの閉じた時のボタン種別
+     * Display a dialog.
+     * @return Button type when the dialog is closed
      */
     public int showDialog() {
 
-        // 親フレーム中央に表示する。
+        // Display in the center of the parent frame.
         this.setLocationRelativeTo(this.getOwner());
 
-        // ダイアログ表示
+        // Dialog display
         this.setVisible(true);
 
         return this.result;
     }
 
     /**
-     * ボタンクリックイベント
-     * @param event		イベント情報
+     * Button click event
+     * @param event Event information
      */
     @Override
     public void actionPerformed(ActionEvent event) {
@@ -238,22 +238,22 @@ public class TreeChooserDialog extends javax.swing.JDialog implements ActionList
         // OK
         if (event.getSource() == this.btnOk) {
             this.result = Constant.OK_DIALOG;
-            // ダイアログを閉じる。
+            // Close the dialog.
             dispose();
             return;
         }
-        // キャンセル
+        // Cancel
         else if (event.getSource() == this.btnCancel) {
             this.result = Constant.CANCEL_DIALOG;
-            // ダイアログを閉じる。
+            // Close the dialog.
             dispose();
             return;
         }
-        // すべて展開
+        // Expand all
         else if (event.getSource() == this.btnExpand) {
             expandTreeAll();
         }
-        // すべて収納
+        // store everything
         else if (event.getSource() == this.btnCollapse) {
             collapseTreeAll();
         }
@@ -261,7 +261,7 @@ public class TreeChooserDialog extends javax.swing.JDialog implements ActionList
     }
 
     /**
-     * ツリーをすべて収納する。
+     * Stores the entire tree.
      */
     public void collapseTreeAll() {
         int row = this.treeSelect.getRowCount()-1;
@@ -269,12 +269,12 @@ public class TreeChooserDialog extends javax.swing.JDialog implements ActionList
             this.treeSelect.collapseRow(row);
             row--;
         }
-        // ルートノードのみ展開
+        // Expand only root node
         this.treeSelect.expandRow(0);
     }
 
     /**
-     * ツリーをすべて展開する。
+     * Expand the entire tree.
      */
     public void expandTreeAll() {
         int row = 0;
@@ -284,8 +284,8 @@ public class TreeChooserDialog extends javax.swing.JDialog implements ActionList
         }
     }
     /**
-     * 選択ノードを取得する
-     * @return 		選択ノード
+     * Get the selected node
+     * @return Selected node
      */
     public TreeNode[] getSelectedTreeNodes() {
         TreePath[] paths = this.treeSelect.getSelectionPaths();
@@ -299,8 +299,8 @@ public class TreeChooserDialog extends javax.swing.JDialog implements ActionList
     }
 
     /**
-     * 選択ノードを設定する。
-     * @param nodes 	選択ノード
+     * Set the selection node.
+     * @param nodes Selected nodes
      */
     public void setSelectedTreeNodes(TreeNode[] nodes) {
         if (nodes == null) return;

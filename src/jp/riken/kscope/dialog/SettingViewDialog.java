@@ -62,61 +62,61 @@ import jp.riken.kscope.data.PropertyValue;
 import jp.riken.kscope.properties.SourceProperties;
 
 /**
- * ソースビュー設定ダイアログ
+ * Source view settings dialog
  * @author RIKEN
  */
 public class SettingViewDialog extends javax.swing.JDialog implements ActionListener, ListSelectionListener {
-    /** シリアル番号 */
+    /** Serial number */
     private static final long serialVersionUID = 1L;
 
-    /** キャンセルボタン */
+    /** Cancel button */
     private JButton btnCancel;
-    /** OKボタン */
+    /** OK button */
     private JButton btnOk;
-    /** 適用ボタン */
+    /** Apply button */
     private JButton btnApply;
-    /** 登録ボタン */
+    /** Registration button */
     private JButton btnReg;
-    /** ソースビュー設定リスト */
+    /** Source view settings list */
     private JTable tblProperties;
-    /** ソースビュー設定リストデータ */
+    /** Source view settings list data */
     private DefaultTableModel modelProperties;
-    /** ソースビュー設定パネル */
+    /** Source View Settings Panel */
     private JPanel panelProperty;
 
-    /** ダイアログの戻り値 */
+    /** Dialog return value */
     private int result = Constant.CANCEL_DIALOG;
 
-    /** ソースビュープロパティ */
+    /** Source view properties */
     SourceProperties properities;
 
-    /** 列名 */
+    /** Column name */
     private final String[] COLUMN_HEADER = {
         Message.getString("settingprojectdialog.column_header.propertyvalue"), //PROPERTYVALUE
-        Message.getString("settingprojectdialog.column_header.key"), //キー
-        Message.getString("settingprojectdialog.column_header.type"), //タイプ
-        Message.getString("settingprogramdialog.label.name"), //名前
-        Message.getString("settingprojectdialog.column_header.value"), //値
-        Message.getString("settingprojectdialog.column_header.message")}; //メッセージ
+        Message.getString("settingprojectdialog.column_header.key"), //Key
+        Message.getString("settingprojectdialog.column_header.type"), //type
+        Message.getString("settingprogramdialog.label.name"), //name
+        Message.getString("settingprojectdialog.column_header.value"), //value
+        Message.getString("settingprojectdialog.column_header.message")}; //message
 
-    /** フォント選択ボタン */
+    /** Font selection button */
     private JButton btnFont;
-    /** 色設定ボタン */
+    /** Color setting button */
     private JColorButton btnColor;
-    /** 色有効チェックボックス */
+    /** Color valid check box */
     private JCheckBox chkEnabled;
-    /** 値設定テキストボックス */
+    /** Value setting text box */
     private JTextField txtValue;
-    /** フォントラベル */
+    /** Font label */
     private JLabel lblFontName;
 
-    /** 選択プロパティ */
+    /** Selected properties */
     private PropertyValue selectedvalue;
 
 
     /**
-     * コンストラクタ
-     * @param frame		親フレーム
+     * Constructor
+     * @param frame Parent frame
      */
     public SettingViewDialog(Frame frame) {
         super(frame);
@@ -124,9 +124,9 @@ public class SettingViewDialog extends javax.swing.JDialog implements ActionList
     }
 
     /**
-     * コンストラクタ
-     * @param frame		親フレーム
-     * @param modal		true=モーダルダイアログを表示する
+     * Constructor
+     * @param frame Parent frame
+     * @param modal true = Show modal dialog
      */
     public SettingViewDialog(Frame frame, boolean modal) {
         super(frame, modal);
@@ -134,10 +134,10 @@ public class SettingViewDialog extends javax.swing.JDialog implements ActionList
     }
 
     /**
-     * コンストラクタ
-     * @param frame		親フレーム
-     * @param modal		true=モーダルダイアログを表示する
-     * @param properities		ソース設定プロパティ
+     * Constructor
+     * @param frame Parent frame
+     * @param modal true = Show modal dialog
+     * @param properities Source configuration properties
      */
     public SettingViewDialog(Frame frame, boolean modal, SourceProperties properities) {
         super(frame, modal);
@@ -146,16 +146,16 @@ public class SettingViewDialog extends javax.swing.JDialog implements ActionList
     }
 
     /**
-     * ソース設定を設定する。
-     * @param properities		ソース設定プロパティ
+     * Set source settings.
+     * @param properities Source configuration properties
      */
     public void setSourceProperties(SourceProperties properities) {
 
         PropertyValue[] values = properities.getPropertyValues();
 
-        // テーブルに追加する
+        // add to table
         for (PropertyValue value : values) {
-            // "PropertyValue", "キー", "タイプ", "名前", "値"
+            // "PropertyValue", "key", "type", "name", "value"
             Object[] rowData = new Object[6];
             rowData[0] = value;
             rowData[1] = value.getKey();
@@ -174,7 +174,7 @@ public class SettingViewDialog extends javax.swing.JDialog implements ActionList
 
 
     /**
-     * GUI初期化を行う。
+     * Initialize the GUI.
      */
     private void initGUI() {
         try {
@@ -183,7 +183,7 @@ public class SettingViewDialog extends javax.swing.JDialog implements ActionList
             thisLayout.setVgap(5);
             getContentPane().setLayout(thisLayout);
 
-            // ボタンパネル
+            // Button panel
             {
                 JPanel panelButtons = new JPanel();
                 FlowLayout jPanel1Layout = new FlowLayout();
@@ -193,11 +193,11 @@ public class SettingViewDialog extends javax.swing.JDialog implements ActionList
                 getContentPane().add(panelButtons, BorderLayout.SOUTH);
                 panelButtons.setPreferredSize(new java.awt.Dimension(390, 46));
 
-                // メインボタンサイズ
+                // Main button size
                 java.awt.Dimension buttonSize = new java.awt.Dimension(96, 22);
                 {
                     btnApply = new JButton();
-                    btnApply.setText(Message.getString("dialog.common.button.apply")); //適用
+                    btnApply.setText(Message.getString("dialog.common.button.apply")); //Apply
                     btnApply.setPreferredSize(buttonSize);
                     btnApply.addActionListener(this);
                     panelButtons.add(btnApply);
@@ -211,7 +211,7 @@ public class SettingViewDialog extends javax.swing.JDialog implements ActionList
                 }
                 {
                     btnCancel = new JButton();
-                    btnCancel.setText(Message.getString("dialog.common.button.cancel"));//キャンセル
+                    btnCancel.setText(Message.getString("dialog.common.button.cancel"));//Cancel
                     btnCancel.setPreferredSize(buttonSize);
                     btnCancel.addActionListener(this);
                     btnCancel.setMargin(new Insets(5, 5, 5, 5));
@@ -219,7 +219,7 @@ public class SettingViewDialog extends javax.swing.JDialog implements ActionList
                 }
             }
 
-            // コンテンツパネル
+            // Content panel
             {
                 JPanel panelContent = new JPanel();
                 BorderLayout panelContentLayout = new BorderLayout();
@@ -228,7 +228,7 @@ public class SettingViewDialog extends javax.swing.JDialog implements ActionList
                 panelContent.setBorder(border);
                 panelContent.setLayout(panelContentLayout);
 
-                // プロパティリスト
+                // Property list
                 {
                     JPanel panelList = new JPanel();
                     BorderLayout panelListLayout = new BorderLayout();
@@ -237,7 +237,7 @@ public class SettingViewDialog extends javax.swing.JDialog implements ActionList
                     {
                         JLabel lblList = new JLabel();
                         panelList.add(lblList, BorderLayout.NORTH);
-                        lblList.setText(Message.getString("settingviewdialog.label.setupsourceviewlist"));//ソースビュー設定リスト
+                        lblList.setText(Message.getString("settingviewdialog.label.setupsourceviewlist"));// Source view settings list
                     }
                     {
                         JScrollPane scrollList = new JScrollPane();
@@ -247,7 +247,7 @@ public class SettingViewDialog extends javax.swing.JDialog implements ActionList
                         {
                             modelProperties = new DefaultTableModel();
                             modelProperties.setColumnCount(COLUMN_HEADER.length);
-                            // ヘッダー列名
+                            // Header column name
                             String[] columns = COLUMN_HEADER;
                             modelProperties.setColumnIdentifiers(columns);
                             tblProperties = new JTable();
@@ -260,41 +260,41 @@ public class SettingViewDialog extends javax.swing.JDialog implements ActionList
                             tblProperties.setColumnSelectionAllowed(false);
                             tblProperties.setDefaultEditor(Object.class, null);
 
-                            // 列幅設定
-                            // 1列目:PropertyValue:非表示
+                            // Column width setting
+                            // First column: PropertyValue: Hidden
                             {
                                 TableColumn col = tblProperties.getColumnModel().getColumn(0);
                                 col.setResizable(false);
                                 col.setMinWidth(0);
                                 col.setMaxWidth(0);
                             }
-                            // 2列目:キー:非表示
+                            // Second column: Key: Hide
                             {
                                 TableColumn col = tblProperties.getColumnModel().getColumn(1);
                                 col.setResizable(false);
                                 col.setMinWidth(0);
                                 col.setMaxWidth(0);
                             }
-                            // 3列目:タイプ:非表示
+                            // Third column: Type: Hidden
                             {
                                 TableColumn col = tblProperties.getColumnModel().getColumn(2);
                                 col.setResizable(false);
                                 col.setMinWidth(0);
                                 col.setMaxWidth(0);
                             }
-                            // 4列目:名前
+                            // Fourth column: Name
                             {
                                 TableColumn col = tblProperties.getColumnModel().getColumn(3);
                                 col.setResizable(true);
                                 col.setMinWidth(160);
                             }
-                            // 5列目:値
+                            // 5th column: Value
                             {
                                 TableColumn col = tblProperties.getColumnModel().getColumn(4);
                                 col.setResizable(true);
                                 col.setMinWidth(80);
                             }
-                            // 6列目:メッセージ
+                            // 6th column: Message
                             {
                                 TableColumn col = tblProperties.getColumnModel().getColumn(5);
                                 col.setResizable(false);
@@ -304,7 +304,7 @@ public class SettingViewDialog extends javax.swing.JDialog implements ActionList
                         }
                     }
                 }
-                // 設定パネル
+                // Settings panel
                 {
                     JPanel panelSettings = new JPanel();
                     BorderLayout panelSettingsLayout = new BorderLayout();
@@ -314,7 +314,7 @@ public class SettingViewDialog extends javax.swing.JDialog implements ActionList
                     panelSettings.setLayout(panelSettingsLayout);
                     {
                         JLabel lblSettings = new JLabel();
-                        lblSettings.setText(Message.getString("mainmenu.project.config")); //設定
+                        lblSettings.setText(Message.getString("mainmenu.project.config")); //Configuration
                         panelSettings.add(lblSettings, BorderLayout.NORTH);
                     }
                     this.panelProperty = new JPanel();
@@ -327,23 +327,23 @@ public class SettingViewDialog extends javax.swing.JDialog implements ActionList
                     this.panelProperty.setLayout(panelPropertyLayout);
                     this.panelProperty.setPreferredSize(new java.awt.Dimension(320, 234));
 
-                    // 設定パネル枠
+                    // Setting panel frame
                     EtchedBorder titleBorder = (EtchedBorder) BorderFactory.createEtchedBorder();
                     Border borderKeyword = new CompoundBorder( titleBorder, new EmptyBorder(17,7,0,7));
                     panelProperty.setBorder(borderKeyword);
 
-                    // プロパティ名
+                    // Property name
                     {
                         JLabel lblName = new JLabel();
                         this.panelProperty.add(lblName, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
-                        lblName.setText(Message.getString("settingprogramdialog.label.name")); //名前
+                        lblName.setText(Message.getString("settingprogramdialog.label.name")); //name
                     }
                     {
                         JLabel txtName = new JLabel();
                         this.panelProperty.add(txtName, new GridBagConstraints(1, 0, 2, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
                     }
 
-                    // キーワード追加削除ボタンパネル
+                    // Keyword add / delete button panel
                     JPanel panelAddButtons = new JPanel();
                     FlowLayout panelAddButtonsLayout = new FlowLayout(FlowLayout.RIGHT);
                     Border borderAddButtons = new EmptyBorder(0,7,0,0);
@@ -356,14 +356,14 @@ public class SettingViewDialog extends javax.swing.JDialog implements ActionList
                     {
                         btnReg = new JButton();
                         panelAddButtons.add(btnReg);
-                        btnReg.setText(Message.getString("dialog.common.button.update")); //更新
+                        btnReg.setText(Message.getString("dialog.common.button.update")); //update
                         btnReg.setPreferredSize(minSize);
                         btnReg.setMargin(minInsets);
                         btnReg.addActionListener(this);
                     }
                 }
             }
-            setTitle(Message.getString("settingviewdialog.dialog.title")); //ソースビュー設定
+            setTitle(Message.getString("settingviewdialog.dialog.title")); // Source view settings
             setSize(600, 300);
 
         } catch (Exception e) {
@@ -372,22 +372,22 @@ public class SettingViewDialog extends javax.swing.JDialog implements ActionList
     }
 
     /**
-     * プロパティ設定パネルを設定する
-     * @param value		設定プロパティ
+     * Set the property setting panel
+     * @param value Setting property
      */
     private void setPropertyPanel(PropertyValue value) {
         if (value == null) return;
 
         if ("font".equalsIgnoreCase(value.getType())) {
-            // フォント設定
+            // Font settings
             setFontPanel(value);
         }
         else if ("color".equalsIgnoreCase(value.getType())) {
-            // 色設定
+            // Color setting
             setColorPanel(value);
         }
         else if ("integer".equalsIgnoreCase(value.getType())) {
-            // 値設定
+            // Value setting
             setValuePanel(value);
         }
         this.panelProperty.revalidate();
@@ -396,22 +396,22 @@ public class SettingViewDialog extends javax.swing.JDialog implements ActionList
 
 
     /**
-     * フォント設定パネルを設定する
-     * @param value		フォント設定プロパティ
+     * Set the font settings panel
+     * @param value Font setting property
      */
     private void setFontPanel(PropertyValue value) {
 
         if (!("font".equalsIgnoreCase(value.getType()))) return;
 
-        // 設定フォント
+        // Setting font
         Font font = (Font)value.getValue();
         this.panelProperty.removeAll();
 
-        // プロパティ名
+        // Property name
         {
             JLabel label = new JLabel();
             this.panelProperty.add(label, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
-            label.setText(Message.getString("settingprogramdialog.label.name"));//名前
+            label.setText(Message.getString("settingprogramdialog.label.name"));//name
         }
         {
             JLabel lblName = new JLabel();
@@ -419,11 +419,11 @@ public class SettingViewDialog extends javax.swing.JDialog implements ActionList
             lblName.setText(value.getName());
         }
 
-        // フォント
+        // Font
         {
             JLabel lblFont = new JLabel();
             this.panelProperty.add(lblFont, new GridBagConstraints(0, 1, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
-            lblFont.setText(Message.getString("jfontchooserdialog.fontpanel.title"));//フォント
+            lblFont.setText(Message.getString("jfontchooserdialog.fontpanel.title"));//font
         }
         {
             lblFontName = new JLabel();
@@ -435,7 +435,7 @@ public class SettingViewDialog extends javax.swing.JDialog implements ActionList
             Dimension sizeButton = new Dimension(46, 22);
             btnFont = new JButton();
             this.panelProperty.add(btnFont, new GridBagConstraints(1, 2, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
-            btnFont.setText(Message.getString("settingviewdialog.label.select"));//選択
+            btnFont.setText(Message.getString("settingviewdialog.label.select"));//Choice
             btnFont.setMargin(new Insets(5, 5, 5, 5));
             btnFont.addActionListener(this);
             btnFont.setMaximumSize(sizeButton);
@@ -444,7 +444,7 @@ public class SettingViewDialog extends javax.swing.JDialog implements ActionList
 //            btnFont.setSize(sizeButton);
         }
 
-        // メッセージ
+        // Message
         {
             JComponent lblMassage = createMessageLabel(value.getMessage());
             if (lblMassage != null) {
@@ -454,23 +454,23 @@ public class SettingViewDialog extends javax.swing.JDialog implements ActionList
     }
 
     /**
-     * 色設定パネルを設定する
-     * @param value		色設定プロパティ
+     * Set the color setting panel
+     * @param value Color setting property
      */
     private void setColorPanel(PropertyValue value) {
 
         if (!("color".equalsIgnoreCase(value.getType()))) return;
 
-        // 設定色
+        // Set color
         Color color = (Color)value.getValue();
 
         this.panelProperty.removeAll();
 
-        // プロパティ名
+        // Property name
         {
             JLabel label = new JLabel();
             this.panelProperty.add(label, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
-            label.setText(Message.getString("settingprogramdialog.label.name"));//名前
+            label.setText(Message.getString("settingprogramdialog.label.name"));//name
         }
         {
             JLabel lblName = new JLabel();
@@ -479,11 +479,11 @@ public class SettingViewDialog extends javax.swing.JDialog implements ActionList
         }
 
 
-        // 色
+        // color
         {
             JLabel lblColor = new JLabel();
             this.panelProperty.add(lblColor, new GridBagConstraints(0, 1, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
-            lblColor.setText(Message.getString("settingviewdialog.label.color"));//色設定
+            lblColor.setText(Message.getString("settingviewdialog.label.color"));// Color setting
         }
         {
             btnColor = new JColorButton();
@@ -494,11 +494,11 @@ public class SettingViewDialog extends javax.swing.JDialog implements ActionList
         {
             chkEnabled = new JCheckBox();
             this.panelProperty.add(chkEnabled, new GridBagConstraints(2, 1, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
-            chkEnabled.setText(Message.getString("settingkeyworddialog.checkbox.enable"));//有効
+            chkEnabled.setText(Message.getString("settingkeyworddialog.checkbox.enable"));//Effectiveness
             chkEnabled.addActionListener(this);
         }
 
-        // メッセージ
+        // Message
         {
             JComponent lblMassage = createMessageLabel(value.getMessage());
             if (lblMassage != null) {
@@ -506,7 +506,7 @@ public class SettingViewDialog extends javax.swing.JDialog implements ActionList
             }
         }
 
-        // イネーブル設定
+        // Enable setting
         boolean enabled = (color!=null);
         this.btnColor.setEnabled(enabled);
         chkEnabled.setSelected(enabled);
@@ -514,22 +514,22 @@ public class SettingViewDialog extends javax.swing.JDialog implements ActionList
 
 
     /**
-     * 値設定パネルを設定する
-     * @param value		値設定プロパティ
+     * Set the value setting panel
+     * @param value Value setting property
      */
     private void setValuePanel(PropertyValue value) {
 
         if (!("integer".equalsIgnoreCase(value.getType()))) return;
 
-        // 設定値
+        // Set value
         Integer intValue = (Integer)value.getValue();
         this.panelProperty.removeAll();
 
-        // プロパティ名
+        // Property name
         {
             JLabel label = new JLabel();
             this.panelProperty.add(label, new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
-            label.setText(Message.getString("settingprogramdialog.label.name"));//名前
+            label.setText(Message.getString("settingprogramdialog.label.name"));//name
         }
         {
             JLabel lblName = new JLabel();
@@ -537,11 +537,11 @@ public class SettingViewDialog extends javax.swing.JDialog implements ActionList
             lblName.setText(value.getName());
         }
 
-        // 値
+        // value
         {
             JLabel lblColor = new JLabel();
             this.panelProperty.add(lblColor, new GridBagConstraints(0, 1, 1, 1, 0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
-            lblColor.setText(Message.getString("settingprojectdialog.column_header.value"));//値
+            lblColor.setText(Message.getString("settingprojectdialog.column_header.value"));//value
         }
         {
             txtValue = new JTextField();
@@ -549,7 +549,7 @@ public class SettingViewDialog extends javax.swing.JDialog implements ActionList
             txtValue.setText(String.valueOf(intValue));
             txtValue.setHorizontalAlignment(JTextField.RIGHT);
         }
-        // メッセージ
+        // Message
         {
             JComponent lblMassage = createMessageLabel(value.getMessage());
             if (lblMassage != null) {
@@ -559,9 +559,9 @@ public class SettingViewDialog extends javax.swing.JDialog implements ActionList
     }
 
     /**
-     * メッセージラベルコンポーネントを作成する
-     * @param  message   表示メッセージ
-     * @return			メッセージラベルコンポーネント
+     * Create a message label component
+     * @param message Display message
+     * @return Message label component
      */
     private JComponent createMessageLabel(String  message) {
         if (message == null) return null;
@@ -581,75 +581,75 @@ public class SettingViewDialog extends javax.swing.JDialog implements ActionList
 
 
     /**
-     * ダイアログを表示する。
-     * @return    ダイアログの閉じた時のボタン種別
+     * Display a dialog.
+     * @return Button type when the dialog is closed
      */
     public int showDialog() {
 
-        // 親フレーム中央に表示する。
+        // Display in the center of the parent frame.
         this.setLocationRelativeTo(this.getOwner());
 
-        // ダイアログ表示
+        // Dialog display
         this.setVisible(true);
 
         return this.result;
     }
 
     /**
-     * ボタンクリックイベント
-     * @param event		イベント情報
+     * Button click event
+     * @param event Event information
      */
     @Override
     public void actionPerformed(ActionEvent event) {
 
-        // 登録
+        // Registration
         if (event.getSource() == this.btnOk) {
             this.result = Constant.OK_DIALOG;
 
-            // 変更内容をソースプロパティに更新する。
+            // Update your changes to source properties.
             setProperties();
 
-            // 変更イベントを発生
+            // Fire a change event
             this.properities.firePropertyChange();
 
-            // ダイアログを閉じる。
+            // Close the dialog.
             dispose();
             return;
         }
-        // 適用
+        // Apply
         if (event.getSource() == this.btnApply) {
             this.result = Constant.OK_DIALOG;
 
-            // 変更内容をソースプロパティに更新する。
+            // Update your changes to source properties.
             setProperties();
 
-            // 変更イベントを発生
+            // Fire a change event
             this.properities.firePropertyChange();
 
             return;
         }
-        // 閉じる
+        // close
         else if (event.getSource() == this.btnCancel) {
             this.result = Constant.CANCEL_DIALOG;
-            // ダイアログを閉じる。
+            // Close the dialog.
             dispose();
             return;
         }
-        // フォント、背景、アクティブ背景色
+        // Font, background, active background color
         else if (event.getSource() == this.btnColor) {
             JColorButton button = (JColorButton) event.getSource();
-            // 色選択ダイアログ
+            // Color selection dialog
             Color color = JColorChooser.showDialog(this,
-                    Message.getString("settingkeyworddialog.colorchooser.title"), //色の選択
+                    Message.getString("settingkeyworddialog.colorchooser.title"), // Color selection
                     button.getColor());
             if(color != null){
-                // ボタンにカラーを設定する
+                // Set the color for the button
                 button.setColor(color);
             }
 
             return;
         }
-        // ソース表示フォント
+        // Source display font
         else if (event.getSource() == this.btnFont ) {
             Font deffont = this.lblFontName.getFont();
             JFontChooserDialog dialog = new JFontChooserDialog(this, true, deffont);
@@ -661,10 +661,10 @@ public class SettingViewDialog extends javax.swing.JDialog implements ActionList
                 }
             }
         }
-        // 更新
+        // update
         else if (event.getSource() == this.btnReg ) {
-            // 設定値をテーブルに設定する
-            // 選択行を取得する。
+            // Set the setting value in the table
+            // Get the selected row.
             int selectedrow = this.tblProperties.getSelectedRow();
             if (selectedrow < 0) return;
             if (selectedvalue == null) return;
@@ -672,11 +672,11 @@ public class SettingViewDialog extends javax.swing.JDialog implements ActionList
             int col = 4;
 
             if ("font".equalsIgnoreCase(selectedvalue.getType())) {
-                // フォント設定
+                // Font settings
                 this.modelProperties.setValueAt(this.lblFontName.getFont() ,selectedrow, col);
             }
             else if ("color".equalsIgnoreCase(selectedvalue.getType())) {
-                // 色設定
+                // Color setting
                 if (this.chkEnabled.isSelected()) {
                     this.modelProperties.setValueAt(this.btnColor.getColor(), selectedrow, col);
                 }
@@ -685,13 +685,13 @@ public class SettingViewDialog extends javax.swing.JDialog implements ActionList
                 }
             }
             else if ("integer".equalsIgnoreCase(selectedvalue.getType())) {
-                // 値設定
+                // Value setting
                 try {
                     Integer value = Integer.parseInt(this.txtValue.getText());
                     if (value < 0) {
                     	JOptionPane.showMessageDialog(this,
-                    			Message.getString("settingviewdialog.infodialog.word-erapping.message"), //折り返し文字数には０以上の値を設定してください。
-                    			Message.getString("settingviewdialog.dialog.title"), //ソースビュー設定
+                    			Message.getString("settingviewdialog.infodialog.word-erapping.message"), // Set a value of 0 or more for the number of wrapping characters.
+                    			Message.getString("settingviewdialog.dialog.title"), // Source view settings
                     			JOptionPane.INFORMATION_MESSAGE);
                     	return;
                     }
@@ -699,7 +699,7 @@ public class SettingViewDialog extends javax.swing.JDialog implements ActionList
                 } catch (NumberFormatException e) { }
             }
         }
-        // 有効チェック
+        // Valid check
         else if (event.getSource() == this.chkEnabled ) {
             boolean enabled = this.chkEnabled.isSelected();
             this.btnColor.setEnabled(enabled);
@@ -707,9 +707,9 @@ public class SettingViewDialog extends javax.swing.JDialog implements ActionList
     }
 
     /**
-     * フォントラベルを設定する
-     * @param font		設定フォント
-     * @param label		設定ラベル
+     * Set the font label
+     * @param font Setting font
+     * @param label Setting label
      */
     private void setLabelFont(Font font, JLabel label) {
         if (font == null) return;
@@ -721,9 +721,9 @@ public class SettingViewDialog extends javax.swing.JDialog implements ActionList
     }
 
     /**
-     * フォントの文字列表現を取得する
-     * @param font		設定フォント
-     * @return   フォントの文字列表現
+     * Get the string representation of the font
+     * @param font Setting font
+     * @return Font string representation
      */
     private String toStringFont(Font font) {
     	if (font == null) return "";
@@ -744,13 +744,13 @@ public class SettingViewDialog extends javax.swing.JDialog implements ActionList
     }
 
     /**
-     * ソースビュープロパティを設定する。
+     * Set source view properties.
      */
     private void setProperties() {
 
         int rows = this.modelProperties.getRowCount();
 
-        // "PropertyValue", "キー", "タイプ", "名前", "値", "メッセージ"}
+        // "PropertyValue", "key", "type", "name", "value", "message"}
         for (int i=0; i<rows; i++) {
             PropertyValue value = (PropertyValue) this.modelProperties.getValueAt(i, 0);
             value.setValue(this.modelProperties.getValueAt(i, 4));
@@ -760,18 +760,18 @@ public class SettingViewDialog extends javax.swing.JDialog implements ActionList
 
 
     /**
-     * 選択プロパティを表示する
-     * @param event		イベント情報
+     * Show selection properties
+     * @param event Event information
      */
     @Override
     public void valueChanged(ListSelectionEvent event) {
 
         if (event.getSource() == this.tblProperties.getSelectionModel()) {
-            // 選択行を取得する。
+            // Get the selected row.
             int selectedrow = this.tblProperties.getSelectedRow();
             if (selectedrow < 0) return;
 
-            // "PropertyValue", "キー", "タイプ", "名前", "値", "メッセージ"
+            // "PropertyValue", "key", "type", "name", "value", "message"
             PropertyValue value = new PropertyValue(
                         (String)this.modelProperties.getValueAt(selectedrow, 1),
                         (String)this.modelProperties.getValueAt(selectedrow, 3),
@@ -779,33 +779,33 @@ public class SettingViewDialog extends javax.swing.JDialog implements ActionList
                         this.modelProperties.getValueAt(selectedrow, 4),
                         (String)this.modelProperties.getValueAt(selectedrow, 5)
                     );
-            // 選択プロパティ
+            // Selected properties
             this.selectedvalue = value;
 
-            // 設定パネルに表示する
+            // Display in the settings panel
             this.setPropertyPanel(value);
         }
     }
 
 
     /**
-     * プロパティテーブルの色セルの描画クラス
+     * Property table color cell drawing class
      * @author RIKEN
      *
      */
     private class PropertiesTableRenderer extends DefaultTableCellRenderer {
-        /** シリアル番号 */
+        /** Serial number */
         private static final long serialVersionUID = 1L;
 
         /**
-         * セルの描画コンポーネントを取得する
-         * @param table			描画テーブル
-         * @param value			セルデータ
-         * @param isSelected	選択状態
-         * @param hasFocus		フォーカス
-         * @param row			行インデックス
-         * @param column		列インデックス
-         * @return		描画コンポーネント
+         * Get the drawing component of the cell
+         * @param table Drawing table
+         * @param value Cell data
+         * @param isSelected Selected state
+         * @param hasFocus Focus
+         * @param row row index
+         * @param column Column index
+         * @return drawing component
          */
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value,
@@ -821,7 +821,7 @@ public class SettingViewDialog extends javax.swing.JDialog implements ActionList
                 cellColor = (java.awt.Color)value;
             }
             else if (value instanceof java.awt.Font) {
-                // フォント名
+                // font name
                 cellValue = toStringFont((Font)value);
                 font = (Font)value;
             }
