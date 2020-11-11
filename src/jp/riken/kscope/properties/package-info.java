@@ -16,6 +16,6 @@
  */
 
 /**
- * キーワード、ソースビュー等のプロパティを提供します.
+ * Provides properties such as keywords and source views.
  */
 package jp.riken.kscope.properties;

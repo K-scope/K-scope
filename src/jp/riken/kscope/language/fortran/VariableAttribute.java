@@ -23,7 +23,7 @@ import java.util.Set;
 
 /**
 *
-* 変数の属性を示すクラス.<br>
+* A class that shows the attributes of variables. <br>
 *
 * @author RIKEN
 *
@@ -31,14 +31,14 @@ import java.util.Set;
 public class VariableAttribute
  implements Serializable,
         jp.riken.kscope.language.IVariableAttribute {
-    /** シリアル番号 */
+    /** Serial number */
     private static final long serialVersionUID = 3279154150773399072L;
 
     /**
-     * 変数のスコープ属性(public/private/[未指定]).
+     * Variable scope attribute (public / private / [unspecified]).
      */
     public enum ScopeAttribute {
-        /** 未指定. */
+        /** Not specified. */
         NONE,
         /** public. */
         PUBLIC,
@@ -47,10 +47,10 @@ public class VariableAttribute
     }
 
     /**
-     * 変数のpointer(あるいはtarget)属性(pointer/target/[未指定]).
+     * Variable pointer (or target) attribute (pointer / target / [unspecified]).
      */
     public enum PointerAttribute {
-        /** 未指定. */
+        /** Not specified. */
         NONE,
         /** pointer. */
         POINTER,
@@ -59,67 +59,67 @@ public class VariableAttribute
     }
 
     /**
-     * 外部(external)、内部(intrinsic)、未指定([none])からなる、関数の位置属性。
+     * Function position attribute consisting of external, intrinsic, and unspecified ([none]).
      */
     public enum FunctionPositionAttribute {
-        /** 未指定. */
+        /** Not specified. */
         NONE,
-        /** 外部. */
+        /** External. */
         EXTERNAL,
-        /** 内部. */
+        /** Interior. */
         INTRINSIC,
     }
 
     /**
-     * intent属性。
+     * intent attribute.
      */
     public enum IntentAttribute {
-        /** 未指定. */
+        /** Not specified. */
         NONE,
-        /** 入力. */
+        /** Input. */
         IN,
-        /** 出力. */
+        /** Output. */
         OUT,
-        /** 入出力. */
+        /** I / O. */
         INOUT,
     }
 
-    /** 全属性の情報. */
+    /** Information on all attributes. */
     private Set<String> attributes = new HashSet<String>();
 
     /**
-     * デフォルトコンストラクタ。
+     * Default constructor.
      */
     public VariableAttribute() {
-        // 何もしない
+        // do nothing
     }
 
     /**
-     * コンストラクタ。
+     * Constructor.
      *
      * @param attrbts
-     *            全属性リスト
+     * List of all attributes
      */
     public VariableAttribute(Set<String> attrbts) {
         this.setAttributes(attrbts);
     }
 
     /**
-     * parameter属性を持つかどうか.
+     * Whether it has a parameter attribute.
      *
-     * @return true : parameter属性を持つ
-     *         false: parameter属性を持たない
+     * @return true: with parameter attribute
+     * false: Does not have parameter attribute
      */
     public boolean hasParameter() {
         return this.contains("parameter");
     }
 
     /**
-     * スコープ属性(public/private/[未指定])の取得.
+     * Get the scope attribute (public / private / [unspecified]).
      *
-     * @return NONE   : 未指定
-     *         PUBLIC : public属性を持つ
-     *         PRIVATE: private属性を持つ
+     * @return NONE: Not specified
+     * PUBLIC: with public attribute
+     * PRIVATE: with private attribute
      */
     public ScopeAttribute getScope() {
         ScopeAttribute result = ScopeAttribute.NONE;
@@ -132,21 +132,21 @@ public class VariableAttribute
     }
 
     /**
-     * optional属性を持つかどうか.
+     * Whether it has an optional attribute.
      *
-     * @return true : optional属性を持つ
-     *         false: optional属性を持たない
+     * @return true: with optional attribute
+     * false: Does not have optional attribute
      */
     public boolean hasOptional() {
         return this.contains("optional");
     }
 
     /**
-     * 変数のpointer(あるいはtarget)属性の取得.
+     * Get the pointer (or target) attribute of a variable.
      *
-     * @return NONE   : 未指定
-     *         POINTER: pointer属性を持つ
-     *         TARGET : target属性を持つ
+     * @return NONE: Not specified
+     * POINTER: with pointer attribute
+     * TARGET: with target attribute
      */
     public PointerAttribute getPointerOrTarget() {
         PointerAttribute result = PointerAttribute.NONE;
@@ -159,21 +159,21 @@ public class VariableAttribute
     }
 
     /**
-     * save属性を持つかどうか.
+     * Whether it has a save attribute.
      *
-     * @return true : save属性を持つ
-     *         false: save属性を持たない
+     * @return true: with save attribute
+     * false: Does not have save attribute
      */
     public boolean hasSave() {
         return this.contains("save");
     }
 
     /**
-     * 関数の位置属性の取得.
+     * Get the position attribute of the function.
      *
-     * @return NONE     : 未指定
-     *         EXTERNAL : external属性を持つ
-     *         INTRINSIC: intrinsic属性を持つ
+     * @return NONE: Not specified
+     * EXTERNAL: Has an external attribute
+     * INTRINSIC: Has intrinsic attribute
      */
     public FunctionPositionAttribute getFunctionPosition() {
         FunctionPositionAttribute result = FunctionPositionAttribute.NONE;
@@ -186,42 +186,42 @@ public class VariableAttribute
     }
 
     /**
-     * equivalence属性を持つかどうか.
+     * Whether it has an equivalence attribute.
      *
-     * @return true : equivalence属性を持つ
-     *         false: equivalence属性を持たない
+     * @return true: with equivalence attribute
+     * false: Does not have equivalence attribute
      */
     public boolean hasEquivalence() {
         return this.contains("equivalence");
     }
 
     /**
-     * common属性を持つかどうか.
+     * Whether it has a common attribute.
      *
-     * @return true : common属性を持つ
-     *         false: common属性を持たない
+     * @return true: with common attribute
+     * false: Does not have common attribute
      */
     public boolean hasCommon() {
         return this.contains("common");
     }
 
     /**
-     * dimension属性を持つかどうか.
+     * Whether it has a dimension attribute.
      *
-     * @return true : dimension属性を持つ
-     *         false: dimension属性を持たない
+     * @return true: with dimension attribute
+     * false: Does not have dimension attribute
      */
     public boolean hasDimension() {
         return this.contains("dimension");
     }
 
     /**
-     * 変数のintent属性の取得.
+     * Get the intent attribute of a variable.
      *
-     * @return NONE : 未指定
-     *         IN   : intent(in)属性を持つ
-     *         OUT  : intent(out)属性を持つ
-     *         INOUT: intent(inout)属性を持つ
+     * @return NONE: Not specified
+     * IN: Has intent (in) attribute
+     * OUT: Has an intent (out) attribute
+     * INOUT: with intent (inout) attribute
      */
     public IntentAttribute getIntent() {
         IntentAttribute result = IntentAttribute.NONE;
@@ -239,20 +239,20 @@ public class VariableAttribute
     }
 
     /**
-     * allocatable属性を持つかどうか.
+     * Whether it has the allocatable attribute.
      *
-     * @return true : allocatable属性を持つ
-     *         false: allocatable属性を持たない
+     * @return true: with allocatable attribute
+     * false: Does not have allocatable attribute
      */
     public boolean hasAllocatable() {
         return this.contains("allocatable");
     }
 
     /**
-     * 属性の設定.
+     * Attribute settings.
      *
      * @param attrbts
-     *            設定すべき全属性
+     * All attributes to set
      */
     @Override
     public void setAttributes(Set<String> attrbts) {
@@ -262,10 +262,10 @@ public class VariableAttribute
     }
 
     /**
-     * 属性の設定.
+     * Attribute settings.
      *
      * @param attrbts
-     *            設定すべき全属性
+     * All attributes to set
      */
     @Override
     public void setAttributes(String[] attrbts) {
@@ -278,9 +278,9 @@ public class VariableAttribute
     }
 
     /**
-     * 属性の取得.
+     * Get attributes.
      *
-     * @return 全属性
+     * @return All attributes
      */
     @Override
     public Set<String> getAttributes() {
@@ -288,10 +288,10 @@ public class VariableAttribute
     }
 
     /**
-     * 属性の追加.
+     * Add attributes.
      *
      * @param attrbt
-     *           追加すべき属性
+     * Attributes to add
      */
     @Override
     public void addAttribute(String attrbt) {
@@ -302,9 +302,9 @@ public class VariableAttribute
     }
 
     /**
-     * 変数の属性を返す.
+     * Returns the attributes of the variable.
      *
-     * @return 変数の属性文字列
+     * @return Variable attribute string
      */
     @Override
     public String toString() {
@@ -315,7 +315,7 @@ public class VariableAttribute
         }
         result = result.trim();
 
-        /* 頭の","を削除する */
+        /* Remove the leading "," */
         if (result.startsWith(",")) {
             result = result.substring(1);
             result = result.trim();
@@ -325,12 +325,12 @@ public class VariableAttribute
     }
 
     /**
-     * 対象文字列が属性内に含まれているかどうか。<br>
-     * ただし、対象文字列の大文字小文字は無視する。<br>
+     * Whether the target string is included in the attribute. <br>
+     * However, the case of the target character string is ignored. <br>
      *
      * @param keyword
-     *               対象文字列
-     * @return true : 対象文字列が含まれる
+     * Target string
+     * @return true: The target string is included
      */
     @Override
     public boolean contains(String keyword) {
@@ -338,17 +338,17 @@ public class VariableAttribute
     }
 
     /**
-     * 対象文字列（大文字、小文字は無視）が含まれている属性の取得.
+     * Get attributes that include the target string (ignoring uppercase and lowercase letters).
      *
      * @param keyword
-     *               対象文字列
-     * @return 最初に見つかった属性<br>
-     *         見つからなかった場合は、空文字を返します。
+     * Target string
+     * @return First attribute found <br>
+     * If not found, returns an empty string.
      */
     public String getAttributeBy(String keyword) {
         String result = "";
         for (String item : attributes) {
-            // すべて小文字にして比較する
+            // Compare in all lowercase
             if (item.toLowerCase().contains(keyword.toLowerCase())) {
                 result = item;
                 break;
@@ -357,9 +357,9 @@ public class VariableAttribute
         return result;
     }
     /**
-     * 次元数の取得。
+     * Get the number of dimensions.
      *
-     * @return 次元数
+     * @return Number of dimensions
      */
     public int getDimensionNum() {
         int result = 1;
@@ -371,18 +371,18 @@ public class VariableAttribute
 }
 
     /**
-     * 属性が適合しているかどうか。<br>
+     * Whether the attributes match. <br>
      *
-     * 多重定義されている関数群の中から対応する関数を探索する際に、<br>
-     * 仮引数と実引数の属性チェックをする必要がある。<br>
-     * 「適合している」とは、この属性チェックで、同一の属性と判定される
-     * 事を意味している。fortranの場合は、次元数のチェックのみ行う。
+     * When searching for the corresponding function from the overloaded function group, <br>
+     * It is necessary to check the attributes of formal and actual arguments. <br>
+     * "Matching" is judged to be the same attribute by this attribute check.
+     * Means a thing. In the case of fortran, only the number of dimensions is checked.
      *
      * @param value
-     *          属性
+     * Attributes
      *
-     * @return true : 適合している<br>
-     *         false: 適合していない
+     * @return true: Conforms <br>
+     * false: Not compatible
      *
      */
     @Override

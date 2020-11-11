@@ -41,67 +41,67 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 /**
- * 演算カウントプロパティクラス
+ * Arithmetic count property class
  * @author RIKEN
  */
 public class OperationProperties extends PropertiesBase {
 
-    /** シリアル番号 */
+    /** Serial number */
     private static final long serialVersionUID = 1L;
-    /** 演算子FLOP:+ */
+    /** Operator FLOP: + */
     private int flopAdd;
-    /** 演算子FLOP:* */
+    /** Operator FLOP: * */
     private int flopMul;
-    /** 演算子FLOP:- */
+    /** Operator FLOP:-*/
     private int flopSub;
-    /** 演算子FLOP:/ */
+    /** Operator FLOP: /*/
     private int flopDiv;
-    /** 演算子FLOP:** */
+    /** Operator FLOP: ** */
     private int flopPow;
 
     /**
-     * コンストラクタ
-     * @throws Exception     プロパティ読込エラー
+     * Constructor
+     * @throws Exception Property read error
      */
     public OperationProperties() throws Exception {
         loadProperties();
     }
 
     /**
-     * 演算カウントプロパティをデフォルト設定ファイルから読み込む。
-     * @throws Exception     プロパティ読込エラー
+     * Read the operation count property from the default configuration file.
+     * @throws Exception Property read error
      */
     public void loadProperties() throws Exception {
         InputStream stream = null;
-        // リソースファイルの読込
+        // Read resource file
         stream = ResourceUtils.getPropertiesFile(KscopeProperties.PROPERTIES_FILE);
-        // 演算カウントプロパティを設定ファイルから読み込む。
+        // Read the operation count property from the configuration file.
         loadProperties(stream);
     }
 
     /**
-     * 演算カウントプロパティを設定ファイルから読み込む。
-     * @param  propertiesFile 		演算カウントプロパティ設定ファイル
-     * @throws Exception     プロパティ読込エラー
+     * Read the operation count property from the configuration file.
+     * @param propertiesFile Arithmetic count property setting file
+     * @throws Exception Property read error
      */
     public void loadProperties(File propertiesFile) throws Exception {
 
         if (!propertiesFile.exists()) {
-            throw(new Exception(Message.getString("propertiesbase.exeption.notexist"))); //演算カウントプロパティファイルが存在しません。
+            throw(new Exception(Message.getString("propertiesbase.exeption.notexist"))); // The operation count property file does not exist.
         }
 
-        // リソースファイルの読込
+        // Read resource file
         InputStream stream = new FileInputStream(propertiesFile);
 
-        // XMLファイルのパース
+        // Parsing the XML file
         loadProperties(stream);
     }
 
 
     /**
-     * 演算カウントプロパティを設定ファイルから読み込む。
-     * @param   stream      設定ファイルストリーム
-     * @throws Exception     プロパティ読込エラー
+     * Read the operation count property from the configuration file.
+     * @param stream Configuration file stream
+     * @throws Exception Property read error
      */
     public void loadProperties(InputStream stream) throws Exception {
 
@@ -110,7 +110,7 @@ public class OperationProperties extends PropertiesBase {
         DocumentBuilder builder = dbfactory.newDocumentBuilder();
         org.w3c.dom.Document document = builder.parse(stream);
 
-        // XMLファイルのパース
+        // Parsing the XML file
         List<OperationCount> list = parseOperation(document, "//operation");
         
         // For compatibility with older projects
@@ -118,8 +118,8 @@ public class OperationProperties extends PropertiesBase {
         	list = parseOperation(document, "//operand");
         }
 
-        // PropertiesクラスのHashTableに追加する
-        // キーは組込み関数名(=name)とする
+        // Add to HashTable of Properties class
+        // The key is the built-in function name (= name)
         for (OperationCount opc : list) {
             String name = opc.getName();
             if (name != null && !name.isEmpty()) {
@@ -127,17 +127,17 @@ public class OperationProperties extends PropertiesBase {
             }
         }
 
-        // 四則演算FLOP設定
+        // Four arithmetic FLOP settings
         parseOperatorFlop(document, "//operator_flop");
     }
 
 
     /**
-     * 演算カウント設定を取得する
-     * @param document		XMLドキュメント
-     * @param path		演算カウント設定XPATH
-     * @return		演算カウント設定リスト
-     * @throws Exception     プロパティ読込エラー
+     * Get the operation count setting
+     * @param document XML document
+     * @param path Operation count setting XPATH
+     * @return Operation count setting list
+     * @throws Exception Property read error
      */
     public List<OperationCount> parseOperation(org.w3c.dom.Document document, String path) throws Exception {
         List<OperationCount> list = new ArrayList<OperationCount>();
@@ -157,11 +157,11 @@ public class OperationProperties extends PropertiesBase {
                 Node node = nodelist.item(i);
                 OperationCount opc = new OperationCount();
 
-                // 属性の取得
+                // Get attributes
                 NamedNodeMap attrs = node.getAttributes();
                 Node attrnode;
                 String value = null;
-                // 組込み関数名
+                // Built-in function name
                 String name = null;
                 attrnode = attrs.getNamedItem("name");
                 if (attrnode != null) {
@@ -174,7 +174,7 @@ public class OperationProperties extends PropertiesBase {
                     continue;
                 }
 
-                // 演算子:+カウント
+                // Operator: + count
                 attrnode = attrs.getNamedItem("add");
                 if (attrnode != null) {
                     value = attrnode.getNodeValue();
@@ -182,7 +182,7 @@ public class OperationProperties extends PropertiesBase {
                         opc.setAdd(Integer.parseInt(value));
                     }
                 }
-                // 演算子:-カウント
+                // Operator:-Count
                 attrnode = attrs.getNamedItem("sub");
                 if (attrnode != null) {
                     value = attrnode.getNodeValue();
@@ -190,7 +190,7 @@ public class OperationProperties extends PropertiesBase {
                         opc.setSub(Integer.parseInt(value));
                     }
                 }
-                // 演算子:*カウント
+                // Operator: * Count
                 attrnode = attrs.getNamedItem("mul");
                 if (attrnode != null) {
                     value = attrnode.getNodeValue();
@@ -198,7 +198,7 @@ public class OperationProperties extends PropertiesBase {
                         opc.setMul(Integer.parseInt(value));
                     }
                 }
-                // 演算子:/カウント
+                // Operator: / Count
                 attrnode = attrs.getNamedItem("div");
                 if (attrnode != null) {
                     value = attrnode.getNodeValue();
@@ -224,11 +224,11 @@ public class OperationProperties extends PropertiesBase {
 
 
     /**
-     * 四則演算FLOP設定を取得する
-     * @param document		XMLドキュメント
-     * @param path		四則演算FLOP設定XPATH
-     * @return		演算カウント設定リスト
-     * @throws Exception     プロパティ読込エラー
+     * Get the four arithmetic FLOP settings
+     * @param document XML document
+     * @param path Four arithmetic FLOP settings XPATH
+     * @return Operation count setting list
+     * @throws Exception Property read error
      */
     public void parseOperatorFlop(org.w3c.dom.Document document, String path) throws Exception {
 
@@ -245,11 +245,11 @@ public class OperationProperties extends PropertiesBase {
         try {
             Node node = nodelist.item(0);
 
-            // 属性の取得
+            // Get attributes
             NamedNodeMap attrs = node.getAttributes();
             Node attrnode;
             String value = null;
-            // 演算子:+:FLOP
+            // Operator: +: FLOP
             attrnode = attrs.getNamedItem("add");
             if (attrnode != null) {
                 value = attrnode.getNodeValue();
@@ -257,7 +257,7 @@ public class OperationProperties extends PropertiesBase {
                     this.flopAdd = Integer.parseInt(value);
                 }
             }
-            // 演算子:-FLOP
+            // Operator: -FLOP
             attrnode = attrs.getNamedItem("sub");
             if (attrnode != null) {
                 value = attrnode.getNodeValue();
@@ -265,7 +265,7 @@ public class OperationProperties extends PropertiesBase {
                     this.flopSub = Integer.parseInt(value);
                 }
             }
-            // 演算子:*FLOP
+            // Operator: * FLOP
             attrnode = attrs.getNamedItem("mul");
             if (attrnode != null) {
                 value = attrnode.getNodeValue();
@@ -273,7 +273,7 @@ public class OperationProperties extends PropertiesBase {
                     this.flopMul = Integer.parseInt(value);
                 }
             }
-            // 演算子:/FLOP
+            // Operator: / FLOP
             attrnode = attrs.getNamedItem("div");
             if (attrnode != null) {
                 value = attrnode.getNodeValue();
@@ -281,7 +281,7 @@ public class OperationProperties extends PropertiesBase {
                     this.flopDiv = Integer.parseInt(value);
                 }
             }
-            // 演算子:**FLOP
+            // Operator: ** FLOP
             attrnode = attrs.getNamedItem("pow");
             if (attrnode != null) {
                 value = attrnode.getNodeValue();
@@ -299,18 +299,18 @@ public class OperationProperties extends PropertiesBase {
 
 
     /**
-     * 演算カウントを追加する
-     * @param key		組込み関数名
-     * @param value		演算カウント
+     * Add operation count
+     * @param key Built-in function name
+     * @param value Operation count
      */
     public void addOperationProperty(String key, OperationCount value) {
         this.put(key, value);
     }
 
     /**
-     * 演算カウントを取得する
-     * @param key		組込み関数名
-     * @return        演算カウント
+     * Get the operation count
+     * @param key Built-in function name
+     * @return operation count
      */
     public OperationCount getOperationProperty(String key) {
         return (OperationCount) this.get(key);
@@ -318,7 +318,7 @@ public class OperationProperties extends PropertiesBase {
 
 
     /**
-     * プロパティ変更イベントを通知する。
+     * Notify property change event.
      */
     @Override
     public void firePropertyChange() {
@@ -327,178 +327,178 @@ public class OperationProperties extends PropertiesBase {
 
 
     /**
-     * プロパティをDOMノードに出力する
-     * @param node		出力ノード
+     * Output properties to DOM node
+     * @param node Output node
      */
     public void writeProperties(org.w3c.dom.Node node) {
 
-        // ドキュメントの取得
+        // Get documentation
         org.w3c.dom.Document document = node.getOwnerDocument();
 
-        // コメントを追加
+        // add comment
         {
-            org.w3c.dom.Comment comment = document.createComment(Message.getString("operationproperties.document.comment")); //演算カウントプロパティ
+            org.w3c.dom.Comment comment = document.createComment(Message.getString("operationproperties.document.comment")); // Operation count property
             node.appendChild(comment);
         }
 
-        // 四則演算FLOP設定
+        // Four arithmetic FLOP settings
         {
         	org.w3c.dom.Element elem = document.createElement("operation_flop");
-            // 演算子:+FLOP
+            // Operator: + FLOP
         	{
                 org.w3c.dom.Attr attr = document.createAttribute("add");
                 attr.setNodeValue(String.valueOf(this.flopAdd));
                 elem.setAttributeNode(attr);
             }
-            // 演算子:*FLOP
+            // Operator: * FLOP
             {
                 org.w3c.dom.Attr attr = document.createAttribute("mul");
                 attr.setNodeValue(String.valueOf(this.flopMul));
                 elem.setAttributeNode(attr);
             }
-            // 演算子:-FLOP
+            // Operator: -FLOP
             {
                 org.w3c.dom.Attr attr = document.createAttribute("sub");
                 attr.setNodeValue(String.valueOf(this.flopSub));
                 elem.setAttributeNode(attr);
             }
-            // 演算子:/FLOP
+            // Operator: / FLOP
             {
                 org.w3c.dom.Attr attr = document.createAttribute("div");
                 attr.setNodeValue(String.valueOf(this.flopDiv));
                 elem.setAttributeNode(attr);
             }
-            // 演算子:**FLOP
+            // Operator: ** FLOP
             {
                 org.w3c.dom.Attr attr = document.createAttribute("pow");
                 attr.setNodeValue(String.valueOf(this.flopPow));
                 elem.setAttributeNode(attr);
             }
-            // ノード追加
+            // Add node
             node.appendChild(elem);
         }
-        // 組み込み関数演算数
+        // Number of built-in function operations
         Enumeration<Object> enumKeys = this.keys();
         if (enumKeys == null) return;
 
-        // キーワード
+        // Keywords
         while (enumKeys.hasMoreElements()){
             String key = (String)enumKeys.nextElement();
             OperationCount opc = getOperationProperty(key);
 
             org.w3c.dom.Element elem = document.createElement("operation");
-            // 組込み関数名
+            // Built-in function name
             {
                 org.w3c.dom.Attr attr = document.createAttribute("name");
                 attr.setNodeValue(opc.getName());
                 elem.setAttributeNode(attr);
             }
-            // 演算子:+カウント
+            // Operator: + count
             if (opc.getAdd() != null) {
                 org.w3c.dom.Attr attr = document.createAttribute("add");
                 attr.setNodeValue(String.valueOf(opc.getAdd()));
                 elem.setAttributeNode(attr);
             }
-            // 演算子:*カウント
+            // Operator: * Count
             if (opc.getMul() != null) {
                 org.w3c.dom.Attr attr = document.createAttribute("mul");
                 attr.setNodeValue(String.valueOf(opc.getMul()));
                 elem.setAttributeNode(attr);
             }
-            // 演算子:-カウント
+            // Operator:-Count
             if (opc.getSub() != null) {
                 org.w3c.dom.Attr attr = document.createAttribute("sub");
                 attr.setNodeValue(String.valueOf(opc.getSub()));
                 elem.setAttributeNode(attr);
             }
-            // 演算子:/カウント
+            // Operator: / Count
             if (opc.getDiv() != null) {
                 org.w3c.dom.Attr attr = document.createAttribute("div");
                 attr.setNodeValue(String.valueOf(opc.getDiv()));
                 elem.setAttributeNode(attr);
             }
 
-            // ノード追加
+            // Add node
             node.appendChild(elem);
         }
     }
 
 	/**
-	 * 演算子FLOP:+を取得する
-	 * @return flopAdd		演算子FLOP:+
-	 */
+* Get operator FLOP: +
+* @return flopAdd operator FLOP: +
+*/
 	public int getFlopAdd() {
 		return flopAdd;
 	}
 
 	/**
-	 * 演算子FLOP:+を設定する
-	 * @param value  演算子FLOP:+
-	 */
+* Set operator FLOP: +
+* @param value operator FLOP: +
+*/
 	public void setFlopAdd(int value) {
 		this.flopAdd = value;
 	}
 
 	/**
-	 * 演算子FLOP:*を取得する
-	 * @return flopMul		演算子FLOP:*
-	 */
+* Get operator FLOP: *
+* @return flopMul operator FLOP: *
+*/
 	public int getFlopMul() {
 		return flopMul;
 	}
 
 	/**
-	 * 演算子FLOP:*を設定する
-	 * @param value  演算子FLOP:*
-	 */
+* Set operator FLOP: *
+* @param value operator FLOP: *
+*/
 	public void setFlopMul(int value) {
 		this.flopMul = value;
 	}
 
 	/**
-	 * 演算子FLOP:-を取得する
-	 * @return flopSub		演算子FLOP:-
-	 */
+* Get operator FLOP:-
+* @return flopSub operator FLOP:-
+*/
 	public int getFlopSub() {
 		return flopSub;
 	}
 
 	/**
-	 * 演算子FLOP:-を設定する
-	 * @param value  演算子FLOP:-
-	 */
+* Set operator FLOP:-
+* @param value operator FLOP:-
+*/
 	public void setFlopSub(int value) {
 		this.flopSub = value;
 	}
 
 	/**
-	 * 演算子FLOP:/を取得する.
-	 * @return flopDiv		演算子FLOP:/
-	 */
+* Get the operator FLOP: /.
+* @return flopDiv operator FLOP: /
+*/
 	public int getFlopDiv() {
 		return flopDiv;
 	}
 
 	/**
-	 * 演算子FLOP:/を設定する
-	 * @param value  演算子FLOP:/
-	 */
+* Set operator FLOP: /
+* @param value operator FLOP: /
+*/
 	public void setFlopDiv(int value) {
 		this.flopDiv = value;
 	}
 
 	/**
-	 * 演算子FLOP:**を取得する.
-	 * @return flopPow		演算子FLOP:**
-	 */
+* Get the operator FLOP: **.
+* @return flopPow operator FLOP: **
+*/
 	public int getFlopPow() {
 		return flopPow;
 	}
 
 	/**
-	 * 演算子FLOP:**を設定する
-	 * @param value  演算子FLOP:**
-	 */
+* Set operator FLOP: **
+* @param value operator FLOP: **
+*/
 	public void setFlopPow(int value) {
 		this.flopPow = value;
 	}

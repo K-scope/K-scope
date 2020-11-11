@@ -25,33 +25,33 @@ import jp.riken.kscope.language.fortran.*;
 import jp.riken.kscope.language.generic.*;
 
 /**
- * アクセス先メモリ設定変数探索クラス.
- * アクセス先メモリ設定変数を取得する.
+ * Access destination memory setting variable search class.
+ * Get the access destination memory setting variable.
  * @author RIKEN
  */
 public class VariableMemoryEntry implements ILanguageEntry {
-	/** アクセス先メモリ設定変数 */
+	/** Access memory setting variable */
 	private List<Variable> listVariable;
-	/** Fortranデータベース */
+	/** Fortran database */
 	private Fortran language;
 
 	/**
-	 * コンストラクタ
-	 * @param    Fortranデータベース
-	 */
+* Constructor
+* @param Fortran database
+*/
 	public VariableMemoryEntry(Fortran language) {
 		this.language = language;
 		this.listVariable = new ArrayList<Variable>();
 	}
 
 	/**
-	 * アクセス先メモリ設定変数を追加する.
-	 */
+* Add the access destination memory setting variable.
+*/
 	@Override
 	public void entry(Variable entry) {
 		if (entry == null) return;
 		if (entry.getMemoryType() == null) return;
-		// アクセス先メモリ設定変数を追加する.
+		// Add the access destination memory setting variable.
 		addVariable(entry);
 		return;
 	}
@@ -184,9 +184,9 @@ public class VariableMemoryEntry implements ILanguageEntry {
 	}
 
 	/**
-	 * アクセス先メモリ設定変数を取得する.
-	 * @return  アクセス先メモリ設定変数リスト
-	 */
+* Get the access destination memory setting variable.
+* @return Access destination memory setting variable list
+*/
 	public Variable[] getListVariable() {
 		if (this.listVariable == null || this.listVariable.size() <= 0) {
 			return null;
@@ -195,9 +195,9 @@ public class VariableMemoryEntry implements ILanguageEntry {
 	}
 
 	/**
-	 * アクセス先メモリ設定変数を追加する.
-	 * @param var		アクセス先メモリ設定変数
-	 */
+* Add the access destination memory setting variable.
+* @param var Access destination memory setting variable
+*/
 	private void addVariable(Variable var) {
 		if (this.listVariable.contains(var)) return;
 		this.listVariable.add(var);

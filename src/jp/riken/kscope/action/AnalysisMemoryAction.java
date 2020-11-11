@@ -42,28 +42,28 @@ import jp.riken.kscope.service.AppController;
 
 
 /**
- * 要求Byte/FLOPアクションクラス
+ * Request Byte / FLOP action class
  * @author RIKEN
  */
 public class AnalysisMemoryAction extends ActionBase {
-	/** アクションモード */
+	/** Action mode */
 	public enum ACTION_MODE {
-		/** 変数アクセス先メモリ設定 */
+		/** Variable access destination memory setting */
 		ACCESS_SETTING,
-		/** 要求Byte/FLOP算出 */
+		/** Request Byte / FLOP calculation */
 		MEMORY_CALCULATE
 	};
 
-	/** 要求Byte/FLOPアクションモード */
+	/** Request Byte / FLOP action mode */
 	private ACTION_MODE mode;
-    /** アクセス先変数取得先ビュー */
+    /** Access destination variable acquisition destination view */
     private FRAME_VIEW view;
 
     /**
-     * コンストラクタ
-     * @param controller	アプリケーションコントローラ
-     * @param mode 			アクションモード
-     * @param view 			アクセス先変数取得先ビュー
+     * Constructor
+     * @param controller Application controller
+     * @param mode Action mode
+     * @param view Access destination variable acquisition destination view
      */
     public AnalysisMemoryAction(AppController controller, ACTION_MODE mode, FRAME_VIEW view) {
         super(controller);
@@ -73,13 +73,13 @@ public class AnalysisMemoryAction extends ActionBase {
 
 
     /**
-     * アクションが実行可能であるかチェックする.<br/>
-     * アクションの実行前チェック、メニューのイネーブルの切替を行う。<br/>
-     * @return		true=アクションが実行可能
+     * Check if the action is executable. <br/>
+     * Check before executing the action and switch the menu enable. <br/>
+     * @return true = Action can be executed
      */
     @Override
     public boolean validateAction() {
-        // 選択ブロックを取得する
+        // Get the selected block
         IBlock[] blocks = getSelectedBlocks();
         if (blocks == null) return false;
         return true;
@@ -87,24 +87,24 @@ public class AnalysisMemoryAction extends ActionBase {
 
 
     /**
-     * アクション発生イベント
-     * @param event		イベント情報
+     * Action occurrence event
+     * @param event Event information
      */
     @Override
     public void actionPerformed(ActionEvent event) {
 
-        // 実行チェック
+        // Execution check
         if (!validateAction()) return;
 
-        // 選択ブロックを取得する
+        // Get the selected block
         IBlock[] blocks = getSelectedBlocks();
         if (blocks == null) return;
 
-        // ソースコードの選択範囲をクリアし、選択背景色に変更する
+        // Clear the source code selection and change to the selected background color
         if (this.view == FRAME_VIEW.SOURCE_VIEW) {
         	setSelectedBlockNoCaret();
         }
-        // ステータスメッセージ
+        // Status message
         String message = "";
         if (this.mode == ACTION_MODE.ACCESS_SETTING) {
         	message = Message.getString("mainmenu.analysis.access");
@@ -114,28 +114,28 @@ public class AnalysisMemoryAction extends ActionBase {
         }
         Application.status.setMessageMain(message);
 
-        // 親Frameの取得を行う。
+        // Get the parent Frame.
         Frame frame = getWindowAncestor( event );
-        // 要求Byte/FLOP設定プロパティ
+        // Request Byte / FLOP configuration property
         RequiredBFProperties properitiesMemory = this.controller.getPropertiesMemory();
-        // 変数アクセス先メモリ設定
+        // Variable access destination memory setting
         VariableMemoryProperties properitiesVariable = this.controller.getPropertiesVariable();
-        // メモリアクセス先設定ダイアログ
-        VariableAccessDialog dialogVariable = new VariableAccessDialog(frame, true);        // メモリアクセス性能ダイアログ
+        // Memory access destination setting dialog
+        VariableAccessDialog dialogVariable = new VariableAccessDialog(frame, true);        // Memory access performance dialog
         RequiredBFDialog dialogPerformance = new RequiredBFDialog(frame, true);
-        // プロパティ設定
+        // Property settings
         dialogVariable.setPropertiesVariable(properitiesVariable);
         dialogVariable.setPropertiesMemoryband(properitiesMemory);
         dialogPerformance.setPropertiesMemoryband(properitiesMemory);
         dialogPerformance.setPropertiesVariable(properitiesVariable);
-        // 選択ブロック
+        // Select block
         dialogVariable.setSelectedblocks(blocks);
         dialogPerformance.setSelectedblocks(blocks);
-        // 表示ダイアログ
+        // Display dialog
         dialogVariable.setMemoryPerformanceDialog(dialogPerformance);
         dialogPerformance.setVariableAccessDialog(dialogVariable);
 
-        // 要求Byte/FLOP算出サービス
+        // Request Byte / FLOP calculation service
         RequiredBFModel modelRequired = this.controller.getRequiredByteFlopModel();
         LanguageTreeModel modelLanguage = this.controller.getLanguageTreeModel();
         modelRequired.setModelLanguageTree(modelLanguage);
@@ -148,14 +148,14 @@ public class AnalysisMemoryAction extends ActionBase {
         dialogPerformance.setServiceMemory(serviceMemory);
 
         if (this.mode == ACTION_MODE.ACCESS_SETTING) {
-	        // 変数アクセス先設定ダイアログを表示する。
+	        // Display the variable access destination setting dialog.
 	        int result = dialogVariable.showDialog();
 	        if (result == Constant.CANCEL_DIALOG) {
 	        	return;
 	        }
         }
         else if (this.mode == ACTION_MODE.MEMORY_CALCULATE) {
-	        // メモリアクセス性能ダイアログクラスを表示する。
+	        // Display the memory access performance dialog class.
 	        int result = dialogPerformance.showDialog();
 	        if (result == Constant.CANCEL_DIALOG) {
 	        	return;
@@ -167,16 +167,16 @@ public class AnalysisMemoryAction extends ActionBase {
     }
 
     /**
-     * 選択ブロックを取得する
-     * @return		選択ブロック
+     * Get the selected block
+     * @return selection block
      */
     private IBlock[] getSelectedBlocks() {
     	IBlock[] blocks = null;
         if (this.view == FRAME_VIEW.SOURCE_VIEW) {
-        	// ソースビュー
+        	// Source view
         	IBlock[] codeblocks = getSelectedCodeLines();
             if (codeblocks == null || codeblocks.length <= 0) return null;
-            // ソースビューからの場合、親ブロックとしてブロックリストを作成する.
+            // From the source view, create a block list as the parent block.
             if (codeblocks.length > 1) {
 	            BlockList parent = new BlockList(codeblocks);
 	            blocks = new IBlock[codeblocks.length + 1];
@@ -190,15 +190,15 @@ public class AnalysisMemoryAction extends ActionBase {
             }
         }
         else {
-        	// 構造エクスプローラービューから選択ブロックを取得する
+        	// Get the selected block from the structure explorer view
             blocks = this.controller.getMainframe().getPanelExplorerView().getSelectedBlocks();
         }
         if (blocks == null) return null;
 
-        // IBlockをチェックする
+        // Check IBlock
         List<IBlock> list = new ArrayList<IBlock>();
         for (IBlock block : blocks) {
-        	// 宣言文以外を追加する
+        	// Add something other than the declaration statement
         	if (block.getBlockType() != BlockType.VARIABLEDEFINITION) {
         		list.add(block);
         	}
@@ -209,12 +209,12 @@ public class AnalysisMemoryAction extends ActionBase {
     }
 
     /**
-     * ソースビューから選択ブロックを取得する
-     * @return		選択ブロック
+     * Get the selected block from the source view
+     * @return selection block
      */
     private IBlock[] getSelectedCodeLines() {
 
-    	// ソースコードの選択範囲を取得する
+    	// Get the source code selection
 	    CodeLine line = this.controller.getMainframe().getPanelSourceView().getSelectedArea();
 	    LanguageUtils utils = new LanguageUtils(this.controller.getFortranLanguage());
 	    IBlock[] blocks = utils.getCodeLineBlocks(line);
@@ -222,10 +222,10 @@ public class AnalysisMemoryAction extends ActionBase {
     }
 
     /**
-     * ソースコードの選択範囲をクリアし、選択背景色に変更する.
+     * Clear the selection of the source code and change it to the selected background color.
      */
     private void setSelectedBlockNoCaret() {
-    	// ソースコードの選択範囲を取得する
+    	// Get the source code selection
 	    CodeLine line = this.controller.getMainframe().getPanelSourceView().getSelectedArea();
 	    this.controller.getMainframe().getPanelSourceView().setSelectedBlockNoCaret(line);
     }

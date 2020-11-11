@@ -38,18 +38,18 @@ import jp.riken.kscope.service.AppController;
 import jp.riken.kscope.service.ProfilerService;
 
 /**
- * プロファイラ:Eprofの測定区間挿入アクションクラス
+ * Profiler: Eprof measurement interval insertion action class
  * @author RIKEN
  */
 public class ProfilerAddEprofAction extends ActionBase {
 
-    /** 測定区間取得先ビュー */
+    /** Measurement interval acquisition destination view */
     private FRAME_VIEW view;
 
     /**
-     * コンストラクタ
-     * @param controller	アプリケーションコントローラ
-     * @param view 			測定区間取得先ビュー
+     * Constructor
+     * @param controller Application controller
+     * @param view Measurement interval acquisition destination view
      */
     public ProfilerAddEprofAction(AppController controller, FRAME_VIEW view) {
         super(controller);
@@ -57,9 +57,9 @@ public class ProfilerAddEprofAction extends ActionBase {
     }
 
     /**
-     * アクションが実行可能であるかチェックする.<br/>
-     * アクションの実行前チェック、メニューのイネーブルの切替を行う。<br/>
-     * @return		true=アクションが実行可能
+     * Check if the action is executable. <br/>
+     * Check before executing the action and switch the menu enable. <br/>
+     * @return true = Action can be executed
      */
     @Override
     public boolean validateAction() {
@@ -70,7 +70,7 @@ public class ProfilerAddEprofAction extends ActionBase {
         else if (this.view == FRAME_VIEW.EXPLORE_VIEW) {
             IBlock[] blocks = this.controller.getMainframe().getPanelExplorerView().getSelectedBlocks();
             if (blocks == null || blocks.length <= 0) return false;
-            // 同一ファイルであるかチェックする
+            // Check if they are the same file
             SourceFile srcfile = null;
             for (IBlock block : blocks) {
                 SourceFile file = block.getStartCodeLine().getSourceFile();
@@ -80,12 +80,12 @@ public class ProfilerAddEprofAction extends ActionBase {
                 else if (!srcfile.equals(file)) {
                     return false;
                 }
-                // サブルーチン、関数宣言文には測定区間は設定不可
+                // Measurement interval cannot be set in subroutines and function declaration statements
                 if (block instanceof Procedure) {
                 	return false;
                 }
             }
-            // 同一階層であるかチェックする
+            // Check if they are in the same hierarchy
             int length = -1;
             DefaultMutableTreeNode[] nodes = this.controller.getMainframe().getPanelExplorerView().getSelectedNodes();
             for (DefaultMutableTreeNode node : nodes) {
@@ -104,42 +104,42 @@ public class ProfilerAddEprofAction extends ActionBase {
         return true;
     }
     /**
-     * アクション発生イベント
-     * @param event		イベント情報
+     * Action occurrence event
+     * @param event Event information
      */
     @Override
     public void actionPerformed(ActionEvent event) {
-        // ステータスメッセージ
+        // Status message
     	final String message = event.getActionCommand();
         Application.status.setMessageMain(message);
-        // 親Frameの取得を行う。
+        // Get the parent Frame.
         Frame frame = getWindowAncestor( event );
 
-        // グループ名の入力ダイアログを表示する
+        // Display the group name input dialog
         ProfilerProperties properties = this.controller.getPropertiesProfiler();
         EprofStatementDialog dialog = new EprofStatementDialog(frame, true);
         dialog.setProperties(properties);
         int result = dialog.showDialog();
         if (result != Constant.OK_DIALOG) {
         	Application.status.setMessageMain(message +
-        			Message.getString("action.common.cancel.status")); //キャンセル
+        			Message.getString("action.common.cancel.status")); //Cancel
         	return;
         }
 
-        // グループ名
+        // group name
         String goupname = dialog.getGroupname();
         String number = dialog.getNumber();
         String level = dialog.getLevel();
 
-        // プロファイラサービス
+        // Profiler service
         ProfilerService service = new ProfilerService();
         service.setErrorInfoModel(this.controller.getErrorInfoModel());
-        // 測定区間モデル
+        // Measurement interval model
         ProfilerMeasureModel model = this.controller.getMainframe().getPanelAnalysisView().getPanelProfilerMeasure().getModel();
         service.setMeasureModel(model);
-        // プロファイラ情報
+        // Profiler information
         service.setProfilerInfo(this.controller.getProfilerInfo());
-        // プロジェクトフォルダ
+        // Project folder
         service.setProjectFolder(this.controller.getProjectModel().getProjectFolder());
 
         if (this.view == FRAME_VIEW.SOURCE_VIEW) {
@@ -153,11 +153,11 @@ public class ProfilerAddEprofAction extends ActionBase {
             }
         }
 
-        // 測定区間タブをアクティブにする
+        // Activate the measurement interval tab
         this.controller.getMainframe().getPanelAnalysisView().setSelectedPanel(ANALYSIS_PANEL.EPROF_MEASURE);
         
         Application.status.setMessageMain(message +
-        		Message.getString("action.common.done.status")); //完了
+        		Message.getString("action.common.done.status")); // Done
     }
 
 }

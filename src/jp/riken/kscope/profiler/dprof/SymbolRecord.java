@@ -20,41 +20,41 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * シンボル情報レコードクラス
+ * Symbol information record class
  * @author RIKEN
  */
 public class SymbolRecord {
-    /** シンボル情報：シンボル情報リスト(=スレッド数) */
+    /** Symbol information: Symbol information list (= number of threads) */
     private List<SymbolList> records;
 
     /**
-     * コンストラクタ
+     * Constructor
      */
     public SymbolRecord() {
         records = new ArrayList<SymbolList>();
     }
 
     /**
-     * シンボル情報リストを追加する
-     * @param symbol		スレッドリスト
-     * @return		true=success
+     * Add symbol information list
+     * @param symbol Thread list
+     * @return true = success
      */
     public boolean addSymbolList(SymbolList symbol) {
         return this.records.add(symbol);
     }
 
     /**
-     * シンボル情報レコードを取得する
-     * @return		シンボル情報レコード
+     * Get the symbol information record
+     * @return Symbol information record
      */
     public List<SymbolList> getSymbolRecord() {
         return this.records;
     }
 
     /**
-     * スレッド番号(0〜)のシンボル情報リストを取得する
-     * @param threadid		スレッド番号(0〜)
-     * @return			シンボル情報リスト
+     * Get the symbol information list of thread number (0 ~)
+     * @param threadid Thread number (0 ~)
+     * @return Symbol information list
      */
     public SymbolList getSymbolList(int threadid) {
         if (this.records == null) return null;
@@ -63,10 +63,10 @@ public class SymbolRecord {
     }
 
     /**
-     * シンボル情報を取得するする
-     * @param threadid		スレッド番号(0〜)
-     * @param symbolid		シンボルインデックス
-     * @return		シンボル情報
+     * Get symbol information
+     * @param threadid Thread number (0 ~)
+     * @param symbolid Symbol index
+     * @return Symbol information
      */
     public SymbolInfo getSymbolInfo(int threadid, int symbolid) {
         SymbolList list = getSymbolList(threadid);
@@ -75,8 +75,8 @@ public class SymbolRecord {
     }
 
     /**
-     * シンボル情報リスト数を取得する(=スレッド数)
-     * @return		シンボル情報リスト数
+     * Get the number of symbol information list (= number of threads)
+     * @return Number of symbol information lists
      */
     public int getSymbolListCount() {
         if (this.records == null) return 0;
@@ -85,9 +85,9 @@ public class SymbolRecord {
 
 
     /**
-     * シンボル数を取得する
-     * @param threadid		スレッド番号(0〜)
-     * @return		シンボル数
+     * Get the number of symbols
+     * @param threadid Thread number (0 ~)
+     * @return Number of symbols
      */
     public int getSymbolInfoCount(int threadid) {
         SymbolList list = getSymbolList(threadid);

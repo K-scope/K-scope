@@ -16,6 +16,6 @@
  */
 
 /**
- * プロファイラEPROFデータクラスを提供します.<br/>
+ * Provides profiler EPROF data class. <br/>
  */
 package jp.riken.kscope.profiler.eprof;

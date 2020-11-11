@@ -67,41 +67,41 @@ import jp.riken.kscope.language.generic.ProcedureWithNameOnly;
 import jp.riken.kscope.language.generic.Procedures;
 
 /**
- * データベースの検証クラス.
- * 未定義構造体を検索し、定義を設定する.
+ * Database validation class.
+ * Search for undefined structures and set definitions.
  * @author RIKEN
  */
 public class ValidateLanguage implements ILanguageEntry {
-	/** 探索履歴リスト */
+	/** Search history list */
 	private List<Object> listVisit;
-	/** 検証不可構造体リスト */
+	/** List of unverifiable structures */
 	private List<ErrorTypeInfo> errorTypes;
-	/** Fortranデータベース */
+	/** Fortran database */
 	private Fortran language;
-    /** エラーメッセージモデル */
+    /** Error message model */
     private List<ErrorInfo> errors;
-    /** 検索済みモジュール */
+    /** Searched modules */
     private List<ProgramUnit> searchedPrograms;
-    /** 構造体解析最大ループ回数 */
+    /** Maximum number of loops for structure analysis */
     private final int ANALYSIS_LOOP_MAX = 16;
 
 	/**
-	 * エラー情報クラス
-	 * @author RIKEN
-	 */
+* Error information class
+* @author RIKEN
+*/
 	class ErrorTypeInfo {
-		/** エラー構造体 */
+		/** Error structure */
 		public Type errorType;
-		/** エラー位置リスト */
+		/** Error location list */
 		public List<Object> listLocation;
-		/** エラー状態フラグ:true=エラー */
+		/** Error status flag: true = error */
 		private boolean error;
 
 		/**
-		 * コンストラクタ
-		 * @param errorType		エラー構造体
-		 * @param listLocation	エラー位置リスト
-		 */
+* Constructor
+* @param errorType Error structure
+* @param listLocation Error location list
+*/
 		public ErrorTypeInfo(Type errorType, List<Object> listLocation) {
 			this.errorType = errorType;
 			this.listLocation = listLocation;
@@ -109,8 +109,8 @@ public class ValidateLanguage implements ILanguageEntry {
 		}
 
 		/**
-		 * 同じエラー情報クラスオブジェクトであるかチェックする.
-		 */
+* Check if they are the same error information class object.
+*/
 		@Override
 		public boolean equals(Object obj) {
 			if (!(obj instanceof ErrorTypeInfo)) return false;
@@ -122,26 +122,26 @@ public class ValidateLanguage implements ILanguageEntry {
 		}
 
 		/**
-		 * エラー状態を取得する
-		 * @return		true=エラー
-		 */
+* Get error status
+* @return true = error
+*/
 		public boolean isError() {
 			return this.error;
 		}
 
 		/**
-		 * エラー状態をクリアする.<br/>
-		 * errorをfalseにする.
-		 */
+* Clear the error condition. <br/>
+* Set error to false.
+*/
 		public void clearError() {
 			this.error = false;
 		}
 	}
 
 	/**
-	 * コンストラクタ
-	 * @param    language  ビルドFortranデータベース
-	 */
+* Constructor
+* @param language Build Fortran database
+*/
 	public ValidateLanguage(Fortran language) {
 		this.language = language;
 		this.errorTypes = new ArrayList<ErrorTypeInfo>();
@@ -149,41 +149,41 @@ public class ValidateLanguage implements ILanguageEntry {
 	}
 
 	/**
-	 * Fortranデータベースを取得する.
-	 * @return		Fortranデータベース
-	 */
+* Get the Fortran database.
+* @return Fortran database
+*/
 	public Fortran getLanguage() {
 		return language;
 	}
 
 	/**
-	 * Fortranデータベースを設定する.
-	 * @param language		Fortranデータベース
-	 */
+* Set up a Fortran database.
+* @param language Fortran database
+*/
 	public void setLanguage(Fortran language) {
 		this.language = language;
 	}
 
 	/**
-	 * 探索リストを取得する.
-	 * @return     探索リスト
-	 */
+* Get the search list.
+* @return Search list
+*/
 	public List<Object> getListVisit() {
 		return this.listVisit;
 	}
 
 	/**
-	 * 探索リストを設定する.
-	 * @param list	探索リスト
-	 */
+* Set the search list.
+* @param list Search list
+*/
 	public void setListVisit(List<Object> list) {
 		this.listVisit = list;
 	}
 
 	/**
-	 * エラー構造体を追加する
-	 * @param error		エラー構造体
-	 */
+* Add error structure
+* @param error Error structure
+*/
 	private void addErrorType(Type error) {
 		ArrayList<Object> list = new ArrayList<Object>();
 		list.addAll(this.listVisit);
@@ -195,9 +195,9 @@ public class ValidateLanguage implements ILanguageEntry {
 	}
 
 	/**
-	 * 構造体のチェーンを検証し修復する.
-	 * @return		構造体のチェーンの修復エラー数
-	 */
+* Verify and repair the chain of structures.
+* @return Number of repair errors in the structure chain
+*/
     public int analyseTypes() {
         int error = -1;
         int count = ANALYSIS_LOOP_MAX;
@@ -221,9 +221,9 @@ public class ValidateLanguage implements ILanguageEntry {
     }
 
 	/**
-	 * 構造体のチェーンを検証し修復する.
-	 * @return		構造体のチェーンの修復エラー数
-	 */
+* Verify and repair the chain of structures.
+* @return Number of repair errors in the structure chain
+*/
     private int analyseType() {
     	int errorCount = 0;
     	if (errorTypes == null || errorTypes.size() <= 0) {
@@ -272,10 +272,10 @@ public class ValidateLanguage implements ILanguageEntry {
     }
 
     /**
-     * 構造体定義を検索する.
-     * @param program		モジュール
-     * @param errorType		修復対象構造体
-     * @return		構造体定義
+     * Search for structure definitions.
+     * @param program module
+     * @param errorType Structure to be repaired
+     * @return Structure definition
      */
     private Type searchValidType(ProgramUnit program, Type errorType) {
     	if (program == null) return null;
@@ -283,7 +283,7 @@ public class ValidateLanguage implements ILanguageEntry {
     	String srcname = errorType.getName();
     	if (srcname == null || srcname.isEmpty()) return null;
 
-    	// 検索済みモジュールであれば終了
+    	// Exit if searched module
     	if (this.searchedPrograms == null) {
     		this.searchedPrograms = new ArrayList<ProgramUnit>();
     	}
@@ -303,7 +303,7 @@ public class ValidateLanguage implements ILanguageEntry {
 	    	}
     	}
 
-		// use文のモジュールから同一の構造体を検索する
+		// Search for the same structure from the module of the use statement
     	Type target = null;
         for (UseState useEle : program.getUseList()) {
             if (useEle.hasOnlyMember()) {
@@ -327,9 +327,9 @@ public class ValidateLanguage implements ILanguageEntry {
     }
 
     /**
-     * 構造体メンバーにnullの定義が含まれていないかチェックする.
-     * @param type		構造体
-     * @return			true=正常な構造体
+     * Check if the structure member contains a null definition.
+     * @param type structure
+     * @return true = normal struct
      */
     private boolean isValidType(Type type) {
 
@@ -364,9 +364,9 @@ public class ValidateLanguage implements ILanguageEntry {
     }
 
     /**
-     * 構造体定義をコピーする
-     * @param destType		コピー先構造体
-     * @param srcType		コピー元構造体
+     * Copy the structure definition
+     * @param destType Copy destination structure
+     * @param srcType Copy source structure
      */
 	private void copyType(Type destType, Type srcType) {
 		List<VariableDefinition> srcDefs = srcType.getDefinitions();
@@ -375,15 +375,15 @@ public class ValidateLanguage implements ILanguageEntry {
 	}
 
 	/**
-	 * サブルーチン、モジュールを検索する.
-	 * 構造体定義の親階層から構造体が定義されているサブルーチン、モジュールを検索する.
-	 * @param listLocation		構造体定義の親階層
-	 * @return		サブルーチン、モジュール
-	 */
+* Search for subroutines and modules.
+* Search for subroutines and modules in which a structure is defined from the parent hierarchy of the structure definition.
+* @param listLocation Parent hierarchy of structure definition
+* @return Subroutines, modules
+*/
     private ProgramUnit getProgramUnit(List<Object> listLocation) {
     	if (listLocation == null || listLocation.size() <= 0) return null;
 
-    	// 最下部からサブルーチン、モジュールを検索する.
+    	// Search for subroutines and modules from the bottom.
     	for (int i=listLocation.size()-1; i>=0; i--) {
     		if (listLocation.get(i) instanceof ProgramUnit) {
     			return (ProgramUnit)listLocation.get(i);
@@ -401,8 +401,8 @@ public class ValidateLanguage implements ILanguageEntry {
 
 
     /**
-     * エラーメッセージリストを取得する
-     * @return errorMessage		エラーメッセージリスト
+     * Get the error message list
+     * @return errorMessage Error message list
      */
     public ErrorInfo[] getErrorList() {
     	if (this.errors == null || this.errors.size() <= 0) return null;
@@ -410,7 +410,7 @@ public class ValidateLanguage implements ILanguageEntry {
     }
 
     /**
-     * エラーメッセージリストをクリアする.
+     * Clear the error message list.
      */
     public void clearErrorList() {
     	this.errors = null;
@@ -418,9 +418,9 @@ public class ValidateLanguage implements ILanguageEntry {
 
 
     /**
-     * エラーメッセージをエラー情報リストに追加する
-     * @param lineInfo          エラー箇所情報
-     * @param message			エラーメッセージ
+     * Add error message to error information list
+     * @param lineInfo Error location information
+     * @param message Error message
      */
     public void addErrorMsg(CodeLine lineInfo, String message) {
     	if (this.errors == null) {
@@ -572,17 +572,17 @@ public class ValidateLanguage implements ILanguageEntry {
 	public void entry(Union entry) { }
 
 	/**
-	 * モジュールブロックがビルドFortranデータベースに含まれているかチェックする.
-	 * @param block    モジュールブロック
-	 * @return		true=ビルドFortranデータベースに含まれている
-	 */
+* Check if the module block is included in the build Fortran database.
+* @param block Module block
+* @return true = Build included in Fortran database
+*/
 	private boolean isLanguageModule(IBlock block) {
 		if (block == null) return false;
 		if (this.language == null) return false;
 
     	Map<String, Module> modules = this.language.getModules();
 
-		// モジュールの検索を行う
+		// Search for modules
     	for ( String key : modules.keySet() ) {
     		Module module = modules.get( key );
     		if (module == block) {
@@ -594,11 +594,11 @@ public class ValidateLanguage implements ILanguageEntry {
 
 
 	/**
-	 * 構造体のチェーンを検証し修復する.
-	 * @param    program    検索対象プログラム
-	 * @param    errorType  チェック構造体
-	 * @return		true=成功
-	 */
+* Verify and repair the chain of structures.
+* @param program Search target program
+* @param errorType Check structure
+* @return true = success
+*/
     private boolean analyseType(ProgramUnit program, Type errorType) {
 		if (program == null) return false;
 		if (errorType == null) return false;
@@ -607,7 +607,7 @@ public class ValidateLanguage implements ILanguageEntry {
 		this.searchedPrograms = null;
 
 		while (program != null) {
-			// 自身のサブルーチン、モジュールから検索
+			// Search from your own subroutines and modules
 			target = searchValidType(program, errorType);
 			if (target != null) {
 				break;
@@ -616,7 +616,7 @@ public class ValidateLanguage implements ILanguageEntry {
 		}
 
 		if (target == null) {
-            // NO_MODULEにあるサブルーチンを探索
+            // Search for subroutines in NO_MODULE
 			Module main = language.module("NO_MODULE");
 			target = searchValidType(main, errorType);
 		}

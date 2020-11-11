@@ -18,7 +18,7 @@
 package jp.riken.kscope.data;
 
 /**
- * プロジェクトプロパティ設定値クラス
+ * Project property setting value class
  * @author RIKEN
  */
 public class ProjectPropertyValue {
@@ -31,13 +31,13 @@ public class ProjectPropertyValue {
 	private int order;
 	
 	/**
-	 * コンストラクタ
-	 * @param type		タイプ
-	 * @param key		キー
-	 * @param value		値
-	 * @param name		名前
-	 * @param message	メッセージ
-	 */
+* Constructor
+* @param type type
+* @param key key
+* @param value value
+* @param name name
+* @param message message
+*/
 	public ProjectPropertyValue(String key, String type,  String name, String value, String message, String CLO, int order) {
 		this.type = type;
 		this.key = key;
@@ -56,81 +56,81 @@ public class ProjectPropertyValue {
 	}
 
 	/**
-	 * タイプを取得する.
-	 * @return		タイプ
-	 */
+* Get the type.
+* @return type
+*/
 	public String getType() {
 		return type;
 	}
 
 	/**
-	 * タイプを設定する.
-	 * @param type		タイプ
-	 */
+* Set the type.
+* @param type type
+*/
 	public void setType(String type) {
 		this.type = type;
 	}
 
 	/**
-	 * キーを取得する.
-	 * @return		キー
-	 */
+* Get the key.
+* @return key
+*/
 	public String getKey() {
 		return key;
 	}
 
 	/**
-	 * キーを設定する.
-	 * @param key		キー
-	 */
+* Set the key.
+* @param key key
+*/
 	public void setKey(String key) {
 		this.key = key;
 	}
 
 	/**
-	 * 値を取得する.
-	 * @return		値
-	 */
+* Get the value.
+* @return value
+*/
 	public String getValue() {
 		return value;
 	}
 
 	/**
-	 * 値を設定する.
-	 * @param value		値
-	 */
+* Set the value.
+* @param value value
+*/
 	public void setValue(String value) {
 		this.value = value;
 	}
 
 	/**
-	 * 名前を取得する.
-	 * @return		名前
-	 */
+* Get the name.
+* @return name
+*/
 	public String getName() {
 		return name;
 	}
 
 	/**
-	 * 名前を設定する.
-	 * @param name		名前
-	 */
+* Set the name.
+* @param name name
+*/
 	public void setName(String name) {
 		this.name = name;
 	}
 
 	/**
-	 * メッセージを取得する.
-	 * @return		メッセージ
-	 */
+* Get the message.
+* @return message
+*/
 	public String getMessage() {
 		return message;
 	}
 
 	/**
-	 * メッセージを設定する.
-	 * @param message		メッセージ
-	 */
+* Set the message.
+* @param message message
+*/
 	public void setMessage(String message) {
 		this.message = message;
 	}

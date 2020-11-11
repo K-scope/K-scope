@@ -18,33 +18,33 @@
 package jp.riken.kscope.language;
 
 /**
- * プログラムを終了する制御文に対応したクラス。
+ * The class corresponding to the control statement that terminates the program.
  *
  * @author RIKEN
  *
  */
 public class Termination extends jp.riken.kscope.language.Block {
-	/** シリアル番号 */
+	/** Serial number */
 	private static final long serialVersionUID = 8627136191576027545L;
     private String argument;
 
     /**
-     * コンストラクタ。
+     * Constructor.
      *
      * @param parent
-     *          親ブロック
+     * Parent block
      */
     public Termination(Block parent) {
         super(parent);
     }
 
     /**
-     * コンストラクタ。
+     * Constructor.
      *
      * @param parent
-     *          親ブロック
+     * Parent block
      * @param argmnt
-     *          引数（終了メッセージ等）
+     * Arguments (end message, etc.)
      */
     public Termination(Block parent, String argmnt) {
         super(parent);
@@ -52,15 +52,15 @@ public class Termination extends jp.riken.kscope.language.Block {
     }
 
     /**
-     * コンストラクタ。
+     * Constructor.
      */
     public Termination() {
         super();
     }
 
     /**
-     * ブロックタイプの取得。
-     * 
+     * Get block type.
+     *
      * @return BlockType.TERMINATION
      */
     public BlockType getBlockType() {
@@ -68,19 +68,19 @@ public class Termination extends jp.riken.kscope.language.Block {
     }
 
     /**
-     * 引数のセット。
-     * 
+     * A set of arguments.
+     *
      * @param str
-     *            引数
+     * Argument
      */
     public void setArgument(String str) {
         this.argument = str;
     }
 
     /**
-     * 引数（終了メッセージ等）の取得。
-     * 
-     * @return 引数（終了メッセージ等）
+     * Get arguments (end message, etc.).
+     *
+     * @return argument (end message, etc.)
      */
     public String getArgument() {
         return argument;

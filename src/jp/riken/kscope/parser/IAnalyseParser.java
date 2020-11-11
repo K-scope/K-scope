@@ -28,91 +28,91 @@ import jp.riken.kscope.data.SourceFile;
 import jp.riken.kscope.language.Fortran;
 
 /**
- * フォートラン構文解析インターフェイス
+ * Fortran parsing interface
  * @author RIKEN
  */
 public interface IAnalyseParser extends PropertyChangeListener {
 
     /**
-     * 構文解析をキャンセルする
-     * @param cancel		true=キャンセル
+     * Cancel parsing
+     * @param cancel true = cancel
      */
     public void setCancel(boolean cancel);
 
     /**
-     * インクルードファイルが存在しないときに確認ダイアログを表示するフラグを設定する
-     * @param confirm		true=確認ダイアログを表示する
+     * Set a flag to display a confirmation dialog when the include file does not exist
+     * @param confirm true = Show confirmation dialog
      */
     public void setConfirmInclude(boolean confirm);
 
     /**
-     * ソースファイルから読込を行う
-     * @param file		ソースファイル
-     * @throws IOException		ファイル読込エラー
+     * Read from source file
+     * @param file Source file
+     * @throws IOException File read error
      */
     public void readFile(SourceFile file) throws IOException;
 
     /**
-     * ソースファイルを構文解析してフォートランデータベースに設定する
-     * @param ft		フォートランデータベース
-     * @throws InterruptedException		割り込みエラー
+     * Parse the source file and set it in the Fortran database
+     * @param ft Fortran database
+     * @throws InterruptedException Interrupt error
      */
     public void parseFile(Fortran ft) throws InterruptedException;
 
     /**
-     * プロパティ変更リスナを追加する
-     * @param listener		プロパティ変更リスナ
+     * Add property change listener
+     * @param listener Property change listener
      */
     public void addPropertyChangeListener(PropertyChangeListener listener);
 
     /**
-     * プロパティ変更リスナを削除する
-     * @param listener		プロパティ変更リスナ
+     * Delete property change listener
+     * @param listener Property change listener
      */
     public void removePropertyChangeListener(PropertyChangeListener listener);
 
     /**
-     * プロパティ変更イベントを発生させる。
-     * @param propertyName		プロパティ名
-     * @param oldValue			プロパティ旧値
-     * @param newValue			プロパティ新値
+     * Raise a property change event.
+     * @param propertyName Property name
+     * @param oldValue property old value
+     * @param newValue Property new value
      */
     public void firePropertyChange(String propertyName, Object oldValue, Object newValue);
 
     /**
-     * プロパティ変更イベント
-     * @param evt		プロパティ変更イベント情報
+     * Property change event
+     * @param evt Property change event information
      */
     @Override
     public void propertyChange(PropertyChangeEvent evt);
 
     /**
-     * ソースコード行リストを取得する
-     * @return		ソースコード行リスト
-     * @throws InterruptedException		割り込みエラー
+     * Get the source code line list
+     * @return Source code line list
+     * @throws InterruptedException Interrupt error
      */
     public CodeLine[] getCodeLineList() throws InterruptedException;
 
     /**
-     * ソースファイルを取得する
-     * @return		ソースファイル
+     * Get the source file
+     * @return source file
      */
     public SourceFile getLanguageFile();
 
     /**
-     * XMLファイルからソースファイルのみパースする
+     * Parse only the source file from the XML file
      */
     public void parseSourceFile();
 
     /**
-     * ソースファイルの基準フォルダを設定する
-     * @param	folder	ソースファイルの基準フォルダ
+     * Set the reference folder for source files
+     * @param folder Reference folder for source files
      */
     public void setBaseFolder(File folder);
 
     /**
-     * エラー情報を取得する.
-     * @return		エラー情報リスト
+     * Get error information.
+     * @return Error information list
      */
     public ErrorInfo[] getErrorInfos();
 }

@@ -48,18 +48,18 @@ import org.w3c.dom.NodeList;
 import org.yaml.snakeyaml.Yaml;
 
 /**
- * プロジェクトプロパティ設定クラス
+ * Project property setting class
  * @author RIKEN
  */
 public class ProjectProperties extends PropertiesBase {
 
-    /** シリアル番号 */
+    /** Serial number */
     private static final long serialVersionUID = 1L;
     private static boolean debug=(System.getenv("DEBUG")!= null);
     private static boolean debug_l2 = false;
     
-    // プロパティキー
-    /** プロジェクトタイトルプロパティキー */
+    // Property key
+    /** Project title property key */
     public static final String PRJ_TITLE = "project_title";
     /** Build command */
     public static final String BUILD_COMMAND = "build_command";
@@ -67,13 +67,13 @@ public class ProjectProperties extends PropertiesBase {
     
     public static String LOCAL_PATH = "local_path";
 
-    //中間コードの生成
+    // Intermediate code generation
     public static final String GENERATE_XML = "generate-XML";
 
-    //フルモード
+    // full mode
     public static final String FULL_PROJECT = "full-project";
 
-    /** プロパティ設定リスト */
+    /** Property setting list */
     private List<ProjectPropertyValue> listProperty = new ArrayList<ProjectPropertyValue>();
     /** Project hidden properties */
     private BasicPropertyList listHiddenProperty = null;
@@ -119,8 +119,8 @@ public class ProjectProperties extends PropertiesBase {
     }
     
     /**
-     * コンストラクタ
-     * @throws Exception     プロパティ読込エラー
+     * Constructor
+     * @throws Exception Property read error
      */
     public ProjectProperties() throws Exception {
     	if (debug) debug_l2 = (System.getenv("DEBUG").equalsIgnoreCase("high"));
@@ -132,13 +132,13 @@ public class ProjectProperties extends PropertiesBase {
     }
 
     /**
-     * プロジェクト設定プロパティをデフォルト設定ファイルから読み込む。
-     * @throws Exception     プロパティ読込エラー
+     * Load project configuration properties from the default configuration file.
+     * @throws Exception Property read error
      */
     public void loadProperties() throws Exception {
         InputStream is = null;
 
-        // リソースファイルの読込
+        // Read resource file
         is = ResourceUtils.getPropertiesFile(KscopeProperties.PROPERTIES_FILE);
         loadProperties(is);
         
@@ -147,19 +147,19 @@ public class ProjectProperties extends PropertiesBase {
     }
 
     /**
-     * ソース設定プロパティを設定ファイルから読み込む。
+     * Read source configuration properties from the configuration file.
      *
-     * @param propertiesFile ソース設定プロパティ設定ファイル
-     * @throws Exception プロパティ読込エラー
+     * @param propertiesFile Source configuration property configuration file
+     * @throws Exception Property read error
      */
     public void loadProperties(File propertiesFile) throws Exception {
         if (!propertiesFile.exists()) {
-            throw (new Exception(Message.getString("propertiesbase.exeption.notexist"))); //プロパティファイルが存在しません。
+            throw (new Exception(Message.getString("propertiesbase.exeption.notexist"))); // The property file does not exist.
         }
 
-        // リソースファイルの読込
+        // Read resource file
         InputStream stream = new FileInputStream(propertiesFile);
-        // ソース設定プロパティを設定ファイルから読み込む。
+        // Read the source configuration properties from the configuration file.
         loadProperties(stream);
         
         stream = new FileInputStream(propertiesFile);
@@ -167,12 +167,12 @@ public class ProjectProperties extends PropertiesBase {
     }
 
     /**
-     * プロジェクト設定プロパティを設定ファイルから読み込む。
-     * @param   stream      設定ファイルストリーム
-     * @throws Exception     プロパティ読込エラー
+     * Load project configuration properties from the configuration file.
+     * @param stream Configuration file stream
+     * @throws Exception Property read error
      */
     public void loadProperties(InputStream stream ) throws Exception {
-        // XMLファイルのパース
+        // Parsing the XML file
     	List<ProjectPropertyValue> list = null;
     	list = parseProjectProperty(stream, "//project");
     	if (list != null) {
@@ -181,9 +181,9 @@ public class ProjectProperties extends PropertiesBase {
     }
     
     /**
-     * プロジェクト設定プロパティを設定ファイルから読み込む。
-     * @param   stream      設定ファイルストリーム
-     * @throws Exception     プロパティ読込エラー
+     * Load project configuration properties from the configuration file.
+     * @param stream Configuration file stream
+     * @throws Exception Property read error
      */
     public void loadPropertiesOther(InputStream stream ) throws Exception {
     	// Read project hidden properties
@@ -191,11 +191,11 @@ public class ProjectProperties extends PropertiesBase {
     }
         
      /**
-     * キーワードを取得する
-     * @param stream		XML入力ストリーム
-     * @param path		キーワードXPATH
-     * @return		キーワードリスト
-     * @throws Exception 		キーワードパースエラー
+     * Get keywords
+     * @param stream XML input stream
+     * @param path Keyword XPATH
+     * @return keyword list
+     * @throws Exception Keyword parsing error
      */
     public List<ProjectPropertyValue> parseProjectProperty(InputStream stream, String path) throws Exception {
 
@@ -220,7 +220,7 @@ public class ProjectProperties extends PropertiesBase {
             try {
                 Node node = nodelist.item(i);
 
-                // 属性の取得
+                // Get attributes
                 NamedNodeMap attrs = node.getAttributes();
                 Node attrnode;
                 String type = "text";
@@ -230,12 +230,12 @@ public class ProjectProperties extends PropertiesBase {
                 String message = "";
                 String commandline_option = null;
 
-                // タイプ
+                // Type
                 attrnode = attrs.getNamedItem("type");
                 if (attrnode != null) {
                 	type = attrnode.getNodeValue();
                 }
-                // キー
+                // Key
                 attrnode = attrs.getNamedItem("key");
                 if (attrnode != null) {
                 	key = attrnode.getNodeValue();
@@ -251,12 +251,12 @@ public class ProjectProperties extends PropertiesBase {
                 		value = attrnode.getNodeValue();
                 	}
                 }
-                // 名前
+                // name
                 attrnode = attrs.getNamedItem("name");
                 if (attrnode != null) {
                     name = attrnode.getNodeValue();
                 }
-                // メッセージ
+                // Message
                 attrnode = attrs.getNamedItem("message");
                 if (attrnode != null) {
                 	message = attrnode.getNodeValue();
@@ -282,9 +282,9 @@ public class ProjectProperties extends PropertiesBase {
     }
 
     /**
-     * プロパティ値を設定する.
+     * Set the property value.
      *
-     * @param value	プロパティ値
+     * @param value Property value
      */
     public void setPropertyValue(ProjectPropertyValue value) {
         if (value == null) {
@@ -299,15 +299,15 @@ public class ProjectProperties extends PropertiesBase {
             }
         }
 
-        // 新規追加
+        // Add new
         this.listProperty.add(value);
     }
 
     
     /**
-     * プロパティ値を取得する.
-     * @param key	キー
-     * @return   プロパティ値
+     * Get the property value.
+     * @param key key
+     * @return property value
      */
     public ProjectPropertyValue getPropertyValue(String key) {
         if (key == null) {
@@ -337,18 +337,18 @@ public class ProjectProperties extends PropertiesBase {
     }
     
     /**
-     * プロパティをDOMノードに出力する
-     * @param node	出力ノード
-     * @param projectFolder	プロジェクトフォルダ(=出力フォルダ)
+     * Output properties to DOM node
+     * @param node Output node
+     * @param projectFolder Project folder (= output folder)
      */
     public void writeProperties(org.w3c.dom.Element node) {
 
-        // ドキュメントの取得
+        // Get documentation
         org.w3c.dom.Document document = node.getOwnerDocument();
 
-        // コメントを追加
+        // add comment
         {
-            org.w3c.dom.Comment comment = document.createComment(Message.getString("projectproperties.document.comment")); //プロジェクトプロパティ
+            org.w3c.dom.Comment comment = document.createComment(Message.getString("projectproperties.document.comment")); // Project properties
             node.appendChild(comment);
         }
 
@@ -406,7 +406,7 @@ public class ProjectProperties extends PropertiesBase {
 
         	node.appendChild(elem);
         }
-        // コメントを追加
+        // add comment
         {
             org.w3c.dom.Comment comment = document.createComment("Project hidden properties"); // Project hidden properties
             node.appendChild(comment);
@@ -610,16 +610,16 @@ public class ProjectProperties extends PropertiesBase {
 	*/
 
     /**
-     * プロパティ値リストを取得する.
-     * @return    プロパティ値リスト
+     * Get the property value list.
+     * @return Property value list
      */
     public ProjectPropertyValue[] getPropertyValues() {
     	return this.listProperty.toArray(new ProjectPropertyValue[0]);
     }
     
     /**
-     * build コマンドの設定
-     * @param  command    makeコマンド
+     * Setting the build command
+     * @param command make command
      */    
     public void setBuildCommand(String build_command) {
     	setValueByKey(BUILD_COMMAND, build_command);
@@ -634,8 +634,8 @@ public class ProjectProperties extends PropertiesBase {
     }
 
     /**
-     * プロジェクトタイトルの設定
-     * @param   title    プロジェクトタイトル
+     * Project title setting
+     * @param title Project title
      */
     public void setProjectTitle(String title) {
     	setValueByKey(PRJ_TITLE, title);
@@ -815,10 +815,10 @@ public class ProjectProperties extends PropertiesBase {
 	}
 	
     /**
-	 * キーを指定してプロパティを設定
-	 * @param  key    キー
-	 * @param  value  値
-	 */
+* Specify the key to set the property
+* @param key key
+* @param value value
+*/
 	private void setValueByKey(String key, String value) {
 		if (StringUtils.isNullOrEmpty(key)) return;
 		for (ProjectPropertyValue v : this.listProperty) {
@@ -863,8 +863,8 @@ public class ProjectProperties extends PropertiesBase {
 	}
 
 	/**
-     * True if project is full – i.e. includes intermediate code.
-     * @return 
+     * True if project is full - i.e. includes intermediate code.
+     * @return
      */
     public boolean isFullProject() {
     	return testValue(getHiddenPropertyValue(ProjectProperties.FULL_PROJECT));    	

@@ -16,6 +16,6 @@
  */
 
 /**
- * フォートラン言語の変数のデータ型、属性を表現するためのクラスを提供します。<br/>
+ * Provides classes for expressing the data types and attributes of Fortran language variables. <br/>
  */
 package jp.riken.kscope.language.fortran;

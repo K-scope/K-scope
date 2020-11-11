@@ -21,41 +21,41 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * シンボル情報リストクラス
+ * Symbol information list class
  * @author RIKEN
  */
 public class SymbolList {
-    /** シンボル情報リスト */
+    /** Symbol information list */
     private List<SymbolInfo> list;
 
     /**
-     * コンストラクタ
+     * Constructor
      */
     public SymbolList() {
         list = new ArrayList<SymbolInfo>();
     }
 
     /**
-     * シンボル情報を追加する
-     * @param symbol		シンボル情報
-     * @return		true=success
+     * Add symbol information
+     * @param symbol Symbol information
+     * @return true = success
      */
     public boolean addSymbolInfo(SymbolInfo symbol) {
         return this.list.add(symbol);
     }
 
     /**
-     * シンボル情報リストを取得する
-     * @return		シンボル情報リスト
+     * Get the symbol information list
+     * @return Symbol information list
      */
     public List<SymbolInfo> getSymbolList() {
         return this.list;
     }
 
     /**
-     * シンボル情報を取得する
-     * @param symbolid		シンボルインデックス
-     * @return		シンボル情報
+     * Get symbol information
+     * @param symbolid Symbol index
+     * @return Symbol information
      */
     public SymbolInfo getSymbolInfo(int symbolid) {
         if (list == null) return null;
@@ -64,8 +64,8 @@ public class SymbolList {
     }
 
     /**
-     * シンボル数を取得する
-     * @return		シンボル数
+     * Get the number of symbols
+     * @return Number of symbols
      */
     public int getSymbolInfoCount() {
         if (list == null) return 0;

@@ -16,6 +16,6 @@
  */
 
 /**
- * 総称関数の定義、引数を表現するためのクラスを提供します。<br/>
+ * Provides a class for expressing generic function definitions and arguments. <br/>
  */
 package jp.riken.kscope.language.generic;

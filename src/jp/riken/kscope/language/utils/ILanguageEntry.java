@@ -24,255 +24,255 @@ import jp.riken.kscope.language.fortran.*;
 import jp.riken.kscope.language.generic.*;
 
 /**
- * Entryインターフェイスクラス.
- * データベースの探索を行う.
+ * Entry interface class.
+ * Search the database.
  * @author RIKEN
  */
 public interface ILanguageEntry {
 
 	/**
-	 * 探索履歴リストを取得する.
-	 * @return		探索履歴リスト
-	 */
+* Get the search history list.
+* @return Search history list
+*/
 	public List<Object> getListVisit();
 
 	/**
-	 * 探索履歴リストを設定する
-	 * @param list		探索履歴リスト
-	 */
+* Set the search history list
+* @param list Search history list
+*/
 	public void setListVisit(List<Object> list);
 
 	/**
-	 * フォートランデータベースを取得する
-	 * @return		フォートランデータベース
-	 */
+* Get the Fortran database
+* @return Fortran database
+*/
 	public Fortran getLanguage();
 
 	/**
-	 * フォートランデータベースを設定する.
-	 * @param language		フォートランデータベース
-	 */
+* Set up the Fortran database.
+* @param language Fortran database
+*/
 	public void setLanguage(Fortran language);
 
 	/**
-	 * モジュールを探索する.
-	 * @param entry		モジュール
-	 */
+* Explore modules.
+* @param entry module
+*/
 	public void entry(Module entry);
 
 	/**
-	 * サブルーチン、関数を探索する.
-	 * @param entry		サブルーチン、関数
-	 */
+* Search for subroutines and functions.
+* @param entry Subroutines, functions
+*/
 	public void entry(Procedure entry);
 
 	/**
-	 * 変数を探索する
-	 * @param entry		変数
-	 */
+* Search for variables
+* @param entry variable
+*/
 	public void entry(Variable entry);
 
 	/**
-	 * 構造体を探索する.
-	 * @param entry		構造体
-	 */
+* Search for structures.
+* @param entry structure
+*/
 	public void entry(Type entry);
 
 	/**
-	 * 構造体を探索する.
-	 * @param entry		構造体
-	 */
+* Search for structures.
+* @param entry structure
+*/
 	public void entry(Structure entry);
 
 	/**
-	 * BREAK文を探索する.
-	 * @param entry		BREAK文
-	 */
+* Search for BREAK statements.
+* @param entry BREAK statement
+*/
 	public void entry(Break entry);
 
 	/**
-	 * COMMON文を探索する.
-	 * @param entry		COMMAND文
-	 */
+* Search for COMMON statements.
+* @param entry COMMAND statement
+*/
 	public void entry(Common entry);
 
 	/**
-	 * 条件式を探索する
-	 * @param entry		条件式
-	 */
+* Search for conditional expressions
+* @param entry Conditional expression
+*/
 	public void entry(Condition entry);
 
 	/**
-	 * CONTINUE文を探索する
-	 * @param entry		CONTINUE文
-	 */
+* Search for CONTINUE statements
+* @param entry CONTINUE statement
+*/
 	public void entry(Continue entry);
 
 	/**
-	 * DATA文を探索する.
-	 * @param entry		DATA文
-	 */
+* Search for DATA statements.
+* @param entry DATA statement
+*/
 	public void entry(Data entry);
 
 	/**
-	 * DIRECTIVE文を探索する.
-	 * @param entry		DIRECTIVE文
-	 */
+* Search for DIRECTIVE statements.
+* @param entry DIRECTIVE statement
+*/
 	public void entry(Directive entry);
 	/**
-	 * D何もしない制御文を探索する.
-	 * @param entry		何もしない制御文
-	 */
+* D Search for a control statement that does nothing.
+* @param entry Control statement that does nothing
+*/
 	public void entry(DoNothing entry);
 
 	/**
-	 * ALLOCATE文を探索する.
-	 * @param entry		ALLOCATE文
-	 */
+* Search for ALLOCATE statements.
+* @param entry ALLOCATE statement
+*/
 	public void entry(DynamicAllocation entry);
 
 	/**
-	 * DEALLOCATE文を探索する.
-	 * @param entry		DEALLOCATE文
-	 */
+* Search for DEALLOCATE statements.
+* @param entry DEALLOCATE statement
+*/
 	public void entry(DynamicDeallocation entry);
 
 	/**
-	 * NULLIFY文を探索する.
-	 * @param entry		NULLIFY文
-	 */
+* Search for NULLIFY statements.
+* @param entry NULLIFY statement
+*/
 	public void entry(DynamicNullification entry);
 
 	/**
-	 * EQUIVALENCE文を探索する.
-	 * @param entry		EQUIVALENCE文
-	 */
+* Search for EQUIVALENCE statements.
+* @param entry EQUIVALENCE statement
+*/
 	public void entry(Equivalence entry);
 
 	/**
-	 * サブルーチン、関数の本文を探索する.
-	 * @param entry		サブルーチン、関数の本文
-	 */
+* Search the body of subroutines and functions.
+* @param entry Subroutine, function body
+*/
 	public void entry(ExecutableBody entry);
 
 	/**
-	 * GOTO文を探索する.
-	 * @param entry		GOTO文
-	 */
+* Search for GOTO statements.
+* @param entry GOTO statement
+*/
 	public void entry(GoTo entry);
 
 	/**
-	 * PAUSE文を探索する.
-	 * @param entry		PAUSE文
-	 */
+* Search for PAUSE statements.
+* @param entry PAUSE statement
+*/
 	public void entry(Pause entry);
 
 	/**
-	 * CALL文、関数呼出を探索する.
-	 * @param entry		CALL文、関数呼出
-	 */
+* Search for CALL statements and function calls.
+* @param entry CALL statement, function call
+*/
 	public void entry(ProcedureUsage entry);
 
 	/**
-	 * 総称関数群(interface文)を探索する.
-	 * @param entry		総称関数群(interface文)
-	 */
+* Search for generic functions (interface statement).
+* @param entry Generic function group (interface statement)
+*/
 	public void entry(Procedures entry);
 
 	/**
-	 * DO,WHILE文を探索する.
-	 * @param entry		DO,WHILE文
-	 */
+* Search for DO, WHILE statements.
+* @param entry DO, WHILE statement
+*/
 	public void entry(Repetition entry);
 
 	/**
-	 * RETURN文を探索する
-	 * @param entry		RETURN文
-	 */
+* Search for RETURN statements
+* @param entry RETURN statement
+*/
 	public void entry(Return entry);
 
 	/**
-	 * SELECT文を探索する.
-	 * @param entry 	SELECT文
-	 */
+* Search for SELECT statements.
+* @param entry SELECT statement
+*/
 	public void entry(Selection entry);
 
 	/**
-	 * 代入文を探索する.
-	 * @param entry		代入文
-	 */
+* Search for assignment statements.
+* @param entry assignment statement
+*/
 	public void entry(Substitution entry);
 
 	/**
-	 * STOP文を探索する.
-	 * @param entry		STOP文
-	 */
+* Search for a STOP statement.
+* @param entry STOP statement
+*/
 	public void entry(Termination entry);
 
 	/**
-	 * ユーザーにより定義される処理ブロックを探索する.
-	 * @param entry		ユーザーにより定義される処理ブロック
-	 */
+* Search for user-defined processing blocks.
+* @param entry User-defined processing block
+*/
 	public void entry(UserDefined entry);
 
 	/**
-	 * USE文を探索する.
-	 * @param entry		USE文
-	 */
+* Search for USE statements.
+* @param entry USE statement
+*/
 	public void entry(UseState entry);
 
 	/**
-	 * MODULE PROCEDURE文を探索する.
-	 * @param entry		MODULE PROCEDURE文
-	 */
+* Search for MODULE PROCEDURE statements.
+* @param entry MODULE PROCEDURE statement
+*/
 	public void entry(ProcedureWithNameOnly entry);
 
 	/**
-	 * 変数・構造体の宣言文を探索する.
-	 * @param entry		変数・構造体の宣言文
-	 */
+* Search for variable / structure declaration statements.
+* @param entry Variable / structure declaration statement
+*/
 	public void entry(VariableDefinition entry);
 
 	/**
-	 * 変数属性を探索する.
-	 * @param entry		変数属性
-	 */
+* Search for variable attributes.
+* @param entry Variable attribute
+*/
 	public void entry(VariableAttribute entry);
 
 	/**
-	 * 変数宣言の配列添字を探索する.
-	 * @param entry		変数宣言の配列添字
-	 */
+* Search for array subscripts in variable declarations.
+* @param entry Array subscript of variable declaration
+*/
 	public void entry(VariableDimension entry);
 
 	/**
-	 * 変数の配列添字を探索する.
-	 * @param entry		変数の配列添字
-	 */
+* Search for array subscripts of variables.
+* @param entry Variable array subscript
+*/
 	public void entry(DimensionIndex entry);
 
 	/**
-	 * 式を探索する.
-	 * @param entry		式
-	 */
+* Search for expressions.
+* @param entry expression
+*/
 	public void entry(Expression entry);
 
 	/**
-	 * 総称関数を探索する.
-	 * @param entry		総称関数
-	 */
+* Search for generic functions.
+* @param entry Generic function
+*/
 	public void entry(ProcedureItem entry);
 
 	/**
-	 * 変数データ型を探索する.
-	 * @param entry		変数データ型
-	 */
+* Search for variable data types.
+* @param entry Variable data type
+*/
 	public void entry(VariableType entry);
 
 	/**
-	 * UNION型データ型を探索する.
-	 * @param entry		UNION型
-	 */
+* Search for UNION type data types.
+* @param entry UNION type
+*/
 	public void entry(Union entry);
 
 }
